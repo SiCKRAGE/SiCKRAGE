@@ -79,7 +79,7 @@ class ProperSearcher(object):
         recently_aired = []
         for show in sickrage.app.showlist:
             self._lastProperSearch = self._get_lastProperSearch(show.indexerid)
-            for episode in MainDB.TVEpisode.query(showid=show.indexerid).filter(
+            for episode in MainDB.TVEpisode.query().filter_by(showid=show.indexerid).filter(
                     MainDB.TVEpisode.airdate >= search_date.toordinal(),
                     MainDB.TVEpisode.status.in_(Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST)):
                 recently_aired += [episode]
@@ -295,7 +295,7 @@ class ProperSearcher(object):
         sickrage.app.log.debug("Setting the last proper search in database to " + str(when))
 
         try:
-            dbData = MainDB.TVShow.query(indexer_id=showid).one()
+            dbData = MainDB.TVShow.query().filter_by(indexer_id=showid).one()
             dbData.last_proper_search = when
             MainDB.TVShow.update(**dbData.as_dict())
         except orm.exc.NoResultFound:
@@ -310,7 +310,7 @@ class ProperSearcher(object):
         sickrage.app.log.debug("Retrieving the last check time from the DB")
 
         try:
-            dbData = MainDB.TVShow.query(indexer_id=showid).one()
+            dbData = MainDB.TVShow.query().filter_by(indexer_id=showid).one()
             return int(dbData.last_proper_search)
         except orm.exc.NoResultFound:
             return 1

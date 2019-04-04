@@ -56,7 +56,7 @@ class NameCache(object):
         self.cache[name] = int(indexer_id)
 
         try:
-            CacheDB.SceneName.query(name=name, indexer_id=indexer_id).one()
+            CacheDB.SceneName.query().filter_by(name=name, indexer_id=indexer_id).one()
         except orm.exc.NoResultFound:
             CacheDB.SceneName.add(**{
                 'indexer_id': indexer_id,
@@ -92,7 +92,7 @@ class NameCache(object):
         """Commit cache to database file"""
         for name, indexer_id in self.cache.items():
             try:
-                CacheDB.SceneName.query(name=name, indexer_id=indexer_id).one()
+                CacheDB.SceneName.query().filter_by(name=name, indexer_id=indexer_id).one()
             except orm.exc.NoResultFound:
                 CacheDB.SceneName.add(**{
                     'indexer_id': indexer_id,

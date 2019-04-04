@@ -22,41 +22,12 @@ import shutil
 from contextlib import contextmanager
 
 from sqlalchemy import create_engine, inspect
-from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.orm import sessionmaker, scoped_session, Query
 
 import sickrage
 
 
 class BaseActions(object):
-    @classmethod
-    @contextmanager
-    def session(cls):
-        """ Creates a context with an open SQLAlchemy session.
-        """
-        session = scoped_session(sessionmaker(bind=cls.engine))()
-
-        try:
-            yield session
-            session.commit()
-        except Exception:
-            session.rollback()
-            raise
-        finally:
-            session.close()
-
-    @classmethod
-    def query(cls, **kwargs):
-        with cls.session() as session:
-            return session.query(cls).filter_by(**kwargs)
-
-    @classmethod
-    def bulk_add(cls, values):
-        with cls.session() as session:
-            try:
-                session.bulk_insert_mappings(cls, values)
-            except Exception:
-                [cls.add(**row) for row in values]
-
     @classmethod
     def add(cls, **kwargs):
         with cls.session() as session:
@@ -76,15 +47,6 @@ class BaseActions(object):
 
         with cls.session() as session:
             session.query(cls).filter_by(**primary_keys).update(kwargs)
-            cls.commit()
-
-    @classmethod
-    def commit(cls):
-        with cls.session() as session:
-            try:
-                session.commit()
-            except Exception:
-                session.rollback()
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
@@ -97,6 +59,22 @@ class srDatabase(object):
 
         self.db_path = os.path.join(sickrage.app.data_dir, '{}.db'.format(self.name))
         self.engine = create_engine('sqlite:///{}'.format(self.db_path), echo=False)
+        self.Session = scoped_session(sessionmaker(bind=self.engine))
+
+    @contextmanager
+    def session(self):
+        """ Creates a context with an open SQLAlchemy session.
+        """
+        session = self.Session()
+
+        try:
+            yield session
+            session.commit()
+        except Exception:
+            session.rollback()
+            raise
+        finally:
+            session.close()
 
     @property
     def version(self):
@@ -134,15 +112,22 @@ class srDatabase(object):
 
             for table, rows in migrate_tables.items():
                 sickrage.app.log.info('Migrating {} database table {}'.format(self.name, table))
-                try:
-                    self.tables[table].delete()
-                    self.tables[table].commit()
-                    self.tables[table].bulk_add(rows)
-                except Exception as e:
-                    pass
+                with self.session() as session:
+                    try:
+                        session.query(self.tables[table]).delete()
+                        session.commit()
+                    except Exception as e:
+                        pass
 
             shutil.move(migrate_file, backup_file)
 
             # cleanup
             del migrate_tables
             del rows
+
+    def bulk_add(self, table, values):
+        with self.session() as session:
+            try:
+                session.bulk_insert_mappings(table, values)
+            except Exception:
+                [session.add(table(**row)) for row in values]

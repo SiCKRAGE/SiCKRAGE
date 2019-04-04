@@ -23,7 +23,8 @@ from sickrage.core.databases import srDatabase, BaseActions
 
 
 @as_declarative()
-class CacheDBBase(object): pass
+class CacheDBBase(object):
+    pass
 
 
 class CacheDB(srDatabase):
@@ -32,6 +33,7 @@ class CacheDB(srDatabase):
     def __init__(self, name='cache'):
         super(CacheDB, self).__init__(name)
         CacheDBBase.engine = self.engine
+        CacheDBBase.query = self.Session.query_property()
         CacheDBBase.metadata.create_all(self.engine)
         for model in CacheDBBase._decl_class_registry.values():
             if hasattr(model, '__tablename__'):

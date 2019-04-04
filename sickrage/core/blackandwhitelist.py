@@ -38,8 +38,8 @@ class BlackAndWhiteList(object):
         Builds black and whitelist
         """
         sickrage.app.log.debug('Building black and white list for ' + str(self.show_id))
-        self.blacklist = self._load_list(MainDB.Blacklist.query(show_id=self.show_id))
-        self.whitelist = self._load_list(MainDB.Whitelist.query(show_id=self.show_id))
+        self.blacklist = self._load_list(MainDB.Blacklist.query().filter_by(show_id=self.show_id))
+        self.whitelist = self._load_list(MainDB.Whitelist.query().filter_by(show_id=self.show_id))
 
     def _add_keywords(self, table, values):
         """
@@ -60,7 +60,7 @@ class BlackAndWhiteList(object):
 
         :param values: Complete list of keywords to be set as blacklist
         """
-        self._del_all_keywords(MainDB.Blacklist.query(show_id=self.show_id))
+        self._del_all_keywords(MainDB.Blacklist.query().filter_by(show_id=self.show_id))
         self._add_keywords(MainDB.Blacklist, values)
         self.blacklist = values
         sickrage.app.log.debug('Blacklist set to: %s' % self.blacklist)
@@ -71,7 +71,7 @@ class BlackAndWhiteList(object):
 
         :param values: Complete list of keywords to be set as whitelist
         """
-        self._del_all_keywords(MainDB.Whitelist.query(show_id=self.show_id))
+        self._del_all_keywords(MainDB.Whitelist.query().filter_by(show_id=self.show_id))
         self._add_keywords(MainDB.Whitelist, values)
         self.whitelist = values
         sickrage.app.log.debug('Whitelist set to: %s' % self.whitelist)

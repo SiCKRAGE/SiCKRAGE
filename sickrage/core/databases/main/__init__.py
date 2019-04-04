@@ -25,7 +25,8 @@ from sickrage.core.databases import srDatabase, BaseActions
 
 
 @as_declarative()
-class MainDBBase(object): pass
+class MainDBBase(object):
+    pass
 
 
 class MainDB(srDatabase):
@@ -34,6 +35,7 @@ class MainDB(srDatabase):
     def __init__(self, name='main'):
         super(MainDB, self).__init__(name)
         MainDBBase.engine = self.engine
+        MainDBBase.query = self.Session.query_property()
         MainDBBase.metadata.create_all(self.engine)
         for model in MainDBBase._decl_class_registry.values():
             if hasattr(model, '__tablename__'):
@@ -44,7 +46,7 @@ class MainDB(srDatabase):
         try:
             dbData = MainDB.Version.query().one()
         except orm.exc.NoResultFound:
-            MainDB.Version.add(**{'database_version': 1})
+            MainDB.session.add(MainDB.Version(**{'database_version': 1}))
             dbData = MainDB.Version.query().one()
 
         return dbData.database_version

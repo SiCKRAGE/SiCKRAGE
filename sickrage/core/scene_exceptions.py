@@ -52,7 +52,7 @@ def shouldRefresh(exList):
     MAX_REFRESH_AGE_SECS = 86400  # 1 day
 
     try:
-        dbData = CacheDB.SceneExceptionRefresh.query(exception_list=exList).one()
+        dbData = CacheDB.SceneExceptionRefresh.query().filter_by(exception_list=exList).one()
         last_refresh = int(dbData.last_refreshed)
         return int(time.mktime(datetime.datetime.today().timetuple())) > last_refresh + MAX_REFRESH_AGE_SECS
     except orm.exc.NoResultFound:
@@ -67,7 +67,7 @@ def setLastRefresh(exList):
     """
 
     try:
-        dbData = CacheDB.SceneExceptionRefresh.query(exception_list=exList).one()
+        dbData = CacheDB.SceneExceptionRefresh.query().filter_by(exception_list=exList).one()
         dbData.last_refreshed = int(time.mktime(datetime.datetime.today().timetuple()))
         CacheDB.SceneExceptionRefresh.update(**dbData.as_dict())
     except orm.exc.NoResultFound:
@@ -126,7 +126,7 @@ def retrieve_exceptions(get_xem=True, get_anidb=True):
             continue
 
         existing_exceptions = [x.show_name for x in
-                               CacheDB.SceneException.query(indexer_id=cur_indexer_id)]
+                               CacheDB.SceneException.query().filter_by(indexer_id=cur_indexer_id)]
 
         for cur_exception, curSeason in dict([(key, d[key]) for d in cur_exception_dict for key in d]).items():
             if cur_exception not in existing_exceptions:
@@ -156,7 +156,7 @@ def get_scene_exceptions(indexer_id, season=-1):
     if indexer_id not in exceptionsCache or season not in exceptionsCache[indexer_id]:
         try:
             exceptionsList = list(set([cur_exception.show_name for cur_exception in
-                                       CacheDB.SceneException.query(indexer_id=indexer_id, season=season)]))
+                                       CacheDB.SceneException.query().filter_by(indexer_id=indexer_id, season=season)]))
 
             if indexer_id not in exceptionsCache:
                 exceptionsCache[indexer_id] = {}
@@ -182,7 +182,7 @@ def get_all_scene_exceptions(indexer_id):
     """
     exceptionsDict = {}
 
-    for cur_exception in CacheDB.SceneException.query(indexer_id=indexer_id):
+    for cur_exception in CacheDB.SceneException.query().filter_by(indexer_id=indexer_id):
         if not cur_exception.season in exceptionsDict:
             exceptionsDict[cur_exception.season] = []
         exceptionsDict[cur_exception.season].append(cur_exception.show_name)
@@ -198,7 +198,7 @@ def get_scene_seasons(indexer_id):
 
     if indexer_id not in exceptionsSeasonCache:
         exceptions_season_list = list(set(
-            [int(x.season) for x in CacheDB.SceneException.query(indexer_id=indexer_id)]))
+            [int(x.season) for x in CacheDB.SceneException.query().filter_by(indexer_id=indexer_id)]))
 
         if indexer_id not in exceptionsSeasonCache:
             exceptionsSeasonCache[indexer_id] = {}
@@ -223,7 +223,7 @@ def get_scene_exception_by_name_multiple(show_name):
     out = []
 
     # try the obvious case first
-    exception_result = CacheDB.SceneException.query(show_name=show_name.lower()).order_by(
+    exception_result = CacheDB.SceneException.query().filter_by(show_name=show_name.lower()).order_by(
         CacheDB.SceneException.season)
 
     if exception_result.count():
@@ -329,7 +329,7 @@ def _xem_exceptions_fetcher():
 
 def getSceneSeasons(indexer_id):
     """get a list of season numbers that have scene exceptions"""
-    return (x.season for x in CacheDB.SceneException.query(indexer_id=indexer_id))
+    return (x.season for x in CacheDB.SceneException.query().filter_by(indexer_id=indexer_id))
 
 
 def check_against_names(name_in_question, show, season=-1):

@@ -120,7 +120,7 @@ class TVCache(object):
     @property
     def last_update(self):
         try:
-            dbData = CacheDB.LastUpdate.query(provider=self.providerID).one()
+            dbData = CacheDB.LastUpdate.query().filter_by(provider=self.providerID).one()
             lastTime = int(dbData.time)
             if lastTime > int(time.mktime(datetime.datetime.today().timetuple())):
                 lastTime = 0
@@ -132,7 +132,7 @@ class TVCache(object):
     @last_update.setter
     def last_update(self, toDate):
         try:
-            dbData = CacheDB.LastUpdate.query(provider=self.providerID).one()
+            dbData = CacheDB.LastUpdate.query().filter_by(provider=self.providerID).one()
             dbData.time = int(time.mktime(toDate.timetuple()))
             CacheDB.LastUpdate.update(**dbData.as_dict())
         except orm.exc.NoResultFound:
@@ -144,7 +144,7 @@ class TVCache(object):
     @property
     def last_search(self):
         try:
-            dbData = CacheDB.LastSearch.query(provider=self.providerID).one()
+            dbData = CacheDB.LastSearch.query().filter_by(provider=self.providerID).one()
             lastTime = int(dbData.time)
             if lastTime > int(time.mktime(datetime.datetime.today().timetuple())):
                 lastTime = 0
@@ -156,7 +156,7 @@ class TVCache(object):
     @last_search.setter
     def last_search(self, toDate):
         try:
-            dbData = CacheDB.LastSearch.query(provider=self.providerID).one()
+            dbData = CacheDB.LastSearch.query().filter_by(provider=self.providerID).one()
             dbData.time = int(time.mktime(toDate.timetuple()))
             CacheDB.LastSearch.update(**dbData.as_dict())
         except orm.exc.NoResultFound:
@@ -183,7 +183,7 @@ class TVCache(object):
     def addCacheEntry(self, name, url, seeders, leechers, size):
         # check for existing entry in cache
         try:
-            CacheDB.Provider.query(provider=self.providerID, url=url).one()
+            CacheDB.Provider.query().filter_by(provider=self.providerID, url=url).one()
         except orm.exc.NoResultFound:
             return
 
@@ -260,7 +260,7 @@ class TVCache(object):
 
         # get data from internal database
         dbData += [x.as_dict() for x in
-                   CacheDB.Provider.query(provider=self.providerID, indexerid=ep_obj.show.indexerid, season=season) if
+                   CacheDB.Provider.query().filter_by(provider=self.providerID, indexerid=ep_obj.show.indexerid, season=season) if
                    "|{}|".format(episode) in x.episodes]
 
         # for each cache entry

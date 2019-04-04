@@ -365,7 +365,7 @@ class CalendarHandler(BaseHandler):
         # Get all the shows that are not paused and are currently on air (from kjoconnor Fork)
         for show in [x for x in sickrage.app.showlist if
                      x.status.lower() in ['continuing', 'returning series'] and x.paused != 1]:
-            for dbData in MainDB.TVEpisode.query(showid=int(show.indexerid)).filter(
+            for dbData in MainDB.TVEpisode.query().filter_by(showid=int(show.indexerid)).filter(
                     past_date <= MainDB.TVEpisode.airdate < future_date):
                 air_date_time = sickrage.app.tz_updater.parse_date_time(dbData.airdate, show.airs,
                                                                         show.network).astimezone(utc)
@@ -1138,7 +1138,7 @@ class Home(WebHandler):
             if showObj is None:
                 return self._genericMessage(_("Error"), _("Show not in show list"))
 
-        episodeResults = MainDB.TVEpisode.query(showid=showObj.indexerid).order_by(MainDB.TVEpisode.season.desc(),
+        episodeResults = MainDB.TVEpisode.query().filter_by(showid=showObj.indexerid).order_by(MainDB.TVEpisode.season.desc(),
                                                                                    MainDB.TVEpisode.episode.desc())
 
         seasonResults = list({x.season for x in episodeResults})
@@ -1993,7 +1993,7 @@ class Home(WebHandler):
             epInfo = curEp.split('x')
 
             try:
-                ep_result = MainDB.TVEpisode.query(showid=int(show), season=int(epInfo[0]),
+                ep_result = MainDB.TVEpisode.query().filter_by(showid=int(show), season=int(epInfo[0]),
                                                    episode=int(epInfo[1])).one()
             except orm.exc.NoResultFound:
                 sickrage.app.log.warning("Unable to find an episode for " + curEp + ", skipping")
@@ -2002,7 +2002,7 @@ class Home(WebHandler):
             root_ep_obj = show_obj.get_episode(int(epInfo[0]), int(epInfo[1]))
             root_ep_obj.relatedEps = []
 
-            for cur_related_ep in MainDB.TVEpisode.query(location=ep_result.location).filter(
+            for cur_related_ep in MainDB.TVEpisode.query().filter_by(location=ep_result.location).filter(
                     MainDB.TVEpisode.episode != int(epInfo[1])):
                 related_ep_obj = show_obj.get_episode(int(cur_related_ep.season), int(cur_related_ep.episode))
                 if related_ep_obj not in root_ep_obj.relatedEps:
@@ -2840,7 +2840,7 @@ class Manage(Home, WebRoot):
             status_list = Quality.SNATCHED + Quality.SNATCHED_PROPER
 
         result = {}
-        for dbData in MainDB.TVEpisode.query(showid=int(indexer_id)).filter(MainDB.TVEpisode.season != 0,
+        for dbData in MainDB.TVEpisode.query().filter_by(showid=int(indexer_id)).filter(MainDB.TVEpisode.season != 0,
                                                                             MainDB.TVEpisode.status.in_(status_list)):
             cur_season = int(dbData.season)
             cur_episode = int(dbData.episode)
@@ -2866,7 +2866,7 @@ class Manage(Home, WebRoot):
         # if we have no status then this is as far as we need to go
         if len(status_list):
             for cur_status_result in sorted((s for s in sickrage.app.showlist for __ in
-                                             MainDB.TVEpisode.query(showid=s.indexerid).filter(
+                                             MainDB.TVEpisode.query().filter_by(showid=s.indexerid).filter(
                                                  MainDB.TVEpisode.status.in_(status_list),
                                                  MainDB.TVEpisode.season != 0)), key=lambda d: d.name):
                 cur_indexer_id = int(cur_status_result.indexerid)
@@ -2916,7 +2916,7 @@ class Manage(Home, WebRoot):
             # get a list of all the eps we want to change if they just said "all"
             if 'all' in to_change[cur_indexer_id]:
                 all_eps = ['{}x{}'.format(x.season, x.episode) for x in
-                           MainDB.TVEpisode.query(showid=int(cur_indexer_id)).filter(
+                           MainDB.TVEpisode.query().filter_by(showid=int(cur_indexer_id)).filter(
                                MainDB.TVEpisode.status.in_(status_list), MainDB.TVEpisode.season != 0)]
                 to_change[cur_indexer_id] = all_eps
 
@@ -2927,7 +2927,7 @@ class Manage(Home, WebRoot):
     @staticmethod
     def showSubtitleMissed(indexer_id, whichSubs):
         result = {}
-        for dbData in MainDB.TVEpisode.query(showid=int(indexer_id)).filter(MainDB.TVEpisode.status.endswith(4),
+        for dbData in MainDB.TVEpisode.query().filter_by(showid=int(indexer_id)).filter(MainDB.TVEpisode.status.endswith(4),
                                                                             MainDB.TVEpisode.season != 0):
             if whichSubs == 'all':
                 if not frozenset(sickrage.subtitles.wanted_languages()).difference(dbData["subtitles"].split(',')):
@@ -2961,7 +2961,7 @@ class Manage(Home, WebRoot):
                 if not s.subtitles == 1:
                     continue
 
-                for e in MainDB.TVEpisode.query(showid=s.indexerid).filter(
+                for e in MainDB.TVEpisode.query().filter_by(showid=s.indexerid).filter(
                         or_(MainDB.TVEpisode.status.endswith(4), MainDB.TVEpisode.status.endswith(6)),
                         MainDB.TVEpisode.season != 0):
                     status_results += [{
@@ -3021,7 +3021,7 @@ class Manage(Home, WebRoot):
             # get a list of all the eps we want to download subtitles if they just said "all"
             if 'all' in to_download[cur_indexer_id]:
                 to_download[cur_indexer_id] = ['{}x{}'.format(x.season, x.episode) for x in
-                                               MainDB.TVEpisode.query(showid=int(cur_indexer_id)).filter(
+                                               MainDB.TVEpisode.query().filter_by(showid=int(cur_indexer_id)).filter(
                                                    MainDB.TVEpisode.status.endswith(4), MainDB.TVEpisode.season != 0)]
 
             for epResult in to_download[cur_indexer_id]:
@@ -3064,7 +3064,7 @@ class Manage(Home, WebRoot):
 
             showResults[curShow.indexerid] = []
 
-            for curResult in MainDB.TVEpisode.query(showid=curShow.indexerid).order_by(MainDB.TVEpisode.season.desc(),
+            for curResult in MainDB.TVEpisode.query().filter_by(showid=curShow.indexerid).order_by(MainDB.TVEpisode.season.desc(),
                                                                                        MainDB.TVEpisode.episode.desc()):
                 curEpCat = curShow.get_overview(int(curResult.status or -1))
                 if curEpCat:

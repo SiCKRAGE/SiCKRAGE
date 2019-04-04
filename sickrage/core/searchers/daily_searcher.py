@@ -80,7 +80,7 @@ class DailySearcher(object):
         sickrage.app.log.debug("Seeing if we need anything from {}".format(show.name))
 
         # check through the list of statuses to see if we want any
-        for dbData in MainDB.TVEpisode.query(showid=show.indexerid).filter(MainDB.TVEpisode.season > 0,
+        for dbData in MainDB.TVEpisode.query().filter_by(showid=show.indexerid).filter(MainDB.TVEpisode.season > 0,
                                                                            MainDB.TVEpisode.airdate >= fromDate.toordinal()):
             curStatus, curQuality = Quality.split_composite_status(int(dbData.status or -1))
 

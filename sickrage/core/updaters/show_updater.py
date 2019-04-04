@@ -49,7 +49,7 @@ class ShowUpdater(object):
         update_timestamp = int(time.mktime(datetime.datetime.now().timetuple()))
 
         try:
-            dbData = CacheDB.LastUpdate.query(provider='theTVDB').one()
+            dbData = CacheDB.LastUpdate.query().filter_by(provider='theTVDB').one()
             last_update = int(dbData.time)
         except orm.exc.NoResultFound:
             last_update = update_timestamp

@@ -776,7 +776,7 @@ class CMD_Episode(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         try:
-            episode = MainDB.TVEpisode.query(showid=self.indexerid, season=self.s, episode=self.e).one()
+            episode = MainDB.TVEpisode.query().filter_by(showid=self.indexerid, season=self.s, episode=self.e).one()
 
             showPath = showObj.location
 
@@ -1048,7 +1048,7 @@ class CMD_Exceptions(ApiCall):
                 return _responds(RESULT_FAILURE, msg="Show not found")
 
             scene_exceptions = []
-            for dbData in CacheDB.SceneException.query(indexer_id=self.indexerid):
+            for dbData in CacheDB.SceneException.query().filter_by(indexer_id=self.indexerid):
                 scene_exceptions.append(dbData.show_name)
 
         return _responds(RESULT_SUCCESS, scene_exceptions)
@@ -1169,7 +1169,7 @@ class CMD_Backlog(ApiCall):
                 continue
 
             showEps = []
-            for e in MainDB.TVEpisode.query(showid=s.indexerid).order_by(MainDB.TVEpisode.season.desc(),
+            for e in MainDB.TVEpisode.query().filter_by(showid=s.indexerid).order_by(MainDB.TVEpisode.season.desc(),
                                                                          MainDB.TVEpisode.episode.desc()):
                 curEpCat = s.get_overview(int(e.status or -1))
                 if curEpCat and curEpCat in (Overview.WANTED, Overview.QUAL):
@@ -2398,7 +2398,7 @@ class CMD_ShowSeasonList(ApiCall):
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
-        seasonList = set(x.season for x in MainDB.TVEpisode.query(showid=self.indexerid).order_by(
+        seasonList = set(x.season for x in MainDB.TVEpisode.query().filter_by(showid=self.indexerid).order_by(
             MainDB.TVEpisode.season if not self.sort == 'desc' else MainDB.TVEpisode.season.desc()))
 
         return _responds(RESULT_SUCCESS, seasonList)
@@ -2431,7 +2431,7 @@ class CMD_ShowSeasons(ApiCall):
         if self.season is None:
             seasons = {}
 
-            for row in MainDB.TVEpisode.query(showid=self.indexerid):
+            for row in MainDB.TVEpisode.query().filter_by(showid=self.indexerid):
                 status, quality = Quality.split_composite_status(int(row.status))
                 row.status = _get_status_strings(status)
                 row.quality = get_quality_string(quality)
@@ -2456,7 +2456,7 @@ class CMD_ShowSeasons(ApiCall):
             seasons = {}
 
             row = None
-            for row in MainDB.TVEpisode.query(showid=self.indexerid, season=self.season):
+            for row in MainDB.TVEpisode.query().filter_by(showid=self.indexerid, season=self.season):
                 curEpisode = int(row.episode)
                 status, quality = Quality.split_composite_status(int(row.status))
                 row.status = _get_status_strings(status)
@@ -2571,7 +2571,7 @@ class CMD_ShowStats(ApiCall):
             episode_qualities_counts_snatch[statusCode] = 0
 
         # the main loop that goes through all episodes
-        for row in MainDB.TVEpisode.query(showid=self.indexerid).filter(MainDB.TVEpisode.season != 0):
+        for row in MainDB.TVEpisode.query().filter_by(showid=self.indexerid).filter(MainDB.TVEpisode.season != 0):
             status, quality = Quality.split_composite_status(int(row.status))
             if quality in [Quality.NONE]:
                 continue
