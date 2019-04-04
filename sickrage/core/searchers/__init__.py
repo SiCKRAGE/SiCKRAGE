@@ -33,7 +33,7 @@ def new_episode_finder():
 
     show = None
 
-    for episode in MainDB.TVEpisode.query().filter_by(status=UNAIRED).filter(MainDB.TVEpisode.season > 0,
+    for episode in MainDB.TVEpisode.query.filter_by(status=UNAIRED).filter(MainDB.TVEpisode.season > 0,
                                                                  MainDB.TVEpisode.airdate > 1):
 
         if not show or int(episode.showid) != show.indexerid:

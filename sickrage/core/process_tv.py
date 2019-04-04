@@ -463,7 +463,7 @@ def already_postprocessed(dirName, videofile, force, result):
         return False
 
     # Avoid processing the same dir again if we use a process method <> move
-    if MainDB.TVEpisode.query().filter(or_(literal(dirName).contains(MainDB.TVEpisode.release_name),
+    if MainDB.TVEpisode.query.filter(or_(literal(dirName).contains(MainDB.TVEpisode.release_name),
                                            literal(videofile).contains(MainDB.TVEpisode.release_name))):
         return True
 
@@ -475,8 +475,8 @@ def already_postprocessed(dirName, videofile, force, result):
     except:
         parse_result = False
 
-    for h in MainDB.History.query().filter(MainDB.History.resource.endswith(videofile)):
-        for e in MainDB.TVEpisode.query().filter_by(showid=h.showid, season=h.season, episode=h.episode).filter(
+    for h in MainDB.History.query.filter(MainDB.History.resource.endswith(videofile)):
+        for e in MainDB.TVEpisode.query.filter_by(showid=h.showid, season=h.season, episode=h.episode).filter(
                 MainDB.TVEpisode.status.in_(Quality.DOWNLOADED)):
             # If we find a showid, a season number, and one or more episode numbers then we need to use those in the
             # query

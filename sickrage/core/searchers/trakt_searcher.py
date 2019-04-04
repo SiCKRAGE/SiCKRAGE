@@ -194,7 +194,7 @@ class TraktSearcher(object):
         sickrage.app.log.debug("COLLECTION::SYNC::START - Look for Episodes to Add to Trakt Collection")
 
         for s in sickrage.app.showlist:
-            for e in MainDB.TVEpisode.query().filter_by(showid=s.indexerid):
+            for e in MainDB.TVEpisode.query.filter_by(showid=s.indexerid):
                 trakt_id = IndexerApi(s.indexer).trakt_id
                 if not self._checkInList(trakt_id, str(e.showid), e.season, e.episode, 'Collection'):
                     sickrage.app.log.debug(
@@ -217,7 +217,7 @@ class TraktSearcher(object):
             "COLLECTION::REMOVE::START - Look for Episodes to Remove From Trakt Collection")
 
         for s in sickrage.app.showlist:
-            for e in MainDB.TVEpisode.query().filter_by(showid=s.indexerid):
+            for e in MainDB.TVEpisode.query.filter_by(showid=s.indexerid):
                 if e.location:
                     continue
 
@@ -244,7 +244,7 @@ class TraktSearcher(object):
             "WATCHLIST::REMOVE::START - Look for Episodes to Remove from Trakt Watchlist")
 
         for s in sickrage.app.showlist:
-            for e in MainDB.TVEpisode.query().filter_by(showid=s.indexerid):
+            for e in MainDB.TVEpisode.query.filter_by(showid=s.indexerid):
                 trakt_id = IndexerApi(s.indexer).trakt_id
                 if self._checkInList(trakt_id, str(e.showid), e.season, e.episode):
                     sickrage.app.log.debug(
@@ -268,7 +268,7 @@ class TraktSearcher(object):
         sickrage.app.log.debug("WATCHLIST::ADD::START - Look for Episodes to Add to Trakt Watchlist")
 
         for s in sickrage.app.showlist:
-            for e in MainDB.TVEpisode.query().filter_by(showid=s.indexerid).filter(
+            for e in MainDB.TVEpisode.query.filter_by(showid=s.indexerid).filter(
                     ~MainDB.TVEpisode.episode.in_(Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN] + [WANTED])):
                 trakt_id = IndexerApi(s.indexer).trakt_id
                 if self._checkInList(trakt_id, str(e.showid), e.season, e.episode):

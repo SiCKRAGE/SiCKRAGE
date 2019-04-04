@@ -383,7 +383,7 @@ class GenericProvider(object):
                 else:
                     airdate = parse_result.air_date.toordinal()
                     try:
-                        dbData = MainDB.TVEpisode.query().filter_by(showid=result.show.indexerid, airdate=airdate).one()
+                        dbData = MainDB.TVEpisode.query.filter_by(showid=result.show.indexerid, airdate=airdate).one()
                         actual_season = int(dbData.season)
                         actual_episodes = [int(dbData.episode)]
                     except orm.exc.NoResultFound:

@@ -99,7 +99,7 @@ class SearchInterface(Interface):
 
         return None
 
-    def.query().filter_by(self, query, media=None, year=None, fields=None, extended=None, **kwargs):
+    def query(self, query, media=None, year=None, fields=None, extended=None, **kwargs):
         """Search by titles, descriptions, translated titles, aliases, and people.
 
         **Note:** Results are ordered by the most relevant score.

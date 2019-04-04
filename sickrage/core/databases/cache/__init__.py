@@ -32,27 +32,26 @@ class CacheDB(srDatabase):
 
     def __init__(self, name='cache'):
         super(CacheDB, self).__init__(name)
-        CacheDBBase.engine = self.engine
         CacheDBBase.query = self.Session.query_property()
         CacheDBBase.metadata.create_all(self.engine)
         for model in CacheDBBase._decl_class_registry.values():
             if hasattr(model, '__tablename__'):
                 self.tables[model.__tablename__] = model
 
-    class LastUpdate(BaseActions, CacheDBBase):
+    class LastUpdate(CacheDBBase):
         __tablename__ = 'last_update'
 
         provider = Column(Text, primary_key=True)
         time = Column(Integer)
 
-    class LastSearch(BaseActions, CacheDBBase):
+    class LastSearch(CacheDBBase):
         __tablename__ = 'last_search'
 
         id = Column(Integer, primary_key=True)
         provider = Column(Text)
         time = Column(Integer)
 
-    class SceneException(BaseActions, CacheDBBase):
+    class SceneException(CacheDBBase):
         __tablename__ = 'scene_exceptions'
 
         id = Column(Integer, primary_key=True)
@@ -60,26 +59,26 @@ class CacheDB(srDatabase):
         show_name = Column(Text)
         season = Column(Integer)
 
-    class SceneName(BaseActions, CacheDBBase):
+    class SceneName(CacheDBBase):
         __tablename__ = 'scene_names'
 
         id = Column(Integer, primary_key=True)
         indexer_id = Column(Integer)
         name = Column(Text)
 
-    class NetworkTimezone(BaseActions, CacheDBBase):
+    class NetworkTimezone(CacheDBBase):
         __tablename__ = 'network_timezones'
 
         network_name = Column(Text, primary_key=True)
         timezone = Column(Text)
 
-    class SceneExceptionRefresh(BaseActions, CacheDBBase):
+    class SceneExceptionRefresh(CacheDBBase):
         __tablename__ = 'scene_exceptions_refresh'
 
         exception_list = Column(Text, primary_key=True)
         last_refreshed = Column(Integer)
 
-    class Provider(BaseActions, CacheDBBase):
+    class Provider(CacheDBBase):
         __tablename__ = 'providers'
 
         id = Column(Integer, primary_key=True)
@@ -97,7 +96,7 @@ class CacheDB(srDatabase):
         leechers = Column(Integer)
         size = Column(Integer)
 
-    class QuickSearchShow(BaseActions, CacheDBBase):
+    class QuickSearchShow(CacheDBBase):
         __tablename__ = 'quicksearch_shows'
 
         category = Column(Text)
@@ -106,7 +105,7 @@ class CacheDB(srDatabase):
         name = Column(Text)
         img = Column(Text)
 
-    class QuickSearchEpisode(BaseActions, CacheDBBase):
+    class QuickSearchEpisode(CacheDBBase):
         __tablename__ = 'quicksearch_episodes'
 
         category = Column(Text)

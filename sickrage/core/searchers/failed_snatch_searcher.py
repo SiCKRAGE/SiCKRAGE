@@ -57,7 +57,7 @@ class FailedSnatchSearcher(object):
         show = None
         failed_snatches = False
 
-        snatched_episodes = (x for x in MainDB.History.query().filter(
+        snatched_episodes = (x for x in MainDB.History.query.filter(
             MainDB.History.action.in_(Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER),
             24 >= int((datetime.datetime.now() -
                        datetime.datetime.strptime(
@@ -66,7 +66,7 @@ class FailedSnatchSearcher(object):
                       ) >= sickrage.app.config.failed_snatch_age))
 
         downloaded_releases = ((x.showid, x.season, x.episode) for x in
-                               MainDB.History.query().filter(MainDB.History.action.in_(Quality.DOWNLOADED)))
+                               MainDB.History.query.filter(MainDB.History.action.in_(Quality.DOWNLOADED)))
 
         episodes = [x for x in snatched_episodes if (x.showid, x.season, x.episode) not in downloaded_releases]
 

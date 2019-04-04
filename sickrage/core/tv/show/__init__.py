@@ -438,7 +438,7 @@ class TVShow(object):
             curDate = datetime.date.today()
 
             if not self._next_aired or self._next_aired and curDate.toordinal() > self._next_aired:
-                dbData = MainDB.TVEpisode.query().filter_by(showid=self.indexerid).filter(
+                dbData = MainDB.TVEpisode.query.filter_by(showid=self.indexerid).filter(
                     MainDB.TVEpisode.airdate >= curDate.toordinal(),
                     MainDB.TVEpisode.status.in_([UNAIRED, WANTED])).order_by(MainDB.TVEpisode.airdate).first()
 
@@ -451,7 +451,7 @@ class TVShow(object):
     @property
     def show_size(self):
         total_size = 0
-        for x in MainDB.TVEpisode.query().filter_by(showid=self.indexerid):
+        for x in MainDB.TVEpisode.query.filter_by(showid=self.indexerid):
             total_size += x.file_size
         return total_size
 
@@ -477,7 +477,7 @@ class TVShow(object):
     def get_all_episodes(self, season=None, has_location=False):
         results = []
 
-        for x in MainDB.TVEpisode.query().filter_by(showid=self.indexerid):
+        for x in MainDB.TVEpisode.query.filter_by(showid=self.indexerid):
             if season and x.season != season:
                 continue
             if has_location and x.location == '':
@@ -485,7 +485,7 @@ class TVShow(object):
             results += [x]
 
         ep_list = []
-        for cur_result in MainDB.TVEpisode.query().filter_by(showid=self.indexerid):
+        for cur_result in MainDB.TVEpisode.query.filter_by(showid=self.indexerid):
             cur_ep = self.get_episode(int(cur_result.season), int(cur_result.episode))
             if not cur_ep:
                 continue
@@ -517,7 +517,7 @@ class TVShow(object):
         # if we get an anime get the real season and episode
         if self.is_anime and all([absolute_number is not None, season is None, episode is None]):
             try:
-                dbData = MainDB.TVEpisode.query().filter_by(showid=self.indexerid, absolute_number=absolute_number).filter(
+                dbData = MainDB.TVEpisode.query.filter_by(showid=self.indexerid, absolute_number=absolute_number).filter(
                     MainDB.TVEpisode.season != 0).one()
                 episode = int(dbData.episode)
                 season = int(dbData.season)
@@ -563,7 +563,7 @@ class TVShow(object):
 
         # get latest aired episode to compare against today - graceperiod and today + graceperiod
         try:
-            dbData = MainDB.TVEpisode.query().filter_by(showid=self.indexerid, status=1).filter(MainDB.TVEpisode.season > 0,
+            dbData = MainDB.TVEpisode.query.filter_by(showid=self.indexerid, status=1).filter(MainDB.TVEpisode.season > 0,
                                                                                     MainDB.TVEpisode.airdate > 1).order_by(
                 desc(MainDB.TVEpisode.airdate)).one()
             last_airdate = datetime.date.fromordinal(dbData.airdate)
@@ -573,7 +573,7 @@ class TVShow(object):
             pass
 
         try:
-            dbData = MainDB.TVEpisode.query().filter_by(showid=self.indexerid, status=1).filter(MainDB.TVEpisode.season > 0,
+            dbData = MainDB.TVEpisode.query.filter_by(showid=self.indexerid, status=1).filter(MainDB.TVEpisode.season > 0,
                                                                                     MainDB.TVEpisode.airdate > 1).order_by(
                 MainDB.TVEpisode.airdate).one()
             next_airdate = datetime.date.fromordinal(dbData.airdate)
@@ -624,7 +624,7 @@ class TVShow(object):
 
         sickrage.app.log.debug(str(self.indexerid) + ": Writing NFOs for all episodes")
 
-        for dbData in MainDB.TVEpisode.query().filter_by(showid=self.indexerid).filter(MainDB.TVEpisode.location != ''):
+        for dbData in MainDB.TVEpisode.query.filter_by(showid=self.indexerid).filter(MainDB.TVEpisode.location != ''):
             sickrage.app.log.debug(str(self.indexerid) + ": Retrieving/creating episode S%02dE%02d" % (
                 dbData.season or 0, dbData.episode or 0))
 
@@ -688,7 +688,7 @@ class TVShow(object):
 
         sickrage.app.log.debug("{}: Loading all episodes for show from DB".format(self.indexerid))
 
-        for dbData in MainDB.TVEpisode.query().filter_by(showid=self.indexerid):
+        for dbData in MainDB.TVEpisode.query.filter_by(showid=self.indexerid):
             deleteEp = False
 
             curSeason = int(dbData.season)
@@ -909,7 +909,7 @@ class TVShow(object):
         sickrage.app.log.debug(str(self.indexerid) + ": Loading show info from database")
 
         try:
-            dbData = MainDB.TVShow.query().filter_by(indexer_id=self.indexerid, indexer=self.indexer).one()
+            dbData = MainDB.TVShow.query.filter_by(indexer_id=self.indexerid, indexer=self.indexer).one()
         except orm.exc.MultipleResultsFound:
             raise MultipleShowsInDatabaseException()
         except orm.exc.NoResultFound:
@@ -953,7 +953,7 @@ class TVShow(object):
         if not skipNFO:
             # Get IMDb_info from database
             try:
-                self._imdb_info = MainDB.IMDbInfo.query().filter_by(indexer_id=self.indexerid).one()
+                self._imdb_info = MainDB.IMDbInfo.query.filter_by(indexer_id=self.indexerid).one()
             except orm.exc.NoResultFound:
                 self._imdb_info = self.imdb_info
 
@@ -1043,7 +1043,7 @@ class TVShow(object):
             }
 
             try:
-                dbData = MainDB.IMDbInfo.query().filter_by(indexer_id=self.indexerid).one()
+                dbData = MainDB.IMDbInfo.query.filter_by(indexer_id=self.indexerid).one()
                 dbData.__dict__.update(self.imdb_info)
                 MainDB.IMDbInfo.update(**dbData.as_dict())
             except orm.exc.NoResultFound:
@@ -1136,7 +1136,7 @@ class TVShow(object):
         # run through all locations from DB, check that they exist
         sickrage.app.log.debug(str(self.indexerid) + ": Loading all episodes with a location from the database")
 
-        for ep in MainDB.TVEpisode.query().filter_by(showid=self.indexerid).filter(MainDB.TVEpisode.location != ''):
+        for ep in MainDB.TVEpisode.query.filter_by(showid=self.indexerid).filter(MainDB.TVEpisode.location != ''):
             curLoc = os.path.normpath(ep.location)
             season = int(ep.season)
             episode = int(ep.episode)
@@ -1247,7 +1247,7 @@ class TVShow(object):
         }
 
         try:
-            dbData = MainDB.TVShow.query().filter_by(indexer_id=self.indexerid).one()
+            dbData = MainDB.TVShow.query.filter_by(indexer_id=self.indexerid).one()
             dbData.__dict__.update(tv_show)
             MainDB.TVShow.update(**dbData.as_dict())
         except orm.exc.NoResultFound:
@@ -1415,7 +1415,7 @@ class TVShow(object):
             mapped[indexer] = self.indexerid if int(indexer) == int(self.indexer) else 0
 
         # for each mapped entry
-        for dbData in MainDB.IndexerMapping.query().filter_by(indexer_id=self.indexerid, indexer=self.indexer):
+        for dbData in MainDB.IndexerMapping.query.filter_by(indexer_id=self.indexerid, indexer=self.indexer):
             # Check if its mapped with both tvdb and tvrage.
             if len([i for i in dbData if i is not None]) >= 4:
                 sickrage.app.log.debug("Found indexer mapping in cache for show: " + self.name)

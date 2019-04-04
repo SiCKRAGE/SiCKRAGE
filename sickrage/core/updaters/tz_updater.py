@@ -64,13 +64,13 @@ class TimeZoneUpdater(object):
         except (IOError, OSError):
             pass
 
-        for x in CacheDB.NetworkTimezone.query():
+        for x in CacheDB.NetworkTimezone.query:
             if x.network_name not in network_timezones:
                 CacheDB.NetworkTimezone.delete(network_name=x.network_name)
 
         for network, timezone in network_timezones.items():
             try:
-                dbData = CacheDB.NetworkTimezone.query().filter_by(network_name=network).one()
+                dbData = CacheDB.NetworkTimezone.query.filter_by(network_name=network).one()
                 if dbData.timezone != timezone:
                     dbData.timezone = timezone
                     CacheDB.NetworkTimezone.update(**dbData.as_dict())
@@ -95,7 +95,7 @@ class TimeZoneUpdater(object):
             return sickrage.app.tz
 
         try:
-            return tz.gettz(CacheDB.NetworkTimezone.query().filter_by(network_name=network).one().timezone)
+            return tz.gettz(CacheDB.NetworkTimezone.query.filter_by(network_name=network).one().timezone)
         except Exception:
             return sickrage.app.tz
 

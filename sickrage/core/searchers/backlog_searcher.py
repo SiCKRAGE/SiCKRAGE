@@ -120,7 +120,7 @@ class BacklogSearcher(object):
 
         # check through the list of statuses to see if we want any
         wanted = []
-        for result in MainDB.TVEpisode.query().filter_by(showid=show.indexerid).filter(MainDB.TVEpisode.season > 0,
+        for result in MainDB.TVEpisode.query.filter_by(showid=show.indexerid).filter(MainDB.TVEpisode.season > 0,
                                                                            datetime.date.today().toordinal() > MainDB.TVEpisode.airdate >= from_date.toordinal()):
 
             curStatus, curQuality = Quality.split_composite_status(int(result.status or -1))
@@ -155,7 +155,7 @@ class BacklogSearcher(object):
         sickrage.app.log.debug("Retrieving the last check time from the DB")
 
         try:
-            dbData = MainDB.TVShow.query().filter_by(indexer_id=showid).one()
+            dbData = MainDB.TVShow.query.filter_by(indexer_id=showid).one()
             return int(dbData.last_backlog_search)
         except orm.exc.NoResultFound:
             return 1
@@ -165,7 +165,7 @@ class BacklogSearcher(object):
         sickrage.app.log.debug("Setting the last backlog in the DB to {}".format(when))
 
         try:
-            dbData = MainDB.TVShow.query().filter_by(indexer_id=showid).one()
+            dbData = MainDB.TVShow.query.filter_by(indexer_id=showid).one()
             dbData.last_backlog_search = when
             MainDB.TVShow.update(**dbData.as_dict())
         except orm.exc.NoResultFound:

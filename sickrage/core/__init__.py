@@ -556,7 +556,7 @@ class Core(object):
         self.quicksearch_cache.load()
 
         from sickrage.core.databases.main import MainDB
-        for dbData in MainDB.TVShow.query():
+        for dbData in MainDB.TVShow.query:
             show = TVShow(int(dbData.indexer), int(dbData.indexer_id))
 
             try:

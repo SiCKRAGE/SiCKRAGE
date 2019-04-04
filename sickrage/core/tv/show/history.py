@@ -60,16 +60,16 @@ class History:
         for show in sickrage.app.showlist:
             if limit == 0:
                 if len(actions) > 0:
-                    dbData = MainDB.History.query().filter_by(showid=show.indexerid).filter(
+                    dbData = MainDB.History.query.filter_by(showid=show.indexerid).filter(
                         MainDB.History.action.in_(actions)).order_by(MainDB.History.date.desc())
                 else:
-                    dbData = MainDB.History.query().filter_by(showid=show.indexerid).order_by(MainDB.History.date.desc())
+                    dbData = MainDB.History.query.filter_by(showid=show.indexerid).order_by(MainDB.History.date.desc())
             else:
                 if len(actions) > 0:
-                    dbData = MainDB.History.query().filter_by(showid=show.indexerid).filter(
+                    dbData = MainDB.History.query.filter_by(showid=show.indexerid).filter(
                         MainDB.History.action.in_(actions)).order_by(MainDB.History.date.desc()).limit(limit)
                 else:
-                    dbData = MainDB.History.query().filter_by(showid=show.indexerid).order_by(MainDB.History.date.desc()).limit(
+                    dbData = MainDB.History.query.filter_by(showid=show.indexerid).order_by(MainDB.History.date.desc()).limit(
                         limit)
 
             for result in dbData:
@@ -237,7 +237,7 @@ class FailedHistory(object):
 
         release = FailedHistory.prepareFailedName(release)
 
-        dbData = MainDB.FailedSnatchHistory.query().filter_by(release=release).all()
+        dbData = MainDB.FailedSnatchHistory.query.filter_by(release=release).all()
 
         if len(dbData) == 0:
             sickrage.app.log.warning("{}, Release not found in snatch history.".format(release))
@@ -291,14 +291,14 @@ class FailedHistory(object):
         """
 
         release = FailedHistory.prepareFailedName(release)
-        return MainDB.FailedSnatch.query().filter_by(release=release, size=size, provider=provider).count() > 0
+        return MainDB.FailedSnatch.query.filter_by(release=release, size=size, provider=provider).count() > 0
 
     @staticmethod
     def revertFailedEpisode(epObj):
         """Restore the episodes of a failed download to their original state"""
         history_eps = dict(
             [(res.episode, res) for res in
-             MainDB.FailedSnatchHistory.query().filter_by(showid=epObj.show.indexerid, season=epObj.season)]
+             MainDB.FailedSnatchHistory.query.filter_by(showid=epObj.show.indexerid, season=epObj.season)]
         )
 
         try:

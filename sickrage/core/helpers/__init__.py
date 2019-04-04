@@ -1553,7 +1553,7 @@ def app_statistics():
         if sickrage.app.show_queue.is_being_added(show) or sickrage.app.show_queue.is_being_removed(show):
             continue
 
-        for epData in MainDB.TVEpisode.query().filter_by(showid=show.indexerid):
+        for epData in MainDB.TVEpisode.query.filter_by(showid=show.indexerid):
             if show.indexerid not in show_stat:
                 show_stat[show.indexerid] = {}
                 show_stat[show.indexerid]['ep_snatched'] = 0

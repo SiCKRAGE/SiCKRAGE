@@ -30,9 +30,9 @@ class QuicksearchCache(object):
         }
 
     def load(self):
-        for x in CacheDB.QuickSearchShow.query():
+        for x in CacheDB.QuickSearchShow.query:
             self.cache['shows'][x.showid] = x.as_dict()
-        for x in CacheDB.QuickSearchEpisode.query():
+        for x in CacheDB.QuickSearchEpisode.query:
             self.cache['episodes'][x.episodeid] = x.as_dict()
 
         sickrage.app.log.debug("Loaded {} shows to QuickSearch cache".format(len(self.cache['shows'])))
@@ -49,7 +49,7 @@ class QuicksearchCache(object):
         self.add_show(indexerid)
 
     def add_show(self, indexerid):
-        show = MainDB.TVShow.query().filter_by(indexer_id=indexerid).one()
+        show = MainDB.TVShow.query.filter_by(indexer_id=indexerid).one()
 
         if indexerid not in self.cache['shows']:
             sickrage.app.log.debug("Adding show {} to QuickSearch cache".format(show.show_name))
@@ -86,7 +86,7 @@ class QuicksearchCache(object):
                 del sql_l
 
     def del_show(self, indexerid):
-        show = MainDB.TVShow.query().filter_by(indexer_id=indexerid).one()
+        show = MainDB.TVShow.query.filter_by(indexer_id=indexerid).one()
 
         sickrage.app.log.debug("Deleting show {} from QuickSearch cache".format(show.show_name))
 

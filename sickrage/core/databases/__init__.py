@@ -29,11 +29,6 @@ import sickrage
 
 class BaseActions(object):
     @classmethod
-    def add(cls, **kwargs):
-        with cls.session() as session:
-            session.add(cls(**kwargs))
-
-    @classmethod
     def delete(cls, *args, **kwargs):
         with cls.session() as session:
             return session.query(cls).filter_by(**kwargs).filter(*args).delete()
@@ -116,6 +111,7 @@ class srDatabase(object):
                     try:
                         session.query(self.tables[table]).delete()
                         session.commit()
+                        self.bulk_add(self.tables[table], rows)
                     except Exception as e:
                         pass
 
@@ -125,9 +121,13 @@ class srDatabase(object):
             del migrate_tables
             del rows
 
-    def bulk_add(self, table, values):
+    def bulk_add(self, instance, rows):
         with self.session() as session:
             try:
-                session.bulk_insert_mappings(table, values)
+                session.bulk_insert_mappings(instance, rows)
             except Exception:
-                [session.add(table(**row)) for row in values]
+                [session.add(instance(**row)) for row in rows]
+
+    def add(self, instance):
+        with self.session() as session:
+            session.add(instance)

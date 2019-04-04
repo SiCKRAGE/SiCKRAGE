@@ -34,7 +34,6 @@ class MainDB(srDatabase):
 
     def __init__(self, name='main'):
         super(MainDB, self).__init__(name)
-        MainDBBase.engine = self.engine
         MainDBBase.query = self.Session.query_property()
         MainDBBase.metadata.create_all(self.engine)
         for model in MainDBBase._decl_class_registry.values():
@@ -44,10 +43,10 @@ class MainDB(srDatabase):
     @property
     def version(self):
         try:
-            dbData = MainDB.Version.query().one()
+            dbData = MainDB.Version.query.one()
         except orm.exc.NoResultFound:
             MainDB.session.add(MainDB.Version(**{'database_version': 1}))
-            dbData = MainDB.Version.query().one()
+            dbData = MainDB.Version.query.one()
 
         return dbData.database_version
 
@@ -55,7 +54,7 @@ class MainDB(srDatabase):
         current_version = self.version
 
         while current_version < self._version:
-            dbData = MainDB.Version.query().one()
+            dbData = MainDB.Version.query.one()
             new_version = current_version + 1
             dbData.database_version = new_version
 
@@ -67,12 +66,12 @@ class MainDB(srDatabase):
             MainDB.Version.update(**dbData.as_dict())
             current_version = new_version
 
-    class Version(BaseActions, MainDBBase):
+    class Version(MainDBBase):
         __tablename__ = 'version'
 
         database_version = Column(Integer, primary_key=True)
 
-    class TVShow(BaseActions, MainDBBase):
+    class TVShow(MainDBBase):
         __tablename__ = 'tv_shows'
 
         indexer_id = Column(Integer, index=True, primary_key=True)
@@ -110,7 +109,7 @@ class MainDB(srDatabase):
 
         episodes = relationship('TVEpisode', back_populates='show', lazy='select')
 
-    class TVEpisode(BaseActions, MainDBBase):
+    class TVEpisode(MainDBBase):
         __tablename__ = 'tv_episodes'
         __table_args__ = (
             ForeignKeyConstraint(['showid', 'indexer'], ['tv_shows.indexer_id', 'tv_shows.indexer']),
@@ -148,7 +147,7 @@ class MainDB(srDatabase):
 
         show = relationship('TVShow', back_populates='episodes', lazy='select')
 
-    class IMDbInfo(BaseActions, MainDBBase):
+    class IMDbInfo(MainDBBase):
         __tablename__ = 'imdb_info'
 
         indexer_id = Column(Integer, primary_key=True)
@@ -177,14 +176,14 @@ class MainDB(srDatabase):
         Plot = Column(Text)
         last_update = Column(Integer)
 
-    class XEMRefresh(BaseActions, MainDBBase):
+    class XEMRefresh(MainDBBase):
         __tablename__ = 'xem_refresh'
 
         indexer_id = Column(Integer, primary_key=True)
         indexer = Column(Integer, primary_key=True)
         last_refreshed = Column(Integer)
 
-    class SceneNumbering(BaseActions, MainDBBase):
+    class SceneNumbering(MainDBBase):
         __tablename__ = 'scene_numbering'
 
         indexer = Column(Integer, primary_key=True)
@@ -196,7 +195,7 @@ class MainDB(srDatabase):
         absolute_number = Column(Integer)
         scene_absolute_number = Column(Integer)
 
-    class IndexerMapping(BaseActions, MainDBBase):
+    class IndexerMapping(MainDBBase):
         __tablename__ = 'indexer_mapping'
 
         indexer_id = Column(Integer, primary_key=True)
@@ -204,21 +203,21 @@ class MainDB(srDatabase):
         mindexer_id = Column(Integer)
         mindexer = Column(Integer, primary_key=True)
 
-    class Blacklist(BaseActions, MainDBBase):
+    class Blacklist(MainDBBase):
         __tablename__ = 'blacklist'
 
         id = Column(Integer, primary_key=True)
         show_id = Column(Integer)
         keyword = Column(Text)
 
-    class Whitelist(BaseActions, MainDBBase):
+    class Whitelist(MainDBBase):
         __tablename__ = 'whitelist'
 
         id = Column(Integer, primary_key=True)
         show_id = Column(Integer)
         keyword = Column(Text)
 
-    class History(BaseActions, MainDBBase):
+    class History(MainDBBase):
         __tablename__ = 'history'
 
         id = Column(Integer, primary_key=True)
@@ -232,7 +231,7 @@ class MainDB(srDatabase):
         date = Column(Integer)
         quality = Column(Integer)
 
-    class FailedSnatchHistory(BaseActions, MainDBBase):
+    class FailedSnatchHistory(MainDBBase):
         __tablename__ = 'failed_snatch_history'
 
         id = Column(Integer, primary_key=True)
@@ -245,7 +244,7 @@ class MainDB(srDatabase):
         episode = Column(Integer)
         old_status = Column(Integer)
 
-    class FailedSnatch(BaseActions, MainDBBase):
+    class FailedSnatch(MainDBBase):
         __tablename__ = 'failed_snatches'
 
         id = Column(Integer, primary_key=True)
