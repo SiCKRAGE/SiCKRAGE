@@ -46,7 +46,7 @@ class MainDB(srDatabase):
         try:
             dbData = MainDB.Version.query.one()
         except orm.exc.NoResultFound:
-            MainDB.session.add(MainDB.Version(**{'database_version': 1}))
+            MainDB().add(MainDB.Version(**{'database_version': 1}))
             dbData = MainDB.Version.query.one()
 
         return dbData.database_version
@@ -57,15 +57,14 @@ class MainDB(srDatabase):
         while current_version < self._version:
             dbData = MainDB.Version.query.one()
             new_version = current_version + 1
-            dbData.database_version = new_version
 
             upgrade_func = getattr(self, '_upgrade_v' + str(new_version), None)
             if upgrade_func:
                 sickrage.app.log.info("Upgrading main database to version {}".format(new_version))
                 upgrade_func()
 
-            MainDB().update(**dbData.as_dict())
-            current_version = new_version
+            dbData.database_version = current_version = new_version
+            dbData.update()
 
     class Version(MainDBBase):
         __tablename__ = 'version'

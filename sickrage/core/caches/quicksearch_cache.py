@@ -98,5 +98,5 @@ class QuicksearchCache(object):
                 del self.cache['episodes'][k]
 
         # remove from database
-        CacheDB.QuickSearchShow.delete(showid=indexerid)
-        CacheDB.QuickSearchEpisode.delete(showid=indexerid)
+        CacheDB().delete(CacheDB.QuickSearchShow, showid=indexerid)
+        CacheDB().delete(CacheDB.QuickSearchEpisode, showid=indexerid)

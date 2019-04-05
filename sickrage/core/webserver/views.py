@@ -3488,7 +3488,7 @@ class Manage(Home, WebRoot):
 
         toRemove = toRemove.split("|") if toRemove is not None else []
 
-        MainDB.FailedSnatch.delete(MainDB.FailedSnatch.release.in_(toRemove))
+        MainDB().delete(MainDB.FailedSnatch, MainDB.FailedSnatch.release.in_(toRemove))
 
         if toRemove:
             return self.redirect('/manage/failedDownloads/')

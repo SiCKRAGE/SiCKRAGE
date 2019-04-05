@@ -248,7 +248,7 @@ def update_scene_exceptions(indexer_id, scene_exceptions, season=-1):
     """
     Given a indexer_id, and a list of all show scene exceptions, update the db.
     """
-    CacheDB.SceneException.delete(indexer_id=indexer_id, season=season)
+    CacheDB().delete(CacheDB.SceneException, indexer_id=indexer_id, season=season)
 
     sickrage.app.log.info("Updating scene exceptions")
 

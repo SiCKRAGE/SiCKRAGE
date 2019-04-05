@@ -119,7 +119,7 @@ class SceneExceptionTestCase(tests.SiCKRAGETestDBCase):
 
     def test_sceneExceptionsResetNameCache(self):
         # clear the exceptions
-        CacheDB.SceneException.delete()
+        CacheDB().delete(CacheDB.SceneException)
 
         # put something in the cache
         sickrage.app.name_cache.put('Cached Name', 0)

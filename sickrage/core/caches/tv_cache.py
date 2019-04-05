@@ -42,7 +42,7 @@ class TVCache(object):
 
     def clear(self):
         if self.shouldClearCache():
-            CacheDB.Provider.delete(provider=self.providerID)
+            CacheDB().delete(CacheDB.Provider, provider=self.providerID)
 
     def _get_title_and_url(self, item):
         return self.provider._get_title_and_url(item)

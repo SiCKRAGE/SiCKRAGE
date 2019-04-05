@@ -87,13 +87,11 @@ class srDatabase(object):
 
             for table, rows in migrate_tables.items():
                 sickrage.app.log.info('Migrating {} database table {}'.format(self.name, table))
-                with self.session() as session:
-                    try:
-                        session.query(self.tables[table]).delete()
-                        session.commit()
-                        self.bulk_add(self.tables[table], rows)
-                    except Exception as e:
-                        pass
+                try:
+                    self.delete(self.tables[table])
+                    self.bulk_add(self.tables[table], rows)
+                except Exception as e:
+                    pass
 
             shutil.move(migrate_file, backup_file)
 
@@ -121,6 +119,6 @@ class srDatabase(object):
         with self.session() as session:
             session.query(self).filter_by(**primary_keys).update(kwargs)
 
-    def delete(self, *args, **kwargs):
+    def delete(self, table, *args, **kwargs):
         with self.session() as session:
-            return session.query(self).filter_by(**kwargs).filter(*args).delete()
+            return session.query(table).filter_by(**kwargs).filter(*args).delete()
