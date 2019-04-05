@@ -136,10 +136,10 @@ class TVCache(object):
             dbData.time = int(time.mktime(toDate.timetuple()))
             CacheDB.LastUpdate.update(**dbData.as_dict())
         except orm.exc.NoResultFound:
-            CacheDB.LastUpdate.add(**{
+            CacheDB().add(CacheDB.LastUpdate(**{
                 'provider': self.providerID,
                 'time': int(time.mktime(toDate.timetuple()))
-            })
+            }))
 
     @property
     def last_search(self):
@@ -160,10 +160,10 @@ class TVCache(object):
             dbData.time = int(time.mktime(toDate.timetuple()))
             CacheDB.LastSearch.update(**dbData.as_dict())
         except orm.exc.NoResultFound:
-            CacheDB.LastSearch.add(**{
+            CacheDB().add(CacheDB.LastSearch(**{
                 'provider': self.providerID,
                 'time': int(time.mktime(toDate.timetuple()))
-            })
+            }))
 
     def should_update(self):
         if sickrage.app.developer:
@@ -231,7 +231,7 @@ class TVCache(object):
                     }
 
                     # add to internal database
-                    CacheDB.Provider.add(**dbData)
+                    CacheDB().add(CacheDB.Provider(**dbData))
 
                     # add to external provider cache database
                     if sickrage.app.config.enable_api_providers_cache and not self.provider.private:

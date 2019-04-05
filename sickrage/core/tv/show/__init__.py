@@ -1048,7 +1048,7 @@ class TVShow(object):
                 MainDB.IMDbInfo.update(**dbData.as_dict())
             except orm.exc.NoResultFound:
                 imdb_info.update(self.imdb_info)
-                MainDB.IMDbInfo.add(**imdb_info)
+                MainDB().add(MainDB.IMDbInfo(**imdb_info))
 
     def delete_show(self, full=False):
         # choose delete or trash action
@@ -1251,7 +1251,7 @@ class TVShow(object):
             dbData.__dict__.update(tv_show)
             MainDB.TVShow.update(**dbData.as_dict())
         except orm.exc.NoResultFound:
-            MainDB.TVShow.add(**tv_show)
+            MainDB().add(MainDB.TVShow(**tv_show))
 
     def __str__(self):
         toReturn = ""
@@ -1452,12 +1452,12 @@ class TVShow(object):
                         MainDB.IndexerMapping.query(indexer_id=self.indexerid, indexer=self.indexer,
                                                     mindexer_id=int(mapped_show['id'])).one()
                     except orm.exc.NoResultFound:
-                        MainDB.IndexerMapping.add(**{
+                        MainDB().add(MainDB.IndexerMapping(**{
                             'indexer_id': self.indexerid,
                             'indexer': self.indexer,
                             'mindexer_id': int(mapped_show['id']),
                             'mindexer': indexer
-                        })
+                        }))
 
         return mapped
 

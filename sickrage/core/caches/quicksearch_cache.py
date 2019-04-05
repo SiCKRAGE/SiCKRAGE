@@ -63,7 +63,7 @@ class QuicksearchCache(object):
             }
 
             self.cache['shows'][indexerid] = qsData
-            CacheDB.QuickSearchShow.add(**qsData)
+            CacheDB().add(CacheDB.QuickSearchShow(**qsData))
 
             sql_l = []
             for e in show.episodes:

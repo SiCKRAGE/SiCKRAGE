@@ -112,7 +112,7 @@ class History:
         logDate = datetime.today().strftime(History.date_format)
         resource = resource
 
-        MainDB.History.add(**{
+        MainDB().add(MainDB.History(**{
             'action': action,
             'date': logDate,
             'showid': showid,
@@ -122,7 +122,7 @@ class History:
             'resource': resource,
             'provider': provider,
             'version': version
-        })
+        }))
 
     @staticmethod
     def logSnatch(searchResult):
@@ -260,11 +260,11 @@ class FailedHistory(object):
             provider = dbData[0]["provider"]
 
         if not FailedHistory.hasFailed(release, size, provider):
-            MainDB.FailedSnatch.add(**{
+            MainDB().add(MainDB.FailedSnatch(**{
                 'release': release,
                 'size': size,
                 'provider': provider
-            })
+            }))
 
         FailedHistory.deleteLoggedSnatch(release, size, provider)
 
@@ -355,7 +355,7 @@ class FailedHistory(object):
         show_obj = searchResult.episodes[0].show
 
         for episode in searchResult.episodes:
-            MainDB.FailedSnatchHistory.add(**{
+            MainDB().add(MainDB.FailedSnatchHistory(**{
                 'date': logDate,
                 'size': searchResult.size,
                 'release': release,
@@ -364,7 +364,7 @@ class FailedHistory(object):
                 'season': episode.season,
                 'episode': episode.episode,
                 'old_status': episode.status
-            })
+            }))
 
     @staticmethod
     def deleteLoggedSnatch(release, size, provider):

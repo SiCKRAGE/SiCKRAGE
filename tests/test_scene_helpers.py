@@ -72,11 +72,11 @@ class SceneTests(tests.SiCKRAGETestDBCase):
         self._test_sceneToNormalShowNames('Show Name YA', ['Show Name YA'])
 
     def test_allPossibleShowNames(self):
-        CacheDB.SceneException.add(**{
+        CacheDB().add(CacheDB.SceneException(**{
             'indexer_id': 1,
             'show_name': 'Exception Test',
             'season': -1
-        })
+        }))
 
         exceptionsCache[-1] = ['Exception Test']
         countryList['Full Country Name'] = 'FCN'

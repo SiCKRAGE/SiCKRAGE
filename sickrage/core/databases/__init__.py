@@ -33,16 +33,6 @@ class BaseActions(object):
         with cls.session() as session:
             return session.query(cls).filter_by(**kwargs).filter(*args).delete()
 
-    @classmethod
-    def update(cls, **kwargs):
-        primary_keys = {}
-        for key in inspect(cls).primary_key:
-            if key.name in kwargs:
-                primary_keys[key.name] = kwargs.pop(key.name)
-
-        with cls.session() as session:
-            session.query(cls).filter_by(**primary_keys).update(kwargs)
-
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
@@ -121,13 +111,22 @@ class srDatabase(object):
             del migrate_tables
             del rows
 
-    def bulk_add(self, instance, rows):
+    def bulk_add(self, table, rows):
         with self.session() as session:
             try:
-                session.bulk_insert_mappings(instance, rows)
+                session.bulk_insert_mappings(table, rows)
             except Exception:
-                [session.add(instance(**row)) for row in rows]
+                [session.add(table(**row)) for row in rows]
 
     def add(self, instance):
         with self.session() as session:
             session.add(instance)
+
+    def update(self, **kwargs):
+        primary_keys = {}
+        for key in inspect(self).primary_key:
+            if key.name in kwargs:
+                primary_keys[key.name] = kwargs.pop(key.name)
+
+        with self.session() as session:
+            session.query(self).filter_by(**primary_keys).update(kwargs)

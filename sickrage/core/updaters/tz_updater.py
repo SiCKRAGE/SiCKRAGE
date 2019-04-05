@@ -75,10 +75,10 @@ class TimeZoneUpdater(object):
                     dbData.timezone = timezone
                     CacheDB.NetworkTimezone.update(**dbData.as_dict())
             except orm.exc.NoResultFound:
-                CacheDB.NetworkTimezone.add(**{
+                CacheDB().add(CacheDB.NetworkTimezone(**{
                     'network_name': network,
                     'timezone': timezone
-                })
+                }))
 
         # cleanup
         del network_timezones

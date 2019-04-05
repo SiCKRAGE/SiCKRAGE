@@ -58,10 +58,10 @@ class NameCache(object):
         try:
             CacheDB.SceneName.query.filter_by(name=name, indexer_id=indexer_id).one()
         except orm.exc.NoResultFound:
-            CacheDB.SceneName.add(**{
+            CacheDB().add(CacheDB.SceneName(**{
                 'indexer_id': indexer_id,
                 'name': name
-            })
+            }))
 
     def get(self, name):
         """
@@ -94,10 +94,10 @@ class NameCache(object):
             try:
                 CacheDB.SceneName.query.filter_by(name=name, indexer_id=indexer_id).one()
             except orm.exc.NoResultFound:
-                CacheDB.SceneName.add(**{
+                CacheDB().add(CacheDB.SceneName(**{
                     'indexer_id': indexer_id,
                     'name': name
-                })
+                }))
 
     def build(self, show):
         """Build internal name cache

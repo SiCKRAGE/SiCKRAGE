@@ -802,7 +802,7 @@ class TVEpisode(object):
             dbData.__dict__.update(tv_episode)
             MainDB.TVEpisode.update(**dbData.as_dict())
         except orm.exc.NoResultFound:
-            MainDB.TVEpisode.add(**tv_episode)
+            MainDB().add(MainDB.TVEpisode(**tv_episode))
 
     def fullPath(self):
         if self.location is None or self.location == "":
