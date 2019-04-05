@@ -199,7 +199,7 @@ def set_scene_numbering(indexer_id, indexer, season=0, episode=0, absolute_numbe
                                                  season=season, episode=episode).one()
             dbData.scene_season = sceneSeason
             dbData.scene_episode = sceneEpisode
-            MainDB.SceneNumbering.update(**dbData.as_dict())
+            MainDB().update(**dbData.as_dict())
         except orm.exc.NoResultFound:
             MainDB().add(MainDB.SceneNumbering(**{
                 'indexer': indexer,
@@ -216,7 +216,7 @@ def set_scene_numbering(indexer_id, indexer, season=0, episode=0, absolute_numbe
             dbData = MainDB.SceneNumbering.query(indexer_id=indexer_id, indexer=indexer,
                                                  absolute_number=absolute_number).one()
             dbData.scene_absolute_number = sceneAbsolute
-            MainDB.SceneNumbering.update(**dbData.as_dict())
+            MainDB().update(**dbData.as_dict())
         except orm.exc.NoResultFound:
             MainDB().add(MainDB.SceneNumbering(**{
                 'indexer': indexer,
@@ -473,7 +473,7 @@ def xem_refresh(indexer_id, indexer, force=False):
         try:
             dbData = MainDB.XEMRefresh.query.filter_by(indexer_id=indexer_id).one()
             dbData.last_refreshed = int(time.mktime(datetime.datetime.today().timetuple()))
-            MainDB.XEMRefresh.update(**dbData.as_dict())
+            MainDB().update(**dbData.as_dict())
         except orm.exc.NoResultFound:
             MainDB().add(MainDB.XEMRefresh(**{
                 'indexer': indexer,
@@ -492,7 +492,7 @@ def xem_refresh(indexer_id, indexer, force=False):
             except Exception:
                 for dbData in MainDB.TVEpisode.query.filter_by(showid=indexer_id):
                     dbData.scene_season = dbData.scene_episode = dbData.scene_absolute_number = 0
-                    MainDB.TVEpisode.update(**dbData.as_dict())
+                    MainDB().update(**dbData.as_dict())
                 return
 
             # XEM API URL

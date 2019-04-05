@@ -1045,7 +1045,7 @@ class TVShow(object):
             try:
                 dbData = MainDB.IMDbInfo.query.filter_by(indexer_id=self.indexerid).one()
                 dbData.__dict__.update(self.imdb_info)
-                MainDB.IMDbInfo.update(**dbData.as_dict())
+                MainDB().update(**dbData.as_dict())
             except orm.exc.NoResultFound:
                 imdb_info.update(self.imdb_info)
                 MainDB().add(MainDB.IMDbInfo(**imdb_info))
@@ -1249,7 +1249,7 @@ class TVShow(object):
         try:
             dbData = MainDB.TVShow.query.filter_by(indexer_id=self.indexerid).one()
             dbData.__dict__.update(tv_show)
-            MainDB.TVShow.update(**dbData.as_dict())
+            MainDB().update(**dbData.as_dict())
         except orm.exc.NoResultFound:
             MainDB().add(MainDB.TVShow(**tv_show))
 

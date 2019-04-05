@@ -73,7 +73,7 @@ class TimeZoneUpdater(object):
                 dbData = CacheDB.NetworkTimezone.query.filter_by(network_name=network).one()
                 if dbData.timezone != timezone:
                     dbData.timezone = timezone
-                    CacheDB.NetworkTimezone.update(**dbData.as_dict())
+                    CacheDB().update(**dbData.as_dict())
             except orm.exc.NoResultFound:
                 CacheDB().add(CacheDB.NetworkTimezone(**{
                     'network_name': network,

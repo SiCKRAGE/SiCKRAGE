@@ -49,15 +49,15 @@ class ShowUpdater(object):
         update_timestamp = int(time.mktime(datetime.datetime.now().timetuple()))
 
         try:
-            dbData = CacheDB.LastUpdate.query.filter_by(provider='theTVDB').one().as_dict()
+            dbData = CacheDB.LastUpdate.query.filter_by(provider='theTVDB').one()
             last_update = int(dbData.time)
         except orm.exc.NoResultFound:
             last_update = update_timestamp
-            dbData = {
+            CacheDB().add(CacheDB.LastUpdate(**{
                 'provider': 'theTVDB',
                 'time': 0
-            }
-            CacheDB().add(CacheDB.LastUpdate(**dbData))
+            }))
+            dbData = CacheDB.LastUpdate.query.filter_by(provider='theTVDB').one()
 
         # get indexer updated show ids
         indexer_api = IndexerApi().indexer(**IndexerApi().api_params.copy())
@@ -92,6 +92,6 @@ class ShowUpdater(object):
         ProgressIndicators.setIndicator('dailyShowUpdates', QueueProgressIndicator("Daily Show Updates", pi_list))
 
         dbData.time = update_timestamp
-        CacheDB.LastUpdate.update(**dbData)
+        CacheDB().update(**dbData.as_dict())
 
         self.amActive = False

@@ -63,7 +63,7 @@ class MainDB(srDatabase):
                 sickrage.app.log.info("Upgrading main database to version {}".format(new_version))
                 upgrade_func()
 
-            MainDB.Version.update(**dbData.as_dict())
+            MainDB().update(**dbData.as_dict())
             current_version = new_version
 
     class Version(MainDBBase):
