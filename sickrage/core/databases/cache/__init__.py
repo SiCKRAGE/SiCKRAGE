@@ -19,12 +19,13 @@
 from sqlalchemy import Column, Integer, Text
 from sqlalchemy.ext.declarative import as_declarative
 
-from sickrage.core.databases import srDatabase, BaseActions
+from sickrage.core.databases import srDatabase
 
 
 @as_declarative()
 class CacheDBBase(object):
-    pass
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 class CacheDB(srDatabase):

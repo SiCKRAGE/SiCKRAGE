@@ -27,16 +27,6 @@ from sqlalchemy.orm import sessionmaker, scoped_session, Query
 import sickrage
 
 
-class BaseActions(object):
-    @classmethod
-    def delete(cls, *args, **kwargs):
-        with cls.session() as session:
-            return session.query(cls).filter_by(**kwargs).filter(*args).delete()
-
-    def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
-
-
 class srDatabase(object):
     def __init__(self, name):
         self.name = name
@@ -130,3 +120,7 @@ class srDatabase(object):
 
         with self.session() as session:
             session.query(self).filter_by(**primary_keys).update(kwargs)
+
+    def delete(self, *args, **kwargs):
+        with self.session() as session:
+            return session.query(self).filter_by(**kwargs).filter(*args).delete()

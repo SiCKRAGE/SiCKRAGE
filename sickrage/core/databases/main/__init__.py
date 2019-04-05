@@ -21,12 +21,13 @@ from sqlalchemy.ext.declarative import as_declarative
 from sqlalchemy.orm import relationship
 
 import sickrage
-from sickrage.core.databases import srDatabase, BaseActions
+from sickrage.core.databases import srDatabase
 
 
 @as_declarative()
 class MainDBBase(object):
-    pass
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 class MainDB(srDatabase):
