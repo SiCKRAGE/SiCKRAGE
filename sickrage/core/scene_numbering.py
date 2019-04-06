@@ -281,7 +281,8 @@ def find_xem_absolute_numbering(indexer_id, indexer, absolute_number):
     xem_refresh(indexer_id, indexer)
 
     try:
-        dbData = MainDB.TVEpisode.query.filter_by(showid=indexer_id, indexer=indexer, absolute_number=absolute_number).filter(
+        dbData = MainDB.TVEpisode.query.filter_by(showid=indexer_id, indexer=indexer,
+                                                  absolute_number=absolute_number).filter(
             MainDB.TVEpisode.scene_absolute_number != 0).one()
         return try_int(dbData.scene_absolute_number)
     except orm.exc.NoResultFound:
@@ -510,9 +511,10 @@ def xem_refresh(indexer_id, indexer, force=False):
 
             for entry in parsedJSON['data']:
                 try:
-                    dbData = MainDB.TVEpisode.query(showid=indexer_id, season=
-                    entry[IndexerApi(indexer).config['xem_origin']]['season'], episode=entry[
-                        IndexerApi(indexer).config['xem_origin']]['episode']).one()
+                    dbData = MainDB.TVEpisode.query(showid=indexer_id,
+                                                    season=entry[IndexerApi(indexer).config['xem_origin']]['season'],
+                                                    episode=entry[IndexerApi(indexer).config['xem_origin']][
+                                                        'episode']).one()
                 except orm.exc.NoResultFound:
                     continue
 
@@ -520,13 +522,12 @@ def xem_refresh(indexer_id, indexer, force=False):
                     dbData.scene_season = entry['scene']['season']
                     dbData.scene_episode = entry['scene']['episode']
                     dbData.scene_absolute_number = entry['scene']['absolute']
+                    MainDB().update(**dbData.as_dict())
                 if 'scene_2' in entry:  # for doubles
                     dbData.scene_season = entry['scene_2']['season']
                     dbData.scene_episode = entry['scene_2']['episode']
                     dbData.scene_absolute_number = entry['scene_2']['absolute']
-
-                dbData.commit()
-
+                    MainDB().update(**dbData.as_dict())
         except Exception as e:
             sickrage.app.log.warning(
                 "Exception while refreshing XEM data for show {} on {}: {}".format(indexer_id,
