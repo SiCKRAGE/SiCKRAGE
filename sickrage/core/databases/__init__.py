@@ -114,7 +114,7 @@ class srDatabase(object):
         primary_keys = dict((key.name, getattr(obj, key.name)) for key in inspect(obj.__table__).primary_key)
         with self.session() as session:
             session.query(obj.__table__).filter_by(**primary_keys).update(
-                dict((k, v) for k, v in obj.as_dict() if k not in primary_keys))
+                dict((k, v) for k, v in obj.as_dict().items() if k not in primary_keys))
 
     def delete(self, table, *args, **kwargs):
         with self.session() as session:
