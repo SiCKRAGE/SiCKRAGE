@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2019-03-09 07:50-0800\n"
-"PO-Revision-Date: 2019-03-09 15:52\n"
+"POT-Creation-Date: 2019-04-06 10:18-0700\n"
+"PO-Revision-Date: 2019-04-06 17:19\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
@@ -73,7 +73,7 @@ msgstr "로드"
 msgid "Choose Directory"
 msgstr "디렉터리 선택"
 
-#: sickrage/core/webserver/views.py:3644 src/js/core.js:1505
+#: sickrage/core/webserver/views.py:3635 src/js/core.js:1505
 msgid "Clear History"
 msgstr "기록 지우기"
 
@@ -81,7 +81,7 @@ msgstr "기록 지우기"
 msgid "Are you sure you want to clear all download history ?"
 msgstr "당신은 모두를 다운로드 역사는?"
 
-#: sickrage/core/webserver/views.py:3646 src/js/core.js:1511
+#: sickrage/core/webserver/views.py:3637 src/js/core.js:1511
 msgid "Trim History"
 msgstr "역사를 트림"
 
@@ -166,14 +166,14 @@ msgid "Are you sure you want to reset config to defaults?"
 msgstr "당신은 설정 기본값으로 재설정 하 시겠습니까?"
 
 #: src/js/core.js:3119
-msgid "Select path to pip"
-msgstr "Pip를 경로 선택"
+msgid "Select path to pip2"
+msgstr ""
 
-#: src/js/core.js:3127 src/js/core.js:3153 src/js/core.js:3944 src/js/core.js:3962
-#: src/js/core.js:3983 src/js/core.js:4005 src/js/core.js:4028 src/js/core.js:4050
-#: src/js/core.js:4078 src/js/core.js:4095 src/js/core.js:4139 src/js/core.js:4224
-#: src/js/core.js:4282 src/js/core.js:4299 src/js/core.js:4329 src/js/core.js:4359
-#: src/js/core.js:4416 src/js/core.js:4492 src/js/core.js:4511 src/js/core.js:4527
+#: src/js/core.js:3127 src/js/core.js:3153 src/js/core.js:3940 src/js/core.js:3958
+#: src/js/core.js:3979 src/js/core.js:4001 src/js/core.js:4024 src/js/core.js:4046
+#: src/js/core.js:4074 src/js/core.js:4091 src/js/core.js:4135 src/js/core.js:4220
+#: src/js/core.js:4278 src/js/core.js:4295 src/js/core.js:4325 src/js/core.js:4355
+#: src/js/core.js:4412 src/js/core.js:4488 src/js/core.js:4507 src/js/core.js:4523
 msgid "Please fill out the necessary fields above."
 msgstr "위의 필요한 필드를 작성 하십시오."
 
@@ -181,163 +181,163 @@ msgstr "위의 필요한 필드를 작성 하십시오."
 msgid "Select path to git"
 msgstr "자식에 대 한 경로 선택"
 
-#: src/js/core.js:3192
+#: src/js/core.js:3188
 msgid "Select Subtitles Download Directory"
 msgstr "선택 자막 다운로드 디렉토리"
 
-#: src/js/core.js:3308
+#: src/js/core.js:3304
 msgid "Select .nzb blackhole/watch location"
 msgstr ".Nzb 블랙홀/시계 위치 선택"
 
-#: src/js/core.js:3309
+#: src/js/core.js:3305
 msgid "Select .torrent blackhole/watch location"
 msgstr ".Torrent blackhole/시계 위치 선택"
 
-#: src/js/core.js:3310
+#: src/js/core.js:3306
 msgid "Select .torrent download location"
 msgstr ".Torrent 다운로드 위치를 선택"
 
-#: sickrage/core/webserver/views/config/search.mako:974 src/js/core.js:3377
+#: sickrage/core/webserver/views/config/search.mako:974 src/js/core.js:3373
 msgid "Minimum seeding time is"
 msgstr "최소 시간 시드"
 
-#: src/js/core.js:3379
+#: src/js/core.js:3375
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "URL을 당신의 uTorrent 클라이언트 (예: http://localhost:8000)"
 
-#: src/js/core.js:3382
+#: src/js/core.js:3378
 msgid "Stop seeding when inactive for"
 msgstr "시드 비활성 때 중지"
 
-#: src/js/core.js:3388
+#: src/js/core.js:3384
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "URL 전송 클라이언트 (예: http://localhost:9091)을"
 
-#: src/js/core.js:3398
+#: src/js/core.js:3394
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "URL을 당신의 홍수 클라이언트 (예: http://localhost:8112)"
 
-#: src/js/core.js:3407
+#: src/js/core.js:3403
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "IP 또는 호스트 이름 홍수 데몬 (예: scgi://localhost:58846)"
 
-#: src/js/core.js:3414
+#: src/js/core.js:3410
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "URL을 당신의 Synology DS 클라이언트 (예: http://localhost:5000)"
 
-#: src/js/core.js:3419
+#: src/js/core.js:3415
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000"
 msgstr ""
 
-#: src/js/core.js:3419
+#: src/js/core.js:3415
 msgid " or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr ""
 
-#: src/js/core.js:3429
+#: src/js/core.js:3425
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "Qbittorrent 클라이언트 (예: http://localhost:8080/) URL"
 
-#: src/js/core.js:3439
+#: src/js/core.js:3435
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "URL을 당신의 MLDonkey (예: http://localhost:4080)"
 
-#: src/js/core.js:3450
+#: src/js/core.js:3446
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "Putio 클라이언트 (예: http://localhost:8080/) URL"
 
-#: src/js/core.js:3619
+#: src/js/core.js:3615
 msgid "validating..."
 msgstr ""
 
-#: src/js/core.js:3620
+#: src/js/core.js:3616
 msgid "Select TV Download Directory"
 msgstr "TV 다운로드 디렉터리 선택"
 
-#: src/js/core.js:3621
+#: src/js/core.js:3617
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: src/js/core.js:3635
+#: src/js/core.js:3631
 msgid "Unrar Executable not found."
 msgstr "Unrar 실행 파일을 찾을 수 없습니다."
 
-#: src/js/core.js:3678 src/js/core.js:3713 src/js/core.js:3748 src/js/core.js:3799
+#: src/js/core.js:3674 src/js/core.js:3709 src/js/core.js:3744 src/js/core.js:3795
 msgid "This pattern is invalid."
 msgstr "이 패턴 유효 하지 않습니다."
 
-#: src/js/core.js:3682 src/js/core.js:3717 src/js/core.js:3752 src/js/core.js:3803
+#: src/js/core.js:3678 src/js/core.js:3713 src/js/core.js:3748 src/js/core.js:3799
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "이 패턴은 유효한 것 없이 폴더를 그것을 사용 하 여 강제로 \"결합\"에서 모든 프로그램에 대 한."
 
-#: src/js/core.js:3686 src/js/core.js:3721 src/js/core.js:3756 src/js/core.js:3808
+#: src/js/core.js:3682 src/js/core.js:3717 src/js/core.js:3752 src/js/core.js:3804
 msgid "This pattern is valid."
 msgstr "이 패턴은 유효 합니다."
 
-#: src/js/core.js:4132
+#: src/js/core.js:4128
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> 권한 부여 확인"
 
-#: src/js/core.js:4189 src/js/core.js:4243
+#: src/js/core.js:4185 src/js/core.js:4239
 msgid "Please fill in the Popcorn IP address"
 msgstr "팝콘 IP 주소를 입력 하시기 바랍니다"
 
-#: src/js/core.js:4426
+#: src/js/core.js:4422
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "체크 블랙 리스트 이름; 값 필요 trakt 슬러그"
 
-#: src/js/core.js:4458
+#: src/js/core.js:4454
 msgid "You must specify an SMTP hostname!"
 msgstr ""
 
-#: src/js/core.js:4461
+#: src/js/core.js:4457
 msgid "You must specify an SMTP port!"
 msgstr ""
 
-#: src/js/core.js:4463
+#: src/js/core.js:4459
 msgid "SMTP port must be between 0 and 65535!"
 msgstr ""
 
-#: src/js/core.js:4469
+#: src/js/core.js:4465
 msgid "Enter an email address to send the test to:"
 msgstr "테스트를 보낼 이메일 주소를 입력:"
 
-#: src/js/core.js:4471
+#: src/js/core.js:4467
 msgid "You must provide a recipient email address!"
 msgstr ""
 
-#: src/js/core.js:4541
+#: src/js/core.js:4537
 msgid "Device list updated. Please choose a device to push to."
 msgstr "장치 목록 업데이트입니다. 장치를 선택 하십시오."
 
-#: src/js/core.js:4602
+#: src/js/core.js:4598
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Pushbullet api 키를 입력 하지 않은"
 
-#: src/js/core.js:4632
+#: src/js/core.js:4628
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "새로운 pushbullet 설정을 저장 하려면 잊지 마세요."
 
-#: src/js/core.js:4704
+#: src/js/core.js:4700
 msgid "Select backup folder to save to"
 msgstr "백업 폴더에 저장를 선택합니다"
 
-#: src/js/core.js:4709
+#: src/js/core.js:4705
 msgid "Select backup files to restore"
 msgstr "복원할 백업 파일 선택"
 
-#: src/js/core.js:5254
+#: src/js/core.js:5250
 msgid "No providers available to configure."
 msgstr "제공 업체 구성할입니다."
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5464
+#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5460
 msgid "Mass Delete"
 msgstr "대량 삭제"
 
-#: src/js/core.js:5465
+#: src/js/core.js:5461
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Show(s) 삭제을 선택 했습니다.  당신은 계속 하 시겠습니까? 모든 파일 시스템에서 제거 됩니다."
 
-#: src/js/core.js:5542
+#: src/js/core.js:5538
 msgid "DELETED"
 msgstr ""
 
@@ -584,8 +584,8 @@ msgstr "당신은 PostProcessed 에피소드는 MyList에 추가 하 시겠습�
 #: sickrage/core/webserver/views/config/general.mako:706
 #: sickrage/core/webserver/views/config/general.mako:952
 #: sickrage/core/webserver/views/config/general.mako:1240
-#: sickrage/core/webserver/views/config/general.mako:1298
-#: sickrage/core/webserver/views/config/general.mako:1429
+#: sickrage/core/webserver/views/config/general.mako:1295
+#: sickrage/core/webserver/views/config/general.mako:1426
 #: sickrage/core/webserver/views/config/notifications.mako:203
 #: sickrage/core/webserver/views/config/notifications.mako:355
 #: sickrage/core/webserver/views/config/notifications.mako:488
@@ -765,7 +765,7 @@ msgstr "쇼"
 msgid "Schedule"
 msgstr "일정"
 
-#: sickrage/core/webserver/views.py:3656 sickrage/core/webserver/views.py:3657
+#: sickrage/core/webserver/views.py:3647 sickrage/core/webserver/views.py:3648
 #: sickrage/core/webserver/views/config/general.mako:149
 #: sickrage/core/webserver/views/layouts/main.mako:218
 msgid "History"
@@ -1286,64 +1286,70 @@ msgid "PIP Settings"
 msgstr "픽처 인 픽처 설정"
 
 #: sickrage/core/webserver/views/config/general.mako:1256
-msgid "PIP executable path"
-msgstr "핍 실행 파일 경로"
+msgid "PIP2 executable path"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:1269
-msgid "ex: /path/to/pip"
-msgstr "예: /path/to/pip"
+msgid "ex: /path/to/pip2"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:1275
-#: sickrage/core/webserver/views/config/general.mako:1379
-msgid "Verify Path"
+msgid "Verify PIP2 Path"
 msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:1286
-#: sickrage/core/webserver/views/config/general.mako:1390
-msgid "Click vefify path to test."
-msgstr "Vefify 경로 테스트를 클릭 합니다."
+msgid "Click verify path to test."
+msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1314
+#: sickrage/core/webserver/views/config/general.mako:1311
 msgid "GIT Settings"
 msgstr "GIT 설정"
 
-#: sickrage/core/webserver/views/config/general.mako:1319
+#: sickrage/core/webserver/views/config/general.mako:1316
 msgid "Git Branches"
 msgstr "자식 분기"
 
-#: sickrage/core/webserver/views/config/general.mako:1331
+#: sickrage/core/webserver/views/config/general.mako:1328
 msgid "GIT Branch Version"
 msgstr "GIT 브랜치 버전"
 
-#: sickrage/core/webserver/views/config/general.mako:1351
+#: sickrage/core/webserver/views/config/general.mako:1348
 msgid "select branch to use (restart required)"
 msgstr "(다시 시작 필요)를 사용 하 여 지점 선택"
 
-#: sickrage/core/webserver/views/config/general.mako:1351
+#: sickrage/core/webserver/views/config/general.mako:1348
 msgid "Error: No branches found."
 msgstr "오류: 없음 지점을 발견입니다."
 
-#: sickrage/core/webserver/views/config/general.mako:1360
+#: sickrage/core/webserver/views/config/general.mako:1357
 msgid "GIT executable path"
 msgstr "자식 실행 파일 경로"
 
-#: sickrage/core/webserver/views/config/general.mako:1373
+#: sickrage/core/webserver/views/config/general.mako:1370
 msgid "ex: /path/to/git"
 msgstr "예: /path/to/git"
 
-#: sickrage/core/webserver/views/config/general.mako:1399
+#: sickrage/core/webserver/views/config/general.mako:1376
+msgid "Verify Path"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:1387
+msgid "Click vefify path to test."
+msgstr "Vefify 경로 테스트를 클릭 합니다."
+
+#: sickrage/core/webserver/views/config/general.mako:1396
 msgid "Git reset"
 msgstr "Git 리셋"
 
-#: sickrage/core/webserver/views/config/general.mako:1405
+#: sickrage/core/webserver/views/config/general.mako:1402
 msgid "removes untracked files and performs a hard reset on git branch automatically to help resolve update issues"
 msgstr "추적된 파일을 제거 하 고 자동으로 업데이트 문제 해결에 도움을 git에 하드 리셋을 수행합니다"
 
-#: sickrage/core/webserver/views/config/general.mako:1413
+#: sickrage/core/webserver/views/config/general.mako:1410
 msgid "Git auto-issues submit"
 msgstr "Git 자동 문제 제출"
 
-#: sickrage/core/webserver/views/config/general.mako:1420
+#: sickrage/core/webserver/views/config/general.mako:1417
 msgid "automatically submit bug/issue reports to our issue tracker when errors are logged"
 msgstr "자동으로 오류가 기록 됩니다 때 우리의 문제 추적기에 버그/문제 보고서를 제출"
 
@@ -3571,7 +3577,7 @@ msgstr "최소한 하나의 공급자가 필요 하지만 두는 것이 좋습�
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "NZB/토런트 공급자에 토글 수 있습니다."
 
-#: sickrage/core/webserver/views.py:3689 sickrage/core/webserver/views.py:3970
+#: sickrage/core/webserver/views.py:3680 sickrage/core/webserver/views.py:3961
 #: sickrage/core/webserver/views/config/providers.mako:76
 #: sickrage/core/webserver/views/layouts/main.mako:243
 msgid "Search Clients"
@@ -4736,7 +4742,7 @@ msgstr ""
 msgid "Select Episodes"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4926
+#: sickrage/core/webserver/views.py:4917
 #: sickrage/core/webserver/views/home/display_show.mako:440
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:95
 msgid "Clear All"
@@ -4820,7 +4826,7 @@ msgstr "알 수 없는"
 msgid "Retry Download"
 msgstr "다운로드 다시 시도"
 
-#: sickrage/core/webserver/views.py:4979
+#: sickrage/core/webserver/views.py:4970
 #: sickrage/core/webserver/views/home/edit_show.mako:25
 msgid "Main"
 msgstr "메인"
@@ -4945,7 +4951,7 @@ msgstr "공기 순서 대신 DVD 순서를 사용 하 여"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "\"힘 전체 업데이트\" 필요한 이며 수동으로 정렬할 필요가 경우 기존 에피소드."
 
-#: sickrage/core/webserver/views.py:3695 sickrage/core/webserver/views.py:4863
+#: sickrage/core/webserver/views.py:3686 sickrage/core/webserver/views.py:4854
 #: sickrage/core/webserver/views/home/edit_show.mako:250
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:261
@@ -5263,7 +5269,7 @@ msgstr "다시 시작을 수행"
 msgid "Daily Search"
 msgstr "매일 검색"
 
-#: sickrage/core/webserver/views.py:4966
+#: sickrage/core/webserver/views.py:4957
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "백로그"
@@ -5288,7 +5294,7 @@ msgstr "포스트 프로세스"
 msgid "Subtitles Finder"
 msgstr "자막 찾기"
 
-#: sickrage/core/webserver/views.py:4974
+#: sickrage/core/webserver/views.py:4965
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "Trakt 검사기"
@@ -5321,7 +5327,7 @@ msgstr "아니요"
 msgid "True"
 msgstr "사실"
 
-#: sickrage/core/webserver/views.py:4969
+#: sickrage/core/webserver/views.py:4960
 #: sickrage/core/webserver/views/home/status.mako:110
 msgid "Show Queue"
 msgstr "큐 보기"
@@ -5507,7 +5513,7 @@ msgstr "<p>Select 당신의 선호 fansub <b>Available Groups</b>에서 그룹�
 msgid "Whitelist"
 msgstr "허용 된 사이트 목록"
 
-#: sickrage/core/webserver/views.py:1191
+#: sickrage/core/webserver/views.py:1182
 #: sickrage/core/webserver/views/includes/blackwhitelist.mako:40
 #: sickrage/core/webserver/views/includes/blackwhitelist.mako:86
 msgid "Remove"
@@ -5599,7 +5605,7 @@ msgstr "루트 디렉터리"
 msgid "New"
 msgstr "새로운"
 
-#: sickrage/core/webserver/views.py:1145 sickrage/core/webserver/views.py:1959
+#: sickrage/core/webserver/views.py:1136 sickrage/core/webserver/views.py:1950
 #: sickrage/core/webserver/views/includes/root_dirs.mako:37
 #: sickrage/core/webserver/views/manage/mass_edit.mako:73
 msgid "Edit"
@@ -5625,7 +5631,7 @@ msgstr "SiCKRAGE"
 msgid "Show List"
 msgstr "표시 목록"
 
-#: sickrage/core/webserver/views.py:2332 sickrage/core/webserver/views.py:2333
+#: sickrage/core/webserver/views.py:2323 sickrage/core/webserver/views.py:2324
 #: sickrage/core/webserver/views/layouts/main.mako:140
 msgid "Add Shows"
 msgstr "쇼에 추가"
@@ -5640,18 +5646,18 @@ msgstr "수동 후 처리"
 msgid "Manage"
 msgstr "관리"
 
-#: sickrage/core/webserver/views.py:3478 sickrage/core/webserver/views.py:3479
+#: sickrage/core/webserver/views.py:3469 sickrage/core/webserver/views.py:3470
 #: sickrage/core/webserver/views/layouts/main.mako:166
 #: sickrage/core/webserver/views/manage/mass_update.mako:13
 msgid "Mass Update"
 msgstr "대량 업데이트"
 
-#: sickrage/core/webserver/views.py:3086 sickrage/core/webserver/views.py:3087
+#: sickrage/core/webserver/views.py:3077 sickrage/core/webserver/views.py:3078
 #: sickrage/core/webserver/views/layouts/main.mako:169
 msgid "Backlog Overview"
 msgstr "백로그 개요"
 
-#: sickrage/core/webserver/views.py:3528 sickrage/core/webserver/views.py:3529
+#: sickrage/core/webserver/views.py:3519 sickrage/core/webserver/views.py:3520
 #: sickrage/core/webserver/views/layouts/main.mako:172
 msgid "Manage Queues"
 msgstr "큐 관리"
@@ -5680,7 +5686,7 @@ msgstr "업데이트 Emby"
 msgid "Manage Torrents"
 msgstr "급류를 관리"
 
-#: sickrage/core/webserver/views.py:3503 sickrage/core/webserver/views.py:3504
+#: sickrage/core/webserver/views.py:3494 sickrage/core/webserver/views.py:3495
 #: sickrage/core/webserver/views/layouts/main.mako:203
 msgid "Failed Downloads"
 msgstr "실패 한 다운로드"
@@ -5693,12 +5699,12 @@ msgstr "놓친된 자막 관리"
 msgid "Config"
 msgstr "구성"
 
-#: sickrage/core/webserver/views.py:3686
+#: sickrage/core/webserver/views.py:3677
 #: sickrage/core/webserver/views/layouts/main.mako:234
 msgid "Help and Info"
 msgstr "도움말 및 정보"
 
-#: sickrage/core/webserver/views.py:3687
+#: sickrage/core/webserver/views.py:3678
 #: sickrage/core/webserver/views/layouts/main.mako:237
 msgid "General"
 msgstr "일반"
@@ -5707,28 +5713,28 @@ msgstr "일반"
 msgid "Backup and Restore"
 msgstr "백업 및 복원"
 
-#: sickrage/core/webserver/views.py:3690 sickrage/core/webserver/views.py:4269
+#: sickrage/core/webserver/views.py:3681 sickrage/core/webserver/views.py:4260
 #: sickrage/core/webserver/views/layouts/main.mako:246
 msgid "Search Providers"
 msgstr "검색 공급자"
 
-#: sickrage/core/webserver/views.py:3691 sickrage/core/webserver/views.py:4775
+#: sickrage/core/webserver/views.py:3682 sickrage/core/webserver/views.py:4766
 #: sickrage/core/webserver/views/layouts/main.mako:249
 msgid "Subtitles Settings"
 msgstr "자막 설정"
 
-#: sickrage/core/webserver/views.py:3692 sickrage/core/webserver/views.py:4902
+#: sickrage/core/webserver/views.py:3683 sickrage/core/webserver/views.py:4893
 #: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Quality Settings"
 msgstr "품질 설정"
 
-#: sickrage/core/webserver/views.py:2296 sickrage/core/webserver/views.py:2297
-#: sickrage/core/webserver/views.py:3693 sickrage/core/webserver/views.py:4074
+#: sickrage/core/webserver/views.py:2287 sickrage/core/webserver/views.py:2288
+#: sickrage/core/webserver/views.py:3684 sickrage/core/webserver/views.py:4065
 #: sickrage/core/webserver/views/layouts/main.mako:255
 msgid "Post Processing"
 msgstr "후 처리"
 
-#: sickrage/core/webserver/views.py:3694 sickrage/core/webserver/views.py:4429
+#: sickrage/core/webserver/views.py:3685 sickrage/core/webserver/views.py:4420
 #: sickrage/core/webserver/views/layouts/main.mako:258
 msgid "Notifications"
 msgstr "알림"
@@ -5929,7 +5935,7 @@ msgstr "이 쇼는 Show.S02E03이 아닌 Show.03.02.2010 출시 하는 경우 �
 msgid "Search for subtitles."
 msgstr "자막에 대 한 검색."
 
-#: sickrage/core/webserver/views.py:3236 sickrage/core/webserver/views.py:3237
+#: sickrage/core/webserver/views.py:3227 sickrage/core/webserver/views.py:3228
 #: sickrage/core/webserver/views/manage/mass_update.mako:12
 msgid "Mass Edit"
 msgstr "대량 편집"
@@ -5969,7 +5975,7 @@ msgstr ""
 msgid "Not in progress"
 msgstr "진행에"
 
-#: sickrage/core/webserver/views.py:1185
+#: sickrage/core/webserver/views.py:1176
 #: sickrage/core/webserver/views/manage/queues.mako:27
 #: sickrage/core/webserver/views/manage/queues.mako:45
 #: sickrage/core/webserver/views/manage/queues.mako:81
@@ -5994,7 +6000,7 @@ msgstr "Propers 검색 사용 안 함"
 msgid "Post-Processor:"
 msgstr "-프로세서:"
 
-#: sickrage/core/webserver/views.py:4970
+#: sickrage/core/webserver/views.py:4961
 #: sickrage/core/webserver/views/manage/queues.mako:88
 msgid "Search Queue"
 msgstr "검색 큐"
@@ -6131,23 +6137,23 @@ msgstr "무시"
 msgid "Episode snatched"
 msgstr "납치 하는 에피소드"
 
-#: sickrage/core/version_updater.py:64 sickrage/core/version_updater.py:68
+#: sickrage/core/version_updater.py:65 sickrage/core/version_updater.py:69
 #: sickrage/core/version_updater.py:73 sickrage/core/version_updater.py:81
 #: sickrage/core/version_updater.py:90 sickrage/core/version_updater.py:95
 #: sickrage/core/version_updater.py:100 sickrage/core/version_updater.py:108
-#: sickrage/core/version_updater.py:114 sickrage/core/version_updater.py:192
-#: sickrage/core/version_updater.py:248 sickrage/core/version_updater.py:286
-#: sickrage/core/version_updater.py:390 sickrage/core/version_updater.py:494
-#: sickrage/core/version_updater.py:748 sickrage/core/webserver/views.py:1084
+#: sickrage/core/version_updater.py:114 sickrage/core/version_updater.py:194
+#: sickrage/core/version_updater.py:250 sickrage/core/version_updater.py:338
+#: sickrage/core/version_updater.py:403 sickrage/core/version_updater.py:525
+#: sickrage/core/version_updater.py:785 sickrage/core/webserver/views.py:1084
 #: sickrage/core/webserver/views.py:1088 sickrage/core/webserver/views.py:1096
 msgid "Updater"
 msgstr ""
 
-#: sickrage/core/version_updater.py:65
+#: sickrage/core/version_updater.py:66
 msgid "New update found for SiCKRAGE, starting auto-updater"
 msgstr "새로운 업데이트는 자동 업데이트를 시작 하는 SiCKRAGE에 대 한 발견"
 
-#: sickrage/core/version_updater.py:69
+#: sickrage/core/version_updater.py:70
 msgid "Update was successful"
 msgstr "업데이트 성공 했다"
 
@@ -6175,35 +6181,39 @@ msgstr ""
 msgid "Waiting for jobs in show queue to finish before updating"
 msgstr ""
 
-#: sickrage/core/version_updater.py:193
+#: sickrage/core/version_updater.py:195
 msgid "Update wasn't successful, not restarting. Check your log for more information."
 msgstr "업데이트 성공, 다시 시작 하지 않았다입니다. 자세한 내용은 로그를 확인 하십시오."
 
-#: sickrage/core/version_updater.py:245
+#: sickrage/core/version_updater.py:247
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your {git_folder} folder and run from source to enable updates."
 msgstr ""
 
-#: sickrage/core/version_updater.py:284
-msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
-msgstr "찾을 수 없습니다 당신의 핍 실행-설정 핍 경로 설정에서-> 일반 고급->"
+#: sickrage/core/version_updater.py:336
+msgid "Unable to find your pip2 executable - Set your pip2 path from Settings->General->Advanced"
+msgstr ""
 
-#: sickrage/core/version_updater.py:391
+#: sickrage/core/version_updater.py:404
 msgid "Failed to update requirements"
 msgstr ""
 
-#: sickrage/core/version_updater.py:467 sickrage/core/version_updater.py:596
+#: sickrage/core/version_updater.py:427
+msgid "SiCKRAGE Python 3 release is now out! &mdash; <a href=\"{}\">Migrate Now</a>"
+msgstr ""
+
+#: sickrage/core/version_updater.py:495 sickrage/core/version_updater.py:634
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "사용 가능한 최신 버전, 버전 {&mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:495
+#: sickrage/core/version_updater.py:526
 msgid "Updating SiCKRAGE from GIT servers"
 msgstr ""
 
-#: sickrage/core/version_updater.py:737
+#: sickrage/core/version_updater.py:774
 msgid "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr ""
 
-#: sickrage/core/version_updater.py:748
+#: sickrage/core/version_updater.py:785
 msgid "Updating SiCKRAGE from PyPi servers"
 msgstr ""
 
@@ -6217,8 +6227,8 @@ msgid "Couldn't find a download for <i>%s</i>"
 msgstr "<i>%s</i>에 대 한 다운로드를 찾을 수 없습니다."
 
 #: sickrage/core/queues/show.py:294 sickrage/core/queues/show.py:304
-#: sickrage/core/queues/show.py:315 sickrage/core/webserver/views.py:2676
-#: sickrage/core/webserver/views.py:2688
+#: sickrage/core/queues/show.py:315 sickrage/core/webserver/views.py:2667
+#: sickrage/core/webserver/views.py:2679
 msgid "Unable to add show"
 msgstr "보기를 추가할 수 없습니다"
 
@@ -6294,8 +6304,8 @@ msgstr "잘못 된 표시 paramaters"
 msgid "Invalid paramaters"
 msgstr "잘못 된 paramaters"
 
-#: sickrage/core/webserver/views.py:619 sickrage/core/webserver/views.py:1762
-#: sickrage/core/webserver/views.py:1824
+#: sickrage/core/webserver/views.py:619 sickrage/core/webserver/views.py:1753
+#: sickrage/core/webserver/views.py:1815
 msgid "Episode couldn't be retrieved"
 msgstr "에피소드를 검색할 수 없습니다."
 
@@ -6580,611 +6590,599 @@ msgstr "성공적으로 {path}를 발견"
 msgid "Failed to find {path}"
 msgstr "{path}를 발견 하지 못했습니다."
 
-#: sickrage/core/webserver/views.py:1109
-msgid "Installing SiCKRAGE requirements"
-msgstr "SiCKRAGE 요구 사항 설치"
-
-#: sickrage/core/webserver/views.py:1111
-msgid "Failed to install SiCKRAGE requirements"
-msgstr "SiCKRAGE 요구 사항 설치"
-
-#: sickrage/core/webserver/views.py:1113
-msgid "Installed SiCKRAGE requirements successfully!"
-msgstr "SiCKRAGE 요구를 성공적으로 설치!"
-
-#: sickrage/core/webserver/views.py:1119
+#: sickrage/core/webserver/views.py:1110
 msgid "Checking out branch: "
 msgstr "분기를 체크아웃 하십시오. "
 
-#: sickrage/core/webserver/views.py:1121
+#: sickrage/core/webserver/views.py:1112
 msgid "Branch checkout successful, restarting: "
 msgstr "성공, 다시 시작 지점 체크 아웃: "
 
-#: sickrage/core/webserver/views.py:1124
+#: sickrage/core/webserver/views.py:1115
 msgid "Already on branch: "
 msgstr "지점에 이미: "
 
-#: sickrage/core/webserver/views.py:1132 sickrage/core/webserver/views.py:1137
-#: sickrage/core/webserver/views.py:1352 sickrage/core/webserver/views.py:1361
-#: sickrage/core/webserver/views.py:1569 sickrage/core/webserver/views.py:1574
-#: sickrage/core/webserver/views.py:1587 sickrage/core/webserver/views.py:1592
-#: sickrage/core/webserver/views.py:1614 sickrage/core/webserver/views.py:1619
-#: sickrage/core/webserver/views.py:1632 sickrage/core/webserver/views.py:1637
-#: sickrage/core/webserver/views.py:1653 sickrage/core/webserver/views.py:1658
-#: sickrage/core/webserver/views.py:1731 sickrage/core/webserver/views.py:1734
-#: sickrage/core/webserver/views.py:1738 sickrage/core/webserver/views.py:1740
-#: sickrage/core/webserver/views.py:1743 sickrage/core/webserver/views.py:1762
-#: sickrage/core/webserver/views.py:1780 sickrage/core/webserver/views.py:1783
-#: sickrage/core/webserver/views.py:1788 sickrage/core/webserver/views.py:1791
-#: sickrage/core/webserver/views.py:1796 sickrage/core/webserver/views.py:1798
-#: sickrage/core/webserver/views.py:1801 sickrage/core/webserver/views.py:1824
-#: sickrage/core/webserver/views.py:1925 sickrage/core/webserver/views.py:1930
-#: sickrage/core/webserver/views.py:1933 sickrage/core/webserver/views.py:1976
-#: sickrage/core/webserver/views.py:1982 sickrage/core/webserver/views.py:1985
-#: sickrage/core/webserver/views.py:4976
+#: sickrage/core/webserver/views.py:1123 sickrage/core/webserver/views.py:1128
+#: sickrage/core/webserver/views.py:1343 sickrage/core/webserver/views.py:1352
+#: sickrage/core/webserver/views.py:1560 sickrage/core/webserver/views.py:1565
+#: sickrage/core/webserver/views.py:1578 sickrage/core/webserver/views.py:1583
+#: sickrage/core/webserver/views.py:1605 sickrage/core/webserver/views.py:1610
+#: sickrage/core/webserver/views.py:1623 sickrage/core/webserver/views.py:1628
+#: sickrage/core/webserver/views.py:1644 sickrage/core/webserver/views.py:1649
+#: sickrage/core/webserver/views.py:1722 sickrage/core/webserver/views.py:1725
+#: sickrage/core/webserver/views.py:1729 sickrage/core/webserver/views.py:1731
+#: sickrage/core/webserver/views.py:1734 sickrage/core/webserver/views.py:1753
+#: sickrage/core/webserver/views.py:1771 sickrage/core/webserver/views.py:1774
+#: sickrage/core/webserver/views.py:1779 sickrage/core/webserver/views.py:1782
+#: sickrage/core/webserver/views.py:1787 sickrage/core/webserver/views.py:1789
+#: sickrage/core/webserver/views.py:1792 sickrage/core/webserver/views.py:1815
+#: sickrage/core/webserver/views.py:1916 sickrage/core/webserver/views.py:1921
+#: sickrage/core/webserver/views.py:1924 sickrage/core/webserver/views.py:1967
+#: sickrage/core/webserver/views.py:1973 sickrage/core/webserver/views.py:1976
+#: sickrage/core/webserver/views.py:4967
 msgid "Error"
 msgstr "오류"
 
-#: sickrage/core/webserver/views.py:1132 sickrage/core/webserver/views.py:1569
-#: sickrage/core/webserver/views.py:1587 sickrage/core/webserver/views.py:1614
-#: sickrage/core/webserver/views.py:1632 sickrage/core/webserver/views.py:1653
+#: sickrage/core/webserver/views.py:1123 sickrage/core/webserver/views.py:1560
+#: sickrage/core/webserver/views.py:1578 sickrage/core/webserver/views.py:1605
+#: sickrage/core/webserver/views.py:1623 sickrage/core/webserver/views.py:1644
 msgid "Invalid show ID"
 msgstr "잘못 된 표시 ID"
 
-#: sickrage/core/webserver/views.py:1137 sickrage/core/webserver/views.py:1930
-#: sickrage/core/webserver/views.py:1981
+#: sickrage/core/webserver/views.py:1128 sickrage/core/webserver/views.py:1921
+#: sickrage/core/webserver/views.py:1972
 msgid "Show not in show list"
 msgstr "표시 목록 보기"
 
-#: sickrage/core/webserver/views.py:1155
+#: sickrage/core/webserver/views.py:1146
 msgid "This show is in the process of being downloaded - the info below is incomplete."
 msgstr "이 쇼는 다운로드 되 고 과정-아래의 정보는 완전 하지 않습니다."
 
-#: sickrage/core/webserver/views.py:1158
+#: sickrage/core/webserver/views.py:1149
 msgid "The information on this page is in the process of being updated."
 msgstr "이 페이지의 정보를 업데이트 하는 중입니다."
 
-#: sickrage/core/webserver/views.py:1161
+#: sickrage/core/webserver/views.py:1152
 msgid "The episodes below are currently being refreshed from disk"
 msgstr "아래의 에피소드는 현재 디스크에서 새로 고침 되 고"
 
-#: sickrage/core/webserver/views.py:1164
+#: sickrage/core/webserver/views.py:1155
 msgid "Currently downloading subtitles for this show"
 msgstr "현재이 공연에 대 한 자막을 다운로드"
 
-#: sickrage/core/webserver/views.py:1167
+#: sickrage/core/webserver/views.py:1158
 msgid "This show is queued to be refreshed."
 msgstr "이 쇼는 고쳐질 대기 됩니다."
 
-#: sickrage/core/webserver/views.py:1170
+#: sickrage/core/webserver/views.py:1161
 msgid "This show is queued and awaiting an update."
 msgstr "이 쇼는 큐 업데이트를 기다리고 있다."
 
-#: sickrage/core/webserver/views.py:1173
+#: sickrage/core/webserver/views.py:1164
 msgid "This show is queued and awaiting subtitles download."
 msgstr "이 쇼는 대기 하 고 기다리는 자막 다운로드."
 
-#: sickrage/core/webserver/views.py:1179
+#: sickrage/core/webserver/views.py:1170
 msgid "Resume"
 msgstr "이력서"
 
-#: sickrage/core/webserver/views.py:1199
+#: sickrage/core/webserver/views.py:1190
 msgid "Re-scan files"
 msgstr "다시 스캔 파일"
 
-#: sickrage/core/webserver/views.py:1205
+#: sickrage/core/webserver/views.py:1196
 msgid "Full Update"
 msgstr "전체 업데이트"
 
-#: sickrage/core/webserver/views.py:1211
+#: sickrage/core/webserver/views.py:1202
 msgid "Update show in KODI"
 msgstr "코디에 업데이트 표시"
 
-#: sickrage/core/webserver/views.py:1218
+#: sickrage/core/webserver/views.py:1209
 msgid "Update show in Emby"
 msgstr "Emby에서 업데이트 표시"
 
-#: sickrage/core/webserver/views.py:1225 sickrage/core/webserver/views.py:1967
-#: sickrage/core/webserver/views.py:1968
+#: sickrage/core/webserver/views.py:1216 sickrage/core/webserver/views.py:1958
+#: sickrage/core/webserver/views.py:1959
 msgid "Preview Rename"
 msgstr "미리 보기 이름 바꾸기"
 
-#: sickrage/core/webserver/views.py:1233
+#: sickrage/core/webserver/views.py:1224
 msgid "Download Subtitles"
 msgstr "자막 다운로드"
 
-#: sickrage/core/webserver/views.py:1348
+#: sickrage/core/webserver/views.py:1339
 msgid "Invalid show ID: "
 msgstr "잘못 된 보기 ID: "
 
-#: sickrage/core/webserver/views.py:1357
+#: sickrage/core/webserver/views.py:1348
 msgid "Unable to find the specified show: "
 msgstr "지정 된 표시를 찾을 수 없습니다: "
 
-#: sickrage/core/webserver/views.py:1388 sickrage/core/webserver/views.py:1389
-#: sickrage/core/webserver/views.py:1399 sickrage/core/webserver/views.py:1400
+#: sickrage/core/webserver/views.py:1379 sickrage/core/webserver/views.py:1380
+#: sickrage/core/webserver/views.py:1390 sickrage/core/webserver/views.py:1391
 msgid "Edit Show"
 msgstr "보기 편집"
 
-#: sickrage/core/webserver/views.py:1483
+#: sickrage/core/webserver/views.py:1474
 msgid "Unable to refresh this show: {}"
 msgstr "이 보기를 새로 고칠 수 없습니다: {}"
 
-#: sickrage/core/webserver/views.py:1515
+#: sickrage/core/webserver/views.py:1506
 msgid "Unable to refresh this show:{}"
 msgstr ":{}이 보기를 새로 고칠 수 없습니다."
 
-#: sickrage/core/webserver/views.py:1521
+#: sickrage/core/webserver/views.py:1512
 #, python-format
 msgid "The folder at %s doesn't contain a tvshow.nfo - copy your files to that folder before you change the directory in SiCKRAGE."
 msgstr "%s에 폴더는 tvshow.nfo를 포함 하지 않습니다-SiCKRAGE에 디렉터리를 변경 하기 전에 해당 폴더에 파일을 복사 합니다."
 
-#: sickrage/core/webserver/views.py:1533 sickrage/core/webserver/views.py:3428
+#: sickrage/core/webserver/views.py:1524 sickrage/core/webserver/views.py:3419
 msgid "Unable to update show: {}"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:1540
+#: sickrage/core/webserver/views.py:1531
 msgid "Unable to force an update on scene exceptions of the show."
 msgstr "쇼의 현장 예외에 대 한 업데이트를 강제로 수 없습니다."
 
-#: sickrage/core/webserver/views.py:1547
+#: sickrage/core/webserver/views.py:1538
 msgid "Unable to force an update on scene numbering of the show."
 msgstr "쇼의 장면 번호에 업데이트를 강제로 수 없습니다."
 
-#: sickrage/core/webserver/views.py:1554
+#: sickrage/core/webserver/views.py:1545
 msgid "{num_warnings:d} warning{plural} while saving changes:"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:1561 sickrage/core/webserver/views.py:3353
+#: sickrage/core/webserver/views.py:1552 sickrage/core/webserver/views.py:3344
 msgid "{num_errors:d} error{plural} while saving changes:"
 msgstr "변경 내용을 저장 하는 동안 {num_errors:d} error{plural}:"
 
-#: sickrage/core/webserver/views.py:1574 sickrage/core/webserver/views.py:1592
-#: sickrage/core/webserver/views.py:1619 sickrage/core/webserver/views.py:1637
-#: sickrage/core/webserver/views.py:1658
+#: sickrage/core/webserver/views.py:1565 sickrage/core/webserver/views.py:1583
+#: sickrage/core/webserver/views.py:1610 sickrage/core/webserver/views.py:1628
+#: sickrage/core/webserver/views.py:1649
 msgid "Unable to find the specified show"
 msgstr "지정 된 보기를 찾을 수 없습니다"
 
-#: sickrage/core/webserver/views.py:1581
+#: sickrage/core/webserver/views.py:1572
 #, python-format
 msgid "%s has been %s"
 msgstr "%s %s 되었습니다."
 
-#: sickrage/core/webserver/views.py:1581
+#: sickrage/core/webserver/views.py:1572
 msgid "resumed"
 msgstr "다시 시작"
 
-#: sickrage/core/webserver/views.py:1581
+#: sickrage/core/webserver/views.py:1572
 msgid "paused"
 msgstr "일시 중지"
 
-#: sickrage/core/webserver/views.py:1597
+#: sickrage/core/webserver/views.py:1588
 #, python-format
 msgid "%s has been %s %s"
 msgstr "%s은 %s %s 되었습니다."
 
-#: sickrage/core/webserver/views.py:1600
+#: sickrage/core/webserver/views.py:1591
 msgid "deleted"
 msgstr "삭제"
 
-#: sickrage/core/webserver/views.py:1600
+#: sickrage/core/webserver/views.py:1591
 msgid "trashed"
 msgstr "휴지통"
 
-#: sickrage/core/webserver/views.py:1601
+#: sickrage/core/webserver/views.py:1592
 msgid "(media untouched)"
 msgstr "(본래 미디어)"
 
-#: sickrage/core/webserver/views.py:1601
+#: sickrage/core/webserver/views.py:1592
 msgid "(with all related media)"
 msgstr "(모든 관련 미디어)"
 
-#: sickrage/core/webserver/views.py:1605
+#: sickrage/core/webserver/views.py:1596
 msgid "Unable to delete this show."
 msgstr "이 표시를 삭제할 수 없습니다."
 
-#: sickrage/core/webserver/views.py:1624
+#: sickrage/core/webserver/views.py:1615
 msgid "Unable to refresh this show."
 msgstr "이 보기를 새로 고칠 수 없습니다."
 
-#: sickrage/core/webserver/views.py:1643
+#: sickrage/core/webserver/views.py:1634
 msgid "Unable to update this show."
 msgstr "이 표시를 업데이트할 수 없습니다."
 
-#: sickrage/core/webserver/views.py:1682
+#: sickrage/core/webserver/views.py:1673
 msgid "Library update command sent to KODI host(s): "
 msgstr "라이브러리 업데이트 명령을 코디 호스트에 전송: "
 
-#: sickrage/core/webserver/views.py:1684
+#: sickrage/core/webserver/views.py:1675
 msgid "Unable to contact one or more KODI host(s): "
 msgstr "하나 이상의 코디 호스트에 연결할 수 없습니다: "
 
-#: sickrage/core/webserver/views.py:1694
+#: sickrage/core/webserver/views.py:1685
 msgid "Library update command sent to Plex Media Server host: "
 msgstr "라이브러리 업데이트 명령을 플렉스 미디어 서버 호스트에 전송: "
 
-#: sickrage/core/webserver/views.py:1698
+#: sickrage/core/webserver/views.py:1689
 msgid "Unable to contact Plex Media Server host: "
 msgstr "플렉스 미디어 서버 호스트에 연결할 수 없습니다: "
 
-#: sickrage/core/webserver/views.py:1710
+#: sickrage/core/webserver/views.py:1701
 msgid "Library update command sent to Emby host: "
 msgstr "라이브러리 업데이트 명령 Emby 호스트에 전송: "
 
-#: sickrage/core/webserver/views.py:1713
+#: sickrage/core/webserver/views.py:1704
 msgid "Unable to contact Emby host: "
 msgstr "Emby 호스트에 연결할 수 없습니다: "
 
-#: sickrage/core/webserver/views.py:1723
+#: sickrage/core/webserver/views.py:1714
 msgid "Syncing Trakt with SiCKRAGE"
 msgstr "SiCKRAGE와 동기화 Trakt"
 
-#: sickrage/core/webserver/views.py:1729 sickrage/core/webserver/views.py:1778
-#: sickrage/core/webserver/views.py:1975
+#: sickrage/core/webserver/views.py:1720 sickrage/core/webserver/views.py:1769
+#: sickrage/core/webserver/views.py:1966
 msgid "You must specify a show and at least one episode"
 msgstr "쇼와 하나 이상의 에피소드를 지정 해야 합니다."
 
-#: sickrage/core/webserver/views.py:1786
+#: sickrage/core/webserver/views.py:1777
 msgid "Invalid status"
 msgstr "잘못 된 상태"
 
-#: sickrage/core/webserver/views.py:1881
+#: sickrage/core/webserver/views.py:1872
 msgid "Backlog was automatically started for the following seasons of "
 msgstr "백로그의 다음 시즌에 대 한 자동으로 시작 "
 
-#: sickrage/core/webserver/views.py:1888 sickrage/core/webserver/views.py:1908
+#: sickrage/core/webserver/views.py:1879 sickrage/core/webserver/views.py:1899
 msgid "Season "
 msgstr "시즌 "
 
-#: sickrage/core/webserver/views.py:1895
+#: sickrage/core/webserver/views.py:1886
 msgid "Backlog started"
 msgstr "백로그 시작"
 
-#: sickrage/core/webserver/views.py:1901
+#: sickrage/core/webserver/views.py:1892
 msgid "Retrying Search was automatically started for the following season of "
 msgstr "다음 시즌에 대 한 자동으로 시작 된 검색을 다시 시도 "
 
-#: sickrage/core/webserver/views.py:1915
+#: sickrage/core/webserver/views.py:1906
 msgid "Retry Search started"
 msgstr "다시 검색 시작"
 
-#: sickrage/core/webserver/views.py:1925
+#: sickrage/core/webserver/views.py:1916
 msgid "You must specify a show"
 msgstr "쇼를 지정 해야 합니다."
 
-#: sickrage/core/webserver/views.py:1933 sickrage/core/webserver/views.py:1985
+#: sickrage/core/webserver/views.py:1924 sickrage/core/webserver/views.py:1976
 msgid "Can't rename episodes when the show dir is missing."
 msgstr "표시 dir 때 에피소드를 이름을 바꿀 수 없습니다."
 
-#: sickrage/core/webserver/views.py:2121
+#: sickrage/core/webserver/views.py:2112
 #, python-format
 msgid "New subtitles downloaded: %s"
 msgstr "새로운 자막 다운로드: %s"
 
-#: sickrage/core/webserver/views.py:2123
+#: sickrage/core/webserver/views.py:2114
 msgid "No subtitles downloaded"
 msgstr "아니 자막 다운로드"
 
-#: sickrage/core/webserver/views.py:2248 sickrage/core/webserver/views.py:2252
+#: sickrage/core/webserver/views.py:2239 sickrage/core/webserver/views.py:2243
 msgid "Google Drive Sync"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2248
+#: sickrage/core/webserver/views.py:2239
 msgid "Syncing app data to Google Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2252
+#: sickrage/core/webserver/views.py:2243
 msgid "Syncing app data from Google Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2321
+#: sickrage/core/webserver/views.py:2312
 msgid "Postprocessing results"
 msgstr "사후 처리 결과"
 
-#: sickrage/core/webserver/views.py:2381
+#: sickrage/core/webserver/views.py:2372
 msgid "No folders selected."
 msgstr "아무 폴더 선택입니다."
 
-#: sickrage/core/webserver/views.py:2510 sickrage/core/webserver/views.py:2511
+#: sickrage/core/webserver/views.py:2501 sickrage/core/webserver/views.py:2502
 msgid "New Show"
 msgstr "새로운 쇼"
 
-#: sickrage/core/webserver/views.py:2575 sickrage/core/webserver/views.py:2576
+#: sickrage/core/webserver/views.py:2566 sickrage/core/webserver/views.py:2567
 msgid "Existing Show"
 msgstr "기존 쇼"
 
-#: sickrage/core/webserver/views.py:2597
+#: sickrage/core/webserver/views.py:2588
 msgid "No root directories setup, please go back and add one."
 msgstr "없음 루트 디렉터리 설치, 다시가 서 하시고 하나 추가."
 
-#: sickrage/core/webserver/views.py:2652
+#: sickrage/core/webserver/views.py:2643
 msgid "Unknown error. Unable to add show due to problem with show selection."
 msgstr "알 수 없는 오류가 발생 했습니다. 선택 문제 때문에 보기를 추가할 수 없습니다."
 
-#: sickrage/core/webserver/views.py:2677
+#: sickrage/core/webserver/views.py:2668
 msgid "Folder "
 msgstr "폴더 "
 
-#: sickrage/core/webserver/views.py:2677
+#: sickrage/core/webserver/views.py:2668
 msgid " exists already"
 msgstr " 이미 존재"
 
-#: sickrage/core/webserver/views.py:2689
+#: sickrage/core/webserver/views.py:2680
 msgid "Unable to create the folder , can't add the show"
 msgstr "만들 수 없습니다., 폴더 쇼 추가할 수 없습니다."
 
-#: sickrage/core/webserver/views.py:2741
+#: sickrage/core/webserver/views.py:2732
 msgid "Adding Show"
 msgstr "보기 추가"
 
-#: sickrage/core/webserver/views.py:2741
+#: sickrage/core/webserver/views.py:2732
 msgid "Adding the specified show into "
 msgstr "에 지정 된 표시 추가 "
 
-#: sickrage/core/webserver/views.py:2816
+#: sickrage/core/webserver/views.py:2807
 msgid "Shows Added"
 msgstr "추가 표시"
 
-#: sickrage/core/webserver/views.py:2817
+#: sickrage/core/webserver/views.py:2808
 msgid "Automatically added "
 msgstr "자동으로 추가 "
 
-#: sickrage/core/webserver/views.py:2818
+#: sickrage/core/webserver/views.py:2809
 msgid " from their existing metadata files"
 msgstr " 기존 메타 데이터 파일에서"
 
-#: sickrage/core/webserver/views.py:3000 sickrage/core/webserver/views.py:3001
+#: sickrage/core/webserver/views.py:2991 sickrage/core/webserver/views.py:2992
 msgid "Missing Subtitles"
 msgstr "자막 누락"
 
-#: sickrage/core/webserver/views.py:3436
+#: sickrage/core/webserver/views.py:3427
 msgid "Unable to refresh show "
 msgstr "보기를 새로 고칠 수 없습니다. "
 
-#: sickrage/core/webserver/views.py:3447
+#: sickrage/core/webserver/views.py:3438
 msgid "Errors encountered"
 msgstr "발생 한 오류"
 
-#: sickrage/core/webserver/views.py:3453
+#: sickrage/core/webserver/views.py:3444
 msgid "<br><b>Updates</b><br><ul><li>"
 msgstr "<br><b>Updates</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3458
+#: sickrage/core/webserver/views.py:3449
 msgid "<br><b>Refreshes</b><br><ul><li>"
 msgstr "<br><b>Refreshes</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3463
+#: sickrage/core/webserver/views.py:3454
 msgid "<br><b>Renames</b><br><ul><li>"
 msgstr "<br><b>Renames</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3468
+#: sickrage/core/webserver/views.py:3459
 msgid "<br><b>Subtitles</b><br><ul><li>"
 msgstr "<br><b>Subtitles</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3473
+#: sickrage/core/webserver/views.py:3464
 msgid "The following actions were queued:"
 msgstr "다음 작업 대기 했다."
 
-#: sickrage/core/webserver/views.py:3539
+#: sickrage/core/webserver/views.py:3530
 msgid "Backlog search started"
 msgstr "백로그 검색 시작"
 
-#: sickrage/core/webserver/views.py:3547
+#: sickrage/core/webserver/views.py:3538
 msgid "Daily search started"
 msgstr "매일 검색 시작"
 
-#: sickrage/core/webserver/views.py:3555
+#: sickrage/core/webserver/views.py:3546
 msgid "Find propers search started"
 msgstr "Propers 검색 시작"
 
-#: sickrage/core/webserver/views.py:3666
+#: sickrage/core/webserver/views.py:3657
 msgid "History cleared"
 msgstr "역사 삭제"
 
-#: sickrage/core/webserver/views.py:3673
+#: sickrage/core/webserver/views.py:3664
 msgid "Removed history entries older than 30 days"
 msgstr "30 일 된 제거 된 역사 항목"
 
-#: sickrage/core/webserver/views.py:3688 sickrage/core/webserver/views.py:3910
+#: sickrage/core/webserver/views.py:3679 sickrage/core/webserver/views.py:3901
 msgid "Backup/Restore"
 msgstr "백업/복원"
 
-#: sickrage/core/webserver/views.py:3704 sickrage/core/webserver/views.py:3705
+#: sickrage/core/webserver/views.py:3695 sickrage/core/webserver/views.py:3696
 msgid "Configuration"
 msgstr "구성"
 
-#: sickrage/core/webserver/views.py:3713
+#: sickrage/core/webserver/views.py:3704
 msgid "Configuration Reset to Defaults"
 msgstr "기본값으로 구성 재설정"
 
-#: sickrage/core/webserver/views.py:3726
+#: sickrage/core/webserver/views.py:3717
 msgid "Config - General"
 msgstr "설정-일반"
 
-#: sickrage/core/webserver/views.py:3727
+#: sickrage/core/webserver/views.py:3718
 msgid "General Configuration"
 msgstr "일반 구성"
 
-#: sickrage/core/webserver/views.py:3892 sickrage/core/webserver/views.py:4056
-#: sickrage/core/webserver/views.py:4187 sickrage/core/webserver/views.py:4411
-#: sickrage/core/webserver/views.py:4757 sickrage/core/webserver/views.py:4845
-#: sickrage/core/webserver/views.py:4884
+#: sickrage/core/webserver/views.py:3883 sickrage/core/webserver/views.py:4047
+#: sickrage/core/webserver/views.py:4178 sickrage/core/webserver/views.py:4402
+#: sickrage/core/webserver/views.py:4748 sickrage/core/webserver/views.py:4836
+#: sickrage/core/webserver/views.py:4875
 msgid "Error(s) Saving Configuration"
 msgstr "구성 저장 오류"
 
-#: sickrage/core/webserver/views.py:3894
+#: sickrage/core/webserver/views.py:3885
 msgid "[GENERAL] Configuration Saved"
 msgstr "[GENERAL] 구성 저장"
 
-#: sickrage/core/webserver/views.py:3909
+#: sickrage/core/webserver/views.py:3900
 msgid "Config - Backup/Restore"
 msgstr "설정-백업/복원"
 
-#: sickrage/core/webserver/views.py:3922
+#: sickrage/core/webserver/views.py:3913
 msgid "Backup SUCCESSFUL"
 msgstr "백업 성공"
 
-#: sickrage/core/webserver/views.py:3924
+#: sickrage/core/webserver/views.py:3915
 msgid "Backup FAILED!"
 msgstr "백업 실패!"
 
-#: sickrage/core/webserver/views.py:3926
+#: sickrage/core/webserver/views.py:3917
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "첫 번째 백업을 저장 하는 폴더를 선택 해야 합니다!"
 
-#: sickrage/core/webserver/views.py:3945
+#: sickrage/core/webserver/views.py:3936
 msgid "Successfully extracted restore files to "
 msgstr "성공적으로 추출 된 복원 파일을 "
 
-#: sickrage/core/webserver/views.py:3946
+#: sickrage/core/webserver/views.py:3937
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "복원을 완료 하려면 <br>Restart sickrage입니다."
 
-#: sickrage/core/webserver/views.py:3948
+#: sickrage/core/webserver/views.py:3939
 msgid "Restore FAILED"
 msgstr "복원 실패"
 
-#: sickrage/core/webserver/views.py:3950
+#: sickrage/core/webserver/views.py:3941
 msgid "You need to select a backup file to restore!"
 msgstr "백업 파일 복원을 선택 해야 합니다!"
 
-#: sickrage/core/webserver/views.py:3969
+#: sickrage/core/webserver/views.py:3960
 msgid "Config - Search Clients"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:3995 sickrage/core/webserver/views.py:3998
-#: sickrage/core/webserver/views.py:4102
+#: sickrage/core/webserver/views.py:3986 sickrage/core/webserver/views.py:3989
+#: sickrage/core/webserver/views.py:4093
 msgid "Unable to create directory "
 msgstr "디렉터리를 만들 수 없습니다 "
 
-#: sickrage/core/webserver/views.py:3995 sickrage/core/webserver/views.py:3998
-#: sickrage/core/webserver/views.py:4102
+#: sickrage/core/webserver/views.py:3986 sickrage/core/webserver/views.py:3989
+#: sickrage/core/webserver/views.py:4093
 msgid ", dir not changed."
 msgstr "dir 변경 되지 않습니다."
 
-#: sickrage/core/webserver/views.py:4058
+#: sickrage/core/webserver/views.py:4049
 msgid "[SEARCH] Configuration Saved"
 msgstr "[SEARCH] 구성 저장"
 
-#: sickrage/core/webserver/views.py:4073
+#: sickrage/core/webserver/views.py:4064
 msgid "Config - Post Processing"
 msgstr "구성-게시물 처리"
 
-#: sickrage/core/webserver/views.py:4113
+#: sickrage/core/webserver/views.py:4104
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "지원 되지 않는 압축 풀기, 설정 압축 해제"
 
-#: sickrage/core/webserver/views.py:4148 sickrage/core/webserver/views.py:4159
+#: sickrage/core/webserver/views.py:4139 sickrage/core/webserver/views.py:4150
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "잘못 된 애니메이션 구성 명명, 이름 설정을 저장 하지 저장 시도"
 
-#: sickrage/core/webserver/views.py:4150 sickrage/core/webserver/views.py:4161
+#: sickrage/core/webserver/views.py:4141 sickrage/core/webserver/views.py:4152
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "당신이 시도 잘못 된 명명 구성 저장 명명 설정을 저장"
 
-#: sickrage/core/webserver/views.py:4167
+#: sickrage/core/webserver/views.py:4158
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "당신이 시도 잘못 된 공기-의해-날짜 명명 구성 저장 공기-의해-날짜 설정을 저장"
 
-#: sickrage/core/webserver/views.py:4173
+#: sickrage/core/webserver/views.py:4164
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "저장 구성 명명, 스포츠 설정을 저장 하지 않은 경우 잘못 된 스포츠 시도"
 
-#: sickrage/core/webserver/views.py:4189
+#: sickrage/core/webserver/views.py:4180
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] 구성 저장"
 
-#: sickrage/core/webserver/views.py:4268
+#: sickrage/core/webserver/views.py:4259
 msgid "Config - Search Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4309
+#: sickrage/core/webserver/views.py:4300
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "지정 된 공급자 이름 없음"
 
-#: sickrage/core/webserver/views.py:4311
+#: sickrage/core/webserver/views.py:4302
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "지정 된 공급자 Url 없음"
 
-#: sickrage/core/webserver/views.py:4313
+#: sickrage/core/webserver/views.py:4304
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "지정 된 공급자 Api 키"
 
-#: sickrage/core/webserver/views.py:4413
+#: sickrage/core/webserver/views.py:4404
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] 구성 저장"
 
-#: sickrage/core/webserver/views.py:4428
+#: sickrage/core/webserver/views.py:4419
 msgid "Config - Notifications"
 msgstr "구성-알림"
 
-#: sickrage/core/webserver/views.py:4759
+#: sickrage/core/webserver/views.py:4750
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] 구성 저장"
 
-#: sickrage/core/webserver/views.py:4774
+#: sickrage/core/webserver/views.py:4765
 msgid "Config - Subtitles Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4847
+#: sickrage/core/webserver/views.py:4838
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] 구성 저장"
 
-#: sickrage/core/webserver/views.py:4862
+#: sickrage/core/webserver/views.py:4853
 msgid "Config - Anime"
 msgstr "구성-애니메이션"
 
-#: sickrage/core/webserver/views.py:4886
+#: sickrage/core/webserver/views.py:4877
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] 구성 저장"
 
-#: sickrage/core/webserver/views.py:4901
+#: sickrage/core/webserver/views.py:4892
 msgid "Config - Quality Settings"
 msgstr "구성-품질 설정"
 
-#: sickrage/core/webserver/views.py:4913
+#: sickrage/core/webserver/views.py:4904
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[품질 설정] 구성 저장"
 
-#: sickrage/core/webserver/views.py:4965
+#: sickrage/core/webserver/views.py:4956
 msgid "Daily Searcher"
 msgstr "매일 검색"
 
-#: sickrage/core/webserver/views.py:4967
+#: sickrage/core/webserver/views.py:4958
 msgid "Show Updater"
 msgstr "표시 업데이트"
 
-#: sickrage/core/webserver/views.py:4968
+#: sickrage/core/webserver/views.py:4959
 msgid "Check Version"
 msgstr "버전 확인"
 
-#: sickrage/core/webserver/views.py:4971
+#: sickrage/core/webserver/views.py:4962
 msgid "Find Propers"
 msgstr "Propers 찾기"
 
-#: sickrage/core/webserver/views.py:4972
+#: sickrage/core/webserver/views.py:4963
 msgid "Postprocessor"
 msgstr "재설정할"
 
-#: sickrage/core/webserver/views.py:4973
+#: sickrage/core/webserver/views.py:4964
 msgid "Find Subtitles"
 msgstr "자막 찾기"
 
-#: sickrage/core/webserver/views.py:4975
+#: sickrage/core/webserver/views.py:4966
 msgid "Event"
 msgstr "이벤트"
 
-#: sickrage/core/webserver/views.py:4977
+#: sickrage/core/webserver/views.py:4968
 msgid "Tornado"
 msgstr "토네이도"
 
-#: sickrage/core/webserver/views.py:4978
+#: sickrage/core/webserver/views.py:4969
 msgid "Thread"
 msgstr "스레드"
 

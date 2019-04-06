@@ -1105,15 +1105,6 @@ class Home(WebHandler):
         else:
             return _('Failed to find {path}'.format(path=path))
 
-    def installRequirements(self):
-        sickrage.app.alerts.message(_('Installing SiCKRAGE requirements'))
-        if not sickrage.app.version_updater.updater.install_requirements():
-            sickrage.app.alerts.message(_('Failed to install SiCKRAGE requirements'))
-        else:
-            sickrage.app.alerts.message(_('Installed SiCKRAGE requirements successfully!'))
-
-        return self.redirect(self.previous_url())
-
     def branchCheckout(self, branch):
         if branch and sickrage.app.version_updater.updater.current_branch != branch:
             sickrage.app.alerts.message(_('Checking out branch: '), branch)
@@ -3778,14 +3769,14 @@ class ConfigGeneral(Config):
                     api_key=None, indexer_default=None, timezone_display=None, cpu_preset='NORMAL',
                     version_notify=None, enable_https=None, https_cert=None, https_key=None, handle_reverse_proxy=None,
                     sort_article=None, auto_update=None, notify_on_update=None, proxy_setting=None, proxy_indexers=None,
-                    anon_redirect=None, git_path=None, pip_path=None, calendar_unprotected=None, calendar_icons=None,
+                    anon_redirect=None, git_path=None, calendar_unprotected=None, calendar_icons=None,
                     debug=None, ssl_verify=None, no_restart=None, coming_eps_missed_range=None, filter_row=None,
                     fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None, time_preset=None,
                     indexer_timeout=None, download_url=None, rootDir=None, theme_name=None, default_page=None,
                     git_reset=None, git_username=None, git_password=None, git_autoissues=None, gui_language=None,
                     display_all_seasons=None, showupdate_stale=None, notify_on_login=None, allowed_video_file_exts=None,
                     enable_api_providers_cache=None, enable_upnp=None, web_external_port=None,
-                    strip_special_file_bits=None, **kwargs):
+                    strip_special_file_bits=None, pip2_path=None, **kwargs):
 
         results = []
 
@@ -3829,7 +3820,7 @@ class ConfigGeneral(Config):
         sickrage.app.config.git_reset = 1
         sickrage.app.config.git_autoissues = checkbox_to_value(git_autoissues)
         sickrage.app.config.git_path = git_path
-        sickrage.app.config.pip_path = pip_path
+        sickrage.app.config.pip2_path = pip2_path
         sickrage.app.config.calendar_unprotected = checkbox_to_value(calendar_unprotected)
         sickrage.app.config.calendar_icons = checkbox_to_value(calendar_icons)
         sickrage.app.config.no_restart = checkbox_to_value(no_restart)

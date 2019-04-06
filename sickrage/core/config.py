@@ -69,7 +69,7 @@ class Config(object):
         self.auto_update = True
         self.notify_on_update = True
         self.notify_on_login = False
-        self.pip_path = ""
+        self.pip2_path = ""
         self.git_reset = True
         self.git_username = ""
         self.git_password = ""
@@ -732,7 +732,7 @@ class Config(object):
                 'display_all_seasons': True,
                 'usenet_retention': 500,
                 'download_propers': True,
-                'pip_path': 'pip2',
+                'pip2_path': 'pip2',
                 'del_rar_contents': False,
                 'process_method': 'copy',
                 'file_timestamp_timezone': 'network',
@@ -1407,7 +1407,7 @@ class Config(object):
         self.log_size = self.check_setting_int('General', 'log_size')
         self.socket_timeout = self.check_setting_int('General', 'socket_timeout')
         self.default_page = self.check_setting_str('General', 'default_page')
-        self.pip_path = self.check_setting_str('General', 'pip_path')
+        self.pip2_path = self.check_setting_str('General', 'pip2_path')
         self.git_path = self.check_setting_str('General', 'git_path')
         self.git_autoissues = self.check_setting_bool('General', 'git_autoissues')
         self.git_username = self.check_setting_str('General', 'git_username', censor=True)
@@ -2007,7 +2007,7 @@ class Config(object):
                 'create_missing_show_dirs': int(self.create_missing_show_dirs),
                 'add_shows_wo_dir': int(self.add_shows_wo_dir),
                 'extra_scripts': '|'.join(self.extra_scripts),
-                'pip_path': self.pip_path,
+                'pip2_path': self.pip2_path,
                 'git_path': self.git_path,
                 'ignore_words': self.ignore_words,
                 'require_words': self.require_words,

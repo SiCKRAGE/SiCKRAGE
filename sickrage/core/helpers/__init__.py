@@ -1002,7 +1002,7 @@ def restoreConfigZip(archive, targetDir, restore_database=True, restore_config=T
         shutil.rmtree(targetDir)
 
 
-def backupSR(backupDir, keep_latest=False, migrate=True):
+def backupSR(backupDir, keep_latest=False):
     source = []
 
     file_list = [os.path.basename(sickrage.app.config_file)]
