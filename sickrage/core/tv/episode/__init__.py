@@ -800,7 +800,7 @@ class TVEpisode(object):
             dbData = MainDB.TVEpisode.query(indexer=self.indexer, indexerid=self.indexerid,
                                             showid=self.show.indexerid).one()
             dbData.__dict__.update(tv_episode)
-            MainDB().update(**dbData.as_dict())
+            MainDB().update(dbData)
         except orm.exc.NoResultFound:
             MainDB().add(MainDB.TVEpisode(**tv_episode))
 

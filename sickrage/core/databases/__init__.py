@@ -110,14 +110,11 @@ class srDatabase(object):
         with self.session() as session:
             session.add(instance)
 
-    def update(self, **kwargs):
-        primary_keys = {}
-        for key in inspect(self).primary_key:
-            if key.name in kwargs:
-                primary_keys[key.name] = kwargs.pop(key.name)
-
+    def update(self, obj):
+        primary_keys = dict((key.name, getattr(obj, key.name)) for key in inspect(obj.__table__).primary_key)
         with self.session() as session:
-            session.query(self).filter_by(**primary_keys).update(kwargs)
+            session.query(obj.__table__).filter_by(**primary_keys).update(
+                dict((k, v) for k, v in obj.as_dict() if k not in primary_keys))
 
     def delete(self, table, *args, **kwargs):
         with self.session() as session:
