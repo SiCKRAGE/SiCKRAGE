@@ -1,91 +1,95 @@
 # Changelog
 
-- * 9d0fc85 - 2019-03-09: Release v9.4.83 
-- * 471976b - 2019-03-09: Fixed issues with source updates. 
-- * ee7439e - 2019-03-06: Release v9.4.82 
-- * 8a67674 - 2019-03-06: Release v9.4.81 
-- * 6de5fa5 - 2019-03-05: Release v9.4.80 
-- * 43baedf - 2019-03-05: Fixed saving of provider settings so that booleans are saved as integers 
-- * 4f0d739 - 2019-03-04: Release v9.4.79 
-- * 1ff280d - 2019-03-04: Added code for database restore function to check if db exists then destroy before creating new 
-- * 74f6d46 - 2019-03-04: Release v9.4.78 
-- * 3c0d05a - 2019-03-04: Source updates now download and unpack to main program folder to resolve update issues. 
-- * 3151280 - 2019-03-04: Cleaned up backup and restore functions for database. Bumped keycloak requirement to v0.2.2 
-- * fe70b17 - 2019-03-03: Added backup and restore functions to database class. Refactored backup and restore system for app to accommodate for migration to python 3. 
-- * a72ca25 - 2019-02-24: Release v9.4.77 
-- * b09d78a - 2019-02-24: Added Anime regex for Erai-raws 
-- * e0f2db6 - 2019-02-24: Release v9.4.76 
-- * ed84483 - 2019-02-24: Fixed IndexerErrors for TV cache. Added files to .gitignore related to AniDB. 
-- * abe73d7 - 2019-02-24: Release v9.4.75 
-- * f4b1e65 - 2019-02-24: Fixed issue with scene exceptions not being retrieved. Fixed issues with AniDB and Anime shows. Builds name cache and retrieves exceptions on startup as a background task. 
-- * 78d6b6e - 2019-02-24: Release v9.4.74 
-- * b690738 - 2019-02-24: Fixed issue with default add show options and add show year feature. 
-- * 90fa33d - 2019-02-24: Pre-Release v9.4.74.dev2 
-- * b2896ad - 2019-02-24: Updated AniDB code for post-processor. Added get episode function to AniDB helper. 
-- * 1ebefb4 - 2019-02-24: Pre-Release v9.4.74.dev1 
-- * c26e5b1 - 2019-02-24: Refactored AniDB code. 
-- * 41039e5 - 2019-02-24: Fixed KeyError for twitter notifier. 
-- * 135d868 - 2019-02-24: Fixed AttributeError for gktorrent provider. Refactored log messages for rss cache updater to debug. 
-- * ffd8fa4 - 2019-02-24: Release v9.4.73 
-- * 47572b6 - 2019-02-24: Release v9.4.72 
-- * b86d9d2 - 2019-02-23: Release v9.4.71 
-- * 342b1de - 2019-02-23: Added ability to save &#x60;add_show_year&#x60; as a default option when adding new shows. 
-- * ea526d2 - 2019-02-23: Release v9.4.70 
-- * 2e4fa85 - 2019-02-23: Pre-Release v9.4.70.dev1 
-- * 4a8b635 - 2019-02-23: Fixed issue with sending direct messages via twitter API. 
-- * 502eb01 - 2019-02-23: Release v9.4.69 
-- * ffa69b5 - 2019-02-23: Don&#x27;t attempt daily or backlog searches if nothing to search for. Version updater now moves entire folder at once instead of walking it for source updates. 
-- * 2f89453 - 2019-02-23: Pre-Release v9.4.69.dev1 
-- * 8324c57 - 2019-02-23: Added new release mapping %SY to allow appending the show year to episodes. Added new show option to append show year to show folder if needed. Added check for existing show year in show name, if found, do not append show year. 
-- * c3441ed - 2019-02-23: Release v9.4.68 
-- * 3f6df12 - 2019-02-23: Release v9.4.67 
-- * 83d1b88 - 2019-02-23: Moved RSS cache updates to separate background task that executes every 15 minutes. Parsed search results no longer grab their show id&#x27;s from TheTVDB or Trackt since we only care about shows existing in library. Search results returned for shows not existing in library are discarded. 
-- * 9c78d0b - 2019-02-23: Release v9.4.66 
-- * 8275fd1 - 2019-02-23: Release v9.4.65 
-- * 15ffdce - 2019-02-23: Release v9.4.64 
-- * 33a4acc - 2019-02-23: Release v9.4.63 
-- * e648c9e - 2019-02-23: Release v9.4.62 
-- * 04b3d37 - 2019-02-23: Pre-Release v9.4.62.dev1 
-- * 1e6bcf9 - 2019-02-23: Release v9.4.62 
-- * e39f7d8 - 2019-02-23: Moved RSS cache updates to separate background task that executes every 15 minutes. Parsed search results no longer grab their show id&#x27;s from TheTVDB or Trackt since we only care about shows existing in library. Search results returned for shows not existing in library are discarded. 
-- * 724fc6b - 2019-02-20: Release v9.4.61 
-- * 9467ad1 - 2019-02-20: Release v9.4.60 
-- * e9b99d5 - 2019-02-20: Only shows in library are cached. Calls to the API for caching provider results are now done in the background. Fixed cross-link device issues for version updater. 
-- * 13659fe - 2019-02-17: Release v9.4.59 
-- * 993ca34 - 2019-02-17: Fixed &quot;unable to verify the download url&quot; for Torrent9 provider 
-- * 01ad8b6 - 2019-02-15: Pre-Release v9.4.59.dev3 
-- * 3af8cda - 2019-02-15: Removed redundant automatic show refreshes as these happen during automatic show updates 
-- * 0a29873 - 2019-02-15: Pre-Release v9.4.59.dev1 
-- * 141d1ce - 2019-02-15: Only update indexer details for shows when performing show updates on shows marked as updated on indexer, full updates performed every 7 days. 
-- * d41e525 - 2019-02-11: Fixed issue with &quot;unable to verify the download url&quot; 
-- * 9a10462 - 2019-01-22: Release v9.4.58 
-- * 92b5423 - 2019-01-22: Dockerfile default TZ set to Canada/Pacific 
-- * c128f16 - 2019-01-22: Pre-Release v9.4.58.dev1 
-- * 8913178 - 2019-01-21: Release v9.4.57 
-- * f065a3e - 2019-01-21: Updated Dockerfile. 
-- * ae5c478 - 2019-01-21: Fixed auth issue causing redirect to home page every 5 minutes. 
-- * b2b9f0d - 2019-01-20: Release v9.4.56 
-- * a2596ce - 2019-01-20: Fixed typo in show schedule page, double web roots. 
-- * 468c19e - 2019-01-19: Decreased sleep timer from 5s to 2s for RARBG. Updated keycloak client requirement version. 
-- * 25bcd7f - 2019-01-12: Pre-Release v9.4.56.dev5 
-- * c94aafe - 2019-01-12: Added static app_id to RARBG torrent provider 
-- * 14f8938 - 2019-01-12: Pre-Release v9.4.56.dev4 
-- * c0aa31a - 2019-01-12: Added branch version checking for source installs 
-- * 79db85e - 2019-01-12: Pre-Release v9.4.56.dev3 
-- * a26f1df - 2019-01-12: Building of DEV docker images now implemented 
-- * baf04a1 - 2019-01-12: Fixed issue with connecting to RARBG torrent provider 
-- * 831f077 - 2019-01-13: Update .gitlab-ci.yml 
-- * 7c6290c - 2019-01-13: Update .gitlab-ci.yml 
-- * bf51f72 - 2019-01-13: Update .gitlab-ci.yml 
-- * 560357a - 2019-01-12: Update .gitlab-ci.yml 
-- * 2543e7c - 2019-01-12: Update .gitlab-ci.yml 
-- * 6e96928 - 2019-01-12: Refactored processed marker code 
-- * 60c219a - 2019-01-12: Update Dockerfile 
-- * 74f25eb - 2019-01-12: Update Dockerfile 
-- * 5fcae91 - 2019-01-12: Update Dockerfile 
-- * c27cdf7 - 2019-01-12: Update Dockerfile 
-- * 68a9176 - 2019-01-12: Update .gitlab-ci.yml 
-- * 3f76554 - 2019-01-12: Update .gitlab-ci.yml 
-- * d326930 - 2019-01-12: Update .gitlab-ci.yml 
+- * edbf46a97 - 2019-03-31: Added migration functions to version updater 
+- * 7a6cb045a - 2019-03-31: Added code to allow specifying pip3 location 
+- * f9e4e1f16 - 2019-03-31: Attempt to install requirements prior to doing updates 
+- * 96aab9ca4 - 2019-03-30: Removed py-unrar from requirements 
+- * d8b8087e8 - 2019-03-09: Release v9.4.83 
+- * 471976ba7 - 2019-03-09: Fixed issues with source updates. 
+- * ee7439e9e - 2019-03-06: Release v9.4.82 
+- * 8a6767426 - 2019-03-06: Release v9.4.81 
+- * 6de5fa566 - 2019-03-05: Release v9.4.80 
+- * 43baedf8e - 2019-03-05: Fixed saving of provider settings so that booleans are saved as integers 
+- * 4f0d739a2 - 2019-03-04: Release v9.4.79 
+- * 1ff280d3a - 2019-03-04: Added code for database restore function to check if db exists then destroy before creating new 
+- * 74f6d4603 - 2019-03-04: Release v9.4.78 
+- * 3c0d05a92 - 2019-03-04: Source updates now download and unpack to main program folder to resolve update issues. 
+- * 3151280c7 - 2019-03-04: Cleaned up backup and restore functions for database. Bumped keycloak requirement to v0.2.2 
+- * fe70b1732 - 2019-03-03: Added backup and restore functions to database class. Refactored backup and restore system for app to accommodate for migration to python 3. 
+- * a72ca25f7 - 2019-02-24: Release v9.4.77 
+- * b09d78ad4 - 2019-02-24: Added Anime regex for Erai-raws 
+- * e0f2db685 - 2019-02-24: Release v9.4.76 
+- * ed8448311 - 2019-02-24: Fixed IndexerErrors for TV cache. Added files to .gitignore related to AniDB. 
+- * abe73d780 - 2019-02-24: Release v9.4.75 
+- * f4b1e65d9 - 2019-02-24: Fixed issue with scene exceptions not being retrieved. Fixed issues with AniDB and Anime shows. Builds name cache and retrieves exceptions on startup as a background task. 
+- * 78d6b6ecc - 2019-02-24: Release v9.4.74 
+- * b69073896 - 2019-02-24: Fixed issue with default add show options and add show year feature. 
+- * 90fa33d21 - 2019-02-24: Pre-Release v9.4.74.dev2 
+- * b2896ada3 - 2019-02-24: Updated AniDB code for post-processor. Added get episode function to AniDB helper. 
+- * 1ebefb42e - 2019-02-24: Pre-Release v9.4.74.dev1 
+- * c26e5b165 - 2019-02-24: Refactored AniDB code. 
+- * 41039e5ce - 2019-02-24: Fixed KeyError for twitter notifier. 
+- * 135d86855 - 2019-02-24: Fixed AttributeError for gktorrent provider. Refactored log messages for rss cache updater to debug. 
+- * ffd8fa479 - 2019-02-24: Release v9.4.73 
+- * 47572b673 - 2019-02-24: Release v9.4.72 
+- * b86d9d2ed - 2019-02-23: Release v9.4.71 
+- * 342b1de73 - 2019-02-23: Added ability to save &#x60;add_show_year&#x60; as a default option when adding new shows. 
+- * ea526d22f - 2019-02-23: Release v9.4.70 
+- * 2e4fa859c - 2019-02-23: Pre-Release v9.4.70.dev1 
+- * 4a8b635de - 2019-02-23: Fixed issue with sending direct messages via twitter API. 
+- * 502eb0163 - 2019-02-23: Release v9.4.69 
+- * ffa69b518 - 2019-02-23: Don&#x27;t attempt daily or backlog searches if nothing to search for. Version updater now moves entire folder at once instead of walking it for source updates. 
+- * 2f89453ad - 2019-02-23: Pre-Release v9.4.69.dev1 
+- * 8324c574e - 2019-02-23: Added new release mapping %SY to allow appending the show year to episodes. Added new show option to append show year to show folder if needed. Added check for existing show year in show name, if found, do not append show year. 
+- * c3441ed15 - 2019-02-23: Release v9.4.68 
+- * 3f6df121d - 2019-02-23: Release v9.4.67 
+- * 83d1b88d6 - 2019-02-23: Moved RSS cache updates to separate background task that executes every 15 minutes. Parsed search results no longer grab their show id&#x27;s from TheTVDB or Trackt since we only care about shows existing in library. Search results returned for shows not existing in library are discarded. 
+- * 9c78d0b1c - 2019-02-23: Release v9.4.66 
+- * 8275fd1eb - 2019-02-23: Release v9.4.65 
+- * 15ffdce80 - 2019-02-23: Release v9.4.64 
+- * 33a4acc8e - 2019-02-23: Release v9.4.63 
+- * e648c9e8b - 2019-02-23: Release v9.4.62 
+- * 04b3d3784 - 2019-02-23: Pre-Release v9.4.62.dev1 
+- * 1e6bcf974 - 2019-02-23: Release v9.4.62 
+- * e39f7d88e - 2019-02-23: Moved RSS cache updates to separate background task that executes every 15 minutes. Parsed search results no longer grab their show id&#x27;s from TheTVDB or Trackt since we only care about shows existing in library. Search results returned for shows not existing in library are discarded. 
+- * 724fc6ba7 - 2019-02-20: Release v9.4.61 
+- * 9467ad108 - 2019-02-20: Release v9.4.60 
+- * e9b99d5b0 - 2019-02-20: Only shows in library are cached. Calls to the API for caching provider results are now done in the background. Fixed cross-link device issues for version updater. 
+- * 13659fef5 - 2019-02-17: Release v9.4.59 
+- * 993ca3451 - 2019-02-17: Fixed &quot;unable to verify the download url&quot; for Torrent9 provider 
+- * 01ad8b664 - 2019-02-15: Pre-Release v9.4.59.dev3 
+- * 3af8cda0f - 2019-02-15: Removed redundant automatic show refreshes as these happen during automatic show updates 
+- * 0a29873ba - 2019-02-15: Pre-Release v9.4.59.dev1 
+- * 141d1ce7a - 2019-02-15: Only update indexer details for shows when performing show updates on shows marked as updated on indexer, full updates performed every 7 days. 
+- * d41e5256e - 2019-02-11: Fixed issue with &quot;unable to verify the download url&quot; 
+- * 9a1046230 - 2019-01-22: Release v9.4.58 
+- * 92b54236a - 2019-01-22: Dockerfile default TZ set to Canada/Pacific 
+- * c128f166e - 2019-01-22: Pre-Release v9.4.58.dev1 
+- * 89131788d - 2019-01-21: Release v9.4.57 
+- * f065a3e32 - 2019-01-21: Updated Dockerfile. 
+- * ae5c47884 - 2019-01-21: Fixed auth issue causing redirect to home page every 5 minutes. 
+- * b2b9f0d37 - 2019-01-20: Release v9.4.56 
+- * a2596ce07 - 2019-01-20: Fixed typo in show schedule page, double web roots. 
+- * 468c19ec1 - 2019-01-19: Decreased sleep timer from 5s to 2s for RARBG. Updated keycloak client requirement version. 
+- * 25bcd7fb8 - 2019-01-12: Pre-Release v9.4.56.dev5 
+- * c94aafea8 - 2019-01-12: Added static app_id to RARBG torrent provider 
+- * 14f8938b1 - 2019-01-12: Pre-Release v9.4.56.dev4 
+- * c0aa31a7c - 2019-01-12: Added branch version checking for source installs 
+- * 79db85e8a - 2019-01-12: Pre-Release v9.4.56.dev3 
+- * a26f1df52 - 2019-01-12: Building of DEV docker images now implemented 
+- * baf04a18b - 2019-01-12: Fixed issue with connecting to RARBG torrent provider 
+- * 831f077c8 - 2019-01-13: Update .gitlab-ci.yml 
+- * 7c6290cb5 - 2019-01-13: Update .gitlab-ci.yml 
+- * bf51f728f - 2019-01-13: Update .gitlab-ci.yml 
+- * 560357a4d - 2019-01-12: Update .gitlab-ci.yml 
+- * 2543e7ce2 - 2019-01-12: Update .gitlab-ci.yml 
+- * 6e96928bf - 2019-01-12: Refactored processed marker code 
+- * 60c219a51 - 2019-01-12: Update Dockerfile 
+- * 74f25ebf0 - 2019-01-12: Update Dockerfile 
+- * 5fcae915c - 2019-01-12: Update Dockerfile 
+- * c27cdf73c - 2019-01-12: Update Dockerfile 
+- * 68a917696 - 2019-01-12: Update .gitlab-ci.yml 
+- * 3f765548a - 2019-01-12: Update .gitlab-ci.yml 
+- * d326930d1 - 2019-01-12: Update .gitlab-ci.yml 
 
 
