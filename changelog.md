@@ -1,5 +1,6 @@
 # Changelog
 
+- * 611cb16d6 - 2019-04-06: Pre-Release v9.4.84.dev2 
 - * edbf46a97 - 2019-03-31: Added migration functions to version updater 
 - * 7a6cb045a - 2019-03-31: Added code to allow specifying pip3 location 
 - * f9e4e1f16 - 2019-03-31: Attempt to install requirements prior to doing updates 
