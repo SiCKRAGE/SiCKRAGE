@@ -1238,7 +1238,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5">
-                        <label class="component-title">${_('PIP executable path')}</label>
+                        <label class="component-title">${_('PIP3 executable path')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="form-row">
@@ -1249,10 +1249,10 @@
                                             <span class="fas fa-file"></span>
                                         </span>
                                     </div>
-                                    <input id="pip_path" name="pip_path"
-                                           value="${sickrage.app.config.pip_path}"
-                                           placeholder="${_('ex: /path/to/pip')}"
-                                           title="only needed if OS is unable to locate pip from env"
+                                    <input id="pip3_path" name="pip3_path"
+                                           value="${sickrage.app.config.pip3_path}"
+                                           placeholder="${_('ex: /path/to/pip3')}"
+                                           title="only needed if OS is unable to locate pip3 from env"
                                            class="form-control" autocapitalize="off"/>
                                     <div class="input-group-append">
                                         <span class="input-group-text">
@@ -1268,7 +1268,7 @@
                         <div class="form-row">
                             <div class="col-md-12">
                                 <div class="testNotification" id="testPIP-result">
-                                    ${_('Click vefify path to test.')}
+                                    ${_('Click verify path to test.')}
                                 </div>
                                 <input class="btn btn-inline" type="button" id="installRequirements"
                                        value="Install Requirements">
@@ -1372,7 +1372,7 @@
                             <div class="form-row">
                                 <div class="col-md-12">
                                     <div class="testNotification"
-                                         id="testGIT-result">${_('Click vefify path to test.')}</div>
+                                         id="testGIT-result">${_('Click verify path to test.')}</div>
                                 </div>
                             </div>
                         </div>

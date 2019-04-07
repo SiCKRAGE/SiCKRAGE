@@ -248,10 +248,10 @@ class UpdateManager(object):
         sickrage.app.alerts.error(_('Updater'), error_message)
 
     @property
-    def _pip_path(self):
+    def _pip3_path(self):
         test_cmd = '-V'
 
-        main_pip = sickrage.app.config.pip_path or 'pip3'
+        main_pip = sickrage.app.config.pip3_path or 'pip3'
 
         # sickrage.app.log.debug("Checking if we can use pip commands: " + main_pip + ' ' + test_cmd)
         __, __, exit_status = self._pip_cmd(main_pip, test_cmd, silent=True)
@@ -336,15 +336,15 @@ class UpdateManager(object):
         return output, err, exit_status
 
     @staticmethod
-    def _pip_cmd(pip_path, args, silent=False):
+    def _pip_cmd(pip3_path, args, silent=False):
         output = err = None
 
-        if not pip_path:
+        if not pip3_path:
             sickrage.app.log.warning("No path to pip specified, can't use pip commands")
             exit_status = 1
             return output, err, exit_status
 
-        cmd = [pip_path] + args.split()
+        cmd = [pip3_path] + args.split()
 
         try:
             if not silent:
@@ -386,11 +386,11 @@ class UpdateManager(object):
             os.unlink(requirements_file.name)
             return False
 
-        output, __, exit_status = self._pip_cmd(self._pip_path,
+        output, __, exit_status = self._pip_cmd(self._pip3_path,
                                                 'install --no-cache-dir -r {}'.format(requirements_file.name))
 
         if exit_status != 0:
-            __, __, exit_status = self._pip_cmd(self._pip_path,
+            __, __, exit_status = self._pip_cmd(self._pip3_path,
                                                 'install --no-cache-dir --user -r {}'.format(requirements_file.name))
 
         if exit_status == 0:
@@ -716,7 +716,7 @@ class PipUpdateManager(UpdateManager):
         return 'master'
 
     def _find_installed_version(self):
-        out, __, exit_status = self._pip_cmd(self._pip_path, 'show sickrage')
+        out, __, exit_status = self._pip_cmd(self._pip3_path, 'show sickrage')
         if exit_status == 0:
             return out.split('\n')[1].split()[1]
         return ""
@@ -759,7 +759,7 @@ class PipUpdateManager(UpdateManager):
         """
         Performs pip upgrade
         """
-        __, __, exit_status = self._pip_cmd(self._pip_path, 'install -U --no-cache-dir sickrage')
+        __, __, exit_status = self._pip_cmd(self._pip3_path, 'install -U --no-cache-dir sickrage')
         if exit_status == 0:
             sickrage.app.log.info("Updating SiCKRAGE from PyPi servers")
             sickrage.app.alerts.message(_('Updater'), _('Updating SiCKRAGE from PyPi servers'))

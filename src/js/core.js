@@ -2998,25 +2998,25 @@ $(document).ready(function ($) {
                     });
                 });
 
-                if ($('#pip_path').length) {
-                    $('#pip_path').fileBrowser({
-                        title: gt('Select path to pip'),
-                        key: 'pip_path',
+                if ($('#pip3_path').length) {
+                    $('#pip3_path').fileBrowser({
+                        title: gt('Select path to pip3'),
+                        key: 'pip3_path',
                         includeFiles: 1
                     });
 
                     $('#verifyPipPath').click(function () {
-                        var pip_path = $.trim($('#pip_path').val());
-                        if (!pip_path) {
+                        var pip3_path = $.trim($('#pip3_path').val());
+                        if (!pip3_path) {
                             $('#testPIP-result').html(gt('Please fill out the necessary fields above.'));
-                            $('#pip_path').addClass('warning');
+                            $('#pip3_path').addClass('warning');
                             return;
                         }
-                        $('#pip_path').removeClass('warning');
+                        $('#pip3_path').removeClass('warning');
                         $(this).prop('disabled', true);
                         $('#testPIP-result').html(SICKRAGE.loadingHTML);
                         $.get(SICKRAGE.srWebRoot + '/home/verifyPath', {
-                            'path': pip_path
+                            'path': pip3_path
                         }).done(function (data) {
                             $('#testPIP-result').html(data);
                             $('#verifyPipPath').prop('disabled', false);
