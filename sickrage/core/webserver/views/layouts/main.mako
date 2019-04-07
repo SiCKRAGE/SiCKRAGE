@@ -342,10 +342,14 @@
             <div class="col">
                 <div class="text-center d-print-none">
                     % for menuItem in submenu:
-                        <a href="${srWebRoot}${menuItem['path']}"
-                           class="btn ${('', ' confirm ')['confirm' in menuItem]} ${menuItem.get('class', '')}">
-                            <i class='${menuItem.get('icon', '')}'></i> ${menuItem['title']}
-                        </a>
+                        % if 'requires' in menuItem and not menuItem.get('requires'):
+                            <% continue %>
+                        % else:
+                            <a href="${srWebRoot}${menuItem['path']}"
+                               class="btn ${('', ' confirm ')['confirm' in menuItem]} ${menuItem.get('class', '')}">
+                                <i class='${menuItem.get('icon', '')}'></i> ${menuItem['title']}
+                            </a>
+                        % endif
                     % endfor
                 </div>
             </div>
