@@ -531,6 +531,8 @@ class PostProcessor(object):
         for curName in names:
             try:
                 dbData = MainDB.History.query.filter(MainDB.History.resource.contains(curName)).first()
+                if not dbData:
+                    continue
             except orm.exc.NoResultFound:
                 continue
 
@@ -709,15 +711,16 @@ class PostProcessor(object):
                 # Ignore season 0 when searching for episode(Conflict between special and regular episode,
                 # same air date)
                 try:
-                    dbData = MainDB.TVEpisode.query.filter_by(showid=show.indexerid, indexer=show.indexer,
-                                                    airdate=airdate).filter(MainDB.TVEpisode.season != 0).one()
+                    dbData = MainDB.TVEpisode.query.filter_by(
+                        showid=show.indexerid, indexer=show.indexer, airdate=airdate
+                    ).filter(MainDB.TVEpisode.season != 0).one()
                     season = int(dbData.season)
                     episodes = [int(dbData.episode)]
                 except orm.exc.NoResultFound:
                     # Found no result, try with season 0
                     try:
                         dbData = MainDB.TVEpisode.query.filter_by(showid=show.indexerid, indexer=show.indexer,
-                                                        airdate=airdate).one()
+                                                                  airdate=airdate).one()
                         season = int(dbData.season)
                         episodes = [int(dbData.episode)]
                     except orm.exc.NoResultFound:
@@ -734,8 +737,10 @@ class PostProcessor(object):
 
             # if there's no season then we can hopefully just use 1 automatically
             elif season is None and show:
-                if len({x.season for x in MainDB.TVEpisode.query.filter_by(showid=show.indexerid, indexer=show.indexer).filter(
-                        MainDB.TVEpisode.season != 0)}) == 1:
+                if len({x.season for x in
+                        MainDB.TVEpisode.query.filter_by(
+                            showid=show.indexerid, indexer=show.indexer
+                        ).filter(MainDB.TVEpisode.season != 0)}) == 1:
                     self._log("Don't have a season number, but this show appears to only have 1 season, setting "
                               "season number to 1...", sickrage.app.log.DEBUG)
                     season = 1
@@ -890,25 +895,24 @@ class PostProcessor(object):
                 self._log("SR snatched this episode and it is not processed before", sickrage.app.log.DEBUG)
                 return True
 
-            # if it's in history, we only want it if the new quality is higher or if it's a proper of equal or higher quality
+            # if it's in history, we only want it if the new quality is higher or if it's a proper of equal or higher
+            # quality
             if new_ep_quality > old_ep_quality and new_ep_quality != Quality.UNKNOWN:
                 self._log("SR snatched this episode and it is a higher quality so I'm marking it as priority",
                           sickrage.app.log.DEBUG)
                 return True
 
             if self.is_proper and new_ep_quality >= old_ep_quality and new_ep_quality != Quality.UNKNOWN:
-                self._log(
-                    "SR snatched this episode and it is a proper of equal or higher quality so I'm marking it as priority",
-                    sickrage.app.log.DEBUG)
+                self._log("SR snatched this episode and it is a proper of equal or higher quality so I'm marking it "
+                          "as priority", sickrage.app.log.DEBUG)
                 return True
 
             return False
 
         # if the user downloaded it manually and it's higher quality than the existing episode then it's priority
         if new_ep_quality > old_ep_quality and new_ep_quality != Quality.UNKNOWN:
-            self._log(
-                "This was manually downloaded but it appears to be better quality than what we have so I'm marking it as priority",
-                sickrage.app.log.DEBUG)
+            self._log("This was manually downloaded but it appears to be better quality than what we have so I'm "
+                      "marking it as priority", sickrage.app.log.DEBUG)
             return True
 
         # if the user downloaded it manually and it appears to be a PROPER/REPACK then it's priority
