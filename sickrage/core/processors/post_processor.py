@@ -709,14 +709,14 @@ class PostProcessor(object):
                 # Ignore season 0 when searching for episode(Conflict between special and regular episode,
                 # same air date)
                 try:
-                    dbData = MainDB.TVEpisode.query(showid=show.indexerid, indexer=show.indexer,
+                    dbData = MainDB.TVEpisode.query.filter_by(showid=show.indexerid, indexer=show.indexer,
                                                     airdate=airdate).filter(MainDB.TVEpisode.season != 0).one()
                     season = int(dbData.season)
                     episodes = [int(dbData.episode)]
                 except orm.exc.NoResultFound:
                     # Found no result, try with season 0
                     try:
-                        dbData = MainDB.TVEpisode.query(showid=show.indexerid, indexer=show.indexer,
+                        dbData = MainDB.TVEpisode.query.filter_by(showid=show.indexerid, indexer=show.indexer,
                                                         airdate=airdate).one()
                         season = int(dbData.season)
                         episodes = [int(dbData.episode)]

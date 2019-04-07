@@ -73,8 +73,8 @@ def find_scene_numbering(indexer_id, indexer, season, episode):
     indexer = int(indexer)
 
     try:
-        dbData = MainDB.SceneNumbering.query(indexer_id=indexer_id, indexer=indexer,
-                                             season=season, episode=episode).filter(
+        dbData = MainDB.SceneNumbering.query.filter_by(indexer_id=indexer_id, indexer=indexer,
+                                                       season=season, episode=episode).filter(
             MainDB.SceneNumbering.scene_season != 0 and MainDB.SceneNumbering.scene_episode != 0).one()
         return try_int(dbData.scene_season), try_int(dbData.scene_episode)
     except orm.exc.NoResultFound:
@@ -125,7 +125,7 @@ def find_scene_absolute_numbering(indexer_id, indexer, absolute_number):
     indexer = int(indexer)
 
     try:
-        dbData = MainDB.SceneNumbering.query(indexer_id=indexer_id, indexer=indexer,
+        dbData = MainDB.SceneNumbering.query.filter_by(indexer_id=indexer_id, indexer=indexer,
                                              absolute_number=absolute_number).filter(
             MainDB.SceneNumbering.scene_absolute_number != 0).one()
         return try_int(dbData.scene_absolute_number)
@@ -145,7 +145,7 @@ def get_indexer_numbering(indexer_id, indexer, sceneSeason, sceneEpisode, fallba
     indexer = int(indexer)
 
     try:
-        dbData = MainDB.SceneNumbering.query(indexer_id=indexer_id, indexer=indexer,
+        dbData = MainDB.SceneNumbering.query.filter_by(indexer_id=indexer_id, indexer=indexer,
                                              scene_season=sceneSeason,
                                              scene_episode=sceneEpisode).one()
         return try_int(dbData.season), try_int(dbData.episode)
@@ -168,10 +168,10 @@ def get_indexer_absolute_numbering(indexer_id, indexer, sceneAbsoluteNumber, fal
 
     try:
         if scene_season is None:
-            dbData = MainDB.SceneNumbering.query(indexer_id=indexer_id, indexer=indexer,
+            dbData = MainDB.SceneNumbering.query.filter_by(indexer_id=indexer_id, indexer=indexer,
                                                  scene_absolute_number=sceneAbsoluteNumber).one()
         else:
-            dbData = MainDB.SceneNumbering.query(indexer_id=indexer_id, indexer=indexer,
+            dbData = MainDB.SceneNumbering.query.filter_by(indexer_id=indexer_id, indexer=indexer,
                                                  scene_absolute_number=sceneAbsoluteNumber,
                                                  scene_season=scene_season).one()
         return try_int(dbData.absolute_number)
@@ -195,7 +195,7 @@ def set_scene_numbering(indexer_id, indexer, season=0, episode=0, absolute_numbe
 
     if season and episode:
         try:
-            dbData = MainDB.SceneNumbering.query(indexer_id=indexer_id, indexer=indexer,
+            dbData = MainDB.SceneNumbering.query.filter_by(indexer_id=indexer_id, indexer=indexer,
                                                  season=season, episode=episode).one()
             dbData.scene_season = sceneSeason
             dbData.scene_episode = sceneEpisode
@@ -213,7 +213,7 @@ def set_scene_numbering(indexer_id, indexer, season=0, episode=0, absolute_numbe
             }))
     elif absolute_number:
         try:
-            dbData = MainDB.SceneNumbering.query(indexer_id=indexer_id, indexer=indexer,
+            dbData = MainDB.SceneNumbering.query.filter_by(indexer_id=indexer_id, indexer=indexer,
                                                  absolute_number=absolute_number).one()
             dbData.scene_absolute_number = sceneAbsolute
             MainDB().update(dbData)
@@ -253,7 +253,7 @@ def find_xem_numbering(indexer_id, indexer, season, episode):
     xem_refresh(indexer_id, indexer)
 
     try:
-        dbData = MainDB.TVEpisode.query(showid=indexer_id, indexer=indexer,
+        dbData = MainDB.TVEpisode.query.filter_by(showid=indexer_id, indexer=indexer,
                                         season=season,
                                         episode=episode).filter(
             MainDB.TVEpisode.scene_season != 0, MainDB.TVEpisode.scene_episode != 0).one()
@@ -307,7 +307,7 @@ def get_indexer_numbering_for_xem(indexer_id, indexer, sceneSeason, sceneEpisode
     xem_refresh(indexer_id, indexer)
 
     try:
-        dbData = MainDB.TVEpisode.query(showid=indexer_id, indexer=indexer, scene_season=sceneSeason,
+        dbData = MainDB.TVEpisode.query.filter_by(showid=indexer_id, indexer=indexer, scene_season=sceneSeason,
                                         scene_episode=sceneEpisode).one()
         return try_int(dbData.season), try_int(dbData.episode)
     except orm.exc.NoResultFound:
@@ -332,10 +332,10 @@ def get_indexer_absolute_numbering_for_xem(indexer_id, indexer, sceneAbsoluteNum
 
     try:
         if scene_season is None:
-            dbData = MainDB.TVEpisode.query(showid=indexer_id, indexer=indexer,
+            dbData = MainDB.TVEpisode.query.filter_by(showid=indexer_id, indexer=indexer,
                                             scene_absolute_number=sceneAbsoluteNumber).one()
         else:
-            dbData = MainDB.TVEpisode.query(showid=indexer_id, indexer=indexer,
+            dbData = MainDB.TVEpisode.query.filter_by(showid=indexer_id, indexer=indexer,
                                             scene_absolute_number=sceneAbsoluteNumber, scene_season=scene_season).one()
         return try_int(dbData.absolute_number)
     except orm.exc.NoResultFound:
@@ -511,7 +511,7 @@ def xem_refresh(indexer_id, indexer, force=False):
 
             for entry in parsedJSON['data']:
                 try:
-                    dbData = MainDB.TVEpisode.query(showid=indexer_id,
+                    dbData = MainDB.TVEpisode.query.filter_by(showid=indexer_id,
                                                     season=entry[IndexerApi(indexer).config['xem_origin']]['season'],
                                                     episode=entry[IndexerApi(indexer).config['xem_origin']][
                                                         'episode']).one()

@@ -189,7 +189,7 @@ class ProperSearcher(object):
 
             # check if we actually want this proper (if it's the right quality)            
             try:
-                dbData = MainDB.TVEpisode.query(showid=bestResult.indexerid, season=bestResult.season,
+                dbData = MainDB.TVEpisode.query.filter_by(showid=bestResult.indexerid, season=bestResult.season,
                                                 episode=bestResult.episode).one()
 
                 # only keep the proper if we have already retrieved the same quality ep (don't get better/worse ones)
@@ -201,7 +201,7 @@ class ProperSearcher(object):
 
             # check if we actually want this proper (if it's the right release group and a higher version)
             if bestResult.show.is_anime:
-                dbData = MainDB.TVEpisode.query(showid=bestResult.indexerid, season=bestResult.season,
+                dbData = MainDB.TVEpisode.query.filter_by(showid=bestResult.indexerid, season=bestResult.season,
                                                 episode=bestResult.episode).one()
                 oldVersion = int(dbData.version)
                 oldRelease_group = dbData.release_group
@@ -236,7 +236,7 @@ class ProperSearcher(object):
             historyLimit = datetime.datetime.today() - datetime.timedelta(days=30)
 
             # make sure the episode has been downloaded before
-            historyResults = [x for x in MainDB.History.query(showid=curProper.indexerid, season=curProper.season,
+            historyResults = [x for x in MainDB.History.query.filter_by(showid=curProper.indexerid, season=curProper.season,
                                                               episode=curProper.episode,
                                                               quality=curProper.quality).filter(
                 MainDB.History.date >= historyLimit.strftime(History.date_format),

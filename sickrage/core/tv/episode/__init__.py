@@ -409,8 +409,7 @@ class TVEpisode(object):
             self.show.indexerid, self.show.name, season or 0, episode or 0))
 
         try:
-            dbData = MainDB.TVEpisode.query(showid=self.show.indexerid, season=season,
-                                            episode=episode).one()
+            dbData = MainDB.TVEpisode.query.filter_by(showid=self.show.indexerid, season=season, episode=episode).one()
         except orm.exc.NoResultFound:
             sickrage.app.log.debug("%s: Episode S%02dE%02d not found in the database" % (
                 self.show.indexerid, self.season or 0, self.episode or 0))
@@ -797,7 +796,7 @@ class TVEpisode(object):
         }
 
         try:
-            dbData = MainDB.TVEpisode.query(indexer=self.indexer, indexerid=self.indexerid,
+            dbData = MainDB.TVEpisode.query.filter_by(indexer=self.indexer, indexerid=self.indexerid,
                                             showid=self.show.indexerid).one()
             dbData.__dict__.update(tv_episode)
             MainDB().update(dbData)

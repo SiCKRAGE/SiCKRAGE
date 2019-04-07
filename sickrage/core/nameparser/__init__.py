@@ -284,8 +284,9 @@ class NameParser(object):
                 airdate = bestResult.air_date.toordinal()
 
                 try:
-                    dbData = MainDB.TVEpisode.query(showid=bestResult.show.indexerid, indexer=bestResult.show.indexer,
-                                                    airdate=airdate).one()
+                    dbData = MainDB.TVEpisode.query.filter_by(showid=bestResult.show.indexerid,
+                                                              indexer=bestResult.show.indexer,
+                                                              airdate=airdate).one()
                     season_number = int(dbData.season)
                     episode_numbers = [int(dbData.episode)]
                 except orm.exc.NoResultFound:

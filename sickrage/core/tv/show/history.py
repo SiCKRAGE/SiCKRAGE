@@ -400,7 +400,7 @@ class FailedHistory(object):
                         showid=epObj.show.indexerid, season=epObj.season, episode=epObj.episode)
 
         # Search for release in snatch history
-        for dbData in MainDB.FailedSnatchHistory.query(showid=epObj.show.indexerid, season=epObj.season,
+        for dbData in MainDB.FailedSnatchHistory.query.filter_by(showid=epObj.show.indexerid, season=epObj.season,
                                                        episode=epObj.episode):
             release = str(dbData.release)
             provider = str(dbData.provider)

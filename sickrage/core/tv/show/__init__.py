@@ -500,7 +500,7 @@ class TVShow(object):
                            r.location == cur_result.location and
                            r.episode != cur_result.episode]) > 0:
 
-                    related_eps_result = MainDB.TVEpisode.query(showid=self.indexerid, season=cur_ep.season,
+                    related_eps_result = MainDB.TVEpisode.query.filter_by(showid=self.indexerid, season=cur_ep.season,
                                                                 location=cur_ep.location).filter(
                         MainDB.TVEpisode.episode != cur_ep.episode).order_by(MainDB.TVEpisode.episode)
 
@@ -1024,31 +1024,32 @@ class TVShow(object):
         if self.imdbid:
             sickrage.app.log.debug(str(self.indexerid) + ": Loading show info from IMDb")
 
-            self.imdb_info = IMDbAPI().search_by_imdb_id(self.imdbid)
-            if not self.imdb_info:
+            imdb_info = IMDbAPI().search_by_imdb_id(self.imdbid)
+            if not imdb_info:
                 sickrage.app.log.debug(str(self.indexerid) + ': Unable to obtain IMDb info')
                 return
 
-            for column in self.imdb_info.copy():
+            for column in imdb_info.copy():
                 if column not in MainDB.IMDbInfo.__table__.columns.keys():
-                    del self.imdb_info[column]
+                    del imdb_info[column]
 
             sickrage.app.log.debug(
                 str(self.indexerid) + ": Obtained IMDb info ->" + str(self.imdb_info))
 
             # save imdb info to database
-            imdb_info = {
+            imdb_info.update({
                 'indexer_id': self.indexerid,
                 'last_update': datetime.date.today().toordinal()
-            }
+            })
 
             try:
                 dbData = MainDB.IMDbInfo.query.filter_by(indexer_id=self.indexerid).one()
-                dbData.__dict__.update(self.imdb_info)
+                dbData.__dict__.update(imdb_info)
                 MainDB().update(dbData)
             except orm.exc.NoResultFound:
-                imdb_info.update(self.imdb_info)
                 MainDB().add(MainDB.IMDbInfo(**imdb_info))
+
+            self.imdb_info = imdb_info
 
     def delete_show(self, full=False):
         # choose delete or trash action
@@ -1311,7 +1312,7 @@ class TVShow(object):
             return False
 
         try:
-            dbData = MainDB.TVEpisode.query(showid=self.indexerid, season=season,
+            dbData = MainDB.TVEpisode.query.filter_by(showid=self.indexerid, season=season,
                                             episode=episode).one()
         except orm.exc.NoResultFound:
             sickrage.app.log.debug("Unable to find a matching episode in database, ignoring found episode")
@@ -1449,7 +1450,7 @@ class TVShow(object):
                     sickrage.app.log.debug("Adding indexer mapping to DB for show: " + self.name)
 
                     try:
-                        MainDB.IndexerMapping.query(indexer_id=self.indexerid, indexer=self.indexer,
+                        MainDB.IndexerMapping.query.filter_by(indexer_id=self.indexerid, indexer=self.indexer,
                                                     mindexer_id=int(mapped_show['id'])).one()
                     except orm.exc.NoResultFound:
                         MainDB().add(MainDB.IndexerMapping(**{
