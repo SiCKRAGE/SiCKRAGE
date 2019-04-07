@@ -202,7 +202,7 @@ class PLEXNotifier(Notifiers):
 
                 try:
                     resp.raise_for_status()
-                    auth_tree = ElementTree.parse(resp.text)
+                    auth_tree = ElementTree.fromstring(resp.text)
                     token = auth_tree.findall('.//authentication-token')[0].text
                     token_arg = '?X-Plex-Token=' + token
                 except Exception as e:
@@ -222,8 +222,7 @@ class PLEXNotifier(Notifiers):
                     url = 'http://%s/library/sections%s' % (cur_host, token_arg)
                     resp = WebSession().get(url)
                     resp.raise_for_status()
-                    xml_tree = ElementTree.parse(resp.text)
-                    media_container = xml_tree.getroot()
+                    media_container = ElementTree.fromstring(resp.text)
                 except IOError as e:
                     sickrage.app.log.warning(
                         'PLEX: Error while trying to contact Plex Media Server: {}'.format(e))
@@ -278,6 +277,6 @@ class PLEXNotifier(Notifiers):
                         set(host_list)))
             else:
                 sickrage.app.log.debug(
-                    'PLEX: Updating all hosts with TV sections: ' + ', '.join(set(host_list)))
+                    'PLEX: Updating TV sections on these hosts: {}'.format(', '.join(set(host_list))))
 
             return (', '.join(set(hosts_failed)), None)[not len(hosts_failed)]

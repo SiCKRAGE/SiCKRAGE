@@ -39,14 +39,12 @@ def getSeasonNZBs(name, urlData, season):
     :return: dict of (episode files, xml matches)
     """
     try:
-        showXML = ElementTree.parse(urlData)
+        nzbElement = ElementTree.fromstring(urlData)
     except SyntaxError:
         sickrage.app.log.error("Unable to parse the XML of " + name + ", not splitting it")
         return {}, ''
 
     filename = name.replace(".nzb", "")
-
-    nzbElement = showXML.getroot()
 
     regex = '([\w\._\ ]+)[\. ]S%02d[\. ]([\w\._\-\ ]+)[\- ]([\w_\-\ ]+?)' % season
 
@@ -123,7 +121,7 @@ def splitNZBResult(result):
     :param result: search result object
     :return: False upon failure, a list of episode objects otherwise
     """
-    urlData = WebSession().get(result.url, needBytes=True)
+    urlData = WebSession().get(result.url, needBytes=True).text
     if urlData is None:
         sickrage.app.log.error("Unable to load url " + result.url + ", can't download season NZB")
         return False
