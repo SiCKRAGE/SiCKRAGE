@@ -797,9 +797,9 @@ class TVEpisode(object):
 
         try:
             dbData = MainDB.TVEpisode.query.filter_by(indexer=self.indexer, indexerid=self.indexerid,
-                                            showid=self.show.indexerid).one()
-            dbData.__dict__.update(tv_episode)
-            MainDB().update(dbData)
+                                                      showid=self.show.indexerid).one()
+            dbData.update(**tv_episode)
+            MainDB().Session().commit()
         except orm.exc.NoResultFound:
             MainDB().add(MainDB.TVEpisode(**tv_episode))
 

@@ -126,12 +126,6 @@ class srDatabase(object):
         with self.session() as session:
             session.add(instance)
 
-    def update(self, obj):
-        primary_keys = dict((key.name, getattr(obj, key.name)) for key in inspect(obj.__table__).primary_key)
-        with self.session() as session:
-            session.query(self.get_table_mapper(obj.__table__)).filter_by(**primary_keys).update(
-                dict((k, v) for k, v in obj.as_dict().items() if k not in primary_keys))
-
     def delete(self, table, *args, **kwargs):
         with self.session() as session:
             return session.query(table).filter_by(**kwargs).filter(*args).delete()

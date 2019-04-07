@@ -501,7 +501,7 @@ class TVShow(object):
                            r.episode != cur_result.episode]) > 0:
 
                     related_eps_result = MainDB.TVEpisode.query.filter_by(showid=self.indexerid, season=cur_ep.season,
-                                                                location=cur_ep.location).filter(
+                                                                          location=cur_ep.location).filter(
                         MainDB.TVEpisode.episode != cur_ep.episode).order_by(MainDB.TVEpisode.episode)
 
                     for cur_related_ep in related_eps_result:
@@ -517,7 +517,8 @@ class TVShow(object):
         # if we get an anime get the real season and episode
         if self.is_anime and all([absolute_number is not None, season is None, episode is None]):
             try:
-                dbData = MainDB.TVEpisode.query.filter_by(showid=self.indexerid, absolute_number=absolute_number).filter(
+                dbData = MainDB.TVEpisode.query.filter_by(showid=self.indexerid,
+                                                          absolute_number=absolute_number).filter(
                     MainDB.TVEpisode.season != 0).one()
                 episode = int(dbData.episode)
                 season = int(dbData.season)
@@ -563,8 +564,9 @@ class TVShow(object):
 
         # get latest aired episode to compare against today - graceperiod and today + graceperiod
         try:
-            dbData = MainDB.TVEpisode.query.filter_by(showid=self.indexerid, status=1).filter(MainDB.TVEpisode.season > 0,
-                                                                                    MainDB.TVEpisode.airdate > 1).order_by(
+            dbData = MainDB.TVEpisode.query.filter_by(showid=self.indexerid, status=1).filter(
+                MainDB.TVEpisode.season > 0,
+                MainDB.TVEpisode.airdate > 1).order_by(
                 desc(MainDB.TVEpisode.airdate)).one()
             last_airdate = datetime.date.fromordinal(dbData.airdate)
             if (update_date - graceperiod) <= last_airdate <= (update_date + graceperiod):
@@ -573,8 +575,9 @@ class TVShow(object):
             pass
 
         try:
-            dbData = MainDB.TVEpisode.query.filter_by(showid=self.indexerid, status=1).filter(MainDB.TVEpisode.season > 0,
-                                                                                    MainDB.TVEpisode.airdate > 1).order_by(
+            dbData = MainDB.TVEpisode.query.filter_by(showid=self.indexerid, status=1).filter(
+                MainDB.TVEpisode.season > 0,
+                MainDB.TVEpisode.airdate > 1).order_by(
                 MainDB.TVEpisode.airdate).one()
             next_airdate = datetime.date.fromordinal(dbData.airdate)
             if next_airdate <= (update_date + graceperiod):
@@ -1045,7 +1048,7 @@ class TVShow(object):
             try:
                 dbData = MainDB.IMDbInfo.query.filter_by(indexer_id=self.indexerid).one()
                 dbData.__dict__.update(imdb_info)
-                MainDB().update(dbData)
+                MainDB().Session().commit()
             except orm.exc.NoResultFound:
                 MainDB().add(MainDB.IMDbInfo(**imdb_info))
 
@@ -1249,8 +1252,8 @@ class TVShow(object):
 
         try:
             dbData = MainDB.TVShow.query.filter_by(indexer_id=self.indexerid).one()
-            dbData.__dict__.update(tv_show)
-            MainDB().update(dbData)
+            dbData.update(**tv_show)
+            MainDB().Session().commit()
         except orm.exc.NoResultFound:
             MainDB().add(MainDB.TVShow(**tv_show))
 
@@ -1313,7 +1316,7 @@ class TVShow(object):
 
         try:
             dbData = MainDB.TVEpisode.query.filter_by(showid=self.indexerid, season=season,
-                                            episode=episode).one()
+                                                      episode=episode).one()
         except orm.exc.NoResultFound:
             sickrage.app.log.debug("Unable to find a matching episode in database, ignoring found episode")
             return False
@@ -1451,7 +1454,7 @@ class TVShow(object):
 
                     try:
                         MainDB.IndexerMapping.query.filter_by(indexer_id=self.indexerid, indexer=self.indexer,
-                                                    mindexer_id=int(mapped_show['id'])).one()
+                                                              mindexer_id=int(mapped_show['id'])).one()
                     except orm.exc.NoResultFound:
                         MainDB().add(MainDB.IndexerMapping(**{
                             'indexer_id': self.indexerid,
