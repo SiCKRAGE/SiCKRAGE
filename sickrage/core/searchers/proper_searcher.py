@@ -297,7 +297,7 @@ class ProperSearcher(object):
         try:
             dbData = MainDB.TVShow.query.filter_by(indexer_id=showid).one()
             dbData.last_proper_search = when
-            MainDB().Session().commit()
+            MainDB().Session.commit()
         except orm.exc.NoResultFound:
             pass
 

@@ -1048,7 +1048,7 @@ class TVShow(object):
             try:
                 dbData = MainDB.IMDbInfo.query.filter_by(indexer_id=self.indexerid).one()
                 dbData.__dict__.update(imdb_info)
-                MainDB().Session().commit()
+                MainDB().Session.commit()
             except orm.exc.NoResultFound:
                 MainDB().add(MainDB.IMDbInfo(**imdb_info))
 
@@ -1253,7 +1253,7 @@ class TVShow(object):
         try:
             dbData = MainDB.TVShow.query.filter_by(indexer_id=self.indexerid).one()
             dbData.update(**tv_show)
-            MainDB().Session().commit()
+            MainDB().Session.commit()
         except orm.exc.NoResultFound:
             MainDB().add(MainDB.TVShow(**tv_show))
 
