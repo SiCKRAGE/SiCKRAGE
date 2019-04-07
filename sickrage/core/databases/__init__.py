@@ -22,7 +22,7 @@ import shutil
 from contextlib import contextmanager
 
 from sqlalchemy import create_engine, inspect
-from sqlalchemy.orm import sessionmaker, scoped_session, Query
+from sqlalchemy.orm import sessionmaker, scoped_session, mapperlib
 
 import sickrage
 
@@ -99,6 +99,22 @@ class srDatabase(object):
             del migrate_tables
             del rows
 
+    def get_table_mapper(self, tbl):
+        mappers = [
+            mapper for mapper in mapperlib._mapper_registry
+            if tbl in mapper.tables
+        ]
+        if len(mappers) > 1:
+            raise ValueError(
+                "Multiple mappers found for table '%s'." % tbl.name
+            )
+        elif not mappers:
+            raise ValueError(
+                "Could not get mapper for table '%s'." % tbl.name
+            )
+        else:
+            return mappers[0]
+
     def bulk_add(self, table, rows):
         with self.session() as session:
             try:
@@ -113,8 +129,8 @@ class srDatabase(object):
     def update(self, obj):
         primary_keys = dict((key.name, getattr(obj, key.name)) for key in inspect(obj.__table__).primary_key)
         with self.session() as session:
-            session.query(obj.__table__).filter_by(**primary_keys).update(
-                dict((k, v) for k, v in obj.as_dict().items() if k not in primary_keys))
+            update_values = dict((k, v) for k, v in obj.as_dict().items() if k not in primary_keys)
+            session.query(self.get_table_mapper(obj.__table__)).filter_by(**primary_keys).update(update_values)
 
     def delete(self, table, *args, **kwargs):
         with self.session() as session:
