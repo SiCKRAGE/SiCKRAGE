@@ -333,7 +333,6 @@ def determineReleaseName(dir_name=None, nzb_name=None):
     file_types = ["*.nzb", "*.nfo"]
 
     for search in file_types:
-
         reg_expr = re.compile(fnmatch.translate(search), re.IGNORECASE)
         files = [file_name for file_name in os.listdir(dir_name) if
                  os.path.isfile(os.path.join(dir_name, file_name))]
@@ -344,7 +343,7 @@ def determineReleaseName(dir_name=None, nzb_name=None):
             found_file = found_file.rpartition('.')[0]
             if filterBadReleases(found_file):
                 sickrage.app.log.info("Release name ({}) found from file ({})".format(found_file, results[0]))
-                return found_file.rpartition(b'.')[0]
+                return found_file.rpartition('.')[0]
 
     # If that fails, we try the folder
     folder = os.path.basename(dir_name)
