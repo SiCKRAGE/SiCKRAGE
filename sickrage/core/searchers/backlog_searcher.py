@@ -121,7 +121,8 @@ class BacklogSearcher(object):
         # check through the list of statuses to see if we want any
         wanted = []
         for result in MainDB.TVEpisode.query.filter_by(showid=show.indexerid).filter(MainDB.TVEpisode.season > 0,
-                                                                           datetime.date.today().toordinal() > MainDB.TVEpisode.airdate >= from_date.toordinal()):
+                                                                                     datetime.date.today().toordinal() > MainDB.TVEpisode.airdate,
+                                                                                     MainDB.TVEpisode.airdate >= from_date.toordinal()):
 
             curStatus, curQuality = Quality.split_composite_status(int(result.status or -1))
 

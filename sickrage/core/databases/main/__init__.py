@@ -15,12 +15,9 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
-
 from sqlalchemy import Column, Integer, Text, Boolean, Index, ForeignKeyConstraint, orm
 from sqlalchemy.ext.declarative import as_declarative
 from sqlalchemy.orm import relationship
-
-import sickrage
 from sickrage.core.databases import srDatabase
 
 
@@ -35,8 +32,6 @@ class MainDBBase(object):
 
 
 class MainDB(srDatabase):
-    _version = 1
-
     def __init__(self, name='main'):
         super(MainDB, self).__init__(name)
         MainDBBase.query = self.Session.query_property()
@@ -44,36 +39,6 @@ class MainDB(srDatabase):
         for model in MainDBBase._decl_class_registry.values():
             if hasattr(model, '__tablename__'):
                 self.tables[model.__tablename__] = model
-
-    @property
-    def version(self):
-        try:
-            dbData = MainDB.Version.query.one()
-        except orm.exc.NoResultFound:
-            MainDB().add(MainDB.Version(**{'database_version': 1}))
-            dbData = MainDB.Version.query.one()
-
-        return dbData.database_version
-
-    def upgrade(self):
-        current_version = self.version
-
-        while current_version < self._version:
-            dbData = MainDB.Version.query.one()
-            new_version = current_version + 1
-
-            upgrade_func = getattr(self, '_upgrade_v' + str(new_version), None)
-            if upgrade_func:
-                sickrage.app.log.info("Upgrading main database to version {}".format(new_version))
-                upgrade_func()
-
-            dbData.database_version = current_version = new_version
-            MainDB().update(dbData)
-
-    class Version(MainDBBase):
-        __tablename__ = 'version'
-
-        database_version = Column(Integer, primary_key=True)
 
     class TVShow(MainDBBase):
         __tablename__ = 'tv_shows'
@@ -108,8 +73,9 @@ class MainDB(srDatabase):
         sub_use_sr_metadata = Column(Boolean)
         notify_list = Column(Text)
         search_delay = Column(Boolean)
-        last_update = Column(Integer)
-        last_refresh = Column(Integer)
+        last_update = Column(Integer, default=0)
+        last_refresh = Column(Integer, default=0)
+        last_backlog_search = Column(Integer, default=0)
 
         episodes = relationship('TVEpisode', back_populates='show', lazy='select')
 

@@ -41,11 +41,12 @@ python-keycloak-client == 0.2.2
 simplejson == 3.16.0
 service_identity == 17.0.0
 knowit == 0.2.4
+sqlalchemy == 1.3.2
+sqlalchemy-migrate == 0.12.0
 certifi
 pyasn1
 lxml
 ipaddress
 psutil
 cffi
-sqlalchemy
 cryptography

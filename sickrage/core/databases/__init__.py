@@ -21,7 +21,9 @@ import pickle
 import shutil
 from contextlib import contextmanager
 
-from sqlalchemy import create_engine, inspect
+from migrate import DatabaseAlreadyControlledError
+from migrate.versioning import api
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session, mapperlib
 
 import sickrage
@@ -33,8 +35,17 @@ class srDatabase(object):
         self.tables = {}
 
         self.db_path = os.path.join(sickrage.app.data_dir, '{}.db'.format(self.name))
+        self.db_repository = os.path.join(os.path.dirname(__file__), self.name, 'db_repository')
         self.engine = create_engine('sqlite:///{}'.format(self.db_path), echo=False)
         self.Session = scoped_session(sessionmaker(bind=self.engine))
+
+        if not os.path.exists(self.db_path):
+            api.version_control(self.engine, self.db_repository, api.version(self.db_repository))
+        else:
+            try:
+                api.version_control(self.engine, self.db_repository)
+            except DatabaseAlreadyControlledError:
+                pass
 
     @contextmanager
     def session(self):
@@ -53,10 +64,12 @@ class srDatabase(object):
 
     @property
     def version(self):
-        return 1
+        return int(api.db_version(self.engine, self.db_repository))
 
     def upgrade(self):
-        pass
+        if self.version < int(api.version(self.db_repository)):
+            api.upgrade(self.engine, self.db_repository)
+            sickrage.app.log.info('Upgraded {} database to version {}'.format(self.name, self.version))
 
     def migrate(self):
         backup_file = os.path.join(sickrage.app.data_dir, '{}_{}.codernitydb.bak'.format(self.name,

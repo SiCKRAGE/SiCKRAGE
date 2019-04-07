@@ -33,8 +33,6 @@ class CacheDBBase(object):
 
 
 class CacheDB(srDatabase):
-    _version = 1
-
     def __init__(self, name='cache'):
         super(CacheDB, self).__init__(name)
         CacheDBBase.query = self.Session.query_property()
