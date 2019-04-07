@@ -134,7 +134,7 @@ class TVCache(object):
         try:
             dbData = CacheDB.LastUpdate.query.filter_by(provider=self.providerID).one()
             dbData.time = int(time.mktime(toDate.timetuple()))
-            CacheDB().Session.commit()
+            CacheDB().Session.object_session(dbData).commit()
         except orm.exc.NoResultFound:
             CacheDB().add(CacheDB.LastUpdate(**{
                 'provider': self.providerID,
@@ -158,7 +158,7 @@ class TVCache(object):
         try:
             dbData = CacheDB.LastSearch.query.filter_by(provider=self.providerID).one()
             dbData.time = int(time.mktime(toDate.timetuple()))
-            CacheDB().Session.commit()
+            CacheDB().Session.object_session(dbData).commit()
         except orm.exc.NoResultFound:
             CacheDB().add(CacheDB.LastSearch(**{
                 'provider': self.providerID,

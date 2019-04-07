@@ -92,6 +92,6 @@ class ShowUpdater(object):
         ProgressIndicators.setIndicator('dailyShowUpdates', QueueProgressIndicator("Daily Show Updates", pi_list))
 
         dbData.time = update_timestamp
-        CacheDB().Session.commit()
+        CacheDB().Session.object_session(dbData).commit()
 
         self.amActive = False

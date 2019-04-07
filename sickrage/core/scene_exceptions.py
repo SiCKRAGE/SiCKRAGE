@@ -69,7 +69,7 @@ def setLastRefresh(exList):
     try:
         dbData = CacheDB.SceneExceptionRefresh.query.filter_by(exception_list=exList).one()
         dbData.last_refreshed = int(time.mktime(datetime.datetime.today().timetuple()))
-        CacheDB().Session.commit()
+        CacheDB().Session.object_session(dbData).commit()
     except orm.exc.NoResultFound:
         CacheDB().add(CacheDB.SceneExceptionRefresh(**{
             'last_refreshed': int(time.mktime(datetime.datetime.today().timetuple())),
