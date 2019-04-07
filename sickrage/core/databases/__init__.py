@@ -129,3 +129,7 @@ class srDatabase(object):
     def delete(self, table, *args, **kwargs):
         with self.session() as session:
             return session.query(table).filter_by(**kwargs).filter(*args).delete()
+
+    def update(self, obj):
+        with self.session() as session:
+            session.merge(obj)

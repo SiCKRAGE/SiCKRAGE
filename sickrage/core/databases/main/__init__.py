@@ -68,7 +68,7 @@ class MainDB(srDatabase):
                 upgrade_func()
 
             dbData.database_version = current_version = new_version
-            MainDB().Session.object_session(dbData).commit()
+            MainDB().update(dbData)
 
     class Version(MainDBBase):
         __tablename__ = 'version'

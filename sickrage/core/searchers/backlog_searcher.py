@@ -167,6 +167,6 @@ class BacklogSearcher(object):
         try:
             dbData = MainDB.TVShow.query.filter_by(indexer_id=showid).one()
             dbData.last_backlog_search = when
-            MainDB().Session.object_session(dbData).commit()
+            MainDB().update(dbData)
         except orm.exc.NoResultFound:
             pass
