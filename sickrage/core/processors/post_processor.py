@@ -534,10 +534,10 @@ class PostProcessor(object):
             except orm.exc.NoResultFound:
                 continue
 
-            indexer_id = int(dbData[0]["showid"])
-            season = int(dbData[0]["season"])
-            quality = int(dbData[0]["quality"])
-            version = int(dbData[0]["version"])
+            indexer_id = int(dbData.showid)
+            season = int(dbData.season)
+            quality = int(dbData.quality)
+            version = int(dbData.version)
 
             if quality == Quality.UNKNOWN:
                 quality = None

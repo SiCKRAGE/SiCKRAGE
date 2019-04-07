@@ -257,8 +257,8 @@ class FailedHistory(object):
                 sickrage.app.log.info("They're also from the same provider. Using it as well.")
                 provider = dbData[0].provider
         else:
-            size = dbData[0]["size"]
-            provider = dbData[0]["provider"]
+            size = dbData[0].size
+            provider = dbData[0].provider
 
         if not FailedHistory.hasFailed(release, size, provider):
             MainDB().add(MainDB.FailedSnatch(**{
