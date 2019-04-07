@@ -128,7 +128,8 @@ class srDatabase(object):
 
     def delete(self, table, *args, **kwargs):
         with self.session() as session:
-            return session.query(table).filter_by(**kwargs).filter(*args).delete()
+            found = session.query(table).filter_by(**kwargs).filter(*args)
+            return found.delete() if found.count() else 0
 
     def update(self, obj):
         with self.session() as session:
