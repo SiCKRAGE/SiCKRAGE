@@ -197,7 +197,8 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
 
     else:
         numseasons = len(
-            {x.season for x in MainDB.TVEpisode.query.filter_by(showid=show.indexerid).filter(MainDB.TVEpisode.season != 0)})
+            {x.season for x in
+             MainDB.TVEpisode.query.filter_by(showid=show.indexerid).filter(MainDB.TVEpisode.season != 0)})
 
         seasonStrings = ["S%02d" % int(ep_obj.scene_season)]
 
@@ -230,7 +231,8 @@ def makeSceneSearchString(show, ep_obj):
     toReturn = []
 
     numseasons = len(
-        {x.season for x in MainDB.TVEpisode.query.filter_by(showid=show.indexerid).filter(MainDB.TVEpisode.season != 0)})
+        {x.season for x in
+         MainDB.TVEpisode.query.filter_by(showid=show.indexerid).filter(MainDB.TVEpisode.season != 0)})
 
     # see if we should use dates instead of episodes
     if (show.air_by_date or show.sports) and ep_obj.airdate != date.fromordinal(1):
@@ -356,6 +358,7 @@ def determineReleaseName(dir_name=None, nzb_name=None):
     return None
 
 
+# TODO remove this function after verifying its no longer used
 def searchDBForShow(regShowName, log=False):
     """
     Searches if show names are present in the DB

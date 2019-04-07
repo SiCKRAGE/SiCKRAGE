@@ -530,7 +530,7 @@ class PostProcessor(object):
         # search the database for a possible match and return immediately if we find one
         for curName in names:
             try:
-                dbData = MainDB.History.query.filter(MainDB.History.resource.contains(curName)).one()
+                dbData = MainDB.History.query.filter(MainDB.History.resource.contains(curName)).first()
             except orm.exc.NoResultFound:
                 continue
 
