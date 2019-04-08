@@ -221,10 +221,10 @@ class Core(object):
         else:
             self.private_key = encryption.generate_key()
             self.public_key = self.private_key.public_key()
-            encryption.save_public_key(public_key_filename, self.public_key)
             self.log.info("Attempting to save private key to user profile via SiCKRAGE API")
             while True:
                 if encryption.save_private_key(self.private_key):
+                    encryption.save_public_key(public_key_filename, self.public_key)
                     self.log.info("Private key saved to user profile via SiCKRAGE API")
                     break
 
