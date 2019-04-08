@@ -62,9 +62,6 @@ class SlackNotifier(Notifiers):
         sickrage.app.log.info("Sending slack message: " + message)
         sickrage.app.log.info("Sending slack message  to url: " + sickrage.app.config.slack_webhook)
 
-        if isinstance(message, str):
-            message = message.encode('utf-8')
-
         headers = {"Content-Type": "application/json"}
         try:
             r = requests.post(sickrage.app.config.slack_webhook,

@@ -2363,10 +2363,9 @@ class Config(object):
         })
 
         # encrypt config
-        if sickrage.app.private_key:
-            new_config.write()
-            if encryption.save_key(sickrage.app.private_key):
-                encryption.encrypt_file(sickrage.app.config_file, sickrage.app.private_key.public_key())
+        new_config.write()
+        if sickrage.app.private_key and encryption.save_key(sickrage.app.private_key):
+            encryption.encrypt_file(sickrage.app.config_file, sickrage.app.private_key.public_key())
 
     def encrypt(self, section, key, _decrypt=False):
         """
@@ -2378,7 +2377,7 @@ class Config(object):
             return
 
         try:
-            encryption_version = self.check_setting_int('General', 'encryption_version', 2)
+            encryption_version = self.check_setting_int('General', 'encryption_version', '')
             encryption_secret = self.check_setting_str('General', 'encryption_secret', '', censor=True)
 
             if encryption_version == 1:

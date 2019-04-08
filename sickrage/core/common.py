@@ -101,7 +101,7 @@ class Quality(object):
     UNKNOWN = 1 << 15  # 32768
 
     qualitySizes = {NONE: 0,
-                    UNKNOWN: 0,
+                    UNKNOWN: 500,
                     SDTV: 700,
                     SDDVD: 700,
                     HDTV: 1200,
