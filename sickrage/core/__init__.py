@@ -209,9 +209,10 @@ class Core(object):
         self.private_key = encryption.load_key()
         if not self.private_key:
             self.private_key = encryption.generate_key()
+            self.log.info("Attempting to save encryption key to user profile via SiCKRAGE API")
             while True:
                 if encryption.save_key(self.private_key):
-                    self.log.debug("Encryption key saved to user profile via SiCKRAGE API")
+                    self.log.info("Encryption key saved to user profile via SiCKRAGE API")
                     break
 
         # load config
