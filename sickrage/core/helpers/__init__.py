@@ -1004,7 +1004,12 @@ def restoreConfigZip(archive, targetDir, restore_database=True, restore_config=T
 def backupSR(backupDir, keep_latest=False):
     source = []
 
-    files_list = ['main.db', 'cache.db', os.path.basename(sickrage.app.config_file)]
+    files_list = [
+        'main.db',
+        'cache.db',
+        'sickrage.pub',
+        os.path.basename(sickrage.app.config_file)
+    ]
 
     def _keep_latest_backup():
         for x in sorted(glob.glob(os.path.join(backupDir, '*.zip')), key=os.path.getctime, reverse=True)[1:]:
@@ -1042,6 +1047,7 @@ def restoreSR(srcDir, dstDir):
     try:
         files_list = ['main.db',
                       'cache.db',
+                      'sickrage.pub',
                       'main.codernitydb',
                       'cache.codernitydb',
                       os.path.basename(sickrage.app.config_file)]
