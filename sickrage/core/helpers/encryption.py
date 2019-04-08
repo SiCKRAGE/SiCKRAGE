@@ -8,7 +8,7 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.asymmetric import rsa
-from cryptography.hazmat.primitives.serialization import load_pem_private_key
+from cryptography.hazmat.primitives.serialization import load_pem_private_key, load_pem_public_key
 
 from sickrage.core.api import API
 
@@ -21,7 +21,16 @@ def generate_key():
     )
 
 
-def load_key():
+def load_public_key(filename):
+    try:
+        with open(filename, 'rb') as fd:
+            public_key = load_pem_public_key(fd.read(), default_backend())
+        return public_key
+    except Exception:
+        return
+
+
+def load_private_key():
     try:
         result = API().download_privatekey()
         private_key = load_pem_private_key(base64.b64decode(result['pem']), None, default_backend())
@@ -30,7 +39,16 @@ def load_key():
         return
 
 
-def save_key(private_key):
+def save_public_key(filename, public_key):
+    pem = public_key.public_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PublicFormat.SubjectPublicKeyInfo
+    )
+
+    with open(filename, 'wb') as fd:
+        fd.write(pem)
+
+def save_private_key(private_key):
     pem = private_key.private_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PrivateFormat.PKCS8,

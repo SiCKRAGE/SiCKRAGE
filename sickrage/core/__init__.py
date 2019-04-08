@@ -85,6 +85,8 @@ class Core(object):
             self.tz = tz.tzlocal()
 
         self.private_key = None
+        self.public_key = None
+
         self.config_file = None
         self.data_dir = None
         self.cache_dir = None
@@ -205,14 +207,24 @@ class Core(object):
             helpers.move_file(os.path.abspath(os.path.join(self.data_dir, 'sickbeard.db')),
                               os.path.abspath(os.path.join(self.data_dir, 'sickrage.db')))
 
-        # init private key
-        self.private_key = encryption.load_key()
-        if not self.private_key:
-            self.private_key = encryption.generate_key()
-            self.log.info("Attempting to save encryption key to user profile via SiCKRAGE API")
+        # init public/private key
+        public_key_filename = os.path.join(self.data_dir, 'sickrage.pub')
+        if os.path.exists(public_key_filename):
+            self.public_key = encryption.load_public_key(public_key_filename)
+            self.log.info("Attempting to load private key from user profile via SiCKRAGE API")
             while True:
-                if encryption.save_key(self.private_key):
-                    self.log.info("Encryption key saved to user profile via SiCKRAGE API")
+                self.private_key = encryption.load_private_key()
+                if self.private_key:
+                    self.log.info("Private key loaded from user profile via SiCKRAGE API")
+                    break
+        else:
+            self.private_key = encryption.generate_key()
+            self.public_key = self.private_key.public_key()
+            encryption.save_public_key(public_key_filename, self.public_key)
+            self.log.info("Attempting to save private key to user profile via SiCKRAGE API")
+            while True:
+                if encryption.save_private_key(self.private_key):
+                    self.log.info("Private key saved to user profile via SiCKRAGE API")
                     break
 
         # load config

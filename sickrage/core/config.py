@@ -2364,7 +2364,7 @@ class Config(object):
 
         # encrypt config
         new_config.write()
-        encryption.encrypt_file(sickrage.app.config_file, sickrage.app.private_key.public_key())
+        encryption.encrypt_file(sickrage.app.config_file, sickrage.app.public_key)
 
     def encrypt(self, section, key, _decrypt=False):
         """
