@@ -139,6 +139,7 @@ class Core(object):
         self.tz_updater = None
         self.rsscache_updater = None
         self.daily_searcher = None
+        self.failed_snatch_searcher = None
         self.backlog_searcher = None
         self.proper_searcher = None
         self.trakt_searcher = None
