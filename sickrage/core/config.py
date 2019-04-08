@@ -1375,7 +1375,7 @@ class Config(object):
         if os.path.exists(sickrage.app.config_file):
             try:
                 encryption.decrypt_file(sickrage.app.config_file, sickrage.app.private_key)
-            except ValueError:
+            except (AttributeError, ValueError):
                 # old encryption from python 2
                 self.config_obj = ConfigObj(sickrage.app.config_file, encoding='utf8')
                 self.config_obj.walk(self.decrypt)
@@ -2363,8 +2363,9 @@ class Config(object):
         })
 
         # encrypt config
-        new_config.write()
-        encryption.encrypt_file(sickrage.app.config_file, sickrage.app.public_key)
+        if sickrage.app.public_key:
+            new_config.write()
+            encryption.encrypt_file(sickrage.app.config_file, sickrage.app.public_key)
 
     def encrypt(self, section, key, _decrypt=False):
         """

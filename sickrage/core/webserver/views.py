@@ -56,7 +56,7 @@ from sickrage.core.helpers import argToBool, backupSR, chmod_as_parent, findCert
     getDiskSpaceUsage, makeDir, readFileBuffered, \
     remove_article, restoreConfigZip, \
     sanitizeFileName, clean_url, try_int, torrent_webui_url, checkbox_to_value, clean_host, \
-    clean_hosts, app_statistics
+    clean_hosts, app_statistics, encryption
 from sickrage.core.helpers.anidb import short_group_names, get_release_groups_for_anime
 from sickrage.core.helpers.browser import foldersAtPath
 from sickrage.core.helpers.srdatetime import srDateTime
@@ -302,6 +302,7 @@ class LoginHandler(BaseHandler):
                 if not API().token:
                     exchange = {'scope': 'offline_access', 'subject_token': token['access_token']}
                     API().token = sickrage.app.oidc_client.token_exchange(**exchange)
+                    encryption.initialize()
             except Exception as e:
                 return self.redirect('/logout')
 

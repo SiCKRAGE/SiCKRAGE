@@ -209,24 +209,7 @@ class Core(object):
                               os.path.abspath(os.path.join(self.data_dir, 'sickrage.db')))
 
         # init public/private key
-        public_key_filename = os.path.join(self.data_dir, 'sickrage.pub')
-        if os.path.exists(public_key_filename):
-            self.public_key = encryption.load_public_key(public_key_filename)
-            self.log.info("Attempting to load private key from user profile via SiCKRAGE API")
-            while True:
-                self.private_key = encryption.load_private_key()
-                if self.private_key:
-                    self.log.info("Private key loaded from user profile via SiCKRAGE API")
-                    break
-        else:
-            self.private_key = encryption.generate_key()
-            self.public_key = self.private_key.public_key()
-            self.log.info("Attempting to save private key to user profile via SiCKRAGE API")
-            while True:
-                if encryption.save_private_key(self.private_key):
-                    encryption.save_public_key(public_key_filename, self.public_key)
-                    self.log.info("Private key saved to user profile via SiCKRAGE API")
-                    break
+        encryption.initialize()
 
         # load config
         self.config.load()

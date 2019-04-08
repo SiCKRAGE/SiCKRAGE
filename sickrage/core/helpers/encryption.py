@@ -10,10 +10,35 @@ from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.serialization import load_pem_private_key, load_pem_public_key
 
+import sickrage
 from sickrage.core.api import API
 
 
-def generate_key():
+def initialize():
+    if not API().token:
+        return
+
+    public_key_filename = os.path.join(sickrage.app.data_dir, 'sickrage.pub')
+    if os.path.exists(public_key_filename):
+        sickrage.app.public_key = load_public_key(public_key_filename)
+        sickrage.app.log.info("Attempting to load private key from user profile via SiCKRAGE API")
+        while True:
+            sickrage.app.private_key = load_private_key()
+            if sickrage.app.private_key:
+                sickrage.app.log.info("Private key loaded from user profile via SiCKRAGE API")
+                break
+    else:
+        sickrage.app.private_key = generate_private_key()
+        sickrage.app.public_key = sickrage.app.private_key.public_key()
+        sickrage.app.log.info("Attempting to save private key to user profile via SiCKRAGE API")
+        while True:
+            if save_private_key(sickrage.app.private_key):
+                save_public_key(public_key_filename, sickrage.app.public_key)
+                sickrage.app.log.info("Private key saved to user profile via SiCKRAGE API")
+                break
+
+
+def generate_private_key():
     return rsa.generate_private_key(
         public_exponent=65537,
         key_size=4096,
@@ -47,6 +72,7 @@ def save_public_key(filename, public_key):
 
     with open(filename, 'wb') as fd:
         fd.write(pem)
+
 
 def save_private_key(private_key):
     pem = private_key.private_bytes(
