@@ -110,7 +110,7 @@ class TraktRequest(object):
         )
 
         # Append query parameters (if defined)
-        query = self.encode.query(self.query)
+        query = self.encode_query(self.query)
 
         if query:
             url += '?' + query
