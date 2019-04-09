@@ -21,6 +21,7 @@
 import base64
 import datetime
 import gettext
+import io
 import json
 import os
 import os.path
@@ -986,9 +987,9 @@ class Config(object):
                 # Make a set of unique paths to check from existing environment variables
                 check_locations = {
                     os.path.join(location, winrar_path) for location in (
-                    os.environ.get("ProgramW6432"), os.environ.get("ProgramFiles(x86)"),
-                    os.environ.get("ProgramFiles"), re.sub(r'\s?\(x86\)', '', os.environ["ProgramFiles"])
-                ) if location
+                        os.environ.get("ProgramW6432"), os.environ.get("ProgramFiles(x86)"),
+                        os.environ.get("ProgramFiles"), re.sub(r'\s?\(x86\)', '', os.environ["ProgramFiles"])
+                    ) if location
                 }
                 check_locations.add(os.path.join(sickrage.PROG_DIR, 'unrar\\unrar.exe'))
 
@@ -1374,14 +1375,16 @@ class Config(object):
         # decrypt config
         if os.path.exists(sickrage.app.config_file):
             try:
-                encryption.decrypt_file(sickrage.app.config_file, sickrage.app.private_key)
+                with io.BytesIO() as buffer, open(sickrage.app.config_file, 'rb') as fd:
+                    buffer.write(encryption.decrypt_string(fd.read(), sickrage.app.private_key))
+                    buffer.seek(0)
+                    self.config_obj = ConfigObj(buffer, encoding='utf8')
             except (AttributeError, ValueError):
                 # old encryption from python 2
                 self.config_obj = ConfigObj(sickrage.app.config_file, encoding='utf8')
                 self.config_obj.walk(self.decrypt)
-                self.config_obj.write()
 
-        self.config_obj = ConfigObj(sickrage.app.config_file, encoding='utf8')
+        self.config_obj = self.config_obj or ConfigObj(encoding='utf8')
 
         # use defaults
         if defaults:
@@ -1888,7 +1891,7 @@ class Config(object):
                          'enable_backlog', 'cat', 'subtitle', 'api_key', 'hash', 'digest', 'username', 'password',
                          'passkey', 'pin', 'reject_m2ts', 'cookies', 'custom_url']
 
-        new_config = ConfigObj(sickrage.app.config_file, indent_type='  ', encoding='utf8')
+        new_config = ConfigObj(indent_type='  ', encoding='utf8')
         new_config.clear()
 
         sickrage.app.log.debug("Saving all settings to disk")
@@ -2364,8 +2367,10 @@ class Config(object):
 
         # encrypt config
         if sickrage.app.public_key:
-            new_config.write()
-            encryption.encrypt_file(sickrage.app.config_file, sickrage.app.public_key)
+            with io.BytesIO() as buffer, open(sickrage.app.config_file, 'wb') as fd:
+                new_config.write(buffer)
+                buffer.seek(0)
+                fd.write(encryption.encrypt_string(buffer.read(), sickrage.app.public_key))
 
     def encrypt(self, section, key, _decrypt=False):
         """

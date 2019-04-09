@@ -1,5 +1,4 @@
 import base64
-import json
 import os
 import zlib
 
@@ -20,12 +19,13 @@ def initialize():
 
     public_key_filename = os.path.join(sickrage.app.data_dir, 'sickrage.pub')
     if os.path.exists(public_key_filename):
-        sickrage.app.public_key = load_public_key(public_key_filename)
         sickrage.app.log.info("Attempting to load private key from user profile via SiCKRAGE API")
         while True:
             sickrage.app.private_key = load_private_key()
             if sickrage.app.private_key:
                 sickrage.app.log.info("Private key loaded from user profile via SiCKRAGE API")
+                sickrage.app.public_key = sickrage.app.private_key.public_key()
+                save_public_key(public_key_filename, sickrage.app.public_key)
                 break
     else:
         sickrage.app.private_key = generate_private_key()
@@ -44,6 +44,14 @@ def generate_private_key():
         key_size=4096,
         backend=default_backend()
     )
+
+
+def verify_public_key(public_key, private_key):
+    try:
+        decrypt_string(encrypt_string(b'sickrage', public_key), private_key) == b'sickrage'
+    except ValueError:
+        return False
+    return True
 
 
 def load_public_key(filename):
@@ -144,3 +152,54 @@ def decrypt_file(filename, private_key):
 
     with open(filename, 'wb') as fd:
         fd.write(zlib.decompress(decrypted))
+
+
+def encrypt_string(string, public_key):
+    chunk_size = 245
+    offset = 0
+    end_loop = False
+    encrypted = b""
+
+    blob = zlib.compress(string)
+    while not end_loop:
+        chunk = blob[offset:offset + chunk_size]
+
+        if len(chunk) % chunk_size != 0:
+            end_loop = True
+            chunk += b" " * (chunk_size - len(chunk))
+
+        encrypted += public_key.encrypt(
+            chunk,
+            padding.OAEP(
+                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None
+            )
+        )
+
+        offset += chunk_size
+
+    return base64.b64encode(encrypted)
+
+
+def decrypt_string(string, private_key):
+    chunk_size = 512
+    offset = 0
+    decrypted = b""
+
+    encrypted_blob = base64.b64decode(string)
+    while offset < len(encrypted_blob):
+        chunk = encrypted_blob[offset: offset + chunk_size]
+
+        decrypted += private_key.decrypt(
+            chunk,
+            padding.OAEP(
+                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None
+            )
+        )
+
+        offset += chunk_size
+
+    return zlib.decompress(decrypted)
