@@ -42,6 +42,8 @@ from sickrage.core.caches.name_cache import NameCache
 from sickrage.core.caches.quicksearch_cache import QuicksearchCache
 from sickrage.core.common import SD, SKIPPED, WANTED
 from sickrage.core.config import Config
+from sickrage.core.databases.cache import CacheDB
+from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import findCertainShow, generate_secret, makeDir, get_lan_ip, restoreSR, \
     getDiskSpaceUsage, getFreeSpace, launch_browser, torrent_webui_url, encryption
 from sickrage.core.logger import Logger
@@ -86,6 +88,9 @@ class Core(object):
 
         self.private_key = None
         self.public_key = None
+
+        self.main_db = None
+        self.cache_db = None
 
         self.config_file = None
         self.data_dir = None
@@ -157,6 +162,8 @@ class Core(object):
         threading.currentThread().setName('CORE')
 
         # init core classes
+        self.main_db = MainDB()
+        self.cache_db = CacheDB()
         self.notifier_providers = NotifierProviders()
         self.metadata_providers = MetadataProviders()
         self.search_providers = SearchProviders()
@@ -251,9 +258,7 @@ class Core(object):
             self.log.error('Failed getting disk space: %s', traceback.format_exc())
 
         # perform database startup actions
-        from sickrage.core.databases.main import MainDB
-        from sickrage.core.databases.cache import CacheDB
-        for db in [MainDB(), CacheDB()]:
+        for db in [self.main_db, self.cache_db]:
             # migrate database
             db.migrate()
 
@@ -555,7 +560,6 @@ class Core(object):
 
         self.quicksearch_cache.load()
 
-        from sickrage.core.databases.main import MainDB
         for dbData in MainDB.TVShow.query:
             show = TVShow(int(dbData.indexer), int(dbData.indexer_id))
 

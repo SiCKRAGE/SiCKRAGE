@@ -192,7 +192,7 @@ class WebServer(object):
             sickrage.app.log.info(
                 "SiCKRAGE :: CONFIG:[{}] [v{}]".format(sickrage.app.config_file, sickrage.app.config.config_version))
             sickrage.app.log.info(
-                "SiCKRAGE :: DATABASE:[v{}]".format(MainDB().version))
+                "SiCKRAGE :: DATABASE:[v{}]".format(sickrage.app.main_db.version))
             sickrage.app.log.info(
                 "SiCKRAGE :: URL:[{}://{}:{}{}]".format(('http', 'https')[sickrage.app.config.enable_https],
                                                         sickrage.app.config.web_host, sickrage.app.config.web_port,

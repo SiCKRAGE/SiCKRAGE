@@ -1048,9 +1048,9 @@ class TVShow(object):
             try:
                 dbData = MainDB.IMDbInfo.query.filter_by(indexer_id=self.indexerid).one()
                 dbData.__dict__.update(imdb_info)
-                MainDB().update(dbData)
+                sickrage.app.main_db.update(dbData)
             except orm.exc.NoResultFound:
-                MainDB().add(MainDB.IMDbInfo(**imdb_info))
+                sickrage.app.main_db.add(MainDB.IMDbInfo(**imdb_info))
 
             self.imdb_info = imdb_info
 
@@ -1059,19 +1059,19 @@ class TVShow(object):
         action = ('delete', 'trash')[sickrage.app.config.trash_remove_show]
 
         # remove from tv episodes table
-        MainDB().delete(MainDB.TVEpisode, showid=self.indexerid)
+        sickrage.app.main_db.delete(MainDB.TVEpisode, showid=self.indexerid)
 
         # remove from tv shows table
-        MainDB().delete(MainDB.TVShow, indexer_id=self.indexerid)
+        sickrage.app.main_db.delete(MainDB.TVShow, indexer_id=self.indexerid)
 
         # remove from imdb info table
-        MainDB().delete(MainDB.IMDbInfo, indexer_id=self.indexerid)
+        sickrage.app.main_db.delete(MainDB.IMDbInfo, indexer_id=self.indexerid)
 
         # remove from xem scene table
-        MainDB().delete(MainDB.XEMRefresh, indexer_id=self.indexerid)
+        sickrage.app.main_db.delete(MainDB.XEMRefresh, indexer_id=self.indexerid)
 
         # remove from scene numbering table
-        MainDB().delete(MainDB.SceneNumbering, indexer_id=self.indexerid)
+        sickrage.app.main_db.delete(MainDB.SceneNumbering, indexer_id=self.indexerid)
 
         # remove self from show list
         sickrage.app.showlist = [x for x in sickrage.app.showlist if int(x.indexerid) != self.indexerid]
@@ -1253,9 +1253,9 @@ class TVShow(object):
         try:
             dbData = MainDB.TVShow.query.filter_by(indexer_id=self.indexerid).one()
             dbData.update(**tv_show)
-            MainDB().update(dbData)
+            sickrage.app.main_db.update(dbData)
         except orm.exc.NoResultFound:
-            MainDB().add(MainDB.TVShow(**tv_show))
+            sickrage.app.main_db.add(MainDB.TVShow(**tv_show))
 
     def __str__(self):
         toReturn = ""
@@ -1456,7 +1456,7 @@ class TVShow(object):
                         MainDB.IndexerMapping.query.filter_by(indexer_id=self.indexerid, indexer=self.indexer,
                                                               mindexer_id=int(mapped_show['id'])).one()
                     except orm.exc.NoResultFound:
-                        MainDB().add(MainDB.IndexerMapping(**{
+                        sickrage.app.main_db.add(MainDB.IndexerMapping(**{
                             'indexer_id': self.indexerid,
                             'indexer': self.indexer,
                             'mindexer_id': int(mapped_show['id']),

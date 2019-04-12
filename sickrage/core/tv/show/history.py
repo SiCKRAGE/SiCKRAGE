@@ -35,7 +35,7 @@ class History:
         """
         Clear all the history
         """
-        MainDB().delete(MainDB.History)
+        sickrage.app.main_db.delete(MainDB.History)
 
     def get(self, limit=100, action=None):
         """
@@ -94,7 +94,7 @@ class History:
         """
 
         date = (datetime.today() - timedelta(days=30)).strftime(History.date_format)
-        MainDB().delete(MainDB.History, MainDB.History.data < date)
+        sickrage.app.main_db.delete(MainDB.History, MainDB.History.data < date)
 
     @staticmethod
     def _logHistoryItem(action, showid, season, episode, quality, resource, provider, version=-1):
@@ -113,7 +113,7 @@ class History:
         logDate = datetime.today().strftime(History.date_format)
         resource = resource
 
-        MainDB().add(MainDB.History(**{
+        sickrage.app.main_db.add(MainDB.History(**{
             'action': action,
             'date': logDate,
             'showid': showid,
@@ -261,7 +261,7 @@ class FailedHistory(object):
             provider = dbData[0].provider
 
         if not FailedHistory.hasFailed(release, size, provider):
-            MainDB().add(MainDB.FailedSnatch(**{
+            sickrage.app.main_db.add(MainDB.FailedSnatch(**{
                 'release': release,
                 'size': size,
                 'provider': provider
@@ -274,7 +274,7 @@ class FailedHistory(object):
     @staticmethod
     def logSuccess(release):
         release = FailedHistory.prepareFailedName(release)
-        MainDB().delete(MainDB.FailedSnatchHistory, release=release)
+        sickrage.app.main_db.delete(MainDB.FailedSnatchHistory, release=release)
 
     @staticmethod
     def hasFailed(release, size, provider="%"):
@@ -356,7 +356,7 @@ class FailedHistory(object):
         show_obj = searchResult.episodes[0].show
 
         for episode in searchResult.episodes:
-            MainDB().add(MainDB.FailedSnatchHistory(**{
+            sickrage.app.main_db.add(MainDB.FailedSnatchHistory(**{
                 'date': logDate,
                 'size': searchResult.size,
                 'release': release,
@@ -377,13 +377,13 @@ class FailedHistory(object):
         :param provider: Provider to delete it from
         """
         release = FailedHistory.prepareFailedName(release)
-        MainDB().delete(MainDB.FailedSnatchHistory, release=release, size=size, provider=provider)
+        sickrage.app.main_db.delete(MainDB.FailedSnatchHistory, release=release, size=size, provider=provider)
 
     @staticmethod
     def trimHistory():
         """Trims history table to 1 month of history from today"""
         date = str((datetime.today() - timedelta(days=30)).strftime(History.date_format))
-        MainDB().delete(MainDB.FailedSnatchHistory, MainDB.FailedSnatchHistory.date < date)
+        sickrage.app.main_db.delete(MainDB.FailedSnatchHistory, MainDB.FailedSnatchHistory.date < date)
 
     @staticmethod
     def findFailedRelease(epObj):
@@ -396,7 +396,7 @@ class FailedHistory(object):
         provider = None
 
         # Clear old snatches for this release if any exist
-        MainDB().delete(MainDB.FailedSnatchHistory, MainDB.FailedSnatchHistory.date < MainDB.FailedSnatchHistory.date,
+        sickrage.app.main_db.delete(MainDB.FailedSnatchHistory, MainDB.FailedSnatchHistory.date < MainDB.FailedSnatchHistory.date,
                         showid=epObj.show.indexerid, season=epObj.season, episode=epObj.episode)
 
         # Search for release in snatch history
@@ -407,7 +407,7 @@ class FailedHistory(object):
             date = dbData.date
 
             # Clear any incomplete snatch records for this release if any exist
-            MainDB().delete(MainDB.FailedSnatchHistory, MainDB.FailedSnatchHistory.date != date, release=release)
+            sickrage.app.main_db.delete(MainDB.FailedSnatchHistory, MainDB.FailedSnatchHistory.date != date, release=release)
 
             # Found a previously failed release
             sickrage.app.log.debug(

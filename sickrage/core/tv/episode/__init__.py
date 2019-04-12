@@ -739,7 +739,7 @@ class TVEpisode(object):
         # delete myself from the DB
         sickrage.app.log.debug("Deleting myself from the database")
 
-        MainDB().delete(MainDB.TVEpisode, showid=self.show.indexerid, season=self.season, episode=self.episode)
+        sickrage.app.main_db.delete(MainDB.TVEpisode, showid=self.show.indexerid, season=self.season, episode=self.episode)
 
         data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate([(self.season, self.episode)])
         if sickrage.app.config.use_trakt and sickrage.app.config.trakt_sync_watchlist and data:
@@ -799,9 +799,9 @@ class TVEpisode(object):
             dbData = MainDB.TVEpisode.query.filter_by(indexer=self.indexer, indexerid=self.indexerid,
                                                       showid=self.show.indexerid).one()
             dbData.update(**tv_episode)
-            MainDB().update(dbData)
+            sickrage.app.main_db.update(dbData)
         except orm.exc.NoResultFound:
-            MainDB().add(MainDB.TVEpisode(**tv_episode))
+            sickrage.app.main_db.add(MainDB.TVEpisode(**tv_episode))
 
     def fullPath(self):
         if self.location is None or self.location == "":

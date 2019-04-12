@@ -63,7 +63,7 @@ class QuicksearchCache(object):
             }
 
             self.cache['shows'][indexerid] = qsData
-            CacheDB().add(CacheDB.QuickSearchShow(**qsData))
+            sickrage.app.cache_db.add(CacheDB.QuickSearchShow(**qsData))
 
             sql_l = []
             for e in show.episodes:
@@ -82,7 +82,7 @@ class QuicksearchCache(object):
                 sql_l += [qsData]
 
             if len(sql_l):
-                CacheDB().bulk_add(CacheDB.QuickSearchEpisode, sql_l)
+                sickrage.app.cache_db.bulk_add(CacheDB.QuickSearchEpisode, sql_l)
                 del sql_l
 
     def del_show(self, indexerid):
@@ -98,5 +98,5 @@ class QuicksearchCache(object):
                 del self.cache['episodes'][k]
 
         # remove from database
-        CacheDB().delete(CacheDB.QuickSearchShow, showid=indexerid)
-        CacheDB().delete(CacheDB.QuickSearchEpisode, showid=indexerid)
+        sickrage.app.cache_db.delete(CacheDB.QuickSearchShow, showid=indexerid)
+        sickrage.app.cache_db.delete(CacheDB.QuickSearchEpisode, showid=indexerid)

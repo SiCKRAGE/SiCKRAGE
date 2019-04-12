@@ -66,16 +66,16 @@ class TimeZoneUpdater(object):
 
         for x in CacheDB.NetworkTimezone.query:
             if x.network_name not in network_timezones:
-                CacheDB().delete(CacheDB.NetworkTimezone, network_name=x.network_name)
+                sickrage.app.cache_db.delete(CacheDB.NetworkTimezone, network_name=x.network_name)
 
         for network, timezone in network_timezones.items():
             try:
                 dbData = CacheDB.NetworkTimezone.query.filter_by(network_name=network).one()
                 if dbData.timezone != timezone:
                     dbData.timezone = timezone
-                    CacheDB().update(dbData)
+                    sickrage.app.cache_db.update(dbData)
             except orm.exc.NoResultFound:
-                CacheDB().add(CacheDB.NetworkTimezone(**{
+                sickrage.app.cache_db.add(CacheDB.NetworkTimezone(**{
                     'network_name': network,
                     'timezone': timezone
                 }))

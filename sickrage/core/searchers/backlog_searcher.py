@@ -168,6 +168,6 @@ class BacklogSearcher(object):
         try:
             dbData = MainDB.TVShow.query.filter_by(indexer_id=showid).one()
             dbData.last_backlog_search = when
-            MainDB().update(dbData)
+            sickrage.app.main_db.update(dbData)
         except orm.exc.NoResultFound:
             pass

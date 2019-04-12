@@ -58,7 +58,7 @@ class NameCache(object):
         try:
             CacheDB.SceneName.query.filter_by(name=name, indexer_id=indexer_id).one()
         except orm.exc.NoResultFound:
-            CacheDB().add(CacheDB.SceneName(**{
+            sickrage.app.cache_db.add(CacheDB.SceneName(**{
                 'indexer_id': indexer_id,
                 'name': name
             }))
@@ -79,7 +79,7 @@ class NameCache(object):
         Deletes all entries from the cache matching the indexerid or name.
         """
         if any([indexerid, name]):
-            CacheDB().delete(CacheDB.SceneName,
+            sickrage.app.cache_db.delete(CacheDB.SceneName,
                              or_(CacheDB.SceneName.indexer_id == indexerid, CacheDB.SceneName.name == name))
 
             for key, value in self.cache.copy().items():
@@ -95,7 +95,7 @@ class NameCache(object):
             try:
                 CacheDB.SceneName.query.filter_by(name=name, indexer_id=indexer_id).one()
             except orm.exc.NoResultFound:
-                CacheDB().add(CacheDB.SceneName(**{
+                sickrage.app.cache_db.add(CacheDB.SceneName(**{
                     'indexer_id': indexer_id,
                     'name': name
                 }))

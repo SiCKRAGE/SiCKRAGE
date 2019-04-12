@@ -3489,7 +3489,7 @@ class Manage(Home, WebRoot):
 
         toRemove = toRemove.split("|") if toRemove is not None else []
         if toRemove:
-            MainDB().delete(MainDB.FailedSnatch, MainDB.FailedSnatch.release.in_(toRemove))
+            sickrage.app.main_db.delete(MainDB.FailedSnatch, MainDB.FailedSnatch.release.in_(toRemove))
             return self.redirect('/manage/failedDownloads/')
 
         return self.render(

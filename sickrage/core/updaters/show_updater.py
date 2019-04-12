@@ -53,7 +53,7 @@ class ShowUpdater(object):
             last_update = int(dbData.time)
         except orm.exc.NoResultFound:
             last_update = update_timestamp
-            CacheDB().add(CacheDB.LastUpdate(**{
+            sickrage.app.cache_db.add(CacheDB.LastUpdate(**{
                 'provider': 'theTVDB',
                 'time': 0
             }))
@@ -92,6 +92,6 @@ class ShowUpdater(object):
         ProgressIndicators.setIndicator('dailyShowUpdates', QueueProgressIndicator("Daily Show Updates", pi_list))
 
         dbData.time = update_timestamp
-        CacheDB().update(dbData)
+        sickrage.app.cache_db.update(dbData)
 
         self.amActive = False

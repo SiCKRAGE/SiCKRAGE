@@ -42,7 +42,7 @@ class TVCache(object):
 
     def clear(self):
         if self.shouldClearCache():
-            CacheDB().delete(CacheDB.Provider, provider=self.providerID)
+            sickrage.app.cache_db.delete(CacheDB.Provider, provider=self.providerID)
 
     def _get_title_and_url(self, item):
         return self.provider._get_title_and_url(item)
@@ -134,9 +134,9 @@ class TVCache(object):
         try:
             dbData = CacheDB.LastUpdate.query.filter_by(provider=self.providerID).one()
             dbData.time = int(time.mktime(toDate.timetuple()))
-            CacheDB().update(dbData)
+            sickrage.app.cache_db.update(dbData)
         except orm.exc.NoResultFound:
-            CacheDB().add(CacheDB.LastUpdate(**{
+            sickrage.app.cache_db.add(CacheDB.LastUpdate(**{
                 'provider': self.providerID,
                 'time': int(time.mktime(toDate.timetuple()))
             }))
@@ -158,9 +158,9 @@ class TVCache(object):
         try:
             dbData = CacheDB.LastSearch.query.filter_by(provider=self.providerID).one()
             dbData.time = int(time.mktime(toDate.timetuple()))
-            CacheDB().update(dbData)
+            sickrage.app.cache_db.update(dbData)
         except orm.exc.NoResultFound:
-            CacheDB().add(CacheDB.LastSearch(**{
+            sickrage.app.cache_db.add(CacheDB.LastSearch(**{
                 'provider': self.providerID,
                 'time': int(time.mktime(toDate.timetuple()))
             }))
@@ -231,7 +231,7 @@ class TVCache(object):
                     }
 
                     # add to internal database
-                    CacheDB().add(CacheDB.Provider(**dbData))
+                    sickrage.app.cache_db.add(CacheDB.Provider(**dbData))
 
                     # add to external provider cache database
                     if sickrage.app.config.enable_api_providers_cache and not self.provider.private:

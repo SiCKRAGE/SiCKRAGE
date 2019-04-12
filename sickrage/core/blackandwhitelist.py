@@ -49,7 +49,7 @@ class BlackAndWhiteList(object):
         :param values: Values to be inserted in table
         """
         for value in values:
-            MainDB().add(table(**{
+            sickrage.app.main_db.add(table(**{
                 'show_id': self.show_id,
                 'keyword': value
             }))
@@ -82,7 +82,7 @@ class BlackAndWhiteList(object):
 
         :param table: database table remove keywords from
         """
-        MainDB().delete(table)
+        sickrage.app.main_db.delete(table)
 
     def _load_list(self, table, show_id):
         """

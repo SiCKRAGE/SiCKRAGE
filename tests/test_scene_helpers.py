@@ -72,7 +72,7 @@ class SceneTests(tests.SiCKRAGETestDBCase):
         self._test_sceneToNormalShowNames('Show Name YA', ['Show Name YA'])
 
     def test_allPossibleShowNames(self):
-        CacheDB().add(CacheDB.SceneException(**{
+        sickrage.app.cache_db.add(CacheDB.SceneException(**{
             'indexer_id': 1,
             'show_name': 'Exception Test',
             'season': -1
@@ -119,7 +119,7 @@ class SceneExceptionTestCase(tests.SiCKRAGETestDBCase):
 
     def test_sceneExceptionsResetNameCache(self):
         # clear the exceptions
-        CacheDB().delete(CacheDB.SceneException)
+        sickrage.app.cache_db.delete(CacheDB.SceneException)
 
         # put something in the cache
         sickrage.app.name_cache.put('Cached Name', 0)
