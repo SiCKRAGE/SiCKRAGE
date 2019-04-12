@@ -52,6 +52,7 @@ class srDatabase(object):
         """ Creates a context with an open SQLAlchemy session.
         """
         session = self.Session()
+        session.expire_on_commit = False
 
         try:
             yield session
