@@ -1472,7 +1472,7 @@ class Home(WebHandler):
         with showObj.lock:
             newQuality = try_int(quality_preset, None)
             if not newQuality:
-                newQuality = Quality.combine_qualities(map(int, anyQualities), map(int, bestQualities))
+                newQuality = Quality.combine_qualities(list(map(int, anyQualities)), list(map(int, bestQualities)))
 
             showObj.quality = newQuality
             showObj.skip_downloaded = skip_downloaded
