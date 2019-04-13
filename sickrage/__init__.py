@@ -236,6 +236,9 @@ def main():
                             default=0,
                             type=int,
                             help='Override default/configured port to listen on')
+        parser.add_argument('-H', '--host',
+                            default='',
+                            help='Override default/configured host to listen on')
         parser.add_argument('--dev',
                             action='store_true',
                             help='Enable developer mode')
@@ -259,6 +262,7 @@ def main():
         args = parser.parse_args()
         app.quiet = args.quiet
         app.web_port = int(args.port)
+        app.web_host = args.host
         app.no_launch = args.nolaunch
         app.developer = args.dev
         app.debug = args.debug
