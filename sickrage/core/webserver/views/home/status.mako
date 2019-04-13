@@ -141,14 +141,14 @@
                                     % endif
                                 % endtry
                                     <td>${sickrage.app.show_queue.current_item.is_alive()}</td>
-                                    % if sickrage.app.show_queue.current_item.priority == 10:
+                                    % if sickrage.app.show_queue.current_item.priority[0] == 10:
                                         <td>${_('LOW')}</td>
-                                    % elif sickrage.app.show_queue.current_item.priority == 20:
+                                    % elif sickrage.app.show_queue.current_item.priority[0] == 20:
                                         <td>${_('NORMAL')}</td>
-                                    % elif sickrage.app.show_queue.current_item.priority == 30:
+                                    % elif sickrage.app.show_queue.current_item.priority[0] == 30:
                                         <td>${_('HIGH')}</td>
                                     % else:
-                                        <td>${sickrage.app.show_queue.current_item.priority}</td>
+                                        <td>${sickrage.app.show_queue.current_item.priority[0]}</td>
                                     % endif
                                     <td>${sickrage.app.show_queue.current_item.added.strftime(dateTimeFormat)}</td>
                                     <td>${ShowQueueActions.names[sickrage.app.show_queue.current_item.action_id]}</td>
