@@ -10,32 +10,15 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.serialization import load_pem_private_key, load_pem_public_key
 
 import sickrage
-from sickrage.core.api import API
 
 
 def initialize():
-    if not API().token:
-        return
-
-    public_key_filename = os.path.join(sickrage.app.data_dir, 'sickrage.pub')
-    if os.path.exists(public_key_filename):
-        sickrage.app.log.info("Attempting to load private key from user profile via SiCKRAGE API")
-        while True:
-            sickrage.app.private_key = load_private_key()
-            if sickrage.app.private_key:
-                sickrage.app.log.info("Private key loaded from user profile via SiCKRAGE API")
-                sickrage.app.public_key = sickrage.app.private_key.public_key()
-                save_public_key(public_key_filename, sickrage.app.public_key)
-                break
-    else:
+    private_key_filename = os.path.join(sickrage.app.data_dir, 'privatekey.pem')
+    sickrage.app.private_key = load_private_key(private_key_filename)
+    if not sickrage.app.private_key:
         sickrage.app.private_key = generate_private_key()
-        sickrage.app.public_key = sickrage.app.private_key.public_key()
-        sickrage.app.log.info("Attempting to save private key to user profile via SiCKRAGE API")
-        while True:
-            if save_private_key(sickrage.app.private_key):
-                save_public_key(public_key_filename, sickrage.app.public_key)
-                sickrage.app.log.info("Private key saved to user profile via SiCKRAGE API")
-                break
+        save_private_key(private_key_filename, sickrage.app.private_key)
+    sickrage.app.public_key = sickrage.app.private_key.public_key()
 
 
 def generate_private_key():
@@ -55,6 +38,9 @@ def verify_public_key(public_key, private_key):
 
 
 def load_public_key(filename):
+    if not os.path.exists(filename):
+        return
+
     try:
         with open(filename, 'rb') as fd:
             public_key = load_pem_public_key(fd.read(), default_backend())
@@ -63,10 +49,13 @@ def load_public_key(filename):
         return
 
 
-def load_private_key():
+def load_private_key(filename):
+    if not os.path.exists(filename):
+        return
+
     try:
-        result = API().download_privatekey()
-        private_key = load_pem_private_key(base64.b64decode(result['pem']), None, default_backend())
+        with open(filename, 'rb') as fd:
+            private_key = load_pem_private_key(fd.read(), None, default_backend())
         return private_key
     except Exception:
         return
@@ -82,19 +71,15 @@ def save_public_key(filename, public_key):
         fd.write(pem)
 
 
-def save_private_key(private_key):
+def save_private_key(filename, private_key):
     pem = private_key.private_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PrivateFormat.PKCS8,
         encryption_algorithm=serialization.NoEncryption()
     )
 
-    try:
-        API().upload_privatekey(base64.b64encode(pem))
-    except Exception:
-        return False
-
-    return True
+    with open(filename, 'wb') as fd:
+        fd.write(pem)
 
 
 def encrypt_file(filename, public_key):

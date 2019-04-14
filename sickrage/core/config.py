@@ -37,9 +37,11 @@ from apscheduler.triggers.interval import IntervalTrigger
 from configobj import ConfigObj
 
 import sickrage
+from sickrage.core.api import API
+from sickrage.core.api.account import AccountAPI
 from sickrage.core.common import SD, WANTED, SKIPPED, Quality
 from sickrage.core.helpers import makeDir, generate_secret, auto_type, get_lan_ip, \
-    extract_zipfile, try_int, checkbox_to_value, generateApiKey, backup_versioned_file, encryption
+    extract_zipfile, try_int, checkbox_to_value, generateApiKey, backup_versioned_file, encryption, md5_file_hash
 from sickrage.core.websession import WebSession
 
 
@@ -48,9 +50,10 @@ class Config(object):
         self.loaded = False
 
         self.config_obj = None
-        self.config_version = 12
+        self.config_version = 14
 
-        self.app_sub = ""
+        self.sub_id = ""
+        self.app_id = ""
 
         self.debug = False
 
@@ -700,7 +703,8 @@ class Config(object):
                 'torrent_dir': ''
             },
             'General': {
-                'app_sub': self.app_sub,
+                'sub_id': self.sub_id,
+                'app_id': self.app_id or str(uuid.uuid4()),
                 'enable_api_providers_cache': True,
                 'log_size': 1048576,
                 'calendar_unprotected': False,
@@ -1361,16 +1365,8 @@ class Config(object):
         return my_val
 
     def load(self, defaults=False):
-        # Make sure we can write to the config file
         if not os.path.isabs(sickrage.app.config_file):
             sickrage.app.config_file = os.path.abspath(os.path.join(sickrage.app.data_dir, sickrage.app.config_file))
-
-        if not os.access(sickrage.app.config_file, os.W_OK):
-            if os.path.isfile(sickrage.app.config_file):
-                raise SystemExit("Config file '" + sickrage.app.config_file + "' must be writeable.")
-            elif not os.access(os.path.dirname(sickrage.app.config_file), os.W_OK):
-                raise SystemExit(
-                    "Config file root dir '" + os.path.dirname(sickrage.app.config_file) + "' must be writeable.")
 
         # decrypt config
         if os.path.exists(sickrage.app.config_file):
@@ -1383,6 +1379,18 @@ class Config(object):
                 # old encryption from python 2
                 self.config_obj = ConfigObj(sickrage.app.config_file, encoding='utf8')
                 self.config_obj.walk(self.decrypt)
+        else:
+            try:
+                with io.BytesIO() as buffer:
+                    buffer.write(encryption.decrypt_string(
+                        AccountAPI().download_config(
+                            md5_file_hash(os.path.join(sickrage.app.data_dir, 'privatekey.pem'))
+                        ),
+                        sickrage.app.private_key))
+                    buffer.seek(0)
+                    self.config_obj = ConfigObj(buffer, encoding='utf8')
+            except sickrage.core.api.exceptions.error:
+                pass
 
         self.config_obj = self.config_obj or ConfigObj(encoding='utf8')
 
@@ -1397,8 +1405,9 @@ class Config(object):
         )
 
         # GENERAL SETTINGS
+        self.sub_id = self.check_setting_str('General', 'sub_id')
+        self.app_id = self.check_setting_str('General', 'app_id')
         self.config_version = self.check_setting_int('General', 'config_version')
-        self.app_sub = self.check_setting_str('General', 'app_sub')
         self.enable_api_providers_cache = self.check_setting_bool('General', 'enable_api_providers_cache')
         self.debug = sickrage.app.debug or self.check_setting_bool('General', 'debug')
         self.last_db_compact = self.check_setting_int('General', 'last_db_compact')
@@ -1894,13 +1903,12 @@ class Config(object):
         new_config = ConfigObj(indent_type='  ', encoding='utf8')
         new_config.clear()
 
-        sickrage.app.log.debug("Saving all settings to disk")
-
         new_config.update({
             'General': {
+                'sub_id': self.sub_id,
+                'app_id': self.app_id,
                 'config_version': self.config_version,
                 'last_db_compact': self.last_db_compact,
-                'app_sub': self.app_sub,
                 'enable_api_providers_cache': int(self.enable_api_providers_cache),
                 'git_autoissues': int(self.git_autoissues),
                 'git_username': self.git_username,
@@ -2367,10 +2375,16 @@ class Config(object):
 
         # encrypt config
         if sickrage.app.public_key:
-            with io.BytesIO() as buffer, open(sickrage.app.config_file, 'wb') as fd:
-                new_config.write(buffer)
-                buffer.seek(0)
-                fd.write(encryption.encrypt_string(buffer.read(), sickrage.app.public_key))
+            try:
+                with io.BytesIO() as buffer:
+                    new_config.write(buffer)
+                    buffer.seek(0)
+                    AccountAPI().upload_config(self.app_id,
+                                               md5_file_hash(os.path.join(sickrage.app.data_dir, 'privatekey.pem')),
+                                               encryption.encrypt_string(buffer.read(), sickrage.app.public_key))
+                sickrage.app.log.debug("Saved config to SiCKRAGE cloud")
+            except sickrage.core.api.exceptions.error:
+                pass
 
     def encrypt(self, section, key, _decrypt=False):
         """
@@ -2423,6 +2437,7 @@ class ConfigMigrator(Config):
             10: 'Update all metadata settings to new config format',
             11: 'Update all provider settings to new config format',
             12: 'Migrate external API token to its own file',
+            14: 'Migrate app_sub to sub_id variable',
         }
 
     def migrate_config(self, current_version=0, expected_version=0):
@@ -2548,8 +2563,13 @@ class ConfigMigrator(Config):
     def _migrate_v12(self):
         app_oauth_token = self.check_setting_str('General', 'app_oauth_token', '')
         if app_oauth_token:
-            from sickrage.core.api import API
             with open(API().token_file, 'w') as fd:
                 json.dump(json.loads(app_oauth_token), fd)
             del self.config_obj['General']['app_oauth_token']
+        return self.config_obj
+
+    def _migrate_v14(self):
+        sub_id = self.check_setting_str('General', 'app_sub', '')
+        if sub_id:
+            self.config_obj['General']['sub_id'] = sub_id
         return self.config_obj

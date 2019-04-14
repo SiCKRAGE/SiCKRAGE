@@ -188,11 +188,11 @@ class WebServer(object):
             sickrage.app.log.info(
                 "SiCKRAGE :: STARTED")
             sickrage.app.log.info(
-                "SiCKRAGE :: VERSION:[{}]".format(sickrage.version()))
+                "SiCKRAGE :: APP VERSION:[{}]".format(sickrage.version()))
             sickrage.app.log.info(
-                "SiCKRAGE :: CONFIG:[{}] [v{}]".format(sickrage.app.config_file, sickrage.app.config.config_version))
+                "SiCKRAGE :: CONFIG VERSION:[v{}]".format(sickrage.app.config.config_version))
             sickrage.app.log.info(
-                "SiCKRAGE :: DATABASE:[v{}]".format(sickrage.app.main_db.version))
+                "SiCKRAGE :: DATABASE VERSION:[v{}]".format(sickrage.app.main_db.version))
             sickrage.app.log.info(
                 "SiCKRAGE :: URL:[{}://{}:{}{}]".format(('http', 'https')[sickrage.app.config.enable_https],
                                                         sickrage.app.config.web_host, sickrage.app.config.web_port,

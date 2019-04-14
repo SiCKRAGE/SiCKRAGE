@@ -42,7 +42,7 @@ class GoogleDrive(object):
 
     def sync_remote(self):
         main_folder = 'appDataFolder'
-        folder_id = GoogleDriveAPI().search_files(main_folder, sickrage.app.config.app_sub)['data']
+        folder_id = GoogleDriveAPI().search_files(main_folder, sickrage.app.config.sub_id)['data']
 
         local_dirs = set()
         local_files = set()
@@ -52,7 +52,7 @@ class GoogleDrive(object):
             local_dirs.update(dirs)
             local_files.update(files)
 
-            folder = root.replace(sickrage.app.data_dir, '{}/{}'.format(main_folder, sickrage.app.config.app_sub))
+            folder = root.replace(sickrage.app.data_dir, '{}/{}'.format(main_folder, sickrage.app.config.sub_id))
             folder = folder.replace('\\', '/')
             for f in files:
                 self.set_progress('Syncing {} to Google Drive'.format(os.path.join(root, f)), 0)
@@ -70,7 +70,7 @@ class GoogleDrive(object):
 
     def sync_local(self):
         main_folder = 'appDataFolder'
-        folder_id = GoogleDriveAPI().search_files(main_folder, sickrage.app.config.app_sub)['data']
+        folder_id = GoogleDriveAPI().search_files(main_folder, sickrage.app.config.sub_id)['data']
 
         for drive_root, drive_folders, drive_files in self.walk_drive(folder_id):
             folder = drive_root.replace(folder_id, sickrage.app.data_dir)

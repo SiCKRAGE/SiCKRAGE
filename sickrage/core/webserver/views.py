@@ -22,6 +22,7 @@ import os
 import re
 import time
 import traceback
+import uuid
 from collections import OrderedDict
 from functools import cmp_to_key
 from urllib.parse import urljoin, urlparse, unquote_plus, quote_plus
@@ -43,6 +44,7 @@ import sickrage.subtitles
 from sickrage.clients import getClientIstance
 from sickrage.clients.sabnzbd import SabNZBd
 from sickrage.core.api import API
+from sickrage.core.api.account import AccountAPI
 from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.classes import ErrorViewer, AllShowsUI
 from sickrage.core.classes import WarningViewer
@@ -284,10 +286,10 @@ class LoginHandler(BaseHandler):
                 if not userinfo.get('sub'):
                     return self.redirect('/logout')
 
-                if not sickrage.app.config.app_sub:
-                    sickrage.app.config.app_sub = userinfo.get('sub')
+                if not sickrage.app.config.sub_id:
+                    sickrage.app.config.sub_id = userinfo.get('sub')
                     sickrage.app.config.save()
-                elif sickrage.app.config.app_sub != userinfo.get('sub'):
+                elif sickrage.app.config.sub_id != userinfo.get('sub'):
                     if API().token:
                         allowed_usernames = API().allowed_usernames()['data']
                         if not userinfo['preferred_username'] in allowed_usernames:
@@ -302,7 +304,9 @@ class LoginHandler(BaseHandler):
                 if not API().token:
                     exchange = {'scope': 'offline_access', 'subject_token': token['access_token']}
                     API().token = sickrage.app.oidc_client.token_exchange(**exchange)
-                    encryption.initialize()
+
+                AccountAPI().register_app_id(sickrage.app.config.app_id, 'test')
+                sickrage.app.config.save()
             except Exception as e:
                 return self.redirect('/logout')
 
@@ -551,10 +555,12 @@ class WebRoot(WebHandler):
         )
 
     def unlink(self):
-        if not sickrage.app.config.app_sub == self.get_current_user().get('sub'):
+        if not sickrage.app.config.sub_id == self.get_current_user().get('sub'):
             return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
-        sickrage.app.config.app_sub = ""
+        AccountAPI().unregister_app_id(sickrage.app.config.app_id)
+
+        sickrage.app.config.sub_id = ""
         sickrage.app.config.save()
 
         API().token = sickrage.app.oidc_client.logout(API().token['refresh_token'])
@@ -3886,8 +3892,7 @@ class ConfigGeneral(Config):
             [sickrage.app.log.error(x) for x in results]
             sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.app.alerts.message(_('[GENERAL] Configuration Saved'),
-                                        os.path.join(sickrage.app.config_file))
+            sickrage.app.alerts.message(_('[GENERAL] Configuration Encrypted and Saved to SiCKRAGE Cloud'))
 
         return self.redirect("/config/general/")
 
@@ -4050,8 +4055,7 @@ class ConfigSearch(Config):
             [sickrage.app.log.error(x) for x in results]
             sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.app.alerts.message(_('[SEARCH] Configuration Saved'),
-                                        os.path.join(sickrage.app.config_file))
+            sickrage.app.alerts.message(_('[SEARCH] Configuration Encrypted and Saved to SiCKRAGE Cloud'))
 
         return self.redirect("/config/search/")
 
@@ -4181,8 +4185,7 @@ class ConfigPostProcessing(Config):
             [sickrage.app.log.warning(x) for x in results]
             sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.app.alerts.message(_('[POST-PROCESSING] Configuration Saved'),
-                                        os.path.join(sickrage.app.config_file))
+            sickrage.app.alerts.message(_('[POST-PROCESSING] Configuration Encrypted and Saved to SiCKRAGE Cloud'))
 
         return self.redirect("/config/postProcessing/")
 
@@ -4405,8 +4408,7 @@ class ConfigProviders(Config):
             [sickrage.app.log.error(x) for x in results]
             sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.app.alerts.message(_('[PROVIDERS] Configuration Saved'),
-                                        os.path.join(sickrage.app.config_file))
+            sickrage.app.alerts.message(_('[PROVIDERS] Configuration Encrypted and Saved to SiCKRAGE Cloud'))
 
         return self.redirect("/config/providers/")
 
@@ -4751,8 +4753,7 @@ class ConfigNotifications(Config):
             [sickrage.app.log.error(x) for x in results]
             sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.app.alerts.message(_('[NOTIFICATIONS] Configuration Saved'),
-                                        os.path.join(sickrage.app.config_file))
+            sickrage.app.alerts.message(_('[NOTIFICATIONS] Configuration Encrypted and Saved to SiCKRAGE Cloud'))
 
         return self.redirect("/config/notifications/")
 
@@ -4839,8 +4840,7 @@ class ConfigSubtitles(Config):
             [sickrage.app.log.error(x) for x in results]
             sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.app.alerts.message(_('[SUBTITLES] Configuration Saved'),
-                                        os.path.join(sickrage.app.config_file))
+            sickrage.app.alerts.message(_('[SUBTITLES] Configuration Encrypted and Saved to SiCKRAGE Cloud'))
 
         return self.redirect("/config/subtitles/")
 
@@ -4878,8 +4878,7 @@ class ConfigAnime(Config):
             [sickrage.app.log.error(x) for x in results]
             sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.app.alerts.message(_('[ANIME] Configuration Saved'),
-                                        os.path.join(sickrage.app.config_file))
+            sickrage.app.alerts.message(_('[ANIME] Configuration Encrypted and Saved to SiCKRAGE Cloud'))
 
         return self.redirect("/config/anime/")
 
@@ -4905,8 +4904,7 @@ class ConfigQualitySettings(Config):
 
         sickrage.app.config.save()
 
-        sickrage.app.alerts.message(_('[QUALITY SETTINGS] Configuration Saved'),
-                                    os.path.join(sickrage.app.config_file))
+        sickrage.app.alerts.message(_('[QUALITY SETTINGS] Configuration Encrypted and Saved to SiCKRAGE Cloud'))
 
         return self.redirect("/config/qualitySettings/")
 

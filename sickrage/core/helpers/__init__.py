@@ -22,6 +22,7 @@ import ctypes
 import datetime
 import errno
 import glob
+import hashlib
 import os
 import platform
 import random
@@ -1855,3 +1856,10 @@ def strip_accents(name):
         name = name.decode()
 
     return name
+
+
+def md5_file_hash(filename):
+    hasher = hashlib.md5()
+    with open(filename, 'rb') as fd:
+        hasher.update(fd.read())
+    return hasher.hexdigest()
