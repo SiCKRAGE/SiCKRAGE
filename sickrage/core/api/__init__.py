@@ -13,7 +13,7 @@ from sickrage.core.api.exceptions import unauthorized, error
 
 class API(object):
     def __init__(self):
-        self.api_url = 'https://api.sickrage.ca/api/v1/'
+        self.api_url = 'https://www.sickrage.ca/api/v1/'
         self.client_id = sickrage.app.oidc_client._client_id
         self.client_secret = sickrage.app.oidc_client._client_secret
         self.token_url = sickrage.app.oidc_client.well_known['token_endpoint']
