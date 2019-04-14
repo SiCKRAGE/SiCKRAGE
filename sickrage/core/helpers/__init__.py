@@ -356,18 +356,6 @@ def sanitizeFileName(name):
     return name
 
 
-def remove_file_failed(failed_file):
-    """
-    Remove file from filesystem
-
-    """
-
-    try:
-        os.remove(failed_file)
-    except Exception:
-        pass
-
-
 def findCertainShow(indexerid, return_show_object=True):
     """
     Find a show by indexer ID in the show list

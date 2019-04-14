@@ -1379,6 +1379,7 @@ class Config(object):
                 # old encryption from python 2
                 self.config_obj = ConfigObj(sickrage.app.config_file, encoding='utf8')
                 self.config_obj.walk(self.decrypt)
+            os.remove(sickrage.app.config_file)
         else:
             try:
                 with io.BytesIO() as buffer:

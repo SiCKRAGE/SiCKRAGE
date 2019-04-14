@@ -15,8 +15,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
-
-
+import os
 import ssl
 from urllib.parse import splittype
 
@@ -119,7 +118,8 @@ class WebSession(Session):
             helpers.chmod_as_parent(filename)
         except Exception as e:
             sickrage.app.log.debug("Failed to download file from {} - ERROR: {}".format(url, e))
-            helpers.remove_file_failed(filename)
+            if os.path.exists(filename):
+                os.remove(filename)
             return False
 
         return True
