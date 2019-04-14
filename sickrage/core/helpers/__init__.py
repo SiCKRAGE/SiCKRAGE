@@ -1008,8 +1008,7 @@ def backupSR(backupDir, keep_latest=False):
     files_list = [
         'main.db',
         'cache.db',
-        'privatekey.pem',
-        os.path.basename(sickrage.app.config_file)
+        'privatekey.pem'
     ]
 
     def _keep_latest_backup():
@@ -1048,9 +1047,9 @@ def restoreSR(srcDir, dstDir):
     try:
         files_list = ['main.db',
                       'cache.db',
-                      'privatekey.pem',
                       'main.codernitydb',
                       'cache.codernitydb',
+                      'privatekey.pem',
                       os.path.basename(sickrage.app.config_file)]
 
         for filename in files_list:
