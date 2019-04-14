@@ -215,7 +215,7 @@ class Core(object):
             helpers.move_file(os.path.abspath(os.path.join(self.data_dir, 'sickbeard.db')),
                               os.path.abspath(os.path.join(self.data_dir, 'sickrage.db')))
 
-        # init public/private key
+        # init encryption public and private keys
         encryption.initialize()
 
         # load config
