@@ -704,7 +704,7 @@ class Config(object):
             },
             'General': {
                 'sub_id': self.sub_id,
-                'app_id': self.app_id or str(uuid.uuid4()),
+                'app_id': self.app_id or AccountAPI().register_app_id(),
                 'enable_api_providers_cache': True,
                 'log_size': 1048576,
                 'calendar_unprotected': False,
@@ -2375,7 +2375,7 @@ class Config(object):
         })
 
         # encrypt config
-        if sickrage.app.public_key:
+        if self.app_id:
             try:
                 with io.BytesIO() as buffer:
                     new_config.write(buffer)
@@ -2383,7 +2383,7 @@ class Config(object):
                     AccountAPI().upload_config(self.app_id,
                                                md5_file_hash(os.path.join(sickrage.app.data_dir, 'privatekey.pem')),
                                                encryption.encrypt_string(buffer.read(), sickrage.app.public_key))
-                sickrage.app.log.debug("Saved config to SiCKRAGE cloud")
+                sickrage.app.log.debug("Saved encrypted config to SiCKRAGE cloud")
             except sickrage.core.api.exceptions.error:
                 pass
 

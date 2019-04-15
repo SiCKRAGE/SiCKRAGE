@@ -2,20 +2,15 @@ from sickrage.core.api import API
 
 
 class AccountAPI(API):
-    def register_app_id(self, app_id, alias):
-        data = {
-            'app-id': app_id,
-            'alias': alias
-        }
-
-        return self._request('POST', 'account/register-app-id', data=data)
+    def register_app_id(self):
+        return self._request('GET', 'account/app-id')
 
     def unregister_app_id(self, app_id):
         data = {
             'app-id': app_id
         }
 
-        return self._request('POST', 'account/unregister-app-id', data=data)
+        return self._request('DELETE', 'account/app-id', data=data)
 
     def upload_config(self, app_id, pkey_sig, config):
         data = {

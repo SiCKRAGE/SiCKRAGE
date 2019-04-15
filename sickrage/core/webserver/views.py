@@ -144,6 +144,7 @@ class BaseHandler(RequestHandler):
                                              webroot=sickrage.app.config.web_root))
 
     def get_current_user(self):
+        # get userinfo
         try:
             try:
                 return sickrage.app.oidc_client.userinfo(self.get_secure_cookie('sr_access_token'))
@@ -304,11 +305,12 @@ class LoginHandler(BaseHandler):
                 if not API().token:
                     exchange = {'scope': 'offline_access', 'subject_token': token['access_token']}
                     API().token = sickrage.app.oidc_client.token_exchange(**exchange)
-
-                AccountAPI().register_app_id(sickrage.app.config.app_id, 'test')
-                sickrage.app.config.save()
             except Exception as e:
                 return self.redirect('/logout')
+
+            if not sickrage.app.config.app_id:
+                sickrage.app.config.app_id = AccountAPI().register_app_id()
+                sickrage.app.config.save()
 
             redirect_uri = self.get_argument('next', "/{}/".format(sickrage.app.config.default_page))
             return self.redirect("{}".format(redirect_uri))
