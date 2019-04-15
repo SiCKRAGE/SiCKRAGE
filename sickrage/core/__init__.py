@@ -38,6 +38,7 @@ from keycloak.realm import KeycloakRealm
 from tornado.ioloop import IOLoop
 
 import sickrage
+from sickrage.core.api.account import AccountAPI
 from sickrage.core.caches.name_cache import NameCache
 from sickrage.core.caches.quicksearch_cache import QuicksearchCache
 from sickrage.core.common import SD, SKIPPED, WANTED

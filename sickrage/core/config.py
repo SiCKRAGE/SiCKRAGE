@@ -50,7 +50,7 @@ class Config(object):
         self.loaded = False
 
         self.config_obj = None
-        self.config_version = 14
+        self.config_version = 15
 
         self.sub_id = ""
         self.app_id = ""
@@ -1407,7 +1407,7 @@ class Config(object):
 
         # GENERAL SETTINGS
         self.sub_id = self.check_setting_str('General', 'sub_id')
-        self.app_id = self.check_setting_str('General', 'app_id') or AccountAPI().register_app_id()
+        self.app_id = self.check_setting_str('General', 'app_id')
         self.config_version = self.check_setting_int('General', 'config_version')
         self.enable_api_providers_cache = self.check_setting_bool('General', 'enable_api_providers_cache')
         self.debug = sickrage.app.debug or self.check_setting_bool('General', 'debug')
@@ -2439,6 +2439,7 @@ class ConfigMigrator(Config):
             11: 'Update all provider settings to new config format',
             12: 'Migrate external API token to its own file',
             14: 'Migrate app_sub to sub_id variable',
+            15: 'Added AppID to config',
         }
 
     def migrate_config(self, current_version=0, expected_version=0):
@@ -2573,4 +2574,10 @@ class ConfigMigrator(Config):
         sub_id = self.check_setting_str('General', 'app_sub', '')
         if sub_id:
             self.config_obj['General']['sub_id'] = sub_id
+        return self.config_obj
+
+    def _migrate_v15(self):
+        app_id = self.check_setting_str('General', 'app_id', '')
+        if not app_id and API().token:
+            self.config_obj['General']['app_id'] = AccountAPI().register_app_id()
         return self.config_obj
