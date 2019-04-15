@@ -704,7 +704,7 @@ class Config(object):
             },
             'General': {
                 'sub_id': self.sub_id,
-                'app_id': self.app_id or AccountAPI().register_app_id(),
+                'app_id': self.app_id,
                 'enable_api_providers_cache': True,
                 'log_size': 1048576,
                 'calendar_unprotected': False,
@@ -1407,7 +1407,7 @@ class Config(object):
 
         # GENERAL SETTINGS
         self.sub_id = self.check_setting_str('General', 'sub_id')
-        self.app_id = self.check_setting_str('General', 'app_id')
+        self.app_id = self.check_setting_str('General', 'app_id') or AccountAPI().register_app_id()
         self.config_version = self.check_setting_int('General', 'config_version')
         self.enable_api_providers_cache = self.check_setting_bool('General', 'enable_api_providers_cache')
         self.debug = sickrage.app.debug or self.check_setting_bool('General', 'debug')
