@@ -996,7 +996,8 @@ def backupSR(backupDir, keep_latest=False):
     files_list = [
         'main.db',
         'cache.db',
-        'privatekey.pem'
+        'privatekey.pem',
+        os.path.basename(sickrage.app.config_file)
     ]
 
     def _keep_latest_backup():

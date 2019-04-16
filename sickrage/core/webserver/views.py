@@ -20,6 +20,7 @@
 import datetime
 import os
 import re
+import threading
 import time
 import traceback
 import uuid
@@ -37,6 +38,7 @@ from mako.lookup import TemplateLookup
 from requests import HTTPError
 from sqlalchemy import orm, or_
 from tornado.escape import json_encode, recursive_unicode
+from tornado.ioloop import IOLoop
 from tornado.web import RequestHandler, authenticated
 
 import sickrage
@@ -205,14 +207,6 @@ class BaseHandler(RequestHandler):
     def render(self, template_name, **kwargs):
         return self.render_string(template_name, **kwargs)
 
-    def worker(self, function, **kwargs):
-        kwargs = recursive_unicode(kwargs)
-        for arg, value in kwargs.items():
-            if len(value) == 1:
-                kwargs[arg] = value[0]
-
-        return function(**kwargs)
-
     def set_default_headers(self):
         self.set_header("Access-Control-Allow-Origin", "*")
         self.set_header("Access-Control-Allow-Headers", "x-requested-with")
@@ -222,7 +216,7 @@ class BaseHandler(RequestHandler):
     def redirect(self, url, permanent=True, status=None):
         if sickrage.app.config.web_root not in url:
             url = urljoin(sickrage.app.config.web_root + '/', url.lstrip('/'))
-        super(BaseHandler, self).redirect(url, permanent, status)
+        sickrage.app.io_loop.add_callback(lambda: super(BaseHandler, self).redirect(url, permanent, status))
 
     def previous_url(self):
         url = urlparse(self.request.headers.get("referer", "/{}/".format(sickrage.app.config.default_page)))
@@ -234,20 +228,18 @@ class WebHandler(BaseHandler):
         super(WebHandler, self).__init__(*args, **kwargs)
 
     @authenticated
-    @tornado.gen.coroutine
-    def get(self, *args, **kwargs):
-        result = self.route()
+    async def get(self, *args, **kwargs):
+        result = await self.route()
         if result:
             self.write(result)
 
     @authenticated
-    @tornado.gen.coroutine
-    def post(self, *args, **kwargs):
-        result = self.route()
+    async def post(self, *args, **kwargs):
+        result = await self.route()
         if result:
             self.write(result)
 
-    def route(self):
+    async def route(self):
         # route -> method obj
         method = getattr(
             self, self.request.path.strip('/').split('/')[::-1][0].replace('.', '_'),
@@ -255,7 +247,16 @@ class WebHandler(BaseHandler):
         )
 
         if method:
-            return self.worker(method, **self.request.arguments)
+            return await sickrage.app.io_loop.run_in_executor(None, lambda: self.worker(method, **self.request.arguments))
+
+    def worker(self, function, **kwargs):
+        kwargs = recursive_unicode(kwargs)
+        for arg, value in kwargs.items():
+            if len(value) == 1:
+                kwargs[arg] = value[0]
+
+        threading.currentThread().setName('TORNADO')
+        return function(**kwargs)
 
     def _genericMessage(self, subject, message):
         return self.render(
@@ -413,7 +414,7 @@ class WebRoot(WebHandler):
         super(WebRoot, self).__init__(*args, **kwargs)
 
     def index(self):
-        return self.redirect("/{}/".format(sickrage.app.config.default_page))
+        raise self.redirect("/{}/".format(sickrage.app.config.default_page))
 
     def robots_txt(self):
         """ Keep web crawlers out """

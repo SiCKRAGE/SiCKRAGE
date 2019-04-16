@@ -1368,6 +1368,13 @@ class Config(object):
         if not os.path.isabs(sickrage.app.config_file):
             sickrage.app.config_file = os.path.abspath(os.path.join(sickrage.app.data_dir, sickrage.app.config_file))
 
+        if not os.access(sickrage.app.config_file, os.W_OK):
+            if os.path.isfile(sickrage.app.config_file):
+                raise SystemExit("Config file '{}' must be writeable.".format(sickrage.app.config_file))
+            elif not os.access(os.path.dirname(sickrage.app.config_file), os.W_OK):
+                raise SystemExit(
+                    "Config file root dir '{}' must be writeable.".format(os.path.dirname(sickrage.app.config_file)))
+
         # decrypt config
         if os.path.exists(sickrage.app.config_file):
             try:
@@ -1379,19 +1386,6 @@ class Config(object):
                 # old encryption from python 2
                 self.config_obj = ConfigObj(sickrage.app.config_file, encoding='utf8')
                 self.config_obj.walk(self.decrypt)
-            os.remove(sickrage.app.config_file)
-        else:
-            try:
-                with io.BytesIO() as buffer:
-                    buffer.write(encryption.decrypt_string(
-                        AccountAPI().download_config(
-                            md5_file_hash(os.path.join(sickrage.app.data_dir, 'privatekey.pem'))
-                        ),
-                        sickrage.app.private_key))
-                    buffer.seek(0)
-                    self.config_obj = ConfigObj(buffer, encoding='utf8')
-            except sickrage.core.api.exceptions.error:
-                pass
 
         self.config_obj = self.config_obj or ConfigObj(encoding='utf8')
 
@@ -2375,17 +2369,14 @@ class Config(object):
         })
 
         # encrypt config
-        if self.app_id:
-            try:
-                with io.BytesIO() as buffer:
-                    new_config.write(buffer)
-                    buffer.seek(0)
-                    AccountAPI().upload_config(self.app_id,
-                                               md5_file_hash(os.path.join(sickrage.app.data_dir, 'privatekey.pem')),
-                                               encryption.encrypt_string(buffer.read(), sickrage.app.public_key))
-                sickrage.app.log.debug("Saved encrypted config to SiCKRAGE cloud")
-            except sickrage.core.api.exceptions.error:
-                pass
+        try:
+            with io.BytesIO() as buffer, open(sickrage.app.config_file, 'wb') as fd:
+                new_config.write(buffer)
+                buffer.seek(0)
+                fd.write(encryption.encrypt_string(buffer.read(), sickrage.app.public_key))
+            sickrage.app.log.debug("Saved encrypted config to disk")
+        except sickrage.core.api.exceptions.error:
+            pass
 
     def encrypt(self, section, key, _decrypt=False):
         """
