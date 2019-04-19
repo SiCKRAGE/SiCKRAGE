@@ -88,8 +88,8 @@ class PushbulletNotifier(Notifiers):
         sickrage.app.log.debug("Pushbullet devices: %r" % pushbullet_device)
 
         post_data = {
-            'title': event.encode('utf-8'),
-            'body': message.encode('utf-8'),
+            'title': event,
+            'body': message,
             'type': 'note'
         }
 

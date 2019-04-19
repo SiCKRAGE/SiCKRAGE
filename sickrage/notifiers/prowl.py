@@ -75,7 +75,7 @@ class ProwlNotifier(Notifiers):
         data = {'apikey': prowl_api,
                 'application': title,
                 'event': event,
-                'description': message.encode('utf-8'),
+                'description': message,
                 'priority': prowl_priority}
 
         resp = WebSession().post("https://api.prowlapp.com/publicapi/add",

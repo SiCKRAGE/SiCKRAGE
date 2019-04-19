@@ -80,7 +80,7 @@
                                         <tr id="${cur_indexer_id}">
                                             <th style="width: 1%;">
                                                 <input type="checkbox" class="allCheck" id="allCheck-${cur_indexer_id}"
-                                                       name="${cur_indexer_id}-all" checked/>
+                                                       name="toDownload" value="${cur_indexer_id}-all" checked/>
                                             </th>
                                             <th colspan="3" style="text-align: left;">
                                                 <a class="whitelink"

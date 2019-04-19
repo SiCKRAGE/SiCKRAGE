@@ -68,8 +68,8 @@ class PushoverNotifier(Notifiers):
         if sickrage.app.config.pushover_sound != "default":
             args = {"token": apiKey,
                     "user": userKey,
-                    "title": title.encode('utf-8'),
-                    "message": msg.encode('utf-8'),
+                    "title": title,
+                    "message": msg,
                     "timestamp": int(time.time()),
                     "retry": 60,
                     "expire": 3600,
@@ -79,8 +79,8 @@ class PushoverNotifier(Notifiers):
             # sound is default, so don't send it
             args = {"token": apiKey,
                     "user": userKey,
-                    "title": title.encode('utf-8'),
-                    "message": msg.encode('utf-8'),
+                    "title": title,
+                    "message": msg,
                     "timestamp": int(time.time()),
                     "retry": 60,
                     "expire": 3600,

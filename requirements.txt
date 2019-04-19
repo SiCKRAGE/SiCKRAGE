@@ -14,7 +14,7 @@ profilehooks == 1.10.0
 Send2Trash == 1.5.0
 six == 1.11.0
 subliminal == 2.0.5
-tornado == 5.1.1
+tornado == 6.0.2
 xmltodict == 0.11.0
 MultipartPostHandler == 0.1.0
 beautifulsoup4 == 4.6.3

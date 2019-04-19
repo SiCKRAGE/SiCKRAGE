@@ -24,7 +24,7 @@
                 </div>
 
                 <div class="card-body">
-                    <form action="massEditSubmit" method="post">
+                    <form action="massEdit" method="post">
                         <input type="hidden" name="toEdit" value="${showList}"/>
                         <p>
                             <u>

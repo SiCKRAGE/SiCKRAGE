@@ -53,7 +53,7 @@ class FreeMobileNotifier(Notifiers):
 
         # build up the URL and parameters
         msg = msg.strip()
-        msg_quoted = parse.quote(title.encode('utf-8') + ": " + msg.encode('utf-8'))
+        msg_quoted = parse.quote(title + ": " + msg)
         URL = "https://smsapi.free-mobile.fr/sendmsg?user=" + id + "&pass=" + apiKey + "&msg=" + msg_quoted
 
         resp = WebSession().get(URL

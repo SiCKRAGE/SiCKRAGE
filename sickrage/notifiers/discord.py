@@ -67,10 +67,8 @@ class DiscordNotifier(Notifiers):
         sickrage.app.log.info("Sending discord message: " + message)
         sickrage.app.log.info("Sending discord message  to url: " + discord_webhook)
 
-        if isinstance(message, str):
-            message = message.encode('utf-8')
-
         headers = {"Content-Type": "application/json"}
+
         try:
             r = requests.post(discord_webhook, data=json.dumps(dict(content=message,
                                                                     username=discord_name,

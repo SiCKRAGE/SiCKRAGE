@@ -11,7 +11,6 @@
                         <h3 class="title">${title}</h3>
                     </div>
                     <div class="card-body">
-
                         <input type="hidden" id="type" name="proc_type" value="manual">
                         <div class="row">
                             <div class="col-md-6">

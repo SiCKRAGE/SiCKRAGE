@@ -219,7 +219,7 @@ class EmailNotifier(Notifiers):
                 srv.ehlo()
             if user and pwd:
                 sickrage.app.log.debug('Sent LOGIN command!')
-                srv.login(user.encode('utf-8'), pwd.encode('utf-8'))
+                srv.login(user, pwd)
 
             srv.sendmail(smtp_from, to, msg.as_string())
             srv.quit()

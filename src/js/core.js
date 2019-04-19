@@ -56,23 +56,23 @@ $(document).ready(function ($) {
         text_viewer: function () {
             var minimized_elements = $('p.text-viewer');
 
-            minimized_elements.each(function(){
+            minimized_elements.each(function () {
                 var t = $(this).text();
-                if(t.length < 500) return;
+                if (t.length < 500) return;
 
                 $(this).html(
-                    t.slice(0,500)+'<span>... </span><a href="#" class="read-more"> Read More</a>'+
-                    '<span style="display:none;">'+ t.slice(500,t.length)+' <a href="#" class="read-less"> Read Less </a></span>'
+                    t.slice(0, 500) + '<span>... </span><a href="#" class="read-more"> Read More</a>' +
+                    '<span style="display:none;">' + t.slice(500, t.length) + ' <a href="#" class="read-less"> Read Less </a></span>'
                 );
             });
 
-            $('a.read-more', minimized_elements).click(function(event){
+            $('a.read-more', minimized_elements).click(function (event) {
                 event.preventDefault();
                 $(this).hide().prev().hide();
                 $(this).next().show();
             });
 
-            $('a.read-less', minimized_elements).click(function(event){
+            $('a.read-less', minimized_elements).click(function (event) {
                 event.preventDefault();
                 $(this).parent().hide().prev().show().prev().show();
             });
@@ -535,7 +535,7 @@ $(document).ready(function ($) {
 
                 $("#changelog").on('click', function (event) {
                     event.preventDefault();
-                    $("#changelogModal").find('.modal-body').load(SICKRAGE.srWebRoot + '/changes');
+                    $("#changelogModal").find('.modal-body').load(SICKRAGE.srWebRoot + '/changelog');
                     $("#changelogModal").modal();
                 });
 
@@ -5136,7 +5136,7 @@ $(document).ready(function ($) {
                 function makeRow(indexerId, season, episode, name, checked) {
                     var row = '';
                     row += ' <tr class="text-dark ' + $('#row_class').val() + ' show-' + indexerId + '">';
-                    row += '  <td align="center"><input type="checkbox" class="' + indexerId + '-epcheck" name="' + indexerId + '-' + season + 'x' + episode + '"' + (checked ? ' checked' : '') + '></td>';
+                    row += '  <td align="center"><input type="checkbox" class="' + indexerId + '-epcheck" name="toChange" value="' + indexerId + '-' + season + 'x' + episode + '"' + (checked ? ' checked' : '') + '></td>';
                     row += '  <td>' + season + 'x' + episode + '</td>';
                     row += '  <td style="width: 100%">' + name + '</td>';
                     row += ' </tr>';
@@ -5260,7 +5260,7 @@ $(document).ready(function ($) {
                         return;
                     }
 
-                    window.location.href = 'massEdit?toEdit=' + checkArr.join('|');
+                    window.location = SICKRAGE.srWebRoot + "/manage/massEdit?toEdit=" + checkArr.join('|');
                 });
 
                 $('#submitMassUpdate').on('click', function () {
@@ -5274,7 +5274,9 @@ $(document).ready(function ($) {
                         return;
                     }
 
-                    window.location.href = 'massUpdate?toUpdate=' + checkArr.join('|');
+                    $.post(SICKRAGE.srWebRoot + "/manage/massUpdate", {
+                        toUpdate: checkArr.join('|')
+                    });
                 });
 
                 $('#submitMassRescan').on('click', function () {
@@ -5288,7 +5290,9 @@ $(document).ready(function ($) {
                         return;
                     }
 
-                    window.location.href = 'massUpdate?toRefresh=' + checkArr.join('|');
+                    $.post(SICKRAGE.srWebRoot + "/manage/massUpdate", {
+                        toRefresh: checkArr.join('|')
+                    });
                 });
 
                 $('#submitMassRename').on('click', function () {
@@ -5302,7 +5306,9 @@ $(document).ready(function ($) {
                         return;
                     }
 
-                    window.location.href = 'massUpdate?toRename=' + checkArr.join('|');
+                    $.post(SICKRAGE.srWebRoot + "/manage/massUpdate", {
+                        toRename: checkArr.join('|')
+                    });
                 });
 
                 $('#submitMassDelete').on('click', function () {
@@ -5322,7 +5328,9 @@ $(document).ready(function ($) {
                         content: gt("You have selected to delete " + checkArr.length + " show(s).  Are you sure you wish to continue? All files will be removed from your system."),
                         buttons: {
                             confirm: function () {
-                                window.location.href = 'massUpdate?toDelete=' + checkArr.join('|');
+                                $.post(SICKRAGE.srWebRoot + "/manage/massUpdate", {
+                                    toDelete: checkArr.join('|')
+                                });
                             },
                             cancel: {
                                 action: function () {
@@ -5344,7 +5352,25 @@ $(document).ready(function ($) {
                         return;
                     }
 
-                    window.location.href = 'massUpdate?toRemove=' + checkArr.join('|');
+                    $.post(SICKRAGE.srWebRoot + "/manage/massUpdate", {
+                        toRemove: checkArr.join('|')
+                    });
+                });
+
+                $('#submitMassSubtitle').on('click', function () {
+                    var checkArr = [];
+
+                    $('.showCheck:checked').each(function () {
+                        checkArr.push($(this).attr('id'));
+                    });
+
+                    if (checkArr.length === 0) {
+                        return;
+                    }
+
+                    $.post(SICKRAGE.srWebRoot + "/manage/massUpdate", {
+                        toSubtitle: checkArr.join('|')
+                    });
                 });
 
                 $('.bulkCheck').on('click', function () {
@@ -5488,7 +5514,7 @@ $(document).ready(function ($) {
 
                     var row = '';
                     row += ' <tr class="good show-' + indexerId + '">';
-                    row += '  <td align="center"><input type="checkbox" class="' + indexerId + '-epcheck" name="' + indexerId + '-' + season + 'x' + episode + '"' + checked + '></td>';
+                    row += '  <td align="center"><input type="checkbox" class="' + indexerId + '-epcheck" name="toDownload" value="' + indexerId + '-' + season + 'x' + episode + '"' + checked + '></td>';
                     row += '  <td style="width: 1%;">' + season + 'x' + episode + '</td>';
                     row += '  <td>' + name + '</td>';
                     row += ' </tr>';
@@ -5568,7 +5594,7 @@ $(document).ready(function ($) {
                     $('#minLevel').prop('disabled', true);
                     $('#logFilter').prop('disabled', true);
                     document.body.style.cursor = 'wait';
-                    var url = SICKRAGE.srWebRoot + '/logs/viewlog/?minLevel=' + $('select[name=minLevel]').val() + '&logFilter=' + $('select[name=logFilter]').val() + '&logSearch=' + $('#logSearch').val();
+                    var url = SICKRAGE.srWebRoot + '/logs/view/?minLevel=' + $('select[name=minLevel]').val() + '&logFilter=' + $('select[name=logFilter]').val() + '&logSearch=' + $('#logSearch').val();
                     $.get(url, function (data) {
                         history.pushState('data', '', url);
                         $('#loglines').html($(data).find('#loglines').html());

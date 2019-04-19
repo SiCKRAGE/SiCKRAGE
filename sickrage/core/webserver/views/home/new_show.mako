@@ -159,7 +159,7 @@
 
                     <div class="card setup-content" id="step-3">
                         <div class="card-header">
-                            <h3 class="card-title">${_('Custom options')}</h3>
+                            <h3 class="card-title">${_('Custom options for show: ')} ${default_show_name}</h3>
                         </div>
                         <div class="card-body">
                             <div class="form-group">

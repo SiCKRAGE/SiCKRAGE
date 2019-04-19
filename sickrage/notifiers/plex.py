@@ -119,7 +119,7 @@ class PLEXNotifier(Notifiers):
             sickrage.app.log.debug('PLEX: Sending notification to \'%s\' - %s' % (curHost, message))
 
             command = {'command': 'ExecBuiltIn',
-                       'parameter': 'Notification(%s,%s)' % (title.encode('utf-8'), message.encode('utf-8'))}
+                       'parameter': 'Notification(%s,%s)' % (title, message)}
             notify_result = self._send_to_plex(command, curHost, username, password)
             if notify_result:
                 result += '%s:%s' % (curHost, str(notify_result))

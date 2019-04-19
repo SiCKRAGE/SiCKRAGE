@@ -301,7 +301,7 @@
                                         <span class="badge badge-warning">${numWarnings}</span>
                                     </a>
                                 %endif
-                                <a class="dropdown-item" href="${srWebRoot}/logs/viewlog/">
+                                <a class="dropdown-item" href="${srWebRoot}/logs/view/">
                                     <i class="fas fa-fw fa-file-archive"></i>&nbsp;${_('View Log')}
                                 </a>
                                 <div class="dropdown-divider"></div>

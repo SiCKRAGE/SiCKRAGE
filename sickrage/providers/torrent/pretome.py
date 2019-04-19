@@ -93,7 +93,7 @@ class PretomeProvider(TorrentProvider):
                 if mode != 'RSS':
                     sickrage.app.log.debug("Search string: %s " % search_string)
 
-                searchURL = self.urls['search'] % (parse.quote(search_string.encode('utf-8')), self.categories)
+                searchURL = self.urls['search'] % (parse.quote(search_string), self.categories)
 
                 try:
                     data = self.session.get(searchURL).text

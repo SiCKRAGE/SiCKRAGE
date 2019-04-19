@@ -69,8 +69,8 @@ class PushalotNotifier(Notifiers):
         sickrage.app.log.debug("Pushalot api: " + pushalot_authorizationtoken)
 
         data = {'AuthorizationToken': pushalot_authorizationtoken,
-                'Title': event.encode('utf-8'),
-                'Body': message.encode('utf-8')}
+                'Title': event,
+                'Body': message}
 
         resp = WebSession().post("https://pushalot.com/api/sendmessage",
                                  headers={'Content-type': "application/x-www-form-urlencoded"},

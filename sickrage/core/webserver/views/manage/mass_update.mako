@@ -18,8 +18,7 @@
             <button class="btn" id="submitMassDelete">${_('Mass Delete')}</button>
             <button class="btn" id="submitMassRemove">${_('Mass Remove')}</button>
             % if sickrage.app.config.use_subtitles:
-                <input class="btn" type="button" value="${_('Mass Subtitle')}"
-                       id="submitMassSubtitle"/>
+                <button class="btn" id="submitMassSubtitle">${_('Mass Subtitle')}</button>
             % endif
         </div>
         <div class="col text-right">
@@ -57,86 +56,84 @@
                     <h3>${title}</h3>
                 </div>
                 <div class="card-body">
-                    <form name="massUpdateForm" method="post" action="massUpdate">
-                        <div class="table-responsive">
-                            <table id="massUpdateTable" class="table">
-                                <thead class="thead-dark">
-                                <tr>
-                                    <th class="col-checkbox">
-                                        <input type="checkbox" class="bulkCheck" id="checkAll"/>
-                                    </th>
-                                    <th>${_('Show Name')}</th>
-                                    <th>${_('Show Directory')}</th>
-                                    <th class="col-quality">${_('Quality')}</th>
-                                    <th class="col-legend">${_('Sports')}</th>
-                                    <th class="col-legend">${_('Scene')}</th>
-                                    <th class="col-legend">${_('Anime')}</th>
-                                    <th class="col-legend">${_('Season folders')}</th>
-                                    <th class="col-legend">${_('Skip downloaded')}</th>
-                                    <th class="col-legend">${_('Paused')}</th>
-                                    <th class="col-legend">${_('Subtitle')}</th>
-                                    <th class="col-legend">${_('Default Ep Status')}</th>
-                                    <th class="col-legend">${_('Status')}</th>
-                                </tr>
-                                </thead>
+                    <div class="table-responsive">
+                        <table id="massUpdateTable" class="table">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th class="col-checkbox">
+                                    <input type="checkbox" class="bulkCheck" id="checkAll"/>
+                                </th>
+                                <th>${_('Show Name')}</th>
+                                <th>${_('Show Directory')}</th>
+                                <th class="col-quality">${_('Quality')}</th>
+                                <th class="col-legend">${_('Sports')}</th>
+                                <th class="col-legend">${_('Scene')}</th>
+                                <th class="col-legend">${_('Anime')}</th>
+                                <th class="col-legend">${_('Season folders')}</th>
+                                <th class="col-legend">${_('Skip downloaded')}</th>
+                                <th class="col-legend">${_('Paused')}</th>
+                                <th class="col-legend">${_('Subtitle')}</th>
+                                <th class="col-legend">${_('Default Ep Status')}</th>
+                                <th class="col-legend">${_('Status')}</th>
+                            </tr>
+                            </thead>
 
-                                <tbody>
-                                    % for curShow in sorted(sickrage.app.showlist, key=cmp_to_key(lambda x, y: x.name < y.name)):
-                                        <% curEp = curShow.next_aired %>
+                            <tbody>
+                                % for curShow in sorted(sickrage.app.showlist, key=cmp_to_key(lambda x, y: x.name < y.name)):
+                                    <% curEp = curShow.next_aired %>
 
-                                        <tr class="${curShow.status}" id="${curShow.indexerid}">
-                                            <td class="table-fit">
-                                                <input type="checkbox" class="showCheck"
-                                                       id="${curShow.indexerid}"
-                                                       name="${curShow.indexerid}" ${('disabled', '')[bool(not any([sickrage.app.show_queue.is_being_renamed(curShow), sickrage.app.show_queue.is_in_rename_queue(curShow), sickrage.app.show_queue.is_in_refresh_queue(curShow), sickrage.app.show_queue.is_being_updated(curShow),sickrage.app.show_queue.is_in_update_queue(curShow), sickrage.app.show_queue.is_being_refreshed(curShow), sickrage.app.show_queue.is_in_refresh_queue(curShow), sickrage.app.show_queue.is_being_renamed(curShow), sickrage.app.show_queue.is_in_rename_queue(curShow), sickrage.app.show_queue.is_being_subtitled(curShow), sickrage.app.show_queue.is_in_subtitle_queue(curShow)]))]}/>
-                                            </td>
-                                            <td class="tvShow">
-                                                <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a>
-                                            </td>
-                                            <td>
-                                                ${curShow.location}
-                                            </td>
-                                            <td class="table-fit">${renderQualityPill(curShow.quality, showTitle=True)}</td>
-                                            <td class="table-fit">
-                                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(curShow.is_sports)]}"></i>
-                                                <span class="d-none d-print-inline">${bool(curShow.is_sports)}</span>
-                                            </td>
-                                            <td class="table-fit">
-                                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(curShow.is_scene)]}"></i>
-                                                <span class="d-none d-print-inline">${bool(curShow.is_scene)}</span>
-                                            </td>
-                                            <td class="table-fit">
-                                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(curShow.is_anime)]}"></i>
-                                                <span class="d-none d-print-inline">${bool(curShow.is_anime)}</span>
-                                            </td>
-                                            <td class="table-fit">
-                                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[not bool(curShow.flatten_folders)]}"></i>
-                                                <span class="d-none d-print-inline">${bool(curShow.flatten_folders)}</span>
-                                            </td>
-                                            <td class="table-fit">
-                                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(curShow.skip_downloaded)]}"></i>
-                                                <span class="d-none d-print-inline">${bool(curShow.skip_downloaded)}</span>
-                                            </td>
-                                            <td class="table-fit">
-                                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(curShow.paused)]}"></i>
-                                                <span class="d-none d-print-inline">${bool(curShow.paused)}</span>
-                                            </td>
-                                            <td class="table-fit">
-                                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(curShow.subtitles)]}"></i>
-                                                <span class="d-none d-print-inline">${bool(curShow.subtitles)}</span>
-                                            </td>
-                                            <td class="table-fit">
-                                                ${statusStrings[curShow.default_ep_status]}
-                                            </td>
-                                            <td class="table-fit">
-                                                ${curShow.status}
-                                            </td>
-                                        </tr>
-                                    % endfor
-                                </tbody>
-                            </table>
-                        </div>
-                    </form>
+                                    <tr class="${curShow.status}" id="${curShow.indexerid}">
+                                        <td class="table-fit">
+                                            <input type="checkbox" class="showCheck"
+                                                   id="${curShow.indexerid}"
+                                                   name="${curShow.indexerid}" ${('disabled', '')[bool(not any([sickrage.app.show_queue.is_being_renamed(curShow), sickrage.app.show_queue.is_in_rename_queue(curShow), sickrage.app.show_queue.is_in_refresh_queue(curShow), sickrage.app.show_queue.is_being_updated(curShow),sickrage.app.show_queue.is_in_update_queue(curShow), sickrage.app.show_queue.is_being_refreshed(curShow), sickrage.app.show_queue.is_in_refresh_queue(curShow), sickrage.app.show_queue.is_being_renamed(curShow), sickrage.app.show_queue.is_in_rename_queue(curShow), sickrage.app.show_queue.is_being_subtitled(curShow), sickrage.app.show_queue.is_in_subtitle_queue(curShow)]))]}/>
+                                        </td>
+                                        <td class="tvShow">
+                                            <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a>
+                                        </td>
+                                        <td>
+                                            ${curShow.location}
+                                        </td>
+                                        <td class="table-fit">${renderQualityPill(curShow.quality, showTitle=True)}</td>
+                                        <td class="table-fit">
+                                            <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(curShow.is_sports)]}"></i>
+                                            <span class="d-none d-print-inline">${bool(curShow.is_sports)}</span>
+                                        </td>
+                                        <td class="table-fit">
+                                            <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(curShow.is_scene)]}"></i>
+                                            <span class="d-none d-print-inline">${bool(curShow.is_scene)}</span>
+                                        </td>
+                                        <td class="table-fit">
+                                            <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(curShow.is_anime)]}"></i>
+                                            <span class="d-none d-print-inline">${bool(curShow.is_anime)}</span>
+                                        </td>
+                                        <td class="table-fit">
+                                            <i class="fa ${("fa-times text-danger", "fa-check text-success")[not bool(curShow.flatten_folders)]}"></i>
+                                            <span class="d-none d-print-inline">${bool(curShow.flatten_folders)}</span>
+                                        </td>
+                                        <td class="table-fit">
+                                            <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(curShow.skip_downloaded)]}"></i>
+                                            <span class="d-none d-print-inline">${bool(curShow.skip_downloaded)}</span>
+                                        </td>
+                                        <td class="table-fit">
+                                            <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(curShow.paused)]}"></i>
+                                            <span class="d-none d-print-inline">${bool(curShow.paused)}</span>
+                                        </td>
+                                        <td class="table-fit">
+                                            <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(curShow.subtitles)]}"></i>
+                                            <span class="d-none d-print-inline">${bool(curShow.subtitles)}</span>
+                                        </td>
+                                        <td class="table-fit">
+                                            ${statusStrings[curShow.default_ep_status]}
+                                        </td>
+                                        <td class="table-fit">
+                                            ${curShow.status}
+                                        </td>
+                                    </tr>
+                                % endfor
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

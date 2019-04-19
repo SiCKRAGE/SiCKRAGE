@@ -39,9 +39,15 @@
                             </div>
                         </form>
                     % else:
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button class="btn selectAllShows">${_('Select All')}</button>
+                                <button class="btn unselectAllShows">${_('Clear All')}</button>
+                            </div>
+                        </div>
+                        <br/>
                         <form action="${srWebRoot}/manage/changeEpisodeStatuses" method="post">
                             <input type="hidden" id="oldStatus" name="oldStatus" value="${whichStatus}"/>
-
                             <div class="row">
                                 <div class="col-md-12">
                                     <h2>
@@ -49,9 +55,7 @@
                                     </h2>
                                 </div>
                             </div>
-
                             <br>
-
                             <div class="row">
                                 <div class="col-md-12">
                                     <%
@@ -91,13 +95,6 @@
                             <br/>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <button class="btn selectAllShows">${_('Select All')}</button>
-                                    <button class="btn unselectAllShows">${_('Clear All')}</button>
-                                </div>
-                            </div>
-                            <br/>
-                            <div class="row">
-                                <div class="col-md-12">
                                     <div class="table-responsive">
                                         <table class="table">
                                             % for cur_indexer_id in sorted_show_ids:
@@ -106,7 +103,7 @@
                                                         <input type="checkbox" class="allCheck"
                                                                id="allCheck-${cur_indexer_id}"
                                                                title="${show_names[cur_indexer_id]}"
-                                                               name="${cur_indexer_id}-all" checked/>
+                                                               name="toChange" value="${cur_indexer_id}-all" checked/>
                                                     </td>
                                                     <td class="text-left text-nowrap" style="border:none">
                                                         <a class="text-white"

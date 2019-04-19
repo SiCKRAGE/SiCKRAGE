@@ -91,7 +91,7 @@ class MainDB(srDatabase):
         )
 
         showid = Column(Integer, index=True, primary_key=True)
-        indexerid = Column(Integer, index=True, primary_key=True)
+        indexerid = Column(Integer, index=True)
         indexer = Column(Integer, index=True, primary_key=True)
         season = Column(Integer, index=True, primary_key=True)
         episode = Column(Integer, index=True, primary_key=True)

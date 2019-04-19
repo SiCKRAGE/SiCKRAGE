@@ -2,7 +2,7 @@
 
 <%!
     from collections import OrderedDict
-    from sickrage.core.webserver.api import ApiHandler
+    from sickrage.core.webserver.handlers.api import ApiHandler
 %>
 
 <%block name="metas">

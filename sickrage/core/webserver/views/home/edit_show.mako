@@ -365,7 +365,7 @@
                                                                 class="form-control"
                                                                 multiple="multiple"
                                                                 style="min-width:200px;height:99px;">
-                                                            % for cur_exception in show.exceptions:
+                                                            % for cur_exception in scene_exceptions:
                                                                 <option value="${cur_exception}">${cur_exception}</option>
                                                             % endfor
                                                         </select>

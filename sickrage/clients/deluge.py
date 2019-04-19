@@ -39,7 +39,7 @@ class DelugeAPI(GenericClient):
                                 "id": 1})
 
         try:
-            self.response = self.session.post(self.url, data=post_data.encode('utf-8'),
+            self.response = self.session.post(self.url, data=post_data,
                                               verify=bool(sickrage.app.config.torrent_verify_cert))
         except Exception:
             return None
@@ -51,7 +51,7 @@ class DelugeAPI(GenericClient):
                                 "id": 10})
 
         try:
-            self.response = self.session.post(self.url, data=post_data.encode('utf-8'),
+            self.response = self.session.post(self.url, data=post_data,
                                               verify=bool(sickrage.app.config.torrent_verify_cert))
         except Exception:
             return None
@@ -62,7 +62,7 @@ class DelugeAPI(GenericClient):
                                     "params": [],
                                     "id": 11})
             try:
-                self.response = self.session.post(self.url, data=post_data.encode('utf-8'),
+                self.response = self.session.post(self.url, data=post_data,
                                                   verify=bool(sickrage.app.config.torrent_verify_cert))
             except Exception:
                 return None
@@ -77,7 +77,7 @@ class DelugeAPI(GenericClient):
                                     "id": 11})
 
             try:
-                self.response = self.session.post(self.url, data=post_data.encode('utf-8'),
+                self.response = self.session.post(self.url, data=post_data,
                                                   verify=bool(sickrage.app.config.torrent_verify_cert))
             except Exception:
                 return None
@@ -87,7 +87,7 @@ class DelugeAPI(GenericClient):
                                     "id": 10})
 
             try:
-                self.response = self.session.post(self.url, data=post_data.encode('utf-8'),
+                self.response = self.session.post(self.url, data=post_data,
                                                   verify=bool(sickrage.app.config.torrent_verify_cert))
             except Exception:
                 return None
