@@ -70,7 +70,6 @@ class srQueue(object):
             item.run()
         finally:
             self.processing.remove(item)
-            item.is_alive = False
             self.queue.task_done()
 
     def get(self):
