@@ -55,7 +55,7 @@ class srQueue(object):
         self.amActive = True
 
         while not (self.stop and self.queue.empty()):
-            if not self.is_paused and not len(self.processing) == sickrage.app.config.max_queue_workers:
+            if not self.is_paused and not len(self.processing) >= int(sickrage.app.config.max_queue_workers):
                 sickrage.app.io_loop.run_in_executor(None, self.worker, await self.get())
 
             await gen.sleep(1)
@@ -98,7 +98,7 @@ class srQueue(object):
 
     @property
     def is_busy(self):
-        return bool(len(self.queue_items))
+        return bool(len(self.queue_items) > 0)
 
     @property
     def is_paused(self):
