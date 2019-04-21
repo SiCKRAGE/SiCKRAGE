@@ -57,8 +57,8 @@ class PostProcessorQueue(srQueue):
         for cur_item in self.queue_items:
             if isinstance(cur_item,
                           PostProcessorItem) and cur_item.dirName == dirName and cur_item.proc_type == proc_type:
-                return cur_item
-        return None
+                return True
+        return False
 
     @property
     def is_in_progress(self):
@@ -84,8 +84,8 @@ class PostProcessorQueue(srQueue):
 
         return length
 
-    def put(self, dirName, nzbName=None, process_method=None, force=False, is_priority=None, delete_on=False,
-            failed=False, proc_type="auto", force_next=False, **kwargs):
+    async def put(self, dirName, nzbName=None, process_method=None, force=False, is_priority=None, delete_on=False,
+                  failed=False, proc_type="auto", force_next=False, **kwargs):
         """
         Adds an item to post-processing queue
         :param dirName: directory to process
@@ -114,27 +114,23 @@ class PostProcessorQueue(srQueue):
             delete_on = (False, (not sickrage.app.config.no_delete, True)[process_method == "move"])[
                 proc_type == "auto"]
 
-        item = self.find_in_queue(dirName, proc_type)
-
-        if item:
-            item.__dict__.update(dict(dirName=dirName, nzbName=nzbName, process_method=process_method, force=force,
-                                      is_priority=is_priority, delete_on=delete_on, failed=failed, proc_type=proc_type))
-
-            message = logHelper(
-                "An item with directory {} is already being processed in the queue, item updated".format(dirName))
-            return message + "<br\><span class='hidden'>Processing succeeded</span>"
+        if self.find_in_queue(dirName, proc_type):
+            message = logHelper("An item with directory {} is already being processed in the queue".format(dirName))
+            return message
         else:
             sickrage.app.io_loop.add_callback(super(PostProcessorQueue, self).put,
                                               PostProcessorItem(dirName, nzbName, process_method, force, is_priority,
                                                                 delete_on, failed, proc_type))
 
             if force_next:
-                return self._result_queue.get()
-            else:
-                message = logHelper(
-                    "{} post-processing job for {} has been added to the queue".format(proc_type.title(), dirName)
-                )
-                return message + "<br\><span class='hidden'>Processing succeeded</span>"
+                result = await self._result_queue.get()
+                return result
+
+            message = logHelper(
+                "{} post-processing job for {} has been added to the queue".format(proc_type.title(), dirName)
+            )
+
+            return message + "<br\><span class='hidden'>Processing succeeded</span>"
 
 
 class PostProcessorItem(srQueueItem):
@@ -183,4 +179,4 @@ class PostProcessorItem(srQueueItem):
             self.result = '{}'.format(traceback.format_exc())
             self.result += 'Processing Failed'
 
-        self.result_queue.put(self.result)
+        sickrage.app.io_loop.add_callback(self.result_queue.put, self.result)

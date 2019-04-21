@@ -60,7 +60,7 @@ class HomeProcessEpisodeHandler(BaseHandler, ABC):
         if not proc_dir:
             return self.redirect("/home/postprocess/")
 
-        result = await self.run_task(lambda: sickrage.app.postprocessor_queue.put(proc_dir, **pp_options))
+        result = await sickrage.app.postprocessor_queue.put(proc_dir, **pp_options)
 
         if quiet:
             return self.write(result)
