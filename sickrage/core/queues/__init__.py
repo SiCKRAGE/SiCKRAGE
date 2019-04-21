@@ -45,30 +45,29 @@ class srQueue(object):
         self.processing = []
         self.min_priority = srQueuePriorities.EXTREME
         self.amActive = False
+        self.stop = False
 
     async def watch(self):
         """
         Process items in this queue
         """
 
-        while True:
-            self.amActive = True
+        self.amActive = True
 
+        while not (self.stop and self.queue.empty()):
             if not self.is_paused:
                 await sickrage.app.io_loop.run_in_executor(None, self.worker, await self.get())
 
-            self.amActive = False
-
             await gen.sleep(1)
+
+        self.amActive = False
 
     def worker(self, item):
         threading.currentThread().setName(item.name)
         try:
             self.processing.append(item)
-            item.is_alive = True
             item.run()
         finally:
-            item.is_alive = False
             self.processing.remove(item)
             self.queue.task_done()
 
@@ -82,10 +81,14 @@ class srQueue(object):
         :param item: Queue object to add
         :return: item
         """
+        if self.stop:
+            return
+
         item.added = datetime.datetime.now()
         item.name = "{}-{}".format(self.name, item.name)
         item.result_queue = self._result_queue
         self.queue.put(item)
+
         return item
 
     @property
@@ -94,7 +97,7 @@ class srQueue(object):
 
     @property
     def is_busy(self):
-        return bool(len([x for x in self.queue_items if x.is_alive]))
+        return bool(len(self.queue_items))
 
     @property
     def is_paused(self):
