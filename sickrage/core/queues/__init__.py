@@ -55,7 +55,7 @@ class srQueue(object):
         self.amActive = True
 
         while not (self.stop and self.queue.empty()):
-            if not self.is_paused and not len(self.processing) > sickrage.app.config.max_queue_workers:
+            if not self.is_paused and not len(self.processing) == sickrage.app.config.max_queue_workers:
                 sickrage.app.io_loop.run_in_executor(None, self.worker, await self.get())
 
             await gen.sleep(1)
@@ -65,10 +65,12 @@ class srQueue(object):
     def worker(self, item):
         threading.currentThread().setName(item.name)
         try:
+            item.is_alive = True
             self.processing.append(item)
             item.run()
         finally:
             self.processing.remove(item)
+            item.is_alive = False
             self.queue.task_done()
 
     def get(self):
