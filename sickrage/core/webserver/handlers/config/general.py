@@ -255,6 +255,6 @@ class SaveGeneralHandler(BaseHandler, ABC):
             [sickrage.app.log.error(x) for x in results]
             sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.app.alerts.message(_('[GENERAL] Configuration Encrypted and Saved to SiCKRAGE Cloud'))
+            sickrage.app.alerts.message(_('[GENERAL] Configuration Encrypted and Saved to disk'))
 
         return self.redirect("/config/general/")

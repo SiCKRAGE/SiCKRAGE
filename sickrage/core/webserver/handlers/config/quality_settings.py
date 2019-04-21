@@ -60,6 +60,6 @@ class SaveQualitiesHandler(BaseHandler, ABC):
 
         sickrage.app.config.save()
 
-        sickrage.app.alerts.message(_('[QUALITY SETTINGS] Configuration Encrypted and Saved to SiCKRAGE Cloud'))
+        sickrage.app.alerts.message(_('[QUALITY SETTINGS] Configuration Encrypted and Saved to disk'))
 
         return self.redirect("/config/qualitySettings/")
