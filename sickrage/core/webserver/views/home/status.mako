@@ -140,13 +140,15 @@
                                         <td></td>
                                     % endif
                                 % endtry
-                                    <td>${item.is_alive()}</td>
-                                    % if item.priority == 10:
-                                        <td>${_('LOW')}</td>
+                                    <td>${item.is_alive}</td>
+                                    % if item.priority == 5:
+                                        <td>${_('EXTREME')}</td>
+                                    % elif item.priority == 10:
+                                        <td>${_('HIGH')}</td>
                                     % elif item.priority == 20:
                                         <td>${_('NORMAL')}</td>
                                     % elif item.priority == 30:
-                                        <td>${_('HIGH')}</td>
+                                        <td>${_('LOW')}</td>
                                     % else:
                                         <td>${item.priority}</td>
                                     % endif
