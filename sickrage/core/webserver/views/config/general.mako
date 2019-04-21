@@ -1,4 +1,4 @@
-<%inherit file="../layouts/config.mako"/>
+c<%inherit file="../layouts/config.mako"/>
 <%def name='formaction()'><% return 'saveGeneral' %></%def>
 <%!
     import datetime
@@ -980,6 +980,25 @@
                                     <option value="${cur_preset}" ${('', 'selected')[sickrage.app.config.cpu_preset == cur_preset]}>${cur_preset.capitalize()}</option>
                                 % endfor
                             </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row form-group">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
+                        <label class="component-title">${_('Max queue workers')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fas fa-microchip"></span>
+                                </span>
+                            </div>
+                            <input id="max_queue_workers" name="max_queue_workers" type="number"
+                                   value="${sickrage.app.config.max_queue_workers}" min="1"
+                                   title="maximum allowed items to be processed from queue at same time"
+                                   class="form-control" autocapitalize="off"/>
                         </div>
                     </div>
                 </div>

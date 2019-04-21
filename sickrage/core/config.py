@@ -470,6 +470,8 @@ class Config(object):
 
         self.view_changelog = False
 
+        self.max_queue_workers = None
+
     @property
     def defaults(self):
         return {
@@ -830,7 +832,8 @@ class Config(object):
                 'processor_follow_symlinks': False,
                 'allowed_extensions': 'srt,nfo,srr,sfv',
                 'view_changelog': False,
-                'strip_special_file_bits': True
+                'strip_special_file_bits': True,
+                'max_queue_workers': 5
             },
             'NZBget': {
                 'nzbget_host': '',
@@ -1431,6 +1434,7 @@ class Config(object):
         self.ep_default_deleted_status = self.check_setting_int('General', 'ep_default_deleted_status')
         self.download_url = self.check_setting_str('General', 'download_url')
         self.cpu_preset = self.check_setting_str('General', 'cpu_preset')
+        self.max_queue_workers = self.check_setting_int('General', 'max_queue_workers')
         self.anon_redirect = self.check_setting_str('General', 'anon_redirect')
         self.proxy_setting = self.check_setting_str('General', 'proxy_setting')
         self.proxy_indexers = self.check_setting_bool('General', 'proxy_indexers')
@@ -1924,6 +1928,7 @@ class Config(object):
                 'ssl_verify': int(self.ssl_verify),
                 'download_url': self.download_url,
                 'cpu_preset': self.cpu_preset,
+                'max_queue_workers': self.max_queue_workers,
                 'anon_redirect': self.anon_redirect,
                 'api_key': self.api_key,
                 'debug': int(self.debug),

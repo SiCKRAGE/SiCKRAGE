@@ -148,6 +148,7 @@ class SaveGeneralHandler(BaseHandler, ABC):
         enable_api_providers_cache = self.get_body_argument('enable_api_providers_cache', None)
         enable_upnp = self.get_body_argument('enable_upnp', None)
         strip_special_file_bits = self.get_body_argument('strip_special_file_bits', None)
+        max_queue_workers = self.get_body_argument('max_queue_workers', None)
 
         results = []
 
@@ -245,6 +246,8 @@ class SaveGeneralHandler(BaseHandler, ABC):
         sickrage.app.config.theme_name = theme_name
 
         sickrage.app.config.default_page = default_page
+
+        sickrage.app.config.max_queue_workers = try_int(max_queue_workers)
 
         sickrage.app.config.save()
 
