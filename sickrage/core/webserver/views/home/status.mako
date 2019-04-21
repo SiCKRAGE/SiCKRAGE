@@ -140,7 +140,7 @@
                                         <td></td>
                                     % endif
                                 % endtry
-                                    <td>${item.is_alive}</td>
+                                    <td>${bool(item in sickrage.app.show_queue.processing)}</td>
                                     % if item.priority == 5:
                                         <td>${_('EXTREME')}</td>
                                     % elif item.priority == 10:
