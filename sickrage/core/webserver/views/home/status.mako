@@ -122,39 +122,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                            % if sickrage.app.show_queue.current_item is not None:
-                                <tr>
-                                % try:
-                                    <% showindexerid = sickrage.app.show_queue.current_item.show.indexerid %>
-                                    <td>${showindexerid}</td>
-                                % except Exception:
-                                    <td></td>
-                                % endtry
-                                % try:
-                                    <% showname = sickrage.app.show_queue.current_item.show.name %>
-                                    <td>${showname}</td>
-                                % except Exception:
-                                    % if sickrage.app.show_queue.current_item.action_id == ShowQueueActions.ADD:
-                                        <td>${sickrage.app.show_queue.current_item.showDir}</td>
-                                    % else:
-                                        <td></td>
-                                    % endif
-                                % endtry
-                                    <td>${sickrage.app.show_queue.current_item.is_alive()}</td>
-                                    % if sickrage.app.show_queue.current_item.priority[0] == 10:
-                                        <td>${_('LOW')}</td>
-                                    % elif sickrage.app.show_queue.current_item.priority[0] == 20:
-                                        <td>${_('NORMAL')}</td>
-                                    % elif sickrage.app.show_queue.current_item.priority[0] == 30:
-                                        <td>${_('HIGH')}</td>
-                                    % else:
-                                        <td>${sickrage.app.show_queue.current_item.priority[0]}</td>
-                                    % endif
-                                    <td>${sickrage.app.show_queue.current_item.added.strftime(dateTimeFormat)}</td>
-                                    <td>${ShowQueueActions.names[sickrage.app.show_queue.current_item.action_id]}</td>
-                                </tr>
-                            % endif
-                            % for item in sickrage.app.show_queue.queue:
+                            % for item in sickrage.app.show_queue.queue_items:
                                 <tr>
                                 % try:
                                     <% showindexerid = item.show.indexerid %>

@@ -17,11 +17,12 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import datetime
 import os
 import time
 import traceback
+
+from tornado.ioloop import IOLoop
 
 import sickrage
 from sickrage.core.blackandwhitelist import BlackAndWhiteList
@@ -48,44 +49,47 @@ class ShowQueue(srQueue):
         return self._get_loading_show_list()
 
     def _is_in_queue(self, show, actions):
-        return show.indexerid in [x.show.indexerid if x.show else 0 for x in self.queue if
+        return show.indexerid in [x.show.indexerid if x.show else 0 for x in self.queue_items if
                                   x.action_id in actions] if show else False
 
     def _is_being(self, show, actions):
-        return self.current_item is not None and show == self.current_item.show and self.current_item.action_id in actions
+        for x in self.queue_items:
+            if show == x.show and x.action_id in actions:
+                return True
+        return False
 
     def is_in_update_queue(self, show):
-        return self._is_in_queue(show, (ShowQueueActions.UPDATE, ShowQueueActions.FORCEUPDATE))
+        return self._is_in_queue(show, [ShowQueueActions.UPDATE, ShowQueueActions.FORCEUPDATE])
 
     def is_in_refresh_queue(self, show):
-        return self._is_in_queue(show, (ShowQueueActions.REFRESH,))
+        return self._is_in_queue(show, [ShowQueueActions.REFRESH])
 
     def is_in_rename_queue(self, show):
-        return self._is_in_queue(show, (ShowQueueActions.RENAME,))
+        return self._is_in_queue(show, [ShowQueueActions.RENAME])
 
     def is_in_subtitle_queue(self, show):
-        return self._is_in_queue(show, (ShowQueueActions.SUBTITLE,))
+        return self._is_in_queue(show, [ShowQueueActions.SUBTITLE])
 
     def is_being_removed(self, show):
-        return self._is_being(show, (ShowQueueActions.REMOVE,))
+        return self._is_being(show, [ShowQueueActions.REMOVE])
 
     def is_being_added(self, show):
-        return self._is_being(show, (ShowQueueActions.ADD,))
+        return self._is_being(show, [ShowQueueActions.ADD])
 
     def is_being_updated(self, show):
-        return self._is_being(show, (ShowQueueActions.UPDATE, ShowQueueActions.FORCEUPDATE))
+        return self._is_being(show, [ShowQueueActions.UPDATE, ShowQueueActions.FORCEUPDATE])
 
     def is_being_refreshed(self, show):
-        return self._is_being(show, (ShowQueueActions.REFRESH,))
+        return self._is_being(show, [ShowQueueActions.REFRESH])
 
     def is_being_renamed(self, show):
-        return self._is_being(show, (ShowQueueActions.RENAME,))
+        return self._is_being(show, [ShowQueueActions.RENAME])
 
     def is_being_subtitled(self, show):
-        return self._is_being(show, (ShowQueueActions.SUBTITLE,))
+        return self._is_being(show, [ShowQueueActions.SUBTITLE])
 
     def _get_queue_items(self):
-        return [x for x in self.queue + [self.current_item] if x]
+        return self.queue_items
 
     def _get_loading_show_list(self):
         return [x for x in self._get_queue_items() if x.is_loading]
@@ -103,8 +107,10 @@ class ShowQueue(srQueue):
             raise CantUpdateShowException("{} is in the process of being updated, can't update again until "
                                           "it's done.".format(show.name))
 
-        return self.put(QueueItemForceUpdate(show, indexer_update_only)) if force else self.put(
-            QueueItemUpdate(show, indexer_update_only))
+        if force:
+            sickrage.app.io_loop.add_callback(self.put, QueueItemForceUpdate(show, indexer_update_only))
+        else:
+            sickrage.app.io_loop.add_callback(self.put, QueueItemUpdate(show, indexer_update_only))
 
     def refreshShow(self, show, force=False):
         if (self.is_being_refreshed(show) or self.is_in_refresh_queue(show)) and not force:
@@ -117,13 +123,13 @@ class ShowQueue(srQueue):
 
         sickrage.app.log.debug("Queueing show refresh for {}".format(show.name))
 
-        return self.put(QueueItemRefresh(show, force=force))
+        sickrage.app.io_loop.add_callback(self.put, QueueItemRefresh(show, force=force))
 
     def renameShowEpisodes(self, show):
-        return self.put(QueueItemRename(show))
+        sickrage.app.io_loop.add_callback(self.put, QueueItemRename(show))
 
     def download_subtitles(self, show):
-        return self.put(QueueItemSubtitle(show))
+        sickrage.app.io_loop.add_callback(self.put, QueueItemSubtitle(show))
 
     def addShow(self, indexer, indexer_id, showDir, default_status=None, quality=None, flatten_folders=None,
                 lang=None, subtitles=None, subtitles_sr_metadata=None, anime=None, scene=None, paused=None,
@@ -132,22 +138,22 @@ class ShowQueue(srQueue):
         if lang is None:
             lang = sickrage.app.config.indexer_default_language
 
-        return self.put(QueueItemAdd(indexer=indexer,
-                                     indexer_id=indexer_id,
-                                     showDir=showDir,
-                                     default_status=default_status,
-                                     quality=quality,
-                                     flatten_folders=flatten_folders,
-                                     lang=lang,
-                                     subtitles=subtitles,
-                                     subtitles_sr_metadata=subtitles_sr_metadata,
-                                     anime=anime,
-                                     scene=scene,
-                                     paused=paused,
-                                     blacklist=blacklist,
-                                     whitelist=whitelist,
-                                     default_status_after=default_status_after,
-                                     skip_downloaded=skip_downloaded))
+        sickrage.app.io_loop.add_callback(self.put, QueueItemAdd(indexer=indexer,
+                                                                 indexer_id=indexer_id,
+                                                                 showDir=showDir,
+                                                                 default_status=default_status,
+                                                                 quality=quality,
+                                                                 flatten_folders=flatten_folders,
+                                                                 lang=lang,
+                                                                 subtitles=subtitles,
+                                                                 subtitles_sr_metadata=subtitles_sr_metadata,
+                                                                 anime=anime,
+                                                                 scene=scene,
+                                                                 paused=paused,
+                                                                 blacklist=blacklist,
+                                                                 whitelist=whitelist,
+                                                                 default_status_after=default_status_after,
+                                                                 skip_downloaded=skip_downloaded))
 
     def removeShow(self, show, full=False):
         if not show:
@@ -162,7 +168,7 @@ class ShowQueue(srQueue):
             if x and x.show and x != self.current_item and show.indexerid == x.show.indexerid:
                 self.queue.remove(x)
 
-        return self.put(QueueItemRemove(show=show, full=full))
+        sickrage.app.io_loop.add_callback(self.put, QueueItemRemove(show=show, full=full))
 
 
 class ShowQueueActions(object):

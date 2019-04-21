@@ -15,8 +15,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
-
-
+from tornado.ioloop import IOLoop
 
 import sickrage
 from sickrage.core.common import Quality, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST
@@ -83,7 +82,7 @@ class FailedProcessor(object):
             if curStatus not in {SNATCHED, SNATCHED_BEST, SNATCHED_PROPER}:
                 continue
 
-            sickrage.app.search_queue.put(FailedQueueItem(parsed.show, [segment]))
+            sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, FailedQueueItem(parsed.show, [segment]))
 
         return True
 

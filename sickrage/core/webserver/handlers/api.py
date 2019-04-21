@@ -48,6 +48,7 @@ from urllib.parse import unquote_plus
 
 from sqlalchemy import orm
 from tornado.escape import json_encode, recursive_unicode
+from tornado.ioloop import IOLoop
 from tornado.web import RequestHandler
 
 import sickrage.subtitles
@@ -861,7 +862,7 @@ class CMD_EpisodeSearch(ApiCall):
 
         # make a queue item for it and put it on the queue
         ep_queue_item = ManualSearchQueueItem(showObj, epObj)
-        sickrage.app.search_queue.put(ep_queue_item)
+        sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, ep_queue_item)
 
         # wait until the queue item tells us whether it worked or not
         while not ep_queue_item.success:
@@ -971,7 +972,7 @@ class CMD_EpisodeSetStatus(ApiCall):
         extra_msg = ""
         if start_backlog:
             for season, segment in segments.items():
-                sickrage.app.search_queue.put(BacklogQueueItem(showObj, segment))  # @UndefinedVariable
+                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(showObj, segment))
                 sickrage.app.log.info("Starting backlog for " + showObj.name + " season " + str(
                     season) + " because some episodes were set to WANTED")
 

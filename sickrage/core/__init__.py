@@ -465,10 +465,10 @@ class Core(object):
         self.scheduler.start()
 
         # start queue's
-        self.search_queue.start()
-        self.show_queue.start()
-        self.postprocessor_queue.start()
-        self.event_queue.start()
+        self.io_loop.add_callback(self.search_queue.watch)
+        self.io_loop.add_callback(self.show_queue.watch)
+        self.io_loop.add_callback(self.postprocessor_queue.watch)
+        self.io_loop.add_callback(self.event_queue.watch)
 
         # fire off startup events
         self.event_queue.fire_event(self.name_cache.build_all)
@@ -494,30 +494,6 @@ class Core(object):
             # shutdown webserver
             if self.wserver:
                 self.wserver.shutdown()
-
-            # shutdown show queue
-            if self.show_queue:
-                self.log.debug("Shutting down show queue")
-                self.show_queue.shutdown()
-                del self.show_queue
-
-            # shutdown search queue
-            if self.search_queue:
-                self.log.debug("Shutting down search queue")
-                self.search_queue.shutdown()
-                del self.search_queue
-
-            # shutdown post-processor queue
-            if self.postprocessor_queue:
-                self.log.debug("Shutting down post-processor queue")
-                self.postprocessor_queue.shutdown()
-                del self.postprocessor_queue
-
-            # shutdown event queue
-            if self.event_queue:
-                self.log.debug("Shutting down event queue")
-                self.event_queue.shutdown()
-                del self.event_queue
 
             # log out of ADBA
             if self.adba_connection:

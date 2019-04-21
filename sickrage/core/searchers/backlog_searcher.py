@@ -21,6 +21,7 @@ import datetime
 import threading
 
 from sqlalchemy import orm
+from tornado.ioloop import IOLoop
 
 import sickrage
 from sickrage.core.common import Quality, DOWNLOADED, SNATCHED, SNATCHED_PROPER, WANTED
@@ -101,7 +102,7 @@ class BacklogSearcher(object):
 
             segments = self._get_segments(curShow, from_date)
             if segments:
-                sickrage.app.search_queue.put(BacklogQueueItem(curShow, segments))
+                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(curShow, segments))
             else:
                 sickrage.app.log.debug("Nothing needs to be downloaded for {}, skipping".format(curShow.name))
 

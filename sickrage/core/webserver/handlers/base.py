@@ -65,10 +65,10 @@ class BaseHandler(RequestHandler, ABC):
                 url = url[len(sickrage.app.config.web_root) + 1:]
 
             if url[:3] != 'api':
-                self.write(self.render(
+                self.render(
                     '/errors/404.mako',
                     title=_('HTTP Error 404'),
-                    header=_('HTTP Error 404')))
+                    header=_('HTTP Error 404'))
             else:
                 self.write('Wrong API key used')
         elif self.settings.get("debug") and "exc_info" in kwargs:
@@ -195,4 +195,4 @@ class BaseHandler(RequestHandler, ABC):
         def worker(func, *args, **kwargs):
             threading.currentThread().setName('TORNADO')
             return func(*args, **kwargs)
-        return await IOLoop.current().run_in_executor(None, worker, func, *args, **kwargs)
+        return await sickrage.app.io_loop.run_in_executor(None, worker, func, *args, **kwargs)

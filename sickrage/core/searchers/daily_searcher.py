@@ -57,7 +57,7 @@ class DailySearcher(object):
 
             segments = self._get_segments(curShow, datetime.date.today())
             if segments:
-                sickrage.app.search_queue.put(DailySearchQueueItem(curShow, segments))
+                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, DailySearchQueueItem(curShow, segments))
             else:
                 sickrage.app.log.debug("Nothing needs to be downloaded for {}, skipping".format(curShow.name))
 
@@ -81,7 +81,7 @@ class DailySearcher(object):
 
         # check through the list of statuses to see if we want any
         for dbData in MainDB.TVEpisode.query.filter_by(showid=show.indexerid).filter(MainDB.TVEpisode.season > 0,
-                                                                           MainDB.TVEpisode.airdate >= fromDate.toordinal()):
+                                                                                     MainDB.TVEpisode.airdate >= fromDate.toordinal()):
             curStatus, curQuality = Quality.split_composite_status(int(dbData.status or -1))
 
             # if we need a better one then say yes

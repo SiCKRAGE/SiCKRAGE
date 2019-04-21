@@ -22,7 +22,8 @@ import datetime
 import threading
 import time
 
-from queue import PriorityQueue, Queue
+from tornado import gen
+from tornado.queues import Queue, PriorityQueue
 
 import sickrage
 
@@ -35,72 +36,44 @@ class srQueuePriorities(object):
     PAUSED = 99
 
 
-class srQueue(threading.Thread):
+class srQueue(object):
     def __init__(self, name="QUEUE"):
-        super(srQueue, self).__init__(name=name)
-        self.daemon = True
-        self._queue = PriorityQueue()
+        super(srQueue, self).__init__()
+        self.name = name
+        self.queue = PriorityQueue()
         self._result_queue = Queue()
-        self._current_items = []
+        self.processing = []
         self.min_priority = srQueuePriorities.EXTREME
         self.amActive = False
-        self.lock = threading.Lock()
-        self.stop = threading.Event()
 
-    def run(self):
+    async def watch(self):
         """
         Process items in this queue
         """
 
-        while not self.stop.is_set():
-            with self.lock:
-                self.amActive = True
+        while True:
+            self.amActive = True
 
-                if not self.is_paused:
-                    if self.current_item:
-                        if self.next_item_priority < self.current_item.priority:
-                            self.current_item = self.get()
-                            self.current_item.start()
-                            self.current_item.join()
+            if not self.is_paused:
+                await sickrage.app.io_loop.run_in_executor(None, self.worker, await self.get())
 
-                    if not self.current_item or not self.current_item.isAlive():
-                        if self.current_item:
-                            self.current_item = None
+            self.amActive = False
 
-                        self.current_item = self.get()
-                        self.current_item.start()
+            await gen.sleep(1)
 
-                self.amActive = False
-
-            time.sleep(1)
-
-    @property
-    def queue(self):
-        return self._queue.queue
-
-    @property
-    def next_item_priority(self):
+    def worker(self, item):
+        threading.currentThread().setName(item.name)
         try:
-            priority = self._queue.queue[0].priority
-        except IndexError:
-            priority = (srQueuePriorities.LOW, time.time())
+            self.processing.append(item)
+            item.is_alive = True
+            item.run()
+        finally:
+            item.is_alive = False
+            self.processing.remove(item)
+            self.queue.task_done()
 
-        return priority
-
-    @property
-    def current_item(self):
-        if len(self._current_items):
-            return self._current_items[0]
-
-    @current_item.setter
-    def current_item(self, value):
-        if value:
-            self._current_items.insert(0, value)
-        else:
-            del self._current_items[0]
-
-    def get(self, *args, **kwargs):
-        return self._queue.get(*args, **kwargs)
+    def get(self):
+        return self.queue.get()
 
     def put(self, item, *args, **kwargs):
         """
@@ -112,12 +85,16 @@ class srQueue(threading.Thread):
         item.added = datetime.datetime.now()
         item.name = "{}-{}".format(self.name, item.name)
         item.result_queue = self._result_queue
-        self._queue.put(item, *args, **kwargs)
+        self.queue.put(item)
         return item
 
     @property
+    def queue_items(self):
+        return self.queue._queue + self.processing
+
+    @property
     def is_busy(self):
-        return bool(len([x for x in self._current_items if x.isAlive()]))
+        return bool(len([x for x in self.queue_items if x.is_alive]))
 
     @property
     def is_paused(self):
@@ -133,33 +110,25 @@ class srQueue(threading.Thread):
         sickrage.app.log.info("Un-pausing {}".format(self.name))
         self.min_priority = srQueuePriorities.EXTREME
 
-    def shutdown(self):
-        self.stop.set()
-        try:
-            self.join(1)
-        except:
-            pass
 
-
-class srQueueItem(threading.Thread):
+class srQueueItem(object):
     def __init__(self, name, action_id=0):
-        super(srQueueItem, self).__init__(name=name.replace(" ", "-").upper())
-        self.daemon = True
+        super(srQueueItem, self).__init__()
+        self.name = name.replace(" ", "-").upper()
         self.lock = threading.Lock()
         self.stop = threading.Event()
         self.action_id = action_id
         self.added = None
         self.result = None
         self.result_queue = None
-        self._priority = (srQueuePriorities.NORMAL, time.time())
+        self.priority = srQueuePriorities.NORMAL
+        self.is_alive = False
 
-    @property
-    def priority(self):
-        return self._priority
+    def __eq__(self, other):
+        return self.priority == other.priority
 
-    @priority.setter
-    def priority(self, value):
-        self._priority = (value, time.time())
+    def __ne__(self, other):
+        return not self.priority == other.priority
 
     def __lt__(self, other):
-        return self.priority[0] < other.priority[0] and self.priority[1] < other.priority[1]
+        return self.priority < other.priority

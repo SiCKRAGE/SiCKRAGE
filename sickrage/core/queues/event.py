@@ -20,6 +20,9 @@
 
 from functools import partial
 
+from tornado.ioloop import IOLoop
+
+import sickrage
 from sickrage.core.queues import srQueue, srQueueItem
 
 
@@ -28,7 +31,7 @@ class EventQueue(srQueue):
         srQueue.__init__(self, "EVENTQUEUE")
 
     def fire_event(self, event, **kwargs):
-        return self.put(EventQueueItem(event, **kwargs))
+        sickrage.app.io_loop.add_callback(self.put, EventQueueItem(event, **kwargs))
 
 
 class EventQueueItem(srQueueItem):

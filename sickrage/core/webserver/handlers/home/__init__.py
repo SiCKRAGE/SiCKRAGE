@@ -604,7 +604,7 @@ class RestartHandler(BaseHandler, ABC):
         if not force:
             self._genericMessage(_("Restarting"), _("SiCKRAGE is restarting"))
 
-        IOLoop.current().add_timeout(datetime.timedelta(seconds=5), sickrage.app.shutdown, restart=True)
+        sickrage.app.io_loop.add_timeout(datetime.timedelta(seconds=5), sickrage.app.shutdown, restart=True)
 
         return self.render(
             "/home/restart.mako",
@@ -1477,7 +1477,7 @@ class SetStatusHandler(BaseHandler, ABC):
             msg += '<ul>'
 
             for season, segment in segments.items():
-                sickrage.app.search_queue.put(BacklogQueueItem(show_obj, segment))
+                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(show_obj, segment))
 
                 msg += "<li>" + _("Season ") + str(season) + "</li>"
                 sickrage.app.log.info("Sending backlog for " + show_obj.name + " season " + str(
@@ -1497,7 +1497,7 @@ class SetStatusHandler(BaseHandler, ABC):
             msg += '<ul>'
 
             for season, segment in segments.items():
-                sickrage.app.search_queue.put(FailedQueueItem(show_obj, segment))
+                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, FailedQueueItem(show_obj, segment))
 
                 msg += "<li>" + _("Season ") + str(season) + "</li>"
                 sickrage.app.log.info("Retrying Search for " + show_obj.name + " season " + str(
@@ -1619,7 +1619,7 @@ class SearchEpisodeHandler(BaseHandler, ABC):
             # make a queue item for it and put it on the queue
             ep_queue_item = ManualSearchQueueItem(ep_obj.show, ep_obj, bool(int(down_cur_quality)))
 
-            sickrage.app.search_queue.put(ep_queue_item)
+            sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, ep_queue_item)
             if not all([ep_queue_item.started, ep_queue_item.success]):
                 return self.write(json_encode({'result': 'success'}))
         return self.write(json_encode({'result': 'failure'}))
@@ -1836,7 +1836,7 @@ class RetryEpisodeHandler(BaseHandler, ABC):
             # make a queue item for it and put it on the queue
             ep_queue_item = FailedQueueItem(ep_obj.show, [ep_obj], bool(int(down_cur_quality)))
 
-            sickrage.app.search_queue.put(ep_queue_item)
+            sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, ep_queue_item)
             if not all([ep_queue_item.started, ep_queue_item.success]):
                 return self.write(json_encode({'result': 'success'}))
         return self.write(json_encode({'result': 'failure'}))

@@ -22,6 +22,8 @@ import threading
 import traceback
 from datetime import date
 
+from tornado.ioloop import IOLoop
+
 import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.common import SKIPPED, WANTED, UNKNOWN
@@ -48,7 +50,7 @@ def setEpisodeToWanted(show, s, e):
             epObj.status = WANTED
             epObj.save_to_db()
 
-        sickrage.app.search_queue.put(BacklogQueueItem(show, [epObj]))
+        sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(show, [epObj]))
 
         sickrage.app.log.info(
             "Starting backlog search for %s S%02dE%02d because some episodes were set to wanted" % (

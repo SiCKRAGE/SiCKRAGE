@@ -22,6 +22,8 @@ import threading
 import traceback
 from time import sleep
 
+from tornado.ioloop import IOLoop
+
 import sickrage
 from sickrage.core.common import cpu_presets
 from sickrage.core.process_tv import logHelper, processDir
@@ -52,7 +54,7 @@ class PostProcessorQueue(srQueue):
         :param proc_type: processing type, auto/manual
         :return: instance of PostProcessorItem or None
         """
-        for cur_item in self.queue + [self.current_item]:
+        for cur_item in self.queue_items:
             if isinstance(cur_item,
                           PostProcessorItem) and cur_item.dirName == dirName and cur_item.proc_type == proc_type:
                 return cur_item
@@ -60,7 +62,7 @@ class PostProcessorQueue(srQueue):
 
     @property
     def is_in_progress(self):
-        for cur_item in self.queue + [self.current_item]:
+        for cur_item in self.queue_items:
             if isinstance(cur_item, PostProcessorItem):
                 return True
         return False
@@ -73,7 +75,7 @@ class PostProcessorQueue(srQueue):
         """
         length = {'auto': 0, 'manual': 0}
 
-        for cur_item in self.queue + [self.current_item]:
+        for cur_item in self.queue_items:
             if isinstance(cur_item, PostProcessorItem):
                 if cur_item.proc_type == 'auto':
                     length['auto'] += 1
@@ -115,10 +117,6 @@ class PostProcessorQueue(srQueue):
         item = self.find_in_queue(dirName, proc_type)
 
         if item:
-            if self.current_item == item:
-                return logHelper("Directory {} is already being processed right now, please wait until it completes "
-                                 "before trying again".format(dirName))
-
             item.__dict__.update(dict(dirName=dirName, nzbName=nzbName, process_method=process_method, force=force,
                                       is_priority=is_priority, delete_on=delete_on, failed=failed, proc_type=proc_type))
 
@@ -126,9 +124,10 @@ class PostProcessorQueue(srQueue):
                 "An item with directory {} is already being processed in the queue, item updated".format(dirName))
             return message + "<br\><span class='hidden'>Processing succeeded</span>"
         else:
-            super(PostProcessorQueue, self).put(
-                PostProcessorItem(dirName, nzbName, process_method, force, is_priority, delete_on, failed, proc_type)
-            )
+            sickrage.app.io_loop.add_callback(super(PostProcessorQueue, self).put,
+                                              PostProcessorItem(dirName, nzbName, process_method, force, is_priority,
+                                                                delete_on, failed, proc_type))
+
             if force_next:
                 return self._result_queue.get()
             else:

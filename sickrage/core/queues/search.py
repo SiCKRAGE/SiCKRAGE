@@ -22,6 +22,8 @@ import threading
 import time
 import traceback
 
+from tornado.ioloop import IOLoop
+
 import sickrage
 from sickrage.core.common import cpu_presets
 from sickrage.core.queues import srQueue, srQueueItem, srQueuePriorities
@@ -50,26 +52,26 @@ class SearchQueue(srQueue):
         srQueue.__init__(self, "SEARCHQUEUE")
 
     def is_in_queue(self, show, segment):
-        for cur_item in self.queue:
+        for cur_item in self.queue_items:
             if isinstance(cur_item, BacklogQueueItem) and cur_item.show == show and cur_item.segment == segment:
                 return True
         return False
 
     def is_ep_in_queue(self, segment):
-        for cur_item in self.queue:
+        for cur_item in self.queue_items:
             if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and cur_item.segment == segment:
                 return True
         return False
 
     def is_show_in_queue(self, show):
-        for cur_item in self.queue:
+        for cur_item in self.queue_items:
             if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and cur_item.show.indexerid == show:
                 return True
         return False
 
     def get_all_ep_from_queue(self, show):
         ep_obj_list = []
-        for cur_item in self.queue:
+        for cur_item in self.queue_items:
             if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and str(cur_item.show.indexerid) == show:
                 ep_obj_list.append(cur_item)
         return ep_obj_list
@@ -93,21 +95,19 @@ class SearchQueue(srQueue):
         return not sickrage.app.scheduler.get_job(sickrage.app.backlog_searcher.name).next_run_time
 
     def is_manualsearch_in_progress(self):
-        # Only referenced in webviews.py, only current running manualsearch or failedsearch is needed!!
-        if isinstance(self.current_item, (ManualSearchQueueItem, FailedQueueItem)):
-            return True
-
+        for cur_item in self.queue_items:
+            if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)):
+                return True
         return False
 
     def is_backlog_in_progress(self):
-        for cur_item in self.queue + [self.current_item]:
+        for cur_item in self.queue_items:
             if isinstance(cur_item, BacklogQueueItem):
                 return True
-
         return False
 
     def is_dailysearch_in_progress(self):
-        for cur_item in self.queue + [self.current_item]:
+        for cur_item in self.queue_items:
             if isinstance(cur_item, DailySearchQueueItem):
                 return True
 
@@ -115,7 +115,7 @@ class SearchQueue(srQueue):
 
     def queue_length(self):
         length = {'backlog': 0, 'daily': 0, 'manual': 0, 'failed': 0}
-        for cur_item in self.queue + [self.current_item]:
+        for cur_item in self.queue_items:
             if isinstance(cur_item, DailySearchQueueItem):
                 length['daily'] += 1
             elif isinstance(cur_item, BacklogQueueItem):
@@ -137,13 +137,13 @@ class SearchQueue(srQueue):
 
         if isinstance(item, DailySearchQueueItem):
             # daily searches
-            super(SearchQueue, self).put(item)
+            sickrage.app.io_loop.add_callback(super(SearchQueue, self).put, item)
         elif isinstance(item, BacklogQueueItem) and not self.is_in_queue(item.show, item.segment):
             # backlog searches
-            super(SearchQueue, self).put(item)
+            sickrage.app.io_loop.add_callback(super(SearchQueue, self).put, item)
         elif isinstance(item, (ManualSearchQueueItem, FailedQueueItem)) and not self.is_ep_in_queue(item.segment):
             # manual and failed searches
-            super(SearchQueue, self).put(item)
+            sickrage.app.io_loop.add_callback(super(SearchQueue, self).put, item)
         else:
             sickrage.app.log.debug("Not adding item, it's already in the queue")
 

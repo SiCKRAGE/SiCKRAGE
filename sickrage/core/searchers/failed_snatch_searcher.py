@@ -21,6 +21,8 @@
 import datetime
 import threading
 
+from tornado.ioloop import IOLoop
+
 import sickrage
 from sickrage.core import findCertainShow
 from sickrage.core.common import Quality, SNATCHED, SNATCHED_BEST, SNATCHED_PROPER
@@ -86,7 +88,7 @@ class FailedSnatchSearcher(object):
                     continue
 
                 # put it on the queue
-                sickrage.app.search_queue.put(FailedQueueItem(show, [ep_obj], True))
+                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, FailedQueueItem(show, [ep_obj], True))
 
         if not failed_snatches:
             sickrage.app.log.info("No failed snatches found")
