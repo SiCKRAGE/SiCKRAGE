@@ -63,7 +63,7 @@ from sickrage.core.webserver.handlers.home import HomeHandler, IsAliveHandler, T
 from sickrage.core.webserver.handlers.home.add_shows import HomeAddShowsHandler, SearchIndexersForShowNameHandler, \
     MassAddTableHandler, NewShowHandler, TraktShowsHandler, PopularShowsHandler, AddShowToBlacklistHandler, \
     ExistingShowsHandler, AddShowByIDHandler, AddNewShowHandler, AddExistingShowsHandler
-from sickrage.core.webserver.handlers.home.postprocess import HomePostProcessHandler
+from sickrage.core.webserver.handlers.home.postprocess import HomePostProcessHandler, HomeProcessEpisodeHandler
 from sickrage.core.webserver.handlers.irc import IRCHandler
 from sickrage.core.webserver.handlers.login import LoginHandler
 from sickrage.core.webserver.handlers.logout import LogoutHandler
@@ -304,8 +304,8 @@ class WebServer(object):
             (r'%s/home/setSceneNumbering(/?)' % sickrage.app.config.web_root, SetSceneNumberingHandler),
             (r'%s/home/retryEpisode(/?)' % sickrage.app.config.web_root, RetryEpisodeHandler),
             (r'%s/home/fetch_releasegroups(/?)' % sickrage.app.config.web_root, FetchReleasegroupsHandler),
-            (r'%s/home/postprocess(/?)' % sickrage.app.config.web_root, FetchReleasegroupsHandler),
-            (r'%s/home/postprocess/processEpisode(/?)' % sickrage.app.config.web_root, HomePostProcessHandler),
+            (r'%s/home/postprocess(/?)' % sickrage.app.config.web_root, HomePostProcessHandler),
+            (r'%s/home/postprocess/processEpisode(/?)' % sickrage.app.config.web_root, HomeProcessEpisodeHandler),
             (r'%s/home/addShows(/?)' % sickrage.app.config.web_root, HomeAddShowsHandler),
             (r'%s/home/addShows/searchIndexersForShowName(/?)' % sickrage.app.config.web_root, SearchIndexersForShowNameHandler),
             (r'%s/home/addShows/massAddTable(/?)' % sickrage.app.config.web_root, MassAddTableHandler),
