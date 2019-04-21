@@ -56,7 +56,7 @@ class srQueue(object):
 
         while not (self.stop and self.queue.empty()):
             if not self.is_paused:
-                await sickrage.app.io_loop.run_in_executor(None, self.worker, await self.get())
+                sickrage.app.io_loop.run_in_executor(None, self.worker, await self.get())
 
             await gen.sleep(1)
 
