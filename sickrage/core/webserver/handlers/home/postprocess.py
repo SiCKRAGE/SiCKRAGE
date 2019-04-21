@@ -27,7 +27,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 class HomePostProcessHandler(BaseHandler, ABC):
     @authenticated
-    def get(self):
+    def get(self, *args, **kwargs):
         return self.render(
             "/home/postprocess.mako",
             title=_('Post Processing'),
