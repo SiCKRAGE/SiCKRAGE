@@ -20,6 +20,8 @@
 import os
 from abc import ABC
 
+from tornado.web import authenticated
+
 import sickrage
 from sickrage.core import common
 from sickrage.core.common import Quality
@@ -29,6 +31,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 
 class ConfigGeneralHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         return self.render(
             "/config/general.mako",
@@ -42,16 +45,19 @@ class ConfigGeneralHandler(BaseHandler, ABC):
 
 
 class GenerateApiKeyHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         return self.write(generateApiKey())
 
 
 class SaveRootDirsHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         sickrage.app.config.root_dirs = self.get_query_argument('rootDirString', '')
 
 
 class SaveAddShowDefaultsHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         default_status = self.get_query_argument('defaultStatus', '5')
         any_qualities = self.get_query_argument('anyQualities', '')
@@ -85,6 +91,7 @@ class SaveAddShowDefaultsHandler(BaseHandler, ABC):
 
 
 class SaveGeneralHandler(BaseHandler, ABC):
+    @authenticated
     def post(self, *args, **kwargs):
         log_nr = self.get_body_argument('log_nr', 5)
         log_size = self.get_body_argument('log_size', 1048576)

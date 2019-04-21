@@ -16,11 +16,15 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
+from abc import ABC
+
+from tornado.web import authenticated
 
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class IRCHandler(BaseHandler):
+class IRCHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         return self.render(
             "/irc.mako",

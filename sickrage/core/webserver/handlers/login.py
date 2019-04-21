@@ -25,7 +25,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 class LoginHandler(BaseHandler):
     def prepare(self, *args, **kwargs):
-        code = self.get_argument('code', False)
+        code = self.get_argument('code', None)
 
         redirect_uri = "{}://{}{}/login".format(self.request.protocol, self.request.host, sickrage.app.config.web_root)
 

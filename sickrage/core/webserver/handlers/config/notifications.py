@@ -18,6 +18,8 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 from abc import ABC
 
+from tornado.web import authenticated
+
 import sickrage
 from sickrage.core.helpers import checkbox_to_value, clean_hosts, clean_host, try_int
 from sickrage.core.webserver import ConfigHandler
@@ -25,6 +27,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 
 class ConfigNotificationsHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         return self.render(
             "/config/notifications.mako",
@@ -37,6 +40,7 @@ class ConfigNotificationsHandler(BaseHandler, ABC):
         )
 
 class SaveNotificationsHandler(BaseHandler, ABC):
+    @authenticated
     def post(self, *args, **kwargs):
         use_kodi = self.get_body_argument('use_kodi', None)
         kodi_always_on = self.get_body_argument('kodi_always_on', None)

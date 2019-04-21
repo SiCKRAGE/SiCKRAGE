@@ -29,7 +29,7 @@ from tornado import gen
 from tornado.escape import json_encode
 from tornado.httpclient import AsyncHTTPClient
 from tornado.httputil import url_concat
-from tornado.ioloop import IOLoop
+from tornado.web import authenticated
 
 import sickrage
 from sickrage.clients import getClientIstance
@@ -87,6 +87,7 @@ def have_torrent():
 
 
 class HomeHandler(BaseHandler, ABC):
+    @authenticated
     async def get(self, *args, **kwargs):
         if not len(sickrage.app.showlist):
             return self.redirect('/home/addShows/')
@@ -123,16 +124,20 @@ class IsAliveHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         self.set_header('Content-Type', 'text/javascript')
 
-        if not all([kwargs.get('srcallback'), kwargs.get('_')]):
+        srcallback = self.get_query_argument('srcallback', None)
+
+        if not srcallback:
             return self.write(
                 _("Error: Unsupported Request. Send jsonp request with 'srcallback' variable in the query string."))
 
         if sickrage.app.started:
-            return self.write("%s({'msg':%s})" % (kwargs['srcallback'], str(sickrage.app.pid)))
-        return self.write("%s({'msg':%s})" % (kwargs['srcallback'], "nope"))
+            return self.write("%s({'msg':%s})" % (srcallback, str(sickrage.app.pid)))
+
+        return self.write("%s({'msg':%s})" % (srcallback, "nope"))
 
 
 class TestSABnzbdHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         host = clean_url(self.get_query_argument('host'))
         username = self.get_query_argument('username')
@@ -151,6 +156,7 @@ class TestSABnzbdHandler(BaseHandler, ABC):
 
 
 class TestTorrentHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         host = clean_url(self.get_query_argument('host'))
         torrent_method = self.get_query_argument('torrent_method')
@@ -163,6 +169,7 @@ class TestTorrentHandler(BaseHandler, ABC):
 
 
 class TestFreeMobileHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         freemobile_id = self.get_query_argument('freemobile_id')
         freemobile_apikey = self.get_query_argument('freemobile_apikey')
@@ -174,6 +181,7 @@ class TestFreeMobileHandler(BaseHandler, ABC):
 
 
 class TestTelegramHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         telegram_id = self.get_query_argument('telegram_id')
         telegram_apikey = self.get_query_argument('telegram_apikey')
@@ -185,6 +193,7 @@ class TestTelegramHandler(BaseHandler, ABC):
 
 
 class TestJoinHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         join_id = self.get_query_argument('join_id')
         join_apikey = self.get_query_argument('join_apikey')
@@ -196,6 +205,7 @@ class TestJoinHandler(BaseHandler, ABC):
 
 
 class TestGrowlHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         host = clean_host(self.get_query_argument('host'), default_port=23053)
         password = self.get_query_argument('password')
@@ -212,6 +222,7 @@ class TestGrowlHandler(BaseHandler, ABC):
 
 
 class TestProwlHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         prowl_api = self.get_query_argument('prowl_api')
         prowl_priority = self.get_query_argument('prowl_priority')
@@ -223,6 +234,7 @@ class TestProwlHandler(BaseHandler, ABC):
 
 
 class TestBoxcar2Handler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         accesstoken = self.get_query_argument('accesstoken')
 
@@ -233,6 +245,7 @@ class TestBoxcar2Handler(BaseHandler, ABC):
 
 
 class TestPushoverHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         user_key = self.get_query_argument('userKey')
         api_key = self.get_query_argument('apiKey')
@@ -244,11 +257,13 @@ class TestPushoverHandler(BaseHandler, ABC):
 
 
 class TwitterStep1Handler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         return self.write(sickrage.app.notifier_providers['twitter']._get_authorization())
 
 
 class TwitterStep2Handler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         key = self.get_query_argument('key')
 
@@ -260,6 +275,7 @@ class TwitterStep2Handler(BaseHandler, ABC):
 
 
 class TestTwitterHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         result = sickrage.app.notifier_providers['twitter'].test_notify()
         if result:
@@ -268,6 +284,7 @@ class TestTwitterHandler(BaseHandler, ABC):
 
 
 class TestTwilioHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         account_sid = self.get_query_argument('account_sid')
         auth_token = self.get_query_argument('auth_token')
@@ -293,6 +310,7 @@ class TestTwilioHandler(BaseHandler, ABC):
 
 
 class TestSlackHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         result = sickrage.app.notifier_providers['slack'].test_notify()
         if result:
@@ -301,6 +319,7 @@ class TestSlackHandler(BaseHandler, ABC):
 
 
 class TestDiscordHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         result = sickrage.app.notifier_providers['discord'].test_notify()
         if result:
@@ -309,6 +328,7 @@ class TestDiscordHandler(BaseHandler, ABC):
 
 
 class TestKODIHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         host = clean_hosts(self.get_query_argument('host'))
         username = self.get_query_argument('username')
@@ -327,6 +347,7 @@ class TestKODIHandler(BaseHandler, ABC):
 
 
 class TestPMCHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         host = clean_hosts(self.get_query_argument('host'))
         username = self.get_query_argument('username')
@@ -352,6 +373,7 @@ class TestPMCHandler(BaseHandler, ABC):
 
 
 class TestPMSHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         host = clean_hosts(self.get_query_argument('host'))
         username = self.get_query_argument('username')
@@ -382,6 +404,7 @@ class TestPMSHandler(BaseHandler, ABC):
 
 
 class TestLibnotifyHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         if sickrage.app.notifier_providers['libnotify'].notifier.test_notify():
             return self.write(_('Tried sending desktop notification via libnotify'))
@@ -389,6 +412,7 @@ class TestLibnotifyHandler(BaseHandler, ABC):
 
 
 class TestEMBYHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         host = clean_host(self.get_query_argument('host'))
         emby_apikey = self.get_query_argument('emby_apikey')
@@ -400,6 +424,7 @@ class TestEMBYHandler(BaseHandler, ABC):
 
 
 class TestNMJHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         host = clean_host(self.get_query_argument('host'))
         database = self.get_query_argument('database')
@@ -412,6 +437,7 @@ class TestNMJHandler(BaseHandler, ABC):
 
 
 class SettingsNMJHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         host = clean_host(self.get_query_argument('host'))
 
@@ -431,6 +457,7 @@ class SettingsNMJHandler(BaseHandler, ABC):
 
 
 class TestNMJv2Handler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         host = clean_host(self.get_query_argument('host'))
 
@@ -441,6 +468,7 @@ class TestNMJv2Handler(BaseHandler, ABC):
 
 
 class SettingsNMJv2Handler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         host = clean_host(self.get_query_argument('host'))
         dbloc = self.get_query_argument('dbloc')
@@ -459,6 +487,7 @@ class SettingsNMJv2Handler(BaseHandler, ABC):
 
 
 class GetTraktTokenHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         trakt_pin = self.get_query_argument('trakt_pin')
 
@@ -468,6 +497,7 @@ class GetTraktTokenHandler(BaseHandler, ABC):
 
 
 class TestTraktHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         username = self.get_query_argument('username')
         blacklist_name = self.get_query_argument('blacklist_name')
@@ -476,6 +506,7 @@ class TestTraktHandler(BaseHandler, ABC):
 
 
 class LoadShowNotifyListsHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         data = {'_size': 0}
         for s in sorted(sickrage.app.showlist, key=lambda k: k.name):
@@ -485,6 +516,7 @@ class LoadShowNotifyListsHandler(BaseHandler, ABC):
 
 
 class SaveShowNotifyListHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
         emails = self.get_query_argument('emails')
@@ -498,6 +530,7 @@ class SaveShowNotifyListHandler(BaseHandler, ABC):
 
 
 class TestEmailHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         host = clean_host(self.get_query_argument('host'))
         port = self.get_query_argument('port')
@@ -513,6 +546,7 @@ class TestEmailHandler(BaseHandler, ABC):
 
 
 class TestNMAHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         nma_api = self.get_query_argument('nma_api')
         nma_priority = self.get_query_argument('nma_priority')
@@ -524,6 +558,7 @@ class TestNMAHandler(BaseHandler, ABC):
 
 
 class TestPushalotHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         authorization_token = self.get_query_argument('authorizationToken')
 
@@ -534,6 +569,7 @@ class TestPushalotHandler(BaseHandler, ABC):
 
 
 class TestPushbulletHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         api = self.get_query_argument('api')
 
@@ -544,6 +580,7 @@ class TestPushbulletHandler(BaseHandler, ABC):
 
 
 class GetPushbulletDevicesHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         api = self.get_query_argument('api')
 
@@ -554,6 +591,7 @@ class GetPushbulletDevicesHandler(BaseHandler, ABC):
 
 
 class StatusHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         tvdir_free = getDiskSpaceUsage(sickrage.app.config.tv_download_dir)
         root_dir = {}
@@ -580,6 +618,7 @@ class StatusHandler(BaseHandler, ABC):
 
 
 class ShutdownHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         pid = self.get_query_argument('pid')
 
@@ -591,6 +630,7 @@ class ShutdownHandler(BaseHandler, ABC):
 
 
 class RestartHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         pid = self.get_query_argument('pid')
         force = self.get_query_argument('force', None)
@@ -617,6 +657,7 @@ class RestartHandler(BaseHandler, ABC):
 
 
 class UpdateCheckHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         pid = self.get_query_argument('pid')
 
@@ -633,6 +674,7 @@ class UpdateCheckHandler(BaseHandler, ABC):
 
 
 class UpdateHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         pid = self.get_query_argument('pid')
 
@@ -647,6 +689,7 @@ class UpdateHandler(BaseHandler, ABC):
 
 
 class VerifyPathHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         path = self.get_query_argument('path')
 
@@ -656,6 +699,7 @@ class VerifyPathHandler(BaseHandler, ABC):
 
 
 class InstallRequirementsHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         sickrage.app.alerts.message(_('Installing SiCKRAGE requirements'))
         if not sickrage.app.version_updater.updater.install_requirements(
@@ -668,6 +712,7 @@ class InstallRequirementsHandler(BaseHandler, ABC):
 
 
 class BranchCheckoutHandler(BaseHandler, ABC):
+    @authenticated
     async def get(self, *args, **kwargs):
         branch = self.get_query_argument('branch')
 
@@ -685,6 +730,7 @@ class BranchCheckoutHandler(BaseHandler, ABC):
 
 
 class DisplayShowHandler(BaseHandler, ABC):
+    @authenticated
     async def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
 
@@ -906,6 +952,7 @@ class DisplayShowHandler(BaseHandler, ABC):
 
 
 class EditShowHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
 
@@ -954,6 +1001,7 @@ class EditShowHandler(BaseHandler, ABC):
                 action="edit_show"
             )
 
+    @authenticated
     async def post(self, *args, **kwargs):
         show = self.get_body_argument('show')
         location = self.get_body_argument('location', None)
@@ -1149,6 +1197,7 @@ class EditShowHandler(BaseHandler, ABC):
 
 
 class TogglePauseHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
 
@@ -1168,6 +1217,7 @@ class TogglePauseHandler(BaseHandler, ABC):
 
 
 class DeleteShowHandler(BaseHandler, ABC):
+    @authenticated
     async def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
         full = self.get_query_argument('full')
@@ -1197,6 +1247,7 @@ class DeleteShowHandler(BaseHandler, ABC):
 
 
 class RefreshShowHandler(BaseHandler, ABC):
+    @authenticated
     async def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
 
@@ -1216,6 +1267,7 @@ class RefreshShowHandler(BaseHandler, ABC):
 
 
 class UpdateShowHandler(BaseHandler, ABC):
+    @authenticated
     async def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
         force = self.get_query_argument('force', None)
@@ -1238,6 +1290,7 @@ class UpdateShowHandler(BaseHandler, ABC):
 
 
 class SubtitleShowHandler(BaseHandler, ABC):
+    @authenticated
     async def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
 
@@ -1255,6 +1308,7 @@ class SubtitleShowHandler(BaseHandler, ABC):
 
 
 class UpdateKODIHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
 
@@ -1282,6 +1336,7 @@ class UpdateKODIHandler(BaseHandler, ABC):
 
 
 class UpdatePLEXHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         if not sickrage.app.notifier_providers['plex'].update_library():
             sickrage.app.alerts.message(
@@ -1295,6 +1350,7 @@ class UpdatePLEXHandler(BaseHandler, ABC):
 
 
 class UpdateEMBYHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
 
@@ -1314,6 +1370,7 @@ class UpdateEMBYHandler(BaseHandler, ABC):
 
 
 class SyncTraktHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         if sickrage.app.scheduler.get_job('TRAKTSEARCHER').func():
             sickrage.app.log.info("Syncing Trakt with SiCKRAGE")
@@ -1323,6 +1380,7 @@ class SyncTraktHandler(BaseHandler, ABC):
 
 
 class DeleteEpisodeHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
         eps = self.get_query_argument('eps')
@@ -1370,6 +1428,7 @@ class DeleteEpisodeHandler(BaseHandler, ABC):
 
 
 class SetStatusHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
         eps = self.get_query_argument('eps')
@@ -1515,6 +1574,7 @@ class SetStatusHandler(BaseHandler, ABC):
 
 
 class TestRenameHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
 
@@ -1566,6 +1626,7 @@ class TestRenameHandler(BaseHandler, ABC):
 
 
 class DoRenameHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
         eps = self.get_query_argument('eps')
@@ -1607,6 +1668,7 @@ class DoRenameHandler(BaseHandler, ABC):
 
 
 class SearchEpisodeHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
         season = self.get_query_argument('season')
@@ -1626,6 +1688,7 @@ class SearchEpisodeHandler(BaseHandler, ABC):
 
 
 class GetManualSearchStatusHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         show = self.get_query_argument('show', None)
 
@@ -1708,6 +1771,7 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
 
 
 class SearchEpisodeSubtitlesHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
         season = self.get_query_argument('season')
@@ -1733,6 +1797,7 @@ class SearchEpisodeSubtitlesHandler(BaseHandler, ABC):
 
 
 class SetSceneNumberingHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
         indexer = self.get_query_argument('indexer')
@@ -1824,6 +1889,7 @@ class SetSceneNumberingHandler(BaseHandler, ABC):
 
 
 class RetryEpisodeHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
         season = self.get_query_argument('season')
@@ -1843,6 +1909,7 @@ class RetryEpisodeHandler(BaseHandler, ABC):
 
 
 class FetchReleasegroupsHandler(BaseHandler, ABC):
+    @authenticated
     async def get(self, *args, **kwargs):
         show_name = self.get_query_argument('show_name')
 

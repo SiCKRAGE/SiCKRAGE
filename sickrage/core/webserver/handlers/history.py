@@ -16,13 +16,17 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
+from abc import ABC
+
+from tornado.web import authenticated
 
 import sickrage
 from sickrage.core.tv.show.history import History
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class HistoryHandler(BaseHandler):
+class HistoryHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         limit = self.get_query_argument('limit', None)
 
@@ -98,14 +102,16 @@ class HistoryHandler(BaseHandler):
         )
 
 
-class HistoryClearHandler(BaseHandler):
+class HistoryClearHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         History().clear()
         sickrage.app.alerts.message(_('History cleared'))
         return self.redirect("/history/")
 
 
-class HistoryTrimHandler(BaseHandler):
+class HistoryTrimHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         History().trim()
         sickrage.app.alerts.message(_('Removed history entries older than 30 days'))

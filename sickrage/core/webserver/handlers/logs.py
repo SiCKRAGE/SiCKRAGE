@@ -19,6 +19,9 @@
 
 import os
 import re
+from abc import ABC
+
+from tornado.web import authenticated
 
 import sickrage
 from sickrage.core.classes import ErrorViewer, WarningViewer
@@ -26,7 +29,7 @@ from sickrage.core.helpers import readFileBuffered
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class LogsHandler(BaseHandler):
+class LogsHandler(BaseHandler, ABC):
     def initialize(self):
         self.logs_menu = [
             {'title': _('Clear All'), 'path': '/logs/clearAll/',
@@ -34,6 +37,7 @@ class LogsHandler(BaseHandler):
              'icon': 'fas fa-trash'},
         ]
 
+    @authenticated
     def get(self, *args, **kwargs):
         level = self.get_query_argument('level', sickrage.app.log.ERROR)
 
@@ -57,14 +61,16 @@ class LogsHandler(BaseHandler):
             return True
 
 
-class LogsClearAllHanlder(BaseHandler):
+class LogsClearAllHanlder(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         WarningViewer.clear()
         ErrorViewer.clear()
         self.redirect("/logs/view/")
 
 
-class LogsViewHandler(BaseHandler):
+class LogsViewHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         min_level = self.get_query_argument('minLevel', sickrage.app.log.INFO)
         log_filter = self.get_query_argument('logFilter', '')

@@ -18,12 +18,15 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 from abc import ABC
 
+from tornado.web import authenticated
+
 import sickrage
 from sickrage.core.helpers import argToBool
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
 class HomePostProcessHandler(BaseHandler, ABC):
+    @authenticated
     def get(self):
         return self.render(
             "/home/postprocess.mako",
@@ -36,6 +39,7 @@ class HomePostProcessHandler(BaseHandler, ABC):
 
 
 class HomeProcessEpisodeHandler(BaseHandler, ABC):
+    @authenticated
     async def post(self, *args, **kwargs):
         pp_options = {
             'proc_dir': self.get_body_argument('proc_dir'),

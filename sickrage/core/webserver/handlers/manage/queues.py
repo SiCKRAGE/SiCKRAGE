@@ -18,11 +18,14 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 from abc import ABC
 
+from tornado.web import authenticated
+
 import sickrage
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
 class ManageQueuesHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         return self.render(
             "/manage/queues.mako",
@@ -44,6 +47,7 @@ class ManageQueuesHandler(BaseHandler, ABC):
 
 
 class ForceBacklogSearchHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         # force it to run the next time it looks
         if sickrage.app.scheduler.get_job(sickrage.app.backlog_searcher.name).func(True):
@@ -54,6 +58,7 @@ class ForceBacklogSearchHandler(BaseHandler, ABC):
 
 
 class ForceDailySearchHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         # force it to run the next time it looks
         if sickrage.app.scheduler.get_job(sickrage.app.daily_searcher.name).func(True):
@@ -64,6 +69,7 @@ class ForceDailySearchHandler(BaseHandler, ABC):
 
 
 class ForceFindPropersHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         # force it to run the next time it looks
         if sickrage.app.scheduler.get_job(sickrage.app.proper_searcher.name).func(True):
@@ -74,6 +80,7 @@ class ForceFindPropersHandler(BaseHandler, ABC):
 
 
 class PauseDailySearcherHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         paused = self.get_query_argument('paused')
 
@@ -86,6 +93,7 @@ class PauseDailySearcherHandler(BaseHandler, ABC):
 
 
 class PauseBacklogSearcherHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         paused = self.get_query_argument('paused')
 
@@ -98,6 +106,7 @@ class PauseBacklogSearcherHandler(BaseHandler, ABC):
 
 
 class PausePostProcessorHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         paused = self.get_query_argument('paused')
 

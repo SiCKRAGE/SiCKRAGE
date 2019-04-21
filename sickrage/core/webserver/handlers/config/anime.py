@@ -18,6 +18,8 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 from abc import ABC
 
+from tornado.web import authenticated
+
 import sickrage
 from sickrage.core.helpers import checkbox_to_value
 from sickrage.core.webserver import ConfigHandler
@@ -25,6 +27,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 
 class ConfigAnimeHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         return self.render(
             "/config/anime.mako",
@@ -36,6 +39,7 @@ class ConfigAnimeHandler(BaseHandler, ABC):
             action='anime'
         )
 
+    @authenticated
     def post(self, *args, **kwargs):
         use_anidb = self.get_body_argument('use_anidb')
         anidb_username = self.get_body_argument('anidb_username')

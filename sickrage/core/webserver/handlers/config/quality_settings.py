@@ -18,6 +18,8 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 from abc import ABC
 
+from tornado.web import authenticated
+
 import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.webserver import ConfigHandler
@@ -25,6 +27,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 
 class ConfigQualitySettingsHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         return self.render(
             "/config/quality_settings.mako",
@@ -38,6 +41,7 @@ class ConfigQualitySettingsHandler(BaseHandler, ABC):
 
 
 class SaveQualitiesHandler(BaseHandler, ABC):
+    @authenticated
     def post(self, *args, **kwargs):
         quality_sizes = {
             Quality.UNKNOWN: int(self.get_body_argument(str(Quality.UNKNOWN))),

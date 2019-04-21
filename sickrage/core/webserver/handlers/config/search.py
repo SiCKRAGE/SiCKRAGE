@@ -20,6 +20,8 @@
 import os
 from abc import ABC
 
+from tornado.web import authenticated
+
 import sickrage
 from sickrage.core.helpers import checkbox_to_value, try_int, clean_url, clean_host, torrent_webui_url
 from sickrage.core.webserver import ConfigHandler
@@ -27,6 +29,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 
 class ConfigSearchHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         return self.render(
             "/config/search.mako",
@@ -40,6 +43,7 @@ class ConfigSearchHandler(BaseHandler, ABC):
 
 
 class SaveSearchHandler(BaseHandler, ABC):
+    @authenticated
     def post(self, *args, **kwargs):
         use_nzbs = self.get_body_argument('use_nzbs', None)
         use_torrents = self.get_body_argument('use_torrents', None)

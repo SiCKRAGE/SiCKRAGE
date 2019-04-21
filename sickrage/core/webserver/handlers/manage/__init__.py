@@ -25,6 +25,7 @@ from sqlalchemy import or_
 from tornado.escape import json_encode
 from tornado.httpclient import AsyncHTTPClient
 from tornado.httputil import url_concat
+from tornado.web import authenticated
 
 import sickrage
 from sickrage.core.common import SNATCHED, Quality, Overview
@@ -36,11 +37,13 @@ from sickrage.subtitles import wanted_languages
 
 
 class ManageHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         return self.redirect('/manage/massUpdate')
 
 
 class ShowEpisodeStatusesHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         indexer_id = self.get_query_argument('indexer_id')
         which_status = self.get_query_argument('whichStatus')
@@ -65,6 +68,7 @@ class ShowEpisodeStatusesHandler(BaseHandler, ABC):
 
 
 class EpisodeStatusesHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         which_status = self.get_query_argument('whichStatus', None)
 
@@ -109,6 +113,7 @@ class EpisodeStatusesHandler(BaseHandler, ABC):
 
 
 class ChangeEpisodeStatusesHandler(BaseHandler, ABC):
+    @authenticated
     async def post(self, *args, **kwargs):
         old_status = self.get_body_argument('oldStatus')
         new_status = self.get_body_argument('newStatus')
@@ -143,6 +148,7 @@ class ChangeEpisodeStatusesHandler(BaseHandler, ABC):
 
 
 class ShowSubtitleMissedHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         indexer_id = self.get_body_argument('indexer_id')
         which_subs = self.get_body_argument('whichSubs')
@@ -174,6 +180,7 @@ class ShowSubtitleMissedHandler(BaseHandler, ABC):
 
 
 class SubtitleMissedHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         which_subs = self.get_body_argument('whichSubs', None)
 
@@ -229,6 +236,7 @@ class SubtitleMissedHandler(BaseHandler, ABC):
 
 
 class DownloadSubtitleMissedHandler(BaseHandler, ABC):
+    @authenticated
     def post(self, *args, **kwargs):
         # make a list of all shows and their associated args
         to_download = {}
@@ -257,6 +265,7 @@ class DownloadSubtitleMissedHandler(BaseHandler, ABC):
 
 
 class BacklogShowHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         indexer_id = self.get_body_argument('indexer_id')
 
@@ -269,6 +278,7 @@ class BacklogShowHandler(BaseHandler, ABC):
 
 
 class BacklogOverviewHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         show_counts = {}
         show_cats = {}
@@ -320,6 +330,7 @@ class BacklogOverviewHandler(BaseHandler, ABC):
 
 
 class MassEditHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         to_edit = self.get_query_argument('toEdit')
 
@@ -466,6 +477,7 @@ class MassEditHandler(BaseHandler, ABC):
             action='mass_edit'
         )
 
+    @authenticated
     async def post(self, *args, **kwargs):
         skip_downloaded = self.get_body_argument('skip_downloaded', None)
         paused = self.get_body_argument('paused', None)
@@ -610,6 +622,7 @@ class MassEditHandler(BaseHandler, ABC):
 
 
 class MassUpdateHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         return self.render(
             '/manage/mass_update.mako',
@@ -620,6 +633,7 @@ class MassUpdateHandler(BaseHandler, ABC):
             action='mass_update'
         )
 
+    @authenticated
     def post(self, *args, **kwargs):
         to_update = self.get_body_argument('toUpdate', '')
         to_refresh = self.get_body_argument('toRefresh', '')
@@ -716,6 +730,7 @@ class MassUpdateHandler(BaseHandler, ABC):
 
 
 class FailedDownloadsHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         limit = self.get_query_argument('limit', None) or 100
         to_remove = self.get_query_argument('toRemove', None)

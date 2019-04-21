@@ -16,14 +16,17 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
+from abc import ABC
 
 import markdown2
+from tornado.web import authenticated
 
 import sickrage
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class ChangelogHandler(BaseHandler):
+class ChangelogHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         try:
             data = markdown2.markdown(sickrage.changelog(), extras=['header-ids'])

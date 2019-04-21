@@ -19,10 +19,12 @@
 
 import datetime
 import os
+from abc import ABC
 from functools import cmp_to_key
 
 from tornado.escape import json_encode
 from tornado.httputil import url_concat
+from tornado.web import authenticated
 
 import sickrage
 from sickrage.core import AccountAPI
@@ -34,19 +36,21 @@ from sickrage.core.webserver import ApiHandler
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class RobotsDotTxtHandler(BaseHandler):
+class RobotsDotTxtHandler(BaseHandler, ABC):
     def initialize(self):
         self.set_header('Content-Type', 'text/plain')
 
+    @authenticated
     def get(self, *args, **kwargs):
         """ Keep web crawlers out """
         return self.write("User-agent: *\nDisallow: /")
 
 
-class MessagesDotPoHandler(BaseHandler):
+class MessagesDotPoHandler(BaseHandler, ABC):
     def initialize(self):
         self.set_header('Content-Type', 'text/plain')
 
+    @authenticated
     def get(self, *args, **kwargs):
         """ Get /sickrage/locale/{lang_code}/LC_MESSAGES/messages.po """
         if sickrage.app.config.gui_lang:
@@ -56,7 +60,8 @@ class MessagesDotPoHandler(BaseHandler):
                     return self.write(f.read())
 
 
-class APIBulderHandler(BaseHandler):
+class APIBulderHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         def titler(x):
             return (remove_article(x), x)[not x or sickrage.app.config.sort_article]
@@ -89,7 +94,8 @@ class APIBulderHandler(BaseHandler):
         )
 
 
-class SetHomeLayoutHandler(BaseHandler):
+class SetHomeLayoutHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         layout = self.get_query_argument('layout', 'poster')
 
@@ -102,7 +108,8 @@ class SetHomeLayoutHandler(BaseHandler):
         return self.redirect("/home/")
 
 
-class SetPosterSortByHandler(BaseHandler):
+class SetPosterSortByHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         sort = self.get_query_argument('sort', 'name')
 
@@ -113,7 +120,8 @@ class SetPosterSortByHandler(BaseHandler):
         sickrage.app.config.save()
 
 
-class SetPosterSortDirHandler(BaseHandler):
+class SetPosterSortDirHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         direction = self.get_query_argument('direction')
 
@@ -121,7 +129,8 @@ class SetPosterSortDirHandler(BaseHandler):
         sickrage.app.config.save()
 
 
-class SetHistoryLayoutHandler(BaseHandler):
+class SetHistoryLayoutHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         layout = self.get_query_argument('layout', 'detailed')
 
@@ -133,7 +142,8 @@ class SetHistoryLayoutHandler(BaseHandler):
         return self.redirect("/history/")
 
 
-class ToggleDisplayShowSpecialsHandler(BaseHandler):
+class ToggleDisplayShowSpecialsHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
 
@@ -141,7 +151,8 @@ class ToggleDisplayShowSpecialsHandler(BaseHandler):
         return self.redirect(url_concat("/home/displayShow", {'show': show}))
 
 
-class SetScheduleLayoutHandler(BaseHandler):
+class SetScheduleLayoutHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         layout = self.get_query_argument('layout', 'banner')
 
@@ -156,13 +167,15 @@ class SetScheduleLayoutHandler(BaseHandler):
         return self.redirect("/schedule/")
 
 
-class ToggleScheduleDisplayPausedHandler(BaseHandler):
+class ToggleScheduleDisplayPausedHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         sickrage.app.config.coming_eps_display_paused = not sickrage.app.config.coming_eps_display_paused
         self.redirect("/schedule/")
 
 
-class SetScheduleSortHandler(BaseHandler):
+class SetScheduleSortHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         sort = self.get_query_argument('sort', 'date')
 
@@ -177,7 +190,8 @@ class SetScheduleSortHandler(BaseHandler):
         return self.redirect("/schedule/")
 
 
-class ScheduleHanlder(BaseHandler):
+class ScheduleHanlder(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         layout = self.get_query_argument('layout', sickrage.app.config.coming_eps_layout)
 
@@ -203,7 +217,8 @@ class ScheduleHanlder(BaseHandler):
         )
 
 
-class UnlinkHandler(BaseHandler):
+class UnlinkHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         if not sickrage.app.config.sub_id == self.get_current_user().get('sub'):
             return self.redirect("/{}/".format(sickrage.app.config.default_page))
@@ -218,7 +233,8 @@ class UnlinkHandler(BaseHandler):
         return self.redirect('/logout/')
 
 
-class QuicksearchDotJsonHandler(BaseHandler):
+class QuicksearchDotJsonHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         term = self.get_query_argument('term')
 

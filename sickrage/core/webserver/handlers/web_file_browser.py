@@ -18,36 +18,41 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
+from abc import ABC
 
 from tornado.escape import json_encode
+from tornado.web import authenticated
 
 from sickrage.core.helpers.browser import foldersAtPath
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class WebFileBrowserHandler(BaseHandler):
+class WebFileBrowserHandler(BaseHandler, ABC):
     def initialize(self):
         self.set_header('Content-Type', 'application/json')
 
+    @authenticated
     def get(self, *args, **kwargs):
         path = self.get_query_argument('path', '')
-        include_files = self.get_query_argument('includeFiles', False)
+        include_files = self.get_query_argument('includeFiles', None)
         file_types = self.get_query_argument('fileTypes', '')
 
-        return self.write(json_encode(foldersAtPath(path, True, bool(int(include_files)), file_types.split(','))))
+        return self.write(json_encode(
+            foldersAtPath(path, True, bool(int(include_files) if include_files else False), file_types.split(','))))
 
 
-class WebFileBrowserCompleteHandler(BaseHandler):
+class WebFileBrowserCompleteHandler(BaseHandler, ABC):
     def initialize(self):
         self.set_header('Content-Type', 'application/json')
 
+    @authenticated
     def get(self, *args, **kwargs):
         term = self.get_query_argument('term')
-        include_files = self.get_query_argument('includeFiles', False)
+        include_files = self.get_query_argument('includeFiles', None)
         file_types = self.get_query_argument('fileTypes', '')
 
         return self.write(json_encode([entry['path'] for entry in foldersAtPath(
             os.path.dirname(term),
-            includeFiles=bool(int(include_files)),
+            includeFiles=bool(int(include_files) if include_files else False),
             fileTypes=file_types.split(',')
         ) if 'path' in entry]))

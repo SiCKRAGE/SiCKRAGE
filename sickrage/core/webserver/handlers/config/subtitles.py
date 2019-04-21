@@ -19,6 +19,7 @@
 from abc import ABC
 
 from tornado.escape import json_encode
+from tornado.web import authenticated
 
 import sickrage
 from sickrage import subtitles
@@ -28,6 +29,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 
 class ConfigSubtitlesHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         return self.render(
             "/config/subtitles.mako",
@@ -41,6 +43,7 @@ class ConfigSubtitlesHandler(BaseHandler, ABC):
 
 
 class ConfigSubtitleGetCodeHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         q = self.get_query_argument('q')
 
@@ -53,6 +56,7 @@ class ConfigSubtitleGetCodeHandler(BaseHandler, ABC):
 
 
 class ConfigSubtitlesWantedLanguagesHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         codes = [{"id": code, "name": subtitles.name_from_code(code)} for code in
                  subtitles.subtitle_code_filter()]
@@ -63,6 +67,7 @@ class ConfigSubtitlesWantedLanguagesHandler(BaseHandler, ABC):
 
 
 class SaveSubtitlesHandler(BaseHandler, ABC):
+    @authenticated
     def post(self, *args, **kwargs):
         use_subtitles = self.get_body_argument('use_subtitles', None)
         subtitles_dir = self.get_body_argument('subtitles_dir', None)

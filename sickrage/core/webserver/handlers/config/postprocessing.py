@@ -22,6 +22,7 @@ from abc import ABC
 
 from tornado.httpclient import AsyncHTTPClient
 from tornado.httputil import url_concat
+from tornado.web import authenticated
 
 import sickrage
 from sickrage.core.helpers import checkbox_to_value
@@ -31,6 +32,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 
 class ConfigPostProcessingHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         return self.render(
             "/config/postprocessing.mako",
@@ -44,6 +46,7 @@ class ConfigPostProcessingHandler(BaseHandler, ABC):
 
 
 class SavePostProcessingHandler(BaseHandler, ABC):
+    @authenticated
     async def post(self, *args, **kwargs):
         naming_pattern = self.get_body_argument('naming_pattern', None)
         naming_multi_ep = self.get_body_argument('naming_multi_ep', None)
@@ -185,6 +188,7 @@ class SavePostProcessingHandler(BaseHandler, ABC):
 
 
 class TestNamingHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         pattern = self.get_query_argument('pattern', None)
         multi = self.get_query_argument('multi', None)
@@ -206,6 +210,7 @@ class TestNamingHandler(BaseHandler, ABC):
 
 
 class IsNamingValidHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         pattern = self.get_query_argument('pattern', None)
         multi = self.get_query_argument('multi', None)
@@ -248,6 +253,7 @@ class IsNamingValidHandler(BaseHandler, ABC):
 
 
 class IsRarSupportedHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         """
         Test Packing Support:

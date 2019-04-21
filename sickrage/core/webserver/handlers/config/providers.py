@@ -19,6 +19,7 @@
 from abc import ABC
 
 from tornado.escape import json_encode
+from tornado.web import authenticated
 
 import sickrage
 from sickrage.core.helpers import try_int, checkbox_to_value
@@ -28,6 +29,7 @@ from sickrage.providers import NewznabProvider, TorrentRssProvider
 
 
 class ConfigProvidersHandler(BaseHandler):
+    @authenticated
     def get(self, *args, **kwargs):
         return self.render(
             "/config/providers.mako",
@@ -41,6 +43,7 @@ class ConfigProvidersHandler(BaseHandler):
 
 
 class CanAddNewznabProviderHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         name = self.get_query_argument('name')
 
@@ -51,6 +54,7 @@ class CanAddNewznabProviderHandler(BaseHandler, ABC):
 
 
 class CanAddTorrentRssProviderHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         name = self.get_query_argument('name')
         url = self.get_query_argument('url')
@@ -67,6 +71,7 @@ class CanAddTorrentRssProviderHandler(BaseHandler, ABC):
 
 
 class GetNewznabCategoriesHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         """
         Retrieves a list of possible categories with category id's
@@ -84,6 +89,7 @@ class GetNewznabCategoriesHandler(BaseHandler, ABC):
 
 
 class SaveProvidersHandler(BaseHandler, ABC):
+    @authenticated
     def post(self, *args, **kwargs):
         results = []
 

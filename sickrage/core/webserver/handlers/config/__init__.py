@@ -20,6 +20,8 @@
 import os
 from abc import ABC
 
+from tornado.web import authenticated
+
 import sickrage
 from sickrage.core.webserver.handlers.base import BaseHandler
 
@@ -38,6 +40,7 @@ class ConfigHandler(BaseHandler, ABC):
         {'title': _('Anime'), 'path': '/config/anime/', 'icon': 'fas fa-eye'},
     ]
 
+    @authenticated
     def get(self, *args, **kwargs):
         return self.render(
             "/config/index.mako",
@@ -51,6 +54,7 @@ class ConfigHandler(BaseHandler, ABC):
 
 
 class ConfigResetHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         sickrage.app.config.load(True)
         sickrage.app.alerts.message(_('Configuration Reset to Defaults'), os.path.join(sickrage.app.config_file))

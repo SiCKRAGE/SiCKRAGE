@@ -25,6 +25,7 @@ from urllib.parse import unquote_plus
 from tornado.escape import json_encode
 from tornado.httpclient import AsyncHTTPClient
 from tornado.httputil import url_concat
+from tornado.web import authenticated
 
 import sickrage
 from sickrage.core.classes import AllShowsUI
@@ -55,6 +56,7 @@ def split_extra_show(extra_show):
 
 
 class HomeAddShowsHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         return self.render(
             "/home/add_shows.mako",
@@ -67,6 +69,7 @@ class HomeAddShowsHandler(BaseHandler, ABC):
 
 
 class SearchIndexersForShowNameHandler(BaseHandler, ABC):
+    @authenticated
     async def get(self, *args, **kwargs):
         search_term = self.get_query_argument('search_term')
         indexer = self.get_query_argument('indexer')
@@ -105,6 +108,7 @@ class SearchIndexersForShowNameHandler(BaseHandler, ABC):
 
 
 class MassAddTableHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         root_dir = self.get_query_argument('rootDir', '')
 
@@ -187,6 +191,7 @@ class MassAddTableHandler(BaseHandler, ABC):
 
 
 class NewShowHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         """
         Display the new show page which collects a tvdb id, folder, and extra options and
@@ -242,6 +247,7 @@ class NewShowHandler(BaseHandler, ABC):
 
 
 class TraktShowsHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         """
         Display the new show page which collects a tvdb id, folder, and extra options and
@@ -270,6 +276,7 @@ class TraktShowsHandler(BaseHandler, ABC):
 
 
 class PopularShowsHandler(BaseHandler, ABC):
+    @authenticated
     async def get(self, *args, **kwargs):
         """
         Fetches data from IMDB to show a list of popular shows.
@@ -292,6 +299,7 @@ class PopularShowsHandler(BaseHandler, ABC):
 
 
 class AddShowToBlacklistHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         indexer_id = self.get_query_argument('indexer_id')
 
@@ -301,6 +309,7 @@ class AddShowToBlacklistHandler(BaseHandler, ABC):
 
 
 class ExistingShowsHandler(BaseHandler, ABC):
+    @authenticated
     def get(self, *args, **kwargs):
         """
         Prints out the page to add existing shows from a root dir
@@ -316,6 +325,7 @@ class ExistingShowsHandler(BaseHandler, ABC):
 
 
 class AddShowByIDHandler(BaseHandler, ABC):
+    @authenticated
     async def get(self, *args, **kwargs):
         indexer_id = self.get_query_argument('indexer_id')
         show_name = self.get_query_argument('showName')
@@ -348,6 +358,7 @@ class AddShowByIDHandler(BaseHandler, ABC):
 
 
 class AddNewShowHandler(BaseHandler, ABC):
+    @authenticated
     async def post(self, *args, **kwargs):
         """
         Receive tvdb id, dir, and other options and create a show from them. If extra show dirs are
@@ -495,6 +506,7 @@ class AddNewShowHandler(BaseHandler, ABC):
 
 
 class AddExistingShowsHandler(BaseHandler, ABC):
+    @authenticated
     async def post(self, *args, **kwargs):
         """
         Receives a dir list and add them. Adds the ones with given TVDB IDs first, then forwards
