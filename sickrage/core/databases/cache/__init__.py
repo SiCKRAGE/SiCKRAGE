@@ -103,7 +103,7 @@ class CacheDB(srDatabase):
         __tablename__ = 'quicksearch_shows'
 
         category = Column(Text)
-        showid = Column(Integer, primary_key=True)
+        showid = Column(Integer, index=True, primary_key=True)
         seasons = Column(Integer)
         name = Column(Text)
         img = Column(Text)
@@ -112,10 +112,10 @@ class CacheDB(srDatabase):
         __tablename__ = 'quicksearch_episodes'
 
         category = Column(Text)
-        showid = Column(Integer, primary_key=True)
-        episodeid = Column(Integer, primary_key=True)
-        season = Column(Integer)
-        episode = Column(Integer)
+        showid = Column(Integer, index=True, primary_key=True)
+        episodeid = Column(Integer)
+        season = Column(Integer, index=True, primary_key=True)
+        episode = Column(Integer, index=True, primary_key=True)
         name = Column(Text)
         showname = Column(Text)
         img = Column(Text)
