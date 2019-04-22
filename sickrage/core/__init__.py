@@ -537,12 +537,9 @@ class Core(object):
 
         self.quicksearch_cache.load()
 
-        for dbData in MainDB.TVShow.query:
-            show = TVShow(int(dbData.indexer), int(dbData.indexer_id))
-
+        for show in TVShow.query:
             try:
-                self.log.debug("Loading data for show: [{}]".format(show.name))
-                self.showlist.append(show)
-                self.quicksearch_cache.add_show(show.indexerid)
+                self.log.debug("Loading data for show: [{}]".format(show.show_name))
+                self.quicksearch_cache.add_show(show.indexer_id)
             except Exception as e:
                 self.log.debug("Show error in [%s]: %s" % (show.location, str(e)))

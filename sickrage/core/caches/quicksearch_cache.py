@@ -18,7 +18,6 @@
 
 import sickrage
 from sickrage.core.databases.cache import CacheDB
-from sickrage.core.databases.main import MainDB
 from sickrage.core.media.util import showImage
 
 
@@ -49,7 +48,8 @@ class QuicksearchCache(object):
         self.add_show(indexerid)
 
     def add_show(self, indexerid):
-        show = MainDB.TVShow.query.filter_by(indexer_id=indexerid).one()
+        from sickrage.core import TVShow
+        show = TVShow.query.filter_by(indexer_id=indexerid).one()
 
         if indexerid not in self.cache['shows']:
             sickrage.app.log.debug("Adding show {} to QuickSearch cache".format(show.show_name))
@@ -86,7 +86,8 @@ class QuicksearchCache(object):
                 del sql_l
 
     def del_show(self, indexerid):
-        show = MainDB.TVShow.query.filter_by(indexer_id=indexerid).one()
+        from sickrage.core import TVShow
+        show = TVShow.query.filter_by(indexer_id=indexerid).one()
 
         sickrage.app.log.debug("Deleting show {} from QuickSearch cache".format(show.show_name))
 

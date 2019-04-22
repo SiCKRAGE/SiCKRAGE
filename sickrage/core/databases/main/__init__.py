@@ -40,46 +40,6 @@ class MainDB(srDatabase):
             if hasattr(model, '__tablename__'):
                 self.tables[model.__tablename__] = model
 
-    class TVShow(MainDBBase):
-        __tablename__ = 'tv_shows'
-
-        indexer_id = Column(Integer, index=True, primary_key=True)
-        indexer = Column(Integer, index=True, primary_key=True)
-        show_name = Column(Text)
-        location = Column(Text)
-        network = Column(Text)
-        genre = Column(Text)
-        overview = Column(Text)
-        classification = Column(Text)
-        runtime = Column(Integer)
-        quality = Column(Integer)
-        airs = Column(Text)
-        status = Column(Integer)
-        flatten_folders = Column(Boolean)
-        paused = Column(Boolean)
-        air_by_date = Column(Boolean)
-        anime = Column(Boolean)
-        scene = Column(Boolean)
-        sports = Column(Boolean)
-        subtitles = Column(Boolean)
-        dvdorder = Column(Boolean)
-        skip_downloaded = Column(Boolean)
-        startyear = Column(Integer)
-        lang = Column(Text)
-        imdb_id = Column(Text)
-        rls_ignore_words = Column(Text)
-        rls_require_words = Column(Text)
-        default_ep_status = Column(Integer, default=-1)
-        sub_use_sr_metadata = Column(Boolean)
-        notify_list = Column(Text)
-        search_delay = Column(Integer, default=0)
-        last_update = Column(Integer, default=0)
-        last_refresh = Column(Integer, default=0)
-        last_backlog_search = Column(Integer, default=0)
-        last_proper_search = Column(Integer, default=0)
-
-        episodes = relationship('TVEpisode', back_populates='show', lazy='select')
-
     class TVEpisode(MainDBBase):
         __tablename__ = 'tv_episodes'
         __table_args__ = (
@@ -120,6 +80,9 @@ class MainDB(srDatabase):
 
     class IMDbInfo(MainDBBase):
         __tablename__ = 'imdb_info'
+        __table_args__ = (
+            ForeignKeyConstraint(['indexer_id'], ['tv_shows.indexer_id']),
+        )
 
         indexer_id = Column(Integer, primary_key=True)
         Rated = Column(Text)

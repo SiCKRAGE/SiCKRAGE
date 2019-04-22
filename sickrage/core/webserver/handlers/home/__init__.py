@@ -89,7 +89,9 @@ def have_torrent():
 class HomeHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
-        if not len(sickrage.app.showlist):
+        from sickrage.core import TVShow
+
+        if not TVShow.query.count():
             return self.redirect('/home/addShows/')
 
         showlists = OrderedDict({'Shows': []})
@@ -102,9 +104,9 @@ class HomeHandler(BaseHandler, ABC):
                 else:
                     showlists['Shows'] += [show]
         else:
-            showlists['Shows'] = sickrage.app.showlist
+            showlists['Shows'] = TVShow.query.all()
 
-        app_stats = await self.run_task(app_statistics)
+        app_stats = app_statistics()
 
         return self.render(
             "/home/index.mako",

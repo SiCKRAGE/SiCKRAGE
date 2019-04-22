@@ -48,7 +48,6 @@ from bs4 import BeautifulSoup
 
 import sickrage
 from sickrage.core.common import Quality, SKIPPED, WANTED, FAILED, UNAIRED
-from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import MultipleShowObjectsException
 from sickrage.core.helpers import encryption
 
@@ -368,8 +367,8 @@ def findCertainShow(indexerid, return_show_object=True):
     if not indexerid:
         return None
 
-    indexer_ids = [indexerid] if not isinstance(indexerid, list) else indexerid
-    results = [show for show in sickrage.app.showlist if show.indexerid in indexer_ids]
+    indexerids = [indexerid] if not isinstance(indexerid, list) else indexerid
+    results = [show for show in sickrage.app.showlist if show.indexerid in indexerids]
 
     if not results:
         return None
@@ -1521,6 +1520,8 @@ def clean_url(url):
 
 
 def app_statistics():
+    from sickrage.core import TVShow
+
     show_stat = {}
 
     overall_stats = {
@@ -1530,9 +1531,9 @@ def app_statistics():
             'total': 0,
         },
         'shows': {
-            'active': len([show for show in sickrage.app.showlist
+            'active': len([show for show in TVShow.query
                            if show.paused == 0 and show.status.lower() == 'continuing']),
-            'total': len(sickrage.app.showlist),
+            'total': TVShow.query.count(),
         },
         'total_size': 0
     }
@@ -1544,19 +1545,19 @@ def app_statistics():
 
     max_download_count = 1000
 
-    for show in sickrage.app.showlist:
+    for show in TVShow.query:
         if sickrage.app.show_queue.is_being_added(show) or sickrage.app.show_queue.is_being_removed(show):
             continue
 
-        for epData in MainDB.TVEpisode.query.filter_by(showid=show.indexerid):
-            if show.indexerid not in show_stat:
-                show_stat[show.indexerid] = {}
-                show_stat[show.indexerid]['ep_snatched'] = 0
-                show_stat[show.indexerid]['ep_downloaded'] = 0
-                show_stat[show.indexerid]['ep_total'] = 0
-                show_stat[show.indexerid]['ep_airs_next'] = 0
-                show_stat[show.indexerid]['ep_airs_prev'] = 0
-                show_stat[show.indexerid]['total_size'] = 0
+        for epData in show.episodes:
+            if show.indexer_id not in show_stat:
+                show_stat[show.indexer_id] = {}
+                show_stat[show.indexer_id]['ep_snatched'] = 0
+                show_stat[show.indexer_id]['ep_downloaded'] = 0
+                show_stat[show.indexer_id]['ep_total'] = 0
+                show_stat[show.indexer_id]['ep_airs_next'] = 0
+                show_stat[show.indexer_id]['ep_airs_prev'] = 0
+                show_stat[show.indexer_id]['total_size'] = 0
 
             season = epData.season
             episode = epData.episode
@@ -1566,26 +1567,26 @@ def app_statistics():
 
             if season > 0 and episode > 0 and airdate > 1:
                 if status in status_quality:
-                    show_stat[show.indexerid]['ep_snatched'] += 1
+                    show_stat[show.indexer_id]['ep_snatched'] += 1
                     overall_stats['episodes']['snatched'] += 1
 
                 if status in status_download:
-                    show_stat[show.indexerid]['ep_downloaded'] += 1
+                    show_stat[show.indexer_id]['ep_downloaded'] += 1
                     overall_stats['episodes']['downloaded'] += 1
 
                 if (airdate <= today and status in [SKIPPED, WANTED, FAILED]) or (
                         status in status_quality + status_download):
-                    show_stat[show.indexerid]['ep_total'] += 1
+                    show_stat[show.indexer_id]['ep_total'] += 1
 
-                if show_stat[show.indexerid]['ep_total'] > max_download_count:
-                    max_download_count = show_stat[show.indexerid]['ep_total']
+                if show_stat[show.indexer_id]['ep_total'] > max_download_count:
+                    max_download_count = show_stat[show.indexer_id]['ep_total']
 
-                if airdate >= today and status in [WANTED, UNAIRED] and not show_stat[show.indexerid]['ep_airs_next']:
-                    show_stat[show.indexerid]['ep_airs_next'] = airdate
-                elif airdate < today > show_stat[show.indexerid]['ep_airs_prev'] and status != UNAIRED:
-                    show_stat[show.indexerid]['ep_airs_prev'] = airdate
+                if airdate >= today and status in [WANTED, UNAIRED] and not show_stat[show.indexer_id]['ep_airs_next']:
+                    show_stat[show.indexer_id]['ep_airs_next'] = airdate
+                elif airdate < today > show_stat[show.indexer_id]['ep_airs_prev'] and status != UNAIRED:
+                    show_stat[show.indexer_id]['ep_airs_prev'] = airdate
 
-                show_stat[show.indexerid]['total_size'] += file_size
+                show_stat[show.indexer_id]['total_size'] += file_size
 
                 overall_stats['episodes']['total'] += 1
                 overall_stats['total_size'] += file_size

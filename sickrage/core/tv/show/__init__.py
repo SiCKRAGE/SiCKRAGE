@@ -28,7 +28,8 @@ import traceback
 from collections import namedtuple
 
 import send2trash
-from sqlalchemy import orm, desc
+from sqlalchemy import orm, desc, Column, Integer, Boolean, Text
+from sqlalchemy.orm import relationship
 from unidecode import unidecode
 
 import sickrage
@@ -38,7 +39,7 @@ from sickrage.core.caches import image_cache
 from sickrage.core.classes import ShowListUI
 from sickrage.core.common import Quality, SKIPPED, WANTED, UNKNOWN, DOWNLOADED, IGNORED, SNATCHED, SNATCHED_PROPER, \
     UNAIRED, ARCHIVED, statusStrings, Overview
-from sickrage.core.databases.main import MainDB
+from sickrage.core.databases.main import MainDB, MainDBBase
 from sickrage.core.exceptions import ShowNotFoundException, \
     EpisodeNotFoundException, EpisodeDeletedException, MultipleShowsInDatabaseException, MultipleShowObjectsException
 from sickrage.core.helpers import list_media_files, is_media_file, try_int, safe_getattr, findCertainShow
@@ -48,373 +49,46 @@ from sickrage.indexers.config import INDEXER_TVRAGE
 from sickrage.indexers.exceptions import indexer_attributenotfound
 
 
-class TVShow(object):
-    def __init__(self, indexer, indexerid, lang=""):
-        self.lock = threading.Lock()
-
-        self._indexerid = int(indexerid)
-        self._indexer = int(indexer)
-        self._name = ""
-        self._imdbid = ""
-        self._network = ""
-        self._genre = ""
-        self._overview = ""
-        self._classification = 'Scripted'
-        self._runtime = 0
-        self._imdb_info = {}
-        self._quality = try_int(sickrage.app.config.quality_default, UNKNOWN)
-        self._flatten_folders = int(sickrage.app.config.flatten_folders_default)
-        self._status = "Unknown"
-        self._airs = ""
-        self._startyear = 0
-        self._paused = 0
-        self._air_by_date = 0
-        self._subtitles = int(sickrage.app.config.subtitles_default)
-        self._subtitles_sr_metadata = 0
-        self._dvdorder = 0
-        self._skip_downloaded = 0
-        self._lang = lang
-        self._last_update = datetime.datetime.now().toordinal()
-        self._last_refresh = datetime.datetime.now().toordinal()
-        self._sports = 0
-        self._anime = 0
-        self._scene = 0
-        self._rls_ignore_words = ""
-        self._rls_require_words = ""
-        self._default_ep_status = SKIPPED
-        self._notify_list = ""
-        self._search_delay = 0
-        self.dirty = True
-
-        self._location = ""
-        self._next_aired = 0
-        self.episodes = {}
-        self.release_groups = None
-
-        if findCertainShow(self.indexerid) is not None:
-            raise MultipleShowObjectsException("Can't create a show if it already exists")
-
-        self.load_from_db()
-
-    @property
-    def name(self):
-        return self._name
-
-    @name.setter
-    def name(self, value):
-        if self._name != value:
-            self.dirty = True
-        self._name = value
-
-    @property
-    def indexerid(self):
-        return self._indexerid
-
-    @indexerid.setter
-    def indexerid(self, value):
-        if self._indexerid != value:
-            self.dirty = True
-        self._indexerid = value
-
-    @property
-    def indexer(self):
-        return self._indexer
-
-    @indexer.setter
-    def indexer(self, value):
-        if self._indexer != value:
-            self.dirty = True
-        self._indexer = value
-
-    @property
-    def imdbid(self):
-        return self._imdbid
-
-    @imdbid.setter
-    def imdbid(self, value):
-        if self._imdbid != value:
-            self.dirty = True
-        self._imdbid = value
-
-    @property
-    def network(self):
-        return self._network
-
-    @network.setter
-    def network(self, value):
-        if self._network != value:
-            self.dirty = True
-        self._network = value
-
-    @property
-    def genre(self):
-        return self._genre
-
-    @genre.setter
-    def genre(self, value):
-        if self._genre != value:
-            self.dirty = True
-        self._genre = value
-
-    @property
-    def overview(self):
-        return self._overview
-
-    @overview.setter
-    def overview(self, value):
-        if self._overview != value:
-            self.dirty = True
-        self._overview = value
-
-    @property
-    def classification(self):
-        return self._classification
-
-    @classification.setter
-    def classification(self, value):
-        if self._classification != value:
-            self.dirty = True
-        self._classification = value
-
-    @property
-    def runtime(self):
-        return self._runtime
-
-    @runtime.setter
-    def runtime(self, value):
-        if self._runtime != value:
-            self.dirty = True
-        self._runtime = value
-
-    @property
-    def imdb_info(self):
-        return self._imdb_info
-
-    @imdb_info.setter
-    def imdb_info(self, value):
-        if self._imdb_info != value:
-            self.dirty = True
-        self._imdb_info = namedtuple("imdb_info", value.keys())(*value.values())
-
-    @property
-    def quality(self):
-        return self._quality
-
-    @quality.setter
-    def quality(self, value):
-        if self._quality != value:
-            self.dirty = True
-        self._quality = value
-
-    @property
-    def flatten_folders(self):
-        return self._flatten_folders
-
-    @flatten_folders.setter
-    def flatten_folders(self, value):
-        if self._flatten_folders != value:
-            self.dirty = True
-        self._flatten_folders = value
-
-    @property
-    def status(self):
-        return self._status
-
-    @status.setter
-    def status(self, value):
-        if self._status != value:
-            self.dirty = True
-        self._status = value
-
-    @property
-    def airs(self):
-        return self._airs
-
-    @airs.setter
-    def airs(self, value):
-        if self._airs != value:
-            self.dirty = True
-        self._airs = value
-
-    @property
-    def startyear(self):
-        return self._startyear
-
-    @startyear.setter
-    def startyear(self, value):
-        if self._startyear != value:
-            self.dirty = True
-        self._startyear = value
-
-    @property
-    def paused(self):
-        return self._paused
-
-    @paused.setter
-    def paused(self, value):
-        if self._paused != value:
-            self.dirty = True
-        self._paused = value
-
-    @property
-    def air_by_date(self):
-        return self._air_by_date
-
-    @air_by_date.setter
-    def air_by_date(self, value):
-        if self._air_by_date != value:
-            self.dirty = True
-        self._air_by_date = value
-
-    @property
-    def subtitles(self):
-        return self._subtitles
-
-    @subtitles.setter
-    def subtitles(self, value):
-        if self._subtitles != value:
-            self.dirty = True
-        self._subtitles = value
-
-    @property
-    def dvdorder(self):
-        return self._dvdorder
-
-    @dvdorder.setter
-    def dvdorder(self, value):
-        if self._dvdorder != value:
-            self.dirty = True
-        self._dvdorder = value
-
-    @property
-    def skip_downloaded(self):
-        return self._skip_downloaded
-
-    @skip_downloaded.setter
-    def skip_downloaded(self, value):
-        if self._skip_downloaded != value:
-            self.dirty = True
-        self._skip_downloaded = value
-
-    @property
-    def lang(self):
-        return self._lang
-
-    @lang.setter
-    def lang(self, value):
-        if self._lang != value:
-            self.dirty = True
-        self._lang = value
-
-    @property
-    def last_update(self):
-        return self._last_update
-
-    @last_update.setter
-    def last_update(self, value):
-        if self._last_update != value:
-            self.dirty = True
-        self._last_update = value
-
-    @property
-    def last_refresh(self):
-        return self._last_refresh
-
-    @last_refresh.setter
-    def last_refresh(self, value):
-        if self._last_refresh != value:
-            self.dirty = True
-        self._last_refresh = value
-
-    @property
-    def sports(self):
-        return self._sports
-
-    @sports.setter
-    def sports(self, value):
-        if self._sports != value:
-            self.dirty = True
-        self._sports = value
-
-    @property
-    def anime(self):
-        return self._anime
-
-    @anime.setter
-    def anime(self, value):
-        if self._anime != value:
-            self.dirty = True
-        self._anime = value
-
-    @property
-    def scene(self):
-        return self._scene
-
-    @scene.setter
-    def scene(self, value):
-        if self._scene != value:
-            self.dirty = True
-        self._scene = value
-
-    @property
-    def rls_ignore_words(self):
-        return self._rls_ignore_words
-
-    @rls_ignore_words.setter
-    def rls_ignore_words(self, value):
-        if self._rls_ignore_words != value:
-            self.dirty = True
-        self._rls_ignore_words = value
-
-    @property
-    def rls_require_words(self):
-        return self._rls_require_words
-
-    @rls_require_words.setter
-    def rls_require_words(self, value):
-        if self._rls_require_words != value:
-            self.dirty = True
-        self._rls_require_words = value
-
-    @property
-    def default_ep_status(self):
-        return self._default_ep_status
-
-    @default_ep_status.setter
-    def default_ep_status(self, value):
-        if self._default_ep_status != value:
-            self.dirty = True
-        self._default_ep_status = value
-
-    @property
-    def notify_list(self):
-        return self._notify_list
-
-    @notify_list.setter
-    def notify_list(self, value):
-        if self._notify_list != value:
-            self.dirty = True
-        self._notify_list = value
-
-    @property
-    def search_delay(self):
-        return self._search_delay
-
-    @search_delay.setter
-    def search_delay(self, value):
-        if self._search_delay != value:
-            self.dirty = True
-        self._search_delay = value
-
-    @property
-    def subtitles_sr_metadata(self):
-        return self._subtitles_sr_metadata
-
-    @subtitles_sr_metadata.setter
-    def subtitles_sr_metadata(self, value):
-        if self._subtitles_sr_metadata != value:
-            self.dirty = True
-        self._subtitles_sr_metadata = value
+class TVShow(MainDBBase):
+    __tablename__ = 'tv_shows'
+
+    indexer_id = Column(Integer, index=True, primary_key=True)
+    indexer = Column(Integer, index=True, primary_key=True)
+    show_name = Column(Text)
+    location = Column(Text)
+    network = Column(Text)
+    genre = Column(Text)
+    overview = Column(Text)
+    classification = Column(Text, default='Scripted')
+    runtime = Column(Integer, default=0)
+    quality = Column(Integer, default=-1)
+    airs = Column(Text)
+    status = Column(Integer, default=UNKNOWN)
+    flatten_folders = Column(Boolean, default=False)
+    paused = Column(Boolean, default=False)
+    air_by_date = Column(Boolean, default=False)
+    anime = Column(Boolean, default=False)
+    scene = Column(Boolean, default=False)
+    sports = Column(Boolean, default=False)
+    subtitles = Column(Boolean, default=False)
+    dvdorder = Column(Boolean, default=False)
+    skip_downloaded = Column(Boolean, default=False)
+    startyear = Column(Integer, default=0)
+    lang = Column(Text)
+    imdb_id = Column(Text)
+    rls_ignore_words = Column(Text)
+    rls_require_words = Column(Text)
+    default_ep_status = Column(Integer, default=SKIPPED)
+    sub_use_sr_metadata = Column(Boolean, default=False)
+    notify_list = Column(Text)
+    search_delay = Column(Integer, default=0)
+    last_update = Column(Integer, default=datetime.datetime.now().toordinal())
+    last_refresh = Column(Integer, default=datetime.datetime.now().toordinal())
+    last_backlog_search = Column(Integer, default=datetime.datetime.now().toordinal())
+    last_proper_search = Column(Integer, default=datetime.datetime.now().toordinal())
+
+    episodes = relationship('TVEpisode', back_populates='show', lazy='select')
+    imdb_info = relationship('IMDbInfo', lazy='select')
 
     @property
     def is_anime(self):
@@ -456,15 +130,20 @@ class TVShow(object):
         return total_size
 
     @property
-    def location(self):
-        return self._location
+    def release_groups(self):
+        if self.is_anime:
+            return BlackAndWhiteList(self.indexerid)
 
-    @location.setter
-    def location(self, new_location):
-        if sickrage.app.config.add_shows_wo_dir or os.path.isdir(new_location):
-            sickrage.app.log.debug("Show location set to " + new_location)
-            self.dirty = True
-            self._location = new_location
+    # @property
+    # def location(self):
+    #     return self._location
+    #
+    # @location.setter
+    # def location(self, new_location):
+    #     if sickrage.app.config.add_shows_wo_dir or os.path.isdir(new_location):
+    #         sickrage.app.log.debug("Show location set to " + new_location)
+    #         self.dirty = True
+    #         self._location = new_location
 
     # delete references to anything that's not in the internal lists
     def flush_episodes(self):
@@ -908,58 +587,6 @@ class TVShow(object):
 
         return rootEp
 
-    def load_from_db(self, skipNFO=False):
-        sickrage.app.log.debug(str(self.indexerid) + ": Loading show info from database")
-
-        try:
-            dbData = MainDB.TVShow.query.filter_by(indexer_id=self.indexerid, indexer=self.indexer).one()
-        except orm.exc.MultipleResultsFound:
-            raise MultipleShowsInDatabaseException()
-        except orm.exc.NoResultFound:
-            return ShowNotFoundException()
-
-        self._indexer = try_int(dbData.indexer, self.indexer)
-        self._name = dbData.show_name or self.name
-        self._network = dbData.network or self.network
-        self._genre = dbData.genre or self.genre
-        self._overview = dbData.overview or self.overview
-        self._classification = dbData.classification or self.classification
-        self._runtime = dbData.runtime or self.runtime
-        self._status = dbData.status or self.status
-        self._airs = dbData.airs or self.airs
-        self._startyear = dbData.startyear or self.startyear
-        self._air_by_date = dbData.air_by_date or self.air_by_date
-        self._anime = dbData.anime or self.anime
-        self._sports = dbData.sports or self.sports
-        self._scene = dbData.scene or self.scene
-        self._subtitles = dbData.subtitles or self.subtitles
-        self._subtitles_sr_metadata = dbData.sub_use_sr_metadata or self.subtitles_sr_metadata
-        self._dvdorder = dbData.dvdorder or self.dvdorder
-        self._skip_downloaded = dbData.skip_downloaded or self.skip_downloaded
-        self._quality = dbData.quality or self.quality
-        self._flatten_folders = dbData.flatten_folders or self.flatten_folders
-        self._paused = dbData.paused or self.paused
-        self._lang = dbData.lang or self.lang
-        self._last_update = dbData.last_update or self.last_update
-        self._last_refresh = dbData.last_refresh or self.last_refresh
-        self._rls_ignore_words = dbData.rls_ignore_words or self.rls_ignore_words
-        self._rls_require_words = dbData.rls_require_words or self.rls_require_words
-        self._default_ep_status = dbData.default_ep_status or self.default_ep_status
-        self._notify_list = dbData.notify_list or self.notify_list
-        self._search_delay = dbData.search_delay or self.search_delay
-        self._imdbid = dbData.imdb_id or self.imdbid
-        self._location = dbData.location or self.location
-
-        if self.is_anime:
-            self.release_groups = BlackAndWhiteList(self.indexerid)
-
-        if not skipNFO:
-            # Get IMDb_info from database
-            try:
-                self._imdb_info = MainDB.IMDbInfo.query.filter_by(indexer_id=self.indexerid).one()
-            except orm.exc.NoResultFound:
-                self._imdb_info = self.imdb_info
-
     def load_from_indexer(self, cache=True, tvapi=None):
         if self.indexer is not INDEXER_TVRAGE:
             sickrage.app.log.debug(
@@ -1062,7 +689,7 @@ class TVShow(object):
         sickrage.app.main_db.delete(MainDB.TVEpisode, showid=self.indexerid)
 
         # remove from tv shows table
-        sickrage.app.main_db.delete(MainDB.TVShow, indexer_id=self.indexerid)
+        sickrage.app.main_db.delete(TVShow, indexer_id=self.indexerid)
 
         # remove from imdb info table
         sickrage.app.main_db.delete(MainDB.IMDbInfo, indexer_id=self.indexerid)
