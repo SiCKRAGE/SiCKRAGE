@@ -164,8 +164,8 @@ class ShowQueue(srQueue):
             raise CantRemoveShowException("{} is already queued to be removed".format(show))
 
         # remove other queued actions for this show.
-        for x in self.queue:
-            if x and x.show and x != self.current_item and show.indexerid == x.show.indexerid:
+        for x in self.queue_items:
+            if show.indexerid == x.show.indexerid:
                 self.queue.remove(x)
 
         sickrage.app.io_loop.add_callback(self.put, QueueItemRemove(show=show, full=full))
@@ -214,7 +214,7 @@ class ShowQueueItem(srQueueItem):
         self.show.flush_episodes()
 
     def is_in_queue(self):
-        return self in sickrage.app.show_queue.queue + [sickrage.app.show_queue.current_item]
+        return self in sickrage.app.show_queue.queue_items
 
     @property
     def show_name(self):
