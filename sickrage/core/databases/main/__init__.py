@@ -72,10 +72,11 @@ class MainDB(srDatabase):
         default_ep_status = Column(Integer, default=-1)
         sub_use_sr_metadata = Column(Boolean)
         notify_list = Column(Text)
-        search_delay = Column(Boolean)
+        search_delay = Column(Integer, default=0)
         last_update = Column(Integer, default=0)
         last_refresh = Column(Integer, default=0)
         last_backlog_search = Column(Integer, default=0)
+        last_proper_search = Column(Integer, default=0)
 
         episodes = relationship('TVEpisode', back_populates='show', lazy='select')
 

@@ -101,11 +101,16 @@ class srDatabase(object):
 
             for table, rows in migrate_tables.items():
                 sickrage.app.log.info('Migrating {} database table {}'.format(self.name, table))
+                self.delete(self.tables[table])
+
                 try:
-                    self.delete(self.tables[table])
                     self.bulk_add(self.tables[table], rows)
                 except Exception as e:
-                    pass
+                    for row in rows:
+                        try:
+                            self.add(self.tables[table](**row))
+                        except Exception as e:
+                            pass
 
             shutil.move(migrate_file, backup_file)
 
@@ -131,10 +136,7 @@ class srDatabase(object):
 
     def bulk_add(self, table, rows):
         with self.session() as session:
-            try:
-                session.bulk_insert_mappings(table, rows)
-            except Exception:
-                [session.add(table(**row)) for row in rows]
+            session.bulk_insert_mappings(table, rows)
 
     def add(self, instance):
         with self.session() as session:
