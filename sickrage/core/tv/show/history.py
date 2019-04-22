@@ -23,6 +23,7 @@ from datetime import timedelta
 from urllib.parse import unquote
 
 import sickrage
+from sickrage.core.tv.show.helpers import get_show_list
 from sickrage.core.common import Quality, SNATCHED, SUBTITLED, FAILED, WANTED
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import EpisodeNotFoundException
@@ -57,7 +58,7 @@ class History:
         else:
             actions = []
 
-        for show in sickrage.app.showlist:
+        for show in get_show_list():
             if limit == 0:
                 if len(actions) > 0:
                     dbData = MainDB.History.query.filter_by(showid=show.indexerid).filter(

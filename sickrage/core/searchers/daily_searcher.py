@@ -22,6 +22,7 @@ import datetime
 import threading
 
 import sickrage
+from sickrage.core.tv.show.helpers import get_show_list
 from sickrage.core.common import Quality, WANTED, DOWNLOADED, SNATCHED, SNATCHED_PROPER
 from sickrage.core.databases.main import MainDB
 from sickrage.core.queues.search import DailySearchQueueItem
@@ -50,7 +51,7 @@ class DailySearcher(object):
         # find new released episodes and update their statuses
         new_episode_finder()
 
-        for curShow in sickrage.app.showlist:
+        for curShow in get_show_list():
             if curShow.paused:
                 sickrage.app.log.debug("Skipping search for {} because the show is paused".format(curShow.name))
                 continue

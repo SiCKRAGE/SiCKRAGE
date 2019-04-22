@@ -19,13 +19,9 @@
 
 
 import datetime
-import re
 import sys
 
-from dateutil import parser
-
-import sickrage
-from sickrage.core.common import Quality, dateFormat, dateTimeFormat
+from sickrage.core.common import Quality, dateTimeFormat
 
 
 class SearchResult(object):
@@ -142,58 +138,6 @@ class TorrentSearchResult(SearchResult):
         self.resultType = "torrent"
 
 
-class AllShowsUI(object):
-    def __init__(self, config, log=None):
-        self.config = config
-        self.log = log
-
-    def selectSeries(self, allSeries, *args, **kwargs):
-        shows = []
-
-        # get all available shows
-        for curShow in allSeries:
-            try:
-                if not curShow['seriesname'] or curShow in shows:
-                    continue
-
-                if 'firstaired' not in curShow:
-                    curShow['firstaired'] = datetime.datetime.now().strftime("%Y-%m-%d")
-                    curShow['firstaired'] = re.sub("([-]0{2})+", "", curShow['firstaired'])
-                    fixDate = parser.parse(curShow['firstaired'], fuzzy=True).date()
-                    curShow['firstaired'] = fixDate.strftime(dateFormat)
-
-                shows += [curShow]
-            except Exception as e:
-                continue
-
-        return shows
-
-
-class ShowListUI(object):
-    """
-    Instead of prompting with a UI to pick the
-    desired result out of a list of shows it tries to be smart about it
-    based on what shows are in SiCKRAGE.
-    """
-
-    def __init__(self, config, log=None):
-        self.config = config
-        self.log = log
-
-    def selectSeries(self, allSeries, *args, **kwargs):
-        try:
-            # try to pick a show that's in my show list
-            showIDList = [int(x.indexerid) for x in sickrage.app.showlist]
-            for curShow in allSeries:
-                if int(curShow['id']) in showIDList:
-                    return curShow
-        except Exception:
-            pass
-
-        # if nothing matches then return first result
-        return allSeries[0]
-
-
 class UIError(object):
     """
     Represents an error to be displayed in the web UI.
@@ -252,20 +196,3 @@ class WarningViewer(object):
 
     def get(self):
         return self.errors
-
-
-class AttrDict(dict):
-    def __getattr__(self, name):
-        if name in self:
-            return self[name]
-        else:
-            raise AttributeError("No such attribute: " + name)
-
-    def __setattr__(self, name, value):
-        self[name] = value
-
-    def __delattr__(self, name):
-        if name in self:
-            del self[name]
-        else:
-            raise AttributeError("No such attribute: " + name)

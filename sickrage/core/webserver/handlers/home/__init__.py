@@ -40,8 +40,8 @@ from sickrage.core.common import Overview, Quality, cpu_presets, statusStrings, 
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AnidbAdbaConnectionException, CantRefreshShowException, NoNFOException, \
     CantUpdateShowException, CantRemoveShowException, EpisodeDeletedException
-from sickrage.core.helpers import app_statistics, clean_url, clean_host, clean_hosts, findCertainShow, \
-    getDiskSpaceUsage, remove_article, checkbox_to_value, try_int
+from sickrage.core.helpers import clean_url, clean_host, clean_hosts, getDiskSpaceUsage, remove_article, \
+    checkbox_to_value, try_int
 from sickrage.core.helpers.anidb import get_release_groups_for_anime, short_group_names
 from sickrage.core.helpers.srdatetime import srDateTime
 from sickrage.core.queues.search import BacklogQueueItem, FailedQueueItem, ManualSearchQueueItem, MANUAL_SEARCH_HISTORY
@@ -51,6 +51,7 @@ from sickrage.core.scene_numbering import get_scene_numbering_for_show, get_xem_
     get_scene_absolute_numbering, get_scene_numbering
 from sickrage.core.traktapi import srTraktAPI
 from sickrage.core.tv.episode import TVEpisode
+from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
 from sickrage.indexers import IndexerApi
 from sickrage.subtitles import name_from_code
@@ -60,7 +61,7 @@ def _get_episode(show, season=None, episode=None, absolute=None):
     if show is None:
         return _("Invalid show parameters")
 
-    show_obj = findCertainShow(int(show))
+    show_obj = find_show(int(show))
 
     if show_obj is None:
         return _("Invalid show paramaters")
@@ -89,14 +90,12 @@ def have_torrent():
 class HomeHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
-        from sickrage.core import TVShow
-
-        if not TVShow.query.count():
+        if not len(get_show_list()):
             return self.redirect('/home/addShows/')
 
         showlists = OrderedDict({'Shows': []})
         if sickrage.app.config.anime_split_home:
-            for show in sickrage.app.showlist:
+            for show in get_show_list():
                 if show.is_anime:
                     if 'Anime' not in list(showlists.keys()):
                         showlists['Anime'] = []
@@ -104,9 +103,9 @@ class HomeHandler(BaseHandler, ABC):
                 else:
                     showlists['Shows'] += [show]
         else:
-            showlists['Shows'] = TVShow.query.all()
+            showlists['Shows'] = get_show_list()
 
-        app_stats = app_statistics()
+        show_stats = self.show_statistics()
 
         return self.render(
             "/home/index.mako",
@@ -114,12 +113,87 @@ class HomeHandler(BaseHandler, ABC):
             header="Show List",
             topmenu="home",
             showlists=showlists,
-            show_stat=app_stats[0],
-            overall_stats=app_stats[1],
-            max_download_count=app_stats[2],
+            show_stat=show_stats[0],
+            overall_stats=show_stats[1],
+            max_download_count=show_stats[2],
             controller='home',
             action='index'
         )
+
+    def show_statistics(self):
+        show_stat = {}
+
+        overall_stats = {
+            'episodes': {
+                'downloaded': 0,
+                'snatched': 0,
+                'total': 0,
+            },
+            'shows': {
+                'active': len([show for show in get_show_list()
+                               if show.paused == 0 and show.status.lower() == 'continuing']),
+                'total': len(get_show_list()),
+            },
+            'total_size': 0
+        }
+
+        today = datetime.date.today().toordinal()
+
+        status_quality = Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST
+        status_download = Quality.DOWNLOADED + Quality.ARCHIVED
+
+        max_download_count = 1000
+
+        for show in get_show_list():
+            if sickrage.app.show_queue.is_being_added(show) or sickrage.app.show_queue.is_being_removed(show):
+                continue
+
+            for epData in show.episodes:
+                if show.indexerid not in show_stat:
+                    show_stat[show.indexerid] = {}
+                    show_stat[show.indexerid]['ep_snatched'] = 0
+                    show_stat[show.indexerid]['ep_downloaded'] = 0
+                    show_stat[show.indexerid]['ep_total'] = 0
+                    show_stat[show.indexerid]['ep_airs_next'] = 0
+                    show_stat[show.indexerid]['ep_airs_prev'] = 0
+                    show_stat[show.indexerid]['total_size'] = 0
+
+                season = epData.season
+                episode = epData.episode
+                airdate = epData.airdate
+                status = epData.status
+                file_size = epData.file_size
+
+                if season > 0 and episode > 0 and airdate > 1:
+                    if status in status_quality:
+                        show_stat[show.indexerid]['ep_snatched'] += 1
+                        overall_stats['episodes']['snatched'] += 1
+
+                    if status in status_download:
+                        show_stat[show.indexerid]['ep_downloaded'] += 1
+                        overall_stats['episodes']['downloaded'] += 1
+
+                    if (airdate <= today and status in [SKIPPED, WANTED, FAILED]) or (
+                            status in status_quality + status_download):
+                        show_stat[show.indexerid]['ep_total'] += 1
+
+                    if show_stat[show.indexerid]['ep_total'] > max_download_count:
+                        max_download_count = show_stat[show.indexerid]['ep_total']
+
+                    if airdate >= today and status in [WANTED, UNAIRED] and not show_stat[show.indexerid][
+                        'ep_airs_next']:
+                        show_stat[show.indexerid]['ep_airs_next'] = airdate
+                    elif airdate < today > show_stat[show.indexerid]['ep_airs_prev'] and status != UNAIRED:
+                        show_stat[show.indexerid]['ep_airs_prev'] = airdate
+
+                    show_stat[show.indexerid]['total_size'] += file_size
+
+                    overall_stats['episodes']['total'] += 1
+                    overall_stats['total_size'] += file_size
+
+        max_download_count *= 100
+
+        return show_stat, overall_stats, max_download_count
 
 
 class IsAliveHandler(BaseHandler, ABC):
@@ -511,7 +585,7 @@ class LoadShowNotifyListsHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
         data = {'_size': 0}
-        for s in sorted(sickrage.app.showlist, key=lambda k: k.name):
+        for s in sorted(get_show_list(), key=lambda k: k.name):
             data[s.indexerid] = {'id': s.indexerid, 'name': s.name, 'list': s.notify_list}
             data['_size'] += 1
         return self.write(json_encode(data))
@@ -524,7 +598,7 @@ class SaveShowNotifyListHandler(BaseHandler, ABC):
         emails = self.get_query_argument('emails')
 
         try:
-            show = findCertainShow(int(show))
+            show = find_show(int(show))
             show.notify_list = emails
             show.save_to_db()
         except Exception:
@@ -738,14 +812,12 @@ class DisplayShowHandler(BaseHandler, ABC):
 
         submenu = []
 
-        show_obj = await self.run_task(findCertainShow, int(show))
+        show_obj = find_show(int(show))
 
         if show_obj is None:
             return self._genericMessage(_("Error"), _("Show not in show list"))
 
-        episode_results = MainDB.TVEpisode.query.filter_by(showid=show_obj.indexerid).order_by(
-            MainDB.TVEpisode.season.desc(),
-            MainDB.TVEpisode.episode.desc())
+        episode_results = sorted(show_obj.episodes, key=lambda x: (x.season, x.episode), reverse=True)
 
         season_results = list({x.season for x in episode_results})
 
@@ -857,7 +929,7 @@ class DisplayShowHandler(BaseHandler, ABC):
         }
 
         for curEp in episode_results:
-            cur_ep_cat = await self.run_task(show_obj.get_overview, int(curEp.status or -1))
+            cur_ep_cat = show_obj.get_overview(int(curEp.status or -1))
 
             if curEp.airdate != 1:
                 today = datetime.datetime.now().replace(tzinfo=sickrage.app.tz)
@@ -879,7 +951,7 @@ class DisplayShowHandler(BaseHandler, ABC):
 
         if sickrage.app.config.anime_split_home:
             shows, anime = [], []
-            for show in sickrage.app.showlist:
+            for show in get_show_list():
                 if show.is_anime:
                     anime.append(show)
                 else:
@@ -890,14 +962,14 @@ class DisplayShowHandler(BaseHandler, ABC):
                                  "Anime": sorted(anime, key=cmp_to_key(
                                      lambda x, y: titler(x.name).lower() < titler(y.name).lower()))}
         else:
-            sorted_show_lists = {"Shows": sorted(sickrage.app.showlist, key=cmp_to_key(
+            sorted_show_lists = {"Shows": sorted(get_show_list(), key=cmp_to_key(
                 lambda x, y: titler(x.name).lower() < titler(y.name).lower()))}
 
         bwl = None
         if show_obj.is_anime:
             bwl = show_obj.release_groups
 
-        show_obj.exceptions = await self.run_task(get_scene_exceptions, show_obj.indexerid)
+        show_obj.exceptions = get_scene_exceptions(show_obj.indexerid)
 
         indexerid = int(show_obj.indexerid)
         indexer = int(show_obj.indexer)
@@ -916,11 +988,6 @@ class DisplayShowHandler(BaseHandler, ABC):
             'name': show_obj.name,
         })
 
-        scene_numbering = await self.run_task(get_scene_numbering_for_show, indexerid, indexer)
-        xem_numbering = await self.run_task(get_xem_numbering_for_show, indexerid, indexer)
-        scene_absolute_numbering = await self.run_task(get_scene_absolute_numbering_for_show, indexerid, indexer)
-        xem_absolute_numbering = await self.run_task(get_xem_absolute_numbering_for_show, indexerid, indexer)
-
         return self.render(
             "/home/display_show.mako",
             submenu=submenu,
@@ -934,10 +1001,10 @@ class DisplayShowHandler(BaseHandler, ABC):
             epCounts=ep_counts,
             epCats=ep_cats,
             all_scene_exceptions=show_obj.exceptions,
-            scene_numbering=scene_numbering,
-            xem_numbering=xem_numbering,
-            scene_absolute_numbering=scene_absolute_numbering,
-            xem_absolute_numbering=xem_absolute_numbering,
+            scene_numbering=get_scene_numbering_for_show(indexerid, indexer),
+            xem_numbering=get_xem_numbering_for_show(indexerid, indexer),
+            scene_absolute_numbering=get_scene_absolute_numbering_for_show(indexerid, indexer),
+            xem_absolute_numbering=get_xem_absolute_numbering_for_show(indexerid, indexer),
             title=show_obj.name,
             controller='home',
             action="display_show"
@@ -960,14 +1027,13 @@ class EditShowHandler(BaseHandler, ABC):
 
         groups = []
 
-        show_obj = findCertainShow(int(show))
+        show_obj = find_show(int(show))
 
         if not show_obj:
             err_string = _("Unable to find the specified show: ") + str(show)
             return self._genericMessage(_("Error"), err_string)
 
-        with show_obj.lock:
-            scene_exceptions = get_scene_exceptions(show_obj.indexerid)
+        scene_exceptions = get_scene_exceptions(show_obj.indexerid)
 
         if show_obj.is_anime:
             whitelist = show_obj.release_groups.whitelist
@@ -1030,7 +1096,7 @@ class EditShowHandler(BaseHandler, ABC):
         quality_preset = self.get_body_argument('quality_preset', None)
         search_delay = self.get_body_argument('search_delay', None)
 
-        show_obj = findCertainShow(int(show))
+        show_obj = find_show(int(show))
 
         if not show_obj:
             err_string = _("Unable to find the specified show: ") + str(show)
@@ -1080,79 +1146,77 @@ class EditShowHandler(BaseHandler, ABC):
             else:
                 do_update_exceptions = True
 
-            with show_obj.lock:
-                if anime:
-                    if not show_obj.release_groups:
-                        show_obj.release_groups = BlackAndWhiteList(show_obj.indexerid)
+            if anime:
+                if not show_obj.release_groups:
+                    show_obj.release_groups = BlackAndWhiteList(show_obj.indexerid)
 
-                    if whitelist:
-                        shortwhitelist = short_group_names(whitelist)
-                        show_obj.release_groups.set_white_keywords(shortwhitelist)
-                    else:
-                        show_obj.release_groups.set_white_keywords([])
+                if whitelist:
+                    shortwhitelist = short_group_names(whitelist)
+                    show_obj.release_groups.set_white_keywords(shortwhitelist)
+                else:
+                    show_obj.release_groups.set_white_keywords([])
 
-                    if blacklist:
-                        shortblacklist = short_group_names(blacklist)
-                        show_obj.release_groups.set_black_keywords(shortblacklist)
-                    else:
-                        show_obj.release_groups.set_black_keywords([])
+                if blacklist:
+                    shortblacklist = short_group_names(blacklist)
+                    show_obj.release_groups.set_black_keywords(shortblacklist)
+                else:
+                    show_obj.release_groups.set_black_keywords([])
 
         warnings, errors = [], []
 
-        with show_obj.lock:
-            new_quality = try_int(quality_preset, None)
-            if not new_quality:
-                new_quality = Quality.combine_qualities(list(map(int, any_qualities)), list(map(int, best_qualities)))
+        new_quality = try_int(quality_preset, None)
+        if not new_quality:
+            new_quality = Quality.combine_qualities(list(map(int, any_qualities)), list(map(int, best_qualities)))
 
-            show_obj.quality = new_quality
-            show_obj.skip_downloaded = skip_downloaded
+        show_obj.quality = new_quality
+        show_obj.skip_downloaded = skip_downloaded
 
-            # reversed for now
-            if bool(show_obj.flatten_folders) != bool(flatten_folders):
-                show_obj.flatten_folders = flatten_folders
+        # reversed for now
+        if bool(show_obj.flatten_folders) != bool(flatten_folders):
+            show_obj.flatten_folders = flatten_folders
+            try:
+                sickrage.app.show_queue.refreshShow(show_obj, True)
+            except CantRefreshShowException as e:
+                errors.append(_("Unable to refresh this show: {}").format(e))
+
+        show_obj.paused = paused
+        show_obj.scene = scene
+        show_obj.anime = anime
+        show_obj.sports = sports
+        show_obj.subtitles = subtitles
+        show_obj.subtitles_sr_metadata = subtitles_sr_metadata
+        show_obj.air_by_date = air_by_date
+        show_obj.default_ep_status = int(default_ep_status)
+
+        if not direct_call:
+            show_obj.lang = indexer_lang
+            show_obj.dvdorder = dvdorder
+            show_obj.rls_ignore_words = rls_ignore_words.strip()
+            show_obj.rls_require_words = rls_require_words.strip()
+            show_obj.search_delay = int(search_delay)
+
+        # if we change location clear the db of episodes, change it, write to db, and rescan
+        if os.path.normpath(show_obj.location) != os.path.normpath(location):
+            sickrage.app.log.debug(os.path.normpath(show_obj.location) + " != " + os.path.normpath(location))
+            if not os.path.isdir(location) and not sickrage.app.config.create_missing_show_dirs:
+                warnings.append("New location {} does not exist".format(location))
+
+            # don't bother if we're going to update anyway
+            elif not do_update:
+                # change it
                 try:
-                    sickrage.app.show_queue.refreshShow(show_obj, True)
-                except CantRefreshShowException as e:
-                    errors.append(_("Unable to refresh this show: {}").format(e))
-
-            show_obj.paused = paused
-            show_obj.scene = scene
-            show_obj.anime = anime
-            show_obj.sports = sports
-            show_obj.subtitles = subtitles
-            show_obj.subtitles_sr_metadata = subtitles_sr_metadata
-            show_obj.air_by_date = air_by_date
-            show_obj.default_ep_status = int(default_ep_status)
-
-            if not direct_call:
-                show_obj.lang = indexer_lang
-                show_obj.dvdorder = dvdorder
-                show_obj.rls_ignore_words = rls_ignore_words.strip()
-                show_obj.rls_require_words = rls_require_words.strip()
-                show_obj.search_delay = int(search_delay)
-
-            # if we change location clear the db of episodes, change it, write to db, and rescan
-            if os.path.normpath(show_obj.location) != os.path.normpath(location):
-                sickrage.app.log.debug(os.path.normpath(show_obj.location) + " != " + os.path.normpath(location))
-                if not os.path.isdir(location) and not sickrage.app.config.create_missing_show_dirs:
-                    warnings.append("New location {} does not exist".format(location))
-
-                # don't bother if we're going to update anyway
-                elif not do_update:
-                    # change it
+                    show_obj.location = location
                     try:
-                        show_obj.location = location
-                        try:
-                            sickrage.app.show_queue.refreshShow(show_obj, True)
-                        except CantRefreshShowException as e:
-                            errors.append(_("Unable to refresh this show:{}").format(e))
-                            # grab updated info from TVDB
-                            # showObj.loadEpisodesFromIndexer()
-                            # rescan the episodes in the new folder
-                    except NoNFOException:
-                        warnings.append(
-                            _("The folder at %s doesn't contain a tvshow.nfo - copy your files to that folder before "
-                              "you change the directory in SiCKRAGE.") % location)
+                        sickrage.app.show_queue.refreshShow(show_obj, True)
+                    except CantRefreshShowException as e:
+                        errors.append(_("Unable to refresh this show:{}").format(e))
+                        # grab updated info from TVDB
+                        # showObj.loadEpisodesFromIndexer()
+                        # rescan the episodes in the new folder
+                except NoNFOException:
+                    warnings.append(
+                        _("The folder at %s doesn't contain a tvshow.nfo - copy your files to that folder before "
+                          "you change the directory in SiCKRAGE.") % location)
 
             # save it to the DB
             show_obj.save_to_db()
@@ -1203,7 +1267,7 @@ class TogglePauseHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
 
-        show_obj = findCertainShow(int(show))
+        show_obj = find_show(int(show))
 
         if show_obj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
@@ -1222,9 +1286,9 @@ class DeleteShowHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
-        full = self.get_query_argument('full')
+        full = self.get_query_argument('full', None)
 
-        show_obj = findCertainShow(int(show))
+        show_obj = find_show(int(show))
 
         if show_obj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
@@ -1253,7 +1317,7 @@ class RefreshShowHandler(BaseHandler, ABC):
     async def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
 
-        show_obj = findCertainShow(int(show))
+        show_obj = find_show(int(show))
 
         if show_obj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
@@ -1274,7 +1338,7 @@ class UpdateShowHandler(BaseHandler, ABC):
         show = self.get_query_argument('show')
         force = self.get_query_argument('force', None)
 
-        show_obj = findCertainShow(int(show))
+        show_obj = find_show(int(show))
 
         if show_obj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
@@ -1296,7 +1360,7 @@ class SubtitleShowHandler(BaseHandler, ABC):
     async def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
 
-        show_obj = findCertainShow(int(show))
+        show_obj = find_show(int(show))
 
         if show_obj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
@@ -1316,7 +1380,7 @@ class UpdateKODIHandler(BaseHandler, ABC):
 
         show_name = None
 
-        show_obj = findCertainShow(int(show))
+        show_obj = find_show(int(show))
         if show_obj:
             show_name = quote_plus(show_obj.name.encode())
 
@@ -1356,7 +1420,7 @@ class UpdateEMBYHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
 
-        show_obj = findCertainShow(int(show))
+        show_obj = find_show(int(show))
 
         if show_obj:
             if sickrage.app.notifier_providers['emby'].update_library(show_obj):
@@ -1388,7 +1452,7 @@ class DeleteEpisodeHandler(BaseHandler, ABC):
         eps = self.get_query_argument('eps')
         direct = self.get_query_argument('direct', None)
 
-        show_obj = findCertainShow(int(show))
+        show_obj = find_show(int(show))
 
         if not show_obj:
             err_msg = _("Error", "Show not in show list")
@@ -1445,7 +1509,7 @@ class SetStatusHandler(BaseHandler, ABC):
             else:
                 return self._genericMessage(_("Error"), err_msg)
 
-        show_obj = findCertainShow(int(show))
+        show_obj = find_show(int(show))
 
         if not show_obj:
             err_msg = _("Error", "Show not in show list")
@@ -1580,7 +1644,7 @@ class TestRenameHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
 
-        show_obj = findCertainShow(int(show))
+        show_obj = find_show(int(show))
 
         if show_obj is None:
             return self._genericMessage(_("Error"), _("Show not in show list"))
@@ -1633,7 +1697,7 @@ class DoRenameHandler(BaseHandler, ABC):
         show = self.get_query_argument('show')
         eps = self.get_query_argument('eps')
 
-        show_obj = findCertainShow(int(show))
+        show_obj = find_show(int(show))
 
         if show_obj is None:
             err_msg = _("Show not in show list")
@@ -1727,7 +1791,7 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
         return self.write(json_encode({'episodes': episodes}))
 
     def get_episodes(self, search_thread, search_status):
-        show_obj = findCertainShow(int(search_thread.show.indexerid))
+        show_obj = find_show(int(search_thread.show.indexerid))
 
         results = []
 
@@ -1822,7 +1886,7 @@ class SetSceneNumberingHandler(BaseHandler, ABC):
         if scene_absolute in ['null', '']:
             scene_absolute = None
 
-        show_obj = findCertainShow(int(show))
+        show_obj = find_show(int(show))
 
         if show_obj.is_anime:
             result = {

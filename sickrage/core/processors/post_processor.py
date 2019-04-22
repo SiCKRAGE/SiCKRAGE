@@ -31,10 +31,11 @@ from sickrage.core.common import Quality, ARCHIVED, DOWNLOADED
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import EpisodeNotFoundException, EpisodePostProcessingFailedException, \
     NoFreeSpaceException
-from sickrage.core.helpers import findCertainShow, show_names, replaceExtension, makeDir, \
+from sickrage.core.helpers import show_names, replaceExtension, makeDir, \
     chmod_as_parent, move_file, copy_file, hardlink_file, move_and_symlink_file, remove_non_release_groups, \
     remove_extension, \
     isFileLocked, verify_freespace, delete_empty_folders, make_dirs, symlink, is_rar_file, glob_escape, touch_file
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.helpers.anidb import get_anime_episode
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
@@ -544,7 +545,7 @@ class PostProcessor(object):
             if quality == Quality.UNKNOWN:
                 quality = None
 
-            show = findCertainShow(indexer_id)
+            show = find_show(indexer_id)
 
             self.in_history = True
             self.version = version

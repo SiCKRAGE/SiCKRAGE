@@ -22,16 +22,19 @@ import re
 from abc import ABC
 from urllib.parse import unquote_plus
 
+from sqlalchemy import orm
 from tornado.escape import json_encode
 from tornado.httpclient import AsyncHTTPClient
 from tornado.httputil import url_concat
 from tornado.web import authenticated
 
 import sickrage
-from sickrage.core.classes import AllShowsUI
+from sickrage.core.tv.show import TVShow
+from sickrage.indexers.ui import AllShowsUI
 from sickrage.core.common import Quality
-from sickrage.core.helpers import sanitizeFileName, findCertainShow, makeDir, chmod_as_parent, checkbox_to_value, \
+from sickrage.core.helpers import sanitizeFileName, makeDir, chmod_as_parent, checkbox_to_value, \
     try_int
+from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.helpers.anidb import short_group_names
 from sickrage.core.imdb_popular import imdbPopular
 from sickrage.core.traktapi import srTraktAPI
@@ -101,7 +104,7 @@ class SearchIndexersForShowNameHandler(BaseHandler, ABC):
         for i, shows in results.items():
             final_results.extend([[IndexerApi(i).name, i, IndexerApi(i).config["show_url"],
                                    int(show['id']), show['seriesname'], show['firstaired'],
-                                   ('', 'disabled')[bool(findCertainShow(show['id'], False))]] for show in shows])
+                                   ('', 'disabled')[find_show(show['id']) is not None]] for show in shows])
 
         lang_id = IndexerApi().indexer().languages[lang] or 7
         return self.write(json_encode({'results': final_results, 'langid': lang_id}))
@@ -151,9 +154,10 @@ class MassAddTableHandler(BaseHandler, ABC):
                     }
 
                     # see if the folder is in database already
-                    if [x for x in sickrage.app.showlist if x.location == cur_path]:
+                    try:
+                        TVShow.query.filter_by(location=cur_path).one()
                         cur_dir['added_already'] = True
-                    else:
+                    except orm.exc.NoResultFound:
                         cur_dir['added_already'] = False
 
                     dir_list.append(cur_dir)
@@ -177,7 +181,7 @@ class MassAddTableHandler(BaseHandler, ABC):
                                 showid = i
 
                     cur_dir['existing_info'] = (showid, show_name, indexer)
-                    if showid and findCertainShow(showid):
+                    if showid and find_show(showid):
                         cur_dir['added_already'] = True
                 except Exception:
                     pass
@@ -261,7 +265,7 @@ class TraktShowsHandler(BaseHandler, ABC):
 
         # filter shows
         trakt_shows = [x for x in trakt_shows if
-                       'tvdb' in x.ids and not findCertainShow(int(x.ids['tvdb']))]
+                       'tvdb' in x.ids and not find_show(int(x.ids['tvdb']))]
 
         return self.render("/home/trakt_shows.mako",
                            title="Trakt {} Shows".format(list.capitalize()),
@@ -335,7 +339,7 @@ class AddShowByIDHandler(BaseHandler, ABC):
             t = IndexerApi(1).indexer(**l_indexer_api_parms)
             indexer_id = t[indexer_id]['id']
 
-        if findCertainShow(int(indexer_id)):
+        if find_show(int(indexer_id)):
             return
 
         location = None

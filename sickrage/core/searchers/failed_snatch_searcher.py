@@ -24,7 +24,7 @@ import threading
 from tornado.ioloop import IOLoop
 
 import sickrage
-from sickrage.core import findCertainShow
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.common import Quality, SNATCHED, SNATCHED_BEST, SNATCHED_PROPER
 from sickrage.core.databases.main import MainDB
 from sickrage.core.queues.search import FailedQueueItem
@@ -75,7 +75,7 @@ class FailedSnatchSearcher(object):
         for episode in episodes:
             failed_snatches = True
             if not show or int(episode.showid) != show.indexerid:
-                show = findCertainShow(int(episode.showid))
+                show = find_show(int(episode.showid))
 
             # for when there is orphaned series in the database but not loaded into our showlist
             if not show or show.paused:

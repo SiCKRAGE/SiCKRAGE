@@ -26,6 +26,7 @@ from tornado.web import authenticated
 import sickrage
 from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import try_int
+from sickrage.core.tv.show.helpers import get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
@@ -64,11 +65,15 @@ class CalendarHandler(BaseHandler, ABC):
         future_date = (datetime.date.today() + datetime.timedelta(weeks=52)).toordinal()
 
         # Get all the shows that are not paused and are currently on air (from kjoconnor Fork)
-        for show in [x for x in sickrage.app.showlist if
-                     x.status.lower() in ['continuing', 'returning series'] and x.paused != 1]:
-            for dbData in MainDB.TVEpisode.query.filter_by(showid=int(show.indexerid)).filter(
-                    past_date <= MainDB.TVEpisode.airdate < future_date):
-                air_date_time = sickrage.app.tz_updater.parse_date_time(dbData.airdate, show.airs,
+        for show in get_show_list():
+            if show.status.lower() not in ['continuing', 'returning series'] or show.paused:
+                continue
+
+            for episode in show.episodes:
+                if not past_date <= MainDB.TVEpisode.airdate < future_date:
+                    continue
+
+                air_date_time = sickrage.app.tz_updater.parse_date_time(episode.airdate, show.airs,
                                                                         show.network).astimezone(utc)
                 air_date_time_end = air_date_time + datetime.timedelta(minutes=try_int(show.runtime, 60))
 
@@ -80,15 +85,15 @@ class CalendarHandler(BaseHandler, ABC):
                 if sickrage.app.config.calendar_icons:
                     ical += 'X-GOOGLE-CALENDAR-CONTENT-ICON:https://www.sickrage.ca/favicon.ico\r\n'
                     ical += 'X-GOOGLE-CALENDAR-CONTENT-DISPLAY:CHIP\r\n'
-                ical += 'SUMMARY: {0} - {1}x{2} - {3}\r\n'.format(show.name, dbData.season, dbData.episode, dbData.name)
+                ical += 'SUMMARY: {0} - {1}x{2} - {3}\r\n'.format(show.name, episode.season, episode.episode, episode.name)
                 ical += 'UID:SiCKRAGE-' + str(datetime.date.today().isoformat()) + '-' + \
-                        show.name.replace(" ", "-") + '-E' + str(dbData.episode) + \
-                        'S' + str(dbData.season) + '\r\n'
-                if dbData.description:
+                        show.name.replace(" ", "-") + '-E' + str(episode.episode) + \
+                        'S' + str(episode.season) + '\r\n'
+                if episode.description:
                     ical += 'DESCRIPTION: {0} on {1} \\n\\n {2}\r\n'.format(
                         (show.airs or '(Unknown airs)'),
                         (show.network or 'Unknown network'),
-                        dbData.description.splitlines()[0])
+                        episode.description.splitlines()[0])
                 else:
                     ical += 'DESCRIPTION:' + (show.airs or '(Unknown airs)') + ' on ' + (
                             show.network or 'Unknown network') + '\r\n'

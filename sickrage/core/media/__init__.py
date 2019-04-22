@@ -5,7 +5,7 @@ from tornado.escape import url_escape
 
 import sickrage
 from sickrage.core.exceptions import MultipleShowObjectsException
-from sickrage.core.helpers import findCertainShow
+from sickrage.core.tv.show.helpers import find_show
 
 
 class Media(object):
@@ -84,7 +84,7 @@ class Media(object):
         """
 
         try:
-            return findCertainShow(self.indexer_id)
+            return find_show(self.indexer_id)
         except MultipleShowObjectsException:
             return None
 

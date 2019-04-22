@@ -27,6 +27,7 @@ from sqlalchemy import orm
 import sickrage
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.exceptions import CantRefreshShowException, CantUpdateShowException
+from sickrage.core.tv.show.helpers import get_show_list
 from sickrage.core.ui import ProgressIndicators, QueueProgressIndicator
 from sickrage.indexers import IndexerApi
 
@@ -65,7 +66,7 @@ class ShowUpdater(object):
 
         # start update process
         pi_list = []
-        for show in sickrage.app.showlist:
+        for show in get_show_list():
             if show.paused:
                 sickrage.app.log.info('Show update skipped, show: {} is paused.'.format(show.name))
                 continue
@@ -84,8 +85,6 @@ class ShowUpdater(object):
                     pi_list.append(sickrage.app.show_queue.updateShow(show, indexer_update_only=True, force=False))
                 elif (datetime.datetime.now() - datetime.datetime.fromordinal(show.last_update)).days >= 7:
                     pi_list.append(sickrage.app.show_queue.updateShow(show, force=False))
-                #else:
-                #    pi_list.append(sickrage.app.show_queue.refreshShow(show, False))
             except (CantUpdateShowException, CantRefreshShowException) as e:
                 sickrage.app.log.debug("Automatic update failed: {}".format(e))
 

@@ -27,7 +27,7 @@ import sickrage
 import sickrage.subtitles
 from sickrage.core.common import dateTimeFormat
 from sickrage.core.databases.main import MainDB
-from sickrage.core.helpers import findCertainShow
+from sickrage.core.tv.show.helpers import find_show, get_show_list
 
 
 class SubtitleSearcher(object):
@@ -67,7 +67,7 @@ class SubtitleSearcher(object):
         today = datetime.date.today().toordinal()
 
         results = []
-        for s in sickrage.app.showlist:
+        for s in get_show_list():
             if s.subtitles != 1:
                 continue
 
@@ -126,7 +126,7 @@ class SubtitleSearcher(object):
                 sickrage.app.log.debug('Downloading subtitles for episode %dx%d of show %s' % (
                     epToSub['season'], epToSub['episode'], epToSub['show_name']))
 
-                showObj = findCertainShow(int(epToSub['showid']))
+                showObj = find_show(int(epToSub['showid']))
                 if not showObj:
                     sickrage.app.log.debug('Show not found')
                     return

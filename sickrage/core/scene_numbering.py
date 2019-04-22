@@ -26,7 +26,8 @@ from sqlalchemy import orm
 
 import sickrage
 from sickrage.core.databases.main import MainDB
-from sickrage.core.helpers import findCertainShow, try_int
+from sickrage.core.helpers import try_int
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.websession import WebSession
 from sickrage.indexers import IndexerApi
 
@@ -47,7 +48,7 @@ def get_scene_numbering(indexer_id, indexer, season, episode, fallback_to_xem=Tr
     if not all([indexer_id, season, episode]):
         return season, episode
 
-    showObj = findCertainShow(int(indexer_id))
+    showObj = find_show(int(indexer_id))
     if showObj and not showObj.is_scene:
         return season, episode
 
@@ -99,7 +100,7 @@ def get_scene_absolute_numbering(indexer_id, indexer, absolute_number, fallback_
     indexer_id = int(indexer_id)
     indexer = int(indexer)
 
-    showObj = findCertainShow(indexer_id)
+    showObj = find_show(indexer_id)
     if showObj and not showObj.is_scene:
         return absolute_number
 
@@ -228,10 +229,6 @@ def set_scene_numbering(indexer_id, indexer, season=0, episode=0, absolute_numbe
                 'absolute_number': absolute_number,
                 'scene_absolute_number': sceneAbsolute
             }))
-
-    # Reload data from DB so that cache and db are in sync
-    show = findCertainShow(indexer_id)
-    show.flush_episodes()
 
 
 def find_xem_numbering(indexer_id, indexer, season, episode):

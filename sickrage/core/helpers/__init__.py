@@ -47,8 +47,6 @@ import requests
 from bs4 import BeautifulSoup
 
 import sickrage
-from sickrage.core.common import Quality, SKIPPED, WANTED, FAILED, UNAIRED
-from sickrage.core.exceptions import MultipleShowObjectsException
 from sickrage.core.helpers import encryption
 
 
@@ -353,45 +351,6 @@ def sanitizeFileName(name):
     name = name.strip(' .')
 
     return name
-
-
-def findCertainShow(indexerid, return_show_object=True):
-    """
-    Find a show by indexer ID in the show list
-
-    :param return_show_object: returns a show object if True
-    :param indexerid: Show to look for
-    :return: result list
-    """
-
-    if not indexerid:
-        return None
-
-    indexerids = [indexerid] if not isinstance(indexerid, list) else indexerid
-    results = [show for show in sickrage.app.showlist if show.indexerid in indexerids]
-
-    if not results:
-        return None
-
-    if len(results) == 1:
-        if return_show_object:
-            return results[0]
-        else:
-            return True
-
-    raise MultipleShowObjectsException()
-
-
-def search_showlist_by_name(term):
-    results = [show for show in sickrage.app.showlist if show.name.lower() == term.lower()]
-
-    if not results:
-        return None
-
-    if len(results) == 1:
-        return results[0]
-
-    raise MultipleShowObjectsException()
 
 
 def makeDir(path):
@@ -1517,83 +1476,6 @@ def clean_url(url):
         cleaned_url = ''
 
     return cleaned_url
-
-
-def app_statistics():
-    from sickrage.core import TVShow
-
-    show_stat = {}
-
-    overall_stats = {
-        'episodes': {
-            'downloaded': 0,
-            'snatched': 0,
-            'total': 0,
-        },
-        'shows': {
-            'active': len([show for show in TVShow.query
-                           if show.paused == 0 and show.status.lower() == 'continuing']),
-            'total': TVShow.query.count(),
-        },
-        'total_size': 0
-    }
-
-    today = datetime.date.today().toordinal()
-
-    status_quality = Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST
-    status_download = Quality.DOWNLOADED + Quality.ARCHIVED
-
-    max_download_count = 1000
-
-    for show in TVShow.query:
-        if sickrage.app.show_queue.is_being_added(show) or sickrage.app.show_queue.is_being_removed(show):
-            continue
-
-        for epData in show.episodes:
-            if show.indexer_id not in show_stat:
-                show_stat[show.indexer_id] = {}
-                show_stat[show.indexer_id]['ep_snatched'] = 0
-                show_stat[show.indexer_id]['ep_downloaded'] = 0
-                show_stat[show.indexer_id]['ep_total'] = 0
-                show_stat[show.indexer_id]['ep_airs_next'] = 0
-                show_stat[show.indexer_id]['ep_airs_prev'] = 0
-                show_stat[show.indexer_id]['total_size'] = 0
-
-            season = epData.season
-            episode = epData.episode
-            airdate = epData.airdate
-            status = epData.status
-            file_size = epData.file_size
-
-            if season > 0 and episode > 0 and airdate > 1:
-                if status in status_quality:
-                    show_stat[show.indexer_id]['ep_snatched'] += 1
-                    overall_stats['episodes']['snatched'] += 1
-
-                if status in status_download:
-                    show_stat[show.indexer_id]['ep_downloaded'] += 1
-                    overall_stats['episodes']['downloaded'] += 1
-
-                if (airdate <= today and status in [SKIPPED, WANTED, FAILED]) or (
-                        status in status_quality + status_download):
-                    show_stat[show.indexer_id]['ep_total'] += 1
-
-                if show_stat[show.indexer_id]['ep_total'] > max_download_count:
-                    max_download_count = show_stat[show.indexer_id]['ep_total']
-
-                if airdate >= today and status in [WANTED, UNAIRED] and not show_stat[show.indexer_id]['ep_airs_next']:
-                    show_stat[show.indexer_id]['ep_airs_next'] = airdate
-                elif airdate < today > show_stat[show.indexer_id]['ep_airs_prev'] and status != UNAIRED:
-                    show_stat[show.indexer_id]['ep_airs_prev'] = airdate
-
-                show_stat[show.indexer_id]['total_size'] += file_size
-
-                overall_stats['episodes']['total'] += 1
-                overall_stats['total_size'] += file_size
-
-    max_download_count *= 100
-
-    return show_stat, overall_stats, max_download_count
 
 
 def launch_browser(protocol=None, host=None, startport=None):

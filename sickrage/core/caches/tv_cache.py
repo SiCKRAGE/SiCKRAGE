@@ -28,7 +28,8 @@ from sickrage.core.api.cache import ProviderCacheAPI
 from sickrage.core.common import Quality
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.exceptions import AuthException, EpisodeNotFoundException
-from sickrage.core.helpers import findCertainShow, show_names, validate_url, is_ip_private, try_int
+from sickrage.core.helpers import show_names, validate_url, is_ip_private, try_int
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.nameparser import InvalidNameException, NameParser, InvalidShowException
 from sickrage.core.websession import WebSession
 
@@ -279,7 +280,7 @@ class TVCache(object):
                 continue
 
             # get the show object, or if it's not one of our shows then ignore it
-            result.show = findCertainShow(int(curResult["indexerid"]))
+            result.show = find_show(int(curResult["indexerid"]))
             if not result.show:
                 continue
 

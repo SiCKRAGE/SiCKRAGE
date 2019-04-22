@@ -40,8 +40,9 @@ from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.classes import NZBSearchResult, SearchResult, TorrentSearchResult
 from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT, cpu_presets
 from sickrage.core.databases.main import MainDB
-from sickrage.core.helpers import chmod_as_parent, findCertainShow, sanitizeFileName, clean_url, bs4_parser, \
+from sickrage.core.helpers import chmod_as_parent, sanitizeFileName, clean_url, bs4_parser, \
     validate_url, try_int, convert_size
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.helpers.show_names import allPossibleShowNames
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
 from sickrage.core.scene_exceptions import get_scene_exceptions
@@ -436,7 +437,7 @@ class GenericProvider(object):
         results = []
 
         for episode in episodes:
-            show = findCertainShow(int(episode["showid"]))
+            show = find_show(int(episode["showid"]))
             if not show:
                 continue
 

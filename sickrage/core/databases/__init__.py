@@ -23,10 +23,18 @@ from contextlib import contextmanager
 
 from migrate import DatabaseAlreadyControlledError
 from migrate.versioning import api
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, event
+from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker, scoped_session, mapperlib
 
 import sickrage
+
+
+@event.listens_for(Engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    cursor = dbapi_connection.cursor()
+    cursor.execute("PRAGMA journal_mode=WAL")
+    cursor.close()
 
 
 class srDatabase(object):
@@ -37,7 +45,7 @@ class srDatabase(object):
         self.db_path = os.path.join(sickrage.app.data_dir, '{}.db'.format(self.name))
         self.db_repository = os.path.join(os.path.dirname(__file__), self.name, 'db_repository')
         self.engine = create_engine('sqlite:///{}'.format(self.db_path), echo=False)
-        self.Session = scoped_session(sessionmaker(bind=self.engine))
+        self.Session = scoped_session(sessionmaker(bind=self.engine, autoflush=False, expire_on_commit=False))
 
         if not os.path.exists(self.db_path):
             api.version_control(self.engine, self.db_repository, api.version(self.db_repository))
@@ -52,7 +60,6 @@ class srDatabase(object):
         """ Creates a context with an open SQLAlchemy session.
         """
         session = self.Session()
-        session.expire_on_commit = False
 
         try:
             yield session

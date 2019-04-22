@@ -23,10 +23,11 @@ import unittest
 
 import sickrage
 import tests
-from sickrage.core import TVShow, helpers
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.common import UNAIRED
 from sickrage.core.databases.main import MainDB
 from sickrage.core.tv.episode import TVEpisode
+from sickrage.core.tv.show import TVShow
 
 
 class DBBasicTests(tests.SiCKRAGETestDBCase):
@@ -62,7 +63,7 @@ class DBBasicTests(tests.SiCKRAGETestDBCase):
             if all([episode.status == UNAIRED, episode.season > 0, episode.airdate > 1]):
                 count += 1
 
-                show = helpers.findCertainShow(int(episode.showid))
+                show = find_show(int(episode.showid))
 
                 ep = TVEpisode(show, 1, episode.episode)
                 ep.indexerid = episode.episode

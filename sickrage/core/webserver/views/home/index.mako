@@ -6,6 +6,7 @@
     from functools import cmp_to_key
 
     import sickrage
+    from sickrage.core.tv.show.helpers import get_show_list
     from sickrage.core.helpers import srdatetime, pretty_filesize
     from sickrage.core.media.util import showImage
 %>
@@ -113,11 +114,11 @@
                             <div class="show-container" data-name="0" data-date="010101" data-network="0"
                                  data-progress="101">
                                 <div class="card card-block text-white bg-dark m-1 shadow">
-                                    <img alt="" title="${curLoadingShow.show_name}" class="card-img-top"
+                                    <img alt="" title="${curLoadingShow.name}" class="card-img-top"
                                          src="${srWebRoot}/images/poster.png"/>
                                     <div class="card-body text-truncate py-1 px-1 small">
                                         <div class="show-title">
-                                            ${curLoadingShow.show_name}
+                                            ${curLoadingShow.name}
                                         </div>
                                     </div>
                                     <div class="card-footer show-details p-1">
@@ -130,7 +131,7 @@
                         % endif
                     % endfor
 
-                    % for curShow in sorted(curShowlist, key=cmp_to_key(lambda x, y: x.show_name < y.show_name)):
+                    % for curShow in sorted(curShowlist, key=cmp_to_key(lambda x, y: x.name < y.name)):
                     <%
                         cur_airs_next = ''
                         cur_snatched = 0
@@ -145,18 +146,18 @@
                             elif re.search(r'(?i)(?:nded)', curShow.status):
                                 display_status = _('Ended')
 
-                        if curShow.indexer_id in show_stat:
-                            cur_airs_next = show_stat[curShow.indexer_id]['ep_airs_next']
+                        if curShow.indexerid in show_stat:
+                            cur_airs_next = show_stat[curShow.indexerid]['ep_airs_next']
 
-                            cur_snatched = show_stat[curShow.indexer_id]['ep_snatched']
+                            cur_snatched = show_stat[curShow.indexerid]['ep_snatched']
                             if not cur_snatched:
                                 cur_snatched = 0
 
-                            cur_downloaded = show_stat[curShow.indexer_id]['ep_downloaded']
+                            cur_downloaded = show_stat[curShow.indexerid]['ep_downloaded']
                             if not cur_downloaded:
                                 cur_downloaded = 0
 
-                            cur_total = show_stat[curShow.indexer_id]['ep_total']
+                            cur_total = show_stat[curShow.indexerid]['ep_total']
                             if not cur_total:
                                 cur_total = 0
 
@@ -198,27 +199,27 @@
                             network_class_name = re.sub(r'^(\s*)([\W\w]*)(\b\s*$)', '\\2', network_class_name)
                             network_class_name = network_class_name.lower()
                     %>
-                        <div class="show-container" id="show${curShow.indexer_id}" data-name="${curShow.show_name}"
+                        <div class="show-container" id="show${curShow.indexerid}" data-name="${curShow.name}"
                              data-date="${data_date}" data-network="${curShow.network}"
                              data-progress="${progressbar_percent}">
                             <div class="card card-block text-white bg-dark m-1 shadow">
-                                <a href="${srWebRoot}/home/displayShow?show=${curShow.indexer_id}">
+                                <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
                                     <img alt="" class="card-img-top"
-                                         src="${srWebRoot}${showImage(curShow.indexer_id, 'poster').url}"/>
+                                         src="${srWebRoot}${showImage(curShow.indexerid, 'poster').url}"/>
                                 </a>
                                 <div class="card-header py-0 px-0">
                                     <div class="bg-dark rounded">
                                         <div class="progress progress-bar rounded d-print-none" role="progressbar"
                                              style="width: ${progressbar_percent}%;height: 5px;"
                                              data-progress-percentage="${progressbar_percent}"
-                                             data-show-id="${curShow.indexer_id}">
+                                             data-show-id="${curShow.indexerid}">
                                         </div>
                                     </div>
 
                                 </div>
                                 <div class="card-body text-truncate py-1 px-1 small">
                                     <div class="show-title">
-                                        ${curShow.show_name}
+                                        ${curShow.name}
                                     </div>
 
                                     <div class="show-date" style="color: grey">
@@ -296,16 +297,16 @@
                             % if sickrage.app.show_queue.loading_show_list:
                                 <tbody>
                                     % for curLoadingShow in sickrage.app.show_queue.loading_show_list:
-                                        % if not curLoadingShow.show or curLoadingShow.show not in sickrage.app.showlist:
+                                        % if not curLoadingShow.show or curLoadingShow.show not in get_show_list():
                                             <tr>
                                                 <td class="table-fit">(${_('loading')})</td>
                                                 <td></td>
                                                 <td>
                                                     % if curLoadingShow.show is None:
-                                                        <span title="">${_('Loading...')} ${curLoadingShow.show_name}</span>
+                                                        <span title="">${_('Loading...')} ${curLoadingShow.name}</span>
                                                     % else:
                                                         <a data-fancybox
-                                                           href="displayShow?show=${curLoadingShow.show.indexer_id}">${curLoadingShow.show.show_name}</a>
+                                                           href="displayShow?show=${curLoadingShow.show.indexerid}">${curLoadingShow.show.name}</a>
                                                     % endif
                                                 </td>
                                                 <td></td>
@@ -320,7 +321,7 @@
                             % endif
 
                             <tbody class="">
-                                % for curShow in sorted(curShowlist, key=cmp_to_key(lambda x, y: x.show_name < y.show_name)):
+                                % for curShow in sorted(curShowlist, key=cmp_to_key(lambda x, y: x.name < y.name)):
                                     <%
                                         cur_airs_next = ''
                                         cur_airs_prev = ''
@@ -330,23 +331,23 @@
                                         show_size = 0
                                         download_stat_tip = ''
 
-                                        if curShow.indexer_id in show_stat:
-                                            cur_airs_next = show_stat[curShow.indexer_id]['ep_airs_next']
-                                            cur_airs_prev = show_stat[curShow.indexer_id]['ep_airs_prev']
+                                        if curShow.indexerid in show_stat:
+                                            cur_airs_next = show_stat[curShow.indexerid]['ep_airs_next']
+                                            cur_airs_prev = show_stat[curShow.indexerid]['ep_airs_prev']
 
-                                            cur_snatched = show_stat[curShow.indexer_id]['ep_snatched']
+                                            cur_snatched = show_stat[curShow.indexerid]['ep_snatched']
                                             if not cur_snatched:
                                                 cur_snatched = 0
 
-                                            cur_downloaded = show_stat[curShow.indexer_id]['ep_downloaded']
+                                            cur_downloaded = show_stat[curShow.indexerid]['ep_downloaded']
                                             if not cur_downloaded:
                                                 cur_downloaded = 0
 
-                                            cur_total = show_stat[curShow.indexer_id]['ep_total']
+                                            cur_total = show_stat[curShow.indexerid]['ep_total']
                                             if not cur_total:
                                                 cur_total = 0
 
-                                            show_size = show_stat[curShow.indexer_id]['total_size']
+                                            show_size = show_stat[curShow.indexerid]['total_size']
 
                                         if cur_total != 0:
                                             download_stat = str(cur_downloaded)
@@ -407,27 +408,27 @@
 
                                         % if sickrage.app.config.home_layout == 'small':
                                             <td class="tvShow">
-                                                <a href="${srWebRoot}/home/displayShow?show=${curShow.indexer_id}"
-                                                   title="${curShow.show_name}">
-                                                    <img src="${srWebRoot}${showImage(curShow.indexer_id, 'poster_thumb').url}"
+                                                <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}"
+                                                   title="${curShow.name}">
+                                                    <img src="${srWebRoot}${showImage(curShow.indexerid, 'poster_thumb').url}"
                                                          class="img-smallposter rounded shadow"
-                                                         alt="${curShow.indexer_id}"/>
-                                                    ${curShow.show_name}
+                                                         alt="${curShow.indexerid}"/>
+                                                    ${curShow.name}
                                                 </a>
                                             </td>
                                         % elif sickrage.app.config.home_layout == 'banner':
                                             <td class="table-fit tvShow">
-                                                <span class="d-none">${curShow.show_name}</span>
-                                                <a href="${srWebRoot}/home/displayShow?show=${curShow.indexer_id}">
-                                                    <img src="${srWebRoot}${showImage(curShow.indexer_id, 'banner').url}"
-                                                         class="img-banner rounded shadow" alt="${curShow.indexer_id}"
-                                                         title="${curShow.show_name}"/>
+                                                <span class="d-none">${curShow.name}</span>
+                                                <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
+                                                    <img src="${srWebRoot}${showImage(curShow.indexerid, 'banner').url}"
+                                                         class="img-banner rounded shadow" alt="${curShow.indexerid}"
+                                                         title="${curShow.name}"/>
                                                 </a>
                                             </td>
                                         % elif sickrage.app.config.home_layout == 'simple':
                                             <td class="tvShow">
-                                                <a href="${srWebRoot}/home/displayShow?show=${curShow.indexer_id}">
-                                                    ${curShow.show_name}
+                                                <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
+                                                    ${curShow.name}
                                                 </a>
                                             </td>
                                         % endif
@@ -459,7 +460,7 @@
                                             <div class="bg-dark rounded shadow">
                                                 <div class="progress-bar rounded "
                                                      style="width: ${progressbar_percent}%"
-                                                     data-show-id="${curShow.indexer_id}"
+                                                     data-show-id="${curShow.indexerid}"
                                                      data-progress-percentage="${progressbar_percent}"
                                                      data-progress-text="${download_stat}"
                                                      data-progress-tip="${download_stat_tip}"></div>

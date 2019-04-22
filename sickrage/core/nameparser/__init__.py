@@ -27,12 +27,12 @@ from dateutil import parser
 from sqlalchemy import orm
 
 import sickrage
-from sickrage.core.common import Quality
+from sickrage.core import scene_exceptions, common
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import MultipleShowObjectsException
-from sickrage.core.helpers import findCertainShow, remove_extension, search_showlist_by_name, strip_accents
+from sickrage.core.helpers import remove_extension, strip_accents
+from sickrage.core.tv.show.helpers import find_show_by_name, find_show
 from sickrage.core.nameparser import regexes
-from sickrage.core.scene_exceptions import get_scene_exception_by_name
 from sickrage.core.scene_numbering import get_absolute_number_from_season_and_episode, get_indexer_absolute_numbering, \
     get_indexer_numbering
 from sickrage.indexers import IndexerApi
@@ -62,18 +62,18 @@ class NameParser(object):
         show_id = None
         show_names = [name]
 
-        if not all([name, sickrage.app.showlist]):
+        if not name:
             return show, show_id
 
         def cache_lookup(term):
             return sickrage.app.name_cache.get(term)
 
         def scene_exception_lookup(term):
-            return get_scene_exception_by_name(term)[0]
+            return scene_exceptions.get_scene_exception_by_name(term)[0]
 
         def showlist_lookup(term):
             try:
-                return search_showlist_by_name(term).indexerid
+                return find_show_by_name(term).indexerid
             except MultipleShowObjectsException:
                 return None
 
@@ -98,7 +98,7 @@ class NameParser(object):
 
                     if not show:
                         if self.validate_show:
-                            show = findCertainShow(show_id)
+                            show = find_show(show_id)
                         else:
                             from sickrage.core.tv.show import TVShow
                             show = TVShow(1, show_id)
@@ -273,7 +273,7 @@ class NameParser(object):
                 return bestResult
 
             # get quality
-            bestResult.quality = Quality.name_quality(name, bestResult.show.is_anime)
+            bestResult.quality = common.Quality.name_quality(name, bestResult.show.is_anime)
 
             new_episode_numbers = []
             new_season_numbers = []
@@ -334,7 +334,7 @@ class NameParser(object):
                     a = epAbsNo
 
                     if bestResult.show.is_scene:
-                        scene_season = get_scene_exception_by_name(bestResult.series_name)[1]
+                        scene_season = scene_exceptions.get_scene_exception_by_name(bestResult.series_name)[1]
                         a = get_indexer_absolute_numbering(bestResult.show.indexerid,
                                                            bestResult.show.indexer, epAbsNo,
                                                            True, scene_season)
@@ -551,7 +551,7 @@ class ParseResult(object):
         self.season_number = season_number
         self.episode_numbers = episode_numbers or []
         self.ab_episode_numbers = ab_episode_numbers or []
-        self.quality = quality or Quality.UNKNOWN
+        self.quality = quality or common.Quality.UNKNOWN
         self.extra_info = extra_info
         self.release_group = release_group
         self.air_date = air_date
@@ -614,7 +614,7 @@ class ParseResult(object):
 
     @property
     def in_showlist(self):
-        if findCertainShow(self.indexerid):
+        if find_show(self.indexerid):
             return True
         return False
 

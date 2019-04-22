@@ -3,6 +3,7 @@
     from functools import cmp_to_key
 
     import sickrage
+    from sickrage.core.tv.show.helpers import get_show_list
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import statusStrings
     from sickrage.core.helpers.compat import cmp
@@ -79,7 +80,7 @@
                             </thead>
 
                             <tbody>
-                                % for curShow in sorted(sickrage.app.showlist, key=cmp_to_key(lambda x, y: x.name < y.name)):
+                                % for curShow in sorted(get_show_list(), key=cmp_to_key(lambda x, y: x.name < y.name)):
                                     <% curEp = curShow.next_aired %>
 
                                     <tr class="${curShow.status}" id="${curShow.indexerid}">

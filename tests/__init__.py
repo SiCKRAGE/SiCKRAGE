@@ -90,8 +90,6 @@ class SiCKRAGETestCase(unittest.TestCase):
         if self.TESTALL and self.__module__ in self.TESTSKIPPED:
             raise unittest.SkipTest()
 
-        sickrage.app.showlist = []
-
         if not os.path.exists(self.FILEDIR):
             os.makedirs(self.FILEDIR)
 

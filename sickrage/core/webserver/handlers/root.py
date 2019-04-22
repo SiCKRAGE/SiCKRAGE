@@ -32,6 +32,7 @@ from sickrage.core.api import API
 from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import remove_article
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
+from sickrage.core.tv.show.helpers import get_show_list
 from sickrage.core.webserver import ApiHandler
 from sickrage.core.webserver.handlers.base import BaseHandler
 
@@ -85,7 +86,7 @@ class APIBulderHandler(BaseHandler, ABC):
             'api_builder.mako',
             title=_('API Builder'),
             header=_('API Builder'),
-            shows=sorted(sickrage.app.showlist, key=cmp_to_key(lambda x, y: titler(x.name) < titler(y.name))),
+            shows=sorted(get_show_list(), key=cmp_to_key(lambda x, y: titler(x.name) < titler(y.name))),
             episodes=episodes,
             apikey=apikey,
             commands=ApiHandler(self.application, self.request).api_calls,

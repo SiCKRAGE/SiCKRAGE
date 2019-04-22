@@ -21,7 +21,6 @@ import os
 from abc import ABC
 from urllib.parse import urlencode
 
-from sqlalchemy import or_
 from tornado.escape import json_encode
 from tornado.httpclient import AsyncHTTPClient
 from tornado.httputil import url_concat
@@ -31,7 +30,8 @@ import sickrage
 from sickrage.core.common import SNATCHED, Quality, Overview
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import CantUpdateShowException, CantRefreshShowException
-from sickrage.core.helpers import try_int, findCertainShow
+from sickrage.core.helpers import try_int
+from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
 from sickrage.subtitles import wanted_languages
 
@@ -84,19 +84,17 @@ class EpisodeStatusesHandler(BaseHandler, ABC):
 
         # if we have no status then this is as far as we need to go
         if len(status_list):
-            for cur_status_result in sorted((s for s in sickrage.app.showlist for __ in
-                                             MainDB.TVEpisode.query.filter_by(showid=s.indexerid).filter(
-                                                 MainDB.TVEpisode.status.in_(status_list),
-                                                 MainDB.TVEpisode.season != 0)), key=lambda d: d.name):
-                cur_indexer_id = int(cur_status_result.indexerid)
-                if cur_indexer_id not in ep_counts:
-                    ep_counts[cur_indexer_id] = 1
-                else:
-                    ep_counts[cur_indexer_id] += 1
+            for show in sorted(get_show_list(), key=lambda d: d.name):
+                for episode in show.episodes:
+                    if episode.season != 0 and episode.status in status_list:
+                        if show.indexerid not in ep_counts:
+                            ep_counts[show.indexerid] = 1
+                        else:
+                            ep_counts[show.indexerid] += 1
 
-                show_names[cur_indexer_id] = cur_status_result.name
-                if cur_indexer_id not in sorted_show_ids:
-                    sorted_show_ids.append(cur_indexer_id)
+                        show_names[show.indexerid] = show.name
+                        if show.indexerid not in sorted_show_ids:
+                            sorted_show_ids.append(show.indexerid)
 
         return self.render(
             "/manage/episode_statuses.mako",
@@ -150,8 +148,8 @@ class ChangeEpisodeStatusesHandler(BaseHandler, ABC):
 class ShowSubtitleMissedHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        indexer_id = self.get_body_argument('indexer_id')
-        which_subs = self.get_body_argument('whichSubs')
+        indexer_id = self.get_query_argument('indexer_id')
+        which_subs = self.get_query_argument('whichSubs')
 
         result = {}
         for dbData in MainDB.TVEpisode.query.filter_by(showid=int(indexer_id)).filter(
@@ -182,7 +180,7 @@ class ShowSubtitleMissedHandler(BaseHandler, ABC):
 class SubtitleMissedHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        which_subs = self.get_body_argument('whichSubs', None)
+        which_subs = self.get_query_argument('whichSubs', None)
 
         ep_counts = {}
         show_names = {}
@@ -190,18 +188,17 @@ class SubtitleMissedHandler(BaseHandler, ABC):
         status_results = []
 
         if which_subs:
-            for s in sickrage.app.showlist:
+            for s in get_show_list():
                 if not s.subtitles == 1:
                     continue
 
-                for e in MainDB.TVEpisode.query.filter_by(showid=s.indexerid).filter(
-                        or_(MainDB.TVEpisode.status.endswith(4), MainDB.TVEpisode.status.endswith(6)),
-                        MainDB.TVEpisode.season != 0):
-                    status_results += [{
-                        'show_name': s.name,
-                        'indexer_id': s.indexerid,
-                        'subtitles': e.subtitles
-                    }]
+                for e in s.episodes:
+                    if e.season != 0 and (str(e.status).endswith('4') or str(e.status).endswith('6')):
+                        status_results += [{
+                            'show_name': s.name,
+                            'indexer_id': s.indexerid,
+                            'subtitles': e.subtitles
+                        }]
 
             for cur_status_result in sorted(status_results, key=lambda k: k['show_name']):
                 if which_subs == 'all':
@@ -258,7 +255,7 @@ class DownloadSubtitleMissedHandler(BaseHandler, ABC):
             for epResult in to_download[cur_indexer_id]:
                 season, episode = epResult.split('x')
 
-                show = findCertainShow(int(cur_indexer_id))
+                show = find_show(int(cur_indexer_id))
                 show.get_episode(int(season), int(episode)).download_subtitles()
 
         return self.redirect('/manage/subtitleMissed/')
@@ -267,9 +264,9 @@ class DownloadSubtitleMissedHandler(BaseHandler, ABC):
 class BacklogShowHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        indexer_id = self.get_body_argument('indexer_id')
+        indexer_id = self.get_query_argument('indexer_id')
 
-        show_obj = findCertainShow(int(indexer_id))
+        show_obj = find_show(int(indexer_id))
 
         if show_obj:
             sickrage.app.backlog_searcher.search_backlog([show_obj])
@@ -284,7 +281,7 @@ class BacklogOverviewHandler(BaseHandler, ABC):
         show_cats = {}
         show_results = {}
 
-        for curShow in sickrage.app.showlist:
+        for curShow in get_show_list():
             if curShow.paused:
                 continue
 
@@ -303,9 +300,7 @@ class BacklogOverviewHandler(BaseHandler, ABC):
 
             show_results[curShow.indexerid] = []
 
-            for curResult in MainDB.TVEpisode.query.filter_by(showid=curShow.indexerid).order_by(
-                    MainDB.TVEpisode.season.desc(),
-                    MainDB.TVEpisode.episode.desc()):
+            for curResult in sorted(curShow.episodes, key=lambda x: (x.season, x.episode), reverse=True):
                 cur_ep_cat = curShow.get_overview(int(curResult.status or -1))
                 if cur_ep_cat:
                     ep_cats["{}x{}".format(curResult.season, curResult.episode)] = cur_ep_cat
@@ -338,7 +333,7 @@ class MassEditHandler(BaseHandler, ABC):
         show_list = []
         show_names = []
         for curID in show_ids:
-            show_obj = findCertainShow(curID)
+            show_obj = find_show(curID)
             if show_obj:
                 show_list.append(show_obj)
                 show_names.append(show_obj.name)
@@ -509,7 +504,7 @@ class MassEditHandler(BaseHandler, ABC):
         errors = []
         for curShow in show_ids:
             cur_errors = []
-            show_obj = findCertainShow(int(curShow))
+            show_obj = find_show(int(curShow))
             if not show_obj:
                 continue
 
@@ -661,7 +656,7 @@ class MassUpdateHandler(BaseHandler, ABC):
             if curShowID == '':
                 continue
 
-            show_obj = findCertainShow(int(curShowID))
+            show_obj = find_show(int(curShowID))
             if show_obj is None:
                 continue
 

@@ -29,6 +29,7 @@ from email.mime.text import MIMEText
 from email.utils import formatdate
 
 import sickrage
+from sickrage.core.tv.show.helpers import get_show_list
 from sickrage.notifiers import Notifiers
 
 
@@ -185,7 +186,7 @@ class EmailNotifier(Notifiers):
 
         # Grab the recipients for the show
         for s in show:
-            for subs in [x for x in sickrage.app.showlist if x.name == s]:
+            for subs in [x for x in get_show_list() if x.name == s]:
                 if subs.notify_list:
                     for addr in subs.notify_list.split(','):
                         if len(addr.strip()) > 0:

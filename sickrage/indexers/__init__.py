@@ -16,13 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
-
-
 import re
 
 import sickrage
-from sickrage.core.classes import ShowListUI
 from sickrage.indexers.config import indexerConfig
+from sickrage.indexers.ui import ShowListUI
 
 
 class IndexerApi(object):

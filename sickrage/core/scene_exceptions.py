@@ -29,6 +29,7 @@ from sqlalchemy import orm
 import sickrage
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.helpers import full_sanitizeSceneName, sanitizeSceneName
+from sickrage.core.tv.show.helpers import get_show_list
 from sickrage.core.websession import WebSession
 from sickrage.indexers import IndexerApi
 
@@ -268,7 +269,7 @@ def update_scene_exceptions(indexer_id, scene_exceptions, season=-1):
 def _anidb_exceptions_fetcher():
     if shouldRefresh('anidb'):
         sickrage.app.log.info("Checking for AniDB scene exception updates")
-        for show in sickrage.app.showlist:
+        for show in get_show_list():
             if show.is_anime and show.indexer == 1:
                 try:
                     anime = Anime(None, name=show.name, tvdbid=show.indexerid, autoCorrectName=True)

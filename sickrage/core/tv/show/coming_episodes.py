@@ -22,8 +22,8 @@ from functools import cmp_to_key
 
 import sickrage
 from sickrage.core.common import Quality, get_quality_string, WANTED, UNAIRED, timeFormat, dateFormat
-from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers.srdatetime import srDateTime
+from sickrage.core.tv.show.helpers import get_show_list
 
 
 class ComingEpisodes:
@@ -96,8 +96,11 @@ class ComingEpisodes:
                          Quality.IGNORED
 
         results = []
-        for s in sickrage.app.showlist:
-            for e in MainDB.TVEpisode.query.filter_by(showid=s.indexerid).filter(MainDB.TVEpisode.season != 0):
+        for s in get_show_list():
+            for e in s.episodes:
+                if e.season == 0:
+                    continue
+
                 if today <= e.airdate < next_week and e.status not in qualities_list:
                     results += result(s, e)
 
@@ -106,8 +109,7 @@ class ComingEpisodes:
                         not in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER:
                     results += result(s, e)
 
-                if today > e.airdate >= recently \
-                        and e.status in [WANTED, UNAIRED] and e.status not in qualities_list:
+                if today > e.airdate >= recently and e.status in [WANTED, UNAIRED] and e.status not in qualities_list:
                     results += result(s, e)
 
         for index, item in enumerate(results):

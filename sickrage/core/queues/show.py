@@ -22,19 +22,18 @@ import os
 import time
 import traceback
 
-from tornado.ioloop import IOLoop
-
 import sickrage
 from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.common import WANTED
 from sickrage.core.exceptions import CantRefreshShowException, \
     CantRemoveShowException, CantUpdateShowException, EpisodeDeletedException, \
     MultipleShowObjectsException
-from sickrage.core.helpers import scrub, findCertainShow
+from sickrage.core.helpers import scrub
 from sickrage.core.queues import srQueue, srQueueItem, srQueuePriorities
 from sickrage.core.scene_numbering import xem_refresh, get_xem_numbering_for_show
 from sickrage.core.traktapi import srTraktAPI
 from sickrage.core.tv.show import TVShow
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_attributenotfound, \
     indexer_error, indexer_exception
@@ -210,9 +209,6 @@ class ShowQueueItem(srQueueItem):
         super(ShowQueueItem, self).__init__(ShowQueueActions.names[action_id], action_id)
         self.show = show
 
-    def finish(self):
-        self.show.flush_episodes()
-
     def is_in_queue(self):
         return self in sickrage.app.show_queue.queue_items
 
@@ -340,7 +336,7 @@ class QueueItemAdd(ShowQueueItem):
             return self._finish_early()
 
         try:
-            self.show = TVShow(self.indexer, self.indexer_id, self.lang)
+            self.show = TVShow(**{'indexer': self.indexer, 'indexerid': self.indexer_id, 'lang': self.lang})
 
             self.show.load_from_indexer()
 
@@ -362,7 +358,6 @@ class QueueItemAdd(ShowQueueItem):
             self.show.default_ep_status = self.default_status
 
             if self.show.anime:
-                self.show.release_groups = BlackAndWhiteList(self.show.indexerid)
                 if self.blacklist:
                     self.show.release_groups.set_black_keywords(self.blacklist)
                 if self.whitelist:
@@ -413,10 +408,6 @@ class QueueItemAdd(ShowQueueItem):
             sickrage.app.log.debug(traceback.format_exc())
             raise self._finish_early()
 
-        # add it to the show list
-        if not findCertainShow(self.indexer_id):
-            sickrage.app.showlist.append(self.show)
-
         try:
             self.show.load_episodes_from_indexer()
         except Exception as e:
@@ -454,7 +445,8 @@ class QueueItemAdd(ShowQueueItem):
         # Load XEM data to DB for show
         xem_refresh(self.show.indexerid, self.show.indexer, force=True)
 
-        # check if show has XEM mapping so we can determin if searches should go by scene numbering or indexer numbering.
+        # check if show has XEM mapping so we can determin if searches should go by scene numbering or indexer
+        # numbering.
         if not self.scene and get_xem_numbering_for_show(self.show.indexerid, self.show.indexer):
             self.show.scene = 1
 
@@ -465,8 +457,6 @@ class QueueItemAdd(ShowQueueItem):
         sickrage.app.name_cache.build(self.show)
 
         sickrage.app.quicksearch_cache.add_show(self.show.indexerid)
-
-        self.finish()
 
         sickrage.app.log.info(
             "Finished adding show {} in {}s from show dir: {}".format(self.show_name,

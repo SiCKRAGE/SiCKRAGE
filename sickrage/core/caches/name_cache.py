@@ -27,6 +27,7 @@ import sickrage
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.helpers import full_sanitizeSceneName, strip_accents
 from sickrage.core.scene_exceptions import retrieve_exceptions, get_scene_seasons, get_scene_exceptions
+from sickrage.core.tv.show.helpers import get_show_list
 
 
 class NameCache(object):
@@ -125,5 +126,5 @@ class NameCache(object):
                 self.put(show_name, show.indexerid)
 
     def build_all(self):
-        for show in sickrage.app.showlist:
+        for show in get_show_list():
             self.build(show)

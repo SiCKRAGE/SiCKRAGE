@@ -21,20 +21,19 @@ import datetime
 import threading
 
 from sqlalchemy import orm
-from tornado.ioloop import IOLoop
 
 import sickrage
 from sickrage.core.common import Quality, DOWNLOADED, SNATCHED, SNATCHED_PROPER, WANTED
 from sickrage.core.databases.main import MainDB
 from sickrage.core.queues.search import BacklogQueueItem
 from sickrage.core.searchers import new_episode_finder
+from sickrage.core.tv.show.helpers import find_show, get_show_list
 
 
 class BacklogSearcher(object):
     def __init__(self, *args, **kwargs):
         self.name = "BACKLOG"
         self.lock = threading.Lock()
-        self._last_backlog_search = None
         self.cycleTime = 21 / 60 / 24
         self.amActive = False
         self.amPaused = False
@@ -57,12 +56,6 @@ class BacklogSearcher(object):
         finally:
             self.amActive = False
 
-    def next_run(self):
-        if self._last_backlog_search <= 1:
-            return datetime.date.today()
-        else:
-            return datetime.date.fromordinal(self._last_backlog_search + self.cycleTime)
-
     def am_running(self):
         sickrage.app.log.debug("amWaiting: " + str(self.amWaiting) + ", amActive: " + str(self.amActive))
         return (not self.amWaiting) and self.amActive
@@ -75,10 +68,7 @@ class BacklogSearcher(object):
         self.amActive = True
         self.amPaused = False
 
-        show_list = sickrage.app.showlist
-        if which_shows:
-            show_list = which_shows
-
+        show_list = which_shows or get_show_list()
         cur_date = datetime.date.today().toordinal()
         from_date = datetime.date.fromordinal(1)
 
@@ -97,8 +87,6 @@ class BacklogSearcher(object):
             if curShow.paused:
                 sickrage.app.log.debug("Skipping search for {} because the show is paused".format(curShow.name))
                 continue
-
-            self._last_backlog_search = self._get_last_backlog_search(curShow.indexerid)
 
             segments = self._get_segments(curShow, from_date)
             if segments:
@@ -157,8 +145,8 @@ class BacklogSearcher(object):
         sickrage.app.log.debug("Retrieving the last check time from the DB")
 
         try:
-            dbData = MainDB.TVShow.query.filter_by(indexer_id=showid).one()
-            return int(dbData.last_backlog_search)
+            show = find_show(showid)
+            return int(show.last_backlog_search)
         except orm.exc.NoResultFound:
             return 1
 
@@ -167,8 +155,8 @@ class BacklogSearcher(object):
         sickrage.app.log.debug("Setting the last backlog in the DB to {}".format(when))
 
         try:
-            dbData = MainDB.TVShow.query.filter_by(indexer_id=showid).one()
-            dbData.last_backlog_search = when
-            sickrage.app.main_db.update(dbData)
+            show = find_show(showid)
+            show.last_backlog_search = when
+            sickrage.app.main_db.update(show)
         except orm.exc.NoResultFound:
             pass

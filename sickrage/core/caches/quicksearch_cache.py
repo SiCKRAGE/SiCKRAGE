@@ -19,6 +19,7 @@
 import sickrage
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.media.util import showImage
+from sickrage.core.tv.show.helpers import find_show
 
 
 class QuicksearchCache(object):
@@ -48,17 +49,16 @@ class QuicksearchCache(object):
         self.add_show(indexerid)
 
     def add_show(self, indexerid):
-        from sickrage.core import TVShow
-        show = TVShow.query.filter_by(indexer_id=indexerid).one()
+        show = find_show(indexerid)
 
         if indexerid not in self.cache['shows']:
-            sickrage.app.log.debug("Adding show {} to QuickSearch cache".format(show.show_name))
+            sickrage.app.log.debug("Adding show {} to QuickSearch cache".format(show.name))
 
             qsData = {
                 'category': 'shows',
                 'showid': indexerid,
                 'seasons': len(set([e.season for e in show.episodes if e.season != 0])),
-                'name': show.show_name,
+                'name': show.name,
                 'img': sickrage.app.config.web_root + showImage(indexerid, 'poster_thumb').url
             }
 
@@ -74,7 +74,7 @@ class QuicksearchCache(object):
                     'season': e.season,
                     'episode': e.episode,
                     'name': e.name,
-                    'showname': show.show_name,
+                    'showname': show.name,
                     'img': sickrage.app.config.web_root + showImage(e.showid, 'poster_thumb').url
                 }
 
@@ -86,10 +86,9 @@ class QuicksearchCache(object):
                 del sql_l
 
     def del_show(self, indexerid):
-        from sickrage.core import TVShow
-        show = TVShow.query.filter_by(indexer_id=indexerid).one()
+        show = find_show(indexerid)
 
-        sickrage.app.log.debug("Deleting show {} from QuickSearch cache".format(show.show_name))
+        sickrage.app.log.debug("Deleting show {} from QuickSearch cache".format(show.name))
 
         if indexerid in self.cache['shows'].copy():
             del self.cache['shows'][indexerid]

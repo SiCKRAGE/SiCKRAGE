@@ -1,6 +1,7 @@
 <%inherit file="../layouts/main.mako"/>
 <%!
     import sickrage
+    from sickrage.core.tv.show.helpers import get_show_list
     from sickrage.core.helpers import anon_url
 %>
 <%block name="sub_navbar">
@@ -38,7 +39,7 @@
                     <h3>${title}</h3>
                 </div>
                 <div class="card-body">
-                    <% imdb_tt = {show.imdbid for show in sickrage.app.showlist if show.imdbid} %>
+                    <% imdb_tt = {show.imdb_id for show in get_show_list() if show.imdb_id} %>
                     <div class="show-grid mx-auto">
                         % if not popular_shows:
                             <div class="trakt_show" style="width:100%; margin-top:20px">

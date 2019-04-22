@@ -34,6 +34,7 @@ from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import remove_non_release_groups
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
 from sickrage.core.search import pickBestResult, snatchEpisode
+from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.tv.show.history import History
 from sickrage.providers import NZBProvider, NewznabProvider, TorrentProvider, TorrentRssProvider
 
@@ -77,7 +78,7 @@ class ProperSearcher(object):
         origThreadName = threading.currentThread().getName()
 
         recently_aired = []
-        for show in sickrage.app.showlist:
+        for show in get_show_list():
             self._lastProperSearch = self._get_lastProperSearch(show.indexerid)
             for episode in MainDB.TVEpisode.query.filter_by(showid=show.indexerid).filter(
                     MainDB.TVEpisode.airdate >= search_date.toordinal(),
@@ -295,9 +296,9 @@ class ProperSearcher(object):
         sickrage.app.log.debug("Setting the last proper search in database to " + str(when))
 
         try:
-            dbData = MainDB.TVShow.query.filter_by(indexer_id=showid).one()
-            dbData.last_proper_search = when
-            sickrage.app.main_db.update(dbData)
+            show = find_show(showid)
+            show.last_proper_search = when
+            sickrage.app.main_db.update(show)
         except orm.exc.NoResultFound:
             pass
 
@@ -310,7 +311,7 @@ class ProperSearcher(object):
         sickrage.app.log.debug("Retrieving the last check time from the DB")
 
         try:
-            dbData = MainDB.TVShow.query.filter_by(indexer_id=showid).one()
-            return int(dbData.last_proper_search)
+            show = find_show(showid)
+            return int(show.last_proper_search)
         except orm.exc.NoResultFound:
             return 1

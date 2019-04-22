@@ -45,7 +45,7 @@ from sickrage.core.common import SD, SKIPPED, WANTED
 from sickrage.core.config import Config
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.databases.main import MainDB
-from sickrage.core.helpers import findCertainShow, generate_secret, makeDir, get_lan_ip, restoreSR, \
+from sickrage.core.helpers import generate_secret, makeDir, get_lan_ip, restoreSR, \
     getDiskSpaceUsage, getFreeSpace, launch_browser, torrent_webui_url, encryption
 from sickrage.core.logger import Logger
 from sickrage.core.nameparser.validator import check_force_season_folders
@@ -61,7 +61,6 @@ from sickrage.core.searchers.failed_snatch_searcher import FailedSnatchSearcher
 from sickrage.core.searchers.proper_searcher import ProperSearcher
 from sickrage.core.searchers.subtitle_searcher import SubtitleSearcher
 from sickrage.core.searchers.trakt_searcher import TraktSearcher
-from sickrage.core.tv.show import TVShow
 from sickrage.core.ui import Notifications
 from sickrage.core.updaters.rsscache_updater import RSSCacheUpdater
 from sickrage.core.updaters.show_updater import ShowUpdater
@@ -80,7 +79,6 @@ class Core(object):
         self.daemon = None
         self.io_loop = None
         self.pid = os.getpid()
-        self.showlist = []
 
         try:
             self.tz = tz.tzwinlocal() if tz.tzwinlocal else tz.tzlocal()
@@ -500,8 +498,8 @@ class Core(object):
                 self.log.debug("Shutting down ANIDB connection")
                 self.adba_connection.stop()
 
-            # save all show and config settings
-            self.save_all()
+            # save settings
+            self.config.save()
 
             # shutdown logging
             if self.log:
@@ -518,18 +516,6 @@ class Core(object):
         if self.io_loop:
             self.io_loop.stop()
 
-    def save_all(self):
-        # write all shows
-        self.log.info("Saving all shows to the database")
-        for show in self.showlist:
-            try:
-                show.save_to_db()
-            except Exception:
-                continue
-
-        # save config
-        self.config.save()
-
     def load_shows(self):
         """
         Populates the showlist and quicksearch cache with shows and episodes from the database
@@ -537,9 +523,10 @@ class Core(object):
 
         self.quicksearch_cache.load()
 
-        for show in TVShow.query:
+        from sickrage.core.tv.show.helpers import get_show_list
+        for show in get_show_list():
             try:
-                self.log.debug("Loading data for show: [{}]".format(show.show_name))
-                self.quicksearch_cache.add_show(show.indexer_id)
+                self.log.debug("Loading data for show: [{}]".format(show.name))
+                self.quicksearch_cache.add_show(show.indexerid)
             except Exception as e:
                 self.log.debug("Show error in [%s]: %s" % (show.location, str(e)))
