@@ -42,7 +42,7 @@
                         <select class="form-control" id="pickShow" title="Change Show">
                             % for show_list_name, show_list in sortedShowLists.items():
                                 % if len(show_list) > 1:
-                                    <optgroup label="${show_list}">
+                                    <optgroup label="${show_list_name}">
                                 % endif
                                 % for cur_show in show_list:
                                     <option value="${cur_show.indexerid}" ${('', 'selected')[cur_show == show]}>${cur_show.name}</option>
