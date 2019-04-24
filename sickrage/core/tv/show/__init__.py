@@ -86,8 +86,8 @@ class TVShow(MainDBBase):
     last_backlog_search = Column(Integer, default=datetime.datetime.now().toordinal())
     last_proper_search = Column(Integer, default=datetime.datetime.now().toordinal())
 
-    episodes = relationship('TVEpisode', back_populates='show', lazy='select')
-    imdb_info = relationship('IMDbInfo', uselist=False, lazy='select')
+    episodes = relationship('TVEpisode', back_populates='show', lazy='joined')
+    imdb_info = relationship('IMDbInfo', uselist=False, lazy='joined')
 
     @property
     def is_anime(self):
