@@ -27,7 +27,6 @@ from urllib.parse import unquote_plus, quote_plus
 from sqlalchemy import orm
 from tornado import gen
 from tornado.escape import json_encode
-from tornado.httpclient import AsyncHTTPClient
 from tornado.httputil import url_concat
 from tornado.web import authenticated
 
@@ -796,8 +795,11 @@ class BranchCheckoutHandler(BaseHandler, ABC):
             sickrage.app.alerts.message(_('Checking out branch: '), branch)
             if sickrage.app.version_updater.updater.checkout_branch(branch):
                 sickrage.app.alerts.message(_('Branch checkout successful, restarting: '), branch)
-                response = await AsyncHTTPClient().fetch(
-                    url_concat(self.get_url("/home/restart"), {'pid': sickrage.app.pid}))
+                response = await self.http_client.fetch(
+                    url_concat(
+                        self.get_url("/home/restart"), {'pid': sickrage.app.pid}
+                    )
+                )
                 return self.write(response.body)
         else:
             sickrage.app.alerts.message(_('Already on branch: '), branch)

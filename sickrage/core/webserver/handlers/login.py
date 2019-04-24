@@ -16,6 +16,7 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
+from abc import ABC
 
 import sickrage
 from sickrage.core import AccountAPI
@@ -23,7 +24,7 @@ from sickrage.core.api import API
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class LoginHandler(BaseHandler):
+class LoginHandler(BaseHandler, ABC):
     def prepare(self, *args, **kwargs):
         code = self.get_argument('code', None)
 

@@ -22,7 +22,6 @@ from abc import ABC
 from urllib.parse import urlencode
 
 from tornado.escape import json_encode
-from tornado.httpclient import AsyncHTTPClient
 from tornado.httputil import url_concat
 from tornado.web import authenticated
 
@@ -138,9 +137,12 @@ class ChangeEpisodeStatusesHandler(BaseHandler, ABC):
                                MainDB.TVEpisode.status.in_(status_list), MainDB.TVEpisode.season != 0)]
                 to_change[cur_indexer_id] = all_eps
 
-            await AsyncHTTPClient().fetch(url_concat(self.get_url("/home/setStatus"),
-                                                     dict(show=cur_indexer_id, eps='|'.join(to_change[cur_indexer_id]),
-                                                          status=new_status, direct=True)))
+            await self.http_client.fetch(
+                url_concat(
+                    self.get_url("/home/setStatus"),
+                    dict(show=cur_indexer_id, eps='|'.join(to_change[cur_indexer_id]), status=new_status, direct=True)
+                )
+            )
 
         return self.redirect('/manage/episodeStatuses/')
 
@@ -596,8 +598,10 @@ class MassEditHandler(BaseHandler, ABC):
                 directCall='true'
             )
 
-            response = await AsyncHTTPClient().fetch(self.get_url("/home/editShow"), method='POST',
-                                                     body=urlencode(post_data))
+            response = await self.http_client.fetch(
+                self.get_url("/home/editShow"), method='POST',
+                body=urlencode(post_data)
+            )
 
             if response.body:
                 cur_errors += [response.body]

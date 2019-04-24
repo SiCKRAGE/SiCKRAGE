@@ -29,6 +29,7 @@ from mako.exceptions import RichTraceback
 from mako.lookup import TemplateLookup
 from requests import HTTPError
 from tornado import locale
+from tornado.httpclient import AsyncHTTPClient
 from tornado.ioloop import IOLoop
 from tornado.web import RequestHandler
 
@@ -53,6 +54,8 @@ class BaseHandler(RequestHandler, ABC):
             encoding_errors='replace',
             future_imports=['unicode_literals']
         )
+
+        self.http_client = AsyncHTTPClient()
 
     def get_user_locale(self):
         return locale.get(sickrage.app.config.gui_lang)
@@ -101,14 +104,11 @@ class BaseHandler(RequestHandler, ABC):
 
     def get_current_user(self):
         try:
-            try:
-                return sickrage.app.oidc_client.userinfo(self.get_secure_cookie('sr_access_token'))
-            except (KeycloakClientError, HTTPError):
-                token = sickrage.app.oidc_client.refresh_token(self.get_secure_cookie('sr_refresh_token'))
-                self.set_secure_cookie('sr_access_token', token['access_token'])
-                self.set_secure_cookie('sr_refresh_token', token['refresh_token'])
-                return sickrage.app.oidc_client.userinfo(token['access_token'])
-        except Exception:
+            token = sickrage.app.oidc_client.refresh_token(self.get_secure_cookie('sr_refresh_token'))
+            self.set_secure_cookie('sr_access_token', token['access_token'])
+            self.set_secure_cookie('sr_refresh_token', token['refresh_token'])
+            return sickrage.app.oidc_client.userinfo(token['access_token'])
+        except (KeycloakClientError, HTTPError):
             pass
 
     def render_string(self, template_name, **kwargs):

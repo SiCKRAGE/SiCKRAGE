@@ -24,22 +24,21 @@ from urllib.parse import unquote_plus
 
 from sqlalchemy import orm
 from tornado.escape import json_encode
-from tornado.httpclient import AsyncHTTPClient
 from tornado.httputil import url_concat
 from tornado.web import authenticated
 
 import sickrage
-from sickrage.core.tv.show import TVShow
-from sickrage.indexers.ui import AllShowsUI
 from sickrage.core.common import Quality
 from sickrage.core.helpers import sanitizeFileName, makeDir, chmod_as_parent, checkbox_to_value, \
     try_int
-from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.helpers.anidb import short_group_names
 from sickrage.core.imdb_popular import imdbPopular
 from sickrage.core.traktapi import srTraktAPI
+from sickrage.core.tv.show import TVShow
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.webserver.handlers.base import BaseHandler
 from sickrage.indexers import IndexerApi
+from sickrage.indexers.ui import AllShowsUI
 
 
 def split_extra_show(extra_show):
@@ -353,11 +352,15 @@ class AddShowByIDHandler(BaseHandler, ABC):
 
         show_dir = os.path.join(location, sanitizeFileName(show_name))
 
-        response = await AsyncHTTPClient().fetch(
-            url_concat("/home/addShows/newShow",
-                       {'show_to_add': '1|{show_dir}|{indexer_id}|{show_name}'.format(**{'show_dir': show_dir,
-                                                                                         'indexer_id': indexer_id,
-                                                                                         'show_name': show_name})}))
+        response = await self.http_client.fetch(
+            url_concat(
+                "/home/addShows/newShow",
+                {'show_to_add': '1|{show_dir}|{indexer_id}|{show_name}'.format(**{'show_dir': show_dir,
+                                                                                  'indexer_id': indexer_id,
+                                                                                  'show_name': show_name})}
+            )
+        )
+
         return self.write(response.body)
 
 
@@ -404,9 +407,12 @@ class AddNewShowHandler(BaseHandler, ABC):
             rest_of_show_dirs = ','.join(other_shows[1:])
 
             # go to add the next show
-            response = await AsyncHTTPClient().fetch(url_concat(self.get_url("/home/addShows/newShow"),
-                                                                {'show_to_add': next_show_dir,
-                                                                 'other_shows': rest_of_show_dirs}))
+            response = await self.http_client.fetch(
+                url_concat(
+                    self.get_url("/home/addShows/newShow"),
+                    {'show_to_add': next_show_dir, 'other_shows': rest_of_show_dirs}
+                )
+            )
 
             return response.body
 
@@ -541,9 +547,13 @@ class AddExistingShowsHandler(BaseHandler, ABC):
 
         # if they want me to prompt for settings then I will just carry on to the newShow page
         if prompt_for_settings and shows_to_add:
-            response = await AsyncHTTPClient().fetch(url_concat(self.get_url("/home/addShows/newShow"),
-                                                                {'show_to_add': shows_to_add[0],
-                                                                 'other_shows': ','.join(shows_to_add[1:])}))
+            response = await self.http_client.fetch(
+                url_concat(
+                    self.get_url("/home/addShows/newShow"),
+                    {'show_to_add': shows_to_add[0], 'other_shows': ','.join(shows_to_add[1:])}
+                )
+            )
+
             return self.write(response.body)
 
         # if they don't want me to prompt for settings then I can just add all the nfo shows now
@@ -576,7 +586,10 @@ class AddExistingShowsHandler(BaseHandler, ABC):
             return self.redirect('/home/')
 
         # for the remaining shows we need to prompt for each one, so forward this on to the newShow page
-        response = await AsyncHTTPClient().fetch(url_concat(self.get_url("/home/addShows/newShow"),
-                                                            {'show_to_add': dirs_only[0],
-                                                             'other_shows': ','.join(dirs_only[1:])}))
+        response = await self.http_client.fetch(
+            url_concat(
+                self.get_url("/home/addShows/newShow"),
+                {'show_to_add': dirs_only[0], 'other_shows': ','.join(dirs_only[1:])}
+            )
+        )
         return self.write(response.body)
