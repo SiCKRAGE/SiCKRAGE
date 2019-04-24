@@ -642,11 +642,12 @@ class TVShow(MainDBBase):
                 sickrage.app.log.debug(str(self.indexer_id) + ': Unable to obtain IMDb info')
                 return
 
+            imdb_info = dict((k.lower(), v) for k, v in imdb_info.items())
             for column in imdb_info.copy():
                 if column in imdb_info_mapper:
                     imdb_info[imdb_info_mapper[column]] = imdb_info[column]
 
-                if column.lower() not in MainDB.IMDbInfo.__table__.columns.keys():
+                if column not in MainDB.IMDbInfo.__table__.columns.keys():
                     del imdb_info[column]
 
             sickrage.app.log.debug(
