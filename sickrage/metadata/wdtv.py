@@ -189,7 +189,7 @@ class WDTVMetadata(GenericMetadata):
                 lINDEXER_API_PARMS['dvdorder'] = True
 
             t = IndexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
-            myShow = t[ep_obj.show.indexerid]
+            myShow = t[ep_obj.show.indexer_id]
         except indexer_shownotfound as e:
             raise ShowNotFoundException(str(e))
         except indexer_error as e:
@@ -223,7 +223,7 @@ class WDTVMetadata(GenericMetadata):
 
             # TODO: get right EpisodeID
             episodeID = SubElement(episode, "id")
-            episodeID.text = str(curEpToWrite.indexerid)
+            episodeID.text = str(curEpToWrite.indexer_id)
 
             title = SubElement(episode, "title")
             title.text = ep_obj.pretty_name()
@@ -268,7 +268,7 @@ class WDTVMetadata(GenericMetadata):
                 director = SubElement(episode, "director")
                 director.text = myEp['director']
 
-            for actor in t.actors(int(ep_obj.show.indexerid)):
+            for actor in t.actors(int(ep_obj.show.indexer_id)):
                 if not ('name' in actor and actor['name'].strip()):
                     continue
 

@@ -239,22 +239,22 @@ class ImageCache(object):
         # generate the path based on the type & indexer_id
         if img_type == self.POSTER:
             img_type_name = 'poster'
-            dest_path = self.poster_path(show_obj.indexerid)
+            dest_path = self.poster_path(show_obj.indexer_id)
         elif img_type == self.BANNER:
             img_type_name = 'series'
-            dest_path = self.banner_path(show_obj.indexerid)
+            dest_path = self.banner_path(show_obj.indexer_id)
         elif img_type == self.FANART:
             img_type_name = 'fanart'
-            dest_path = self.fanart_path(show_obj.indexerid)
+            dest_path = self.fanart_path(show_obj.indexer_id)
         elif img_type == self.POSTER_THUMB:
             img_type_name = 'poster_thumb'
-            dest_path = self.poster_thumb_path(show_obj.indexerid)
+            dest_path = self.poster_thumb_path(show_obj.indexer_id)
         elif img_type == self.BANNER_THUMB:
             img_type_name = 'series_thumb'
-            dest_path = self.banner_thumb_path(show_obj.indexerid)
+            dest_path = self.banner_thumb_path(show_obj.indexer_id)
         elif img_type == self.FANART_THUMB:
             img_type_name = 'fanart_thumb'
-            dest_path = self.fanart_thumb_path(show_obj.indexerid)
+            dest_path = self.fanart_thumb_path(show_obj.indexer_id)
         else:
             sickrage.app.log.error("Invalid cache image type: " + str(img_type))
             return False
@@ -274,14 +274,14 @@ class ImageCache(object):
         :param show_obj: TVShow object to cache images for
         """
 
-        sickrage.app.log.debug("Checking if we need any cache images for show " + str(show_obj.indexerid))
+        sickrage.app.log.debug("Checking if we need any cache images for show " + str(show_obj.indexer_id))
 
         # check if the images are already cached or not
-        need_images = {self.POSTER: force or not self.has_poster(show_obj.indexerid),
-                       self.BANNER: force or not self.has_banner(show_obj.indexerid),
-                       self.POSTER_THUMB: force or not self.has_poster_thumbnail(show_obj.indexerid),
-                       self.BANNER_THUMB: force or not self.has_banner_thumbnail(show_obj.indexerid),
-                       self.FANART: force or not self.has_fanart(show_obj.indexerid)}
+        need_images = {self.POSTER: force or not self.has_poster(show_obj.indexer_id),
+                       self.BANNER: force or not self.has_banner(show_obj.indexer_id),
+                       self.POSTER_THUMB: force or not self.has_poster_thumbnail(show_obj.indexer_id),
+                       self.BANNER_THUMB: force or not self.has_banner_thumbnail(show_obj.indexer_id),
+                       self.FANART: force or not self.has_fanart(show_obj.indexer_id)}
 
         if all([not need_images[self.POSTER],
                 not need_images[self.BANNER],
@@ -314,7 +314,7 @@ class ImageCache(object):
                             sickrage.app.log.debug(
                                 "Found an image in the show dir that doesn't exist in the cache, caching it: " + cur_file_name + ", type " + str(
                                     cur_file_type))
-                            self._cache_image_from_file(cur_file_name, cur_file_type, show_obj.indexerid)
+                            self._cache_image_from_file(cur_file_name, cur_file_type, show_obj.indexer_id)
                             need_images[cur_file_type] = False
 
         # download from indexer for missing ones

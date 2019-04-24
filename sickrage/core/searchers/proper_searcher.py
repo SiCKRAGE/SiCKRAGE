@@ -79,13 +79,13 @@ class ProperSearcher(object):
 
         recently_aired = []
         for show in get_show_list():
-            self._lastProperSearch = self._get_lastProperSearch(show.indexerid)
-            for episode in MainDB.TVEpisode.query.filter_by(showid=show.indexerid).filter(
+            self._lastProperSearch = self._get_lastProperSearch(show.indexer_id)
+            for episode in MainDB.TVEpisode.query.filter_by(showid=show.indexer_id).filter(
                     MainDB.TVEpisode.airdate >= search_date.toordinal(),
                     MainDB.TVEpisode.status.in_(Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST)):
                 recently_aired += [episode]
 
-            self._set_lastProperSearch(show.indexerid, datetime.datetime.today().toordinal())
+            self._set_lastProperSearch(show.indexer_id, datetime.datetime.today().toordinal())
 
         if not recently_aired:
             sickrage.app.log.info('No recently aired episodes, nothing to search for')
@@ -160,8 +160,8 @@ class ProperSearcher(object):
             sickrage.app.log.debug(
                 "Successful match! Result " + parse_result.original_name + " matched to show " + parse_result.show.name)
 
-            # set the indexerid in the db to the show's indexerid
-            curProper.indexerid = parse_result.indexerid
+            # set the indexer_id in the db to the show's indexer_id
+            curProper.indexer_id = parse_result.indexer_id
 
             # set the indexer in the db to the show's indexer
             curProper.indexer = parse_result.show.indexer
@@ -190,7 +190,7 @@ class ProperSearcher(object):
 
             # check if we actually want this proper (if it's the right quality)            
             try:
-                dbData = MainDB.TVEpisode.query.filter_by(showid=bestResult.indexerid, season=bestResult.season,
+                dbData = MainDB.TVEpisode.query.filter_by(showid=bestResult.indexer_id, season=bestResult.season,
                                                 episode=bestResult.episode).one()
 
                 # only keep the proper if we have already retrieved the same quality ep (don't get better/worse ones)
@@ -202,7 +202,7 @@ class ProperSearcher(object):
 
             # check if we actually want this proper (if it's the right release group and a higher version)
             if bestResult.show.is_anime:
-                dbData = MainDB.TVEpisode.query.filter_by(showid=bestResult.indexerid, season=bestResult.season,
+                dbData = MainDB.TVEpisode.query.filter_by(showid=bestResult.indexer_id, season=bestResult.season,
                                                 episode=bestResult.episode).one()
                 oldVersion = int(dbData.version)
                 oldRelease_group = dbData.release_group
@@ -219,8 +219,8 @@ class ProperSearcher(object):
 
             # if the show is in our list and there hasn't been a proper already added for that particular episode
             # then add it to our list of propers
-            if bestResult.indexerid != -1 and (bestResult.indexerid, bestResult.season, bestResult.episode) not in map(
-                    operator.attrgetter('indexerid', 'season', 'episode'), finalPropers):
+            if bestResult.indexer_id != -1 and (bestResult.indexer_id, bestResult.season, bestResult.episode) not in map(
+                    operator.attrgetter('indexer_id', 'season', 'episode'), finalPropers):
                 sickrage.app.log.info("Found a proper that we need: " + str(bestResult.name))
                 finalPropers.append(bestResult)
 
@@ -237,7 +237,7 @@ class ProperSearcher(object):
             historyLimit = datetime.datetime.today() - datetime.timedelta(days=30)
 
             # make sure the episode has been downloaded before
-            historyResults = [x for x in MainDB.History.query.filter_by(showid=curProper.indexerid, season=curProper.season,
+            historyResults = [x for x in MainDB.History.query.filter_by(showid=curProper.indexer_id, season=curProper.season,
                                                               episode=curProper.episode,
                                                               quality=curProper.quality).filter(
                 MainDB.History.date >= historyLimit.strftime(History.date_format),

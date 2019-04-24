@@ -38,19 +38,19 @@ class DBBasicTests(tests.SiCKRAGETestDBCase):
         sickrage.app.showlist += [show]
 
         ep = TVEpisode(show, 1, 1)
-        ep.indexerid = 1
+        ep.indexer_id = 1
         ep.name = "test episode 1"
         ep.airdate = datetime.date.fromordinal(733832)
         ep.status = UNAIRED
         ep.save_to_db()
         ep = TVEpisode(show, 1, 2)
-        ep.indexerid = 2
+        ep.indexer_id = 2
         ep.name = "test episode 2"
         ep.airdate = datetime.date.fromordinal(733832)
         ep.status = UNAIRED
         ep.save_to_db()
         ep = TVEpisode(show, 1, 3)
-        ep.indexerid = 3
+        ep.indexer_id = 3
         ep.name = "test episode 3"
         ep.airdate = datetime.date.fromordinal(733832)
         ep.status = UNAIRED
@@ -66,7 +66,7 @@ class DBBasicTests(tests.SiCKRAGETestDBCase):
                 show = find_show(int(episode.showid))
 
                 ep = TVEpisode(show, 1, episode.episode)
-                ep.indexerid = episode.episode
+                ep.indexer_id = episode.episode
                 ep.name = "test episode {}".format(episode.episode)
                 ep.airdate = datetime.date.fromordinal(733832)
                 ep.status = UNAIRED

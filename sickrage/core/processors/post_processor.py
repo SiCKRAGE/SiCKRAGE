@@ -713,21 +713,21 @@ class PostProcessor(object):
                 # same air date)
                 try:
                     dbData = MainDB.TVEpisode.query.filter_by(
-                        showid=show.indexerid, indexer=show.indexer, airdate=airdate
+                        showid=show.indexer_id, indexer=show.indexer, airdate=airdate
                     ).filter(MainDB.TVEpisode.season != 0).one()
                     season = int(dbData.season)
                     episodes = [int(dbData.episode)]
                 except orm.exc.NoResultFound:
                     # Found no result, try with season 0
                     try:
-                        dbData = MainDB.TVEpisode.query.filter_by(showid=show.indexerid, indexer=show.indexer,
+                        dbData = MainDB.TVEpisode.query.filter_by(showid=show.indexer_id, indexer=show.indexer,
                                                                   airdate=airdate).one()
                         season = int(dbData.season)
                         episodes = [int(dbData.episode)]
                     except orm.exc.NoResultFound:
                         self._log(
                             "Unable to find episode with date " +
-                            str(episodes[0]) + " for show " + str(show.indexerid) + ", skipping",
+                            str(episodes[0]) + " for show " + str(show.indexer_id) + ", skipping",
                             sickrage.app.log.DEBUG
                         )
 
@@ -740,7 +740,7 @@ class PostProcessor(object):
             elif season is None and show:
                 if len({x.season for x in
                         MainDB.TVEpisode.query.filter_by(
-                            showid=show.indexerid, indexer=show.indexer
+                            showid=show.indexer_id, indexer=show.indexer
                         ).filter(MainDB.TVEpisode.season != 0)}) == 1:
                     self._log("Don't have a season number, but this show appears to only have 1 season, setting "
                               "season number to 1...", sickrage.app.log.DEBUG)
@@ -857,7 +857,7 @@ class PostProcessor(object):
             script_cmd[0] = os.path.abspath(script_cmd[0])
             self._log("Absolute path to script: " + script_cmd[0], sickrage.app.log.DEBUG)
 
-            script_cmd = script_cmd + [ep_obj.location, self.file_path, str(ep_obj.show.indexerid), str(ep_obj.season),
+            script_cmd = script_cmd + [ep_obj.location, self.file_path, str(ep_obj.show.indexer_id), str(ep_obj.season),
                                        str(ep_obj.episode), str(ep_obj.airdate)]
 
             # use subprocess to run the command and capture output

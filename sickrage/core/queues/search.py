@@ -65,14 +65,14 @@ class SearchQueue(srQueue):
 
     def is_show_in_queue(self, show):
         for cur_item in self.queue_items:
-            if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and cur_item.show.indexerid == show:
+            if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and cur_item.show.indexer_id == show:
                 return True
         return False
 
     def get_all_ep_from_queue(self, show):
         ep_obj_list = []
         for cur_item in self.queue_items:
-            if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and str(cur_item.show.indexerid) == show:
+            if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and str(cur_item.show.indexer_id) == show:
                 ep_obj_list.append(cur_item)
         return ep_obj_list
 
@@ -151,7 +151,7 @@ class SearchQueue(srQueue):
 class DailySearchQueueItem(srQueueItem):
     def __init__(self, show, segment):
         super(DailySearchQueueItem, self).__init__('Daily Search', DAILY_SEARCH)
-        self.name = 'DAILY-' + str(show.indexerid)
+        self.name = 'DAILY-' + str(show.indexer_id)
         self.show = show
         self.segment = segment
         self.success = False
@@ -183,7 +183,7 @@ class DailySearchQueueItem(srQueueItem):
 class ManualSearchQueueItem(srQueueItem):
     def __init__(self, show, segment, downCurQuality=False):
         super(ManualSearchQueueItem, self).__init__('Manual Search', MANUAL_SEARCH)
-        self.name = 'MANUAL-' + str(show.indexerid)
+        self.name = 'MANUAL-' + str(show.indexer_id)
         self.show = show
         self.segment = segment
         self.success = False
@@ -227,7 +227,7 @@ class ManualSearchQueueItem(srQueueItem):
 class BacklogQueueItem(srQueueItem):
     def __init__(self, show, segment):
         super(BacklogQueueItem, self).__init__('Backlog Search', BACKLOG_SEARCH)
-        self.name = 'BACKLOG-' + str(show.indexerid)
+        self.name = 'BACKLOG-' + str(show.indexer_id)
         self.show = show
         self.segment = segment
         self.priority = srQueuePriorities.LOW
@@ -260,7 +260,7 @@ class BacklogQueueItem(srQueueItem):
 class FailedQueueItem(srQueueItem):
     def __init__(self, show, segment, downCurQuality=False):
         super(FailedQueueItem, self).__init__('Retry', FAILED_SEARCH)
-        self.name = 'RETRY-' + str(show.indexerid)
+        self.name = 'RETRY-' + str(show.indexer_id)
         self.show = show
         self.segment = segment
         self.priority = srQueuePriorities.HIGH

@@ -121,7 +121,7 @@ class TraktSearcher(object):
             if sickrage.app.config.trakt_sync_remove:
                 self.removeEpisodesFromTraktCollection()
 
-    def findShowMatch(self, indexer, indexerid):
+    def findShowMatch(self, indexer, indexer_id):
         traktShow = None
 
         try:
@@ -131,7 +131,7 @@ class TraktSearcher(object):
                 return
 
             traktShow = [x for __, x in library.items() if
-                         int(indexerid) == int(x.ids[IndexerApi(indexer).trakt_id])]
+                         int(indexer_id) == int(x.ids[IndexerApi(indexer).trakt_id])]
         except Exception as e:
             sickrage.app.log.warning(
                 "Could not connect to Trakt service. Aborting library check. Error: %s" % repr(e))
@@ -139,14 +139,14 @@ class TraktSearcher(object):
         return traktShow
 
     def removeShowFromTraktLibrary(self, show_obj):
-        if self.findShowMatch(show_obj.indexer, show_obj.indexerid):
+        if self.findShowMatch(show_obj.indexer, show_obj.indexer_id):
             # URL parameters
             data = {
                 'shows': [
                     {
                         'title': show_obj.name,
                         'year': show_obj.startyear,
-                        'ids': {IndexerApi(show_obj.indexer).trakt_id: show_obj.indexerid}
+                        'ids': {IndexerApi(show_obj.indexer).trakt_id: show_obj.indexer_id}
                     }
                 ]
             }
@@ -168,14 +168,14 @@ class TraktSearcher(object):
         """
         data = {}
 
-        if not self.findShowMatch(show_obj.indexer, show_obj.indexerid):
+        if not self.findShowMatch(show_obj.indexer, show_obj.indexer_id):
             # URL parameters
             data = {
                 'shows': [
                     {
                         'title': show_obj.name,
                         'year': show_obj.startyear,
-                        'ids': {IndexerApi(show_obj.indexer).trakt_id: show_obj.indexerid}
+                        'ids': {IndexerApi(show_obj.indexer).trakt_id: show_obj.indexer_id}
                     }
                 ]
             }
@@ -271,7 +271,7 @@ class TraktSearcher(object):
         sickrage.app.log.debug("WATCHLIST::ADD::START - Look for Episodes to Add to Trakt Watchlist")
 
         for s in get_show_list():
-            for e in MainDB.TVEpisode.query.filter_by(showid=s.indexerid).filter(
+            for e in MainDB.TVEpisode.query.filter_by(showid=s.indexer_id).filter(
                     ~MainDB.TVEpisode.episode.in_(Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN] + [WANTED])):
                 trakt_id = IndexerApi(s.indexer).trakt_id
                 if self._checkInList(trakt_id, str(e.showid), e.season, e.episode):
@@ -295,14 +295,14 @@ class TraktSearcher(object):
         sickrage.app.log.debug("SHOW_WATCHLIST::ADD::START - Look for Shows to Add to Trakt Watchlist")
 
         for show in get_show_list():
-            if not self._checkInList(IndexerApi(show.indexer).trakt_id, str(show.indexerid), 0, 0, 'Show'):
+            if not self._checkInList(IndexerApi(show.indexer).trakt_id, str(show.indexer_id), 0, 0, 'Show'):
                 sickrage.app.log.debug(
                     "Adding Show: Indexer %s %s - %s to Watchlist" % (
-                        IndexerApi(show.indexer).trakt_id, str(show.indexerid), show.name))
+                        IndexerApi(show.indexer).trakt_id, str(show.indexer_id), show.name))
 
                 show_el = {'title': show.name,
                            'year': show.startyear,
-                           'ids': {IndexerApi(show.indexer).trakt_id: show.indexerid}}
+                           'ids': {IndexerApi(show.indexer).trakt_id: show.indexer_id}}
 
                 trakt_data.append(show_el)
 
@@ -322,7 +322,7 @@ class TraktSearcher(object):
         for show in get_show_list():
             if show.status == "Ended":
                 try:
-                    progress = srTraktAPI()["shows"].get(show.imdbid)
+                    progress = srTraktAPI()["shows"].get(show.imdb_id)
                 except Exception as e:
                     sickrage.app.log.warning(
                         "Could not connect to Trakt service. Aborting removing show %s from SiCKRAGE. Error: %s" % (
@@ -450,7 +450,7 @@ class TraktSearcher(object):
     def manageNewShow(self, show):
         sickrage.app.log.debug(
             "Checking if trakt watch list wants to search for episodes from new show " + show.name)
-        episodes = [i for i in self.todoWanted if i[0] == show.indexerid]
+        episodes = [i for i in self.todoWanted if i[0] == show.indexer_id]
 
         for episode in episodes:
             self.todoWanted.remove(episode)
@@ -528,24 +528,24 @@ class TraktSearcher(object):
         shows = {}
         seasons = {}
 
-        for indexerid, indexer, show_name, startyear, season, episode in data:
-            if indexerid not in shows:
-                shows[indexerid] = {'title': show_name,
+        for indexer_id, indexer, show_name, startyear, season, episode in data:
+            if indexer_id not in shows:
+                shows[indexer_id] = {'title': show_name,
                                     'year': startyear,
-                                    'ids': {IndexerApi(indexer).trakt_id: indexerid}}
+                                    'ids': {IndexerApi(indexer).trakt_id: indexer_id}}
 
-            if indexerid not in seasons:
-                seasons[indexerid] = {}
-            if season not in seasons[indexerid]:
-                seasons[indexerid] = {season: []}
-            if episode not in seasons[indexerid][season]:
-                seasons[indexerid][season] += [{'number': episode}]
+            if indexer_id not in seasons:
+                seasons[indexer_id] = {}
+            if season not in seasons[indexer_id]:
+                seasons[indexer_id] = {season: []}
+            if episode not in seasons[indexer_id][season]:
+                seasons[indexer_id][season] += [{'number': episode}]
 
-        for indexerid, seasonlist in seasons.items():
-            if 'seasons' not in shows[indexerid]: shows[indexerid]['seasons'] = []
+        for indexer_id, seasonlist in seasons.items():
+            if 'seasons' not in shows[indexer_id]: shows[indexer_id]['seasons'] = []
             for season, episodelist in seasonlist.items():
-                shows[indexerid]['seasons'] += [{'number': season, 'episodes': episodelist}]
+                shows[indexer_id]['seasons'] += [{'number': season, 'episodes': episodelist}]
 
-            show_list.append(shows[indexerid])
+            show_list.append(shows[indexer_id])
 
         return {'shows': show_list}

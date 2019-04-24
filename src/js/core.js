@@ -1509,7 +1509,7 @@ $(document).ready(function ($) {
                     var command = $(this).data('command');
                     var select = $('[data-command=' + command + '][name=episode]');
                     var season = $(this).val();
-                    var show = $('[data-command=' + command + '][name=indexerid]').val();
+                    var show = $('[data-command=' + command + '][name=indexer_id]').val();
                     var episodes = select.val();
 
                     if (select !== undefined) {

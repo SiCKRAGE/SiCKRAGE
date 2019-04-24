@@ -246,10 +246,10 @@ class MediaBrowserMetadata(GenericMetadata):
         tv_node = Element("Series")
 
         try:
-            myShow = t[int(show_obj.indexerid)]
+            myShow = t[int(show_obj.indexer_id)]
         except indexer_shownotfound:
             sickrage.app.log.error(
-                "Unable to find show with id " + str(show_obj.indexerid) + " on " + IndexerApi(
+                "Unable to find show with id " + str(show_obj.indexer_id) + " on " + IndexerApi(
                     show_obj.indexer).name + ", skipping it")
             raise
 
@@ -261,13 +261,13 @@ class MediaBrowserMetadata(GenericMetadata):
         # check for title and id
         if not (getattr(myShow, 'seriesname', None) and getattr(myShow, 'id', None)):
             sickrage.app.log.info(
-                "Incomplete info for show with id " + str(show_obj.indexerid) + " on " + IndexerApi(
+                "Incomplete info for show with id " + str(show_obj.indexer_id) + " on " + IndexerApi(
                     show_obj.indexer).name + ", skipping it")
             return False
 
         if getattr(myShow, 'id', None):
-            indexerid = SubElement(tv_node, "id")
-            indexerid.text = str(myShow['id'])
+            indexer_id = SubElement(tv_node, "id")
+            indexer_id.text = str(myShow['id'])
 
         if getattr(myShow, 'seriesname', None):
             SeriesName = SubElement(tv_node, "SeriesName")
@@ -364,7 +364,7 @@ class MediaBrowserMetadata(GenericMetadata):
             Studio.text = myShow['network']
 
             Persons = SubElement(tv_node, "Persons")
-            for actor in t.actors(int(show_obj.indexerid)):
+            for actor in t.actors(int(show_obj.indexer_id)):
                 if not ('name' in actor and actor['name'].strip()):
                     continue
 
@@ -414,7 +414,7 @@ class MediaBrowserMetadata(GenericMetadata):
 
             t = IndexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
 
-            myShow = t[ep_obj.show.indexerid]
+            myShow = t[ep_obj.show.indexer_id]
         except indexer_shownotfound as e:
             raise ShowNotFoundException(str(e))
         except indexer_error as e:
@@ -491,8 +491,8 @@ class MediaBrowserMetadata(GenericMetadata):
                         IMDbId = SubElement(episode, "IMDbId")
                         IMDbId.text = myShow['imdb_id']
 
-                indexerid = SubElement(episode, "id")
-                indexerid.text = str(curEpToWrite.indexerid)
+                indexer_id = SubElement(episode, "id")
+                indexer_id.text = str(curEpToWrite.indexer_id)
 
                 # fill in Persons section with collected directors, guest starts and writers
                 Persons = SubElement(episode, "Persons")
@@ -506,7 +506,7 @@ class MediaBrowserMetadata(GenericMetadata):
                         cur_person_type = SubElement(Person, "Type")
                         cur_person_type.text = person_type
 
-                for actor in t.actors(int(ep_obj.show.indexerid)):
+                for actor in t.actors(int(ep_obj.show.indexer_id)):
                     if not ('name' in actor and actor['name'].strip()):
                         continue
 

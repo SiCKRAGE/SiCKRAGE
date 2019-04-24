@@ -86,14 +86,14 @@ class EpisodeStatusesHandler(BaseHandler, ABC):
             for show in sorted(get_show_list(), key=lambda d: d.name):
                 for episode in show.episodes:
                     if episode.season != 0 and episode.status in status_list:
-                        if show.indexerid not in ep_counts:
-                            ep_counts[show.indexerid] = 1
+                        if show.indexer_id not in ep_counts:
+                            ep_counts[show.indexer_id] = 1
                         else:
-                            ep_counts[show.indexerid] += 1
+                            ep_counts[show.indexer_id] += 1
 
-                        show_names[show.indexerid] = show.name
-                        if show.indexerid not in sorted_show_ids:
-                            sorted_show_ids.append(show.indexerid)
+                        show_names[show.indexer_id] = show.name
+                        if show.indexer_id not in sorted_show_ids:
+                            sorted_show_ids.append(show.indexer_id)
 
         return self.render(
             "/manage/episode_statuses.mako",
@@ -198,7 +198,7 @@ class SubtitleMissedHandler(BaseHandler, ABC):
                     if e.season != 0 and (str(e.status).endswith('4') or str(e.status).endswith('6')):
                         status_results += [{
                             'show_name': s.name,
-                            'indexer_id': s.indexerid,
+                            'indexer_id': s.indexer_id,
                             'subtitles': e.subtitles
                         }]
 
@@ -300,7 +300,7 @@ class BacklogOverviewHandler(BaseHandler, ABC):
                 Overview.MISSED: 0,
             }
 
-            show_results[curShow.indexerid] = []
+            show_results[curShow.indexer_id] = []
 
             for curResult in sorted(curShow.episodes, key=lambda x: (x.season, x.episode), reverse=True):
                 cur_ep_cat = curShow.get_overview(int(curResult.status or -1))
@@ -308,10 +308,10 @@ class BacklogOverviewHandler(BaseHandler, ABC):
                     ep_cats["{}x{}".format(curResult.season, curResult.episode)] = cur_ep_cat
                     ep_counts[cur_ep_cat] += 1
 
-                show_results[curShow.indexerid] += [curResult]
+                show_results[curShow.indexer_id] += [curResult]
 
-            show_counts[curShow.indexerid] = ep_counts
-            show_cats[curShow.indexerid] = ep_cats
+            show_counts[curShow.indexer_id] = ep_counts
+            show_cats[curShow.indexer_id] = ep_cats
 
         return self.render(
             "/manage/backlog_overview.mako",

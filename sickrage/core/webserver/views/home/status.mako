@@ -125,8 +125,8 @@
                             % for item in sickrage.app.show_queue.queue_items:
                                 <tr>
                                 % try:
-                                    <% showindexerid = item.show.indexerid %>
-                                    <td>${showindexerid}</td>
+                                    <% showindexer_id = item.show.indexer_id %>
+                                    <td>${showindexer_id}</td>
                                 % except Exception:
                                     <td></td>
                                 % endtry

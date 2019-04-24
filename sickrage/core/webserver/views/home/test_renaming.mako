@@ -17,7 +17,7 @@
                     <h3>${title}</h3>
                 </div>
                 <div class="card-body">
-                    <input type="hidden" id="showID" value="${show.indexerid}"/>
+                    <input type="hidden" id="showID" value="${show.indexer_id}"/>
 
                     <div class="row">
                         <div class="col mx-auto">
@@ -66,7 +66,7 @@
                                 </div>
                                 <div class="card-footer">
                                     <input type="submit" value="${_('Rename Selected')}" class="btn btn-success"/>
-                                    <a href="${srWebRoot}/home/displayShow?show=${show.indexerid}"
+                                    <a href="${srWebRoot}/home/displayShow?show=${show.indexer_id}"
                                        class="btn btn-danger">${_('Cancel Rename')}</a>
                                 </div>
                             </div>
@@ -131,7 +131,7 @@
                                 </div>
                                 <div class="card-footer">
                                     <input type="submit" value="${_('Rename Selected')}" class="btn btn-success"/>
-                                    <a href="${srWebRoot}/home/displayShow?show=${show.indexerid}"
+                                    <a href="${srWebRoot}/home/displayShow?show=${show.indexer_id}"
                                        class="btn btn-danger">${_('Cancel Rename')}</a>
                                 </div>
                             </div>

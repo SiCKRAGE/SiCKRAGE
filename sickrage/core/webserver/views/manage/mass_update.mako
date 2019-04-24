@@ -83,14 +83,14 @@
                                 % for curShow in sorted(get_show_list(), key=cmp_to_key(lambda x, y: x.name < y.name)):
                                     <% curEp = curShow.next_aired %>
 
-                                    <tr class="${curShow.status}" id="${curShow.indexerid}">
+                                    <tr class="${curShow.status}" id="${curShow.indexer_id}">
                                         <td class="table-fit">
                                             <input type="checkbox" class="showCheck"
-                                                   id="${curShow.indexerid}"
-                                                   name="${curShow.indexerid}" ${('disabled', '')[bool(not any([sickrage.app.show_queue.is_being_renamed(curShow), sickrage.app.show_queue.is_in_rename_queue(curShow), sickrage.app.show_queue.is_in_refresh_queue(curShow), sickrage.app.show_queue.is_being_updated(curShow),sickrage.app.show_queue.is_in_update_queue(curShow), sickrage.app.show_queue.is_being_refreshed(curShow), sickrage.app.show_queue.is_in_refresh_queue(curShow), sickrage.app.show_queue.is_being_renamed(curShow), sickrage.app.show_queue.is_in_rename_queue(curShow), sickrage.app.show_queue.is_being_subtitled(curShow), sickrage.app.show_queue.is_in_subtitle_queue(curShow)]))]}/>
+                                                   id="${curShow.indexer_id}"
+                                                   name="${curShow.indexer_id}" ${('disabled', '')[bool(not any([sickrage.app.show_queue.is_being_renamed(curShow), sickrage.app.show_queue.is_in_rename_queue(curShow), sickrage.app.show_queue.is_in_refresh_queue(curShow), sickrage.app.show_queue.is_being_updated(curShow),sickrage.app.show_queue.is_in_update_queue(curShow), sickrage.app.show_queue.is_being_refreshed(curShow), sickrage.app.show_queue.is_in_refresh_queue(curShow), sickrage.app.show_queue.is_being_renamed(curShow), sickrage.app.show_queue.is_in_rename_queue(curShow), sickrage.app.show_queue.is_being_subtitled(curShow), sickrage.app.show_queue.is_in_subtitle_queue(curShow)]))]}/>
                                         </td>
                                         <td class="tvShow">
-                                            <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a>
+                                            <a href="${srWebRoot}/home/displayShow?show=${curShow.indexer_id}">${curShow.name}</a>
                                         </td>
                                         <td>
                                             ${curShow.location}

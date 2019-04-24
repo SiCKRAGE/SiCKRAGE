@@ -74,7 +74,7 @@ class FailedSnatchSearcher(object):
 
         for episode in episodes:
             failed_snatches = True
-            if not show or int(episode.showid) != show.indexerid:
+            if not show or int(episode.showid) != show.indexer_id:
                 show = find_show(int(episode.showid))
 
             # for when there is orphaned series in the database but not loaded into our showlist

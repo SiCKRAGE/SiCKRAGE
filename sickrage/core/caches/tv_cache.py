@@ -220,7 +220,7 @@ class TVCache(object):
                         'name': name,
                         'season': season,
                         'episodes': episodeText,
-                        'indexerid': parse_result.indexerid,
+                        'indexer_id': parse_result.indexer_id,
                         'url': url,
                         'time': int(time.mktime(datetime.datetime.today().timetuple())),
                         'quality': quality,
@@ -255,13 +255,13 @@ class TVCache(object):
         # get data from external database
         if sickrage.app.config.enable_api_providers_cache and not self.provider.private:
             try:
-                dbData += ProviderCacheAPI().get(self.providerID, ep_obj.show.indexerid, season, episode)['data']
+                dbData += ProviderCacheAPI().get(self.providerID, ep_obj.show.indexer_id, season, episode)['data']
             except Exception:
                 pass
 
         # get data from internal database
         dbData += [x.as_dict() for x in
-                   CacheDB.Provider.query.filter_by(provider=self.providerID, indexerid=ep_obj.show.indexerid, season=season) if
+                   CacheDB.Provider.query.filter_by(provider=self.providerID, indexer_id=ep_obj.show.indexer_id, season=season) if
                    "|{}|".format(episode) in x.episodes]
 
         # for each cache entry
@@ -280,7 +280,7 @@ class TVCache(object):
                 continue
 
             # get the show object, or if it's not one of our shows then ignore it
-            result.show = find_show(int(curResult["indexerid"]))
+            result.show = find_show(int(curResult["indexer_id"]))
             if not result.show:
                 continue
 

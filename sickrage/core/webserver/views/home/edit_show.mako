@@ -48,7 +48,7 @@
                                             <label class="component-title">${_('Show Location')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                            <input type="hidden" name="show" value="${show.indexerid}"/>
+                                            <input type="hidden" name="show" value="${show.indexer_id}"/>
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><span
@@ -161,9 +161,9 @@
                                             <label class="component-title">${_('Subtitle metdata')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                            <label for="subtitles_sr_metadata">
-                                                <input type="checkbox" class="toggle color-primary is-material" id="subtitles_sr_metadata"
-                                                       name="subtitles_sr_metadata" ${('', 'checked')[show.subtitles_sr_metadata == 1]} />
+                                            <label for="sub_use_sr_metadata">
+                                                <input type="checkbox" class="toggle color-primary is-material" id="sub_use_sr_metadata"
+                                                       name="sub_use_sr_metadata" ${('', 'checked')[show.sub_use_sr_metadata == 1]} />
                                                 ${_('use SiCKRAGE metadata when searching for subtitle, this will '
                                                 'override the auto-discovered metadata')}
                                             </label>

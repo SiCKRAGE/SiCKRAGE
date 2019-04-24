@@ -146,7 +146,7 @@
                                     <div class="dropdown-divider"></div>
                                 % for recentShow in sickrage.app.config.shows_recent:
                                     <a class="dropdown-item"
-                                       href="${srWebRoot}/home/displayShow/?show=${recentShow['indexerid']}">
+                                       href="${srWebRoot}/home/displayShow/?show=${recentShow['indexer_id']}">
                                         <i class="fas fa-fw fa-tv"></i>&nbsp;${recentShow['name']|trim,h}
                                     </a>
                                 % endfor

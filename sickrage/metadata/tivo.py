@@ -175,7 +175,7 @@ class TIVOMetadata(GenericMetadata):
                 lINDEXER_API_PARMS['dvdorder'] = True
 
             t = IndexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
-            myShow = t[ep_obj.show.indexerid]
+            myShow = t[ep_obj.show.indexer_id]
         except indexer_shownotfound as e:
             raise ShowNotFoundException(str(e))
         except indexer_error as e:
@@ -249,7 +249,7 @@ class TIVOMetadata(GenericMetadata):
                 data += ("originalAirDate : " + str(curEpToWrite.airdate) + "T00:00:00Z\n")
 
             # This shows up at the beginning of the description on the Program screen and on the Details screen.
-            for actor in t.actors(int(ep_obj.show.indexerid)):
+            for actor in t.actors(int(ep_obj.show.indexer_id)):
                 if 'name' in actor and actor['name'].strip():
                     data += ("vActor : " + actor['name'].strip() + "\n")
 

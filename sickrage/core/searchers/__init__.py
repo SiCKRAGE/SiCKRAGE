@@ -37,7 +37,7 @@ def new_episode_finder():
     for episode in MainDB.TVEpisode.query.filter_by(status=UNAIRED).filter(MainDB.TVEpisode.season > 0,
                                                                  MainDB.TVEpisode.airdate > 1):
 
-        if not show or int(episode.showid) != show.indexerid:
+        if not show or int(episode.showid) != show.indexer_id:
             show = sickrage.core.tv.show.helpers.find_show(int(episode.showid))
 
         # for when there is orphaned series in the database but not loaded into our showlist

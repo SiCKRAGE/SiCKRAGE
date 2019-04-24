@@ -66,7 +66,7 @@ class ShowListUI(object):
     def selectSeries(self, allSeries, *args, **kwargs):
         try:
             # try to pick a show that's in my show list
-            showIDList = [int(x.indexerid) for x in get_show_list()]
+            showIDList = [int(x.indexer_id) for x in get_show_list()]
             for curShow in allSeries:
                 if int(curShow['id']) in showIDList:
                     return curShow

@@ -111,7 +111,7 @@ class EMBYNotifier(Notifiers):
                 else:
                     sickrage.app.log.warning('EMBY: Provider unknown')
                     return False
-                query = '?%sid=%s' % (provider, show.indexerid)
+                query = '?%sid=%s' % (provider, show.indexer_id)
             else:
                 query = ''
 

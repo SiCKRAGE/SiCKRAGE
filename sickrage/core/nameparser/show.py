@@ -23,7 +23,7 @@ class Show(object):
     def __init__(self):
         self.name = "Show Name"
         self.genre = "Comedy"
-        self.indexerid = 0o00001
+        self.indexer_id = 0o00001
         self.air_by_date = 0
         self.startyear = 2011
         self.sports = 0

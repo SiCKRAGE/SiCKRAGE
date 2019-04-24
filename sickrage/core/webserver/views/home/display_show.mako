@@ -45,7 +45,7 @@
                                     <optgroup label="${show_list_name}">
                                 % endif
                                 % for cur_show in show_list:
-                                    <option value="${cur_show.indexerid}" ${('', 'selected')[cur_show == show]}>${cur_show.name}</option>
+                                    <option value="${cur_show.indexer_id}" ${('', 'selected')[cur_show == show]}>${cur_show.name}</option>
                                 % endfor
                                 % if len(sortedShowLists) > 1:
                                     </optgroup>
@@ -77,7 +77,7 @@
                                     % if season_special:
                                     ${_('Display Specials:')}
                                         <a class="inner"
-                                           href="${srWebRoot}/toggleDisplayShowSpecials/?show=${show.indexerid}">
+                                           href="${srWebRoot}/toggleDisplayShowSpecials/?show=${show.indexer_id}">
                                             ${('Show', 'Hide')[bool(sickrage.app.config.display_show_specials)]}
                                         </a>
                                     % endif
@@ -118,10 +118,10 @@
                         <div class="col my-auto">
                             <div class="row">
                                 <div class="col-auto">
-                                    % if show.imdb_info and hasattr(show.imdb_info, 'imdbRating'):
-                                    <% rating_tip = str(show.imdb_info.imdbRating) + " / 10" + " Stars and " + str(show.imdb_info.imdbVotes) + " Votes" %>
+                                    % if show.imdb_info and hasattr(show.imdb_info, 'rating'):
+                                    <% rating_tip = str(show.imdb_info.rating) + " / 10" + " Stars and " + str(show.imdb_info.votes) + " Votes" %>
                                         <span id="imdbstars"
-                                              data-imdb-rating="${show.imdb_info.imdbRating}"
+                                              data-imdb-rating="${show.imdb_info.rating}"
                                               title="${rating_tip}"></span>
                                     % endif
                                 </div>
@@ -137,11 +137,11 @@
                                         % endif
                                     </span>
 
-                                    % if show.imdbid:
-                                        <a href="${anon_url('http://www.imdb.com/title/', show.imdbid)}"
+                                    % if show.imdb_id:
+                                        <a href="${anon_url('http://www.imdb.com/title/', show.imdb_id)}"
                                            rel="noreferrer"
                                            onclick="window.open(this.href, '_blank'); return false;"
-                                           title="http://www.imdb.com/title/${show.imdbid}">
+                                           title="http://www.imdb.com/title/${show.imdb_id}">
                                             <i class="sickrage-core sickrage-core-imdb"
                                                style="margin-top: -1px; vertical-align:middle;"></i>
                                         </a>
@@ -157,9 +157,9 @@
                                         </a>
                                     % endif
 
-                                    <a href="${anon_url(IndexerApi(show.indexer).config['show_url'], show.indexerid)}"
+                                    <a href="${anon_url(IndexerApi(show.indexer).config['show_url'], show.indexer_id)}"
                                        onclick="window.open(this.href, '_blank'); return false;"
-                                       title="<% IndexerApi(show.indexer).config["show_url"] + str(show.indexerid) %>">
+                                       title="<% IndexerApi(show.indexer).config["show_url"] + str(show.indexer_id) %>">
                                         <i class="sickrage-core sickrage-core-${IndexerApi(show.indexer).name.lower()}"
                                            style="margin-top: -1px; vertical-align:middle;"></i>
                                     </a>
@@ -168,7 +168,7 @@
                             <div class="row">
                                 <div class="col">
                                     <ul class="list-group d-inline">
-                                        % if not show.imdbid and show.genre:
+                                        % if not show.imdb_id and show.genre:
                                             % for genre in show.genre.split(','):
                                                 <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', genre.lower())}"
                                                    target="_blank"
@@ -177,8 +177,8 @@
                                                 </a>
                                             % endfor
                                         % endif
-                                        % if show.imdb_info and hasattr(show.imdb_info, 'Genre'):
-                                            % for imdbgenre in show.imdb_info.Genre.replace('Sci-Fi','Science-Fiction').split(','):
+                                        % if show.imdb_info and hasattr(show.imdb_info, 'genre'):
+                                            % for imdbgenre in show.imdb_info.genre.replace('Sci-Fi','Science-Fiction').split(','):
                                                 <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', imdbgenre.lower())}"
                                                    target="_blank"
                                                    title="View other popular ${imdbgenre} shows on trakt.tv.">
@@ -192,7 +192,7 @@
                         </div>
                         <div class="col-auto my-auto d-lg-none d-xl-flex">
                             <img class="rounded shadow-lg img-banner"
-                                 src="${srWebRoot}${showImage(show.indexerid, 'banner').url}"/>
+                                 src="${srWebRoot}${showImage(show.indexer_id, 'banner').url}"/>
                         </div>
                     </div>
                 </div>
@@ -203,7 +203,7 @@
                     <div class="row">
                         <div class="col-auto d-none d-lg-block">
                             <img class="shadow-lg rounded"
-                                 src="${srWebRoot}${showImage(show.indexerid, 'poster_thumb').url}"/>
+                                 src="${srWebRoot}${showImage(show.indexer_id, 'poster_thumb').url}"/>
                         </div>
 
                         <div class="col">
@@ -336,7 +336,7 @@
                                 <tr>
                                     <td class="show-legend">${_('Subtitles Metadata:')}</td>
                                     <td>
-                                        <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(show.subtitles_sr_metadata)]}"></i>
+                                        <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(show.sub_use_sr_metadata)]}"></i>
                                     </td>
                                 </tr>
                                 <tr>
@@ -460,7 +460,7 @@
                                     <button id="changeStatus" class="btn fas fa-play"></button>
                                 </div>
                             </div>
-                            <input type="hidden" id="showID" value="${show.indexerid}"/>
+                            <input type="hidden" id="showID" value="${show.indexer_id}"/>
                             <input type="hidden" id="indexer" value="${show.indexer}"/>
                         </div>
                     </div>
@@ -620,7 +620,7 @@
                            class="sceneSeasonXEpisode form-control input-scene"
                            data-for-season="${epResult.season}"
                            data-for-episode="${epResult.episode}"
-                           id="sceneSeasonXEpisode_${show.indexerid}_${str(epResult.season)}_${str(epResult.episode)}"
+                           id="sceneSeasonXEpisode_${show.indexer_id}_${str(epResult.season)}_${str(epResult.episode)}"
                            title="Change the value here if scene numbering differs from the indexer episode numbering"
                         % if dfltEpNumbering:
                            value=""
@@ -634,7 +634,7 @@
                     <input placeholder="${str(dfltAbsolute)}" size="6" maxlength="8"
                            class="sceneAbsolute form-control d-inline input-scene"
                            data-for-absolute="${epResult.absolute_number}"
-                           id="sceneAbsolute_${show.indexerid}_${str(epResult.absolute_number)}"
+                           id="sceneAbsolute_${show.indexer_id}_${str(epResult.absolute_number)}"
                            title="Change the value here if scene absolute numbering differs from the indexer absolute numbering"
                         % if dfltAbsNumbering:
                            value=""
@@ -645,7 +645,7 @@
                 </td>
 
                 <td class="col-name">
-                    <i id="plot_info_${str(show.indexerid)}_${str(epResult.season)}_${str(epResult.episode)}"
+                    <i id="plot_info_${str(show.indexer_id)}_${str(epResult.season)}_${str(epResult.episode)}"
                        class="fas fa-info-circle" title="${epResult.description}"></i>
                     ${epResult.name}
                 </td>
@@ -712,23 +712,23 @@
                         % if int(epResult.season) != 0:
                             % if ( int(epResult.status) in Quality.SNATCHED + Quality.DOWNLOADED ):
                                 <a class="epRetry"
-                                   id="${str(show.indexerid)}x${str(epResult.season)}x${str(epResult.episode)}"
-                                   name="${str(show.indexerid)}x${str(epResult.season)}x${str(epResult.episode)}"
-                                   href="retryEpisode?show=${show.indexerid}&amp;season=${epResult.season}&amp;episode=${epResult.episode}">
+                                   id="${str(show.indexer_id)}x${str(epResult.season)}x${str(epResult.episode)}"
+                                   name="${str(show.indexer_id)}x${str(epResult.season)}x${str(epResult.episode)}"
+                                   href="retryEpisode?show=${show.indexer_id}&amp;season=${epResult.season}&amp;episode=${epResult.episode}">
                                     <i class="fas fa-sync" title="${_('Retry Download')}"></i>
                                 </a>
                             % else:
                                 <a class="epSearch"
-                                   id="${str(show.indexerid)}x${str(epResult.season)}x${str(epResult.episode)}"
-                                   name="${str(show.indexerid)}x${str(epResult.season)}x${str(epResult.episode)}"
-                                   href="searchEpisode?show=${show.indexerid}&amp;season=${epResult.season}&amp;episode=${epResult.episode}">
+                                   id="${str(show.indexer_id)}x${str(epResult.season)}x${str(epResult.episode)}"
+                                   name="${str(show.indexer_id)}x${str(epResult.season)}x${str(epResult.episode)}"
+                                   href="searchEpisode?show=${show.indexer_id}&amp;season=${epResult.season}&amp;episode=${epResult.episode}">
                                     <i class="fas fa-search" title="${_('Manual Search')}"></i>
                                 </a>
                             % endif
                         % endif
                         % if sickrage.app.config.use_subtitles and show.subtitles and epResult.location and frozenset(sickrage.subtitles.wanted_languages()).difference(epResult.subtitles.split(',')):
                             <a class="epSubtitlesSearch"
-                               href="searchEpisodeSubtitles?show=${show.indexerid}&amp;season=${epResult.season}&amp;episode=${epResult.episode}">
+                               href="searchEpisodeSubtitles?show=${show.indexer_id}&amp;season=${epResult.season}&amp;episode=${epResult.episode}">
                                 <i class="fas fa-comment" title="${_('Subtitles Search')}"></i>
                             </a>
                         % endif

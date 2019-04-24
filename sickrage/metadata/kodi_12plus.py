@@ -98,7 +98,7 @@ class KODI_12PlusMetadata(GenericMetadata):
         show_obj: a TVShow instance to create the NFO for
         """
 
-        show_ID = show_obj.indexerid
+        show_ID = show_obj.indexer_id
 
         indexer_lang = show_obj.lang or sickrage.app.config.indexer_default_language
         lINDEXER_API_PARMS = IndexerApi(show_obj.indexer).api_params.copy()
@@ -161,8 +161,8 @@ class KODI_12PlusMetadata(GenericMetadata):
             mpaa.text = myShow["contentrating"]
 
         if getattr(myShow, 'id', None):
-            indexerid = SubElement(tv_node, "id")
-            indexerid.text = str(myShow["id"])
+            indexer_id = SubElement(tv_node, "id")
+            indexer_id.text = str(myShow["id"])
 
         if getattr(myShow, 'genre', None) and isinstance(myShow["genre"], str):
             genre = SubElement(tv_node, "genre")
@@ -220,7 +220,7 @@ class KODI_12PlusMetadata(GenericMetadata):
 
         try:
             t = IndexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
-            myShow = t[ep_obj.show.indexerid]
+            myShow = t[ep_obj.show.indexer_id]
         except indexer_shownotfound as e:
             raise ShowNotFoundException(str(e))
         except indexer_error as e:
@@ -275,7 +275,7 @@ class KODI_12PlusMetadata(GenericMetadata):
             episodenum.text = str(curEpToWrite.episode)
 
             uniqueid = SubElement(episode, "uniqueid")
-            uniqueid.text = str(curEpToWrite.indexerid)
+            uniqueid.text = str(curEpToWrite.indexer_id)
 
             if curEpToWrite.airdate != datetime.date.fromordinal(1):
                 aired = SubElement(episode, "aired")
@@ -322,7 +322,7 @@ class KODI_12PlusMetadata(GenericMetadata):
                     cur_actor_name = SubElement(cur_actor, "name")
                     cur_actor_name.text = actor
 
-            for actor in t.actors(int(ep_obj.show.indexerid)):
+            for actor in t.actors(int(ep_obj.show.indexer_id)):
                 cur_actor = SubElement(episode, "actor")
 
                 if 'name' in actor and actor['name'].strip():

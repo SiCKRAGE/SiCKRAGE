@@ -16,8 +16,8 @@
             <% continue %>
         % endif
 
-        <% totalWanted = totalWanted + showCounts[curShow.indexerid][Overview.WANTED] %>
-        <% totalQual = totalQual + showCounts[curShow.indexerid][Overview.QUAL] %>
+        <% totalWanted = totalWanted + showCounts[curShow.indexer_id][Overview.WANTED] %>
+        <% totalQual = totalQual + showCounts[curShow.indexer_id][Overview.QUAL] %>
     % endfor
 
     <div class="row">
@@ -46,8 +46,8 @@
                                             <% continue %>
                                         % endif
 
-                                        % if showCounts[curShow.indexerid][Overview.QUAL] + showCounts[curShow.indexerid][Overview.WANTED] != 0:
-                                            <option value="${curShow.indexerid}">${curShow.name}</option>
+                                        % if showCounts[curShow.indexer_id][Overview.QUAL] + showCounts[curShow.indexer_id][Overview.WANTED] != 0:
+                                            <option value="${curShow.indexer_id}">${curShow.name}</option>
                                         % endif
                                     % endfor
                                 </select>
@@ -65,22 +65,22 @@
                                         <% continue %>
                                     % endif
 
-                                    % if not showCounts[curShow.indexerid][Overview.QUAL] + showCounts[curShow.indexerid][Overview.WANTED] == 0:
+                                    % if not showCounts[curShow.indexer_id][Overview.QUAL] + showCounts[curShow.indexer_id][Overview.WANTED] == 0:
                                     <table class="table mb-3">
-                                        <tr class="seasonheader" id="show-${curShow.indexerid}">
+                                        <tr class="seasonheader" id="show-${curShow.indexer_id}">
                                             <td colspan="3" class="align-left">
                                                 <div class="float-md-left">
                                                     <h2>
-                                                        <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a>
+                                                        <a href="${srWebRoot}/home/displayShow?show=${curShow.indexer_id}">${curShow.name}</a>
                                                     </h2>
                                                 </div>
                                                 <div class="text-center float-md-right">
                                                         <span class="badge wanted">${_('Wanted:')}
-                                                            <b>${showCounts[curShow.indexerid][Overview.WANTED]}</b></span>
+                                                            <b>${showCounts[curShow.indexer_id][Overview.WANTED]}</b></span>
                                                     <span class="badge qual">${_('Low Quality:')}
-                                                        <b>${showCounts[curShow.indexerid][Overview.QUAL]}</b></span>
+                                                        <b>${showCounts[curShow.indexer_id][Overview.QUAL]}</b></span>
                                                     <a class="btn forceBacklog"
-                                                       href="${srWebRoot}/manage/backlogShow?indexer_id=${curShow.indexerid}"><i
+                                                       href="${srWebRoot}/manage/backlogShow?indexer_id=${curShow.indexer_id}"><i
                                                             class="icon-play-circle icon-white"></i> ${_('Force Backlog')}
                                                     </a>
                                                 </div>
@@ -93,11 +93,11 @@
                                             <th class="text-nowrap">${_('Airdate')}</th>
                                         </tr>
 
-                                    % for curResult in showResults[curShow.indexerid]:
+                                    % for curResult in showResults[curShow.indexer_id]:
                                         <% whichStr = '{}x{}'.format(curResult.season, curResult.episode) %>
-                                        <% overview = showCats[curShow.indexerid][whichStr] %>
+                                        <% overview = showCats[curShow.indexer_id][whichStr] %>
                                         % if overview in (Overview.QUAL, Overview.WANTED):
-                                            <tr class="seasonstyle ${Overview.overviewStrings[showCats[curShow.indexerid][whichStr]]}">
+                                            <tr class="seasonstyle ${Overview.overviewStrings[showCats[curShow.indexer_id][whichStr]]}">
                                                 <td class="tableleft" align="center">${whichStr}</td>
                                                 <td class="tableright" align="center" class="text-nowrap">
                                                     ${curResult.name}

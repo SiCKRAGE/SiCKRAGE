@@ -198,7 +198,7 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
     else:
         numseasons = len(
             {x.season for x in
-             MainDB.TVEpisode.query.filter_by(showid=show.indexerid).filter(MainDB.TVEpisode.season != 0)})
+             MainDB.TVEpisode.query.filter_by(showid=show.indexer_id).filter(MainDB.TVEpisode.season != 0)})
 
         seasonStrings = ["S%02d" % int(ep_obj.scene_season)]
 
@@ -232,7 +232,7 @@ def makeSceneSearchString(show, ep_obj):
 
     numseasons = len(
         {x.season for x in
-         MainDB.TVEpisode.query.filter_by(showid=show.indexerid).filter(MainDB.TVEpisode.season != 0)})
+         MainDB.TVEpisode.query.filter_by(showid=show.indexer_id).filter(MainDB.TVEpisode.season != 0)})
 
     # see if we should use dates instead of episodes
     if (show.air_by_date or show.sports) and ep_obj.airdate != date.fromordinal(1):
@@ -278,10 +278,10 @@ def allPossibleShowNames(show, season=-1):
     :rtype: list[unicode]
     """
 
-    show_names = get_scene_exceptions(show.indexerid, season=season)[:]
+    show_names = get_scene_exceptions(show.indexer_id, season=season)[:]
     if not show_names:  # if we dont have any season specific exceptions fallback to generic exceptions
         season = -1
-        show_names = get_scene_exceptions(show.indexerid, season=season)[:]
+        show_names = get_scene_exceptions(show.indexer_id, season=season)[:]
 
     if season in [-1, 1]:
         show_names.append(show.name)

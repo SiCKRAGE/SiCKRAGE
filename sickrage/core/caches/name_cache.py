@@ -75,16 +75,16 @@ class NameCache(object):
         if name in self.cache:
             return int(self.cache[name])
 
-    def clear(self, indexerid=None, name=None):
+    def clear(self, indexer_id=None, name=None):
         """
-        Deletes all entries from the cache matching the indexerid or name.
+        Deletes all entries from the cache matching the indexer_id or name.
         """
-        if any([indexerid, name]):
+        if any([indexer_id, name]):
             sickrage.app.cache_db.delete(CacheDB.SceneName,
-                             or_(CacheDB.SceneName.indexer_id == indexerid, CacheDB.SceneName.name == name))
+                             or_(CacheDB.SceneName.indexer_id == indexer_id, CacheDB.SceneName.name == name))
 
             for key, value in self.cache.copy().items():
-                if value == indexerid or key == name:
+                if value == indexer_id or key == name:
                     del self.cache[key]
 
     def load(self):
@@ -112,18 +112,18 @@ class NameCache(object):
         if self.should_update(show):
             self.last_update[show.name] = datetime.fromtimestamp(int(time.mktime(datetime.today().timetuple())))
 
-            self.clear(show.indexerid)
+            self.clear(show.indexer_id)
 
             show_names = []
-            for curSeason in [-1] + get_scene_seasons(show.indexerid):
-                for name in list(set(get_scene_exceptions(show.indexerid, season=curSeason) + [show.name])):
+            for curSeason in [-1] + get_scene_seasons(show.indexer_id):
+                for name in list(set(get_scene_exceptions(show.indexer_id, season=curSeason) + [show.name])):
                     show_names.append(name)
                     show_names.append(strip_accents(name))
                     show_names.append(strip_accents(name).replace("'", " "))
 
             for show_name in set(show_names):
                 self.clear(show_name)
-                self.put(show_name, show.indexerid)
+                self.put(show_name, show.indexer_id)
 
     def build_all(self):
         for show in get_show_list():

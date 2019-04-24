@@ -551,7 +551,7 @@ def get_absolute_number_from_season_and_episode(show, season, episode):
 
     if season and episode:
         try:
-            dbData = MainDB.TVEpisode.query.filter_by(showid=show.indexerid, season=season, episode=episode).one()
+            dbData = MainDB.TVEpisode.query.filter_by(showid=show.indexer_id, season=season, episode=episode).one()
             absolute_number = try_int(dbData.absolute_number)
             sickrage.app.log.debug(
                 "Found absolute number %s for show %s S%02dE%02d" % (absolute_number, show.name, season, episode))

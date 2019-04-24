@@ -60,7 +60,7 @@ class TraktNotifier(Notifiers):
                         {
                             'title': ep_obj.show.name,
                             'year': ep_obj.show.startyear,
-                            'ids': {IndexerApi(ep_obj.show.indexer).trakt_id: ep_obj.show.indexerid},
+                            'ids': {IndexerApi(ep_obj.show.indexer).trakt_id: ep_obj.show.indexer_id},
                         }
                     ]
                 }
@@ -108,7 +108,7 @@ class TraktNotifier(Notifiers):
                             {
                                 'title': show_obj.name,
                                 'year': show_obj.startyear,
-                                'ids': {IndexerApi(show_obj.indexer).trakt_id: show_obj.indexerid},
+                                'ids': {IndexerApi(show_obj.indexer).trakt_id: show_obj.indexer_id},
                             }
                         ]
                     }
@@ -162,10 +162,10 @@ class TraktNotifier(Notifiers):
     def trakt_show_data_generate(self, data):
 
         showList = []
-        for indexer, indexerid, title, year in data:
+        for indexer, indexer_id, title, year in data:
             show = {'title': title,
                     'year': year,
-                    'ids': {IndexerApi(indexer).trakt_id: indexerid}}
+                    'ids': {IndexerApi(indexer).trakt_id: indexer_id}}
 
             showList.append(show)
 

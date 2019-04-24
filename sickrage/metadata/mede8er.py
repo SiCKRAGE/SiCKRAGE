@@ -113,10 +113,10 @@ class Mede8erMetadata(MediaBrowserMetadata):
         tv_node.attrib["isTV"] = "true"
 
         try:
-            myShow = t[int(show_obj.indexerid)]
+            myShow = t[int(show_obj.indexer_id)]
         except indexer_shownotfound:
             sickrage.app.log.error(
-                "Unable to find show with id " + str(show_obj.indexerid) + " on tvdb, skipping it")
+                "Unable to find show with id " + str(show_obj.indexer_id) + " on tvdb, skipping it")
             raise
 
         except indexer_error:
@@ -126,7 +126,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
         # check for title and id
         if not (getattr(myShow, 'seriesname', None) and getattr(myShow, 'id', None)):
             sickrage.app.log.info(
-                "Incomplete info for show with id " + str(show_obj.indexerid) + " on " + IndexerApi(
+                "Incomplete info for show with id " + str(show_obj.indexer_id) + " on " + IndexerApi(
                     show_obj.indexer).name + ", skipping it")
             return False
 
@@ -181,15 +181,15 @@ class Mede8erMetadata(MediaBrowserMetadata):
             imdb_id.text = myShow['imdb_id']
 
         if getattr(myShow, 'id', None):
-            indexerid = SubElement(tv_node, "indexerid")
-            indexerid.text = myShow['id']
+            indexer_id = SubElement(tv_node, "indexer_id")
+            indexer_id.text = myShow['id']
 
         if getattr(myShow, 'runtime', None):
             Runtime = SubElement(tv_node, "runtime")
             Runtime.text = myShow['runtime']
 
         cast = SubElement(tv_node, "cast")
-        for actor in t.actors(int(show_obj.indexerid)):
+        for actor in t.actors(int(show_obj.indexer_id)):
             if 'name' in actor and actor['name'].strip():
                 cur_actor = SubElement(cast, "actor")
                 cur_actor.text = actor['name'].strip()
@@ -223,7 +223,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
                 lINDEXER_API_PARMS['dvdorder'] = True
 
             t = IndexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
-            myShow = t[ep_obj.show.indexerid]
+            myShow = t[ep_obj.show.indexer_id]
         except indexer_shownotfound as e:
             raise ShowNotFoundException(str(e))
         except indexer_error as e:
@@ -316,7 +316,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
                         cur_actor = SubElement(cast, "actor")
                         cur_actor.text = actor
 
-                for actor in t.actors(int(ep_obj.show.indexerid)):
+                for actor in t.actors(int(ep_obj.show.indexer_id)):
                     if 'name' in actor and actor['name'].strip():
                         cur_actor = SubElement(cast, "actor")
                         cur_actor.text = actor['name'].strip()

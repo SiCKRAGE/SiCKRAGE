@@ -19,14 +19,14 @@
 from sqlalchemy import orm
 
 
-def find_show(indexerid):
+def find_show(indexer_id):
     from sickrage.core.tv.show import TVShow
 
-    if not indexerid:
+    if not indexer_id:
         return None
 
     try:
-        return TVShow.query.filter_by(indexerid=indexerid).one()
+        return TVShow.query.filter_by(indexer_id=indexer_id).one()
     except orm.exc.NoResultFound:
         return None
 

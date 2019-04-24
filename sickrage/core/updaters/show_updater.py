@@ -81,7 +81,7 @@ class ShowUpdater(object):
                     continue
 
             try:
-                if show.indexerid in updated_shows:
+                if show.indexer_id in updated_shows:
                     pi_list.append(sickrage.app.show_queue.updateShow(show, indexer_update_only=True, force=False))
                 elif (datetime.datetime.now() - datetime.datetime.fromordinal(show.last_update)).days >= 7:
                     pi_list.append(sickrage.app.show_queue.updateShow(show, force=False))

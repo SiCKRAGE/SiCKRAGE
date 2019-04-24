@@ -61,16 +61,16 @@ class History:
         for show in get_show_list():
             if limit == 0:
                 if len(actions) > 0:
-                    dbData = MainDB.History.query.filter_by(showid=show.indexerid).filter(
+                    dbData = MainDB.History.query.filter_by(showid=show.indexer_id).filter(
                         MainDB.History.action.in_(actions)).order_by(MainDB.History.date.desc())
                 else:
-                    dbData = MainDB.History.query.filter_by(showid=show.indexerid).order_by(MainDB.History.date.desc())
+                    dbData = MainDB.History.query.filter_by(showid=show.indexer_id).order_by(MainDB.History.date.desc())
             else:
                 if len(actions) > 0:
-                    dbData = MainDB.History.query.filter_by(showid=show.indexerid).filter(
+                    dbData = MainDB.History.query.filter_by(showid=show.indexer_id).filter(
                         MainDB.History.action.in_(actions)).order_by(MainDB.History.date.desc()).limit(limit)
                 else:
-                    dbData = MainDB.History.query.filter_by(showid=show.indexerid).order_by(
+                    dbData = MainDB.History.query.filter_by(showid=show.indexer_id).order_by(
                         MainDB.History.date.desc()).limit(
                         limit)
 
@@ -135,7 +135,7 @@ class History:
         """
         for curEpObj in searchResult.episodes:
 
-            showid = int(curEpObj.show.indexerid)
+            showid = int(curEpObj.show.indexer_id)
             season = int(curEpObj.season)
             episode = int(curEpObj.episode)
             quality = searchResult.quality
@@ -164,7 +164,7 @@ class History:
         :param release_group: Release group
         :param version: Version of file (defaults to -1)
         """
-        showid = int(episode.show.indexerid)
+        showid = int(episode.show.indexer_id)
         season = int(episode.season)
         epNum = int(episode.episode)
 
@@ -208,7 +208,7 @@ class History:
         :param release: Release group
         :param provider: Provider used for snatch
         """
-        showid = int(epObj.show.indexerid)
+        showid = int(epObj.show.indexer_id)
         season = int(epObj.season)
         epNum = int(epObj.episode)
         status, quality = Quality.split_composite_status(epObj.status)
@@ -300,7 +300,7 @@ class FailedHistory(object):
         """Restore the episodes of a failed download to their original state"""
         history_eps = dict(
             [(res.episode, res) for res in
-             MainDB.FailedSnatchHistory.query.filter_by(showid=epObj.show.indexerid, season=epObj.season)]
+             MainDB.FailedSnatchHistory.query.filter_by(showid=epObj.show.indexer_id, season=epObj.season)]
         )
 
         try:
@@ -362,7 +362,7 @@ class FailedHistory(object):
                 'size': searchResult.size,
                 'release': release,
                 'provider': provider,
-                'showid': show_obj.indexerid,
+                'showid': show_obj.indexer_id,
                 'season': episode.season,
                 'episode': episode.episode,
                 'old_status': episode.status
@@ -398,10 +398,10 @@ class FailedHistory(object):
 
         # Clear old snatches for this release if any exist
         sickrage.app.main_db.delete(MainDB.FailedSnatchHistory, MainDB.FailedSnatchHistory.date < MainDB.FailedSnatchHistory.date,
-                        showid=epObj.show.indexerid, season=epObj.season, episode=epObj.episode)
+                        showid=epObj.show.indexer_id, season=epObj.season, episode=epObj.episode)
 
         # Search for release in snatch history
-        for dbData in MainDB.FailedSnatchHistory.query.filter_by(showid=epObj.show.indexerid, season=epObj.season,
+        for dbData in MainDB.FailedSnatchHistory.query.filter_by(showid=epObj.show.indexer_id, season=epObj.season,
                                                        episode=epObj.episode):
             release = str(dbData.release)
             provider = str(dbData.provider)
@@ -418,6 +418,6 @@ class FailedHistory(object):
 
         # Release was not found
         sickrage.app.log.debug(
-            "No releases found for season (%s) of (%s)" % (epObj.season, epObj.show.indexerid))
+            "No releases found for season (%s) of (%s)" % (epObj.season, epObj.show.indexer_id))
 
         return release, provider

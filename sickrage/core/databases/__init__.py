@@ -80,6 +80,12 @@ class srDatabase(object):
             sickrage.app.log.info('Upgraded {} database to version {}'.format(self.name, self.version))
 
     def migrate(self):
+        migration_table_column_mapper = {
+            'tv_shows': {
+                'show_name': 'name'
+            }
+        }
+
         backup_file = os.path.join(sickrage.app.data_dir, '{}_{}.codernitydb.bak'.format(self.name,
                                                                                          datetime.datetime.now().strftime(
                                                                                              '%Y%m%d_%H%M%S')))
@@ -101,7 +107,12 @@ class srDatabase(object):
                     migrate_tables[table] = []
 
                 for column in row.copy():
-                    if column not in self.tables[table].__table__.columns.keys():
+                    if column not in self.tables[table].__table__.columns:
+                        if table in migration_table_column_mapper:
+                            if column in migration_table_column_mapper[table]:
+                                new_column = migration_table_column_mapper[table][column]
+                                row[new_column] = row[column]
+
                         del row[column]
 
                 migrate_tables[table] += [row]

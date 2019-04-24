@@ -89,7 +89,7 @@ class CacheDB(srDatabase):
         name = Column(Text)
         season = Column(Integer)
         episodes = Column(Text)
-        indexerid = Column(Integer)
+        indexer_id = Column(Integer)
         url = Column(Text, index=True, unique=True)
         time = Column(Integer)
         quality = Column(Integer)

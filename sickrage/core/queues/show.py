@@ -48,7 +48,7 @@ class ShowQueue(srQueue):
         return self._get_loading_show_list()
 
     def _is_in_queue(self, show, actions):
-        return show.indexerid in [x.show.indexerid if x.show else 0 for x in self.queue_items if
+        return show.indexer_id in [x.show.indexer_id if x.show else 0 for x in self.queue_items if
                                   x.action_id in actions] if show else False
 
     def _is_being(self, show, actions):
@@ -131,7 +131,7 @@ class ShowQueue(srQueue):
         sickrage.app.io_loop.add_callback(self.put, QueueItemSubtitle(show))
 
     def addShow(self, indexer, indexer_id, showDir, default_status=None, quality=None, flatten_folders=None,
-                lang=None, subtitles=None, subtitles_sr_metadata=None, anime=None, scene=None, paused=None,
+                lang=None, subtitles=None, sub_use_sr_metadata=None, anime=None, scene=None, paused=None,
                 blacklist=None, whitelist=None, default_status_after=None, skip_downloaded=None):
 
         if lang is None:
@@ -145,7 +145,7 @@ class ShowQueue(srQueue):
                                                                  flatten_folders=flatten_folders,
                                                                  lang=lang,
                                                                  subtitles=subtitles,
-                                                                 subtitles_sr_metadata=subtitles_sr_metadata,
+                                                                 sub_use_sr_metadata=sub_use_sr_metadata,
                                                                  anime=anime,
                                                                  scene=scene,
                                                                  paused=paused,
@@ -157,14 +157,14 @@ class ShowQueue(srQueue):
     def removeShow(self, show, full=False):
         if not show:
             raise CantRemoveShowException('Failed removing show: Show does not exist')
-        elif not hasattr(show, 'indexerid'):
+        elif not hasattr(show, 'indexer_id'):
             raise CantRemoveShowException('Failed removing show: Show does not have an indexer id')
         elif self._is_in_queue(show, (ShowQueueActions.REMOVE,)):
             raise CantRemoveShowException("{} is already queued to be removed".format(show))
 
         # remove other queued actions for this show.
         for x in self.queue_items:
-            if show.indexerid == x.show.indexerid:
+            if show.indexer_id == x.show.indexer_id:
                 self.queue.remove(x)
 
         sickrage.app.io_loop.add_callback(self.put, QueueItemRemove(show=show, full=full))
@@ -214,7 +214,7 @@ class ShowQueueItem(srQueueItem):
 
     @property
     def show_name(self):
-        return str(self.show.indexerid)
+        return str(self.show.indexer_id)
 
     @property
     def is_loading(self):
@@ -223,7 +223,7 @@ class ShowQueueItem(srQueueItem):
 
 class QueueItemAdd(ShowQueueItem):
     def __init__(self, indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang, subtitles,
-                 subtitles_sr_metadata, anime, scene, paused, blacklist, whitelist, default_status_after,
+                 sub_use_sr_metadata, anime, scene, paused, blacklist, whitelist, default_status_after,
                  skip_downloaded):
         super(QueueItemAdd, self).__init__(None, ShowQueueActions.ADD)
 
@@ -235,7 +235,7 @@ class QueueItemAdd(ShowQueueItem):
         self.flatten_folders = flatten_folders
         self.lang = lang
         self.subtitles = subtitles
-        self.subtitles_sr_metadata = subtitles_sr_metadata
+        self.sub_use_sr_metadata = sub_use_sr_metadata
         self.anime = anime
         self.scene = scene
         self.paused = paused
@@ -336,14 +336,14 @@ class QueueItemAdd(ShowQueueItem):
             return self._finish_early()
 
         try:
-            self.show = TVShow(**{'indexer': self.indexer, 'indexerid': self.indexer_id, 'lang': self.lang})
+            self.show = TVShow(**{'indexer': self.indexer, 'indexer_id': self.indexer_id, 'lang': self.lang})
 
             self.show.load_from_indexer()
 
             # set up initial values
             self.show.location = self.showDir
             self.show.subtitles = self.subtitles or sickrage.app.config.subtitles_default
-            self.show.subtitles_sr_metadata = self.subtitles_sr_metadata
+            self.show.sub_use_sr_metadata = self.sub_use_sr_metadata
             self.show.quality = self.quality or sickrage.app.config.quality_default
             self.show.flatten_folders = self.flatten_folders or sickrage.app.config.flatten_folders_default
             self.show.anime = self.anime or sickrage.app.config.anime_default
@@ -443,11 +443,11 @@ class QueueItemAdd(ShowQueueItem):
                 sickrage.app.notifier_providers['trakt'].update_watchlist(show_obj=self.show)
 
         # Load XEM data to DB for show
-        xem_refresh(self.show.indexerid, self.show.indexer, force=True)
+        xem_refresh(self.show.indexer_id, self.show.indexer, force=True)
 
         # check if show has XEM mapping so we can determin if searches should go by scene numbering or indexer
         # numbering.
-        if not self.scene and get_xem_numbering_for_show(self.show.indexerid, self.show.indexer):
+        if not self.scene and get_xem_numbering_for_show(self.show.indexer_id, self.show.indexer):
             self.show.scene = 1
 
         self.show.default_ep_status = self.default_status_after
@@ -456,7 +456,7 @@ class QueueItemAdd(ShowQueueItem):
 
         sickrage.app.name_cache.build(self.show)
 
-        sickrage.app.quicksearch_cache.add_show(self.show.indexerid)
+        sickrage.app.quicksearch_cache.add_show(self.show.indexer_id)
 
         sickrage.app.log.info(
             "Finished adding show {} in {}s from show dir: {}".format(self.show_name,
@@ -485,7 +485,7 @@ class QueueItemRefresh(ShowQueueItem):
         self.show.populate_cache(force=self.force)
 
         # Load XEM data to DB for show
-        # xem_refresh(self.show.indexerid, self.show.indexer)
+        # xem_refresh(self.show.indexer_id, self.show.indexer)
 
         self.show.last_refresh = datetime.date.today().toordinal()
 
@@ -613,7 +613,7 @@ class QueueItemUpdate(ShowQueueItem):
         scrub(DBEpList)
         scrub(IndexerEpList)
 
-        sickrage.app.quicksearch_cache.update_show(self.show.indexerid)
+        sickrage.app.quicksearch_cache.update_show(self.show.indexer_id)
 
         sickrage.app.log.info(
             "Finished updates in {}s for show: {}".format(round(time.time() - start_time, 2), self.show.name))
@@ -648,7 +648,7 @@ class QueueItemRemove(ShowQueueItem):
     def run(self):
         sickrage.app.log.info("Removing show: {}".format(self.show.name))
 
-        sickrage.app.quicksearch_cache.del_show(self.show.indexerid)
+        sickrage.app.quicksearch_cache.del_show(self.show.indexer_id)
 
         self.show.delete_show(full=self.full)
 

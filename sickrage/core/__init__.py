@@ -527,6 +527,6 @@ class Core(object):
         for show in get_show_list():
             try:
                 self.log.debug("Loading data for show: [{}]".format(show.name))
-                self.quicksearch_cache.add_show(show.indexerid)
+                self.quicksearch_cache.add_show(show.indexer_id)
             except Exception as e:
                 self.log.debug("Show error in [%s]: %s" % (show.location, str(e)))

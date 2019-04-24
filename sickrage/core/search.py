@@ -125,7 +125,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
 
     if sickrage.app.config.use_trakt and sickrage.app.config.trakt_sync_watchlist:
         sickrage.app.log.debug(
-            "Add episodes, showid: indexerid " + str(result.show.indexerid) + ", Title " + str(
+            "Add episodes, showid: indexer_id " + str(result.show.indexer_id) + ", Title " + str(
                 result.show.name) + " to Traktv Watchlist")
         if data:
             sickrage.app.notifier_providers['trakt'].update_watchlist(result.show, data_episode=data, update="add")
@@ -433,7 +433,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                     Quality.qualityStrings[
                         seasonQual])
 
-                allEps = [int(x.episode) for x in MainDB.TVEpisode.query.filter_by(showid=show.indexerid).filter(
+                allEps = [int(x.episode) for x in MainDB.TVEpisode.query.filter_by(showid=show.indexer_id).filter(
                     MainDB.TVEpisode.season.in_(searchedSeasons))]
 
                 sickrage.app.log.debug("Episode list: " + str(allEps))

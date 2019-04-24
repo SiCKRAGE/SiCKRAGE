@@ -642,7 +642,7 @@ class GenericMetadata(object):
             t = IndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
 
         except (indexer_error, IOError) as e:
-            sickrage.app.log.warning("{}: Unable to look up show on ".format(show_obj.indexerid) + IndexerApi(
+            sickrage.app.log.warning("{}: Unable to look up show on ".format(show_obj.indexer_id) + IndexerApi(
                 show_obj.indexer).name + ", not downloading images: {}".format(e))
             sickrage.app.log.debug("Indexer " + IndexerApi(
                 show_obj.indexer).name + " maybe experiencing some problems. Try again later")
@@ -656,17 +656,17 @@ class GenericMetadata(object):
 
         if image_type == 'poster_thumb':
             try:
-                image_url = t.images(show_obj.indexerid, key_type='poster')[which]['thumbnail']
+                image_url = t.images(show_obj.indexer_id, key_type='poster')[which]['thumbnail']
             except (KeyError, IndexError):
                 image_url = self._retrieve_show_images_from_fanart(show_obj, image_type, True)
         elif image_type == 'series_thumb':
             try:
-                image_url = t.images(show_obj.indexerid, key_type='series')[which]['thumbnail']
+                image_url = t.images(show_obj.indexer_id, key_type='series')[which]['thumbnail']
             except (KeyError, IndexError):
                 image_url = self._retrieve_show_images_from_fanart(show_obj, image_type, True)
         else:
             try:
-                image_url = t.images(show_obj.indexerid, key_type=image_type)[which]['filename']
+                image_url = t.images(show_obj.indexer_id, key_type=image_type)[which]['filename']
             except (KeyError, IndexError):
                 image_url = self._retrieve_show_images_from_fanart(show_obj, image_type)
 
@@ -699,9 +699,9 @@ class GenericMetadata(object):
             t = IndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
 
             # Give us just the normal poster-style season graphics
-            return t.images(show_obj.indexerid, key_type='season', season=season)[which]['filename']
+            return t.images(show_obj.indexer_id, key_type='season', season=season)[which]['filename']
         except (indexer_error, IOError) as e:
-            sickrage.app.log.warning("{}: Unable to look up show on ".format(show_obj.indexerid) + IndexerApi(
+            sickrage.app.log.warning("{}: Unable to look up show on ".format(show_obj.indexer_id) + IndexerApi(
                 show_obj.indexer).name + ", not downloading images: {}".format(e))
             sickrage.app.log.debug("Indexer " + IndexerApi(
                 show_obj.indexer).name + " maybe experiencing some problems. Try again later")
@@ -729,9 +729,9 @@ class GenericMetadata(object):
             t = IndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
 
             # Give us just the normal season graphics
-            return t.images(show_obj.indexerid, key_type='seasonwide', season=season)[which]['filename']
+            return t.images(show_obj.indexer_id, key_type='seasonwide', season=season)[which]['filename']
         except (indexer_error, IOError) as e:
-            sickrage.app.log.warning("{}: Unable to look up show on ".format(show_obj.indexerid) + IndexerApi(
+            sickrage.app.log.warning("{}: Unable to look up show on ".format(show_obj.indexer_id) + IndexerApi(
                 show_obj.indexer).name + ", not downloading images: {}".format(e))
             sickrage.app.log.debug("Indexer " + IndexerApi(
                 show_obj.indexer).name + " maybe experiencing some problems. Try again later")
@@ -820,11 +820,11 @@ class GenericMetadata(object):
         sickrage.app.log.debug("Searching for any " + img_type + " images on Fanart.tv for " + show.name)
 
         try:
-            indexerid = show.map_indexers()[1]
-            if indexerid:
+            indexer_id = show.map_indexers()[1]
+            if indexer_id:
                 request = fanart.Request(
                     apikey=sickrage.app.config.fanart_api_key,
-                    id=indexerid,
+                    id=indexer_id,
                     ws=fanart.WS.TV,
                     type=types[img_type],
                     sort=fanart.SORT.POPULAR,
@@ -857,7 +857,7 @@ class GenericMetadata(object):
             if season is None and episode is None:
                 return t
 
-            return t[show.indexerid][season][episode]
+            return t[show.indexer_id][season][episode]
         except (indexer_episodenotfound, indexer_seasonnotfound):
             pass
 

@@ -189,7 +189,7 @@ class GenericProvider(object):
             elif episode.show.anime:
                 # If the show name is a season scene exception, we want to use the indexer episode number.
                 if (episode.scene_season > 1 and
-                        show_name in get_scene_exceptions(episode.show.indexerid, episode.scene_season)):
+                        show_name in get_scene_exceptions(episode.show.indexer_id, episode.scene_season)):
                     # This is apparently a season exception, let's use the scene_episode instead of absolute
                     ep = episode.scene_episode
                 else:
@@ -384,7 +384,7 @@ class GenericProvider(object):
                 else:
                     airdate = parse_result.air_date.toordinal()
                     try:
-                        dbData = MainDB.TVEpisode.query.filter_by(showid=result.show.indexerid, airdate=airdate).one()
+                        dbData = MainDB.TVEpisode.query.filter_by(showid=result.show.indexer_id, airdate=airdate).one()
                         actual_season = int(dbData.season)
                         actual_episodes = [int(dbData.episode)]
                     except orm.exc.NoResultFound:
@@ -1113,7 +1113,7 @@ class NewznabProvider(NZBProvider):
             if mode != 'RSS':
                 if (self.cap_tv_search or not self.cap_tv_search == 'True') and not self.force_query:
                     search_params['t'] = 'tvsearch'
-                    search_params.update({'tvdbid': ep_obj.show.indexerid})
+                    search_params.update({'tvdbid': ep_obj.show.indexer_id})
 
                 if search_params['t'] == 'tvsearch':
                     if ep_obj.show.air_by_date or ep_obj.show.sports:

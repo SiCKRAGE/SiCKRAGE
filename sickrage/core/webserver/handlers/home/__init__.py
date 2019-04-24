@@ -148,14 +148,14 @@ class HomeHandler(BaseHandler, ABC):
                 continue
 
             for epData in show.episodes:
-                if show.indexerid not in show_stat:
-                    show_stat[show.indexerid] = {}
-                    show_stat[show.indexerid]['ep_snatched'] = 0
-                    show_stat[show.indexerid]['ep_downloaded'] = 0
-                    show_stat[show.indexerid]['ep_total'] = 0
-                    show_stat[show.indexerid]['ep_airs_next'] = 0
-                    show_stat[show.indexerid]['ep_airs_prev'] = 0
-                    show_stat[show.indexerid]['total_size'] = 0
+                if show.indexer_id not in show_stat:
+                    show_stat[show.indexer_id] = {}
+                    show_stat[show.indexer_id]['ep_snatched'] = 0
+                    show_stat[show.indexer_id]['ep_downloaded'] = 0
+                    show_stat[show.indexer_id]['ep_total'] = 0
+                    show_stat[show.indexer_id]['ep_airs_next'] = 0
+                    show_stat[show.indexer_id]['ep_airs_prev'] = 0
+                    show_stat[show.indexer_id]['total_size'] = 0
 
                 season = epData.season
                 episode = epData.episode
@@ -165,27 +165,27 @@ class HomeHandler(BaseHandler, ABC):
 
                 if season > 0 and episode > 0 and airdate > 1:
                     if status in status_quality:
-                        show_stat[show.indexerid]['ep_snatched'] += 1
+                        show_stat[show.indexer_id]['ep_snatched'] += 1
                         overall_stats['episodes']['snatched'] += 1
 
                     if status in status_download:
-                        show_stat[show.indexerid]['ep_downloaded'] += 1
+                        show_stat[show.indexer_id]['ep_downloaded'] += 1
                         overall_stats['episodes']['downloaded'] += 1
 
                     if (airdate <= today and status in [SKIPPED, WANTED, FAILED]) or (
                             status in status_quality + status_download):
-                        show_stat[show.indexerid]['ep_total'] += 1
+                        show_stat[show.indexer_id]['ep_total'] += 1
 
-                    if show_stat[show.indexerid]['ep_total'] > max_download_count:
-                        max_download_count = show_stat[show.indexerid]['ep_total']
+                    if show_stat[show.indexer_id]['ep_total'] > max_download_count:
+                        max_download_count = show_stat[show.indexer_id]['ep_total']
 
-                    if airdate >= today and status in [WANTED, UNAIRED] and not show_stat[show.indexerid][
+                    if airdate >= today and status in [WANTED, UNAIRED] and not show_stat[show.indexer_id][
                         'ep_airs_next']:
-                        show_stat[show.indexerid]['ep_airs_next'] = airdate
-                    elif airdate < today > show_stat[show.indexerid]['ep_airs_prev'] and status != UNAIRED:
-                        show_stat[show.indexerid]['ep_airs_prev'] = airdate
+                        show_stat[show.indexer_id]['ep_airs_next'] = airdate
+                    elif airdate < today > show_stat[show.indexer_id]['ep_airs_prev'] and status != UNAIRED:
+                        show_stat[show.indexer_id]['ep_airs_prev'] = airdate
 
-                    show_stat[show.indexerid]['total_size'] += file_size
+                    show_stat[show.indexer_id]['total_size'] += file_size
 
                     overall_stats['episodes']['total'] += 1
                     overall_stats['total_size'] += file_size
@@ -585,7 +585,7 @@ class LoadShowNotifyListsHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         data = {'_size': 0}
         for s in sorted(get_show_list(), key=lambda k: k.name):
-            data[s.indexerid] = {'id': s.indexerid, 'name': s.name, 'list': s.notify_list}
+            data[s.indexer_id] = {'id': s.indexer_id, 'name': s.name, 'list': s.notify_list}
             data['_size'] += 1
         return self.write(json_encode(data))
 
@@ -825,7 +825,7 @@ class DisplayShowHandler(BaseHandler, ABC):
 
         submenu.append({
             'title': _('Edit'),
-            'path': '/home/editShow?show=%d' % show_obj.indexerid,
+            'path': '/home/editShow?show=%d' % show_obj.indexer_id,
             'icon': 'fas fa-edit'
         })
 
@@ -859,19 +859,19 @@ class DisplayShowHandler(BaseHandler, ABC):
                 if show_obj.paused:
                     submenu.append({
                         'title': _('Resume'),
-                        'path': '/home/togglePause?show=%d' % show_obj.indexerid,
+                        'path': '/home/togglePause?show=%d' % show_obj.indexer_id,
                         'icon': 'fas fa-play'
                     })
                 else:
                     submenu.append({
                         'title': _('Pause'),
-                        'path': '/home/togglePause?show=%d' % show_obj.indexerid,
+                        'path': '/home/togglePause?show=%d' % show_obj.indexer_id,
                         'icon': 'fas fa-pause'
                     })
 
                 submenu.append({
                     'title': _('Remove'),
-                    'path': '/home/deleteShow?show=%d' % show_obj.indexerid,
+                    'path': '/home/deleteShow?show=%d' % show_obj.indexer_id,
                     'class': 'removeshow',
                     'confirm': True,
                     'icon': 'fas fa-trash'
@@ -879,33 +879,33 @@ class DisplayShowHandler(BaseHandler, ABC):
 
                 submenu.append({
                     'title': _('Re-scan files'),
-                    'path': '/home/refreshShow?show=%d' % show_obj.indexerid,
+                    'path': '/home/refreshShow?show=%d' % show_obj.indexer_id,
                     'icon': 'fas fa-compass'
                 })
 
                 submenu.append({
                     'title': _('Full Update'),
-                    'path': '/home/updateShow?show=%d&amp;force=1' % show_obj.indexerid,
+                    'path': '/home/updateShow?show=%d&amp;force=1' % show_obj.indexer_id,
                     'icon': 'fas fa-sync'
                 })
 
                 submenu.append({
                     'title': _('Update show in KODI'),
-                    'path': '/home/updateKODI?show=%d' % show_obj.indexerid,
+                    'path': '/home/updateKODI?show=%d' % show_obj.indexer_id,
                     'requires': self.have_kodi(),
                     'icon': 'fas fa-tv'
                 })
 
                 submenu.append({
                     'title': _('Update show in Emby'),
-                    'path': '/home/updateEMBY?show=%d' % show_obj.indexerid,
+                    'path': '/home/updateEMBY?show=%d' % show_obj.indexer_id,
                     'requires': self.have_emby(),
                     'icon': 'fas fa-tv'
                 })
 
                 submenu.append({
                     'title': _('Preview Rename'),
-                    'path': '/home/testRename?show=%d' % show_obj.indexerid,
+                    'path': '/home/testRename?show=%d' % show_obj.indexer_id,
                     'icon': 'fas fa-tag'
                 })
 
@@ -913,7 +913,7 @@ class DisplayShowHandler(BaseHandler, ABC):
                     if not sickrage.app.show_queue.is_being_subtitled(show_obj):
                         submenu.append({
                             'title': _('Download Subtitles'),
-                            'path': '/home/subtitleShow?show=%d' % show_obj.indexerid,
+                            'path': '/home/subtitleShow?show=%d' % show_obj.indexer_id,
                             'icon': 'fas fa-comment'
                         })
 
@@ -971,14 +971,14 @@ class DisplayShowHandler(BaseHandler, ABC):
         if show_obj.is_anime:
             bwl = show_obj.release_groups
 
-        show_obj.exceptions = get_scene_exceptions(show_obj.indexerid)
+        show_obj.exceptions = get_scene_exceptions(show_obj.indexer_id)
 
-        indexerid = int(show_obj.indexerid)
+        indexer_id = int(show_obj.indexer_id)
         indexer = int(show_obj.indexer)
 
         # Delete any previous occurrances
         for index, recentShow in enumerate(sickrage.app.config.shows_recent):
-            if recentShow['indexerid'] == indexerid:
+            if recentShow['indexer_id'] == indexer_id:
                 del sickrage.app.config.shows_recent[index]
 
         # Only track 5 most recent shows
@@ -986,7 +986,7 @@ class DisplayShowHandler(BaseHandler, ABC):
 
         # Insert most recent show
         sickrage.app.config.shows_recent.insert(0, {
-            'indexerid': indexerid,
+            'indexer_id': indexer_id,
             'name': show_obj.name,
         })
 
@@ -1003,10 +1003,10 @@ class DisplayShowHandler(BaseHandler, ABC):
             epCounts=ep_counts,
             epCats=ep_cats,
             all_scene_exceptions=show_obj.exceptions,
-            scene_numbering=get_scene_numbering_for_show(indexerid, indexer),
-            xem_numbering=get_xem_numbering_for_show(indexerid, indexer),
-            scene_absolute_numbering=get_scene_absolute_numbering_for_show(indexerid, indexer),
-            xem_absolute_numbering=get_xem_absolute_numbering_for_show(indexerid, indexer),
+            scene_numbering=get_scene_numbering_for_show(indexer_id, indexer),
+            xem_numbering=get_xem_numbering_for_show(indexer_id, indexer),
+            scene_absolute_numbering=get_scene_absolute_numbering_for_show(indexer_id, indexer),
+            xem_absolute_numbering=get_xem_absolute_numbering_for_show(indexer_id, indexer),
             title=show_obj.name,
             controller='home',
             action="display_show"
@@ -1035,7 +1035,7 @@ class EditShowHandler(BaseHandler, ABC):
             err_string = _("Unable to find the specified show: ") + str(show)
             return self._genericMessage(_("Error"), err_string)
 
-        scene_exceptions = get_scene_exceptions(show_obj.indexerid)
+        scene_exceptions = get_scene_exceptions(show_obj.indexer_id)
 
         if show_obj.is_anime:
             whitelist = show_obj.release_groups.whitelist
@@ -1086,7 +1086,7 @@ class EditShowHandler(BaseHandler, ABC):
         dvdorder = self.get_body_argument('dvdorder', None)
         indexer_lang = self.get_body_argument('indexerLang', None)
         subtitles = self.get_body_argument('subtitles', None)
-        subtitles_sr_metadata = self.get_body_argument('subtitles_sr_metadata', None)
+        sub_use_sr_metadata = self.get_body_argument('sub_use_sr_metadata', None)
         skip_downloaded = self.get_body_argument('skip_downloaded', None)
         rls_ignore_words = self.get_body_argument('rls_ignore_words', None)
         rls_require_words = self.get_body_argument('rls_require_words', None)
@@ -1106,7 +1106,7 @@ class EditShowHandler(BaseHandler, ABC):
                 return self.write(err_string)
             return self._genericMessage(_("Error"), err_string)
 
-        show_obj.exceptions = get_scene_exceptions(show_obj.indexerid)
+        show_obj.exceptions = get_scene_exceptions(show_obj.indexer_id)
 
         flatten_folders = not checkbox_to_value(flatten_folders)  # UI inverts this value
         dvdorder = checkbox_to_value(dvdorder)
@@ -1117,7 +1117,7 @@ class EditShowHandler(BaseHandler, ABC):
         sports = checkbox_to_value(sports)
         anime = checkbox_to_value(anime)
         subtitles = checkbox_to_value(subtitles)
-        subtitles_sr_metadata = checkbox_to_value(subtitles_sr_metadata)
+        sub_use_sr_metadata = checkbox_to_value(sub_use_sr_metadata)
 
         if indexer_lang and indexer_lang in IndexerApi(show_obj.indexer).indexer().languages.keys():
             indexer_lang = indexer_lang
@@ -1150,7 +1150,7 @@ class EditShowHandler(BaseHandler, ABC):
 
             if anime:
                 if not show_obj.release_groups:
-                    show_obj.release_groups = BlackAndWhiteList(show_obj.indexerid)
+                    show_obj.release_groups = BlackAndWhiteList(show_obj.indexer_id)
 
                 if whitelist:
                     shortwhitelist = short_group_names(whitelist)
@@ -1186,7 +1186,7 @@ class EditShowHandler(BaseHandler, ABC):
         show_obj.anime = anime
         show_obj.sports = sports
         show_obj.subtitles = subtitles
-        show_obj.subtitles_sr_metadata = subtitles_sr_metadata
+        show_obj.sub_use_sr_metadata = sub_use_sr_metadata
         show_obj.air_by_date = air_by_date
         show_obj.default_ep_status = int(default_ep_status)
 
@@ -1233,14 +1233,14 @@ class EditShowHandler(BaseHandler, ABC):
 
         if do_update_exceptions:
             try:
-                update_scene_exceptions(show_obj.indexerid, exceptions_list)
+                update_scene_exceptions(show_obj.indexer_id, exceptions_list)
                 await gen.sleep(cpu_presets[sickrage.app.config.cpu_preset])
             except CantUpdateShowException:
                 warnings.append(_("Unable to force an update on scene exceptions of the show."))
 
         if do_update_scene_numbering:
             try:
-                xem_refresh(show_obj.indexerid, show_obj.indexer, True)
+                xem_refresh(show_obj.indexer_id, show_obj.indexer, True)
                 await gen.sleep(cpu_presets[sickrage.app.config.cpu_preset])
             except CantUpdateShowException:
                 warnings.append(_("Unable to force an update on scene numbering of the show."))
@@ -1281,7 +1281,7 @@ class TogglePauseHandler(BaseHandler, ABC):
         sickrage.app.alerts.message(
             _('%s has been %s') % (show_obj.name, (_('resumed'), _('paused'))[show_obj.paused]))
 
-        return self.redirect("/home/displayShow?show=%i" % show_obj.indexerid)
+        return self.redirect("/home/displayShow?show=%i" % show_obj.indexer_id)
 
 
 class DeleteShowHandler(BaseHandler, ABC):
@@ -1331,7 +1331,7 @@ class RefreshShowHandler(BaseHandler, ABC):
 
         await gen.sleep(cpu_presets[sickrage.app.config.cpu_preset])
 
-        return self.redirect("/home/displayShow?show=" + str(show_obj.indexerid))
+        return self.redirect("/home/displayShow?show=" + str(show_obj.indexer_id))
 
 
 class UpdateShowHandler(BaseHandler, ABC):
@@ -1354,7 +1354,7 @@ class UpdateShowHandler(BaseHandler, ABC):
         # just give it some time
         await gen.sleep(cpu_presets[sickrage.app.config.cpu_preset])
 
-        return self.redirect("/home/displayShow?show=" + str(show_obj.indexerid))
+        return self.redirect("/home/displayShow?show=" + str(show_obj.indexer_id))
 
 
 class SubtitleShowHandler(BaseHandler, ABC):
@@ -1372,7 +1372,7 @@ class SubtitleShowHandler(BaseHandler, ABC):
 
         await gen.sleep(cpu_presets[sickrage.app.config.cpu_preset])
 
-        return self.redirect("/home/displayShow?show=" + str(show_obj.indexerid))
+        return self.redirect("/home/displayShow?show=" + str(show_obj.indexer_id))
 
 
 class UpdateKODIHandler(BaseHandler, ABC):
@@ -1398,7 +1398,7 @@ class UpdateKODIHandler(BaseHandler, ABC):
                 sickrage.app.alerts.error(_("Unable to contact one or more KODI host(s): ") + host)
 
         if show_obj:
-            return self.redirect('/home/displayShow?show=' + str(show_obj.indexerid))
+            return self.redirect('/home/displayShow?show=' + str(show_obj.indexer_id))
         else:
             return self.redirect('/home/')
 
@@ -1432,7 +1432,7 @@ class UpdateEMBYHandler(BaseHandler, ABC):
                 sickrage.app.alerts.error(
                     _("Unable to contact Emby host: ") + sickrage.app.config.emby_host)
 
-            return self.redirect('/home/displayShow?show=' + str(show_obj.indexerid))
+            return self.redirect('/home/displayShow?show=' + str(show_obj.indexer_id))
         else:
             return self.redirect('/home/')
 
@@ -1587,13 +1587,13 @@ class SetStatusHandler(BaseHandler, ABC):
             if data and sickrage.app.config.use_trakt and sickrage.app.config.trakt_sync_watchlist:
                 if int(status) in [WANTED, FAILED]:
                     sickrage.app.log.debug(
-                        "Add episodes, showid: indexerid " + str(show_obj.indexerid) + ", Title " + str(
+                        "Add episodes, showid: indexer_id " + str(show_obj.indexer_id) + ", Title " + str(
                             show_obj.name) + " to Watchlist")
                     sickrage.app.notifier_providers['trakt'].update_watchlist(show_obj, data_episode=data,
                                                                               update="add")
                 elif int(status) in [IGNORED, SKIPPED] + Quality.DOWNLOADED + Quality.ARCHIVED:
                     sickrage.app.log.debug(
-                        "Remove episodes, showid: indexerid " + str(show_obj.indexerid) + ", Title " + str(
+                        "Remove episodes, showid: indexer_id " + str(show_obj.indexer_id) + ", Title " + str(
                             show_obj.name) + " from Watchlist")
                     sickrage.app.notifier_providers['trakt'].update_watchlist(show_obj, data_episode=data,
                                                                               update="remove")
@@ -1678,7 +1678,7 @@ class TestRenameHandler(BaseHandler, ABC):
             ep_obj_rename_list.reverse()
 
         submenu = [
-            {'title': _('Edit'), 'path': '/home/editShow?show=%d' % show_obj.indexerid,
+            {'title': _('Edit'), 'path': '/home/editShow?show=%d' % show_obj.indexer_id,
              'icon': 'fas fa-edit'}]
 
         return self.render(
@@ -1779,33 +1779,33 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
         search_status = 'finished'
         for search_thread in MANUAL_SEARCH_HISTORY:
             if show is not None:
-                if not str(search_thread.show.indexerid) == show:
+                if not str(search_thread.show.indexer_id) == show:
                     continue
 
             if isinstance(search_thread, ManualSearchQueueItem):
-                if not [x for x in episodes if x['episodeindexid'] == search_thread.segment.indexerid]:
+                if not [x for x in episodes if x['episodeindexid'] == search_thread.segment.indexer_id]:
                     episodes += self.get_episodes(search_thread, search_status)
             else:
                 # These are only Failed Downloads/Retry SearchThreadItems.. lets loop through the segement/episodes
-                if not [i for i, j in zip(search_thread.segment, episodes) if i.indexerid == j['episodeindexid']]:
+                if not [i for i, j in zip(search_thread.segment, episodes) if i.indexer_id == j['episodeindexid']]:
                     episodes += self.get_episodes(search_thread, search_status)
 
         return self.write(json_encode({'episodes': episodes}))
 
     def get_episodes(self, search_thread, search_status):
-        show_obj = find_show(int(search_thread.show.indexerid))
+        show_obj = find_show(int(search_thread.show.indexer_id))
 
         results = []
 
         if not show_obj:
             sickrage.app.log.warning(
-                'No Show Object found for show with indexerID: ' + str(search_thread.show.indexerid))
+                'No Show Object found for show with indexerID: ' + str(search_thread.show.indexer_id))
             return results
 
         if isinstance(search_thread, ManualSearchQueueItem):
-            results.append({'show': search_thread.show.indexerid,
+            results.append({'show': search_thread.show.indexer_id,
                             'episode': search_thread.segment.episode,
-                            'episodeindexid': search_thread.segment.indexerid,
+                            'episodeindexid': search_thread.segment.indexer_id,
                             'season': search_thread.segment.season,
                             'searchstatus': search_status,
                             'status': statusStrings[search_thread.segment.status],
@@ -1814,9 +1814,9 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
                                 show_obj.get_overview(int(search_thread.segment.status or -1))]})
         else:
             for epObj in search_thread.segment:
-                results.append({'show': epObj.show.indexerid,
+                results.append({'show': epObj.show.indexer_id,
                                 'episode': epObj.episode,
-                                'episodeindexid': epObj.indexerid,
+                                'episodeindexid': epObj.indexer_id,
                                 'season': epObj.season,
                                 'searchstatus': search_status,
                                 'status': statusStrings[epObj.status],

@@ -81,9 +81,9 @@ class NZBGet(object):
         for curEp in nzb.episodes:
             if dupe_key == "":
                 if curEp.show.indexer == 1:
-                    dupe_key = "SiCKRAGE-" + str(curEp.show.indexerid)
+                    dupe_key = "SiCKRAGE-" + str(curEp.show.indexer_id)
                 elif curEp.show.indexer == 2:
-                    dupe_key = "SiCKRAGE-tvr" + str(curEp.show.indexerid)
+                    dupe_key = "SiCKRAGE-tvr" + str(curEp.show.indexer_id)
             dupe_key += "-" + str(curEp.season) + "." + str(curEp.episode)
             if date.today() - curEp.airdate <= timedelta(days=7):
                 addToTop = True

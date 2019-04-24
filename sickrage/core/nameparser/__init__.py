@@ -73,7 +73,7 @@ class NameParser(object):
 
         def showlist_lookup(term):
             try:
-                return find_show_by_name(term).indexerid
+                return find_show_by_name(term).indexer_id
             except MultipleShowObjectsException:
                 return None
 
@@ -106,7 +106,7 @@ class NameParser(object):
                     pass
 
             if show_id is None:
-                # ignore show name by caching it with a indexerid of 0
+                # ignore show name by caching it with a indexer_id of 0
                 sickrage.app.name_cache.put(show_name, 0)
 
         return show, show_id or 0
@@ -252,19 +252,19 @@ class NameParser(object):
             bestResult = max(sorted(matches, reverse=True, key=lambda x: x.which_regex), key=lambda x: x.score)
 
             bestResult.show = self.showObj
-            bestResult.indexerid = self.showObj.indexerid if self.showObj else 0
+            bestResult.indexer_id = self.showObj.indexer_id if self.showObj else 0
 
             if not self.naming_pattern:
                 # try and create a show object for this result
-                bestResult.show, bestResult.indexerid = self.get_show(bestResult.series_name)
+                bestResult.show, bestResult.indexer_id = self.get_show(bestResult.series_name)
 
                 # confirm passed in show object indexer id matches result show object indexer id
                 if self.showObj and bestResult.show:
-                    if self.showObj.indexerid == bestResult.show.indexerid:
+                    if self.showObj.indexer_id == bestResult.show.indexer_id:
                         bestResult.show = self.showObj
                     else:
                         bestResult.show = None
-                        bestResult.indexerid = 0
+                        bestResult.indexer_id = 0
                 elif self.showObj and not bestResult.show and not self.validate_show:
                     bestResult.show = self.showObj
 
@@ -284,7 +284,7 @@ class NameParser(object):
                 airdate = bestResult.air_date.toordinal()
 
                 try:
-                    dbData = MainDB.TVEpisode.query.filter_by(showid=bestResult.show.indexerid,
+                    dbData = MainDB.TVEpisode.query.filter_by(showid=bestResult.show.indexer_id,
                                                               indexer=bestResult.show.indexer,
                                                               airdate=airdate).one()
                     season_number = int(dbData.season)
@@ -302,7 +302,7 @@ class NameParser(object):
 
                         t = IndexerApi(bestResult.show.indexer).indexer(**lINDEXER_API_PARMS)
 
-                        epObj = t[bestResult.show.indexerid].airedOn(bestResult.air_date)[0]
+                        epObj = t[bestResult.show.indexer_id].airedOn(bestResult.air_date)[0]
 
                         season_number = int(epObj["airedseason"])
                         episode_numbers = [int(epObj["airedepisodenumber"])]
@@ -322,7 +322,7 @@ class NameParser(object):
                     e = epNo
 
                     if bestResult.show.is_scene and not skip_scene_detection:
-                        (s, e) = get_indexer_numbering(bestResult.show.indexerid,
+                        (s, e) = get_indexer_numbering(bestResult.show.indexer_id,
                                                        bestResult.show.indexer,
                                                        season_number,
                                                        epNo)
@@ -335,7 +335,7 @@ class NameParser(object):
 
                     if bestResult.show.is_scene:
                         scene_season = scene_exceptions.get_scene_exception_by_name(bestResult.series_name)[1]
-                        a = get_indexer_absolute_numbering(bestResult.show.indexerid,
+                        a = get_indexer_absolute_numbering(bestResult.show.indexer_id,
                                                            bestResult.show.indexer, epAbsNo,
                                                            True, scene_season)
 
@@ -351,7 +351,7 @@ class NameParser(object):
                     e = epNo
 
                     if bestResult.show.is_scene and not skip_scene_detection:
-                        (s, e) = get_indexer_numbering(bestResult.show.indexerid,
+                        (s, e) = get_indexer_numbering(bestResult.show.indexer_id,
                                                        bestResult.show.indexer,
                                                        bestResult.season_number,
                                                        epNo)
@@ -510,7 +510,7 @@ class NameParser(object):
                 final_result.which_regex |= dir_name_result.which_regex
 
         final_result.show = self._combine_results(file_name_result, dir_name_result, 'show')
-        final_result.indexerid = self._combine_results(file_name_result, dir_name_result, 'indexerid')
+        final_result.indexer_id = self._combine_results(file_name_result, dir_name_result, 'indexer_id')
         final_result.quality = self._combine_results(file_name_result, dir_name_result, 'quality')
 
         if self.validate_show and not self.naming_pattern and not final_result.show:
@@ -540,7 +540,7 @@ class ParseResult(object):
                  air_date=None,
                  ab_episode_numbers=None,
                  show=None,
-                 indexerid=None,
+                 indexer_id=None,
                  score=None,
                  quality=None,
                  version=None
@@ -556,7 +556,7 @@ class ParseResult(object):
         self.release_group = release_group
         self.air_date = air_date
         self.show = show
-        self.indexerid = indexerid or 0
+        self.indexer_id = indexer_id or 0
         self.score = score
         self.version = version
         self.which_regex = set()
@@ -614,7 +614,7 @@ class ParseResult(object):
 
     @property
     def in_showlist(self):
-        if find_show(self.indexerid):
+        if find_show(self.indexer_id):
             return True
         return False
 

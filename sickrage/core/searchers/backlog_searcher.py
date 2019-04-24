@@ -97,7 +97,7 @@ class BacklogSearcher(object):
             # don't consider this an actual backlog search if we only did recent eps
             # or if we only did certain shows
             if from_date == datetime.date.fromordinal(1) and not which_shows:
-                self._set_last_backlog_search(curShow.indexerid, cur_date)
+                self._set_last_backlog_search(curShow.indexer_id, cur_date)
 
         self.amActive = False
 
@@ -109,7 +109,7 @@ class BacklogSearcher(object):
 
         # check through the list of statuses to see if we want any
         wanted = []
-        for result in MainDB.TVEpisode.query.filter_by(showid=show.indexerid).filter(MainDB.TVEpisode.season > 0,
+        for result in MainDB.TVEpisode.query.filter_by(showid=show.indexer_id).filter(MainDB.TVEpisode.season > 0,
                                                                                      datetime.date.today().toordinal() > MainDB.TVEpisode.airdate,
                                                                                      MainDB.TVEpisode.airdate >= from_date.toordinal()):
 

@@ -217,7 +217,7 @@ def get_scene_exception_by_name(show_name):
 
 def get_scene_exception_by_name_multiple(show_name):
     """
-    Given a show name, return the indexerid of the exception, None if no exception
+    Given a show name, return the indexer_id of the exception, None if no exception
     is present.
     """
 
@@ -272,12 +272,12 @@ def _anidb_exceptions_fetcher():
         for show in get_show_list():
             if show.is_anime and show.indexer == 1:
                 try:
-                    anime = Anime(None, name=show.name, tvdbid=show.indexerid, autoCorrectName=True)
+                    anime = Anime(None, name=show.name, tvdbid=show.indexer_id, autoCorrectName=True)
                 except Exception:
                     continue
                 else:
                     if anime.name and anime.name != show.name:
-                        anidb_exception_dict[show.indexerid] = [{anime.name: -1}]
+                        anidb_exception_dict[show.indexer_id] = [{anime.name: -1}]
 
         setLastRefresh('anidb')
 
@@ -309,12 +309,12 @@ def _xem_exceptions_fetcher():
             if parsedJSON['result'] == 'failure':
                 continue
 
-            for indexerid, names in parsedJSON['data'].items():
+            for indexer_id, names in parsedJSON['data'].items():
                 try:
-                    xem_exception_dict[int(indexerid)] = names
+                    xem_exception_dict[int(indexer_id)] = names
                 except Exception as e:
                     sickrage.app.log.warning(
-                        "XEM: Rejected entry: indexerid:{0}; names:{1}".format(indexerid, names))
+                        "XEM: Rejected entry: indexer_id:{0}; names:{1}".format(indexer_id, names))
                     sickrage.app.log.debug("XEM: Rejected entry error message:{}".format(e))
 
         setLastRefresh('xem')
@@ -338,7 +338,7 @@ def check_against_names(name_in_question, show, season=-1):
     if season in [-1, 1]:
         show_names = [show.name]
 
-    show_names.extend(get_scene_exceptions(show.indexerid, season=season))
+    show_names.extend(get_scene_exceptions(show.indexer_id, season=season))
 
     for showName in show_names:
         name_from_list = full_sanitizeSceneName(showName)

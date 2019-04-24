@@ -40,11 +40,11 @@ class SceneTests(tests.SiCKRAGETestDBCase):
         dot_expected = [x.replace(' ', '.') for x in expected]
         self.assertTrue(len(set(dot_expected).intersection(set(dot_result))) == len(dot_expected))
 
-    def _test_allPossibleShowNames(self, name, indexerid=0, expected=None):
+    def _test_allPossibleShowNames(self, name, indexer_id=0, expected=None):
         if expected is None:
             expected = []
 
-        s = TVShow(1, indexerid)
+        s = TVShow(1, indexer_id)
         s.name = name
         s.save_to_db()
 

@@ -383,7 +383,7 @@ class AddNewShowHandler(BaseHandler, ABC):
         bestQualities = self.get_body_argument('bestQualities', '')
         flatten_folders = self.get_body_argument('flatten_folders', None)
         subtitles = self.get_body_argument('subtitles', None)
-        subtitles_sr_metadata = self.get_body_argument('subtitles_sr_metadata', None)
+        sub_use_sr_metadata = self.get_body_argument('sub_use_sr_metadata', None)
         other_shows = self.get_body_arguments('other_shows')
         skipShow = self.get_body_argument('skipShow', None)
         providedIndexer = self.get_body_argument('providedIndexer', None)
@@ -477,7 +477,7 @@ class AddNewShowHandler(BaseHandler, ABC):
         anime = checkbox_to_value(anime)
         flatten_folders = checkbox_to_value(flatten_folders)
         subtitles = checkbox_to_value(subtitles)
-        subtitles_sr_metadata = checkbox_to_value(subtitles_sr_metadata)
+        sub_use_sr_metadata = checkbox_to_value(sub_use_sr_metadata)
         skip_downloaded = checkbox_to_value(skip_downloaded)
 
         if whitelist:
@@ -501,7 +501,7 @@ class AddNewShowHandler(BaseHandler, ABC):
                                         flatten_folders=flatten_folders,
                                         lang=indexerLang,
                                         subtitles=subtitles,
-                                        subtitles_sr_metadata=subtitles_sr_metadata,
+                                        sub_use_sr_metadata=sub_use_sr_metadata,
                                         anime=anime,
                                         scene=scene,
                                         paused=None,

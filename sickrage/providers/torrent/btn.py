@@ -183,11 +183,11 @@ class BTNProvider(TorrentProvider):
 
         # Search
         if ep_obj.show.indexer == 1:
-            params['tvdb'] = ep_obj.show.indexerid
+            params['tvdb'] = ep_obj.show.indexer_id
             searches.append(params)
         else:
             name_exceptions = list(
-                set(scene_exceptions.get_scene_exceptions(ep_obj.show.indexerid) + [ep_obj.show.name]))
+                set(scene_exceptions.get_scene_exceptions(ep_obj.show.indexer_id) + [ep_obj.show.name]))
             for name in name_exceptions:
                 # Search by name if we don't have tvdb id
                 params['series'] = sanitizeSceneName(name)
