@@ -86,7 +86,7 @@ class TVShow(MainDBBase):
     last_backlog_search = Column(Integer, default=datetime.datetime.now().toordinal())
     last_proper_search = Column(Integer, default=datetime.datetime.now().toordinal())
 
-    episodes = relationship('TVEpisode', back_populates='show', lazy='joined')
+    episodes = relationship('TVEpisode', back_populates='show', lazy='select')
     imdb_info = relationship('IMDbInfo', uselist=False, lazy='joined')
 
     @property
