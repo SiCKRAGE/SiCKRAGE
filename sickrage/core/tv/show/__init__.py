@@ -663,9 +663,9 @@ class TVShow(MainDBBase):
             })
 
             try:
-                dbData = MainDB.IMDbInfo.query.filter_by(indexer_id=self.indexer_id).one()
-                dbData.__dict__.update(imdb_info)
-                sickrage.app.main_db.update(dbData)
+                with sickrage.app.main_db.session() as session:
+                    dbData = session.query(MainDB.IMDbInfo).filter_by(indexer_id=self.indexer_id).one()
+                    dbData.__dict__.update(imdb_info)
             except orm.exc.NoResultFound:
                 sickrage.app.main_db.add(MainDB.IMDbInfo(**imdb_info))
 
@@ -824,7 +824,7 @@ class TVShow(MainDBBase):
         sickrage.app.log.debug("%i: Saving show to database: %s" % (self.indexer_id, self.name))
 
         try:
-            self.query.filter_by(indexer_id=self.indexer_id).one()
+            TVShow.query.filter_by(indexer_id=self.indexer_id).one()
             sickrage.app.main_db.update(self)
         except orm.exc.NoResultFound:
             sickrage.app.main_db.add(self)

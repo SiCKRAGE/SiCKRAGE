@@ -117,14 +117,14 @@
                     <div class="row mb-1">
                         <div class="col my-auto">
                             <div class="row">
-                                <div class="col-auto">
-                                    % if show.imdb_info and hasattr(show.imdb_info, 'rating'):
-                                    <% rating_tip = str(show.imdb_info.rating) + " / 10" + " Stars and " + str(show.imdb_info.votes) + " Votes" %>
+                                % if show.imdb_info:
+                                    <div class="col-auto">
+                                        <% rating_tip = str(show.imdb_info.rating) + " / 10" + " Stars and " + str(show.imdb_info.votes) + " Votes" %>
                                         <span id="imdbstars"
                                               data-imdb-rating="${show.imdb_info.rating}"
                                               title="${rating_tip}"></span>
-                                    % endif
-                                </div>
+                                    </div>
+                                % endif
 
                                 <div class="col-auto">
                                     (<span>${show.startyear}</span>) -
@@ -168,8 +168,8 @@
                             <div class="row">
                                 <div class="col">
                                     <ul class="list-group d-inline">
-                                        % if not show.imdb_id and show.genre:
-                                            % for genre in show.genre.split(','):
+                                        % if not show.imdb_info and show.genre:
+                                            % for genre in show.genre.split('|'):
                                                 <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', genre.lower())}"
                                                    target="_blank"
                                                    title="View other popular ${genre} shows on trakt.tv.">
