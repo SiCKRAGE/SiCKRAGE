@@ -72,10 +72,10 @@ class srQueue(object):
             self.processing.remove(item)
             self.queue.task_done()
 
-    def get(self):
-        return self.queue.get()
+    async def get(self):
+        return await self.queue.get()
 
-    def put(self, item, *args, **kwargs):
+    async def put(self, item, *args, **kwargs):
         """
         Adds an item to this queue
 
@@ -88,7 +88,7 @@ class srQueue(object):
         item.added = datetime.datetime.now()
         item.name = "{}-{}".format(self.name, item.name)
         item.result_queue = self._result_queue
-        self.queue.put(item)
+        await self.queue.put(item)
 
         return item
 
