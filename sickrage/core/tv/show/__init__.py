@@ -623,6 +623,8 @@ class TVShow(MainDBBase):
         imdb_info_mapper = {
             'imdbVotes': 'votes',
             'imdbRating': 'rating',
+            'totalSeasons': 'seasons',
+            'imdbID': 'imdb_id'
         }
 
         if not self.imdb_id:

@@ -948,9 +948,6 @@ class DisplayShowHandler(BaseHandler, ABC):
                 ep_cats[str(curEp.season) + "x" + str(curEp.episode)] = cur_ep_cat
                 ep_counts[cur_ep_cat] += 1
 
-        def titler(x):
-            return (remove_article(x), x)[not x or sickrage.app.config.sort_article]
-
         if sickrage.app.config.anime_split_home:
             shows, anime = [], []
             for show in get_show_list():
@@ -959,13 +956,14 @@ class DisplayShowHandler(BaseHandler, ABC):
                 else:
                     shows.append(show)
 
-            sorted_show_lists = {"Shows": sorted(shows, key=cmp_to_key(
-                lambda x, y: titler(x.name).lower() < titler(y.name).lower())),
-                                 "Anime": sorted(anime, key=cmp_to_key(
-                                     lambda x, y: titler(x.name).lower() < titler(y.name).lower()))}
+            sorted_show_lists = {
+                "Shows": sorted(shows, key=lambda x: x.name),
+                "Anime": sorted(anime, key=lambda x: x.name)
+            }
         else:
-            sorted_show_lists = {"Shows": sorted(get_show_list(), key=cmp_to_key(
-                lambda x, y: titler(x.name).lower() < titler(y.name).lower()))}
+            sorted_show_lists = {
+                "Shows": sorted(get_show_list(), key=lambda x: x.name)
+            }
 
         bwl = None
         if show_obj.is_anime:

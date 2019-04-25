@@ -85,6 +85,7 @@ class MainDB(srDatabase):
         )
 
         indexer_id = Column(Integer, primary_key=True)
+        imdb_id = Column(Text, index=True, unique=True)
         rated = Column(Text)
         title = Column(Text)
         production = Column(Text)
@@ -103,7 +104,6 @@ class MainDB(srDatabase):
         language = Column(Text)
         country = Column(Text)
         runtime = Column(Text)
-        imdbid = Column(Text, index=True, unique=True)
         metascore = Column(Text)
         year = Column(Integer)
         plot = Column(Text)

@@ -166,10 +166,10 @@
                             download_stat_tip = _("Downloaded: ") + str(cur_downloaded)
                             if cur_snatched > 0:
                                 download_stat = download_stat
-                                download_stat_tip = download_stat_tip + "&#013;" + _("Snatched: ") + str(cur_snatched)
+                                download_stat_tip = download_stat_tip + " " + _("Snatched: ") + str(cur_snatched)
 
                             download_stat = download_stat + " / " + str(cur_total)
-                            download_stat_tip = download_stat_tip + "&#013;" + _("Total: ") + str(cur_total)
+                            download_stat_tip = download_stat_tip + " " + _("Total: ") + str(cur_total)
                         else:
                             download_stat = '?'
                             download_stat_tip = _("no data")
@@ -215,7 +215,12 @@
                                              data-show-id="${curShow.indexer_id}">
                                         </div>
                                     </div>
-
+                                    <div>
+                                        <span class="d-block small show-dlstats badge"
+                                              title="${download_stat_tip}">
+                                            ${download_stat}
+                                        </span>
+                                    </div>
                                 </div>
                                 <div class="card-body text-truncate py-1 px-1 small">
                                     <div class="show-title">
@@ -248,10 +253,6 @@
                                     <table class="show-details w-100" style="height:40px">
                                         <tr>
                                             <td class="text-left align-middle w-25">
-                                                <span class="d-block small show-dlstats"
-                                                      title="${download_stat_tip}">${download_stat}</span>
-                                            </td>
-                                            <td class="text-center align-middle">
                                                 % if curShow.network:
                                                     <span>
                                                         <i class="show-network-image sickrage-network sickrage-network-${network_class_name}"

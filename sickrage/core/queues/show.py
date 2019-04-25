@@ -23,7 +23,6 @@ import time
 import traceback
 
 import sickrage
-from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.common import WANTED
 from sickrage.core.exceptions import CantRefreshShowException, \
     CantRemoveShowException, CantUpdateShowException, EpisodeDeletedException, \
@@ -33,7 +32,6 @@ from sickrage.core.queues import srQueue, srQueueItem, srQueuePriorities
 from sickrage.core.scene_numbering import xem_refresh, get_xem_numbering_for_show
 from sickrage.core.traktapi import srTraktAPI
 from sickrage.core.tv.show import TVShow
-from sickrage.core.tv.show.helpers import find_show
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_attributenotfound, \
     indexer_error, indexer_exception
@@ -489,8 +487,6 @@ class QueueItemRefresh(ShowQueueItem):
 
         self.show.last_refresh = datetime.date.today().toordinal()
 
-        self.finish()
-
         sickrage.app.log.info(
             "Finished refresh in {}s for show: {}".format(round(time.time() - start_time, 2), self.show.name))
 
@@ -529,8 +525,6 @@ class QueueItemRename(ShowQueueItem):
         for cur_ep_obj in ep_obj_rename_list:
             cur_ep_obj.rename()
 
-        self.finish()
-
         sickrage.app.log.info("Finished renames for show: {}".format(self.show.name))
 
 
@@ -542,8 +536,6 @@ class QueueItemSubtitle(ShowQueueItem):
         sickrage.app.log.info("Started downloading subtitles for show: {}".format(self.show.name))
 
         self.show.download_subtitles()
-
-        self.finish()
 
         sickrage.app.log.info("Finished downloading subtitles for show: {}".format(self.show.name))
 
@@ -658,7 +650,5 @@ class QueueItemRemove(ShowQueueItem):
             except Exception as e:
                 sickrage.app.log.warning(
                     "Unable to delete show from Trakt: %s. Error: %s" % (self.show.name, e))
-
-        self.finish()
 
         sickrage.app.log.info("Finished removing show: {}".format(self.show.name))

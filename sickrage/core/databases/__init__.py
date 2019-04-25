@@ -81,8 +81,18 @@ class srDatabase(object):
 
     def migrate(self):
         migration_table_column_mapper = {
-            'tv_shows': {
-                'show_name': 'name'
+            'main': {
+                'tv_shows': {
+                    'show_name': 'name'
+                },
+                'tv_episodes': {
+                    'indexerid': 'indexer_id'
+                },
+            },
+            'cache': {
+                'providers': {
+                    'indexerid': 'indexer_id'
+                }
             }
         }
 
@@ -108,9 +118,9 @@ class srDatabase(object):
 
                 for column in row.copy():
                     if column not in self.tables[table].__table__.columns:
-                        if table in migration_table_column_mapper:
-                            if column in migration_table_column_mapper[table]:
-                                new_column = migration_table_column_mapper[table][column]
+                        if table in migration_table_column_mapper[self.name]:
+                            if column in migration_table_column_mapper[self.name][table]:
+                                new_column = migration_table_column_mapper[self.name][table][column]
                                 row[new_column] = row[column]
 
                         del row[column]
