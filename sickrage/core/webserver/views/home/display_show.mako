@@ -176,13 +176,12 @@
                                                     <li class="fas fa-tag fa-1x badge badge-primary p-2"> ${genre}</li>
                                                 </a>
                                             % endfor
-                                        % endif
-                                        % if show.imdb_info and hasattr(show.imdb_info, 'genre'):
-                                            % for imdbgenre in show.imdb_info.genre.replace('Sci-Fi','Science-Fiction').split(','):
-                                                <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', imdbgenre.lower())}"
+                                        % elif show.imdb_info.genre:
+                                            % for genre in show.imdb_info.genre.split(','):
+                                                <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', genre.lower())}"
                                                    target="_blank"
-                                                   title="View other popular ${imdbgenre} shows on trakt.tv.">
-                                                    <li class="fas fa-tag badge badge-primary p-1"> ${imdbgenre}</li>
+                                                   title="View other popular ${genre} shows on trakt.tv.">
+                                                    <li class="fas fa-tag badge badge-primary p-1"> ${genre}</li>
                                                 </a>
                                             % endfor
                                         % endif

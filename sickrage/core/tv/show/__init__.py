@@ -621,14 +621,15 @@ class TVShow(MainDBBase):
 
     def load_imdb_info(self):
         imdb_info_mapper = {
-            'imdbVotes': 'votes',
-            'imdbRating': 'rating',
-            'totalSeasons': 'seasons',
-            'imdbID': 'imdb_id'
+            'imdbvotes': 'votes',
+            'imdbrating': 'rating',
+            'totalseasons': 'seasons',
+            'imdbid': 'imdb_id'
         }
 
         if not self.imdb_id:
-            for x in IMDbAPI().search_by_imdb_title(self.name) or []:
+            resp = IMDbAPI().search_by_imdb_title(self.name)
+            for x in resp['Search'] if 'Search' in resp else []:
                 try:
                     if int(x.get('Year'), 0) == self.startyear and x.get('Title') in self.name:
                         self.imdb_id = x.get('imdbID')
