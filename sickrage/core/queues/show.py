@@ -22,6 +22,8 @@ import os
 import time
 import traceback
 
+from sqlalchemy import orm
+
 import sickrage
 from sickrage.core.common import WANTED
 from sickrage.core.exceptions import CantRefreshShowException, \
@@ -120,13 +122,13 @@ class ShowQueue(srQueue):
 
         sickrage.app.log.debug("Queueing show refresh for {}".format(show.name))
 
-        sickrage.app.io_loop.add_callback(self.put, QueueItemRefresh(show, force=force))
+        sickrage.app.io_loop.add_callback(self.put, QueueItemRefresh(show.indexer_id, force=force))
 
     def renameShowEpisodes(self, show):
-        sickrage.app.io_loop.add_callback(self.put, QueueItemRename(show))
+        sickrage.app.io_loop.add_callback(self.put, QueueItemRename(show.indexer_id))
 
     def download_subtitles(self, show):
-        sickrage.app.io_loop.add_callback(self.put, QueueItemSubtitle(show))
+        sickrage.app.io_loop.add_callback(self.put, QueueItemSubtitle(show.indexer_id))
 
     def addShow(self, indexer, indexer_id, showDir, default_status=None, quality=None, flatten_folders=None,
                 lang=None, subtitles=None, sub_use_sr_metadata=None, anime=None, scene=None, paused=None,
@@ -165,7 +167,7 @@ class ShowQueue(srQueue):
             if show.indexer_id == x.show.indexer_id:
                 self.queue.remove(x)
 
-        sickrage.app.io_loop.add_callback(self.put, QueueItemRemove(show=show, full=full))
+        sickrage.app.io_loop.add_callback(self.put, QueueItemRemove(indexer_id=show.indexer_id, full=full))
 
 
 class ShowQueueActions(object):
@@ -205,7 +207,11 @@ class ShowQueueItem(srQueueItem):
 
     def __init__(self, indexer_id, action_id):
         super(ShowQueueItem, self).__init__(ShowQueueActions.names[action_id], action_id)
-        self.show = TVShow.query.filter_by(indexer_id=indexer_id).one()
+
+        try:
+            self.show = TVShow.query.filter_by(indexer_id=indexer_id).one()
+        except orm.exc.NoResultFound:
+            self.show = None
 
     def is_in_queue(self):
         return self in sickrage.app.show_queue.queue_items
@@ -492,8 +498,8 @@ class QueueItemRefresh(ShowQueueItem):
 
 
 class QueueItemRename(ShowQueueItem):
-    def __init__(self, show=None):
-        super(QueueItemRename, self).__init__(show, ShowQueueActions.RENAME)
+    def __init__(self, indexer_id=None):
+        super(QueueItemRename, self).__init__(indexer_id, ShowQueueActions.RENAME)
 
     def run(self):
         sickrage.app.log.info("Performing renames for show: {}".format(self.show.name))
@@ -529,8 +535,8 @@ class QueueItemRename(ShowQueueItem):
 
 
 class QueueItemSubtitle(ShowQueueItem):
-    def __init__(self, show=None):
-        super(QueueItemSubtitle, self).__init__(show, ShowQueueActions.SUBTITLE)
+    def __init__(self, indexer_id=None):
+        super(QueueItemSubtitle, self).__init__(indexer_id, ShowQueueActions.SUBTITLE)
 
     def run(self):
         sickrage.app.log.info("Started downloading subtitles for show: {}".format(self.show.name))
@@ -623,8 +629,8 @@ class QueueItemForceUpdate(QueueItemUpdate):
 
 
 class QueueItemRemove(ShowQueueItem):
-    def __init__(self, show=None, full=False):
-        super(QueueItemRemove, self).__init__(show, ShowQueueActions.REMOVE)
+    def __init__(self, indexer_id=None, full=False):
+        super(QueueItemRemove, self).__init__(indexer_id, ShowQueueActions.REMOVE)
 
         # lets make sure this happens before any other high priority actions
         self.priority = srQueuePriorities.EXTREME
