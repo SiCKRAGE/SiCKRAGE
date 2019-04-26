@@ -68,6 +68,8 @@ class srQueue(object):
             item.is_alive = True
             self.processing.append(item)
             item.run()
+        except Exception as e:
+            sickrage.app.log.debug(e)
         finally:
             self.processing.remove(item)
             self.queue.task_done()

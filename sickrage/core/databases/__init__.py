@@ -64,9 +64,11 @@ class srDatabase(object):
         try:
             yield session
             session.commit()
-        except Exception as e:
+        except Exception:
             session.rollback()
             raise
+        finally:
+            session.close()
 
     @property
     def version(self):
@@ -174,5 +176,4 @@ class srDatabase(object):
             return found.delete() if found.count() else 0
 
     def update(self, obj):
-        with self.session() as session:
-            session.merge(obj)
+        inspect(obj).session.commit()

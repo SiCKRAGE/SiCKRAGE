@@ -34,6 +34,7 @@ from sickrage.core.queues import srQueue, srQueueItem, srQueuePriorities
 from sickrage.core.scene_numbering import xem_refresh, get_xem_numbering_for_show
 from sickrage.core.traktapi import srTraktAPI
 from sickrage.core.tv.show import TVShow
+from sickrage.core.tv.show.helpers import load_show_from_indexer, load_imdb_info, load_episodes_from_indexer
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_attributenotfound, \
     indexer_error, indexer_exception
@@ -49,7 +50,7 @@ class ShowQueue(srQueue):
 
     def _is_in_queue(self, show, actions):
         return show.indexer_id in [x.show.indexer_id if x.show else 0 for x in self.queue_items if
-                                  x.action_id in actions] if show else False
+                                   x.action_id in actions] if show else False
 
     def _is_being(self, show, actions):
         for x in self.queue_items:
@@ -342,7 +343,7 @@ class QueueItemAdd(ShowQueueItem):
         try:
             self.show = TVShow(**{'indexer': self.indexer, 'indexer_id': self.indexer_id, 'lang': self.lang})
 
-            self.show.load_from_indexer()
+            load_show_from_indexer(self.show.indexer_id)
 
             # set up initial values
             self.show.location = self.showDir
@@ -367,18 +368,10 @@ class QueueItemAdd(ShowQueueItem):
                 if self.whitelist:
                     self.show.release_groups.set_white_keywords(self.whitelist)
 
-                    # # be smartish about this
-                    # if self.show.genre and "talk show" in self.show.genre.lower():
-                    #     self.show.air_by_date = 1
-                    # if self.show.genre and "documentary" in self.show.genre.lower():
-                    #     self.show.air_by_date = 0
-                    # if self.show.classification and "sports" in self.show.classification.lower():
-                    #     self.show.sports = 1
-
+            sickrage.app.main_db.update(self.show)
         except indexer_exception as e:
             sickrage.app.log.warning(
-                "Unable to add show due to an error with " + IndexerApi(
-                    self.indexer).name + ": {}".format(e))
+                _("Unable to add show due to an error with ") + IndexerApi(self.indexer).name + ": {}".format(e))
             if self.show:
                 sickrage.app.alerts.error(
                     _("Unable to add ") + str(self.show.name) + _(" due to an error with ") + IndexerApi(
@@ -389,35 +382,27 @@ class QueueItemAdd(ShowQueueItem):
             return self._finish_early()
 
         except MultipleShowObjectsException:
-            sickrage.app.log.warning("The show in " + self.showDir + " is already in your show list, skipping")
+            sickrage.app.log.warning(_("The show in ") + self.showDir + _(" is already in your show list, skipping"))
             sickrage.app.alerts.error(_('Show skipped'),
                                       _("The show in ") + self.showDir + _(" is already in your show list"))
             return self._finish_early()
 
         except Exception as e:
-            sickrage.app.log.error("Error trying to add show: {}".format(e))
+            sickrage.app.log.error(_("Error trying to add show: {}").format(e))
             sickrage.app.log.debug(traceback.format_exc())
             raise self._finish_early()
 
         try:
-            sickrage.app.log.debug("Attempting to retrieve show info from IMDb")
-            self.show.load_imdb_info()
+            sickrage.app.log.debug(_("Attempting to retrieve show info from IMDb"))
+            load_imdb_info(self.show.indexer_id)
         except Exception as e:
-            sickrage.app.log.error("Error loading IMDb info: {}".format(e))
+            sickrage.app.log.error(_("Error loading IMDb info: {}").format(e))
 
         try:
-            self.show.save_to_db()
-        except Exception as e:
-            sickrage.app.log.error("Error saving the show to the database: {}".format(e))
-            sickrage.app.log.debug(traceback.format_exc())
-            raise self._finish_early()
-
-        try:
-            self.show.load_episodes_from_indexer()
+            load_episodes_from_indexer(self.show.indexer_id)
         except Exception as e:
             sickrage.app.log.error(
-                "Error with " + IndexerApi(
-                    self.show.indexer).name + ", not creating episode list: {}".format(e))
+                _("Error with ") + IndexerApi(self.show.indexer).name + _(", not creating episode list: {}").format(e))
             sickrage.app.log.debug(traceback.format_exc())
 
         try:
@@ -428,7 +413,7 @@ class QueueItemAdd(ShowQueueItem):
 
         # if they set default ep status to WANTED then run the backlog to search for episodes
         if self.show.default_ep_status == WANTED:
-            sickrage.app.log.info("Launching backlog for this show since its episodes are WANTED")
+            sickrage.app.log.info(_("Launching backlog for this show since its episodes are WANTED"))
             sickrage.app.backlog_searcher.search_backlog([self.show])
 
         self.show.write_metadata(force=True)
@@ -559,7 +544,7 @@ class QueueItemUpdate(ShowQueueItem):
 
         try:
             sickrage.app.log.debug("Retrieving show info from " + IndexerApi(self.show.indexer).name + "")
-            self.show.load_from_indexer(cache=False)
+            load_show_from_indexer(self.show.indexer_id, cache=False)
         except indexer_error as e:
             sickrage.app.log.warning(
                 "Unable to contact " + IndexerApi(self.show.indexer).name + ", aborting: {}".format(e))
@@ -572,7 +557,7 @@ class QueueItemUpdate(ShowQueueItem):
         try:
             if not self.indexer_update_only:
                 sickrage.app.log.debug("Attempting to retrieve show info from IMDb")
-                self.show.load_imdb_info()
+                load_imdb_info(self.show.indexer_id)
         except Exception as e:
             sickrage.app.log.warning("Error loading IMDb info for {}: {}".format(IndexerApi(self.show.indexer).name, e))
 
@@ -582,7 +567,7 @@ class QueueItemUpdate(ShowQueueItem):
 
         # get episode list from TVDB
         try:
-            IndexerEpList = self.show.load_episodes_from_indexer()
+            IndexerEpList = load_episodes_from_indexer(self.show.indexer_id)
         except indexer_exception as e:
             sickrage.app.log.error("Unable to get info from " + IndexerApi(
                 self.show.indexer).name + ", the show info will not be refreshed: {}".format(e))
@@ -618,7 +603,7 @@ class QueueItemUpdate(ShowQueueItem):
 
         # refresh show
         if not self.indexer_update_only:
-            sickrage.app.show_queue.refreshShow(self.show.indexer_id, self.force)
+            sickrage.app.show_queue.refreshShow(self.show, self.force)
 
 
 class QueueItemForceUpdate(QueueItemUpdate):
