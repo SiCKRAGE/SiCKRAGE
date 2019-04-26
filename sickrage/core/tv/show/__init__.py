@@ -87,7 +87,7 @@ class TVShow(MainDBBase):
     last_proper_search = Column(Integer, default=datetime.datetime.now().toordinal())
 
     episodes = relationship('TVEpisode', back_populates='show', lazy='select')
-    imdb_info = relationship('IMDbInfo', uselist=False, lazy='joined')
+    imdb_info = relationship('IMDbInfo', uselist=False, lazy='select')
 
     @property
     def is_anime(self):
@@ -665,7 +665,7 @@ class TVShow(MainDBBase):
             try:
                 with sickrage.app.main_db.session() as session:
                     dbData = session.query(MainDB.IMDbInfo).filter_by(indexer_id=self.indexer_id).one()
-                    dbData.__dict__.update(imdb_info)
+                    dbData.update(**imdb_info)
             except orm.exc.NoResultFound:
                 sickrage.app.main_db.add(MainDB.IMDbInfo(**imdb_info))
 
@@ -824,8 +824,9 @@ class TVShow(MainDBBase):
         sickrage.app.log.debug("%i: Saving show to database: %s" % (self.indexer_id, self.name))
 
         try:
-            TVShow.query.filter_by(indexer_id=self.indexer_id).one()
-            sickrage.app.main_db.update(self)
+            with sickrage.app.main_db.session() as session:
+                dbData = session.query(TVShow).filter_by(indexer_id=self.indexer_id).one()
+                dbData.update(**self.as_dict())
         except orm.exc.NoResultFound:
             sickrage.app.main_db.add(self)
 

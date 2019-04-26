@@ -23,10 +23,14 @@ from sqlalchemy import *
 def upgrade(migrate_engine):
     meta = MetaData(bind=migrate_engine)
     tv_shows = Table('tv_shows', meta, autoload=True)
-    tv_shows.c.show_name.alter(name='name')
+
+    if hasattr(tv_shows.c, 'show_name'):
+        tv_shows.c.show_name.alter(name='name')
 
 
 def downgrade(migrate_engine):
     meta = MetaData(bind=migrate_engine)
     tv_shows = Table('tv_shows', meta, autoload=True)
-    tv_shows.c.name.alter(name='show_name')
+
+    if hasattr(tv_shows.c, 'name'):
+        tv_shows.c.name.alter(name='show_name')

@@ -105,9 +105,9 @@ class ShowQueue(srQueue):
                                           "it's done.".format(show.name))
 
         if force:
-            sickrage.app.io_loop.add_callback(self.put, QueueItemForceUpdate(show, indexer_update_only))
+            sickrage.app.io_loop.add_callback(self.put, QueueItemForceUpdate(show.indexer_id, indexer_update_only))
         else:
-            sickrage.app.io_loop.add_callback(self.put, QueueItemUpdate(show, indexer_update_only))
+            sickrage.app.io_loop.add_callback(self.put, QueueItemUpdate(show.indexer_id, indexer_update_only))
 
     def refreshShow(self, show, force=False):
         if (self.is_being_refreshed(show) or self.is_in_refresh_queue(show)) and not force:
@@ -203,9 +203,9 @@ class ShowQueueItem(srQueueItem):
     - show being subtitled
     """
 
-    def __init__(self, show, action_id):
+    def __init__(self, indexer_id, action_id):
         super(ShowQueueItem, self).__init__(ShowQueueActions.names[action_id], action_id)
-        self.show = show
+        self.show = TVShow.query.filter_by(indexer_id=indexer_id).one()
 
     def is_in_queue(self):
         return self in sickrage.app.show_queue.queue_items
@@ -466,8 +466,8 @@ class QueueItemAdd(ShowQueueItem):
 
 
 class QueueItemRefresh(ShowQueueItem):
-    def __init__(self, show=None, force=False):
-        super(QueueItemRefresh, self).__init__(show, ShowQueueActions.REFRESH)
+    def __init__(self, indexer_id=None, force=False):
+        super(QueueItemRefresh, self).__init__(indexer_id, ShowQueueActions.REFRESH)
 
         # force refresh certain items
         self.force = force
@@ -541,8 +541,8 @@ class QueueItemSubtitle(ShowQueueItem):
 
 
 class QueueItemUpdate(ShowQueueItem):
-    def __init__(self, show=None, indexer_update_only=False, action_id=ShowQueueActions.UPDATE):
-        super(QueueItemUpdate, self).__init__(show, action_id)
+    def __init__(self, indexer_id=None, indexer_update_only=False, action_id=ShowQueueActions.UPDATE):
+        super(QueueItemUpdate, self).__init__(indexer_id, action_id)
         self.indexer_update_only = indexer_update_only
         self.force = False
 
@@ -612,12 +612,12 @@ class QueueItemUpdate(ShowQueueItem):
 
         # refresh show
         if not self.indexer_update_only:
-            sickrage.app.show_queue.refreshShow(self.show, self.force)
+            sickrage.app.show_queue.refreshShow(self.show.indexer_id, self.force)
 
 
 class QueueItemForceUpdate(QueueItemUpdate):
-    def __init__(self, show=None, indexer_update_only=False):
-        super(QueueItemForceUpdate, self).__init__(show, indexer_update_only, ShowQueueActions.FORCEUPDATE)
+    def __init__(self, indexer_id=None, indexer_update_only=False):
+        super(QueueItemForceUpdate, self).__init__(indexer_id, indexer_update_only, ShowQueueActions.FORCEUPDATE)
         self.indexer_update_only = indexer_update_only
         self.force = True
 

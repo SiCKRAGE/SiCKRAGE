@@ -23,29 +23,53 @@ from sqlalchemy import *
 def upgrade(migrate_engine):
     meta = MetaData(bind=migrate_engine)
     imdb_info = Table('imdb_info', meta, autoload=True)
-    imdb_info.c.imdbVotes.alter(name='votes')
-    imdb_info.c.imdbRating.alter(name='rating')
-    imdb_info.c.Rated.alter(name='rated')
-    imdb_info.c.Title.alter(name='title')
-    imdb_info.c.DVD.alter(name='dvd')
-    imdb_info.c.Production.alter(name='production')
-    imdb_info.c.Website.alter(name='website')
-    imdb_info.c.Writer.alter(name='writer')
-    imdb_info.c.Actors.alter(name='actors')
-    imdb_info.c.Type.alter(name='type')
-    imdb_info.c.totalSeasons.alter(name='seasons')
-    imdb_info.c.Poster.alter(name='poster')
-    imdb_info.c.Director.alter(name='director')
-    imdb_info.c.Released.alter(name='released')
-    imdb_info.c.Awards.alter(name='awards')
-    imdb_info.c.Genre.alter(name='genre')
-    imdb_info.c.Language.alter(name='language')
-    imdb_info.c.Country.alter(name='country')
-    imdb_info.c.Runtime.alter(name='runtime')
-    imdb_info.c.imdbID.alter(name='imdb_id')
-    imdb_info.c.Metascore.alter(name='metascore')
-    imdb_info.c.Year.alter(name='year')
-    imdb_info.c.Plot.alter(name='plot')
+
+    if hasattr(imdb_info.c, 'imdbVotes'):
+        imdb_info.c.imdbVotes.alter(name='votes')
+    if hasattr(imdb_info.c, 'imdbRating'):
+        imdb_info.c.imdbRating.alter(name='rating')
+    if hasattr(imdb_info.c, 'Rated'):
+        imdb_info.c.Rated.alter(name='rated')
+    if hasattr(imdb_info.c, 'Title'):
+        imdb_info.c.Title.alter(name='title')
+    if hasattr(imdb_info.c, 'DVD'):
+        imdb_info.c.DVD.alter(name='dvd')
+    if hasattr(imdb_info.c, 'Production'):
+        imdb_info.c.Production.alter(name='production')
+    if hasattr(imdb_info.c, 'Website'):
+        imdb_info.c.Website.alter(name='website')
+    if hasattr(imdb_info.c, 'Writer'):
+        imdb_info.c.Writer.alter(name='writer')
+    if hasattr(imdb_info.c, 'Actors'):
+        imdb_info.c.Actors.alter(name='actors')
+    if hasattr(imdb_info.c, 'Type'):
+        imdb_info.c.Type.alter(name='type')
+    if hasattr(imdb_info.c, 'totalSeasons'):
+        imdb_info.c.totalSeasons.alter(name='seasons')
+    if hasattr(imdb_info.c, 'Poster'):
+        imdb_info.c.Poster.alter(name='poster')
+    if hasattr(imdb_info.c, 'Director'):
+        imdb_info.c.Director.alter(name='director')
+    if hasattr(imdb_info.c, 'Released'):
+        imdb_info.c.Released.alter(name='released')
+    if hasattr(imdb_info.c, 'Awards'):
+        imdb_info.c.Awards.alter(name='awards')
+    if hasattr(imdb_info.c, 'Genre'):
+        imdb_info.c.Genre.alter(name='genre')
+    if hasattr(imdb_info.c, 'Language'):
+        imdb_info.c.Language.alter(name='language')
+    if hasattr(imdb_info.c, 'Country'):
+        imdb_info.c.Country.alter(name='country')
+    if hasattr(imdb_info.c, 'Runtime'):
+        imdb_info.c.Runtime.alter(name='runtime')
+    if hasattr(imdb_info.c, 'imdbID'):
+        imdb_info.c.imdbID.alter(name='imdb_id')
+    if hasattr(imdb_info.c, 'Metascore'):
+        imdb_info.c.Metascore.alter(name='metascore')
+    if hasattr(imdb_info.c, 'Year'):
+        imdb_info.c.Year.alter(name='year')
+    if hasattr(imdb_info.c, 'Plot'):
+        imdb_info.c.Plot.alter(name='plot')
 
 
 def downgrade(migrate_engine):

@@ -15,7 +15,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
-from sqlalchemy import Column, Integer, Text, Boolean, Index, ForeignKeyConstraint, orm
+from sqlalchemy import Column, Integer, Text, Boolean, Index, ForeignKeyConstraint, orm, inspect
 from sqlalchemy.ext.declarative import as_declarative
 from sqlalchemy.orm import relationship
 from sickrage.core.databases import srDatabase
@@ -27,8 +27,10 @@ class MainDBBase(object):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
     def update(self, **kwargs):
+        primary_keys = [pk.name for pk in self.__table__.primary_key]
         for key, value in kwargs.items():
-            setattr(self, key, value)
+            if key not in primary_keys:
+                setattr(self, key, value)
 
 
 class MainDB(srDatabase):

@@ -23,17 +23,21 @@ from sqlalchemy import *
 def upgrade(migrate_engine):
     meta = MetaData(bind=migrate_engine)
     tv_episodes = Table('tv_episodes', meta, autoload=True)
-    tv_episodes.c.indexerid.alter(name='indexer_id')
-    tv_episodes.indexes.idx_tv_episodes_showid_airdate.drop()
-    idx_tv_episodes_showid_airdate = Index('idx_tv_episodes_showid_airdate', 'indexer_id', 'airdate')
-    idx_tv_episodes_showid_airdate.create(tv_episodes)
+
+    if hasattr(tv_episodes.c, 'indexerid'):
+        tv_episodes.c.indexerid.alter(name='indexer_id')
+        tv_episodes.indexes.idx_tv_episodes_showid_airdate.drop()
+        idx_tv_episodes_showid_airdate = Index('idx_tv_episodes_showid_airdate', 'indexer_id', 'airdate')
+        idx_tv_episodes_showid_airdate.create(tv_episodes)
 
 
 def downgrade(migrate_engine):
     meta = MetaData(bind=migrate_engine)
     tv_episodes = Table('tv_episodes', meta, autoload=True)
-    tv_episodes.c.indexer_id.alter(name='indexerid')
-    tv_episodes.indexes.idx_tv_episodes_showid_airdate.drop()
-    idx_tv_episodes_showid_airdate = Index('idx_tv_episodes_showid_airdate', 'indexerid', 'airdate')
-    idx_tv_episodes_showid_airdate.create(tv_episodes)
+
+    if hasattr(tv_episodes.c, 'indexer_id'):
+        tv_episodes.c.indexer_id.alter(name='indexerid')
+        tv_episodes.indexes.idx_tv_episodes_showid_airdate.drop()
+        idx_tv_episodes_showid_airdate = Index('idx_tv_episodes_showid_airdate', 'indexerid', 'airdate')
+        idx_tv_episodes_showid_airdate.create(tv_episodes)
 

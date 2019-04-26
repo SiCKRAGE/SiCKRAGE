@@ -23,7 +23,7 @@ from contextlib import contextmanager
 
 from migrate import DatabaseAlreadyControlledError
 from migrate.versioning import api
-from sqlalchemy import create_engine, event
+from sqlalchemy import create_engine, event, inspect
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker, scoped_session, mapperlib
 
@@ -67,8 +67,6 @@ class srDatabase(object):
         except Exception as e:
             session.rollback()
             raise
-        finally:
-            session.close()
 
     @property
     def version(self):

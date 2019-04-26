@@ -23,10 +23,14 @@ from sqlalchemy import *
 def upgrade(migrate_engine):
     meta = MetaData(bind=migrate_engine)
     providers = Table('providers', meta, autoload=True)
-    providers.c.indexerid.alter(name='indexer_id')
+
+    if hasattr(providers.c, 'indexerid'):
+        providers.c.indexerid.alter(name='indexer_id')
 
 
 def downgrade(migrate_engine):
     meta = MetaData(bind=migrate_engine)
     providers = Table('providers', meta, autoload=True)
-    providers.c.indexer_id.alter(name='indexerid')
+
+    if hasattr(providers.c, 'indexer_id'):
+        providers.c.indexer_id.alter(name='indexerid')
