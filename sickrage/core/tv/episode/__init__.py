@@ -731,11 +731,6 @@ class TVEpisode(object):
         sickrage.app.log.debug(
             "Deleting %s S%02dE%02d from the DB" % (self.show.name, self.season or 0, self.episode or 0))
 
-        # remove myself from the show dictionary
-        if self.show.get_episode(self.season, self.episode, noCreate=True) == self:
-            sickrage.app.log.debug("Removing myself from my show's list")
-            del self.show.episodes[self.season][self.episode]
-
         # delete myself from the DB
         sickrage.app.log.debug("Deleting myself from the database")
 

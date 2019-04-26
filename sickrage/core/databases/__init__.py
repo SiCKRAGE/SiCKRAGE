@@ -45,7 +45,7 @@ class srDatabase(object):
         self.db_path = os.path.join(sickrage.app.data_dir, '{}.db'.format(self.name))
         self.db_repository = os.path.join(os.path.dirname(__file__), self.name, 'db_repository')
         self.engine = create_engine('sqlite:///{}'.format(self.db_path), echo=False)
-        self.Session = scoped_session(sessionmaker(bind=self.engine))
+        self.Session = scoped_session(sessionmaker(bind=self.engine, expire_on_commit=True))
 
         if not os.path.exists(self.db_path):
             api.version_control(self.engine, self.db_repository, api.version(self.db_repository))
@@ -54,21 +54,6 @@ class srDatabase(object):
                 api.version_control(self.engine, self.db_repository)
             except DatabaseAlreadyControlledError:
                 pass
-
-    @contextmanager
-    def session(self):
-        """ Creates a context with an open SQLAlchemy session.
-        """
-        session = self.Session()
-
-        try:
-            yield session
-            session.commit()
-        except Exception:
-            session.rollback()
-            raise
-        finally:
-            session.close()
 
     @property
     def version(self):
@@ -146,21 +131,18 @@ class srDatabase(object):
             del migrate_tables
             del rows
 
-    def get_table_mapper(self, tbl):
-        mappers = [
-            mapper for mapper in mapperlib._mapper_registry
-            if tbl in mapper.tables
-        ]
-        if len(mappers) > 1:
-            raise ValueError(
-                "Multiple mappers found for table '%s'." % tbl.name
-            )
-        elif not mappers:
-            raise ValueError(
-                "Could not get mapper for table '%s'." % tbl.name
-            )
-        else:
-            return mappers[0]
+    @contextmanager
+    def session(self):
+        """ Creates a context with an open SQLAlchemy session.
+        """
+        session = self.Session()
+
+        try:
+            yield session
+            session.commit()
+        except Exception:
+            session.rollback()
+            raise
 
     def bulk_add(self, table, rows):
         with self.session() as session:
@@ -172,8 +154,8 @@ class srDatabase(object):
 
     def delete(self, table, *args, **kwargs):
         with self.session() as session:
-            found = session.query(table).filter_by(**kwargs).filter(*args)
-            return found.delete() if found.count() else 0
+            session.query(table).filter_by(**kwargs).filter(*args).delete()
 
     def update(self, obj):
-        inspect(obj).session.commit()
+        with self.session() as session:
+            session.merge(obj)
