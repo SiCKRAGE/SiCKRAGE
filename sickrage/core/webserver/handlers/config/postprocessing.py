@@ -100,6 +100,7 @@ class SavePostProcessingHandler(BaseHandler, ABC):
         if unpack:
             response = await self.http_client.fetch(
                 self.get_url("/config/postProcessing/isRarSupported"),
+                headers=self.http_client.defaults['headers'],
             )
             if response.body != "not supported":
                 sickrage.app.config.unpack = checkbox_to_value(unpack)
@@ -138,7 +139,8 @@ class SavePostProcessingHandler(BaseHandler, ABC):
             url_concat(
                 self.get_url("/config/postProcessing/isNamingValid"),
                 dict(pattern=naming_pattern, multi=naming_multi_ep)
-            )
+            ),
+            headers=self.http_client.defaults['headers']
         )
         if response.body != "invalid":
             sickrage.app.config.naming_pattern = naming_pattern
@@ -151,7 +153,8 @@ class SavePostProcessingHandler(BaseHandler, ABC):
             url_concat(
                 self.get_url("/config/postProcessing/isNamingValid"),
                 dict(pattern=naming_anime_pattern, multi=naming_anime_multi_ep, anime_type=naming_anime)
-            )
+            ),
+            headers=self.http_client.defaults['headers']
         )
         if response.body != "invalid":
             sickrage.app.config.naming_anime_pattern = naming_anime_pattern
@@ -164,7 +167,8 @@ class SavePostProcessingHandler(BaseHandler, ABC):
             url_concat(
                 self.get_url("/config/postProcessing/isNamingValid"),
                 dict(pattern=naming_abd_pattern, abd=True)
-            )
+            ),
+            headers=self.http_client.defaults['headers']
         )
 
         if response.body != "invalid":
@@ -177,7 +181,8 @@ class SavePostProcessingHandler(BaseHandler, ABC):
             url_concat(
                 self.get_url("/config/postProcessing/isNamingValid"),
                 dict(pattern=naming_sports_pattern, multi=naming_multi_ep, sports=True)
-            )
+            ),
+            headers=self.http_client.defaults['headers']
         )
 
         if response.body != "invalid":

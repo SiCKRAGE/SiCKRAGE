@@ -358,7 +358,8 @@ class AddShowByIDHandler(BaseHandler, ABC):
                 {'show_to_add': '1|{show_dir}|{indexer_id}|{show_name}'.format(**{'show_dir': show_dir,
                                                                                   'indexer_id': indexer_id,
                                                                                   'show_name': show_name})}
-            )
+            ),
+            headers=self.http_client.defaults['headers']
         )
 
         return self.write(response.body)
@@ -411,7 +412,8 @@ class AddNewShowHandler(BaseHandler, ABC):
                 url_concat(
                     self.get_url("/home/addShows/newShow"),
                     {'show_to_add': next_show_dir, 'other_shows': rest_of_show_dirs}
-                )
+                ),
+                headers=self.http_client.defaults['headers']
             )
 
             return response.body
@@ -551,7 +553,8 @@ class AddExistingShowsHandler(BaseHandler, ABC):
                 url_concat(
                     self.get_url("/home/addShows/newShow"),
                     {'show_to_add': shows_to_add[0], 'other_shows': ','.join(shows_to_add[1:])}
-                )
+                ),
+                headers=self.http_client.defaults['headers']
             )
 
             return self.write(response.body)
@@ -590,6 +593,7 @@ class AddExistingShowsHandler(BaseHandler, ABC):
             url_concat(
                 self.get_url("/home/addShows/newShow"),
                 {'show_to_add': dirs_only[0], 'other_shows': ','.join(dirs_only[1:])}
-            )
+            ),
+            headers=self.http_client.defaults['headers']
         )
         return self.write(response.body)

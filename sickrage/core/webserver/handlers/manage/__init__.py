@@ -141,7 +141,8 @@ class ChangeEpisodeStatusesHandler(BaseHandler, ABC):
                 url_concat(
                     self.get_url("/home/setStatus"),
                     dict(show=cur_indexer_id, eps='|'.join(to_change[cur_indexer_id]), status=new_status, direct=True)
-                )
+                ),
+                headers=self.http_client.defaults['headers']
             )
 
         return self.redirect('/manage/episodeStatuses/')
@@ -600,6 +601,7 @@ class MassEditHandler(BaseHandler, ABC):
 
             response = await self.http_client.fetch(
                 self.get_url("/home/editShow"), method='POST',
+                headers=self.http_client.defaults['headers'],
                 body=urlencode(post_data)
             )
 

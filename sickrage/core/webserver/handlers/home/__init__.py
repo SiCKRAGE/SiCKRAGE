@@ -798,7 +798,8 @@ class BranchCheckoutHandler(BaseHandler, ABC):
                 response = await self.http_client.fetch(
                     url_concat(
                         self.get_url("/home/restart"), {'pid': sickrage.app.pid}
-                    )
+                    ),
+                    headers=self.http_client.defaults['headers']
                 )
                 return self.write(response.body)
         else:

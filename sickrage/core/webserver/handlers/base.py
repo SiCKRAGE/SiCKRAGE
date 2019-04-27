@@ -55,7 +55,13 @@ class BaseHandler(RequestHandler, ABC):
             future_imports=['unicode_literals']
         )
 
-        self.http_client = AsyncHTTPClient()
+        self.http_client = AsyncHTTPClient(
+            defaults={
+                'headers': {
+                    "Cookie": 'sr_httpclient_token={}'.format(self.application.settings['httpclient_secret'])
+                }
+            }
+        )
 
     def get_user_locale(self):
         return locale.get(sickrage.app.config.gui_lang)
@@ -104,6 +110,9 @@ class BaseHandler(RequestHandler, ABC):
 
     def get_current_user(self):
         try:
+            if self.application.settings['httpclient_secret'] == self.get_cookie('sr_httpclient_token'):
+                return True
+
             token = sickrage.app.oidc_client.refresh_token(self.get_secure_cookie('sr_refresh_token'))
             self.set_secure_cookie('sr_access_token', token['access_token'])
             self.set_secure_cookie('sr_refresh_token', token['refresh_token'])
@@ -195,4 +204,5 @@ class BaseHandler(RequestHandler, ABC):
         def worker(func, *args, **kwargs):
             threading.currentThread().setName('TORNADO')
             return func(*args, **kwargs)
+
         return await sickrage.app.io_loop.run_in_executor(None, worker, func, *args, **kwargs)

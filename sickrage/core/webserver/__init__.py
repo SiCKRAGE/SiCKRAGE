@@ -27,7 +27,7 @@ from tornado.httpserver import HTTPServer
 from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 import sickrage
-from sickrage.core.helpers import create_https_certificates
+from sickrage.core.helpers import create_https_certificates, generate_secret
 from sickrage.core.webserver.handlers.api import ApiHandler
 from sickrage.core.webserver.handlers.calendar import CalendarHandler
 from sickrage.core.webserver.handlers.changelog import ChangelogHandler
@@ -157,7 +157,8 @@ class WebServer(object):
             autoreload=False,
             gzip=sickrage.app.config.web_use_gzip,
             cookie_secret=sickrage.app.config.web_cookie_secret,
-            login_url='%s/login/' % sickrage.app.config.web_root
+            login_url='%s/login/' % sickrage.app.config.web_root,
+            httpclient_secret=generate_secret()
         )
 
         # Websocket handler
