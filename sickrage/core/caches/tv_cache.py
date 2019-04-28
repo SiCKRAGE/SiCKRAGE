@@ -135,7 +135,6 @@ class TVCache(object):
         try:
             dbData = CacheDB.LastUpdate.query.filter_by(provider=self.providerID).one()
             dbData.time = int(time.mktime(toDate.timetuple()))
-            sickrage.app.cache_db.update(dbData)
         except orm.exc.NoResultFound:
             sickrage.app.cache_db.add(CacheDB.LastUpdate(**{
                 'provider': self.providerID,
@@ -159,7 +158,6 @@ class TVCache(object):
         try:
             dbData = CacheDB.LastSearch.query.filter_by(provider=self.providerID).one()
             dbData.time = int(time.mktime(toDate.timetuple()))
-            sickrage.app.cache_db.update(dbData)
         except orm.exc.NoResultFound:
             sickrage.app.cache_db.add(CacheDB.LastSearch(**{
                 'provider': self.providerID,

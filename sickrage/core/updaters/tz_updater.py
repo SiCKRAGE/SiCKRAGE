@@ -73,7 +73,6 @@ class TimeZoneUpdater(object):
                 dbData = CacheDB.NetworkTimezone.query.filter_by(network_name=network).one()
                 if dbData.timezone != timezone:
                     dbData.timezone = timezone
-                    sickrage.app.cache_db.update(dbData)
             except orm.exc.NoResultFound:
                 sickrage.app.cache_db.add(CacheDB.NetworkTimezone(**{
                     'network_name': network,

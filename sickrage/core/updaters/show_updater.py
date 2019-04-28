@@ -91,6 +91,5 @@ class ShowUpdater(object):
         ProgressIndicators.setIndicator('dailyShowUpdates', QueueProgressIndicator("Daily Show Updates", pi_list))
 
         dbData.time = update_timestamp
-        sickrage.app.cache_db.update(dbData)
 
         self.amActive = False

@@ -157,6 +157,5 @@ class BacklogSearcher(object):
         try:
             show = find_show(showid)
             show.last_backlog_search = when
-            sickrage.app.main_db.update(show)
         except orm.exc.NoResultFound:
             pass

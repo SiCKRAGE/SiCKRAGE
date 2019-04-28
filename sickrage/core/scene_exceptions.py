@@ -70,7 +70,6 @@ def setLastRefresh(exList):
     try:
         dbData = CacheDB.SceneExceptionRefresh.query.filter_by(exception_list=exList).one()
         dbData.last_refreshed = int(time.mktime(datetime.datetime.today().timetuple()))
-        sickrage.app.cache_db.update(dbData)
     except orm.exc.NoResultFound:
         sickrage.app.cache_db.add(CacheDB.SceneExceptionRefresh(**{
             'last_refreshed': int(time.mktime(datetime.datetime.today().timetuple())),

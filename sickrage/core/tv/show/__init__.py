@@ -41,6 +41,7 @@ from sickrage.core.exceptions import ShowNotFoundException, \
     EpisodeNotFoundException, EpisodeDeletedException
 from sickrage.core.helpers import list_media_files, is_media_file, try_int, safe_getattr
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.config import INDEXER_TVRAGE
 from sickrage.indexers.exceptions import indexer_attributenotfound
@@ -85,8 +86,8 @@ class TVShow(MainDBBase):
     last_backlog_search = Column(Integer, default=datetime.datetime.now().toordinal())
     last_proper_search = Column(Integer, default=datetime.datetime.now().toordinal())
 
-    episodes = relationship('TVEpisode', back_populates='show', lazy='joined')
-    imdb_info = relationship('IMDbInfo', uselist=False, lazy='joined')
+    episodes = relationship('TVEpisode', back_populates='show')
+    imdb_info = relationship('IMDbInfo', uselist=False, backref='tv_shows')
 
     @property
     def is_anime(self):
@@ -144,8 +145,6 @@ class TVShow(MainDBBase):
     #         self._location = new_location
 
     def load_from_indexer(self, cache=True, tvapi=None):
-        from sickrage.indexers import IndexerApi
-
         if self.indexer is not INDEXER_TVRAGE:
             sickrage.app.log.debug(
                 str(self.indexer_id) + ": Loading show info from " + IndexerApi(self.indexer).name)
@@ -195,7 +194,58 @@ class TVShow(MainDBBase):
                 self.indexer).name + " as it is temporarily disabled.")
 
         # save to database
-        sickrage.app.main_db.update(self)
+        self.save_to_db()
+
+    def load_episodes_from_indexer(self, cache=True):
+        scanned_eps = {}
+
+        l_indexer_api_parms = IndexerApi(self.indexer).api_params.copy()
+        l_indexer_api_parms['cache'] = cache
+
+        l_indexer_api_parms['language'] = self.lang or sickrage.app.config.indexer_default_language
+
+        if self.dvdorder != 0:
+            l_indexer_api_parms['dvdorder'] = True
+
+        t = IndexerApi(self.indexer).indexer(**l_indexer_api_parms)
+
+        sickrage.app.log.debug(str(self.indexer_id) + ": Loading all episodes from " + IndexerApi(self.indexer).name + "..")
+
+        for season in t[self.indexer_id]:
+            scanned_eps[season] = {}
+            for episode in t[self.indexer_id][season]:
+                # need some examples of wtf episode 0 means to decide if we want it or not
+                if episode == 0:
+                    continue
+
+                try:
+                    curEp = self.get_episode(season, episode)
+                except EpisodeNotFoundException:
+                    sickrage.app.log.info(
+                        "%s: %s object for S%02dE%02d is incomplete, skipping this episode" % (
+                            self.indexer_id, IndexerApi(self.indexer).name, season or 0, episode or 0))
+                    continue
+                else:
+                    try:
+                        curEp.load_from_indexer(tvapi=t)
+                    except EpisodeDeletedException:
+                        sickrage.app.log.info("The episode was deleted, skipping the rest of the load")
+                        continue
+
+                with curEp.lock:
+                    sickrage.app.log.debug("%s: Loading info from %s for episode S%02dE%02d" % (
+                        self.indexer_id, IndexerApi(self.indexer).name, season or 0, episode or 0))
+
+                    curEp.load_from_indexer(season, episode, tvapi=t)
+                    curEp.save_to_db()
+
+                scanned_eps[season][episode] = True
+
+        # Done updating save last update date
+        self.last_update = datetime.date.today().toordinal()
+        self.save_to_db()
+
+        return scanned_eps
 
     def get_all_episodes(self, season=None, has_location=False):
         results = []
@@ -717,13 +767,6 @@ class TVShow(MainDBBase):
 
     def save_to_db(self):
         sickrage.app.log.debug("%i: Saving show to database: %s" % (self.indexer_id, self.name))
-
-        # try:
-        #     with sickrage.app.main_db.session() as session:
-        #         dbData = session.query(TVShow).filter_by(indexer_id=self.indexer_id).one()
-        #         dbData.update(**self.as_dict())
-        # except orm.exc.NoResultFound:
-        #     sickrage.app.main_db.add(self)
 
     def __str__(self):
         toReturn = ""

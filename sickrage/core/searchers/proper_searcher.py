@@ -298,7 +298,6 @@ class ProperSearcher(object):
         try:
             show = find_show(showid)
             show.last_proper_search = when
-            sickrage.app.main_db.update(show)
         except orm.exc.NoResultFound:
             pass
 

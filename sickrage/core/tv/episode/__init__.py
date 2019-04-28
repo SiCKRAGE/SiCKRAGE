@@ -794,7 +794,6 @@ class TVEpisode(object):
             dbData = MainDB.TVEpisode.query.filter_by(indexer=self.indexer, indexer_id=self.indexer_id,
                                                       showid=self.show.indexer_id).one()
             dbData.update(**tv_episode)
-            sickrage.app.main_db.update(dbData)
         except orm.exc.NoResultFound:
             sickrage.app.main_db.add(MainDB.TVEpisode(**tv_episode))
 

@@ -45,7 +45,7 @@ class srDatabase(object):
         self.db_path = os.path.join(sickrage.app.data_dir, '{}.db'.format(self.name))
         self.db_repository = os.path.join(os.path.dirname(__file__), self.name, 'db_repository')
         self.engine = create_engine('sqlite:///{}'.format(self.db_path), echo=False)
-        self.Session = scoped_session(sessionmaker(bind=self.engine, expire_on_commit=True))
+        self.Session = scoped_session(sessionmaker(bind=self.engine, autocommit=True))
 
         if not os.path.exists(self.db_path):
             api.version_control(self.engine, self.db_repository, api.version(self.db_repository))
@@ -116,14 +116,11 @@ class srDatabase(object):
                 sickrage.app.log.info('Migrating {} database table {}'.format(self.name, table))
                 self.delete(self.tables[table])
 
-                try:
-                    self.bulk_add(self.tables[table], rows)
-                except Exception as e:
-                    for row in rows:
-                        try:
-                            self.add(self.tables[table](**row))
-                        except Exception as e:
-                            pass
+                for row in rows:
+                    try:
+                        self.add(self.tables[table](**row))
+                    except Exception as e:
+                        pass
 
             shutil.move(migrate_file, backup_file)
 
@@ -131,31 +128,12 @@ class srDatabase(object):
             del migrate_tables
             del rows
 
-    @contextmanager
+    @property
     def session(self):
-        """ Creates a context with an open SQLAlchemy session.
-        """
-        session = self.Session()
-
-        try:
-            yield session
-            session.commit()
-        except Exception:
-            session.rollback()
-            raise
-
-    def bulk_add(self, table, rows):
-        with self.session() as session:
-            session.bulk_insert_mappings(table, rows)
+        return self.Session()
 
     def add(self, instance):
-        with self.session() as session:
-            session.add(instance)
+        self.session.add(instance)
 
     def delete(self, table, *args, **kwargs):
-        with self.session() as session:
-            session.query(table).filter_by(**kwargs).filter(*args).delete()
-
-    def update(self, obj):
-        with self.session() as session:
-            session.merge(obj)
+        self.session.query(table).filter_by(**kwargs).filter(*args).delete()

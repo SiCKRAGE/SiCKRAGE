@@ -200,7 +200,6 @@ def set_scene_numbering(indexer_id, indexer, season=0, episode=0, absolute_numbe
                                                            season=season, episode=episode).one()
             dbData.scene_season = sceneSeason
             dbData.scene_episode = sceneEpisode
-            sickrage.app.main_db.update(dbData)
         except orm.exc.NoResultFound:
             sickrage.app.main_db.add(MainDB.SceneNumbering(**{
                 'indexer': indexer,
@@ -217,7 +216,6 @@ def set_scene_numbering(indexer_id, indexer, season=0, episode=0, absolute_numbe
             dbData = MainDB.SceneNumbering.query.filter_by(indexer_id=indexer_id, indexer=indexer,
                                                            absolute_number=absolute_number).one()
             dbData.scene_absolute_number = sceneAbsolute
-            sickrage.app.main_db.update(dbData)
         except orm.exc.NoResultFound:
             sickrage.app.main_db.add(MainDB.SceneNumbering(**{
                 'indexer': indexer,
@@ -474,7 +472,6 @@ def xem_refresh(indexer_id, indexer, force=False):
         try:
             dbData = MainDB.XEMRefresh.query.filter_by(indexer_id=indexer_id).one()
             dbData.last_refreshed = int(time.mktime(datetime.datetime.today().timetuple()))
-            sickrage.app.main_db.update(dbData)
         except orm.exc.NoResultFound:
             sickrage.app.main_db.add(MainDB.XEMRefresh(**{
                 'indexer': indexer,
@@ -493,7 +490,6 @@ def xem_refresh(indexer_id, indexer, force=False):
             except Exception:
                 for dbData in MainDB.TVEpisode.query.filter_by(showid=indexer_id):
                     dbData.scene_season = dbData.scene_episode = dbData.scene_absolute_number = 0
-                    sickrage.app.main_db.update(dbData)
                 return
 
             # XEM API URL
@@ -523,12 +519,10 @@ def xem_refresh(indexer_id, indexer, force=False):
                     dbData.scene_season = entry['scene']['season']
                     dbData.scene_episode = entry['scene']['episode']
                     dbData.scene_absolute_number = entry['scene']['absolute']
-                    sickrage.app.main_db.update(dbData)
                 if 'scene_2' in entry:  # for doubles
                     dbData.scene_season = entry['scene_2']['season']
                     dbData.scene_episode = entry['scene_2']['episode']
                     dbData.scene_absolute_number = entry['scene_2']['absolute']
-                    sickrage.app.main_db.update(dbData)
         except Exception as e:
             sickrage.app.log.warning(
                 "Exception while refreshing XEM data for show {} on {}: {}".format(indexer_id,

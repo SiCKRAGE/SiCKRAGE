@@ -34,7 +34,7 @@ from sickrage.core.queues import srQueue, srQueueItem, srQueuePriorities
 from sickrage.core.scene_numbering import xem_refresh, get_xem_numbering_for_show
 from sickrage.core.traktapi import srTraktAPI
 from sickrage.core.tv.show import TVShow
-from sickrage.core.tv.show.helpers import load_imdb_info, load_episodes_from_indexer
+from sickrage.core.tv.show.helpers import load_imdb_info
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_attributenotfound, \
     indexer_error, indexer_exception
@@ -367,8 +367,6 @@ class QueueItemAdd(ShowQueueItem):
                     self.show.release_groups.set_black_keywords(self.blacklist)
                 if self.whitelist:
                     self.show.release_groups.set_white_keywords(self.whitelist)
-
-            sickrage.app.main_db.update(self.show)
         except indexer_exception as e:
             sickrage.app.log.warning(
                 _("Unable to add show due to an error with ") + IndexerApi(self.indexer).name + ": {}".format(e))
@@ -399,7 +397,7 @@ class QueueItemAdd(ShowQueueItem):
             sickrage.app.log.error(_("Error loading IMDb info: {}").format(e))
 
         try:
-            load_episodes_from_indexer(self.show.indexer_id)
+            self.show.load_episodes_from_indexer()
         except Exception as e:
             sickrage.app.log.error(
                 _("Error with ") + IndexerApi(self.show.indexer).name + _(", not creating episode list: {}").format(e))
@@ -567,14 +565,14 @@ class QueueItemUpdate(ShowQueueItem):
 
         # get episode list from TVDB
         try:
-            IndexerEpList = load_episodes_from_indexer(self.show.indexer_id)
+            IndexerEpList = self.show.load_episodes_from_indexer()
         except indexer_exception as e:
             sickrage.app.log.error("Unable to get info from " + IndexerApi(
                 self.show.indexer).name + ", the show info will not be refreshed: {}".format(e))
 
         if not IndexerEpList:
-            sickrage.app.log.error("No data returned from " + IndexerApi(
-                self.show.indexer).name + ", unable to update this show")
+            sickrage.app.log.error(
+                "No data returned from " + IndexerApi(self.show.indexer).name + ", unable to update this show")
         else:
             # for each ep we found on indexer delete it from the DB list
             for curSeason in IndexerEpList:
