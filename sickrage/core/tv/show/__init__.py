@@ -245,7 +245,7 @@ class TVShow(MainDBBase):
     def get_all_episodes(self, season=None, has_location=False):
         results = []
 
-        for x in MainDB.TVEpisode.query.filter_by(showid=self.indexer_id):
+        for x in self.episodes:
             if season and x.season != season:
                 continue
             if has_location and x.location == '':
@@ -253,7 +253,7 @@ class TVShow(MainDBBase):
             results += [x]
 
         ep_list = []
-        for cur_result in MainDB.TVEpisode.query.filter_by(showid=self.indexer_id):
+        for cur_result in self.episodes:
             cur_ep = self.get_episode(int(cur_result.season), int(cur_result.episode))
             if not cur_ep:
                 continue
@@ -446,7 +446,7 @@ class TVShow(MainDBBase):
 
         sickrage.app.log.debug("{}: Loading all episodes for show from DB".format(self.indexer_id))
 
-        for dbData in MainDB.TVEpisode.query.filter_by(showid=self.indexer_id):
+        for dbData in self.episodes:
             deleteEp = False
 
             curSeason = int(dbData.season)

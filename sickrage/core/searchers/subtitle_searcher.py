@@ -71,13 +71,12 @@ class SubtitleSearcher(object):
             if s.subtitles != 1:
                 continue
 
-            for e in MainDB.TVEpisode.query.filter_by(showid=s.indexer_id).filter(MainDB.TVEpisode.location != '',
-                                                                       ~MainDB.TVEpisode.subtitles.in_(
-                                                                           sickrage.subtitles.wanted_languages()),
-                                                                       or_(MainDB.TVEpisode.subtitles_searchcount <= 2,
-                                                                           and_(
-                                                                               MainDB.TVEpisode.subtitles_searchcount <= 7,
-                                                                               today - MainDB.TVEpisode.airdate))):
+            for e in MainDB.TVEpisode.query.filter_by(showid=s.indexer_id).filter(
+                    MainDB.TVEpisode.location != '', ~MainDB.TVEpisode.subtitles.in_(
+                        sickrage.subtitles.wanted_languages()
+                    ), or_(MainDB.TVEpisode.subtitles_searchcount <= 2,
+                           and_(MainDB.TVEpisode.subtitles_searchcount <= 7,
+                                today - MainDB.TVEpisode.airdate))):
                 results += [{
                     'show_name': s.name,
                     'showid': e.showid,

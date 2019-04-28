@@ -196,10 +196,7 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
                     seasonStrings.append("%02d" % ab_number)
 
     else:
-        numseasons = len(
-            {x.season for x in
-             MainDB.TVEpisode.query.filter_by(showid=show.indexer_id).filter(MainDB.TVEpisode.season != 0)})
-
+        numseasons = len({x.season for x in show.episodes if x.season > 0})
         seasonStrings = ["S%02d" % int(ep_obj.scene_season)]
 
     showNames = set(makeSceneShowSearchStrings(show, ep_obj.scene_season))
@@ -230,9 +227,7 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
 def makeSceneSearchString(show, ep_obj):
     toReturn = []
 
-    numseasons = len(
-        {x.season for x in
-         MainDB.TVEpisode.query.filter_by(showid=show.indexer_id).filter(MainDB.TVEpisode.season != 0)})
+    numseasons = len({x.season for x in show.episodes if x.season > 0})
 
     # see if we should use dates instead of episodes
     if (show.air_by_date or show.sports) and ep_obj.airdate != date.fromordinal(1):

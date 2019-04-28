@@ -738,10 +738,7 @@ class PostProcessor(object):
 
             # if there's no season then we can hopefully just use 1 automatically
             elif season is None and show:
-                if len({x.season for x in
-                        MainDB.TVEpisode.query.filter_by(
-                            showid=show.indexer_id, indexer=show.indexer
-                        ).filter(MainDB.TVEpisode.season != 0)}) == 1:
+                if len({x.season for x in show.episodes if x.season > 0}) == 1:
                     self._log("Don't have a season number, but this show appears to only have 1 season, setting "
                               "season number to 1...", sickrage.app.log.DEBUG)
                     season = 1

@@ -21,10 +21,9 @@
 import datetime
 
 import sickrage
-import sickrage.core.tv.show.helpers
-from sickrage.core import helpers
 from sickrage.core.common import UNAIRED, SKIPPED, statusStrings
 from sickrage.core.databases.main import MainDB
+from sickrage.core.tv.show import find_show
 
 
 def new_episode_finder():
@@ -35,10 +34,10 @@ def new_episode_finder():
     show = None
 
     for episode in MainDB.TVEpisode.query.filter_by(status=UNAIRED).filter(MainDB.TVEpisode.season > 0,
-                                                                 MainDB.TVEpisode.airdate > 1):
+                                                                           MainDB.TVEpisode.airdate > 1):
 
         if not show or int(episode.showid) != show.indexer_id:
-            show = sickrage.core.tv.show.helpers.find_show(int(episode.showid))
+            show = find_show(episode.showid)
 
         # for when there is orphaned series in the database but not loaded into our showlist
         if not show or show.paused:

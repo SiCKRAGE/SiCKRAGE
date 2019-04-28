@@ -433,8 +433,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                     Quality.qualityStrings[
                         seasonQual])
 
-                allEps = [int(x.episode) for x in MainDB.TVEpisode.query.filter_by(showid=show.indexer_id).filter(
-                    MainDB.TVEpisode.season.in_(searchedSeasons))]
+                allEps = [x.episode for x in show.episodes if x.season in searchedSeasons]
 
                 sickrage.app.log.debug("Episode list: " + str(allEps))
 
