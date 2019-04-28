@@ -2357,8 +2357,6 @@ class CMD_ShowPause(ApiCall):
         else:
             showObj.paused = self.pause
 
-        showObj.save_to_db()
-
         return _responds(RESULT_SUCCESS, msg='%s has been %s' % (showObj.name, ('resumed', 'paused')[showObj.paused]))
 
 

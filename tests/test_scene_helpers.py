@@ -46,7 +46,6 @@ class SceneTests(tests.SiCKRAGETestDBCase):
 
         s = TVShow(1, indexer_id)
         s.name = name
-        s.save_to_db()
 
         result = show_names.allPossibleShowNames(s)
         self.assertTrue(len(set(expected).intersection(set(result))) == len(expected))

@@ -23,7 +23,6 @@ import os
 import re
 import shutil
 import stat
-import threading
 import traceback
 
 import send2trash
@@ -193,9 +192,6 @@ class TVShow(MainDBBase):
             sickrage.app.log.warning(str(self.indexer_id) + ": NOT loading info from " + IndexerApi(
                 self.indexer).name + " as it is temporarily disabled.")
 
-        # save to database
-        self.save_to_db()
-
     def load_episodes_from_indexer(self, cache=True):
         scanned_eps = {}
 
@@ -243,7 +239,6 @@ class TVShow(MainDBBase):
 
         # Done updating save last update date
         self.last_update = datetime.date.today().toordinal()
-        self.save_to_db()
 
         return scanned_eps
 

@@ -599,7 +599,6 @@ class SaveShowNotifyListHandler(BaseHandler, ABC):
         try:
             show = find_show(int(show))
             show.notify_list = emails
-            show.save_to_db()
         except Exception:
             return self.write('ERROR')
 
@@ -1219,9 +1218,6 @@ class EditShowHandler(BaseHandler, ABC):
                         _("The folder at %s doesn't contain a tvshow.nfo - copy your files to that folder before "
                           "you change the directory in SiCKRAGE.") % location)
 
-            # save it to the DB
-            show_obj.save_to_db()
-
         # force the update
         if do_update:
             try:
@@ -1274,8 +1270,6 @@ class TogglePauseHandler(BaseHandler, ABC):
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         show_obj.paused = not show_obj.paused
-
-        show_obj.save_to_db()
 
         sickrage.app.alerts.message(
             _('%s has been %s') % (show_obj.name, (_('resumed'), _('paused'))[show_obj.paused]))

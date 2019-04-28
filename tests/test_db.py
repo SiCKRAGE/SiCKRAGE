@@ -34,7 +34,6 @@ class DBBasicTests(tests.SiCKRAGETestDBCase):
     def setUp(self):
         super(DBBasicTests, self).setUp()
         show = TVShow(1, 0o0001, "en")
-        show.save_to_db()
         sickrage.app.showlist += [show]
 
         ep = TVEpisode(show, 1, 1)

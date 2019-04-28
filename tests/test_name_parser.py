@@ -215,7 +215,6 @@ class UnicodeTests(tests.SiCKRAGETestDBCase):
         super(UnicodeTests, self).setUp()
         self.show = TVShow(1, 1, 'en')
         self.show.name = "The Big Bang Theory"
-        self.show.save_to_db()
 
     def _test_unicode(self, name, result):
         np = NameParser(True, showObj=self.show, validate_show=False)
@@ -280,7 +279,6 @@ class AnimeTests(tests.SiCKRAGETestDBCase):
         super(AnimeTests, self).setUp()
         self.show = TVShow(1, 1, 'en')
         self.show.anime = True
-        self.show.save_to_db()
 
     def _test_names(self, np, section, transform=None, verbose=False):
         """
@@ -337,7 +335,6 @@ class BasicTests(tests.SiCKRAGETestDBCase):
     def setUp(self):
         super(BasicTests, self).setUp()
         self.show = TVShow(1, 1, 'en')
-        self.show.save_to_db()
 
     def _test_names(self, np, section, transform=None, verbose=False):
         if VERBOSE or verbose:
