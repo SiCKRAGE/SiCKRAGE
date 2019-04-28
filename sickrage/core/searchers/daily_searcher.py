@@ -78,7 +78,7 @@ class DailySearcher(object):
         anyQualities, bestQualities = Quality.split_quality(show.quality)
         allQualities = list(set(anyQualities + bestQualities))
 
-        sickrage.app.log.debug("Seeing if we need anything from {}".format(show.name))
+        sickrage.app.log.debug("Seeing if we need anything that's not older then 7 days from {}".format(show.name))
 
         # check through the list of statuses to see if we want any
         for dbData in MainDB.TVEpisode.query.filter_by(showid=show.indexer_id).filter(MainDB.TVEpisode.season > 0,

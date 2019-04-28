@@ -105,7 +105,7 @@ class BacklogSearcher(object):
     def _get_segments(show, from_date):
         anyQualities, bestQualities = Quality.split_quality(show.quality)
 
-        sickrage.app.log.debug("Seeing if we need anything from {}".format(show.name))
+        sickrage.app.log.debug("Seeing if we need anything that's older then 7 days from {}".format(show.name))
 
         # check through the list of statuses to see if we want any
         wanted = []
