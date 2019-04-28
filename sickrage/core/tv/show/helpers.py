@@ -57,63 +57,6 @@ def get_show_list():
     return list(TVShow.query)
 
 
-def load_show_from_indexer(indexer_id, cache=True, tvapi=None):
-    from sickrage.indexers import IndexerApi
-
-    show = find_show(indexer_id)
-
-    if show.indexer is not INDEXER_TVRAGE:
-        sickrage.app.log.debug(
-            str(indexer_id) + ": Loading show info from " + IndexerApi(show.indexer).name)
-
-        t = tvapi
-        if not t:
-            lINDEXER_API_PARMS = IndexerApi(show.indexer).api_params.copy()
-            lINDEXER_API_PARMS['cache'] = cache
-
-            lINDEXER_API_PARMS['language'] = show.lang or sickrage.app.config.indexer_default_language
-
-            if show.dvdorder != 0:
-                lINDEXER_API_PARMS['dvdorder'] = True
-
-            t = IndexerApi(show.indexer).indexer(**lINDEXER_API_PARMS)
-
-        myEp = t[indexer_id]
-        if not myEp:
-            return
-
-        try:
-            show.name = myEp['seriesname'].strip()
-        except AttributeError:
-            raise indexer_attributenotfound("Found %s, but attribute 'seriesname' was empty." % indexer_id)
-
-        show.overview = safe_getattr(myEp, 'overview', show.overview)
-        show.classification = safe_getattr(myEp, 'classification', show.classification)
-        show.genre = safe_getattr(myEp, 'genre', show.genre)
-        show.network = safe_getattr(myEp, 'network', show.network)
-        show.runtime = safe_getattr(myEp, 'runtime', show.runtime)
-        show.imdb_id = safe_getattr(myEp, 'imdbid', show.imdb_id)
-
-        try:
-            show.airs = (safe_getattr(myEp, 'airsdayofweek') + " " + safe_getattr(myEp, 'airstime')).strip()
-        except:
-            pass
-
-        try:
-            show.startyear = try_int(
-                str(safe_getattr(myEp, 'firstaired') or datetime.date.fromordinal(1)).split('-')[0])
-        except:
-            pass
-
-        show.status = safe_getattr(myEp, 'status', show.status)
-    else:
-        sickrage.app.log.warning(str(indexer_id) + ": NOT loading info from " + IndexerApi(
-            show.indexer).name + " as it is temporarily disabled.")
-
-    # save to database
-    sickrage.app.main_db.update(show)
-
-
 def load_imdb_info(indexer_id):
     imdb_info_mapper = {
         'imdbvotes': 'votes',

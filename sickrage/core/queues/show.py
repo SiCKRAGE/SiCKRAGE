@@ -34,7 +34,7 @@ from sickrage.core.queues import srQueue, srQueueItem, srQueuePriorities
 from sickrage.core.scene_numbering import xem_refresh, get_xem_numbering_for_show
 from sickrage.core.traktapi import srTraktAPI
 from sickrage.core.tv.show import TVShow
-from sickrage.core.tv.show.helpers import load_show_from_indexer, load_imdb_info, load_episodes_from_indexer
+from sickrage.core.tv.show.helpers import load_imdb_info, load_episodes_from_indexer
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_attributenotfound, \
     indexer_error, indexer_exception
@@ -343,7 +343,7 @@ class QueueItemAdd(ShowQueueItem):
         try:
             self.show = TVShow(**{'indexer': self.indexer, 'indexer_id': self.indexer_id, 'lang': self.lang})
 
-            load_show_from_indexer(self.show.indexer_id)
+            self.show.load_from_indexer()
 
             # set up initial values
             self.show.location = self.showDir
@@ -544,7 +544,7 @@ class QueueItemUpdate(ShowQueueItem):
 
         try:
             sickrage.app.log.debug("Retrieving show info from " + IndexerApi(self.show.indexer).name + "")
-            load_show_from_indexer(self.show.indexer_id, cache=False)
+            self.show.load_from_indexer(cache=False)
         except indexer_error as e:
             sickrage.app.log.warning(
                 "Unable to contact " + IndexerApi(self.show.indexer).name + ", aborting: {}".format(e))

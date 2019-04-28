@@ -39,9 +39,11 @@ from sickrage.core.common import Quality, SKIPPED, WANTED, UNKNOWN, DOWNLOADED, 
 from sickrage.core.databases.main import MainDB, MainDBBase
 from sickrage.core.exceptions import ShowNotFoundException, \
     EpisodeNotFoundException, EpisodeDeletedException
-from sickrage.core.helpers import list_media_files, is_media_file, try_int
+from sickrage.core.helpers import list_media_files, is_media_file, try_int, safe_getattr
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from sickrage.indexers import IndexerApi
+from sickrage.indexers.config import INDEXER_TVRAGE
+from sickrage.indexers.exceptions import indexer_attributenotfound
 from sickrage.indexers.ui import ShowListUI
 
 
@@ -140,6 +142,60 @@ class TVShow(MainDBBase):
     #         sickrage.app.log.debug("Show location set to " + new_location)
     #         self.dirty = True
     #         self._location = new_location
+
+    def load_from_indexer(self, cache=True, tvapi=None):
+        from sickrage.indexers import IndexerApi
+
+        if self.indexer is not INDEXER_TVRAGE:
+            sickrage.app.log.debug(
+                str(self.indexer_id) + ": Loading show info from " + IndexerApi(self.indexer).name)
+
+            t = tvapi
+            if not t:
+                lINDEXER_API_PARMS = IndexerApi(self.indexer).api_params.copy()
+                lINDEXER_API_PARMS['cache'] = cache
+
+                lINDEXER_API_PARMS['language'] = self.lang or sickrage.app.config.indexer_default_language
+
+                if self.dvdorder != 0:
+                    lINDEXER_API_PARMS['dvdorder'] = True
+
+                t = IndexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
+
+            myEp = t[self.indexer_id]
+            if not myEp:
+                return
+
+            try:
+                self.name = myEp['seriesname'].strip()
+            except AttributeError:
+                raise indexer_attributenotfound("Found %s, but attribute 'seriesname' was empty." % self.indexer_id)
+
+            self.overview = safe_getattr(myEp, 'overview', self.overview)
+            self.classification = safe_getattr(myEp, 'classification', self.classification)
+            self.genre = safe_getattr(myEp, 'genre', self.genre)
+            self.network = safe_getattr(myEp, 'network', self.network)
+            self.runtime = safe_getattr(myEp, 'runtime', self.runtime)
+            self.imdb_id = safe_getattr(myEp, 'imdbid', self.imdb_id)
+
+            try:
+                self.airs = (safe_getattr(myEp, 'airsdayofweek') + " " + safe_getattr(myEp, 'airstime')).strip()
+            except:
+                pass
+
+            try:
+                self.startyear = try_int(
+                    str(safe_getattr(myEp, 'firstaired') or datetime.date.fromordinal(1)).split('-')[0])
+            except:
+                pass
+
+            self.status = safe_getattr(myEp, 'status', self.status)
+        else:
+            sickrage.app.log.warning(str(self.indexer_id) + ": NOT loading info from " + IndexerApi(
+                self.indexer).name + " as it is temporarily disabled.")
+
+        # save to database
+        sickrage.app.main_db.update(self)
 
     def get_all_episodes(self, season=None, has_location=False):
         results = []
