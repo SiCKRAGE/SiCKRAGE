@@ -65,7 +65,7 @@ class DailySearcher(object):
         self.amActive = False
 
     @staticmethod
-    def _get_segments(show, fromDate):
+    def _get_segments(show, from_date):
         """
         Get a list of episodes that we want to download
         :param show: Show these episodes are from
@@ -78,12 +78,14 @@ class DailySearcher(object):
         anyQualities, bestQualities = Quality.split_quality(show.quality)
         allQualities = list(set(anyQualities + bestQualities))
 
-        sickrage.app.log.debug("Seeing if we need anything that's not older then 7 days from {}".format(show.name))
+        sickrage.app.log.debug("Seeing if we need anything for today from {}".format(show.name))
 
         # check through the list of statuses to see if we want any
-        for dbData in MainDB.TVEpisode.query.filter_by(showid=show.indexer_id).filter(MainDB.TVEpisode.season > 0,
-                                                                                     MainDB.TVEpisode.airdate >= fromDate.toordinal()):
-            curStatus, curQuality = Quality.split_composite_status(int(dbData.status or -1))
+        for ep_obj in show.episodes:
+            if not ep_obj.season > 0 or not ep_obj.airdate >= from_date.toordinal():
+                continue
+
+            curStatus, curQuality = Quality.split_composite_status(int(ep_obj.status or -1))
 
             # if we need a better one then say yes
             if curStatus not in (WANTED, DOWNLOADED, SNATCHED, SNATCHED_PROPER):
@@ -105,7 +107,7 @@ class DailySearcher(object):
             if curStatus == DOWNLOADED and show.skip_downloaded:
                 continue
 
-            epObj = show.get_episode(int(dbData.season), int(dbData.episode))
+            epObj = show.get_episode(int(ep_obj.season), int(ep_obj.episode))
             epObj.wantedQuality = [i for i in allQualities if (i > curQuality and i != Quality.UNKNOWN)]
             wanted.append(epObj)
 

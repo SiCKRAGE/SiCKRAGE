@@ -105,15 +105,15 @@ class BacklogSearcher(object):
     def _get_segments(show, from_date):
         anyQualities, bestQualities = Quality.split_quality(show.quality)
 
-        sickrage.app.log.debug("Seeing if we need anything that's older then 7 days from {}".format(show.name))
+        sickrage.app.log.debug("Seeing if we need anything that's older then today from {}".format(show.name))
 
         # check through the list of statuses to see if we want any
         wanted = []
-        for result in MainDB.TVEpisode.query.filter_by(showid=show.indexer_id).filter(MainDB.TVEpisode.season > 0,
-                                                                                     datetime.date.today().toordinal() > MainDB.TVEpisode.airdate,
-                                                                                     MainDB.TVEpisode.airdate >= from_date.toordinal()):
+        for ep_obj in show.episodes:
+            if not ep_obj.season > 0 or not datetime.date.today().toordinal() > ep_obj.airdate > from_date.toordinal():
+                continue
 
-            curStatus, curQuality = Quality.split_composite_status(int(result.status or -1))
+            curStatus, curQuality = Quality.split_composite_status(int(ep_obj.status or -1))
 
             # if we need a better one then say yes
             if curStatus not in {WANTED, DOWNLOADED, SNATCHED, SNATCHED_PROPER}:
@@ -135,7 +135,7 @@ class BacklogSearcher(object):
             if curStatus == DOWNLOADED and show.skip_downloaded:
                 continue
 
-            epObj = show.get_episode(int(result.season), int(result.episode))
+            epObj = show.get_episode(int(ep_obj.season), int(ep_obj.episode))
             wanted.append(epObj)
 
         return wanted
