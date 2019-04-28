@@ -32,7 +32,7 @@ from sickrage.core.exceptions import CantRefreshShowException, \
 from sickrage.core.helpers import scrub
 from sickrage.core.queues import srQueue, srQueueItem, srQueuePriorities
 from sickrage.core.scene_numbering import xem_refresh, get_xem_numbering_for_show
-from sickrage.core.traktapi import srTraktAPI
+from sickrage.core.traktapi import TraktAPI
 from sickrage.core.tv.show import TVShow
 from sickrage.core.tv.show.helpers import load_imdb_info
 from sickrage.indexers import IndexerApi
@@ -336,7 +336,7 @@ class QueueItemAdd(ShowQueueItem):
                     ]
                 }
 
-                srTraktAPI()["sync/watchlist"].remove(data)
+                TraktAPI()["sync/watchlist"].remove(data)
 
             return self._finish_early()
 

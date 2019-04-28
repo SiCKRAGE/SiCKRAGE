@@ -48,7 +48,7 @@ from sickrage.core.scene_exceptions import get_scene_exceptions, update_scene_ex
 from sickrage.core.scene_numbering import get_scene_numbering_for_show, get_xem_numbering_for_show, \
     get_scene_absolute_numbering_for_show, get_xem_absolute_numbering_for_show, xem_refresh, set_scene_numbering, \
     get_scene_absolute_numbering, get_scene_numbering
-from sickrage.core.traktapi import srTraktAPI
+from sickrage.core.traktapi import TraktAPI
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
@@ -566,7 +566,7 @@ class GetTraktTokenHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         trakt_pin = self.get_query_argument('trakt_pin')
 
-        if srTraktAPI().authenticate(trakt_pin):
+        if TraktAPI().authenticate(trakt_pin):
             return self.write(_('Trakt Authorized'))
         return self.write(_('Trakt Not Authorized!'))
 

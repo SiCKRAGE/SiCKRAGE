@@ -33,9 +33,9 @@ from sickrage.core.helpers import sanitizeFileName, makeDir, chmod_as_parent, ch
     try_int
 from sickrage.core.helpers.anidb import short_group_names
 from sickrage.core.imdb_popular import imdbPopular
-from sickrage.core.traktapi import srTraktAPI
+from sickrage.core.traktapi import TraktAPI
 from sickrage.core.tv.show import TVShow
-from sickrage.core.tv.show.helpers import find_show
+from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.ui import AllShowsUI
@@ -256,22 +256,24 @@ class TraktShowsHandler(BaseHandler, ABC):
         posts them to addNewShow
         """
 
-        list = self.get_query_argument('list', 'trending')
+        show_list = self.get_query_argument('list', 'trending')
         limit = self.get_query_argument('limit', None) or 10
 
-        trakt_shows, black_list = getattr(srTraktAPI()['shows'], list)(extended="full", limit=limit), False
+        trakt_shows = []
 
-        # filter shows
-        trakt_shows = [x for x in trakt_shows if
-                       'tvdb' in x.ids and not find_show(int(x.ids['tvdb']))]
+        shows, black_list = getattr(TraktAPI()['shows'], show_list)(extended="full",
+                                                                    limit=int(limit) + len(get_show_list())), False
+
+        while len(trakt_shows) < int(limit):
+            trakt_shows += [x for x in shows if 'tvdb' in x.ids and not find_show(int(x.ids['tvdb']))]
 
         return self.render("/home/trakt_shows.mako",
-                           title="Trakt {} Shows".format(list.capitalize()),
-                           header="Trakt {} Shows".format(list.capitalize()),
+                           title="Trakt {} Shows".format(show_list.capitalize()),
+                           header="Trakt {} Shows".format(show_list.capitalize()),
                            enable_anime_options=False,
                            black_list=black_list,
-                           trakt_shows=trakt_shows,
-                           trakt_list=list,
+                           trakt_shows=trakt_shows[:int(limit)],
+                           trakt_list=show_list,
                            limit=limit,
                            controller='home',
                            action="trakt_shows")
@@ -306,7 +308,7 @@ class AddShowToBlacklistHandler(BaseHandler, ABC):
         indexer_id = self.get_query_argument('indexer_id')
 
         data = {'shows': [{'ids': {'tvdb': indexer_id}}]}
-        srTraktAPI()["users/me/lists/{list}".format(list=sickrage.app.config.trakt_blacklist_name)].add(data)
+        TraktAPI()["users/me/lists/{list}".format(list=sickrage.app.config.trakt_blacklist_name)].add(data)
         return self.redirect('/home/addShows/trendingShows/')
 
 

@@ -4,7 +4,7 @@
     import re
 
     import sickrage
-    from sickrage.core.traktapi import srTraktAPI
+    from sickrage.core.traktapi import TraktAPI
     from sickrage.core.helpers import anon_url
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets
@@ -2931,7 +2931,7 @@
                             </div>
                         </div>
                     </div>
-                    <input type="hidden" id="trakt_pin_url" value="${srTraktAPI()['oauth/pin'].url()}">
+                    <input type="hidden" id="trakt_pin_url" value="${TraktAPI()['oauth/pin'].url()}">
                     % if not sickrage.app.config.trakt_oauth_token:
                         <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5">

@@ -19,7 +19,7 @@
 
 
 import sickrage
-from sickrage.core.traktapi import srTraktAPI
+from sickrage.core.traktapi import TraktAPI
 from sickrage.indexers import IndexerApi
 from sickrage.notifiers import Notifiers
 
@@ -67,7 +67,7 @@ class TraktNotifier(Notifiers):
 
                 if sickrage.app.config.trakt_sync_watchlist:
                     if sickrage.app.config.trakt_remove_serieslist:
-                        srTraktAPI()["sync/watchlist"].remove(data)
+                        TraktAPI()["sync/watchlist"].remove(data)
 
                 # Add Season and Episode + Related Episodes
                 data['shows'][0]['seasons'] = [{'number': ep_obj.season, 'episodes': []}]
@@ -77,10 +77,10 @@ class TraktNotifier(Notifiers):
 
                 if sickrage.app.config.trakt_sync_watchlist:
                     if sickrage.app.config.trakt_remove_watchlist:
-                        srTraktAPI()["sync/watchlist"].remove(data)
+                        TraktAPI()["sync/watchlist"].remove(data)
 
                 # update library
-                srTraktAPI()["sync/collection"].add(data)
+                TraktAPI()["sync/collection"].add(data)
 
             except Exception as e:
                 sickrage.app.log.warning("Could not connect to Trakt service: %s" % e)
@@ -149,9 +149,9 @@ class TraktNotifier(Notifiers):
 
                 trakt_url = "sync/watchlist"
                 if update == "remove":
-                    srTraktAPI()[trakt_url].remove(data)
+                    TraktAPI()[trakt_url].remove(data)
                 else:
-                    srTraktAPI()[trakt_url].add(data)
+                    TraktAPI()[trakt_url].add(data)
 
             except Exception as e:
                 sickrage.app.log.warning("Could not connect to Trakt service: %s" % e)
@@ -207,7 +207,7 @@ class TraktNotifier(Notifiers):
         """
         try:
             if blacklist_name and blacklist_name is not None:
-                if not srTraktAPI()["users/me/lists/{list}".format(list=blacklist_name)].get():
+                if not TraktAPI()["users/me/lists/{list}".format(list=blacklist_name)].get():
                     return "Trakt blacklist doesn't exists"
             return "Test notice sent successfully to Trakt"
         except Exception as e:

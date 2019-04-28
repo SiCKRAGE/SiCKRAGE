@@ -31,7 +31,7 @@ from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import sanitizeFileName, makeDir, chmod_as_parent
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.queues.search import BacklogQueueItem
-from sickrage.core.traktapi import srTraktAPI
+from sickrage.core.traktapi import TraktAPI
 from sickrage.indexers import IndexerApi
 
 
@@ -125,7 +125,7 @@ class TraktSearcher(object):
         traktShow = None
 
         try:
-            library = srTraktAPI()["sync/collection"].shows() or {}
+            library = TraktAPI()["sync/collection"].shows() or {}
             if not library:
                 sickrage.app.log.debug("No shows found in your library, aborting library update")
                 return
@@ -154,7 +154,7 @@ class TraktSearcher(object):
             sickrage.app.log.debug("Removing %s from tv library" % show_obj.name)
 
             try:
-                srTraktAPI()["sync/collection"].remove(data)
+                TraktAPI()["sync/collection"].remove(data)
             except Exception as e:
                 sickrage.app.log.warning(
                     "Could not connect to Trakt service. Aborting removing show %s from Trakt library. Error: %s" % (
@@ -184,7 +184,7 @@ class TraktSearcher(object):
             sickrage.app.log.debug("Adding %s to tv library" % show_obj.name)
 
             try:
-                srTraktAPI()["sync/collection"].add(data)
+                TraktAPI()["sync/collection"].add(data)
             except Exception as e:
                 sickrage.app.log.warning(
                     "Could not connect to Trakt service. Aborting adding show %s to Trakt library. Error: %s" % (
@@ -206,7 +206,7 @@ class TraktSearcher(object):
 
         if len(trakt_data):
             try:
-                srTraktAPI()["sync/collection"].add(self.trakt_bulk_data_generate(trakt_data))
+                TraktAPI()["sync/collection"].add(self.trakt_bulk_data_generate(trakt_data))
                 self._getShowCollection()
             except Exception as e:
                 sickrage.app.log.warning("Could not connect to Trakt service. Error: %s" % e)
@@ -232,7 +232,7 @@ class TraktSearcher(object):
 
         if len(trakt_data):
             try:
-                srTraktAPI()["sync/collection"].remove(self.trakt_bulk_data_generate(trakt_data))
+                TraktAPI()["sync/collection"].remove(self.trakt_bulk_data_generate(trakt_data))
                 self._getShowCollection()
             except Exception as e:
                 sickrage.app.log.warning("Could not connect to Trakt service. Error: %s" % e)
@@ -257,7 +257,7 @@ class TraktSearcher(object):
         if len(trakt_data):
             try:
                 data = self.trakt_bulk_data_generate(trakt_data)
-                srTraktAPI()["sync/watchlist"].remove(data)
+                TraktAPI()["sync/watchlist"].remove(data)
                 self._getEpisodeWatchlist()
             except Exception as e:
                 sickrage.app.log.warning("Could not connect to Trakt service. Error: %s" % e)
@@ -282,7 +282,7 @@ class TraktSearcher(object):
         if len(trakt_data):
             try:
                 data = self.trakt_bulk_data_generate(trakt_data)
-                srTraktAPI()["sync/watchlist"].add(data)
+                TraktAPI()["sync/watchlist"].add(data)
                 self._getEpisodeWatchlist()
             except Exception as e:
                 sickrage.app.log.warning("Could not connect to Trakt service. Error %s" % e)
@@ -309,7 +309,7 @@ class TraktSearcher(object):
         if len(trakt_data):
             try:
                 data = {'shows': trakt_data}
-                srTraktAPI()["sync/watchlist"].add(data)
+                TraktAPI()["sync/watchlist"].add(data)
                 self._getShowWatchlist()
             except Exception as e:
                 sickrage.app.log.warning("Could not connect to Trakt service. Error: %s" % e)
@@ -322,7 +322,7 @@ class TraktSearcher(object):
         for show in get_show_list():
             if show.status == "Ended":
                 try:
-                    progress = srTraktAPI()["shows"].get(show.imdb_id)
+                    progress = TraktAPI()["shows"].get(show.imdb_id)
                 except Exception as e:
                     sickrage.app.log.warning(
                         "Could not connect to Trakt service. Aborting removing show %s from SiCKRAGE. Error: %s" % (
@@ -483,7 +483,7 @@ class TraktSearcher(object):
         """
         try:
             sickrage.app.log.debug("Getting Show Watchlist")
-            self.ShowWatchlist = srTraktAPI()["sync/watchlist"].shows() or {}
+            self.ShowWatchlist = TraktAPI()["sync/watchlist"].shows() or {}
         except Exception as e:
             sickrage.app.log.warning(
                 "Could not connect to trakt service, cannot download Show Watchlist: %s" % repr(e))
@@ -496,7 +496,7 @@ class TraktSearcher(object):
         """
         try:
             sickrage.app.log.debug("Getting Episode Watchlist")
-            self.EpisodeWatchlist = srTraktAPI()["sync/watchlist"].episodes() or {}
+            self.EpisodeWatchlist = TraktAPI()["sync/watchlist"].episodes() or {}
         except Exception as e:
             sickrage.app.log.warning(
                 "Could not connect to trakt service, cannot download Episode Watchlist: %s" % repr(e))
@@ -510,7 +510,7 @@ class TraktSearcher(object):
         """
         try:
             sickrage.app.log.debug("Getting Show Collection")
-            self.Collectionlist = srTraktAPI()["sync/collection"].shows() or {}
+            self.Collectionlist = TraktAPI()["sync/collection"].shows() or {}
         except Exception as e:
             sickrage.app.log.warning(
                 "Could not connect to trakt service, cannot download Show Collection: %s" % repr(e))

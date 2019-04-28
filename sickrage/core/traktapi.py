@@ -18,12 +18,11 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import sickrage
 from trakt import Trakt
 
 
-class srTraktAPI(object):
+class TraktAPI(object):
     def __init__(self):
         # Set trakt app id
         Trakt.configuration.defaults.app(
@@ -70,13 +69,13 @@ class srTraktAPI(object):
 
     def __getattr__(self, name):
         if hasattr(self, name):
-            return super(srTraktAPI, self).__getattribute__(name)
+            return super(TraktAPI, self).__getattribute__(name)
 
         return getattr(Trakt, name)
 
     def __setattr__(self, name, value):
         if hasattr(self, name):
-            return super(srTraktAPI, self).__setattr__(name, value)
+            return super(TraktAPI, self).__setattr__(name, value)
 
         setattr(Trakt, name, value)
 
@@ -84,13 +83,13 @@ class srTraktAPI(object):
         return Trakt[key]
 
 
-class traktException(Exception):
+class TraktException(Exception):
     pass
 
 
-class traktAuthException(traktException):
+class TraktAuthException(TraktException):
     pass
 
 
-class traktServerBusy(traktException):
+class TraktServerBusy(TraktException):
     pass
