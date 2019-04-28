@@ -72,7 +72,8 @@ from sickrage.core.webserver.handlers.manage import ManageHandler, ShowEpisodeSt
     ChangeEpisodeStatusesHandler, ShowSubtitleMissedHandler, SubtitleMissedHandler, DownloadSubtitleMissedHandler, \
     BacklogShowHandler, BacklogOverviewHandler, MassEditHandler, MassUpdateHandler, FailedDownloadsHandler
 from sickrage.core.webserver.handlers.manage.queues import ManageQueuesHandler, ForceBacklogSearchHandler, \
-    ForceFindPropersHandler, PauseDailySearcherHandler, PauseBacklogSearcherHandler, PausePostProcessorHandler
+    ForceFindPropersHandler, PauseDailySearcherHandler, PauseBacklogSearcherHandler, PausePostProcessorHandler, \
+    ForceDailySearchHandler
 from sickrage.core.webserver.handlers.root import RobotsDotTxtHandler, MessagesDotPoHandler, \
     APIBulderHandler, SetHomeLayoutHandler, SetPosterSortByHandler, SetPosterSortDirHandler, \
     ToggleDisplayShowSpecialsHandler, SetScheduleLayoutHandler, ToggleScheduleDisplayPausedHandler, \
@@ -332,7 +333,7 @@ class WebServer(object):
             (r'%s/manage/failedDownloads(/?)' % sickrage.app.config.web_root, FailedDownloadsHandler),
             (r'%s/manage/manageQueues(/?)' % sickrage.app.config.web_root, ManageQueuesHandler),
             (r'%s/manage/manageQueues/forceBacklogSearch(/?)' % sickrage.app.config.web_root, ForceBacklogSearchHandler),
-            (r'%s/manage/manageQueues/forceDailySearch(/?)' % sickrage.app.config.web_root, ForceBacklogSearchHandler),
+            (r'%s/manage/manageQueues/forceDailySearch(/?)' % sickrage.app.config.web_root, ForceDailySearchHandler),
             (r'%s/manage/manageQueues/forceFindPropers(/?)' % sickrage.app.config.web_root, ForceFindPropersHandler),
             (r'%s/manage/manageQueues/pauseDailySearcher(/?)' % sickrage.app.config.web_root, PauseDailySearcherHandler),
             (r'%s/manage/manageQueues/pauseBacklogSearcher(/?)' % sickrage.app.config.web_root, PauseBacklogSearcherHandler),
