@@ -35,6 +35,7 @@ from tornado.web import RequestHandler
 
 import sickrage
 from sickrage.core import helpers
+from sickrage.core.api import API
 from sickrage.core.classes import ErrorViewer, WarningViewer
 
 
@@ -111,7 +112,7 @@ class BaseHandler(RequestHandler, ABC):
     def get_current_user(self):
         try:
             if self.application.settings['httpclient_secret'] == self.get_cookie('sr_httpclient_token'):
-                return True
+                return {'email': ''}
 
             token = sickrage.app.oidc_client.refresh_token(self.get_secure_cookie('sr_refresh_token'))
             self.set_secure_cookie('sr_access_token', token['access_token'])

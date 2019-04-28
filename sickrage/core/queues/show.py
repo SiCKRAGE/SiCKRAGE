@@ -343,6 +343,9 @@ class QueueItemAdd(ShowQueueItem):
         try:
             self.show = TVShow(**{'indexer': self.indexer, 'indexer_id': self.indexer_id, 'lang': self.lang})
 
+            # add show to database
+            sickrage.app.main_db.add(self.show)
+
             self.show.load_from_indexer()
 
             # set up initial values
@@ -438,8 +441,6 @@ class QueueItemAdd(ShowQueueItem):
             self.show.scene = 1
 
         self.show.default_ep_status = self.default_status_after
-
-        self.show.save_to_db()
 
         sickrage.app.name_cache.build(self.show)
 

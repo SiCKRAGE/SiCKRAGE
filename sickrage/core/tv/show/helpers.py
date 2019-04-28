@@ -78,7 +78,7 @@ def load_imdb_info(indexer_id):
                 continue
 
     if show.imdb_id:
-        sickrage.app.log.debug(str(indexer_id) + ": Loading show info from IMDb")
+        sickrage.app.log.debug(str(indexer_id) + ": Obtaining IMDb info")
 
         imdb_info = IMDbAPI().search_by_imdb_id(show.imdb_id)
         if not imdb_info:
