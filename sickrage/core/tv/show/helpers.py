@@ -42,8 +42,8 @@ def find_show_by_name(term):
     from sickrage.core.tv.show import TVShow
 
     try:
-        return TVShow.query.filter_by(name=term).one()
-    except orm.exc.NoResultFound:
+        return TVShow.query.filter(TVShow.name.like('%{}%'.format(term))).one()
+    except (orm.exc.NoResultFound, orm.exc.MultipleResultsFound):
         return None
 
 
