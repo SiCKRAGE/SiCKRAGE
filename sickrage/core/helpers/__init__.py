@@ -1734,3 +1734,8 @@ def md5_file_hash(filename):
     with open(filename, 'rb') as fd:
         hasher.update(fd.read())
     return hasher.hexdigest()
+
+
+def get_extension(filename):
+    __, file_extension = os.path.splitext(filename)
+    return file_extension

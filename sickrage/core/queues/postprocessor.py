@@ -22,11 +22,9 @@ import threading
 import traceback
 from time import sleep
 
-from tornado.ioloop import IOLoop
-
 import sickrage
 from sickrage.core.common import cpu_presets
-from sickrage.core.process_tv import logHelper, processDir
+from sickrage.core.process_tv import ProcessResult
 from sickrage.core.queues import srQueue, srQueueItem, srQueuePriorities
 
 
@@ -46,6 +44,15 @@ postprocessor_queue_lock = threading.Lock()
 class PostProcessorQueue(srQueue):
     def __init__(self):
         srQueue.__init__(self, "POSTPROCESSORQUEUE")
+        self._output = []
+
+    @property
+    def output(self):
+        return '\n'.join(self._output)
+
+    def log(self, message, level=None):
+        sickrage.app.log.log(level or sickrage.app.log.INFO, message)
+        self._output.append(message)
 
     def find_in_queue(self, dirName, proc_type):
         """
@@ -101,22 +108,23 @@ class PostProcessorQueue(srQueue):
         """
 
         if not dirName:
-            return logHelper(
-                "{} post-processing attempted but directory is not set: {}".format(proc_type.title(), dirName),
-                sickrage.app.log.WARNING)
+            self.log("{} post-processing attempted but directory is not set: {}".format(proc_type.title(), dirName),
+                     sickrage.app.log.WARNING)
+            return self.output
 
         if not os.path.isabs(dirName):
-            return logHelper("{} post-processing attempted but directory is relative (and probably not what you "
-                             "really want to process): {}".format(proc_type.title(), dirName),
-                             sickrage.app.log.WARNING)
+            self.log("{} post-processing attempted but directory is relative (and probably not "
+                     "what you really want to process): {}".format(proc_type.title(), dirName),
+                     sickrage.app.log.WARNING)
+            return self.output
 
         if not delete_on:
             delete_on = (False, (not sickrage.app.config.no_delete, True)[process_method == "move"])[
                 proc_type == "auto"]
 
         if self.find_in_queue(dirName, proc_type):
-            message = logHelper("An item with directory {} is already being processed in the queue".format(dirName))
-            return message
+            self.log("An item with directory {} is already being processed in the queue".format(dirName))
+            return self.output
         else:
             sickrage.app.io_loop.add_callback(super(PostProcessorQueue, self).put,
                                               PostProcessorItem(dirName, nzbName, process_method, force, is_priority,
@@ -126,11 +134,8 @@ class PostProcessorQueue(srQueue):
                 result = await self._result_queue.get()
                 return result
 
-            message = logHelper(
-                "{} post-processing job for {} has been added to the queue".format(proc_type.title(), dirName)
-            )
-
-            return message + "<br\><span class='hidden'>Processing succeeded</span>"
+            self.log("{} post-processing job for {} has been added to the queue".format(proc_type.title(), dirName))
+            return self.output + "<br\><span class='hidden'>Processing succeeded</span>"
 
 
 class PostProcessorItem(srQueueItem):
@@ -159,16 +164,13 @@ class PostProcessorItem(srQueueItem):
         try:
             sickrage.app.log.info("Started {} post-processing job for: {}".format(self.proc_type, self.dirName))
 
-            self.result = str(processDir(
-                dirName=self.dirName,
+            self.result = ProcessResult(self.dirName, self.process_method, self.proc_type).process(
                 nzbName=self.nzbName,
-                process_method=self.process_method,
                 force=self.force,
                 is_priority=self.is_priority,
                 delete_on=self.delete_on,
-                failed=self.failed,
-                proc_type=self.proc_type
-            ))
+                failed=self.failed
+            )
 
             sickrage.app.log.info("Finished {} post-processing job for: {}".format(self.proc_type, self.dirName))
 
