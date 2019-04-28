@@ -420,33 +420,40 @@ class Tvdb:
         finally:
             return result
 
-    def _request(self, method, url, lang=None, **kwargs):
+    def _request(self, method, url, lang=None, retries=3, **kwargs):
         self.config['headers'].update({'Content-type': 'application/json'})
         self.config['headers']['Authorization'] = 'Bearer {}'.format(self.jwt_token)
         self.config['headers'].update({'Accept-Language': lang or self.config['language']})
 
-        # get response from theTVDB
-        try:
-            resp = WebSession(cache=self.config['cache_enabled']).request(
-                method, urljoin(self.config['api']['base'], url), headers=self.config['headers'],
-                timeout=sickrage.app.config.indexer_timeout, **kwargs
-            )
-        except Exception as e:
-            raise tvdb_error(str(e))
-
-        # handle requests exceptions
-        try:
-            if resp.status_code == 401:
-                raise tvdb_unauthorized(resp.json()['Error'])
-            elif resp.status_code >= 400:
-                raise tvdb_error(resp.json()['Error'])
-        except JSONDecodeError:
+        for i in range(0, retries):
             try:
-                resp.raise_for_status()
-            except RequestException as e:
-                raise tvdb_error(str(e))
+                # get response from theTVDB
+                resp = WebSession(cache=self.config['cache_enabled']).request(
+                    method, urljoin(self.config['api']['base'], url), headers=self.config['headers'],
+                    timeout=sickrage.app.config.indexer_timeout, **kwargs
+                )
+            except Exception as e:
+                if i < retries - 1:
+                    continue
+                raise tvdb_error(e)
 
-        return to_lowercase(resp.json())
+            # handle requests exceptions
+            try:
+                if resp.status_code == 401:
+                    raise tvdb_unauthorized(resp.json()['Error'])
+                elif resp.status_code >= 400:
+                    if i < retries - 1:
+                        continue
+                    raise tvdb_error(resp.json()['Error'])
+            except JSONDecodeError:
+                try:
+                    resp.raise_for_status()
+                except RequestException as e:
+                    if i < retries - 1:
+                        continue
+                    raise tvdb_error(e)
+
+            return to_lowercase(resp.json())
 
     def _setItem(self, sid, seas, ep, attrib, value):
         """Creates a new episode, creating Show(), Season() and
@@ -546,9 +553,9 @@ class Tvdb:
                 series_info.update((k, v) for k, v in self._request('get',
                                                                     self.config['api']['series'].format(id=sid)
                                                                     )['data'].items() if v)
-        except Exception:
-            sickrage.app.log.debug("[{}]: Series result returned zero".format(sid))
-            raise tvdb_error("[{}]: Series result returned zero".format(sid))
+        except Exception as e:
+            sickrage.app.log.debug("[{}]: Series result returned zero, ERROR: {}".format(sid, e))
+            raise tvdb_error("[{}]: Series result returned zero, ERROR: {}".format(sid, e))
 
         # get series data
         for k, v in series_info.items():
