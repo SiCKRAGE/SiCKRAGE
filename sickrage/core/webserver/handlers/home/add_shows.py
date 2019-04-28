@@ -112,10 +112,9 @@ class SearchIndexersForShowNameHandler(BaseHandler, ABC):
 class MassAddTableHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        root_dir = self.get_query_argument('rootDir', '')
+        root_dir = self.get_query_arguments('rootDir')
 
-        root_dirs = root_dir.split(',') if len(root_dir) else []
-        root_dirs = [unquote_plus(x) for x in root_dirs]
+        root_dirs = [unquote_plus(x) for x in root_dir]
 
         if sickrage.app.config.root_dirs:
             default_index = int(sickrage.app.config.root_dirs.split('|')[0])

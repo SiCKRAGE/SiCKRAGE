@@ -988,12 +988,3 @@ class TVShow(MainDBBase):
                     season = ep.season
 
         return season, episodes
-
-    def __getstate__(self):
-        d = dict(self.__dict__)
-        del d['lock']
-        return d
-
-    def __setstate__(self, d):
-        d['lock'] = threading.Lock()
-        self.__dict__.update(d)
