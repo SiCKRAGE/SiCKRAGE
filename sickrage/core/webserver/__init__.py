@@ -67,7 +67,8 @@ from sickrage.core.webserver.handlers.home.postprocess import HomePostProcessHan
 from sickrage.core.webserver.handlers.irc import IRCHandler
 from sickrage.core.webserver.handlers.login import LoginHandler
 from sickrage.core.webserver.handlers.logout import LogoutHandler
-from sickrage.core.webserver.handlers.logs import LogsHandler, LogsClearAllHanlder, LogsViewHandler
+from sickrage.core.webserver.handlers.logs import LogsHandler, LogsClearAllHanlder, LogsViewHandler, \
+    LogsClearErrorsHanlder, LogsClearWarningsHanlder
 from sickrage.core.webserver.handlers.manage import ManageHandler, ShowEpisodeStatusesHandler, EpisodeStatusesHandler, \
     ChangeEpisodeStatusesHandler, ShowSubtitleMissedHandler, SubtitleMissedHandler, DownloadSubtitleMissedHandler, \
     BacklogShowHandler, BacklogOverviewHandler, MassEditHandler, MassUpdateHandler, FailedDownloadsHandler
@@ -240,6 +241,8 @@ class WebServer(object):
             (r'%s/logs(/?)' % sickrage.app.config.web_root, LogsHandler),
             (r'%s/logs/view(/?)' % sickrage.app.config.web_root, LogsViewHandler),
             (r'%s/logs/clearAll(/?)' % sickrage.app.config.web_root, LogsClearAllHanlder),
+            (r'%s/logs/clearWarnings(/?)' % sickrage.app.config.web_root, LogsClearWarningsHanlder),
+            (r'%s/logs/clearErrors(/?)' % sickrage.app.config.web_root, LogsClearErrorsHanlder),
             (r'%s/browser(/?)' % sickrage.app.config.web_root, WebFileBrowserHandler),
             (r'%s/browser/complete(/?)' % sickrage.app.config.web_root, WebFileBrowserCompleteHandler),
             (r'%s/home(/?)' % sickrage.app.config.web_root, HomeHandler),

@@ -17,7 +17,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import datetime
 
 import sickrage
@@ -126,7 +125,7 @@ class ProgressIndicator:
         self.currentStatus = currentStatus
 
 
-class ProgressIndicators():
+class ProgressIndicators:
     _pi = {'massUpdate': [],
            'massAdd': [],
            'dailyShowUpdates': []}
@@ -149,7 +148,7 @@ class ProgressIndicators():
         ProgressIndicators._pi[name].append(indicator)
 
 
-class QueueProgressIndicator():
+class QueueProgressIndicator:
     """
     A class used by the UI to show the progress of the queue or a part of it.
     """
@@ -184,7 +183,7 @@ class QueueProgressIndicator():
             return int(float(numFinished) / float(numTotal) * 100)
 
 
-class LoadingTVShow():
+class LoadingTVShow:
     def __init__(self, dir):
         self.dir = dir
         self.show = None

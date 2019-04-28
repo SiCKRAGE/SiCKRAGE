@@ -30,13 +30,10 @@ from mako.lookup import TemplateLookup
 from requests import HTTPError
 from tornado import locale
 from tornado.httpclient import AsyncHTTPClient
-from tornado.ioloop import IOLoop
 from tornado.web import RequestHandler
 
 import sickrage
 from sickrage.core import helpers
-from sickrage.core.api import API
-from sickrage.core.classes import ErrorViewer, WarningViewer
 
 
 class BaseHandler(RequestHandler, ABC):
@@ -141,8 +138,8 @@ class BaseHandler(RequestHandler, ABC):
             'srWebRoot': sickrage.app.config.web_root,
             'srLocale': self.get_user_locale().code,
             'srLocaleDir': sickrage.LOCALE_DIR,
-            'numErrors': len(ErrorViewer.errors),
-            'numWarnings': len(WarningViewer.errors),
+            'numErrors': len(sickrage.app.log.error_viewer.get()),
+            'numWarnings': len(sickrage.app.log.warning_viewer.get()),
             'srStartTime': self.startTime,
             'makoStartTime': time.time(),
             'overall_stats': None,

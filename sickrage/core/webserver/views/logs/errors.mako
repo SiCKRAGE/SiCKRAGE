@@ -1,15 +1,14 @@
 <%inherit file="../layouts/main.mako"/>
 <%!
     import sickrage
-    from sickrage.core.classes import ErrorViewer, WarningViewer
 %>
 <%block name="content">
     <%
-        if logLevel == sickrage.app.log.logLevels['WARNING']:
-            errors = WarningViewer.errors
+        if int(logLevel) == sickrage.app.log.logLevels['WARNING']:
+            logs = sickrage.app.log.warning_viewer.get()
             title = _('WARNING Logs')
         else:
-            errors = ErrorViewer.errors
+            logs = sickrage.app.log.error_viewer.get()
             title = _('ERROR Logs')
     %>
     <div class="card">
@@ -18,12 +17,13 @@
         </div>
         <div class="card-body">
             <div class="text-left" style="white-space: pre-line;">
-                % if errors:
-                % for curError in sorted(errors, key=lambda error: error.time, reverse=True)[:500]:
-                                                ${curError.time} ${curError.message}
+                % if len(logs):
+                <% logs = sorted(logs, key=lambda x: x.time, reverse=True) %>
+                % for entry in logs[:500]:
+                    ${entry.time} ${entry.message}
                 % endfor
                 % else:
-                ${_('There are no events to display.')}
+                    ${_('There are no events to display.')}
                 % endif
             </div>
         </div>

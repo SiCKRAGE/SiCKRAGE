@@ -22,12 +22,8 @@ import datetime
 from sqlalchemy import orm
 
 import sickrage
-from sickrage.core.databases.main import MainDB
 from sickrage.core.api.imdb import IMDbAPI
-from sickrage.core.exceptions import EpisodeNotFoundException, EpisodeDeletedException
-from sickrage.core.helpers import safe_getattr, try_int
-from sickrage.indexers.config import INDEXER_TVRAGE
-from sickrage.indexers.exceptions import indexer_attributenotfound
+from sickrage.core.databases.main import MainDB
 
 
 def find_show(indexer_id):

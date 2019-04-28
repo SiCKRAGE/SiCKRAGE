@@ -21,7 +21,7 @@ import os
 from abc import ABC
 from urllib.parse import urlencode
 
-from tornado.escape import json_encode
+from tornado.escape import json_encode, json_decode
 from tornado.httputil import url_concat
 from tornado.web import authenticated
 
@@ -504,9 +504,11 @@ class MassEditHandler(BaseHandler, ABC):
             i += 1
 
         show_ids = to_edit.split("|")
-        errors = []
+        warnings, errors = [], []
         for curShow in show_ids:
+            cur_warnings = []
             cur_errors = []
+
             show_obj = find_show(int(curShow))
             if not show_obj:
                 continue
@@ -606,12 +608,25 @@ class MassEditHandler(BaseHandler, ABC):
             )
 
             if response.body:
-                cur_errors += [response.body]
+                cur_warnings += json_decode(response.body)['warnings']
+                cur_errors += json_decode(response.body)['errors']
+
+            if cur_warnings:
+                sickrage.app.log.warning("Warnings: " + str(cur_warnings))
+                warnings.append('<b>%s:</b>\n<ul>' % show_obj.name + ' '.join(
+                    ['<li>%s</li>' % warning for warning in cur_warnings]) + "</ul>")
 
             if cur_errors:
                 sickrage.app.log.error("Errors: " + str(cur_errors))
                 errors.append('<b>%s:</b>\n<ul>' % show_obj.name + ' '.join(
                     ['<li>%s</li>' % error for error in cur_errors]) + "</ul>")
+
+        if len(warnings) > 0:
+            sickrage.app.alerts.message(
+                _('{num_warnings:d} warning{plural} while saving changes:').format(num_warnings=len(warnings),
+                                                                                   plural="" if len(
+                                                                                       warnings) == 1 else "s"),
+                " ".join(warnings))
 
         if len(errors) > 0:
             sickrage.app.alerts.error(

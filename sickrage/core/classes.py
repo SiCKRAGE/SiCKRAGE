@@ -185,14 +185,14 @@ class WarningViewer(object):
     the list to be cleared.
     """
 
-    errors = []
+    warnings = []
 
-    def add(self, error, ui=False):
-        self.errors += [(error, UIWarning(error))[ui]]
+    def add(self, warning, ui=False):
+        self.warnings += [(warning, UIWarning(warning))[ui]]
 
     @classmethod
     def clear(cls):
-        cls.errors = []
+        cls.warnings = []
 
     def get(self):
-        return self.errors
+        return self.warnings

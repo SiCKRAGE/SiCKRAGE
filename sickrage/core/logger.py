@@ -17,7 +17,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import logging
 import os
 import pkgutil
@@ -32,6 +31,7 @@ from unidecode import unidecode
 
 import sickrage
 from sickrage.core import makeDir
+from sickrage.core.classes import ErrorViewer, WarningViewer
 
 
 class Logger(logging.getLoggerClass()):
@@ -79,6 +79,10 @@ class Logger(logging.getLoggerClass()):
         # set custom level for database logging
         logging.addLevelName(self.logLevels['DB'], 'DB')
         self.setLevel(self.logLevels['DB'])
+
+        # viewers
+        self.warning_viewer = WarningViewer()
+        self.error_viewer = ErrorViewer()
 
         # start logger
         self.start()
@@ -158,9 +162,7 @@ class Logger(logging.getLoggerClass()):
 
             # sending record to UI
             if record.levelno in [WARNING, ERROR]:
-                from sickrage.core.classes import WarningViewer
-                from sickrage.core.classes import ErrorViewer
-                (WarningViewer(), ErrorViewer())[record.levelno == ERROR].add(
+                (self.warning_viewer, self.error_viewer)[record.levelno == ERROR].add(
                     "{}::{}".format(record.threadName, record.msg), True)
 
             return record

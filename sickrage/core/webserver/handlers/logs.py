@@ -24,7 +24,6 @@ from abc import ABC
 from tornado.web import authenticated
 
 import sickrage
-from sickrage.core.classes import ErrorViewer, WarningViewer
 from sickrage.core.helpers import readFileBuffered
 from sickrage.core.webserver.handlers.base import BaseHandler
 
@@ -32,8 +31,11 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 class LogsHandler(BaseHandler, ABC):
     def initialize(self):
         self.logs_menu = [
-            {'title': _('Clear All'), 'path': '/logs/clearAll/',
-             'requires': self.have_errors() or self.have_warnings(),
+            {'title': _('Clear Warnings'), 'path': '/logs/clearWarnings/',
+             'requires': self.have_warnings(),
+             'icon': 'fas fa-trash'},
+            {'title': _('Clear Errors'), 'path': '/logs/clearErrors/',
+             'requires': self.have_errors(),
              'icon': 'fas fa-trash'},
         ]
 
@@ -53,19 +55,33 @@ class LogsHandler(BaseHandler, ABC):
         )
 
     def have_errors(self):
-        if len(ErrorViewer.errors) > 0:
+        if len(sickrage.app.log.error_viewer.get()) > 0:
             return True
 
     def have_warnings(self):
-        if len(WarningViewer.errors) > 0:
+        if len(sickrage.app.log.warning_viewer.get()) > 0:
             return True
+
+
+class LogsClearWarningsHanlder(BaseHandler, ABC):
+    @authenticated
+    def get(self, *args, **kwargs):
+        sickrage.app.log.warning_viewer.clear()
+        self.redirect("/logs/view/")
+
+
+class LogsClearErrorsHanlder(BaseHandler, ABC):
+    @authenticated
+    def get(self, *args, **kwargs):
+        sickrage.app.log.error_viewer.clear()
+        self.redirect("/logs/view/")
 
 
 class LogsClearAllHanlder(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        WarningViewer.clear()
-        ErrorViewer.clear()
+        sickrage.app.log.warning_viewer.clear()
+        sickrage.app.log.error_viewer.clear()
         self.redirect("/logs/view/")
 
 

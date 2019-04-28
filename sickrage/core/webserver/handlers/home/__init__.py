@@ -1147,9 +1147,6 @@ class EditShowHandler(BaseHandler, ABC):
                 do_update_exceptions = True
 
             if anime:
-                if not show_obj.release_groups:
-                    show_obj.release_groups = BlackAndWhiteList(show_obj.indexer_id)
-
                 if whitelist:
                     shortwhitelist = short_group_names(whitelist)
                     show_obj.release_groups.set_white_keywords(shortwhitelist)
@@ -1241,7 +1238,7 @@ class EditShowHandler(BaseHandler, ABC):
                 warnings.append(_("Unable to force an update on scene numbering of the show."))
 
         if direct_call:
-            return map(str, warnings + errors)
+            return self.write(json_encode({'warnings': warnings, 'errors': errors}))
 
         if len(warnings) > 0:
             sickrage.app.alerts.message(
