@@ -95,7 +95,7 @@ class History:
         """
 
         date = (datetime.today() - timedelta(days=30)).strftime(History.date_format)
-        sickrage.app.main_db.delete(MainDB.History, MainDB.History.data < date)
+        sickrage.app.main_db.delete(MainDB.History, MainDB.History.date < date)
 
     @staticmethod
     def _logHistoryItem(action, showid, season, episode, quality, resource, provider, version=-1):
