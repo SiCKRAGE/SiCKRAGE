@@ -53,6 +53,7 @@ from tornado.web import RequestHandler
 import sickrage.subtitles
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.databases.main import MainDB
+from sickrage.core.tv.episode import TVEpisode
 
 try:
     from futures import ThreadPoolExecutor
@@ -796,7 +797,7 @@ class CMD_Episode(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         try:
-            episode = MainDB.TVEpisode.query.filter_by(showid=self.indexer_id, season=self.s, episode=self.e).one()
+            episode = TVEpisode.query.filter_by(showid=self.indexer_id, season=self.s, episode=self.e).one()
 
             showPath = showObj.location
 
@@ -962,7 +963,7 @@ class CMD_EpisodeSetStatus(ApiCall):
                     continue
 
                 epObj.status = self.status
-                epObj.save_to_db()
+                # epObj.save_to_db()
 
                 if self.status == WANTED:
                     start_backlog = True
@@ -2414,8 +2415,8 @@ class CMD_ShowSeasonList(ApiCall):
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
-        seasonList = set(x.season for x in MainDB.TVEpisode.query.filter_by(showid=self.indexer_id).order_by(
-            MainDB.TVEpisode.season if not self.sort == 'desc' else MainDB.TVEpisode.season.desc()))
+        seasonList = set(x.season for x in TVEpisode.query.filter_by(showid=self.indexer_id).order_by(
+            TVEpisode.season if not self.sort == 'desc' else TVEpisode.season.desc()))
 
         return _responds(RESULT_SUCCESS, seasonList)
 
@@ -2447,7 +2448,7 @@ class CMD_ShowSeasons(ApiCall):
         if self.season is None:
             seasons = {}
 
-            for row in MainDB.TVEpisode.query.filter_by(showid=self.indexer_id):
+            for row in TVEpisode.query.filter_by(showid=self.indexer_id):
                 status, quality = Quality.split_composite_status(int(row.status))
                 row.status = _get_status_strings(status)
                 row.quality = get_quality_string(quality)
@@ -2472,7 +2473,7 @@ class CMD_ShowSeasons(ApiCall):
             seasons = {}
 
             row = None
-            for row in MainDB.TVEpisode.query.filter_by(showid=self.indexer_id, season=self.season):
+            for row in TVEpisode.query.filter_by(showid=self.indexer_id, season=self.season):
                 curEpisode = int(row.episode)
                 status, quality = Quality.split_composite_status(int(row.status))
                 row.status = _get_status_strings(status)
@@ -2587,7 +2588,7 @@ class CMD_ShowStats(ApiCall):
             episode_qualities_counts_snatch[statusCode] = 0
 
         # the main loop that goes through all episodes
-        for row in MainDB.TVEpisode.query.filter_by(showid=self.indexer_id).filter(MainDB.TVEpisode.season != 0):
+        for row in TVEpisode.query.filter_by(showid=self.indexer_id).filter(TVEpisode.season != 0):
             status, quality = Quality.split_composite_status(int(row.status))
             if quality in [Quality.NONE]:
                 continue

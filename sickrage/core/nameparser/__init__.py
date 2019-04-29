@@ -28,13 +28,12 @@ from sqlalchemy import orm
 
 import sickrage
 from sickrage.core import scene_exceptions, common
-from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import MultipleShowObjectsException
 from sickrage.core.helpers import remove_extension, strip_accents
-from sickrage.core.tv.show.helpers import find_show_by_name, find_show
 from sickrage.core.nameparser import regexes
 from sickrage.core.scene_numbering import get_absolute_number_from_season_and_episode, get_indexer_absolute_numbering, \
     get_indexer_numbering
+from sickrage.core.tv.show.helpers import find_show_by_name, find_show
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_episodenotfound, indexer_error
 
@@ -44,26 +43,25 @@ class NameParser(object):
     NORMAL_REGEX = 1
     ANIME_REGEX = 2
 
-    def __init__(self, file_name=True, showObj=None, naming_pattern=False, validate_show=True):
+    def __init__(self, file_name=True, show_id=None, naming_pattern=False, validate_show=True):
         self.file_name = file_name
-        self.showObj = showObj
+        self.show_obj = find_show(show_id)
         self.naming_pattern = naming_pattern
         self.validate_show = validate_show
 
-        if self.showObj and not self.showObj.is_anime:
+        if self.show_obj and not self.show_obj.is_anime:
             self._compile_regexes(self.NORMAL_REGEX)
-        elif self.showObj and self.showObj.is_anime:
+        elif self.show_obj and self.show_obj.is_anime:
             self._compile_regexes(self.ANIME_REGEX)
         else:
             self._compile_regexes(self.ALL_REGEX)
 
     def get_show(self, name):
-        show = None
         show_id = None
         show_names = [name]
 
         if not name:
-            return show, show_id
+            return show_id
 
         def cache_lookup(term):
             return sickrage.app.name_cache.get(term)
@@ -96,12 +94,8 @@ class NameParser(object):
 
                     sickrage.app.name_cache.put(show_name, show_id)
 
-                    if not show:
-                        if self.validate_show:
-                            show = find_show(show_id)
-                        else:
-                            from sickrage.core.tv.show import TVShow
-                            show = TVShow(1, show_id)
+                    if self.validate_show and not find_show(show_id):
+                        continue
                 except Exception:
                     pass
 
@@ -109,7 +103,7 @@ class NameParser(object):
                 # ignore show name by caching it with a indexer_id of 0
                 sickrage.app.name_cache.put(show_name, 0)
 
-        return show, show_id or 0
+        return show_id or 0
 
     @staticmethod
     def clean_series_name(series_name):
@@ -157,7 +151,7 @@ class NameParser(object):
             return
 
         matches = []
-        bestResult = None
+        best_result = None
 
         for (cur_regex_num, cur_regex_name, cur_regex) in self.compiled_regexes:
             match = cur_regex.match(name)
@@ -249,44 +243,36 @@ class NameParser(object):
 
         if len(matches):
             # pick best match with highest score based on placement
-            bestResult = max(sorted(matches, reverse=True, key=lambda x: x.which_regex), key=lambda x: x.score)
+            best_result = max(sorted(matches, reverse=True, key=lambda x: x.which_regex), key=lambda x: x.score)
 
-            bestResult.show = self.showObj
-            bestResult.indexer_id = self.showObj.indexer_id if self.showObj else 0
+            show_obj = None
+            best_result.indexer_id = self.show_obj.indexer_id if self.show_obj else 0
 
             if not self.naming_pattern:
                 # try and create a show object for this result
-                bestResult.show, bestResult.indexer_id = self.get_show(bestResult.series_name)
-
-                # confirm passed in show object indexer id matches result show object indexer id
-                if self.showObj and bestResult.show:
-                    if self.showObj.indexer_id == bestResult.show.indexer_id:
-                        bestResult.show = self.showObj
-                    else:
-                        bestResult.show = None
-                        bestResult.indexer_id = 0
-                elif self.showObj and not bestResult.show and not self.validate_show:
-                    bestResult.show = self.showObj
+                best_result.indexer_id = self.get_show(best_result.series_name)
+                show_obj = find_show(best_result.indexer_id)
 
             # if this is a naming pattern test or result doesn't have a show object then return best result
-            if not bestResult.show or self.naming_pattern:
-                return bestResult
+            if not show_obj or self.naming_pattern:
+                return best_result
 
             # get quality
-            bestResult.quality = common.Quality.name_quality(name, bestResult.show.is_anime)
+            best_result.quality = common.Quality.name_quality(name, best_result.show.is_anime)
 
             new_episode_numbers = []
             new_season_numbers = []
             new_absolute_numbers = []
 
             # if we have an air-by-date show then get the real season/episode numbers
-            if bestResult.is_air_by_date:
-                airdate = bestResult.air_date.toordinal()
+            if best_result.is_air_by_date:
+                airdate = best_result.air_date.toordinal()
 
                 try:
-                    dbData = MainDB.TVEpisode.query.filter_by(showid=bestResult.show.indexer_id,
-                                                              indexer=bestResult.show.indexer,
-                                                              airdate=airdate).one()
+                    from sickrage.core.tv.episode import TVEpisode
+                    dbData = TVEpisode.query.filter_by(showid=show_obj.indexer_id,
+                                                       indexer=show_obj.indexer,
+                                                       airdate=airdate).one()
                     season_number = int(dbData.season)
                     episode_numbers = [int(dbData.episode)]
                 except orm.exc.NoResultFound:
@@ -295,68 +281,68 @@ class NameParser(object):
 
                 if not season_number or not episode_numbers:
                     try:
-                        lINDEXER_API_PARMS = IndexerApi(bestResult.show.indexer).api_params.copy()
+                        lINDEXER_API_PARMS = IndexerApi(best_result.show.indexer).api_params.copy()
 
                         lINDEXER_API_PARMS[
-                            'language'] = bestResult.show.lang or sickrage.app.config.indexer_default_language
+                            'language'] = best_result.show.lang or sickrage.app.config.indexer_default_language
 
-                        t = IndexerApi(bestResult.show.indexer).indexer(**lINDEXER_API_PARMS)
+                        t = IndexerApi(best_result.show.indexer).indexer(**lINDEXER_API_PARMS)
 
-                        epObj = t[bestResult.show.indexer_id].airedOn(bestResult.air_date)[0]
+                        epObj = t[best_result.show.indexer_id].airedOn(best_result.air_date)[0]
 
                         season_number = int(epObj["airedseason"])
                         episode_numbers = [int(epObj["airedepisodenumber"])]
                     except indexer_episodenotfound:
-                        if bestResult.in_showlist:
+                        if best_result.in_showlist:
                             sickrage.app.log.warning("Unable to find episode with date {air_date} for show {show}, "
-                                                     "skipping".format(air_date=bestResult.air_date,
-                                                                       show=bestResult.show.name))
+                                                     "skipping".format(air_date=best_result.air_date,
+                                                                       show=show_obj.name))
                         episode_numbers = []
                     except indexer_error as e:
                         sickrage.app.log.warning(
-                            "Unable to contact " + IndexerApi(bestResult.show.indexer).name + ": {}".format(e))
+                            "Unable to contact " + IndexerApi(show_obj.show.indexer).name + ": {}".format(e))
                         episode_numbers = []
 
                 for epNo in episode_numbers:
                     s = season_number
                     e = epNo
 
-                    if bestResult.show.is_scene and not skip_scene_detection:
-                        (s, e) = get_indexer_numbering(bestResult.show.indexer_id,
-                                                       bestResult.show.indexer,
+                    if show_obj.is_scene and not skip_scene_detection:
+                        (s, e) = get_indexer_numbering(show_obj.indexer_id,
+                                                       show_obj.indexer,
                                                        season_number,
                                                        epNo)
                     new_episode_numbers.append(e)
                     new_season_numbers.append(s)
 
-            elif bestResult.show.is_anime and bestResult.ab_episode_numbers:
-                for epAbsNo in bestResult.ab_episode_numbers:
+            elif show_obj.is_anime and best_result.ab_episode_numbers:
+                for epAbsNo in best_result.ab_episode_numbers:
                     a = epAbsNo
 
-                    if bestResult.show.is_scene:
-                        scene_season = scene_exceptions.get_scene_exception_by_name(bestResult.series_name)[1]
-                        a = get_indexer_absolute_numbering(bestResult.show.indexer_id,
-                                                           bestResult.show.indexer, epAbsNo,
+                    if best_result.show.is_scene:
+                        scene_season = scene_exceptions.get_scene_exception_by_name(best_result.series_name)[1]
+                        a = get_indexer_absolute_numbering(show_obj.indexer_id,
+                                                           show_obj.indexer, epAbsNo,
                                                            True, scene_season)
 
-                    (s, e) = bestResult.show.get_all_episodes_from_absolute_number([a])
+                    (s, e) = show_obj.get_all_episodes_from_absolute_number([a])
 
                     new_absolute_numbers.append(a)
                     new_episode_numbers.extend(e)
                     new_season_numbers.append(s)
 
-            elif bestResult.season_number and bestResult.episode_numbers:
-                for epNo in bestResult.episode_numbers:
-                    s = bestResult.season_number
+            elif best_result.season_number and best_result.episode_numbers:
+                for epNo in best_result.episode_numbers:
+                    s = best_result.season_number
                     e = epNo
 
-                    if bestResult.show.is_scene and not skip_scene_detection:
-                        (s, e) = get_indexer_numbering(bestResult.show.indexer_id,
-                                                       bestResult.show.indexer,
-                                                       bestResult.season_number,
+                    if show_obj.is_scene and not skip_scene_detection:
+                        (s, e) = get_indexer_numbering(show_obj.indexer_id,
+                                                       show_obj.indexer,
+                                                       best_result.season_number,
                                                        epNo)
-                    if bestResult.show.is_anime:
-                        a = get_absolute_number_from_season_and_episode(bestResult.show, s, e)
+                    if show_obj.is_anime:
+                        a = get_absolute_number_from_season_and_episode(show_obj.indexer_id, s, e)
                         if a:
                             new_absolute_numbers.append(a)
 
@@ -383,20 +369,20 @@ class NameParser(object):
             new_absolute_numbers.sort()
 
             if len(new_absolute_numbers):
-                bestResult.ab_episode_numbers = new_absolute_numbers
+                best_result.ab_episode_numbers = new_absolute_numbers
 
             if len(new_season_numbers) and len(new_episode_numbers):
-                bestResult.episode_numbers = new_episode_numbers
-                bestResult.season_number = new_season_numbers[0]
+                best_result.episode_numbers = new_episode_numbers
+                best_result.season_number = new_season_numbers[0]
 
-            if bestResult.show.is_scene and not skip_scene_detection:
+            if best_result.show.is_scene and not skip_scene_detection:
                 sickrage.app.log.debug(
-                    "Scene converted parsed result {} into {}".format(bestResult.original_name, bestResult))
+                    "Scene converted parsed result {} into {}".format(best_result.original_name, best_result))
 
         # CPU sleep
         time.sleep(0.02)
 
-        return bestResult
+        return best_result
 
     def _combine_results(self, first, second, attr):
         # if the first doesn't exist then return the second or nothing

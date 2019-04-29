@@ -28,6 +28,7 @@ import sickrage
 from sickrage.core.common import cpu_presets
 from sickrage.core.queues import srQueue, srQueueItem, srQueuePriorities
 from sickrage.core.search import searchProviders, snatchEpisode
+from sickrage.core.tv.show import find_show
 from sickrage.core.tv.show.history import FailedHistory, History
 
 search_queue_lock = threading.Lock()
@@ -225,11 +226,11 @@ class ManualSearchQueueItem(srQueueItem):
 
 
 class BacklogQueueItem(srQueueItem):
-    def __init__(self, show, segment):
+    def __init__(self, indexer_id, episode_ids):
         super(BacklogQueueItem, self).__init__('Backlog Search', BACKLOG_SEARCH)
-        self.name = 'BACKLOG-' + str(show.indexer_id)
-        self.show = show
-        self.segment = segment
+        self.name = 'BACKLOG-' + str(indexer_id)
+        self.show = find_show(indexer_id)
+        self.episode_ids = episode_ids
         self.priority = srQueuePriorities.LOW
         self.success = False
         self.started = False
@@ -240,7 +241,7 @@ class BacklogQueueItem(srQueueItem):
         try:
             sickrage.app.log.info("Starting backlog search for: [" + self.show.name + "]")
 
-            search_result = searchProviders(self.show, self.segment, manualSearch=False)
+            search_result = searchProviders(self.show.indexer_id, self.episode_ids, manualSearch=False)
             if search_result:
                 for result in search_result:
                     # just use the first result for now

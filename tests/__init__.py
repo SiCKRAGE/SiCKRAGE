@@ -84,7 +84,7 @@ class SiCKRAGETestCase(unittest.TestCase):
         sickrage.app.config.naming_pattern = 'Season.%0S/%S.N.S%0SE%0E.%E.N'
         sickrage.app.config.tv_download_dir = os.path.join(self.TESTDIR, 'Downloads')
 
-        episode.TVEpisode.populateEpisode = self._fake_specify_ep
+        episode.TVEpisode.populate_episode = self._fake_specify_ep
 
     def setUp(self, **kwargs):
         if self.TESTALL and self.__module__ in self.TESTSKIPPED:

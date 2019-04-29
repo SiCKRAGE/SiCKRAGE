@@ -31,7 +31,9 @@ from sickrage.core.common import Quality, SEASON_RESULT, SNATCHED_BEST, \
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import show_names
-from sickrage.core.nzbSplitter import splitNZBResult
+from sickrage.core.nzbSplitter import split_nzb_result
+from sickrage.core.tv.episode.helpers import find_episode
+from sickrage.core.tv.show import find_show
 from sickrage.core.tv.show.history import FailedHistory, History
 from sickrage.notifiers import Notifiers
 from sickrage.providers import NZBProvider, NewznabProvider, TorrentProvider, TorrentRssProvider
@@ -110,7 +112,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
                 curEpObj.status = Quality.composite_status(endStatus, result.quality)
 
             # save episode to DB
-            curEpObj.save_to_db()
+            # curEpObj.save_to_db()
 
         if curEpObj.status not in Quality.DOWNLOADED:
             try:
@@ -133,7 +135,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
     return True
 
 
-def pickBestResult(results, show):
+def pickBestResult(results, show_id):
     """
     Find the best result out of a list of search results for a show
 
@@ -143,15 +145,14 @@ def pickBestResult(results, show):
     """
     results = results if isinstance(results, list) else [results]
 
+    show = find_show(show_id)
+
     sickrage.app.log.debug("Picking the best result out of " + str([x.name for x in results]))
 
     bestResult = None
 
     # find the best result for the current episode
     for cur_result in results:
-        if show and cur_result.show is not show:
-            continue
-
         # build the black And white list
         if show.is_anime:
             if not show.release_groups.is_valid(cur_result):
@@ -305,7 +306,7 @@ def isFirstBestMatch(result):
     return False
 
 
-def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, cacheOnly=False):
+def searchProviders(show_id, episode_ids, manualSearch=False, downCurQuality=False, cacheOnly=False):
     """
     Walk providers for information on shows
 
@@ -316,12 +317,14 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
     :return: results for search
     """
 
+    show = find_show(show_id)
+
     # build name cache for show
     sickrage.app.name_cache.build(show)
 
     origThreadName = threading.currentThread().getName()
 
-    def perform_searches():
+    def perform_searches(show_id, episode_ids):
         search_results = {}
         found_results = {}
         final_results = []
@@ -359,19 +362,19 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                 try:
                     threading.currentThread().setName(origThreadName + "::[" + providerObj.name + "]")
 
-                    if len(episodes):
+                    if len(episode_ids):
                         if search_mode == 'eponly':
                             sickrage.app.log.info("Performing episode search for " + show.name)
                         else:
                             sickrage.app.log.info("Performing season pack search for " + show.name)
 
                     # search provider for episodes
-                    search_results = providerObj.findSearchResults(show,
-                                                                   episodes,
-                                                                   search_mode,
-                                                                   manualSearch,
-                                                                   downCurQuality,
-                                                                   cacheOnly)
+                    search_results = providerObj.find_search_results(show.indexer_id,
+                                                                     episode_ids,
+                                                                     search_mode,
+                                                                     manualSearch,
+                                                                     downCurQuality,
+                                                                     cacheOnly)
                 except AuthException as e:
                     sickrage.app.log.warning("Authentication error: {}".format(e))
                     break
@@ -383,15 +386,15 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
 
                 if len(search_results):
                     # make a list of all the results for this provider
-                    for curEp in search_results:
-                        if curEp in found_results:
-                            found_results[providerObj.name][curEp] += search_results[curEp]
+                    for cur_eid in search_results:
+                        if cur_eid in found_results:
+                            found_results[providerObj.name][cur_eid] += search_results[cur_eid]
                         else:
-                            found_results[providerObj.name][curEp] = search_results[curEp]
+                            found_results[providerObj.name][cur_eid] = search_results[cur_eid]
 
                         # Sort results by seeders if available
                         if providerObj.type == 'torrent' or getattr(providerObj, 'torznab', False):
-                            found_results[providerObj.name][curEp].sort(key=lambda k: int(k.seeders), reverse=True)
+                            found_results[providerObj.name][cur_eid].sort(key=lambda k: int(k.seeders), reverse=True)
 
                     break
                 elif not providerObj.search_fallback or search_count == 2:
@@ -411,7 +414,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
             # pick the best season NZB
             bestSeasonResult = None
             if SEASON_RESULT in found_results[providerObj.name]:
-                bestSeasonResult = pickBestResult(found_results[providerObj.name][SEASON_RESULT], show)
+                bestSeasonResult = pickBestResult(found_results[providerObj.name][SEASON_RESULT], show.indexer_id)
 
             highest_quality_overall = 0
             for cur_episode in found_results[providerObj.name]:
@@ -424,7 +427,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
 
             # see if every episode is wanted
             if bestSeasonResult:
-                searchedSeasons = {x.season for x in episodes}
+                searchedSeasons = {find_episode(show_id, eid).season for eid in episode_ids}
 
                 # get the quality of the season nzb
                 seasonQual = bestSeasonResult.quality
@@ -440,7 +443,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                 allWanted = True
                 anyWanted = False
                 for curEpNum in allEps:
-                    for season in set([x.season for x in episodes]):
+                    for season in {find_episode(show_id, eid).season for eid in episode_ids}:
                         if not show.want_episode(season, curEpNum, seasonQual, downCurQuality):
                             allWanted = False
                         else:
@@ -452,12 +455,12 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                     sickrage.app.log.info(
                         "Every ep in this season is needed, downloading the whole " + bestSeasonResult.provider.type + " " + bestSeasonResult.name)
 
-                    epObjs = []
+                    episode_ids = []
                     for curEpNum in allEps:
-                        for season in set([x.season for x in episodes]):
-                            epObjs.append(show.get_episode(season, curEpNum))
+                        for season in {find_episode(show_id, eid).season for eid in episode_ids}:
+                            episode_ids.append(show.get_episode(season, curEpNum).indexer_id)
 
-                    bestSeasonResult.episodes = epObjs
+                    bestSeasonResult.episode_ids = episode_ids
 
                     return [bestSeasonResult]
 
@@ -470,7 +473,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                             "Breaking apart the NZB and adding the individual ones to our results")
 
                         # if not, break it apart and add them as the lowest priority results
-                        individualResults = splitNZBResult(bestSeasonResult)
+                        individualResults = split_nzb_result(bestSeasonResult)
                         for curResult in individualResults:
                             epNum = -1
                             if len(curResult.episodes) == 1:
@@ -483,11 +486,13 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                             else:
                                 found_results[providerObj.name][epNum] = [curResult]
 
-                    # If this is a torrent all we can do is leech the entire torrent, user will have to select which eps not do download in his torrent client
+                    # If this is a torrent all we can do is leech the entire torrent, user will have to select which
+                    # eps not do download in his torrent client
                     else:
-                        # Season result from Torrent Provider must be a full-season torrent, creating multi-ep result for it.
-                        sickrage.app.log.info(
-                            "Adding multi-ep result for full-season torrent. Set the episodes you don't want to 'don't download' in your torrent client if desired!")
+                        # Season result from Torrent Provider must be a full-season torrent, creating multi-ep result
+                        # for it.
+                        sickrage.app.log.info("Adding multi-ep result for full-season torrent. Set the episodes you "
+                                              "don't want to 'don't download' in your torrent client if desired!")
 
                         epObjs = []
                         for curEpNum in allEps:
@@ -595,9 +600,9 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                         wantedEpCount += 1
 
             # make sure we search every provider for results unless we found everything we wanted
-            if wantedEpCount == len(episodes):
+            if wantedEpCount == len(episode_ids):
                 break
 
         return final_results
 
-    return perform_searches()
+    return perform_searches(show_id, episode_ids)

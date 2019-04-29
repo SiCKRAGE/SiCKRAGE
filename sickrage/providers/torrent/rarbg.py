@@ -74,7 +74,7 @@ class RarbgProvider(TorrentProvider):
 
         return self.token is not None
 
-    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
         results = []
 
         if not self.login():
@@ -103,7 +103,7 @@ class RarbgProvider(TorrentProvider):
             else:
                 search_params['sort'] = self.sorting if self.sorting else 'seeders'
                 search_params['mode'] = 'search'
-                search_params['search_tvdb'] = ep_obj.show.indexer_id
+                search_params['search_tvdb'] = show_id
 
             for search_string in search_strings[mode]:
                 if mode != 'RSS':

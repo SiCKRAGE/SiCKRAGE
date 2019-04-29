@@ -29,14 +29,14 @@ class SearchResult(object):
     Represents a search result from an indexer.
     """
 
-    def __init__(self, episodes):
+    def __init__(self, episodes_ids):
         self.provider = None
 
         # release name
         self.name = ""
 
         # release show object
-        self.show = None
+        self.show_id = None
 
         # URL to the NZB/torrent file
         self.url = ""
@@ -45,7 +45,7 @@ class SearchResult(object):
         self.extraInfo = []
 
         # list of TVEpisode objects that this result is associated with
-        self.episodes = episodes
+        self.episode_ids = episodes_ids
 
         # quality of the release
         self.quality = Quality.UNKNOWN

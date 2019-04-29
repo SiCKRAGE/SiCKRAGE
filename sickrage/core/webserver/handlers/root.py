@@ -31,6 +31,7 @@ from sickrage.core import AccountAPI
 from sickrage.core.api import API
 from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import remove_article
+from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
 from sickrage.core.tv.show.helpers import get_show_list
 from sickrage.core.webserver import ApiHandler
@@ -68,7 +69,7 @@ class APIBulderHandler(BaseHandler, ABC):
             return (remove_article(x), x)[not x or sickrage.app.config.sort_article]
 
         episodes = {}
-        for result in MainDB.TVEpisode.query.order_by(MainDB.TVEpisode.season, MainDB.TVEpisode.episode):
+        for result in TVEpisode.query.order_by(TVEpisode.season, TVEpisode.episode):
             if result['showid'] not in episodes:
                 episodes[result['showid']] = {}
 

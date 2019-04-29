@@ -71,7 +71,7 @@ class HDBitsProvider(TorrentProvider):
 
         return title, url
 
-    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
         results = []
 
         sickrage.app.log.debug("Search string: %s" % search_strings)

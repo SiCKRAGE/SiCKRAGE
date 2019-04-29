@@ -29,6 +29,7 @@ import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser, convert_size
 from sickrage.core.helpers.show_names import allPossibleShowNames
+from sickrage.core.tv.show import find_show
 from sickrage.providers import TorrentProvider
 
 
@@ -93,11 +94,11 @@ class NewpctProvider(TorrentProvider):
 
         return [search_strings]
 
-    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
         results = []
 
         # Only search if user conditions are true
-        lang_info = '' if not ep_obj or not ep_obj.show else ep_obj.show.lang
+        lang_info = find_show(show_id).lang
 
         for mode in search_strings:
             sickrage.app.log.debug('Search mode: {}'.format(mode))

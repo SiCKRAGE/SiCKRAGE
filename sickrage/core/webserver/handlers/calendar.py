@@ -26,6 +26,7 @@ from tornado.web import authenticated
 import sickrage
 from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import try_int
+from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
 
@@ -70,7 +71,7 @@ class CalendarHandler(BaseHandler, ABC):
                 continue
 
             for episode in show.episodes:
-                if not past_date <= MainDB.TVEpisode.airdate < future_date:
+                if not past_date <= TVEpisode.airdate < future_date:
                     continue
 
                 air_date_time = sickrage.app.tz_updater.parse_date_time(episode.airdate, show.airs,

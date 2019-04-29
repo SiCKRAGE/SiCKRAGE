@@ -46,7 +46,7 @@ class SkyTorrents(TorrentProvider):
         self.regex = re.compile(
             '(?P<seeders>\d+) seeder\(s\), (?P<leechers>\d+) leecher\(s\), (\d+) file\(s\) (?P<size>[^\]]*)')
 
-    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
         results = []
 
         """

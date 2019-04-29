@@ -47,7 +47,7 @@ class Torrent9Provider(TorrentProvider):
 
         self.cache = TVCache(self, min_time=20)
 
-    def search(self, search_strings, age=0, ep_obj=None, **kwargs):  # pylint: disable=too-many-locals
+    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
         results = []
 
         for mode in search_strings:

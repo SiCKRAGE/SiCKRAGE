@@ -121,8 +121,6 @@ class srQueueItem(object):
     def __init__(self, name, action_id=0):
         super(srQueueItem, self).__init__()
         self.name = name.replace(" ", "-").upper()
-        self.lock = threading.Lock()
-        self.stop = threading.Event()
         self.action_id = action_id
         self.added = None
         self.result = None

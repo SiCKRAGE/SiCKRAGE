@@ -25,6 +25,7 @@ import re
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser, try_int
+from sickrage.core.tv.show import find_show
 from sickrage.providers import TorrentProvider
 
 
@@ -42,9 +43,10 @@ class EliteTorrentProvider(TorrentProvider):
 
         self.cache = TVCache(self)
 
-    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
         results = []
-        lang_info = '' if not ep_obj or not ep_obj.show else ep_obj.show.lang
+
+        lang_info = find_show(show_id).lang
 
         """
         Search query:

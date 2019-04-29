@@ -29,33 +29,31 @@ from sickrage.core.common import Quality
 from sickrage.core.common import SKIPPED, WANTED, UNKNOWN
 from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import sanitizeFileName, makeDir, chmod_as_parent
+from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.queues.search import BacklogQueueItem
 from sickrage.core.traktapi import TraktAPI
 from sickrage.indexers import IndexerApi
 
 
-def setEpisodeToWanted(show, s, e):
+def set_episode_to_wanted(show, s, e):
     """
     Sets an episode to wanted, only if it is currently skipped
     """
     epObj = show.get_episode(int(s), int(e))
     if epObj:
-        with epObj.lock:
-            if epObj.status != SKIPPED or epObj.airdate == date.fromordinal(1):
-                return
+        if epObj.status != SKIPPED or epObj.airdate == date.fromordinal(1):
+            return
 
-            sickrage.app.log.info("Setting episode %s S%02dE%02d to wanted" % (show.name, s, e))
-            # figure out what segment the episode is in and remember it so we can backlog it
+        sickrage.app.log.info("Setting episode %s S%02dE%02d to wanted" % (show.name, s, e))
 
-            epObj.status = WANTED
-            epObj.save_to_db()
+        epObj.status = WANTED
 
-        sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(show, [epObj]))
+        sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put,
+                                          BacklogQueueItem(show.indexer_id, [epObj.indexer_id]))
 
         sickrage.app.log.info(
-            "Starting backlog search for %s S%02dE%02d because some episodes were set to wanted" % (
-                show.name, s, e))
+            "Starting backlog search for %s S%02dE%02d because some episodes were set to wanted" % (show.name, s, e))
 
 
 class TraktSearcher(object):
@@ -271,8 +269,8 @@ class TraktSearcher(object):
         sickrage.app.log.debug("WATCHLIST::ADD::START - Look for Episodes to Add to Trakt Watchlist")
 
         for s in get_show_list():
-            for e in MainDB.TVEpisode.query.filter_by(showid=s.indexer_id).filter(
-                    ~MainDB.TVEpisode.episode.in_(Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN] + [WANTED])):
+            for e in TVEpisode.query.filter_by(showid=s.indexer_id).filter(
+                    ~TVEpisode.episode.in_(Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN] + [WANTED])):
                 trakt_id = IndexerApi(s.indexer).trakt_id
                 if self._checkInList(trakt_id, str(e.showid), e.season, e.episode):
                     sickrage.app.log.debug(
@@ -362,7 +360,7 @@ class TraktSearcher(object):
                     newShow = find_show(indexer_id)
 
                     if newShow is not None:
-                        setEpisodeToWanted(newShow, 1, 1)
+                        set_episode_to_wanted(newShow, 1, 1)
                     else:
                         self.todoWanted.append((indexer_id, 1, 1))
 
@@ -405,7 +403,7 @@ class TraktSearcher(object):
                     if newShow.indexer == indexer:
                         for season_number, season in show.seasons.items():
                             for episode_number, _ in season.episodes.items():
-                                setEpisodeToWanted(newShow, int(season_number), int(episode_number))
+                                set_episode_to_wanted(newShow, int(season_number), int(episode_number))
             except TypeError:
                 sickrage.app.log.debug("Could not parse the output from trakt for %s " % show.title)
 
@@ -454,7 +452,7 @@ class TraktSearcher(object):
 
         for episode in episodes:
             self.todoWanted.remove(episode)
-            setEpisodeToWanted(show, episode[1], episode[2])
+            set_episode_to_wanted(show, episode[1], episode[2])
 
     def _checkInList(self, trakt_id, showid, season, episode, List=None):
         """
@@ -531,8 +529,8 @@ class TraktSearcher(object):
         for indexer_id, indexer, show_name, startyear, season, episode in data:
             if indexer_id not in shows:
                 shows[indexer_id] = {'title': show_name,
-                                    'year': startyear,
-                                    'ids': {IndexerApi(indexer).trakt_id: indexer_id}}
+                                     'year': startyear,
+                                     'ids': {IndexerApi(indexer).trakt_id: indexer_id}}
 
             if indexer_id not in seasons:
                 seasons[indexer_id] = {}

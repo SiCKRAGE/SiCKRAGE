@@ -26,6 +26,7 @@ import sickrage
 from sickrage.core import scene_exceptions
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import sanitizeSceneName, episode_num, try_int
+from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.providers import TorrentProvider
 
 
@@ -52,7 +53,7 @@ class BTNProvider(TorrentProvider):
             return False
         return True
 
-    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
         """
         Search a provider and parse the results.
         :param search_strings: A dict with {mode: search value}
@@ -73,7 +74,7 @@ class BTNProvider(TorrentProvider):
             sickrage.app.log.debug('Search mode: {}'.format(mode))
 
             if mode != 'RSS':
-                searches = self._search_params(ep_obj, mode)
+                searches = self._search_params(show_id, episode_id, mode)
             else:
                 searches = [search_params]
 
@@ -155,24 +156,24 @@ class BTNProvider(TorrentProvider):
 
         return title, url
 
-    def _search_params(self, ep_obj, mode, season_numbering=None):
-        if not ep_obj:
-            return []
-
+    def _search_params(self, show_id, episode_id, mode, season_numbering=None):
         searches = []
+
         season = 'Season' if mode == 'Season' else ''
 
-        air_by_date = ep_obj.show.air_by_date
-        sports = ep_obj.show.sports
+        episode_obj = find_episode(show_id, episode_id)
+
+        air_by_date = episode_obj.show.air_by_date
+        sports = episode_obj.show.sports
 
         if not season_numbering and (air_by_date or sports):
             date_fmt = '%Y' if season else '%Y.%m.%d'
-            search_name = ep_obj.airdate.strftime(date_fmt)
+            search_name = episode_obj.airdate.strftime(date_fmt)
         else:
             search_name = '{type} {number}'.format(
                 type=season,
-                number=ep_obj.scene_season if season else episode_num(
-                    ep_obj.scene_season, ep_obj.scene_episode
+                number=episode_obj.scene_season if season else episode_num(
+                    episode_obj.scene_season, episode_obj.scene_episode
                 ),
             ).strip()
 
@@ -182,12 +183,12 @@ class BTNProvider(TorrentProvider):
         }
 
         # Search
-        if ep_obj.show.indexer == 1:
-            params['tvdb'] = ep_obj.show.indexer_id
+        if episode_obj.show.indexer == 1:
+            params['tvdb'] = episode_obj.show.indexer_id
             searches.append(params)
         else:
             name_exceptions = list(
-                set(scene_exceptions.get_scene_exceptions(ep_obj.show.indexer_id) + [ep_obj.show.name]))
+                set(scene_exceptions.get_scene_exceptions(episode_obj.show.indexer_id) + [episode_obj.show.name]))
             for name in name_exceptions:
                 # Search by name if we don't have tvdb id
                 params['series'] = sanitizeSceneName(name)
@@ -195,9 +196,7 @@ class BTNProvider(TorrentProvider):
 
         # extend air by date searches to include season numbering
         if air_by_date and not season_numbering:
-            searches.extend(
-                self._search_params(ep_obj, mode, season_numbering=True)
-            )
+            searches.extend(self._search_params(show_id, episode_id, mode, season_numbering=True))
 
         return searches
 

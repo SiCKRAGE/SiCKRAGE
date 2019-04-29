@@ -25,6 +25,7 @@ from urllib.parse import urljoin
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
+from sickrage.core.tv.show import find_show
 from sickrage.providers import TorrentProvider
 
 
@@ -79,11 +80,13 @@ class TorrentLeechProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
         results = []
 
         if not self.login():
             return results
+
+        show = find_show(show_id)
 
         for mode in search_strings:
             sickrage.app.log.debug("Search Mode: %s" % mode)
@@ -93,7 +96,7 @@ class TorrentLeechProvider(TorrentProvider):
 
                     categories = ["2", "7", "35"]
                     categories += ["26", "32", "44"] if mode == "Episode" else ["27"]
-                    if ep_obj and ep_obj.show and ep_obj.show.is_anime:
+                    if show.is_anime:
                         categories += ["34"]
                 else:
                     categories = ["2", "26", "27", "32", "7", "34", "35", "44"]

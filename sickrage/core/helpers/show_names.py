@@ -26,11 +26,8 @@ from functools import partial
 import sickrage
 from sickrage.core.common import DOWNLOADED, Quality, SNATCHED, WANTED, \
     countryList
-from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import sanitizeSceneName, strip_accents
-from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
-    NameParser
-from sickrage.core.scene_exceptions import get_scene_exceptions
+from sickrage.core.tv.show import find_show
 
 resultFilters = [
     "sub(bed|ed|pack|s)",
@@ -80,6 +77,8 @@ def filterBadReleases(name, parse=True):
     :param parse:
     :return:
     """
+
+    from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
 
     try:
         if parse:
@@ -262,7 +261,7 @@ def makeSceneSearchString(show, ep_obj):
     return toReturn
 
 
-def allPossibleShowNames(show, season=-1):
+def allPossibleShowNames(show_id, season=-1):
     """
     Figures out every possible variation of the name for a particular show. Includes TVDB name, TVRage name,
     country codes on the end, eg. "Show Name (AU)", and any scene exception names.
@@ -273,10 +272,14 @@ def allPossibleShowNames(show, season=-1):
     :rtype: list[unicode]
     """
 
-    show_names = get_scene_exceptions(show.indexer_id, season=season)[:]
+    from sickrage.core.scene_exceptions import get_scene_exceptions
+
+    show = find_show(show_id)
+
+    show_names = get_scene_exceptions(show_id, season=season)[:]
     if not show_names:  # if we dont have any season specific exceptions fallback to generic exceptions
         season = -1
-        show_names = get_scene_exceptions(show.indexer_id, season=season)[:]
+        show_names = get_scene_exceptions(show_id, season=season)[:]
 
     if season in [-1, 1]:
         show_names.append(show.name)

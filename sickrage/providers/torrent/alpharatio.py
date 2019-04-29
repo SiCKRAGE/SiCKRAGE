@@ -72,7 +72,7 @@ class AlphaRatioProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
         results = []
 
         if not self.login():

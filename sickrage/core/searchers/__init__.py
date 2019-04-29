@@ -23,6 +23,7 @@ import datetime
 import sickrage
 from sickrage.core.common import UNAIRED, SKIPPED, statusStrings
 from sickrage.core.databases.main import MainDB
+from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show import find_show
 
 
@@ -33,9 +34,7 @@ def new_episode_finder():
 
     show = None
 
-    for episode in MainDB.TVEpisode.query.filter_by(status=UNAIRED).filter(MainDB.TVEpisode.season > 0,
-                                                                           MainDB.TVEpisode.airdate > 1):
-
+    for episode in TVEpisode.query.filter_by(status=UNAIRED).filter(TVEpisode.season > 0, TVEpisode.airdate > 1):
         if not show or int(episode.showid) != show.indexer_id:
             show = find_show(episode.showid)
 
@@ -68,4 +67,4 @@ def new_episode_finder():
                 special='(specials are not supported)' if not ep_obj.season else '',
             ))
 
-            ep_obj.save_to_db()
+            # ep_obj.save_to_db()

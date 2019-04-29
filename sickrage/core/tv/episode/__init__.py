@@ -20,24 +20,21 @@
 import datetime
 import os
 import re
-import threading
 from collections import OrderedDict
 from xml.etree.ElementTree import ElementTree
 
-from sqlalchemy import orm
+from sqlalchemy import orm, ForeignKeyConstraint, Index, Column, Integer, Text, Boolean
+from sqlalchemy.orm import relationship
 
 import sickrage
 from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, dateTimeFormat, SKIPPED, NAMING_EXTEND, \
     NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
-from sickrage.core.databases.main import MainDB
+from sickrage.core.databases.main import MainDB, MainDBBase
 from sickrage.core.exceptions import NoNFOException, \
     EpisodeNotFoundException, EpisodeDeletedException
 from sickrage.core.helpers import is_media_file, try_int, replaceExtension, \
     touchFile, sanitizeSceneName, remove_non_release_groups, remove_extension, sanitizeFileName, \
     safe_getattr, make_dirs, move_file, delete_empty_folders
-from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
-from sickrage.core.processors.post_processor import PostProcessor
-from sickrage.core.scene_numbering import get_scene_absolute_numbering, get_scene_numbering
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_seasonnotfound, indexer_error, indexer_episodenotfound
 from sickrage.notifiers import Notifiers
@@ -45,280 +42,72 @@ from sickrage.subtitles import subtitle_extensions, download_subtitles, refresh_
     name_from_code
 
 
-class TVEpisode(object):
-    def __init__(self, show, season, episode, file=""):
-        self.lock = threading.Lock()
-        self.dirty = True
+class TVEpisode(MainDBBase):
+    __tablename__ = 'tv_episodes'
+    __table_args__ = (
+        ForeignKeyConstraint(['showid', 'indexer'], ['tv_shows.indexer_id', 'tv_shows.indexer']),
+        Index('idx_showid_indexer', 'showid', 'indexer'),
+        Index('idx_sta_epi_air', 'status', 'episode', 'airdate'),
+        Index('idx_sta_epi_sta_air', 'season', 'episode', 'status', 'airdate'),
+        Index('idx_status ', 'status', 'season', 'episode', 'airdate'),
+        Index('idx_tv_episodes_showid_airdate', 'indexer_id', 'airdate'),
+    )
 
-        self._name = ""
-        self._indexer = int(show.indexer)
-        self._season = season
-        self._episode = episode
-        self._absolute_number = 0
-        self._scene_season = 0
-        self._scene_episode = 0
-        self._scene_absolute_number = 0
-        self._description = ""
-        self._subtitles = []
-        self._subtitles_searchcount = 0
-        self._subtitles_lastsearch = str(datetime.datetime.min)
-        self._airdate = datetime.date.fromordinal(1)
-        self._hasnfo = False
-        self._hastbn = False
-        self._status = UNKNOWN
-        self._indexer_id = 0
-        self._file_size = 0
-        self._release_name = ""
-        self._is_proper = False
-        self._version = 0
-        self._release_group = ""
-        self._location = file
+    showid = Column(Integer, index=True, primary_key=True)
+    indexer_id = Column(Integer, index=True)
+    indexer = Column(Integer, index=True, primary_key=True)
+    season = Column(Integer, index=True, primary_key=True)
+    episode = Column(Integer, index=True, primary_key=True)
+    scene_season = Column(Integer, default=0)
+    scene_episode = Column(Integer, default=0)
+    name = Column(Text, default='')
+    description = Column(Text, default='')
+    subtitles = Column(Text, default='')
+    subtitles_searchcount = Column(Integer, default=0)
+    subtitles_lastsearch = Column(Integer, default=0)
+    airdate = Column(Integer, default=0)
+    hasnfo = Column(Boolean, default=False)
+    hastbn = Column(Boolean, default=False)
+    status = Column(Integer, default=0)
+    location = Column(Text, default='')
+    file_size = Column(Integer, default=0)
+    release_name = Column(Text, default='')
+    is_proper = Column(Boolean, default=False)
+    absolute_number = Column(Integer, default=0)
+    scene_absolute_number = Column(Integer, default=0)
+    version = Column(Integer, default=-1)
+    release_group = Column(Text, default='')
 
-        self.show = show
+    show = relationship('TVShow', back_populates='episodes')
 
-        self.populateEpisode(self.season, self.episode)
+    def __init__(self, **kwargs):
+        super(TVEpisode, self).__init__(**kwargs)
+        from sickrage.core.scene_numbering import get_scene_absolute_numbering, get_scene_numbering
+
+        if self.scene_absolute_number == 0:
+            self.scene_absolute_number = get_scene_absolute_numbering(
+                self.show.indexer_id,
+                self.show.indexer,
+                self.absolute_number
+            )
+
+        if self.scene_season == 0 or self.scene_episode == 0:
+            self.scene_season, self.scene_episode = get_scene_numbering(
+                self.show.indexer_id,
+                self.show.indexer,
+                self.season, self.episode
+            )
 
         self.relatedEps = []
-        self.checkForMetaFiles()
         self.wantedQuality = []
 
-    @property
-    def name(self):
-        return self._name or ""
+        self.checkForMetaFiles()
 
-    @name.setter
-    def name(self, value):
-        if self._name != value:
-            self.dirty = True
-        self._name = value
-
-    @property
-    def season(self):
-        return self._season
-
-    @season.setter
-    def season(self, value):
-        if self._season != value:
-            self.dirty = True
-        self._season = value
-
-    @property
-    def episode(self):
-        return self._episode
-
-    @episode.setter
-    def episode(self, value):
-        if self._episode != value:
-            self.dirty = True
-        self._episode = value
-
-    @property
-    def absolute_number(self):
-        return self._absolute_number
-
-    @absolute_number.setter
-    def absolute_number(self, value):
-        if self._absolute_number != value:
-            self.dirty = True
-        self._absolute_number = value
-
-    @property
-    def scene_season(self):
-        if self._scene_season:
-            return self._scene_season
-        return self._season
-
-    @scene_season.setter
-    def scene_season(self, value):
-        self._scene_season = value
-
-    @property
-    def scene_episode(self):
-        if self._scene_episode:
-            return self._scene_episode
-        return self._episode
-
-    @scene_episode.setter
-    def scene_episode(self, value):
-        self._scene_episode = value
-
-    @property
-    def scene_absolute_number(self):
-        if self._scene_absolute_number:
-            return self._scene_absolute_number
-        return self._absolute_number
-
-    @scene_absolute_number.setter
-    def scene_absolute_number(self, value):
-        self._scene_absolute_number = value
-
-    @property
-    def description(self):
-        return self._description
-
-    @description.setter
-    def description(self, value):
-        if self._description != value:
-            self.dirty = True
-        self._description = value
-
-    @property
-    def subtitles(self):
-        return self._subtitles
-
-    @subtitles.setter
-    def subtitles(self, value):
-        if self._subtitles != value:
-            self.dirty = True
-        self._subtitles = value
-
-    @property
-    def subtitles_searchcount(self):
-        return self._subtitles_searchcount
-
-    @subtitles_searchcount.setter
-    def subtitles_searchcount(self, value):
-        if self._subtitles_searchcount != value:
-            self.dirty = True
-        self._subtitles_searchcount = value
-
-    @property
-    def subtitles_lastsearch(self):
-        return self._subtitles_lastsearch
-
-    @subtitles_lastsearch.setter
-    def subtitles_lastsearch(self, value):
-        if self._subtitles_lastsearch != value:
-            self.dirty = True
-        self._subtitles_lastsearch = value
-
-    @property
-    def airdate(self):
-        return self._airdate
-
-    @airdate.setter
-    def airdate(self, value):
-        if self._airdate != value:
-            self.dirty = True
-        self._airdate = value
-
-    @property
-    def hasnfo(self):
-        return self._hasnfo
-
-    @hasnfo.setter
-    def hasnfo(self, value):
-        if self._hasnfo != value:
-            self.dirty = True
-        self._hasnfo = value
-
-    @property
-    def hastbn(self):
-        return self._hastbn
-
-    @hastbn.setter
-    def hastbn(self, value):
-        if self._hastbn != value:
-            self.dirty = True
-        self._hastbn = value
-
-    @property
-    def status(self):
-        return self._status
-
-    @status.setter
-    def status(self, value):
-        if self._status != value:
-            self.dirty = True
-        self._status = value
-
-    @property
-    def indexer(self):
-        return self._indexer
-
-    @indexer.setter
-    def indexer(self, value):
-        if self._indexer != value:
-            self.dirty = True
-        self._indexer = value
-
-    @property
-    def indexer_id(self):
-        return self._indexer_id
-
-    @indexer_id.setter
-    def indexer_id(self, value):
-        if self._indexer_id != value:
-            self.dirty = True
-        self._indexer_id = value
-
-    @property
-    def file_size(self):
-        return self._file_size
-
-    @file_size.setter
-    def file_size(self, value):
-        if self._file_size != value:
-            self.dirty = True
-        self._file_size = value
-
-    @property
-    def release_name(self):
-        return self._release_name
-
-    @release_name.setter
-    def release_name(self, value):
-        if self._release_name != value:
-            self.dirty = True
-        self._release_name = value
-
-    @property
-    def is_proper(self):
-        return self._is_proper
-
-    @is_proper.setter
-    def is_proper(self, value):
-        if self._is_proper != value:
-            self.dirty = True
-        self._is_proper = value
-
-    @property
-    def version(self):
-        return self._version
-
-    @version.setter
-    def version(self, value):
-        if self._version != value:
-            self.dirty = True
-        self._version = value
-
-    @property
-    def release_group(self):
-        return self._release_group
-
-    @release_group.setter
-    def release_group(self, value):
-        if self._release_group != value:
-            self.dirty = True
-        self._release_group = value
-
-    @property
-    def location(self):
-        return self._location
-
-    @location.setter
-    def location(self, new_location):
-        if os.path.isfile(new_location):
-            self.file_size = os.path.getsize(new_location)
-            sickrage.app.log.debug("{}: Episode location set to {}".format(self.show.indexer_id, new_location))
-            self.dirty = True
-        self._location = new_location
-
-    def refreshSubtitles(self):
+    def refresh_subtitles(self):
         """Look for subtitles files and refresh the subtitles property"""
-        self.subtitles, save_subtitles = refresh_subtitles(self)
+        subtitles, save_subtitles = refresh_subtitles(self)
         if save_subtitles:
-            self.save_to_db()
+            self.subtitles = subtitles
 
     def download_subtitles(self):
         if not os.path.isfile(self.location):
@@ -327,21 +116,19 @@ class TVEpisode(object):
             return
 
         sickrage.app.log.debug(
-            "%s: Downloading subtitles for S%02dE%02d" % (
-                self.show.indexer_id, self.season or 0, self.episode or 0))
+            "%s: Downloading subtitles for S%02dE%02d" % (self.show.indexer_id, self.season or 0, self.episode or 0))
 
         self.subtitles, newSubtitles = download_subtitles(self)
 
         self.subtitles_searchcount += 1 if self.subtitles_searchcount else 1
         self.subtitles_lastsearch = datetime.datetime.now().strftime(dateTimeFormat)
-        self.save_to_db()
 
         if newSubtitles:
-            subtitleList = ", ".join([name_from_code(newSub) for newSub in newSubtitles])
+            subtitle_list = ", ".join([name_from_code(newSub) for newSub in newSubtitles])
             sickrage.app.log.debug("%s: Downloaded %s subtitles for S%02dE%02d" %
-                                   (self.show.indexer_id, subtitleList, self.season or 0, self.episode or 0))
+                                   (self.show.indexer_id, subtitle_list, self.season or 0, self.episode or 0))
 
-            Notifiers.mass_notify_subtitle_download(self.pretty_name(), subtitleList)
+            Notifiers.mass_notify_subtitle_download(self.pretty_name(), subtitle_list)
         else:
             sickrage.app.log.debug("%s: No subtitles downloaded for S%02dE%02d" %
                                    (self.show.indexer_id, self.season or 0, self.episode or 0))
@@ -349,7 +136,6 @@ class TVEpisode(object):
         return newSubtitles
 
     def checkForMetaFiles(self):
-
         oldhasnfo = self.hasnfo
         oldhastbn = self.hastbn
 
@@ -377,14 +163,14 @@ class TVEpisode(object):
         # if either setting has changed return true, if not return false
         return oldhasnfo != self.hasnfo or oldhastbn != self.hastbn
 
-    def populateEpisode(self, season, episode):
+    def populate_episode(self, season, episode):
         # attempt populating episode
-        success = {'nfo': False,
-                   'indexer': False,
-                   'db': False}
+        success = {
+            'nfo': False,
+            'indexer': False
+        }
 
         for method, func in OrderedDict([
-            ('db', lambda: self.load_from_db(season, episode)),
             ('nfo', lambda: self.loadFromNFO(self.location)),
             ('indexer', lambda: self.load_from_indexer(season, episode)),
         ]).items():
@@ -403,56 +189,6 @@ class TVEpisode(object):
 
         # we failed to populate the episode
         raise EpisodeNotFoundException("Couldn't find episode S%02dE%02d" % (season or 0, episode or 0))
-
-    def load_from_db(self, season, episode):
-        sickrage.app.log.debug("%s: Loading episode details from DB for episode %s S%02dE%02d" % (
-            self.show.indexer_id, self.show.name, season or 0, episode or 0))
-
-        try:
-            dbData = MainDB.TVEpisode.query.filter_by(showid=self.show.indexer_id, season=season, episode=episode).one()
-        except orm.exc.NoResultFound:
-            sickrage.app.log.debug("%s: Episode S%02dE%02d not found in the database" % (
-                self.show.indexer_id, self.season or 0, self.episode or 0))
-            return False
-
-        self._season = season
-        self._episode = episode
-        self._name = dbData.name or self.name
-        self._absolute_number = dbData.absolute_number or self.absolute_number
-        self._description = dbData.description or self.description
-        self._subtitles = str(dbData.subtitles or self.subtitles).split(",")
-        self._subtitles_searchcount = dbData.subtitles_searchcount or self.subtitles_searchcount
-        self._subtitles_lastsearch = dbData.subtitles_lastsearch or self.subtitles_lastsearch
-        self._airdate = datetime.date.fromordinal(try_int(dbData.airdate, self.airdate))
-        self._status = try_int(dbData.status, self.status)
-        self._file_size = try_int(dbData.file_size, self.file_size)
-        self._indexer_id = try_int(dbData.indexer_id, self.indexer_id)
-        self._indexer = try_int(dbData.indexer, self.indexer)
-        self._release_name = dbData.release_name or self.release_name
-        self._release_group = dbData.release_group or self.release_group
-        self._is_proper = try_int(dbData.is_proper, self.is_proper)
-        self._version = try_int(dbData.version, self.version)
-        self.location = dbData.location or self.location
-
-        self._scene_season = try_int(dbData.scene_season, self.scene_season)
-        self._scene_episode = try_int(dbData.scene_episode, self.scene_episode)
-        self._scene_absolute_number = try_int(dbData.scene_absolute_number, self.scene_absolute_number)
-
-        if self._scene_absolute_number == 0:
-            self._scene_absolute_number = get_scene_absolute_numbering(
-                self.show.indexer_id,
-                self.show.indexer,
-                self.absolute_number
-            )
-
-        if self._scene_season == 0 or self._scene_episode == 0:
-            self._scene_season, self._scene_episode = get_scene_numbering(
-                self.show.indexer_id,
-                self.show.indexer,
-                self.season, self.episode
-            )
-
-        return True
 
     def load_from_indexer(self, season=None, episode=None, cache=True, tvapi=None, cachedSeason=None):
         indexer_name = IndexerApi(self.indexer).name
@@ -520,6 +256,8 @@ class TVEpisode(object):
 
         self.season = season
         self.episode = episode
+
+        from sickrage.core.scene_numbering import get_scene_absolute_numbering, get_scene_numbering
 
         self.scene_absolute_number = get_scene_absolute_numbering(
             self.show.indexer_id,
@@ -604,7 +342,8 @@ class TVEpisode(object):
     def loadFromNFO(self, location):
         if not os.path.isdir(self.show.location):
             sickrage.app.log.info(
-                "{}: The show dir is missing, not bothering to try loading the episode NFO".format(self.show.indexer_id))
+                "{}: The show dir is missing, not bothering to try loading the episode NFO".format(
+                    self.show.indexer_id))
             return False
 
         sickrage.app.log.debug(
@@ -653,6 +392,8 @@ class TVEpisode(object):
                     self.name = epDetails.findtext('title')
                     self.episode = try_int(epDetails.findtext('episode'))
                     self.season = try_int(epDetails.findtext('season'))
+
+                    from sickrage.core.scene_numbering import get_scene_absolute_numbering, get_scene_numbering
 
                     self.scene_absolute_number = get_scene_absolute_numbering(
                         self.show.indexer_id,
@@ -705,8 +446,7 @@ class TVEpisode(object):
         self.createNFO(force)
         self.createThumbnail(force)
 
-        if self.checkForMetaFiles():
-            self.save_to_db()
+        self.checkForMetaFiles()
 
     def createNFO(self, force=False):
 
@@ -734,7 +474,8 @@ class TVEpisode(object):
         # delete myself from the DB
         sickrage.app.log.debug("Deleting myself from the database")
 
-        sickrage.app.main_db.delete(MainDB.TVEpisode, showid=self.show.indexer_id, season=self.season, episode=self.episode)
+        sickrage.app.main_db.delete(TVEpisode, showid=self.show.indexer_id, season=self.season,
+                                    episode=self.episode)
 
         data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate([(self.season, self.episode)])
         if sickrage.app.config.use_trakt and sickrage.app.config.trakt_sync_watchlist and data:
@@ -749,53 +490,6 @@ class TVEpisode(object):
                 sickrage.app.log.warning('Unable to delete %s: %s / %s' % (self.location, repr(e), str(e)))
 
         raise EpisodeDeletedException()
-
-    def save_to_db(self, force_save=False):
-        """
-        Saves this episode to the database if any of its data has been changed since the last save.
-
-        force_save: If True it will save to the database even if no data has been changed since the
-                    last save (aka if the record is not dirty).
-        """
-
-        if not self.dirty and not force_save:
-            return
-
-        sickrage.app.log.debug("%i: Saving episode to database: %s" % (self.show.indexer_id, self.name))
-
-        tv_episode = {
-            "showid": self.show.indexer_id,
-            "season": self.season,
-            "episode": self.episode,
-            "scene_season": self.scene_season,
-            "scene_episode": self.scene_episode,
-            "indexer_id": self.indexer_id,
-            "indexer": self.indexer,
-            "name": self.name,
-            "description": self.description,
-            "subtitles": ",".join(self.subtitles),
-            "subtitles_searchcount": self.subtitles_searchcount,
-            "subtitles_lastsearch": self.subtitles_lastsearch,
-            "airdate": self.airdate.toordinal(),
-            "hasnfo": self.hasnfo,
-            "hastbn": self.hastbn,
-            "status": self.status,
-            "location": self.location,
-            "file_size": self.file_size,
-            "release_name": self.release_name,
-            "is_proper": self.is_proper,
-            "absolute_number": self.absolute_number,
-            "scene_absolute_number": self.scene_absolute_number,
-            "version": self.version,
-            "release_group": self.release_group
-        }
-
-        try:
-            dbData = MainDB.TVEpisode.query.filter_by(indexer=self.indexer, indexer_id=self.indexer_id,
-                                                      showid=self.show.indexer_id).one()
-            dbData.update(**tv_episode)
-        except orm.exc.NoResultFound:
-            sickrage.app.main_db.add(MainDB.TVEpisode(**tv_episode))
 
     def fullPath(self):
         if self.location is None or self.location == "":
@@ -890,6 +584,8 @@ class TVEpisode(object):
                 str(self.indexer_id) + ": File " + self.location + " is already named correctly, skipping")
             return
 
+        from sickrage.core.processors.post_processor import PostProcessor
+
         related_files = PostProcessor(self.location).list_associated_files(self.location, subfolders=True)
 
         # This is wrong. Cause of pp not moving subs.
@@ -935,11 +631,6 @@ class TVEpisode(object):
         # in case something changed with the metadata just do a quick check
         for curEp in [self] + self.relatedEps:
             curEp.checkForMetaFiles()
-
-        # save any changes to the database
-        with self.lock:
-            for relEp in [self] + self.relatedEps:
-                relEp.save_to_db()
 
     def airdateModifyStamp(self):
         """
@@ -1045,12 +736,14 @@ class TVEpisode(object):
                 name = remove_non_release_groups(remove_extension(name))
             return name
 
-        def release_group(show, name):
+        def release_group(show_id, name):
+            from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
+
             if name:
                 name = remove_non_release_groups(remove_extension(name))
 
                 try:
-                    parse_result = NameParser(name, showObj=show, naming_pattern=True).parse(name)
+                    parse_result = NameParser(name, show_id=show_id, naming_pattern=True).parse(name)
                     if parse_result.release_group:
                         return parse_result.release_group
                 except (InvalidNameException, InvalidShowException) as e:
@@ -1068,7 +761,7 @@ class TVEpisode(object):
         # try to get the release group
         rel_grp = {"SiCKRAGE": 'SiCKRAGE'}
         if hasattr(self, 'location'):  # from the location name
-            rel_grp['location'] = release_group(self.show, self.location)
+            rel_grp['location'] = release_group(self.show.indexer_id, self.location)
             if not rel_grp['location']:
                 del rel_grp['location']
         if hasattr(self, '_release_group'):  # from the release group field in db
@@ -1076,7 +769,7 @@ class TVEpisode(object):
             if not rel_grp['database']:
                 del rel_grp['database']
         if hasattr(self, 'release_name'):  # from the release name field in db
-            rel_grp['release_name'] = release_group(self.show, self.release_name)
+            rel_grp['release_name'] = release_group(self.show.indexer_id, self.release_name)
             if not rel_grp['release_name']:
                 del rel_grp['release_name']
 
@@ -1409,12 +1102,3 @@ class TVEpisode(object):
         delete_empty_folders(os.path.dirname(cur_path))
 
         return True
-
-    def __getstate__(self):
-        d = dict(self.__dict__)
-        del d['lock']
-        return d
-
-    def __setstate__(self, d):
-        d['lock'] = threading.Lock()
-        self.__dict__.update(d)

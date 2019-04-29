@@ -39,7 +39,7 @@ class TorrentProjectProvider(TorrentProvider):
         # Cache
         self.cache = TVCache(self, search_strings={'RSS': ['0day']})
 
-    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
         results = []
 
         search_params = {

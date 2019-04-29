@@ -96,7 +96,7 @@ class MoreThanTVProvider(TorrentProvider):
                 sickrage.app.log.warning(
                     "Invalid username or password. Check your settings")
 
-    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
         results = []
 
         if not self.login():

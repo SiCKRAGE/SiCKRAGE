@@ -27,6 +27,7 @@ import sickrage
 import sickrage.subtitles
 from sickrage.core.common import dateTimeFormat
 from sickrage.core.databases.main import MainDB
+from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 
 
@@ -71,12 +72,12 @@ class SubtitleSearcher(object):
             if s.subtitles != 1:
                 continue
 
-            for e in MainDB.TVEpisode.query.filter_by(showid=s.indexer_id).filter(
-                    MainDB.TVEpisode.location != '', ~MainDB.TVEpisode.subtitles.in_(
+            for e in TVEpisode.query.filter_by(showid=s.indexer_id).filter(
+                    TVEpisode.location != '', ~TVEpisode.subtitles.in_(
                         sickrage.subtitles.wanted_languages()
-                    ), or_(MainDB.TVEpisode.subtitles_searchcount <= 2,
-                           and_(MainDB.TVEpisode.subtitles_searchcount <= 7,
-                                today - MainDB.TVEpisode.airdate))):
+                    ), or_(TVEpisode.subtitles_searchcount <= 2,
+                           and_(TVEpisode.subtitles_searchcount <= 7,
+                                today - TVEpisode.airdate))):
                 results += [{
                     'show_name': s.name,
                     'showid': e.showid,

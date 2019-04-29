@@ -34,6 +34,7 @@ from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import remove_non_release_groups
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
 from sickrage.core.search import pickBestResult, snatchEpisode
+from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.tv.show.history import History
 from sickrage.providers import NZBProvider, NewznabProvider, TorrentProvider, TorrentRssProvider
@@ -80,9 +81,9 @@ class ProperSearcher(object):
         recently_aired = []
         for show in get_show_list():
             self._lastProperSearch = self._get_lastProperSearch(show.indexer_id)
-            for episode in MainDB.TVEpisode.query.filter_by(showid=show.indexer_id).filter(
-                    MainDB.TVEpisode.airdate >= search_date.toordinal(),
-                    MainDB.TVEpisode.status.in_(Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST)):
+            for episode in TVEpisode.query.filter_by(showid=show.indexer_id).filter(
+                    TVEpisode.airdate >= search_date.toordinal(),
+                    TVEpisode.status.in_(Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST)):
                 recently_aired += [episode]
 
             self._set_lastProperSearch(show.indexer_id, datetime.datetime.today().toordinal())
@@ -190,8 +191,8 @@ class ProperSearcher(object):
 
             # check if we actually want this proper (if it's the right quality)            
             try:
-                dbData = MainDB.TVEpisode.query.filter_by(showid=bestResult.indexer_id, season=bestResult.season,
-                                                episode=bestResult.episode).one()
+                dbData = TVEpisode.query.filter_by(showid=bestResult.indexer_id, season=bestResult.season,
+                                                          episode=bestResult.episode).one()
 
                 # only keep the proper if we have already retrieved the same quality ep (don't get better/worse ones)
                 oldStatus, oldQuality = Quality.split_composite_status(int(dbData.status))
@@ -202,8 +203,8 @@ class ProperSearcher(object):
 
             # check if we actually want this proper (if it's the right release group and a higher version)
             if bestResult.show.is_anime:
-                dbData = MainDB.TVEpisode.query.filter_by(showid=bestResult.indexer_id, season=bestResult.season,
-                                                episode=bestResult.episode).one()
+                dbData = TVEpisode.query.filter_by(showid=bestResult.indexer_id, season=bestResult.season,
+                                                          episode=bestResult.episode).one()
                 oldVersion = int(dbData.version)
                 oldRelease_group = dbData.release_group
                 if not -1 < oldVersion < bestResult.version:
@@ -219,7 +220,8 @@ class ProperSearcher(object):
 
             # if the show is in our list and there hasn't been a proper already added for that particular episode
             # then add it to our list of propers
-            if bestResult.indexer_id != -1 and (bestResult.indexer_id, bestResult.season, bestResult.episode) not in map(
+            if bestResult.indexer_id != -1 and (
+            bestResult.indexer_id, bestResult.season, bestResult.episode) not in map(
                     operator.attrgetter('indexer_id', 'season', 'episode'), finalPropers):
                 sickrage.app.log.info("Found a proper that we need: " + str(bestResult.name))
                 finalPropers.append(bestResult)
@@ -237,11 +239,12 @@ class ProperSearcher(object):
             historyLimit = datetime.datetime.today() - datetime.timedelta(days=30)
 
             # make sure the episode has been downloaded before
-            historyResults = [x for x in MainDB.History.query.filter_by(showid=curProper.indexer_id, season=curProper.season,
-                                                              episode=curProper.episode,
-                                                              quality=curProper.quality).filter(
-                MainDB.History.date >= historyLimit.strftime(History.date_format),
-                MainDB.History.action.in_(Quality.SNATCHED + Quality.DOWNLOADED))]
+            historyResults = [x for x in
+                              MainDB.History.query.filter_by(showid=curProper.indexer_id, season=curProper.season,
+                                                             episode=curProper.episode,
+                                                             quality=curProper.quality).filter(
+                                  MainDB.History.date >= historyLimit.strftime(History.date_format),
+                                  MainDB.History.action.in_(Quality.SNATCHED + Quality.DOWNLOADED))]
 
             # if we didn't download this episode in the first place we don't know what quality to use for the proper
             # so we can't do it

@@ -114,7 +114,7 @@ def stripNS(element, ns):
     return element
 
 
-def splitNZBResult(result):
+def split_nzb_result(result):
     """
     Split result into seperate episodes
 
@@ -128,7 +128,7 @@ def splitNZBResult(result):
 
     # parse the season ep name
     try:
-        np = NameParser(False, showObj=result.show)
+        np = NameParser(False, show_id=result.show_id)
         parse_result = np.parse(result.name)
     except InvalidNameException:
         sickrage.app.log.debug("Unable to parse the filename " + result.name + " into a valid episode")
@@ -150,7 +150,7 @@ def splitNZBResult(result):
 
         # parse the name
         try:
-            np = NameParser(False, showObj=result.show)
+            np = NameParser(False, show_id=result.show_id)
             parse_result = np.parse(newNZB)
         except InvalidNameException:
             sickrage.app.log.debug("Unable to parse the filename " + newNZB + " into a valid episode")

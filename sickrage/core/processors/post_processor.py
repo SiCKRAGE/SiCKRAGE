@@ -653,6 +653,8 @@ class PostProcessor(object):
         :return: A (show, season, episodes, quality, version) tuple
         """
 
+        from sickrage.core.tv.episode import TVEpisode
+
         show = season = quality = version = None
         episodes = []
 
@@ -712,15 +714,15 @@ class PostProcessor(object):
                 # Ignore season 0 when searching for episode(Conflict between special and regular episode,
                 # same air date)
                 try:
-                    dbData = MainDB.TVEpisode.query.filter_by(
+                    dbData = TVEpisode.query.filter_by(
                         showid=show.indexer_id, indexer=show.indexer, airdate=airdate
-                    ).filter(MainDB.TVEpisode.season != 0).one()
+                    ).filter(TVEpisode.season != 0).one()
                     season = int(dbData.season)
                     episodes = [int(dbData.episode)]
                 except orm.exc.NoResultFound:
                     # Found no result, try with season 0
                     try:
-                        dbData = MainDB.TVEpisode.query.filter_by(showid=show.indexer_id, indexer=show.indexer,
+                        dbData = TVEpisode.query.filter_by(showid=show.indexer_id, indexer=show.indexer,
                                                                   airdate=airdate).one()
                         season = int(dbData.season)
                         episodes = [int(dbData.episode)]
@@ -1085,7 +1087,7 @@ class PostProcessor(object):
                 else:
                     cur_ep.release_group = ""
 
-                cur_ep.save_to_db()
+                # cur_ep.save_to_db()
 
         # Just want to keep this consistent for failed handling right now
         releaseName = show_names.determineReleaseName(self.folder_path, self.nzb_name)
@@ -1160,14 +1162,14 @@ class PostProcessor(object):
             for cur_ep in [ep_obj] + ep_obj.relatedEps:
                 with cur_ep.lock:
                     cur_ep.location = os.path.join(dest_path, new_file_name)
-                    cur_ep.refreshSubtitles()
+                    cur_ep.refresh_subtitles()
                     cur_ep.download_subtitles()
 
         # put the new location in the database
         for cur_ep in [ep_obj] + ep_obj.relatedEps:
             with cur_ep.lock:
                 cur_ep.location = os.path.join(dest_path, new_file_name)
-                cur_ep.save_to_db()
+                # cur_ep.save_to_db()
 
         # set file modify stamp to show airdate
         if sickrage.app.config.airdate_episodes:

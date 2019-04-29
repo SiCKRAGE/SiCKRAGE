@@ -1566,7 +1566,7 @@ class SetStatusHandler(BaseHandler, ABC):
                     ep_obj.status = int(status)
 
                     # save to database
-                    ep_obj.save_to_db()
+                    # ep_obj.save_to_db()
 
                     trakt_data.append((ep_obj.season, ep_obj.episode))
 
@@ -1702,7 +1702,7 @@ class DoRenameHandler(BaseHandler, ABC):
             ep_info = curEp.split('x')
 
             try:
-                ep_result = MainDB.TVEpisode.query.filter_by(showid=int(show), season=int(ep_info[0]),
+                ep_result = TVEpisode.query.filter_by(showid=int(show), season=int(ep_info[0]),
                                                              episode=int(ep_info[1])).one()
             except orm.exc.NoResultFound:
                 sickrage.app.log.warning("Unable to find an episode for " + curEp + ", skipping")
@@ -1711,8 +1711,8 @@ class DoRenameHandler(BaseHandler, ABC):
             root_ep_obj = show_obj.get_episode(int(ep_info[0]), int(ep_info[1]))
             root_ep_obj.relatedEps = []
 
-            for cur_related_ep in MainDB.TVEpisode.query.filter_by(location=ep_result.location).filter(
-                    MainDB.TVEpisode.episode != int(ep_info[1])):
+            for cur_related_ep in TVEpisode.query.filter_by(location=ep_result.location).filter(
+                    TVEpisode.episode != int(ep_info[1])):
                 related_ep_obj = show_obj.get_episode(int(cur_related_ep.season), int(cur_related_ep.episode))
                 if related_ep_obj not in root_ep_obj.relatedEps:
                     root_ep_obj.relatedEps.append(related_ep_obj)

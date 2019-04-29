@@ -34,6 +34,7 @@ from sickrage.core.helpers import is_media_file, is_rar_file, is_hidden_folder, 
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
 from sickrage.core.processors import failed_processor, post_processor
+from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import get_show_list
 
 
@@ -459,8 +460,8 @@ class ProcessResult(object):
             return False
 
         # Avoid processing the same dir again if we use a process method <> move
-        if MainDB.TVEpisode.query.filter(or_(literal(dirName).contains(MainDB.TVEpisode.release_name),
-                                             literal(videofile).contains(MainDB.TVEpisode.release_name))):
+        if TVEpisode.query.filter(or_(literal(dirName).contains(TVEpisode.release_name),
+                                      literal(videofile).contains(TVEpisode.release_name))):
             return True
 
         # Needed if we have downloaded the same episode @ different quality
@@ -472,8 +473,8 @@ class ProcessResult(object):
             parse_result = False
 
         for h in MainDB.History.query.filter(MainDB.History.resource.endswith(videofile)):
-            for e in MainDB.TVEpisode.query.filter_by(showid=h.showid, season=h.season, episode=h.episode).filter(
-                    MainDB.TVEpisode.status.in_(Quality.DOWNLOADED)):
+            for e in TVEpisode.query.filter_by(showid=h.showid, season=h.season, episode=h.episode).filter(
+                    TVEpisode.status.in_(Quality.DOWNLOADED)):
                 # If we find a showid, a season number, and one or more episode numbers then we need to use those in the
                 # query
                 if parse_result and (parse_result.indexer_id and parse_result.episode_numbers and

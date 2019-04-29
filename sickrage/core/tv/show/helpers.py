@@ -29,9 +29,6 @@ from sickrage.core.databases.main import MainDB
 def find_show(indexer_id):
     from sickrage.core.tv.show import TVShow
 
-    if not indexer_id:
-        return None
-
     try:
         return TVShow.query.filter_by(indexer_id=indexer_id).one()
     except orm.exc.NoResultFound:

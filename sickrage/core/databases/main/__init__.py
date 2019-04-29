@@ -42,44 +42,6 @@ class MainDB(srDatabase):
             if hasattr(model, '__tablename__'):
                 self.tables[model.__tablename__] = model
 
-    class TVEpisode(MainDBBase):
-        __tablename__ = 'tv_episodes'
-        __table_args__ = (
-            ForeignKeyConstraint(['showid', 'indexer'], ['tv_shows.indexer_id', 'tv_shows.indexer']),
-            Index('idx_showid_indexer', 'showid', 'indexer'),
-            Index('idx_sta_epi_air', 'status', 'episode', 'airdate'),
-            Index('idx_sta_epi_sta_air', 'season', 'episode', 'status', 'airdate'),
-            Index('idx_status ', 'status', 'season', 'episode', 'airdate'),
-            Index('idx_tv_episodes_showid_airdate', 'indexer_id', 'airdate'),
-        )
-
-        showid = Column(Integer, index=True, primary_key=True)
-        indexer_id = Column(Integer, index=True)
-        indexer = Column(Integer, index=True, primary_key=True)
-        season = Column(Integer, index=True, primary_key=True)
-        episode = Column(Integer, index=True, primary_key=True)
-        scene_season = Column(Integer)
-        scene_episode = Column(Integer)
-        name = Column(Text)
-        description = Column(Text)
-        subtitles = Column(Text)
-        subtitles_searchcount = Column(Integer)
-        subtitles_lastsearch = Column(Integer)
-        airdate = Column(Integer)
-        hasnfo = Column(Boolean)
-        hastbn = Column(Boolean)
-        status = Column(Integer)
-        location = Column(Text)
-        file_size = Column(Integer)
-        release_name = Column(Text)
-        is_proper = Column(Boolean)
-        absolute_number = Column(Integer)
-        scene_absolute_number = Column(Integer)
-        version = Column(Integer, default=-1)
-        release_group = Column(Text)
-
-        show = relationship('TVShow', back_populates='episodes', lazy='select')
-
     class IMDbInfo(MainDBBase):
         __tablename__ = 'imdb_info'
         __table_args__ = (

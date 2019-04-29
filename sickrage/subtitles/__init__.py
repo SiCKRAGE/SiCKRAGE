@@ -27,10 +27,7 @@ from babelfish import language_converters, Language
 from subliminal import save_subtitles
 
 import sickrage
-from sickrage.core import makeDir
-from sickrage.core.helpers import chmod_as_parent
-# register provider
-from sickrage.core.scene_exceptions import get_scene_exceptions
+from sickrage.core.helpers import chmod_as_parent, makeDir
 from sickrage.subtitles.providers.utils import hash_itasa
 
 for provider in ['itasa = sickrage.subtitles.providers.itasa:ItaSAProvider',
@@ -201,6 +198,8 @@ def refresh_subtitles(episode):
 
 
 def get_video(video_path, subtitles_path=None, subtitles=True, embedded_subtitles=None, episode=None):
+    from sickrage.core.scene_exceptions import get_scene_exceptions
+
     if not subtitles_path:
         subtitles_path = get_subtitles_path(video_path)
 

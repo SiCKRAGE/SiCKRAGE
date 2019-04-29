@@ -58,13 +58,13 @@ class DBBasicTests(tests.SiCKRAGETestDBCase):
     def test_unaired(self):
         count = 0
 
-        for episode in MainDB.TVEpisode.query:
+        for episode in TVEpisode.query:
             if all([episode.status == UNAIRED, episode.season > 0, episode.airdate > 1]):
                 count += 1
 
                 show = find_show(int(episode.showid))
 
-                ep = TVEpisode(show, 1, episode.episode)
+                ep = TVEpisode(**{'indexer':1, 'episode': episode.episode)
                 ep.indexer_id = episode.episode
                 ep.name = "test episode {}".format(episode.episode)
                 ep.airdate = datetime.date.fromordinal(733832)

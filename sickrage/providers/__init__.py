@@ -42,6 +42,8 @@ from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT, cpu_pr
 from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import chmod_as_parent, sanitizeFileName, clean_url, bs4_parser, \
     validate_url, try_int, convert_size
+from sickrage.core.tv.episode import TVEpisode
+from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.helpers.show_names import allPossibleShowNames
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
@@ -140,10 +142,10 @@ class GenericProvider(object):
         quality = Quality.scene_quality(title, anime)
         return quality
 
-    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
         return []
 
-    def _get_season_search_strings(self, episode):
+    def _get_season_search_strings(self, show_id, episode_id):
         """
         Get season search strings.
         """
@@ -151,55 +153,59 @@ class GenericProvider(object):
             'Season': []
         }
 
-        for show_name in allPossibleShowNames(episode.show, episode.scene_season):
+        episode_obj = find_episode(show_id, episode_id)
+
+        for show_name in allPossibleShowNames(show_id, episode_obj.scene_season):
             episode_string = show_name + ' '
 
-            if episode.show.air_by_date or episode.show.sports:
-                episode_string += str(episode.airdate).split('-')[0]
-            elif episode.show.anime:
+            if episode_obj.show.air_by_date or episode_obj.show.sports:
+                episode_string += str(episode_obj.airdate).split('-')[0]
+            elif episode_obj.show.anime:
                 episode_string += 'Season'
             else:
-                episode_string += 'S{season:0>2}'.format(season=episode.scene_season)
+                episode_string += 'S{season:0>2}'.format(season=episode_obj.scene_season)
 
             search_string['Season'].append(episode_string.strip())
 
         return [search_string]
 
-    def _get_episode_search_strings(self, episode, add_string=''):
+    def _get_episode_search_strings(self, show_id, episode_id, add_string=''):
         """
         Get episode search strings.
         """
-        if not episode:
+        if not episode_id:
             return []
 
         search_string = {
             'Episode': []
         }
 
-        for show_name in allPossibleShowNames(episode.show, episode.scene_season):
+        episode_obj = find_episode(show_id, episode_id)
+
+        for show_name in allPossibleShowNames(show_id, episode_obj.scene_season):
             episode_string = show_name + self.search_separator
             episode_string_fallback = None
 
-            if episode.show.air_by_date:
-                episode_string += str(episode.airdate).replace('-', ' ')
-            elif episode.show.sports:
-                episode_string += str(episode.airdate).replace('-', ' ')
+            if episode_obj.show.air_by_date:
+                episode_string += str(episode_obj.airdate).replace('-', ' ')
+            elif episode_obj.show.sports:
+                episode_string += str(episode_obj.airdate).replace('-', ' ')
                 episode_string += ('|', ' ')[len(self.proper_strings) > 1]
-                episode_string += episode.airdate.strftime('%b')
-            elif episode.show.anime:
+                episode_string += episode_obj.airdate.strftime('%b')
+            elif episode_obj.show.anime:
                 # If the show name is a season scene exception, we want to use the indexer episode number.
-                if (episode.scene_season > 1 and
-                        show_name in get_scene_exceptions(episode.show.indexer_id, episode.scene_season)):
+                if (episode_obj.scene_season > 1 and
+                        show_name in get_scene_exceptions(episode_obj.show.indexer_id, episode_obj.scene_season)):
                     # This is apparently a season exception, let's use the scene_episode instead of absolute
-                    ep = episode.scene_episode
+                    ep = episode_obj.scene_episode
                 else:
-                    ep = episode.scene_absolute_number
+                    ep = episode_obj.scene_absolute_number
                 episode_string += '{episode:0>2}'.format(episode=ep)
                 episode_string_fallback = episode_string + '{episode:0>3}'.format(episode=ep)
             else:
                 episode_string += sickrage.app.naming_ep_type[2] % {
-                    'seasonnumber': episode.scene_season,
-                    'episodenumber': episode.scene_episode,
+                    'seasonnumber': episode_obj.scene_season,
+                    'episodenumber': episode_obj.scene_episode,
                 }
 
             if add_string:
@@ -237,44 +243,49 @@ class GenericProvider(object):
         leechers = item.get('leechers', -1)
         return try_int(seeders, -1), try_int(leechers, -1)
 
-    def findSearchResults(self, show, episodes, search_mode, manualSearch=False, downCurQuality=False, cacheOnly=False):
+    def find_search_results(self, show_id, episode_ids, search_mode, manualSearch=False, downCurQuality=False,
+                            cacheOnly=False):
         results = {}
-        itemList = []
+        item_list = []
 
         if not self._check_auth:
             return results
 
+        show = find_show(show_id)
+
         searched_scene_season = None
-        for epObj in episodes:
+        for episode_id in episode_ids:
+            episode_obj = find_episode(show_id, episode_id)
+
             # search cache for episode result
-            cacheResult = self.cache.search_cache(epObj, manualSearch, downCurQuality)
-            if cacheResult:
-                if epObj.episode not in results:
-                    results[epObj.episode] = cacheResult[epObj.episode]
+            cache_result = self.cache.search_cache(show_id, episode_id, manualSearch, downCurQuality)
+            if cache_result:
+                if episode_id not in results:
+                    results[episode_id] = cache_result[episode_id]
                 else:
-                    results[epObj.episode].extend(cacheResult[epObj.episode])
+                    results[episode_id].extend(cache_result[episode_id])
 
                 # found result, search next episode
                 continue
 
             # skip if season already searched
-            if len(episodes) > 1 and search_mode == 'sponly' and searched_scene_season == epObj.scene_season:
+            if len(episode_ids) > 1 and search_mode == 'sponly' and searched_scene_season == episode_obj.scene_season:
                 continue
 
             # mark season searched for season pack searches so we can skip later on
-            searched_scene_season = epObj.scene_season
+            searched_scene_season = episode_obj.scene_season
 
             # check if this is a cache only search
             if cacheOnly:
                 continue
 
             search_strings = []
-            if len(episodes) > 1 and search_mode == 'sponly':
+            if len(episode_ids) > 1 and search_mode == 'sponly':
                 # get season search results
-                search_strings = self._get_season_search_strings(epObj)
+                search_strings = self._get_season_search_strings(show_id, episode_id)
             elif search_mode == 'eponly':
                 # get single episode search results
-                search_strings = self._get_episode_search_strings(epObj)
+                search_strings = self._get_episode_search_strings(show_id, episode_id)
 
             first = search_strings and isinstance(search_strings[0], dict) and 'rid' in search_strings[0]
             if first:
@@ -282,13 +293,13 @@ class GenericProvider(object):
 
             for curString in search_strings:
                 try:
-                    itemList += self.search(curString, ep_obj=epObj)
+                    item_list += self.search(curString, show_id=show_id, episode_id=episode_id)
                 except SAXParseException:
                     continue
 
                 if first:
                     first = False
-                    if itemList:
+                    if item_list:
                         sickrage.app.log.debug(
                             'First search_string had rid, and returned results, skipping query by string')
                         break
@@ -297,14 +308,14 @@ class GenericProvider(object):
                             'First search_string had rid, but returned no results, searching with string query')
 
         # if we found what we needed already from cache then return results and exit
-        if len(results) == len(episodes):
+        if len(results) == len(episode_ids):
             return results
 
         # sort list by quality
-        if itemList:
+        if item_list:
             # categorize the items into lists by quality
             items = defaultdict(list)
-            for item in itemList:
+            for item in item_list:
                 items[self.get_quality(item, anime=show.is_anime)].append(item)
 
             # temporarily remove the list of items with unknown quality
@@ -320,7 +331,7 @@ class GenericProvider(object):
             items_list.extend(unknown_items)
 
         # filter results
-        for item in itemList:
+        for item in item_list:
             result = self.getResult()
 
             result.name, result.url = self._get_title_and_url(item)
@@ -330,12 +341,12 @@ class GenericProvider(object):
                 continue
 
             try:
-                parse_result = NameParser(showObj=show).parse(result.name)
+                parse_result = NameParser(show_id=show_id).parse(result.name)
             except (InvalidNameException, InvalidShowException) as e:
                 sickrage.app.log.debug("{}".format(e))
                 continue
 
-            result.show = parse_result.show
+            result.show_id = parse_result.indexer_id
             result.quality = parse_result.quality
             result.release_group = parse_result.release_group
             result.version = parse_result.version
@@ -345,30 +356,41 @@ class GenericProvider(object):
             sickrage.app.log.debug("Adding item from search to cache: {}".format(result.name))
             self.cache.addCacheEntry(result.name, result.url, result.seeders, result.leechers, result.size)
 
-            if not result.show:
+            if not result.show_id:
                 continue
 
-            if not (result.show.air_by_date or result.show.sports):
+            result_show_obj = find_show(result.show_id)
+            if not (result_show_obj.air_by_date or result_show_obj.sports):
                 if search_mode == 'sponly':
                     if len(parse_result.episode_numbers):
                         sickrage.app.log.debug("This is supposed to be a season pack search but the result {} is not "
                                                "a valid season pack, skipping it".format(result.name))
                         continue
-                    if len(parse_result.episode_numbers) and (
-                            parse_result.season_number not in set([ep.season for ep in episodes])
-                            or not [ep for ep in episodes if ep.scene_episode in parse_result.episode_numbers]):
+                    if len(parse_result.episode_numbers) and (parse_result.season_number not in set(
+                            [find_episode(result.show_id, eid).season for eid in episode_ids]) or not [eid for eid in
+                                                                                                       episode_ids if
+                                                                                                       find_episode(
+                                                                                                           result.show_id,
+                                                                                                           eid).scene_episode in parse_result.episode_numbers]):
                         sickrage.app.log.debug("The result {} doesn't seem to be a valid episode that we are trying "
                                                "to snatch, ignoring".format(result.name))
                         continue
                 else:
-                    if not len(parse_result.episode_numbers) and parse_result.season_number and not [ep for ep in
-                                                                                                     episodes if
-                                                                                                     ep.season == parse_result.season_number and ep.episode in parse_result.episode_numbers]:
+                    if not len(parse_result.episode_numbers) and parse_result.season_number and not [eid for eid in
+                                                                                                     episode_ids if
+                                                                                                     find_episode(
+                                                                                                         result.show_id,
+                                                                                                         eid).season == parse_result.season_number and find_episode(
+                                                                                                         show_id,
+                                                                                                         eid).episode in parse_result.episode_numbers]:
                         sickrage.app.log.debug("The result {} doesn't seem to be a valid season that we are trying to "
                                                "snatch, ignoring".format(result.name))
                         continue
-                    elif len(parse_result.episode_numbers) and not [ep for ep in episodes if
-                                                                    ep.season == parse_result.season_number and ep.episode in parse_result.episode_numbers]:
+                    elif len(parse_result.episode_numbers) and not [eid for eid in episode_ids if
+                                                                    find_episode(result.show_id,
+                                                                                 eid).season == parse_result.season_number and find_episode(
+                                                                            result.show_id,
+                                                                            eid).episode in parse_result.episode_numbers]:
                         sickrage.app.log.debug("The result {} doesn't seem to be a valid episode that we are trying "
                                                "to snatch, ignoring".format(result.name))
                         continue
@@ -384,7 +406,7 @@ class GenericProvider(object):
                 else:
                     airdate = parse_result.air_date.toordinal()
                     try:
-                        dbData = MainDB.TVEpisode.query.filter_by(showid=result.show.indexer_id, airdate=airdate).one()
+                        dbData = TVEpisode.query.filter_by(showid=result_show_obj.indexer_id, airdate=airdate).one()
                         actual_season = int(dbData.season)
                         actual_episodes = [int(dbData.episode)]
                     except orm.exc.NoResultFound:
@@ -393,43 +415,37 @@ class GenericProvider(object):
                         continue
 
             # make sure we want the episode
-            wantEp = False
+            result.episode_ids = []
             for epNo in actual_episodes:
-                if result.show.want_episode(actual_season, epNo, result.quality, manualSearch, downCurQuality):
-                    wantEp = True
-
-            if not wantEp:
-                sickrage.app.log.info(
-                    "RESULT:[{}] QUALITY:[{}] IGNORED!".format(result.name, Quality.qualityStrings[result.quality]))
-                continue
-
-            # make a result object
-            result.episodes = []
-            for curEp in actual_episodes:
-                result.episodes.append(result.show.get_episode(actual_season, curEp))
+                result_episode_obj = result_show_obj.get_episode(actual_season, epNo)
+                if result_show_obj.want_episode(result_show_obj.indexer_id, result_episode_obj.indexer_id,
+                                                result.quality, manualSearch, downCurQuality):
+                    result.episode_ids.append(result_episode_obj.indexer_id)
+                else:
+                    sickrage.app.log.info(
+                        "RESULT:[{}] QUALITY:[{}] IGNORED!".format(result.name, Quality.qualityStrings[result.quality]))
 
             sickrage.app.log.debug(
-                "FOUND RESULT:[{}] QUALITY:[{}] URL:[{}]".format(result.name,
-                                                                 Quality.qualityStrings[result.quality],
+                "FOUND RESULT:[{}] QUALITY:[{}] URL:[{}]".format(result.name, Quality.qualityStrings[result.quality],
                                                                  result.url)
             )
 
-            if len(result.episodes) == 1:
-                epNum = result.episodes[0].episode
+            if len(result.episode_ids) == 1:
+                eid = result.episode_ids[0]
                 sickrage.app.log.debug("Single episode result.")
-            elif len(result.episodes) > 1:
-                epNum = MULTI_EP_RESULT
+            elif len(result.episode_ids) > 1:
+                eid = MULTI_EP_RESULT
                 sickrage.app.log.debug(
                     "Separating multi-episode result to check for later - result contains episodes: " + str(
                         parse_result.episode_numbers))
             else:
-                epNum = SEASON_RESULT
+                eid = SEASON_RESULT
                 sickrage.app.log.debug("Separating full season result to check for later")
 
-            if epNum not in results:
-                results[epNum] = [result]
+            if eid not in results:
+                results[eid] = [result]
             else:
-                results[epNum] += [result]
+                results[eid] += [result]
 
         return results
 
@@ -1082,7 +1098,7 @@ class NewznabProvider(NZBProvider):
 
         return False
 
-    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
         """
         Search indexer using the params in search_strings, either for latest releases, or a string/id search.
 
@@ -1096,6 +1112,8 @@ class NewznabProvider(NZBProvider):
         # For providers that don't have caps, or for which the t=caps is not working.
         if not self.caps:
             self.get_newznab_categories(just_caps=True)
+
+        episode_obj = find_episode(show_id, episode_id)
 
         for mode in search_strings:
             self.torznab = False
@@ -1113,16 +1131,16 @@ class NewznabProvider(NZBProvider):
             if mode != 'RSS':
                 if (self.cap_tv_search or not self.cap_tv_search == 'True') and not self.force_query:
                     search_params['t'] = 'tvsearch'
-                    search_params.update({'tvdbid': ep_obj.show.indexer_id})
+                    search_params.update({'tvdbid': show_id})
 
                 if search_params['t'] == 'tvsearch':
-                    if ep_obj.show.air_by_date or ep_obj.show.sports:
-                        date_str = str(ep_obj.airdate)
+                    if episode_obj.show.air_by_date or episode_obj.show.sports:
+                        date_str = str(episode_obj.airdate)
                         search_params['season'] = date_str.partition('-')[0]
                         search_params['ep'] = date_str.partition('-')[2].replace('-', '/')
                     else:
-                        search_params['season'] = ep_obj.scene_season
-                        search_params['ep'] = ep_obj.scene_episode
+                        search_params['season'] = episode_obj.scene_season
+                        search_params['ep'] = episode_obj.scene_episode
 
                 if mode == 'Season':
                     search_params.pop('ep', '')
@@ -1154,10 +1172,10 @@ class NewznabProvider(NZBProvider):
                 if 'tvdbid' in search_params:
                     break
 
-        # Reproces but now use force_query = True
+        # Reprocess but now use force_query = True
         if not results and not self.force_query:
             self.force_query = True
-            return self.search(search_strings, ep_obj=ep_obj)
+            return self.search(search_strings, show_id=show_id, episode_id=episode_id)
 
         return results
 

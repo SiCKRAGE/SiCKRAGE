@@ -29,6 +29,7 @@ from sickrage.core.common import Quality
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.exceptions import AuthException, EpisodeNotFoundException
 from sickrage.core.helpers import show_names, validate_url, is_ip_private, try_int
+from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.nameparser import InvalidNameException, NameParser, InvalidShowException
 from sickrage.core.websession import WebSession
@@ -243,9 +244,11 @@ class TVCache(object):
         except (InvalidShowException, InvalidNameException):
             pass
 
-    def search_cache(self, ep_obj, manualSearch=False, downCurQuality=False):
-        season = ep_obj.scene_season if ep_obj.show.scene else ep_obj.season
-        episode = ep_obj.scene_episode if ep_obj.show.scene else ep_obj.episode
+    def search_cache(self, show_id, episode_id, manualSearch=False, downCurQuality=False):
+        episode_obj = find_episode(show_id, episode_id)
+
+        season = episode_obj.scene_season if episode_obj.show.scene else episode_obj.season
+        episode = episode_obj.scene_episode if episode_obj.show.scene else episode_obj.episode
 
         neededEps = {}
         dbData = []
@@ -253,17 +256,19 @@ class TVCache(object):
         # get data from external database
         if sickrage.app.config.enable_api_providers_cache and not self.provider.private:
             try:
-                dbData += ProviderCacheAPI().get(self.providerID, ep_obj.show.indexer_id, season, episode)['data']
+                dbData += ProviderCacheAPI().get(self.providerID, show_id, season, episode)['data']
             except Exception:
                 pass
 
         # get data from internal database
         dbData += [x.as_dict() for x in
-                   CacheDB.Provider.query.filter_by(provider=self.providerID, indexer_id=ep_obj.show.indexer_id, season=season) if
+                   CacheDB.Provider.query.filter_by(provider=self.providerID, indexer_id=show_id, season=season) if
                    "|{}|".format(episode) in x.episodes]
 
         # for each cache entry
         for curResult in dbData:
+            show = find_show(int(curResult["indexer_id"]))
+
             result = self.provider.getResult()
 
             # ignore invalid and private IP address urls
@@ -278,13 +283,11 @@ class TVCache(object):
                 continue
 
             # get the show object, or if it's not one of our shows then ignore it
-            result.show = find_show(int(curResult["indexer_id"]))
-            if not result.show:
-                continue
+            result.show_id = int(curResult["indexer_id"])
 
             # skip if provider is anime only and show is not anime
-            if self.provider.anime_only and not result.show.is_anime:
-                sickrage.app.log.debug("" + str(result.show.name) + " is not an anime, skiping")
+            if self.provider.anime_only and not show.is_anime:
+                sickrage.app.log.debug("" + str(show.name) + " is not an anime, skiping")
                 continue
 
             # get season and ep data (ignoring multi-eps for now)
@@ -293,8 +296,8 @@ class TVCache(object):
                 continue
 
             try:
-                result.episodes = [result.show.get_episode(curSeason, int(curEp)) for curEp in
-                                   filter(None, curResult["episodes"].split("|"))]
+                result.episode_ids = [show.get_episode(curSeason, int(curEp)) for curEp in
+                                      filter(None, curResult["episodes"].split("|"))]
             except EpisodeNotFoundException:
                 continue
 
@@ -304,12 +307,8 @@ class TVCache(object):
 
             # make sure we want the episode
             wantEp = False
-            for curEp in result.episodes:
-                if result.show.want_episode(curEp.season,
-                                            curEp.episode,
-                                            result.quality,
-                                            manualSearch,
-                                            downCurQuality):
+            for episode_id in result.episode_ids:
+                if show.want_episode(episode_id, result.quality, manualSearch, downCurQuality):
                     wantEp = True
 
             if not wantEp:
@@ -329,10 +328,10 @@ class TVCache(object):
             result.content = None
 
             # add it to the list
-            if ep_obj.episode not in neededEps:
-                neededEps[ep_obj.episode] = [result]
+            if episode_id not in neededEps:
+                neededEps[episode_id] = [result]
             else:
-                neededEps[ep_obj.episode] += [result]
+                neededEps[episode_id] += [result]
 
         # datetime stamp this search so cache gets cleared
         self.last_search = datetime.datetime.today()

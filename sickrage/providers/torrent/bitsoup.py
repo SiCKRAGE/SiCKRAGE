@@ -77,7 +77,7 @@ class BitSoupProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
         results = []
 
         search_params = {
