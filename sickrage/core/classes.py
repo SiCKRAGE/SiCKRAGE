@@ -171,9 +171,8 @@ class ErrorViewer(object):
     def add(self, error, ui=False):
         self.errors += [(error, UIError(error))[ui]]
 
-    @classmethod
-    def clear(cls):
-        cls.errors = []
+    def clear(self):
+        self.errors = []
 
     def get(self):
         return self.errors
@@ -190,9 +189,8 @@ class WarningViewer(object):
     def add(self, warning, ui=False):
         self.warnings += [(warning, UIWarning(warning))[ui]]
 
-    @classmethod
-    def clear(cls):
-        cls.warnings = []
+    def clear(self):
+        self.warnings = []
 
     def get(self):
         return self.warnings
