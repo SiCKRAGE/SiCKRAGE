@@ -7,7 +7,7 @@ configobj == 5.0.6
 feedparser == 5.2.1
 guessit == 3.0.3
 hachoir3 == 3.0a2
-Mako == 1.0.7
+Mako == 1.0.9
 markdown2 == 2.3.6
 oauth2 == 1.9.0.post1
 profilehooks == 1.10.0
@@ -27,7 +27,7 @@ pyxdg == 0.26
 urllib3 == 1.24.1
 unrar == 0.3
 lockfile == 0.12.2
-requests == 2.20.1
+requests == 2.21.0
 fake-useragent == 0.1.11
 html5lib == 1.0.1
 arrow == 0.12.1
