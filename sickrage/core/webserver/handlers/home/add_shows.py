@@ -90,7 +90,7 @@ class SearchIndexersForShowNameHandler(BaseHandler, ABC):
             l_indexer_api_parms['custom_ui'] = AllShowsUI
             t = IndexerApi(indexer).indexer(**l_indexer_api_parms)
 
-            sickrage.app.log.debug("Searching for Show with searchterm: %s on Indexer: %s" % (
+            sickrage.app.log.debug("Searching for Show with term: %s on Indexer: %s" % (
                 search_term, IndexerApi(indexer).name))
 
             try:
