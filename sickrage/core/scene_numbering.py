@@ -336,7 +336,7 @@ def get_indexer_absolute_numbering_for_xem(indexer_id, indexer, sceneAbsoluteNum
                                                       scene_absolute_number=sceneAbsoluteNumber,
                                                       scene_season=scene_season).one()
         return try_int(dbData.absolute_number)
-    except orm.exc.NoResultFound:
+    except (orm.exc.NoResultFound, orm.exc.MultipleResultsFound):
         return sceneAbsoluteNumber
 
 
