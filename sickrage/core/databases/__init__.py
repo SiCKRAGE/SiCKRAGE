@@ -134,6 +134,8 @@ class srDatabase(object):
 
     def add(self, instance):
         self.session.add(instance)
+        self.session.commit()
 
     def delete(self, table, *args, **kwargs):
         self.session.query(table).filter_by(**kwargs).filter(*args).delete()
+        self.session.commit()
