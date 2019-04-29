@@ -96,7 +96,14 @@ class Logger(logging.getLoggerClass()):
                                      '@sentry.sickrage.ca/5?verify_ssl=0', release=sickrage.version(),
                                      repos={'sickrage': {'name': 'sickrage/sickrage'}})
 
-        sentry_handler = SentryHandler(client=sentry_client, tags={'platform': platform.platform()})
+        sentry_tags = {'platform': platform.platform()}
+        if sickrage.app.config and sickrage.app.config.sub_id:
+            sentry_tags.update({'sub_id': sickrage.app.config.sub_id})
+        if sickrage.app.config and sickrage.app.config.app_id:
+            sentry_tags.update({'app_id': sickrage.app.config.app_id})
+
+        sentry_handler = SentryHandler(client=sentry_client, tags=sentry_tags)
+
         sentry_handler.setLevel(self.logLevels['ERROR'])
         sentry_handler.set_name('sentry')
         self.addHandler(sentry_handler)
