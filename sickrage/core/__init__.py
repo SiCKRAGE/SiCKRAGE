@@ -482,6 +482,8 @@ class Core(object):
                                                                sickrage.app.config.web_host,
                                                                sickrage.app.config.web_port))
 
+        self.log.error('test')
+
         # start ioloop
         self.io_loop.start()
 
