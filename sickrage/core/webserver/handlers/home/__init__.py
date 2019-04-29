@@ -21,7 +21,6 @@ import datetime
 import os
 from abc import ABC
 from collections import OrderedDict
-from functools import cmp_to_key
 from urllib.parse import unquote_plus, quote_plus
 
 from sqlalchemy import orm
@@ -33,14 +32,12 @@ from tornado.web import authenticated
 import sickrage
 from sickrage.clients import getClientIstance
 from sickrage.clients.sabnzbd import SabNZBd
-from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.common import Overview, Quality, cpu_presets, statusStrings, WANTED, FAILED, UNAIRED, IGNORED, \
     SKIPPED
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AnidbAdbaConnectionException, CantRefreshShowException, NoNFOException, \
     CantUpdateShowException, CantRemoveShowException, EpisodeDeletedException
-from sickrage.core.helpers import clean_url, clean_host, clean_hosts, getDiskSpaceUsage, remove_article, \
-    checkbox_to_value, try_int
+from sickrage.core.helpers import clean_url, clean_host, clean_hosts, getDiskSpaceUsage, checkbox_to_value, try_int
 from sickrage.core.helpers.anidb import get_release_groups_for_anime, short_group_names
 from sickrage.core.helpers.srdatetime import srDateTime
 from sickrage.core.queues.search import BacklogQueueItem, FailedQueueItem, ManualSearchQueueItem, MANUAL_SEARCH_HISTORY
@@ -957,12 +954,12 @@ class DisplayShowHandler(BaseHandler, ABC):
                     shows.append(show)
 
             sorted_show_lists = {
-                "Shows": sorted(shows, key=lambda x: x.name),
-                "Anime": sorted(anime, key=lambda x: x.name)
+                "Shows": sorted(shows, key=lambda x: x.name.upper()),
+                "Anime": sorted(anime, key=lambda x: x.name.upper())
             }
         else:
             sorted_show_lists = {
-                "Shows": sorted(get_show_list(), key=lambda x: x.name)
+                "Shows": sorted(get_show_list(), key=lambda x: x.name.upper())
             }
 
         bwl = None

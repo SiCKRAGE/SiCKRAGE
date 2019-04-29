@@ -29,7 +29,7 @@ def interface_addresses(family=socket.AF_INET):
         for fam, __, __, __, sockaddr in socket.getaddrinfo('', None):
             if family == fam:
                 yield sockaddr[0]
-    except socket.gaierror:
+    except (SystemError, socket.gaierror):
         pass
 
 
