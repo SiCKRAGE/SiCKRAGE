@@ -88,10 +88,10 @@ class LogsClearAllHanlder(BaseHandler, ABC):
 class LogsViewHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        min_level = self.get_query_argument('minLevel', sickrage.app.log.INFO)
+        min_level = self.get_query_argument('minLevel', None) or sickrage.app.log.INFO
         log_filter = self.get_query_argument('logFilter', '')
         log_search = self.get_query_argument('logSearch', '')
-        max_lines = self.get_query_argument('maxLines', 500)
+        max_lines = self.get_query_argument('maxLines', None) or 500
 
         log_name_filters = {
             '': 'No Filter',
