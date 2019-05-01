@@ -22,9 +22,7 @@ import datetime
 
 import sickrage
 from sickrage.core.common import UNAIRED, SKIPPED, statusStrings
-from sickrage.core.databases.main import MainDB
 from sickrage.core.tv.episode import TVEpisode
-from sickrage.core.tv.show import find_show
 
 
 def new_episode_finder():
@@ -32,25 +30,20 @@ def new_episode_finder():
     curDate += datetime.timedelta(days=1)
     curTime = datetime.datetime.now(sickrage.app.tz)
 
-    show = None
-
     for episode in TVEpisode.query.filter_by(status=UNAIRED).filter(TVEpisode.season > 0, TVEpisode.airdate > 1):
-        if not show or int(episode.showid) != show.indexer_id:
-            show = find_show(episode.showid)
-
-        # for when there is orphaned series in the database but not loaded into our showlist
-        if not show or show.paused:
+        if episode.show.paused:
             continue
 
         air_date = datetime.date.fromordinal(episode.airdate)
-        air_date += datetime.timedelta(days=show.search_delay)
+        air_date += datetime.timedelta(days=episode.show.search_delay)
         if not curDate.toordinal() >= air_date.toordinal():
             continue
 
-        if show.airs and show.network:
+        if episode.show.airs and episode.show.network:
             # This is how you assure it is always converted to local time
             air_time = sickrage.app.tz_updater.parse_date_time(episode.airdate,
-                                                               show.airs, show.network).astimezone(sickrage.app.tz)
+                                                               episode.show.airs,
+                                                               episode.show.network).astimezone(sickrage.app.tz)
 
             # filter out any episodes that haven't started airing yet,
             # but set them to the default status while they are airing
@@ -58,13 +51,9 @@ def new_episode_finder():
             if air_time > curTime:
                 continue
 
-        ep_obj = show.get_episode(int(episode.season), int(episode.episode))
-        with ep_obj.lock:
-            ep_obj.status = show.default_ep_status if ep_obj.season else SKIPPED
-            sickrage.app.log.info('Setting status ({status}) for show airing today: {name} {special}'.format(
-                name=ep_obj.pretty_name(),
-                status=statusStrings[ep_obj.status],
-                special='(specials are not supported)' if not ep_obj.season else '',
-            ))
-
-            # ep_obj.save_to_db()
+        episode.status = episode.show.default_ep_status if episode.ep_obj.season > 0 else SKIPPED
+        sickrage.app.log.info('Setting status ({status}) for show airing today: {name} {special}'.format(
+            name=episode.pretty_name(),
+            status=statusStrings[episode.status],
+            special='(specials are not supported)' if not episode.season > 0 else '',
+        ))
