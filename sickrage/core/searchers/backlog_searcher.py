@@ -79,31 +79,29 @@ class BacklogSearcher(object):
         else:
             sickrage.app.log.info('Running full backlog search on missed episodes for selected shows')
 
-        # find new released episodes and update their statuses
-        new_episode_finder()
-
         # go through non air-by-date shows and see if they need any episodes
         for curShow in show_list:
             if curShow.paused:
                 sickrage.app.log.debug("Skipping search for {} because the show is paused".format(curShow.name))
                 continue
 
-            segments = self._get_segments(curShow, from_date)
-            if segments:
-                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(curShow, segments))
+            episode_ids = self._get_episode_ids(curShow, from_date)
+            if episode_ids:
+                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(curShow.indexer_id,
+                                                                                                  episode_ids))
             else:
                 sickrage.app.log.debug("Nothing needs to be downloaded for {}, skipping".format(curShow.name))
 
             # don't consider this an actual backlog search if we only did recent eps
             # or if we only did certain shows
             if from_date == datetime.date.fromordinal(1) and not which_shows:
-                self._set_last_backlog_search(curShow.indexer_id, cur_date)
+                self._set_last_backlog_search(curShow, cur_date)
 
         self.amActive = False
 
     @staticmethod
-    def _get_segments(show, from_date):
-        anyQualities, bestQualities = Quality.split_quality(show.quality)
+    def _get_episode_ids(show, from_date):
+        any_qualities, best_qualities = Quality.split_quality(show.quality)
 
         sickrage.app.log.debug("Seeing if we need anything that's older then today from {}".format(show.name))
 
@@ -113,49 +111,46 @@ class BacklogSearcher(object):
             if not ep_obj.season > 0 or not datetime.date.today().toordinal() > ep_obj.airdate > from_date.toordinal():
                 continue
 
-            curStatus, curQuality = Quality.split_composite_status(int(ep_obj.status or -1))
+            cur_status, cur_quality = Quality.split_composite_status(int(ep_obj.status or -1))
 
             # if we need a better one then say yes
-            if curStatus not in {WANTED, DOWNLOADED, SNATCHED, SNATCHED_PROPER}:
+            if cur_status not in {WANTED, DOWNLOADED, SNATCHED, SNATCHED_PROPER}:
                 continue
 
-            if curStatus != WANTED:
-                if bestQualities:
-                    if curQuality in bestQualities:
+            if cur_status != WANTED:
+                if best_qualities:
+                    if cur_quality in best_qualities:
                         continue
-                    elif curQuality != Quality.UNKNOWN and curQuality > max(bestQualities):
+                    elif cur_quality != Quality.UNKNOWN and cur_quality > max(best_qualities):
                         continue
                 else:
-                    if curQuality in anyQualities:
+                    if cur_quality in any_qualities:
                         continue
-                    elif curQuality != Quality.UNKNOWN and curQuality > max(anyQualities):
+                    elif cur_quality != Quality.UNKNOWN and cur_quality > max(any_qualities):
                         continue
 
             # skip upgrading quality of downloaded episodes if enabled
-            if curStatus == DOWNLOADED and show.skip_downloaded:
+            if cur_status == DOWNLOADED and show.skip_downloaded:
                 continue
 
-            epObj = show.get_episode(int(ep_obj.season), int(ep_obj.episode))
-            wanted.append(epObj)
+            wanted.append(ep_obj.indexer_id)
 
         return wanted
 
     @staticmethod
-    def _get_last_backlog_search(showid):
+    def _get_last_backlog_search(show):
         sickrage.app.log.debug("Retrieving the last check time from the DB")
 
         try:
-            show = find_show(showid)
             return int(show.last_backlog_search)
         except orm.exc.NoResultFound:
             return 1
 
     @staticmethod
-    def _set_last_backlog_search(showid, when):
+    def _set_last_backlog_search(show, when):
         sickrage.app.log.debug("Setting the last backlog in the DB to {}".format(when))
 
         try:
-            show = find_show(showid)
             show.last_backlog_search = when
         except orm.exc.NoResultFound:
             pass
