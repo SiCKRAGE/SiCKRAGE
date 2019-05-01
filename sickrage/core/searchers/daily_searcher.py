@@ -22,11 +22,10 @@ import datetime
 import threading
 
 import sickrage
-from sickrage.core.tv.show.helpers import get_show_list
 from sickrage.core.common import Quality, WANTED, DOWNLOADED, SNATCHED, SNATCHED_PROPER
-from sickrage.core.databases.main import MainDB
 from sickrage.core.queues.search import DailySearchQueueItem
 from sickrage.core.searchers import new_episode_finder
+from sickrage.core.tv.show.helpers import get_show_list
 
 
 class DailySearcher(object):
@@ -56,16 +55,18 @@ class DailySearcher(object):
                 sickrage.app.log.debug("Skipping search for {} because the show is paused".format(curShow.name))
                 continue
 
-            segments = self._get_segments(curShow, datetime.date.today())
-            if segments:
-                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, DailySearchQueueItem(curShow, segments))
+            episode_ids = self._get_episode_ids(curShow, datetime.date.today())
+            if episode_ids:
+                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put,
+                                                  DailySearchQueueItem(curShow.indexer_id,
+                                                                       episode_ids))
             else:
                 sickrage.app.log.debug("Nothing needs to be downloaded for {}, skipping".format(curShow.name))
 
         self.amActive = False
 
     @staticmethod
-    def _get_segments(show, from_date):
+    def _get_episode_ids(show, from_date):
         """
         Get a list of episodes that we want to download
         :param show: Show these episodes are from
@@ -75,8 +76,8 @@ class DailySearcher(object):
 
         wanted = []
 
-        anyQualities, bestQualities = Quality.split_quality(show.quality)
-        allQualities = list(set(anyQualities + bestQualities))
+        any_qualities, best_qualities = Quality.split_quality(show.quality)
+        all_qualities = list(set(any_qualities + best_qualities))
 
         sickrage.app.log.debug("Seeing if we need anything for today from {}".format(show.name))
 
@@ -85,30 +86,29 @@ class DailySearcher(object):
             if not ep_obj.season > 0 or not ep_obj.airdate >= from_date.toordinal():
                 continue
 
-            curStatus, curQuality = Quality.split_composite_status(int(ep_obj.status or -1))
+            cur_status, cur_quality = Quality.split_composite_status(int(ep_obj.status or -1))
 
             # if we need a better one then say yes
-            if curStatus not in (WANTED, DOWNLOADED, SNATCHED, SNATCHED_PROPER):
+            if cur_status not in (WANTED, DOWNLOADED, SNATCHED, SNATCHED_PROPER):
                 continue
 
-            if curStatus != WANTED:
-                if bestQualities:
-                    if curQuality in bestQualities:
+            if cur_status != WANTED:
+                if best_qualities:
+                    if cur_quality in best_qualities:
                         continue
-                    elif curQuality != Quality.UNKNOWN and curQuality > max(bestQualities):
+                    elif cur_quality != Quality.UNKNOWN and cur_quality > max(best_qualities):
                         continue
                 else:
-                    if curQuality in anyQualities:
+                    if cur_quality in any_qualities:
                         continue
-                    elif curQuality != Quality.UNKNOWN and curQuality > max(anyQualities):
+                    elif cur_quality != Quality.UNKNOWN and cur_quality > max(any_qualities):
                         continue
 
             # skip upgrading quality of downloaded episodes if enabled
-            if curStatus == DOWNLOADED and show.skip_downloaded:
+            if cur_status == DOWNLOADED and show.skip_downloaded:
                 continue
 
-            epObj = show.get_episode(int(ep_obj.season), int(ep_obj.episode))
-            epObj.wantedQuality = [i for i in allQualities if (i > curQuality and i != Quality.UNKNOWN)]
-            wanted.append(epObj)
+            ep_obj.wantedQuality = [i for i in all_qualities if (i > cur_quality and i != Quality.UNKNOWN)]
+            wanted.append(ep_obj.indexer_id)
 
         return wanted
