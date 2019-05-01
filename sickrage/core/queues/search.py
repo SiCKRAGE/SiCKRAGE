@@ -22,6 +22,7 @@ import threading
 import time
 import traceback
 
+from tornado import gen
 from tornado.ioloop import IOLoop
 
 import sickrage
@@ -226,22 +227,24 @@ class ManualSearchQueueItem(srQueueItem):
 
 
 class BacklogQueueItem(srQueueItem):
-    def __init__(self, indexer_id, episode_ids):
+    def __init__(self, show_id, episode_ids):
         super(BacklogQueueItem, self).__init__('Backlog Search', BACKLOG_SEARCH)
-        self.name = 'BACKLOG-' + str(indexer_id)
-        self.show = find_show(indexer_id)
+        self.name = 'BACKLOG-{}'.format(show_id)
+        self.show_id = show_id
         self.episode_ids = episode_ids
         self.priority = srQueuePriorities.LOW
         self.success = False
         self.started = False
 
-    def run(self):
+    async def run(self):
         self.started = True
 
-        try:
-            sickrage.app.log.info("Starting backlog search for: [" + self.show.name + "]")
+        show = find_show(self.show_id)
 
-            search_result = searchProviders(self.show.indexer_id, self.episode_ids, manualSearch=False)
+        try:
+            sickrage.app.log.info("Starting backlog search for: [" + show.name + "]")
+
+            search_result = searchProviders(self.show_id, self.episode_ids, manualSearch=False)
             if search_result:
                 for result in search_result:
                     # just use the first result for now
@@ -249,13 +252,13 @@ class BacklogQueueItem(srQueueItem):
                     snatchEpisode(result)
 
                     # give the CPU a break
-                    time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
+                    await gen.sleep(cpu_presets[sickrage.app.config.cpu_preset])
             else:
-                sickrage.app.log.info("Unable to find search results for: [" + self.show.name + "]")
+                sickrage.app.log.info("Unable to find search results for: [" + show.name + "]")
         except Exception:
             sickrage.app.log.debug(traceback.format_exc())
         finally:
-            sickrage.app.log.info("Finished backlog search for: [" + self.show.name + "]")
+            sickrage.app.log.info("Finished backlog search for: [" + show.name + "]")
 
 
 class FailedQueueItem(srQueueItem):
