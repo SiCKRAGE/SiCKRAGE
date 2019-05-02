@@ -310,8 +310,8 @@ def searchProviders(show_id, episode_ids, manualSearch=False, downCurQuality=Fal
     """
     Walk providers for information on shows
 
-    :param show: Show we are looking for
-    :param episodes: Episodes we hope to find
+    :param show_id: Show we are looking for
+    :param episode_ids: Episodes we hope to find
     :param manualSearch: Boolean, is this a manual search?
     :param downCurQuality: Boolean, should we redownload currently avaialble quality file
     :return: results for search

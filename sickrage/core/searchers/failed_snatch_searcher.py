@@ -56,10 +56,33 @@ class FailedSnatchSearcher(object):
 
         sickrage.app.log.info("Searching for failed snatches")
 
-        show = None
         failed_snatches = False
 
-        snatched_episodes = (x for x in MainDB.History.query.filter(
+        for snatched_episode_obj in [x for x in self.snatched_episodes() if
+                                     (x.showid, x.season, x.episode) not in self.downloaded_releases()]:
+
+            show_obj = find_show(snatched_episode_obj.showid)
+            if show_obj.paused:
+                continue
+
+            episode_obj = show_obj.get_episode(snatched_episode_obj.season, snatched_episode_obj.episode)
+
+            cur_status, cur_quality = Quality.split_composite_status(episode_obj.status)
+            if cur_status not in {SNATCHED, SNATCHED_BEST, SNATCHED_PROPER}:
+                continue
+
+            sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put,
+                                              FailedQueueItem(show_obj.showid, [episode_obj.indexer_id], True))
+
+            failed_snatches = True
+
+        if not failed_snatches:
+            sickrage.app.log.info("No failed snatches found")
+
+        self.amActive = False
+
+    def snatched_episodes(self):
+        return (x for x in MainDB.History.query.filter(
             MainDB.History.action.in_(Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER),
             24 >= int((datetime.datetime.now() -
                        datetime.datetime.strptime(
@@ -67,30 +90,6 @@ class FailedSnatchSearcher(object):
                            History.date_format)).total_seconds() / 3600
                       ) >= sickrage.app.config.failed_snatch_age))
 
-        downloaded_releases = ((x.showid, x.season, x.episode) for x in
-                               MainDB.History.query.filter(MainDB.History.action.in_(Quality.DOWNLOADED)))
-
-        episodes = [x for x in snatched_episodes if (x.showid, x.season, x.episode) not in downloaded_releases]
-
-        for episode in episodes:
-            failed_snatches = True
-            if not show or int(episode.showid) != show.indexer_id:
-                show = find_show(int(episode.showid))
-
-            # for when there is orphaned series in the database but not loaded into our showlist
-            if not show or show.paused:
-                continue
-
-            ep_obj = show.get_episode(int(episode.season), int(episode.episode))
-            if isinstance(ep_obj, TVEpisode):
-                curStatus, curQuality = Quality.split_composite_status(ep_obj.status)
-                if curStatus not in {SNATCHED, SNATCHED_BEST, SNATCHED_PROPER}:
-                    continue
-
-                # put it on the queue
-                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, FailedQueueItem(show, [ep_obj], True))
-
-        if not failed_snatches:
-            sickrage.app.log.info("No failed snatches found")
-
-        self.amActive = False
+    def downloaded_releases(self):
+        return ((x.showid, x.season, x.episode) for x in
+                MainDB.History.query.filter(MainDB.History.action.in_(Quality.DOWNLOADED)))
