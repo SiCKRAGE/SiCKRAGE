@@ -17,9 +17,9 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import sickrage
 from sickrage.core.traktapi import TraktAPI
+from sickrage.core.tv.show import find_show
 from sickrage.indexers import IndexerApi
 from sickrage.notifiers import Notifiers
 
@@ -85,7 +85,7 @@ class TraktNotifier(Notifiers):
             except Exception as e:
                 sickrage.app.log.warning("Could not connect to Trakt service: %s" % e)
 
-    def update_watchlist(self, show_obj=None, s=None, e=None, data_show=None, data_episode=None, update="add"):
+    def update_watchlist(self, show_id=None, s=None, e=None, data_show=None, data_episode=None, update="add"):
 
         """
         Sends a request to trakt indicating that the given episode is part of our library.
@@ -97,6 +97,11 @@ class TraktNotifier(Notifiers):
         data_episode: structured object of episodes traktv type
         update: type o action add or remove
         """
+
+        show_obj = find_show(show_id)
+
+        sickrage.app.log.debug(
+            "Add episodes, showid: indexer_id {}, Title {} to Trak.tv Watchlist".format(show_id, show.name))
 
         if sickrage.app.config.use_trakt:
             data = {}
@@ -112,12 +117,11 @@ class TraktNotifier(Notifiers):
                             }
                         ]
                     }
-
                 elif data_show is not None:
                     data.update(data_show)
                 else:
-                    sickrage.app.log.warning(
-                        "there's a coding problem contact developer. It's needed to be provided at lest one of the two: data_show or show_obj")
+                    sickrage.app.log.warning("there's a coding problem contact developer. It's needed to be provided "
+                                             "at lest one of the two: data_show or show_obj")
                     return False
 
                 if data_episode is not None:

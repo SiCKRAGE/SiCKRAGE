@@ -258,7 +258,7 @@ class NameParser(object):
                 return best_result
 
             # get quality
-            best_result.quality = common.Quality.name_quality(name, best_result.show.is_anime)
+            best_result.quality = common.Quality.name_quality(name, show_obj.is_anime)
 
             new_episode_numbers = []
             new_season_numbers = []
@@ -281,14 +281,14 @@ class NameParser(object):
 
                 if not season_number or not episode_numbers:
                     try:
-                        lINDEXER_API_PARMS = IndexerApi(best_result.show.indexer).api_params.copy()
+                        lINDEXER_API_PARMS = IndexerApi(show_obj.indexer).api_params.copy()
 
                         lINDEXER_API_PARMS[
-                            'language'] = best_result.show.lang or sickrage.app.config.indexer_default_language
+                            'language'] = show_obj.lang or sickrage.app.config.indexer_default_language
 
-                        t = IndexerApi(best_result.show.indexer).indexer(**lINDEXER_API_PARMS)
+                        t = IndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
 
-                        epObj = t[best_result.show.indexer_id].airedOn(best_result.air_date)[0]
+                        epObj = t[show_obj.indexer_id].airedOn(best_result.air_date)[0]
 
                         season_number = int(epObj["airedseason"])
                         episode_numbers = [int(epObj["airedepisodenumber"])]
@@ -300,7 +300,7 @@ class NameParser(object):
                         episode_numbers = []
                     except indexer_error as e:
                         sickrage.app.log.warning(
-                            "Unable to contact " + IndexerApi(show_obj.show.indexer).name + ": {}".format(e))
+                            "Unable to contact " + IndexerApi(show_obj.indexer).name + ": {}".format(e))
                         episode_numbers = []
 
                 for epNo in episode_numbers:
@@ -319,7 +319,7 @@ class NameParser(object):
                 for epAbsNo in best_result.ab_episode_numbers:
                     a = epAbsNo
 
-                    if best_result.show.is_scene:
+                    if show_obj.is_scene:
                         scene_season = scene_exceptions.get_scene_exception_by_name(best_result.series_name)[1]
                         a = get_indexer_absolute_numbering(show_obj.indexer_id,
                                                            show_obj.indexer, epAbsNo,
@@ -375,7 +375,7 @@ class NameParser(object):
                 best_result.episode_numbers = new_episode_numbers
                 best_result.season_number = new_season_numbers[0]
 
-            if best_result.show.is_scene and not skip_scene_detection:
+            if show_obj.is_scene and not skip_scene_detection:
                 sickrage.app.log.debug(
                     "Scene converted parsed result {} into {}".format(best_result.original_name, best_result))
 
@@ -495,11 +495,10 @@ class NameParser(object):
             if dir_name_result:
                 final_result.which_regex |= dir_name_result.which_regex
 
-        final_result.show = self._combine_results(file_name_result, dir_name_result, 'show')
         final_result.indexer_id = self._combine_results(file_name_result, dir_name_result, 'indexer_id')
         final_result.quality = self._combine_results(file_name_result, dir_name_result, 'quality')
 
-        if self.validate_show and not self.naming_pattern and not final_result.show:
+        if self.validate_show and not self.naming_pattern and not final_result.indexer_id:
             raise InvalidShowException("Unable to match {} to a show in your database. Parser result: {}".format(
                 name, final_result))
 
@@ -508,7 +507,7 @@ class NameParser(object):
             raise InvalidNameException(
                 "Unable to parse {} to a valid episode. Parser result: {}".format(name, final_result))
 
-        if cache_result and final_result.show:
+        if cache_result and final_result.indexer_id:
             name_parser_cache.add(name, final_result)
 
         sickrage.app.log.debug("Parsed {} into {}".format(name, final_result))
@@ -525,7 +524,6 @@ class ParseResult(object):
                  release_group=None,
                  air_date=None,
                  ab_episode_numbers=None,
-                 show=None,
                  indexer_id=None,
                  score=None,
                  quality=None,
@@ -541,7 +539,6 @@ class ParseResult(object):
         self.extra_info = extra_info
         self.release_group = release_group
         self.air_date = air_date
-        self.show = show
         self.indexer_id = indexer_id or 0
         self.score = score
         self.version = version
@@ -557,7 +554,6 @@ class ParseResult(object):
             self.release_group == other.release_group,
             self.air_date == other.air_date,
             self.ab_episode_numbers == other.ab_episode_numbers,
-            self.show == other.show,
             self.score == other.score,
             self.quality == other.quality,
             self.version == other.version

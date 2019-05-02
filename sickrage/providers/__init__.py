@@ -109,11 +109,11 @@ class GenericProvider(object):
                 for s in sub.get_subclasses():
                     yield s
 
-    def getResult(self, episodes=None):
+    def getResult(self, episode_ids=None):
         """
         Returns a result of the correct type for this provider
         """
-        return SearchResult(episodes)
+        return SearchResult(episode_ids)
 
     def get_content(self, url):
         if self.login():
@@ -449,15 +449,12 @@ class GenericProvider(object):
 
         return results
 
-    def find_propers(self, episodes):
+    def find_propers(self, show_id, episode_ids):
         results = []
 
-        for episode in episodes:
-            show = find_show(int(episode["showid"]))
-            if not show:
-                continue
+        for episode_id in episode_ids:
+            ep_obj = find_episode(show_id, episode_id)
 
-            ep_obj = show.get_episode(int(episode["season"]), int(episode["episode"]))
             for term in self.proper_strings:
                 search_strngs = self._get_episode_search_strings(ep_obj, add_string=term)
                 for item in self.search(search_strngs[0], ep_obj=ep_obj):
@@ -643,11 +640,11 @@ class TorrentProvider(GenericProvider):
         """
         return self.ratio
 
-    def getResult(self, episodes=None):
+    def getResult(self, episode_ids=None):
         """
         Returns a result of the correct type for this provider
         """
-        result = TorrentSearchResult(episodes)
+        result = TorrentSearchResult(episode_ids)
         result.provider = self
         return result
 
@@ -786,11 +783,11 @@ class NZBProvider(GenericProvider):
     def imageName(self):
         return self.id
 
-    def getResult(self, episodes=None):
+    def getResult(self, episode_ids=None):
         """
         Returns a result of the correct type for this provider
         """
-        result = NZBSearchResult(episodes)
+        result = NZBSearchResult(episode_ids)
         result.resultType = ('nzb', 'torznab')[self.torznab]
         result.provider = self
         return result

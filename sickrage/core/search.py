@@ -118,7 +118,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
             try:
                 Notifiers.mass_notify_snatch(
                     curEpObj._format_pattern('%SN - %Sx%0E - %EN - %QN') + " from " + result.provider.name)
-            except:
+            except Exception:
                 sickrage.app.log.debug("Failed to send snatch notification")
 
             trakt_data.append((curEpObj.season, curEpObj.episode))
@@ -126,33 +126,30 @@ def snatchEpisode(result, endStatus=SNATCHED):
     data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate(trakt_data)
 
     if sickrage.app.config.use_trakt and sickrage.app.config.trakt_sync_watchlist:
-        sickrage.app.log.debug(
-            "Add episodes, showid: indexer_id " + str(result.show.indexer_id) + ", Title " + str(
-                result.show.name) + " to Traktv Watchlist")
         if data:
-            sickrage.app.notifier_providers['trakt'].update_watchlist(result.show, data_episode=data, update="add")
+            sickrage.app.notifier_providers['trakt'].update_watchlist(result.show_id, data_episode=data, update="add")
 
     return True
 
 
-def pickBestResult(results, show_id):
+def pickBestResult(results):
     """
     Find the best result out of a list of search results for a show
 
     :param results: list of result objects
-    :param show: Shows we check for
+    :param show_id: Show ID we check for
     :return: best result object
     """
     results = results if isinstance(results, list) else [results]
 
-    show = find_show(show_id)
-
     sickrage.app.log.debug("Picking the best result out of " + str([x.name for x in results]))
 
-    bestResult = None
+    best_result = None
 
     # find the best result for the current episode
     for cur_result in results:
+        show = find_show(cur_result.indexer_id)
+
         # build the black And white list
         if show.is_anime:
             if not show.release_groups.is_valid(cur_result):
@@ -181,14 +178,12 @@ def pickBestResult(results, show_id):
                                       "{}".format(cur_result.name, cur_result.leechers))
                 continue
 
-        if show.rls_ignore_words and show_names.containsAtLeastOneWord(cur_result.name,
-                                                                       cur_result.show.rls_ignore_words):
+        if show.rls_ignore_words and show_names.containsAtLeastOneWord(cur_result.name, show.rls_ignore_words):
             sickrage.app.log.info(
                 "Ignoring " + cur_result.name + " based on ignored words filter: " + show.rls_ignore_words)
             continue
 
-        if show.rls_require_words and not show_names.containsAtLeastOneWord(cur_result.name,
-                                                                            cur_result.show.rls_require_words):
+        if show.rls_require_words and not show_names.containsAtLeastOneWord(cur_result.name, show.rls_require_words):
             sickrage.app.log.info(
                 "Ignoring " + cur_result.name + " based on required words filter: " + show.rls_require_words)
             continue
@@ -228,28 +223,28 @@ def pickBestResult(results, show_id):
                         "Ignoring {} because we are unable to verify the download url".format(cur_result.name))
                     continue
 
-        if not bestResult:
-            bestResult = cur_result
+        if not best_result:
+            best_result = cur_result
         elif cur_result.quality in bestQualities and (
-                bestResult.quality < cur_result.quality or bestResult.quality not in bestQualities):
-            bestResult = cur_result
-        elif cur_result.quality in anyQualities and bestResult.quality not in bestQualities and bestResult.quality < cur_result.quality:
-            bestResult = cur_result
-        elif bestResult.quality == cur_result.quality:
+                best_result.quality < cur_result.quality or best_result.quality not in bestQualities):
+            best_result = cur_result
+        elif cur_result.quality in anyQualities and best_result.quality not in bestQualities and best_result.quality < cur_result.quality:
+            best_result = cur_result
+        elif best_result.quality == cur_result.quality:
             if "proper" in cur_result.name.lower() or "repack" in cur_result.name.lower():
-                bestResult = cur_result
-            elif "internal" in bestResult.name.lower() and "internal" not in cur_result.name.lower():
-                bestResult = cur_result
-            elif "xvid" in bestResult.name.lower() and "x264" in cur_result.name.lower():
+                best_result = cur_result
+            elif "internal" in best_result.name.lower() and "internal" not in cur_result.name.lower():
+                best_result = cur_result
+            elif "xvid" in best_result.name.lower() and "x264" in cur_result.name.lower():
                 sickrage.app.log.info("Preferring " + cur_result.name + " (x264 over xvid)")
-                bestResult = cur_result
+                best_result = cur_result
 
-    if bestResult:
-        sickrage.app.log.debug("Picked " + bestResult.name + " as the best")
+    if best_result:
+        sickrage.app.log.debug("Picked " + best_result.name + " as the best")
     else:
         sickrage.app.log.debug("No result picked.")
 
-    return bestResult
+    return best_result
 
 
 def isFinalResult(result):
@@ -414,7 +409,7 @@ def searchProviders(show_id, episode_ids, manualSearch=False, downCurQuality=Fal
             # pick the best season NZB
             bestSeasonResult = None
             if SEASON_RESULT in found_results[providerObj.name]:
-                bestSeasonResult = pickBestResult(found_results[providerObj.name][SEASON_RESULT], show.indexer_id)
+                bestSeasonResult = pickBestResult(found_results[providerObj.name][SEASON_RESULT])
 
             highest_quality_overall = 0
             for cur_episode in found_results[providerObj.name]:
@@ -514,7 +509,7 @@ def searchProviders(show_id, episode_ids, manualSearch=False, downCurQuality=Fal
                         "Seeing if we want to bother with multi-episode result " + _multiResult.name)
 
                     # Filter result by ignore/required/whitelist/blacklist/quality, etc
-                    multiResult = pickBestResult(_multiResult, show)
+                    multiResult = pickBestResult(_multiResult)
                     if not multiResult:
                         continue
 
@@ -576,7 +571,7 @@ def searchProviders(show_id, episode_ids, manualSearch=False, downCurQuality=Fal
                     continue
 
                 # if all results were rejected move on to the next episode
-                bestResult = pickBestResult(found_results[providerObj.name][curEp], show)
+                bestResult = pickBestResult(found_results[providerObj.name][curEp])
                 if not bestResult:
                     continue
 

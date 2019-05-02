@@ -113,8 +113,8 @@ class NZBSearchResult(SearchResult):
     Regular NZB result with an URL to the NZB
     """
 
-    def __init__(self, episodes):
-        super(NZBSearchResult, self).__init__(episodes)
+    def __init__(self, episode_ids):
+        super(NZBSearchResult, self).__init__(episode_ids)
         self.resultType = "nzb"
 
 
@@ -133,8 +133,8 @@ class TorrentSearchResult(SearchResult):
     Torrent result with an URL to the torrent
     """
 
-    def __init__(self, episodes):
-        super(TorrentSearchResult, self).__init__(episodes)
+    def __init__(self, episode_ids):
+        super(TorrentSearchResult, self).__init__(episode_ids)
         self.resultType = "torrent"
 
 
