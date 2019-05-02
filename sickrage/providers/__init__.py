@@ -453,12 +453,10 @@ class GenericProvider(object):
         results = []
 
         for episode_id in episode_ids:
-            ep_obj = find_episode(show_id, episode_id)
-
             for term in self.proper_strings:
-                search_strngs = self._get_episode_search_strings(ep_obj, add_string=term)
-                for item in self.search(search_strngs[0], ep_obj=ep_obj):
-                    result = self.getResult([ep_obj])
+                search_strngs = self._get_episode_search_strings(show_id, episode_id, add_string=term)
+                for item in self.search(search_strngs[0], show_id=show_id, episode_id=episode_id):
+                    result = self.getResult([episode_id])
                     result.name, result.url = self._get_title_and_url(item)
                     if not validate_url(result.url) and not result.url.startswith('magnet'):
                         continue
@@ -466,7 +464,6 @@ class GenericProvider(object):
                     result.seeders, result.leechers = self._get_result_stats(item)
                     result.size = self._get_size(item)
                     result.date = datetime.datetime.today()
-                    result.show = show
                     results.append(result)
 
         return results
