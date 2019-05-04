@@ -33,7 +33,7 @@ from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import remove_non_release_groups
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
-from sickrage.core.search import pickBestResult, snatchEpisode
+from sickrage.core.search import pick_best_result, snatch_episode
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.tv.show.history import History
@@ -178,7 +178,7 @@ class ProperSearcher(object):
             curProper.content = None
 
             # filter release
-            best_result = pickBestResult(curProper)
+            best_result = pick_best_result(curProper)
             if not best_result:
                 sickrage.app.log.debug("Proper " + curProper.name + " were rejected by our release filters.")
                 continue
@@ -285,7 +285,7 @@ class ProperSearcher(object):
             result.content = curProper.content
 
             # snatch it
-            snatchEpisode(result, SNATCHED_PROPER)
+            snatch_episode(result, SNATCHED_PROPER)
             time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
 
     def _generic_name(self, name):

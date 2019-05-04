@@ -28,7 +28,7 @@ from tornado.ioloop import IOLoop
 import sickrage
 from sickrage.core.common import cpu_presets
 from sickrage.core.queues import srQueue, srQueueItem, srQueuePriorities
-from sickrage.core.search import searchProviders, snatchEpisode
+from sickrage.core.search import search_providers, snatch_episode
 from sickrage.core.tv.show import find_show
 from sickrage.core.tv.show.history import FailedHistory, History
 
@@ -165,12 +165,12 @@ class DailySearchQueueItem(srQueueItem):
         try:
             sickrage.app.log.info("Starting daily search for: [" + self.show.name + "]")
 
-            search_result = searchProviders(self.show, self.segment, cacheOnly=sickrage.app.config.enable_rss_cache)
+            search_result = search_providers(self.show, self.segment, cacheOnly=sickrage.app.config.enable_rss_cache)
             if search_result:
                 for result in search_result:
                     # just use the first result for now
                     sickrage.app.log.info("Downloading " + result.name + " from " + result.provider.name)
-                    snatchEpisode(result)
+                    snatch_episode(result)
 
                     # give the CPU a break
                     time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
@@ -199,13 +199,13 @@ class ManualSearchQueueItem(srQueueItem):
         try:
             sickrage.app.log.info("Starting manual search for: [" + self.segment.pretty_name() + "]")
 
-            search_result = searchProviders(self.show, [self.segment], manualSearch=True,
-                                            downCurQuality=self.downCurQuality)
+            search_result = search_providers(self.show, [self.segment], manualSearch=True,
+                                             downCurQuality=self.downCurQuality)
             if search_result:
                 # just use the first result for now
                 sickrage.app.log.info(
                     "Downloading " + search_result[0].name + " from " + search_result[0].provider.name)
-                self.success = snatchEpisode(search_result[0])
+                self.success = snatch_episode(search_result[0])
 
                 # give the CPU a break
                 time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
@@ -244,12 +244,12 @@ class BacklogQueueItem(srQueueItem):
         try:
             sickrage.app.log.info("Starting backlog search for: [" + show.name + "]")
 
-            search_result = searchProviders(self.show_id, self.episode_ids, manualSearch=False)
+            search_result = search_providers(self.show_id, self.episode_ids, manualSearch=False)
             if search_result:
                 for result in search_result:
                     # just use the first result for now
                     sickrage.app.log.info("Downloading " + result.name + " from " + result.provider.name)
-                    snatchEpisode(result)
+                    snatch_episode(result)
 
                     # give the CPU a break
                     await gen.sleep(cpu_presets[sickrage.app.config.cpu_preset])
@@ -290,12 +290,12 @@ class FailedQueueItem(srQueueItem):
 
                 FailedHistory.revertFailedEpisode(epObj)
 
-            search_result = searchProviders(self.show, self.segment, manualSearch=True, downCurQuality=False)
+            search_result = search_providers(self.show, self.segment, manualSearch=True, downCurQuality=False)
             if search_result:
                 for result in search_result:
                     # just use the first result for now
                     sickrage.app.log.info("Downloading " + result.name + " from " + result.provider.name)
-                    snatchEpisode(result)
+                    snatch_episode(result)
 
                     # give the CPU a break
                     time.sleep(cpu_presets[sickrage.app.config.cpu_preset])

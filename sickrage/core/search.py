@@ -23,12 +23,11 @@ import threading
 from datetime import date, timedelta
 
 import sickrage
-from sickrage.clients import getClientIstance
+from sickrage.clients import get_client_instance
 from sickrage.clients.nzbget import NZBGet
 from sickrage.clients.sabnzbd import SabNZBd
 from sickrage.core.common import Quality, SEASON_RESULT, SNATCHED_BEST, \
     SNATCHED_PROPER, SNATCHED, MULTI_EP_RESULT
-from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import show_names
 from sickrage.core.nzbSplitter import split_nzb_result
@@ -39,7 +38,7 @@ from sickrage.notifiers import Notifiers
 from sickrage.providers import NZBProvider, NewznabProvider, TorrentProvider, TorrentRssProvider
 
 
-def snatchEpisode(result, endStatus=SNATCHED):
+def snatch_episode(result, endStatus=SNATCHED):
     """
     Contains the internal logic necessary to actually "snatch" a result that
     has been found.
@@ -85,7 +84,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
             dlResult = result.provider.download_result(result)
         else:
             if any([result.content, result.url.startswith('magnet:')]):
-                client = getClientIstance(sickrage.app.config.torrent_method)()
+                client = get_client_instance(sickrage.app.config.torrent_method)()
                 dlResult = client.send_torrent(result)
             else:
                 sickrage.app.log.warning("Torrent file content is empty")
@@ -106,7 +105,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
     trakt_data = []
     for curEpObj in result.episodes:
         with curEpObj.lock:
-            if isFirstBestMatch(result):
+            if is_first_best_match(result):
                 curEpObj.status = Quality.composite_status(SNATCHED_BEST, result.quality)
             else:
                 curEpObj.status = Quality.composite_status(endStatus, result.quality)
@@ -132,7 +131,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
     return True
 
 
-def pickBestResult(results):
+def pick_best_result(results):
     """
     Find the best result out of a list of search results for a show
 
@@ -158,9 +157,9 @@ def pickBestResult(results):
         sickrage.app.log.info(
             "Quality of " + cur_result.name + " is " + Quality.qualityStrings[cur_result.quality])
 
-        anyQualities, bestQualities = Quality.split_quality(show.quality)
+        any_qualities, best_qualities = Quality.split_quality(show.quality)
 
-        if cur_result.quality not in anyQualities + bestQualities:
+        if cur_result.quality not in any_qualities + best_qualities:
             sickrage.app.log.debug(cur_result.name + " is a quality we know we don't want, rejecting it")
             continue
 
@@ -210,7 +209,7 @@ def pickBestResult(results):
                                 file_size, quality_size)
                         )
             except Exception as e:
-                sickrage.app.log.info(str(e))
+                sickrage.app.log.info(e)
                 continue
 
         # verify result content
@@ -226,10 +225,10 @@ def pickBestResult(results):
 
         if not best_result:
             best_result = cur_result
-        elif cur_result.quality in bestQualities and (
-                best_result.quality < cur_result.quality or best_result.quality not in bestQualities):
+        elif cur_result.quality in best_qualities and (
+                best_result.quality < cur_result.quality or best_result.quality not in best_qualities):
             best_result = cur_result
-        elif cur_result.quality in anyQualities and best_result.quality not in bestQualities and best_result.quality < cur_result.quality:
+        elif cur_result.quality in any_qualities and best_result.quality not in best_qualities and best_result.quality < cur_result.quality:
             best_result = cur_result
         elif best_result.quality == cur_result.quality:
             if "proper" in cur_result.name.lower() or "repack" in cur_result.name.lower():
@@ -248,7 +247,7 @@ def pickBestResult(results):
     return best_result
 
 
-def isFinalResult(result):
+def is_final_result(result):
     """
     Checks if the given result is good enough quality that we can stop searching for other ones.
 
@@ -258,7 +257,7 @@ def isFinalResult(result):
 
     sickrage.app.log.debug("Checking if we should keep searching after we've found " + result.name)
 
-    show_obj = result.episodes[0].show
+    show_obj = find_show(result.show_id)
 
     any_qualities, best_qualities = Quality.split_quality(show_obj.quality)
 
@@ -282,7 +281,7 @@ def isFinalResult(result):
         return False
 
 
-def isFirstBestMatch(result):
+def is_first_best_match(result):
     """
     Checks if the given result is a best quality match and if we want to archive the episode on first match.
     """
@@ -302,7 +301,7 @@ def isFirstBestMatch(result):
     return False
 
 
-def searchProviders(show_id, episode_ids, manualSearch=False, downCurQuality=False, cacheOnly=False):
+def search_providers(show_id, episode_ids, manualSearch=False, downCurQuality=False, cacheOnly=False):
     """
     Walk providers for information on shows
 
@@ -315,292 +314,285 @@ def searchProviders(show_id, episode_ids, manualSearch=False, downCurQuality=Fal
 
     orig_thread_name = threading.currentThread().getName()
 
-    def perform_searches(show_id, episode_ids):
-        search_results = {}
-        found_results = {}
-        final_results = []
+    search_results = {}
+    found_results = {}
+    final_results = []
 
-        show = find_show(show_id)
+    show = find_show(show_id)
 
-        # build name cache for show
-        sickrage.app.name_cache.build(show)
+    # build name cache for show
+    sickrage.app.name_cache.build(show)
 
-        for providerID, providerObj in sickrage.app.search_providers.sort(
-                randomize=sickrage.app.config.randomize_providers).items():
+    for providerID, providerObj in sickrage.app.search_providers.sort(
+            randomize=sickrage.app.config.randomize_providers).items():
 
-            # check if provider is enabled
-            if not providerObj.isEnabled:
-                continue
+        # check if provider is enabled
+        if not providerObj.isEnabled:
+            continue
 
-            # check provider type
-            if not sickrage.app.config.use_nzbs and providerObj.type in [NZBProvider.type, NewznabProvider.type]:
-                continue
-            elif not sickrage.app.config.use_torrents and providerObj.type in [TorrentProvider.type,
-                                                                               TorrentRssProvider.type]:
-                continue
+        # check provider type
+        if not sickrage.app.config.use_nzbs and providerObj.type in [NZBProvider.type, NewznabProvider.type]:
+            continue
+        elif not sickrage.app.config.use_torrents and providerObj.type in [TorrentProvider.type,
+                                                                           TorrentRssProvider.type]:
+            continue
 
-            if providerObj.anime_only and not show.is_anime:
-                sickrage.app.log.debug("" + str(show.name) + " is not an anime, skiping")
-                continue
+        if providerObj.anime_only and not show.is_anime:
+            sickrage.app.log.debug("" + str(show.name) + " is not an anime, skiping")
+            continue
 
-            found_results[providerObj.name] = {}
+        found_results[providerObj.name] = {}
 
-            search_count = 0
-            search_mode = providerObj.search_mode
+        search_count = 0
+        search_mode = providerObj.search_mode
 
-            # Always search for episode when manually searching when in sponly
-            if search_mode == 'sponly' and manualSearch == True:
-                search_mode = 'eponly'
+        # Always search for episode when manually searching when in sponly
+        if search_mode == 'sponly' and manualSearch == True:
+            search_mode = 'eponly'
 
-            while True:
-                search_count += 1
+        while True:
+            search_count += 1
 
-                try:
-                    threading.currentThread().setName(orig_thread_name + "::[" + providerObj.name + "]")
+            try:
+                threading.currentThread().setName(orig_thread_name + "::[" + providerObj.name + "]")
 
-                    if len(episode_ids):
-                        if search_mode == 'eponly':
-                            sickrage.app.log.info("Performing episode search for " + show.name)
-                        else:
-                            sickrage.app.log.info("Performing season pack search for " + show.name)
-
-                    # search provider for episodes
-                    search_results = providerObj.find_search_results(
-                        show_id,
-                        episode_ids,
-                        search_mode,
-                        manualSearch,
-                        downCurQuality,
-                        cacheOnly
-                    )
-                except AuthException as e:
-                    sickrage.app.log.warning("Authentication error: {}".format(e))
-                    break
-                except Exception as e:
-                    sickrage.app.log.error("Error while searching " + providerObj.name + ", skipping: {}".format(e))
-                    break
-                finally:
-                    threading.currentThread().setName(orig_thread_name)
-
-                if len(search_results):
-                    # make a list of all the results for this provider
-                    for cur_eid in search_results:
-                        if cur_eid in found_results:
-                            found_results[providerObj.name][cur_eid] += search_results[cur_eid]
-                        else:
-                            found_results[providerObj.name][cur_eid] = search_results[cur_eid]
-
-                        # Sort results by seeders if available
-                        if providerObj.type == 'torrent' or getattr(providerObj, 'torznab', False):
-                            found_results[providerObj.name][cur_eid].sort(key=lambda k: int(k.seeders), reverse=True)
-
-                    break
-                elif not providerObj.search_fallback or search_count == 2:
-                    break
-
-                if search_mode == 'sponly':
-                    sickrage.app.log.debug("Fallback episode search initiated")
-                    search_mode = 'eponly'
-                else:
-                    sickrage.app.log.debug("Fallback season pack search initiate")
-                    search_mode = 'sponly'
-
-            # skip to next provider if we have no results to process
-            if not len(found_results[providerObj.name]):
-                continue
-
-            # pick the best season NZB
-            bestSeasonResult = None
-            if SEASON_RESULT in found_results[providerObj.name]:
-                bestSeasonResult = pickBestResult(found_results[providerObj.name][SEASON_RESULT])
-
-            highest_quality_overall = 0
-            for cur_episode in found_results[providerObj.name]:
-                for cur_result in found_results[providerObj.name][cur_episode]:
-                    if cur_result.quality != Quality.UNKNOWN and cur_result.quality > highest_quality_overall:
-                        highest_quality_overall = cur_result.quality
-
-            sickrage.app.log.debug(
-                "The highest quality of any match is " + Quality.qualityStrings[highest_quality_overall])
-
-            # see if every episode is wanted
-            if bestSeasonResult:
-                searchedSeasons = {find_episode(show_id, eid).season for eid in episode_ids}
-
-                # get the quality of the season nzb
-                seasonQual = bestSeasonResult.quality
-                sickrage.app.log.debug(
-                    "The quality of the season " + bestSeasonResult.provider.type + " is " +
-                    Quality.qualityStrings[
-                        seasonQual])
-
-                allEps = [x.episode for x in show.episodes if x.season in searchedSeasons]
-
-                sickrage.app.log.debug("Episode list: " + str(allEps))
-
-                allWanted = True
-                anyWanted = False
-                for curEpNum in allEps:
-                    for season in {find_episode(show_id, eid).season for eid in episode_ids}:
-                        if not show.want_episode(season, curEpNum, seasonQual, downCurQuality):
-                            allWanted = False
-                        else:
-                            anyWanted = True
-
-                # if we need every ep in the season and there's nothing better then just download this and be done
-                # with it (unless single episodes are preferred)
-                if allWanted and bestSeasonResult.quality == highest_quality_overall:
-                    sickrage.app.log.info(
-                        "Every ep in this season is needed, downloading the whole " + bestSeasonResult.provider.type + " " + bestSeasonResult.name)
-
-                    episode_ids = []
-                    for curEpNum in allEps:
-                        for season in {find_episode(show_id, eid).season for eid in episode_ids}:
-                            episode_ids.append(show.get_episode(season, curEpNum).indexer_id)
-
-                    bestSeasonResult.episode_ids = episode_ids
-
-                    return [bestSeasonResult]
-
-                elif not anyWanted:
-                    sickrage.app.log.debug(
-                        "No eps from this season are wanted at this quality, ignoring the result of " + bestSeasonResult.name)
-                else:
-                    if bestSeasonResult.provider.type == NZBProvider.type:
-                        sickrage.app.log.debug(
-                            "Breaking apart the NZB and adding the individual ones to our results")
-
-                        # if not, break it apart and add them as the lowest priority results
-                        individualResults = split_nzb_result(bestSeasonResult)
-                        for curResult in individualResults:
-                            epNum = -1
-                            if len(curResult.episodes) == 1:
-                                epNum = curResult.episodes[0].episode
-                            elif len(curResult.episodes) > 1:
-                                epNum = MULTI_EP_RESULT
-
-                            if epNum in found_results[providerObj.name]:
-                                found_results[providerObj.name][epNum].append(curResult)
-                            else:
-                                found_results[providerObj.name][epNum] = [curResult]
-
-                    # If this is a torrent all we can do is leech the entire torrent, user will have to select which
-                    # eps not do download in his torrent client
+                if len(episode_ids):
+                    if search_mode == 'eponly':
+                        sickrage.app.log.info("Performing episode search for " + show.name)
                     else:
-                        # Season result from Torrent Provider must be a full-season torrent, creating multi-ep result
-                        # for it.
-                        sickrage.app.log.info("Adding multi-ep result for full-season torrent. Set the episodes you "
-                                              "don't want to 'don't download' in your torrent client if desired!")
+                        sickrage.app.log.info("Performing season pack search for " + show.name)
 
-                        epObjs = []
-                        for curEpNum in allEps:
-                            for season in set([x.season for x in episodes]):
-                                epObjs.append(show.get_episode(season, curEpNum))
-                        bestSeasonResult.episodes = epObjs
+                # search provider for episodes
+                search_results = providerObj.find_search_results(
+                    show_id,
+                    episode_ids,
+                    search_mode,
+                    manualSearch,
+                    downCurQuality,
+                    cacheOnly
+                )
+            except AuthException as e:
+                sickrage.app.log.warning("Authentication error: {}".format(e))
+                break
+            except Exception as e:
+                sickrage.app.log.error("Error while searching " + providerObj.name + ", skipping: {}".format(e))
+                break
+            finally:
+                threading.currentThread().setName(orig_thread_name)
 
-                        if MULTI_EP_RESULT in found_results[providerObj.name]:
-                            found_results[providerObj.name][MULTI_EP_RESULT].append(bestSeasonResult)
-                        else:
-                            found_results[providerObj.name][MULTI_EP_RESULT] = [bestSeasonResult]
+            if len(search_results):
+                # make a list of all the results for this provider
+                for search_result in search_results:
+                    if search_result in found_results:
+                        found_results[providerObj.name][search_result] += search_results[search_result]
+                    else:
+                        found_results[providerObj.name][search_result] = search_results[search_result]
 
-            # go through multi-ep results and see if we really want them or not, get rid of the rest
-            multiResults = {}
-            if MULTI_EP_RESULT in found_results[providerObj.name]:
-                for _multiResult in found_results[providerObj.name][MULTI_EP_RESULT]:
+                    # Sort results by seeders if available
+                    if providerObj.type == 'torrent' or getattr(providerObj, 'torznab', False):
+                        found_results[providerObj.name][search_result].sort(key=lambda k: int(k.seeders),
+                                                                            reverse=True)
 
-                    sickrage.app.log.debug(
-                        "Seeing if we want to bother with multi-episode result " + _multiResult.name)
-
-                    # Filter result by ignore/required/whitelist/blacklist/quality, etc
-                    multiResult = pickBestResult(_multiResult)
-                    if not multiResult:
-                        continue
-
-                    # see how many of the eps that this result covers aren't covered by single results
-                    neededEps = []
-                    notNeededEps = []
-                    for epObj in multiResult.episodes:
-                        # if we have results for the episode
-                        if epObj.episode in found_results[providerObj.name] and len(
-                                found_results[providerObj.name][epObj.episode]) > 0:
-                            notNeededEps.append(epObj.episode)
-                        else:
-                            neededEps.append(epObj.episode)
-
-                    sickrage.app.log.debug(
-                        "Single-ep check result is neededEps: " + str(neededEps) + ", notNeededEps: " + str(
-                            notNeededEps))
-
-                    if not neededEps:
-                        sickrage.app.log.debug(
-                            "All of these episodes were covered by single episode results, ignoring this multi-episode result")
-                        continue
-
-                    # check if these eps are already covered by another multi-result
-                    multiNeededEps = []
-                    multiNotNeededEps = []
-                    for epObj in multiResult.episodes:
-                        if epObj.episode in multiResults:
-                            multiNotNeededEps.append(epObj.episode)
-                        else:
-                            multiNeededEps.append(epObj.episode)
-
-                    sickrage.app.log.debug(
-                        "Multi-ep check result is multiNeededEps: " + str(
-                            multiNeededEps) + ", multiNotNeededEps: " + str(
-                            multiNotNeededEps))
-
-                    if not multiNeededEps:
-                        sickrage.app.log.debug(
-                            "All of these episodes were covered by another multi-episode nzbs, ignoring this multi-ep result")
-                        continue
-
-                    # don't bother with the single result if we're going to get it with a multi result
-                    for epObj in multiResult.episodes:
-                        multiResults[epObj.episode] = multiResult
-                        if epObj.episode in found_results[providerObj.name]:
-                            sickrage.app.log.debug(
-                                "A needed multi-episode result overlaps with a single-episode result for ep #" + str(
-                                    epObj.episode) + ", removing the single-episode results from the list")
-                            del found_results[providerObj.name][epObj.episode]
-
-            # of all the single ep results narrow it down to the best one for each episode
-            final_results += set(multiResults.values())
-            for curEp in found_results[providerObj.name]:
-                if curEp in (MULTI_EP_RESULT, SEASON_RESULT):
-                    continue
-
-                if not len(found_results[providerObj.name][curEp]) > 0:
-                    continue
-
-                # if all results were rejected move on to the next episode
-                bestResult = pickBestResult(found_results[providerObj.name][curEp])
-                if not bestResult:
-                    continue
-
-                # add result if its not a duplicate and
-                found = False
-                for i, result in enumerate(final_results):
-                    for bestResultEp in bestResult.episodes:
-                        if bestResultEp in result.episodes:
-                            if result.quality < bestResult.quality:
-                                final_results.pop(i)
-                            else:
-                                found = True
-                if not found:
-                    final_results += [bestResult]
-
-            # check that we got all the episodes we wanted first before doing a match and snatch
-            wantedEpCount = 0
-            for wantedEp in episodes:
-                for result in final_results:
-                    if wantedEp in result.episodes and isFinalResult(result):
-                        wantedEpCount += 1
-
-            # make sure we search every provider for results unless we found everything we wanted
-            if wantedEpCount == len(episode_ids):
+                break
+            elif not providerObj.search_fallback or search_count == 2:
                 break
 
-        return final_results
+            if search_mode == 'sponly':
+                sickrage.app.log.debug("Fallback episode search initiated")
+                search_mode = 'eponly'
+            else:
+                sickrage.app.log.debug("Fallback season pack search initiate")
+                search_mode = 'sponly'
 
-    return perform_searches(show_id, episode_ids)
+        # skip to next provider if we have no results to process
+        if not len(found_results[providerObj.name]):
+            continue
+
+        # pick the best season NZB
+        best_season_result = None
+        if SEASON_RESULT in found_results[providerObj.name]:
+            best_season_result = pick_best_result(found_results[providerObj.name][SEASON_RESULT])
+
+        highest_quality_overall = 0
+        for cur_episode in found_results[providerObj.name]:
+            for cur_result in found_results[providerObj.name][cur_episode]:
+                if cur_result.quality != Quality.UNKNOWN and cur_result.quality > highest_quality_overall:
+                    highest_quality_overall = cur_result.quality
+
+        sickrage.app.log.debug(
+            "The highest quality of any match is " + Quality.qualityStrings[highest_quality_overall])
+
+        # see if every episode is wanted
+        if best_season_result:
+            searched_seasons = {find_episode(show_id, episode_id).season for episode_id in episode_ids}
+
+            # get the quality of the season nzb
+            season_qual = best_season_result.quality
+            sickrage.app.log.debug("The quality of the season " + best_season_result.provider.type + " is " +
+                                   Quality.qualityStrings[season_qual])
+
+            all_episode_ids = [x.indexer_id for x in show.episodes if x.season in searched_seasons]
+
+            sickrage.app.log.debug("Episode ID list: {}".format(','.join(all_episode_ids)))
+
+            all_wanted = True
+            any_wanted = False
+
+            for curEpID in all_episode_ids:
+                if not show.want_episode(curEpID, season_qual, downCurQuality):
+                    all_wanted = False
+                else:
+                    any_wanted = True
+
+            # if we need every ep in the season and there's nothing better then just download this and be done
+            # with it (unless single episodes are preferred)
+            if all_wanted and best_season_result.quality == highest_quality_overall:
+                sickrage.app.log.info(
+                    "Every ep in this season is needed, downloading the whole " + best_season_result.provider.type + " " + best_season_result.name)
+
+                best_season_result.episode_ids = all_episode_ids
+
+                return [best_season_result]
+
+            elif not any_wanted:
+                sickrage.app.log.debug("No eps from this season are wanted at this quality, ignoring the result "
+                                       "of {}".format(best_season_result.name))
+            else:
+                if best_season_result.provider.type == NZBProvider.type:
+                    sickrage.app.log.debug("Breaking apart the NZB and adding the individual ones to our results")
+
+                    # if not, break it apart and add them as the lowest priority results
+                    individual_results = split_nzb_result(best_season_result)
+                    for curResult in individual_results:
+                        ep_num = -1
+                        if len(curResult.episodes_ids) == 1:
+                            ep_num = find_episode(curResult.show_id, curResult.episode_ids[0]).episode
+                        elif len(curResult.episodes_ids) > 1:
+                            ep_num = MULTI_EP_RESULT
+
+                        if ep_num in found_results[providerObj.name]:
+                            found_results[providerObj.name][ep_num].append(curResult)
+                        else:
+                            found_results[providerObj.name][ep_num] = [curResult]
+
+                # If this is a torrent all we can do is leech the entire torrent, user will have to select which
+                # eps not do download in his torrent client
+                else:
+                    # Season result from Torrent Provider must be a full-season torrent, creating multi-ep result
+                    # for it.
+                    sickrage.app.log.info("Adding multi-ep result for full-season torrent. Set the episodes you "
+                                          "don't want to 'don't download' in your torrent client if desired!")
+
+                    best_season_result.episode_ids = all_episode_ids
+
+                    if MULTI_EP_RESULT in found_results[providerObj.name]:
+                        found_results[providerObj.name][MULTI_EP_RESULT].append(best_season_result)
+                    else:
+                        found_results[providerObj.name][MULTI_EP_RESULT] = [best_season_result]
+
+        # go through multi-ep results and see if we really want them or not, get rid of the rest
+        multi_results = {}
+        if MULTI_EP_RESULT in found_results[providerObj.name]:
+            for _multiResult in found_results[providerObj.name][MULTI_EP_RESULT]:
+                sickrage.app.log.debug(
+                    "Seeing if we want to bother with multi-episode result " + _multiResult.name)
+
+                # Filter result by ignore/required/whitelist/blacklist/quality, etc
+                multi_result = pick_best_result(_multiResult)
+                if not multi_result:
+                    continue
+
+                # see how many of the eps that this result covers aren't covered by single results
+                needed_eps = []
+                not_needed_eps = []
+                for episode_id in multi_result.episode_ids:
+                    episode_obj = find_episode(multi_result.show_id, episode_id)
+
+                    # if we have results for the episode
+                    if episode_obj.episode in found_results[providerObj.name] and len(
+                            found_results[providerObj.name][episode_obj.episode]) > 0:
+                        not_needed_eps.append(episode_obj.episode)
+                    else:
+                        needed_eps.append(episode_obj.episode)
+
+                sickrage.app.log.debug(
+                    "Single-ep check result is neededEps: " + str(needed_eps) + ", notNeededEps: " + str(
+                        not_needed_eps)
+                )
+
+                if not needed_eps:
+                    sickrage.app.log.debug("All of these episodes were covered by single episode results, "
+                                           "ignoring this multi-episode result")
+                    continue
+
+                # check if these eps are already covered by another multi-result
+                multi_needed_eps = []
+                multi_not_needed_eps = []
+                for episode_id in multi_result.episode_ids:
+                    episode_obj = find_episode(multi_result.show_id, episode_id)
+
+                    if episode_obj.episode in multi_results:
+                        multi_not_needed_eps.append(episode_obj.episode)
+                    else:
+                        multi_needed_eps.append(episode_obj.episode)
+
+                sickrage.app.log.debug(
+                    "Multi-ep check result is multiNeededEps: " + str(
+                        multi_needed_eps) + ", multiNotNeededEps: " + str(
+                        multi_not_needed_eps)
+                )
+
+                if not multi_needed_eps:
+                    sickrage.app.log.debug("All of these episodes were covered by another multi-episode nzbs, "
+                                           "ignoring this multi-ep result")
+                    continue
+
+                # don't bother with the single result if we're going to get it with a multi result
+                for episode_id in multi_result.episode_ids:
+                    episode_obj = find_episode(multi_result.show_id, episode_id)
+                    multi_results[episode_obj.episode] = multi_result
+
+                    if episode_obj.episode in found_results[providerObj.name]:
+                        sickrage.app.log.debug(
+                            "A needed multi-episode result overlaps with a single-episode result for ep #" + str(
+                                episode_obj.episode) + ", removing the single-episode results from the list")
+                        del found_results[providerObj.name][episode_obj.episode]
+
+        # of all the single ep results narrow it down to the best one for each episode
+        final_results += set(multi_results.values())
+        for curEp in found_results[providerObj.name]:
+            if curEp in (MULTI_EP_RESULT, SEASON_RESULT):
+                continue
+
+            if not len(found_results[providerObj.name][curEp]) > 0:
+                continue
+
+            # if all results were rejected move on to the next episode
+            best_result = pick_best_result(found_results[providerObj.name][curEp])
+            if not best_result:
+                continue
+
+            # add result if its not a duplicate and
+            found = False
+            for i, result in enumerate(final_results):
+                for bestResultEp in best_result.episodes:
+                    if bestResultEp in result.episodes:
+                        if result.quality < best_result.quality:
+                            final_results.pop(i)
+                        else:
+                            found = True
+            if not found:
+                final_results += [best_result]
+
+        # check that we got all the episodes we wanted first before doing a match and snatch
+        wanted_ep_count = 0
+        for wanted_episode_id in episode_ids:
+            for result in final_results:
+                if wanted_episode_id in result.episode_ids and is_final_result(result):
+                    wanted_ep_count += 1
+
+        # make sure we search every provider for results unless we found everything we wanted
+        if wanted_ep_count == len(episode_ids):
+            break
+
+    return final_results

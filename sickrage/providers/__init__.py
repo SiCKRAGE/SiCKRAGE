@@ -422,8 +422,7 @@ class GenericProvider(object):
             provider_result.episode_ids = []
             for epNo in actual_episodes:
                 provider_result_episode_obj = provider_result_show_obj.get_episode(actual_season, epNo)
-                if provider_result_show_obj.want_episode(provider_result_show_obj.indexer_id,
-                                                         provider_result_episode_obj.indexer_id,
+                if provider_result_show_obj.want_episode(provider_result_episode_obj.indexer_id,
                                                          provider_result.quality, manualSearch, downCurQuality):
                     provider_result.episode_ids.append(provider_result_episode_obj.indexer_id)
                 else:

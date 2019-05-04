@@ -129,7 +129,7 @@ default_host = {
 }
 
 
-def codeDescription(status_code):
+def code_description(status_code):
     """
     Returns the description of the URL error code
     """
@@ -140,15 +140,15 @@ def codeDescription(status_code):
         return 'unknown'
 
 
-def getClientModule(name):
+def get_client_module(name):
     name = name.lower()
     prefix = "sickrage.clients."
 
     return __import__(prefix + name, fromlist=__all__)
 
 
-def getClientIstance(name):
-    module = getClientModule(name)
+def get_client_instance(name):
+    module = get_client_module(name)
     className = module.api.__class__.__name__
 
     return getattr(module, className)

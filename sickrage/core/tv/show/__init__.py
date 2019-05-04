@@ -798,48 +798,48 @@ class TVShow(MainDBBase):
             self.name, dbData.season or 0, dbData.episode or 0, Quality.qualityStrings[quality]))
 
         # if the quality isn't one we want under any circumstances then just say no
-        anyQualities, bestQualities = Quality.split_quality(self.quality)
+        any_qualities, best_qualities = Quality.split_quality(self.quality)
         sickrage.app.log.debug("Any, Best = [{}] [{}] Found = [{}]".format(
-            self.qualitiesToString(anyQualities),
-            self.qualitiesToString(bestQualities),
+            self.qualitiesToString(any_qualities),
+            self.qualitiesToString(best_qualities),
             self.qualitiesToString([quality]))
         )
 
-        if quality not in anyQualities + bestQualities or quality is UNKNOWN:
+        if quality not in any_qualities + best_qualities or quality is UNKNOWN:
             sickrage.app.log.debug("Don't want this quality, ignoring found episode")
             return False
 
-        epStatus = int(dbData.status)
-        epStatus_text = statusStrings[epStatus]
+        ep_status = int(dbData.status)
+        ep_status_text = statusStrings[ep_status]
 
-        sickrage.app.log.debug("Existing episode status: " + str(epStatus) + " (" + epStatus_text + ")")
+        sickrage.app.log.debug("Existing episode status: " + str(ep_status) + " (" + ep_status_text + ")")
 
         # if we know we don't want it then just say no
-        if epStatus in Quality.ARCHIVED + [UNAIRED, SKIPPED, IGNORED] and not manualSearch:
+        if ep_status in Quality.ARCHIVED + [UNAIRED, SKIPPED, IGNORED] and not manualSearch:
             sickrage.app.log.debug(
                 "Existing episode status is unaired/skipped/ignored/archived, ignoring found episode")
             return False
 
-        curStatus, curQuality = Quality.split_composite_status(epStatus)
+        cur_status, cur_quality = Quality.split_composite_status(ep_status)
 
         # if it's one of these then we want it as long as it's in our allowed initial qualities
-        if epStatus == WANTED:
+        if ep_status == WANTED:
             sickrage.app.log.debug("Existing episode status is WANTED, getting found episode")
             return True
         elif manualSearch:
-            if (downCurQuality and quality >= curQuality) or (not downCurQuality and quality > curQuality):
+            if (downCurQuality and quality >= cur_quality) or (not downCurQuality and quality > cur_quality):
                 sickrage.app.log.debug(
                     "Usually ignoring found episode, but forced search allows the quality, getting found episode")
                 return True
 
         # if we are re-downloading then we only want it if it's in our bestQualities list and better than what we
         # have, or we only have one bestQuality and we do not have that quality yet
-        if epStatus in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER and quality in bestQualities and (
-                quality > curQuality or curQuality not in bestQualities):
+        if ep_status in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER and quality in best_qualities and (
+                quality > cur_quality or cur_quality not in best_qualities):
             sickrage.app.log.debug(
                 "Episode already exists but the found episode quality is wanted more, getting found episode")
             return True
-        elif curQuality == UNKNOWN and manualSearch:
+        elif cur_quality == UNKNOWN and manualSearch:
             sickrage.app.log.debug("Episode already exists but quality is Unknown, getting found episode")
             return True
         else:
