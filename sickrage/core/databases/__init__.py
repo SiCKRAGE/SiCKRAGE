@@ -110,6 +110,10 @@ class srDatabase(object):
 
                         del row[column]
 
+                    if table == 'tv_episodes':
+                        if column == 'airdate':
+                            row[column] = datetime.date.fromordinal(row[column])
+
                 migrate_tables[table] += [row]
 
             for table, rows in migrate_tables.items():

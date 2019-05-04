@@ -17,7 +17,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import os
 import re
 import subprocess
@@ -165,11 +164,7 @@ def download_subtitles(episode):
         for subtitle in found_subtitles:
             sickrage.app.log.debug(
                 'history.logSubtitle %s, %s' % (subtitle.provider_name, subtitle.language.opensubtitles))
-            History.logSubtitle(episode.show.indexer_id,
-                                episode.season,
-                                episode.episode,
-                                episode.status,
-                                subtitle)
+            History.log_subtitle(episode.showid, episode.episode_id, episode.status, subtitle)
 
     return current_subtitles, new_subtitles
 

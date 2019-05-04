@@ -230,11 +230,10 @@ class TVShow(MainDBBase):
                         sickrage.app.log.info("The episode was deleted, skipping the rest of the load")
                         continue
 
-                with curEp.lock:
-                    sickrage.app.log.debug("%s: Loading info from %s for episode S%02dE%02d" % (
-                        self.indexer_id, IndexerApi(self.indexer).name, season or 0, episode or 0))
+                sickrage.app.log.debug("%s: Loading info from %s for episode S%02dE%02d" % (
+                    self.indexer_id, IndexerApi(self.indexer).name, season or 0, episode or 0))
 
-                    curEp.load_from_indexer(season, episode, tvapi=t)
+                curEp.load_from_indexer(season, episode, tvapi=t)
 
                 scanned_eps[season][episode] = True
 
@@ -304,12 +303,14 @@ class TVShow(MainDBBase):
                 return None
 
         try:
-            return TVEpisode.query.filter_by(indexer=self.indexer, indexer_id=self.indexer_id,
-                                             showid=self.show.indexer_id).one()
+            return TVEpisode.query.filter_by(showid=self.indexer_id, season=season, episode=episode).one()
         except orm.exc.NoResultFound:
-            sickrage.app.main_db.add(TVEpisode(**{'season': season, 'episode': episode, 'location': file or ''}))
-            return TVEpisode.query.filter_by(indexer=self.indexer, indexer_id=self.indexer_id,
-                                             showid=self.show.indexer_id).one()
+            sickrage.app.main_db.add(TVEpisode(**{'showid': self.indexer_id,
+                                                  'indexer': self.indexer,
+                                                  'season': season,
+                                                  'episode': episode,
+                                                  'location': file or ''}))
+            return TVEpisode.query.filter_by(showid=self.indexer_id, season=season, episode=episode).one()
 
     def should_update(self, update_date=datetime.date.today()):
         # if show status 'Ended' always update (status 'Continuing')
@@ -536,32 +537,28 @@ class TVShow(MainDBBase):
                                            "the quality based on the new filename " + filename)
                     checkQualityAgain = True
 
-                with curEp.lock:
-                    # if the sizes are the same then it's probably the same file
-                    old_size = curEp.file_size
-                    curEp.location = filename
-                    same_file = old_size and curEp.file_size == old_size
-                    curEp.checkForMetaFiles()
+                # if the sizes are the same then it's probably the same file
+                old_size = curEp.file_size
+                curEp.location = filename
+                same_file = old_size and curEp.file_size == old_size
+                curEp.checkForMetaFiles()
 
             if rootEp is None:
                 rootEp = curEp
             else:
                 if curEp not in rootEp.relatedEps:
-                    with rootEp.lock:
-                        rootEp.relatedEps.append(curEp)
+                    rootEp.relatedEps.append(curEp)
 
             # if it's a new file then
             if not same_file:
-                with curEp.lock:
-                    curEp.release_name = ''
+                curEp.release_name = ''
 
             # if they replace a file on me I'll make some attempt at re-checking the quality unless I know it's the same file
             if checkQualityAgain and not same_file:
                 newQuality = Quality.name_quality(filename, self.is_anime)
                 sickrage.app.log.debug("Since this file has been renamed")
 
-                with curEp.lock:
-                    curEp.status = Quality.composite_status(DOWNLOADED, newQuality)
+                curEp.status = Quality.composite_status(DOWNLOADED, newQuality)
 
             # check for status/quality changes as long as it's a new file
             elif not same_file and is_media_file(
@@ -593,17 +590,15 @@ class TVShow(MainDBBase):
                     newStatus = DOWNLOADED
 
                 if newStatus is not None:
-                    with curEp.lock:
-                        sickrage.app.log.debug(
-                            "STATUS: we have an associated file, so setting the status from " + str(
-                                curEp.status) + " to DOWNLOADED/" + str(
-                                Quality.status_from_name(filename, anime=self.is_anime)))
-                        curEp.status = Quality.composite_status(newStatus, newQuality)
+                    sickrage.app.log.debug(
+                        "STATUS: we have an associated file, so setting the status from " + str(
+                            curEp.status) + " to DOWNLOADED/" + str(
+                            Quality.status_from_name(filename, anime=self.is_anime)))
+                    curEp.status = Quality.composite_status(newStatus, newQuality)
 
         # creating metafiles on the root should be good enough
         if rootEp:
-            with rootEp.lock:
-                rootEp.createMetaFiles()
+            rootEp.createMetaFiles()
 
         return rootEp
 
@@ -727,8 +722,7 @@ class TVShow(MainDBBase):
             else:
                 # the file exists, set its modify file stamp
                 if sickrage.app.config.airdate_episodes:
-                    with curEp.lock:
-                        curEp.airdateModifyStamp()
+                    curEp.airdateModifyStamp()
 
     def download_subtitles(self):
         if not os.path.isdir(self.location):

@@ -288,14 +288,14 @@ class FailedQueueItem(srQueueItem):
 
             sickrage.app.log.info("Marking episode as bad: [" + episode_obj.pretty_name() + "]")
 
-            FailedHistory.markFailed(episode_obj)
+            FailedHistory.mark_failed(episode_obj)
 
-            (release, provider) = FailedHistory.findFailedRelease(episode_obj)
+            (release, provider) = FailedHistory.find_failed_release(episode_obj)
             if release:
-                FailedHistory.logFailed(release)
-                History.logFailed(episode_obj, release, provider)
+                FailedHistory.log_failed(release)
+                History.log_failed(self.show_id, self.episode_id, release, provider)
 
-            FailedHistory.revertFailedEpisode(episode_obj)
+            FailedHistory.revert_failed_episode(self.show_id, self.episode_id)
 
             search_result = search_providers(show_obj, [self.episode_id], manualSearch=True, downCurQuality=False)
             if search_result:

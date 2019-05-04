@@ -119,9 +119,8 @@ class MainDB(srDatabase):
 
         id = Column(Integer, primary_key=True)
         showid = Column(Integer)
+        episode_id = Column(Integer)
         resource = Column(Text)
-        season = Column(Integer)
-        episode = Column(Integer)
         action = Column(Integer)
         version = Column(Integer, default=-1)
         provider = Column(Text)
@@ -137,8 +136,7 @@ class MainDB(srDatabase):
         release = Column(Text)
         provider = Column(Text)
         showid = Column(Integer)
-        season = Column(Integer)
-        episode = Column(Integer)
+        episode_id = Column(Integer)
         old_status = Column(Integer)
 
     class FailedSnatch(MainDBBase):

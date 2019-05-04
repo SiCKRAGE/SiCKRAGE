@@ -18,10 +18,9 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import re
 import threading
-from datetime import datetime
+import datetime
 
 from dateutil import tz
 from sqlalchemy import orm
@@ -129,9 +128,10 @@ class TimeZoneUpdater(object):
             hr = hr if 0 <= hr <= 23 else 0
             m = m if 0 <= m <= 59 else 0
 
-        result = datetime.fromordinal(max(try_int(d), 1))
+        if isinstance(d, datetime.date):
+            d = datetime.datetime.combine(d, datetime.datetime.min.time())
 
-        return result.replace(hour=hr, minute=m, tzinfo=network_tz)
+        return d.replace(hour=hr, minute=m, tzinfo=network_tz)
 
     def test_timeformat(self, t):
         return self.time_regex.search(t) is not None

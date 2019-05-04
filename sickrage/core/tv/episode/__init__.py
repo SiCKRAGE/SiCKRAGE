@@ -23,13 +23,13 @@ import re
 from collections import OrderedDict
 from xml.etree.ElementTree import ElementTree
 
-from sqlalchemy import orm, ForeignKeyConstraint, Index, Column, Integer, Text, Boolean
+from sqlalchemy import ForeignKeyConstraint, Index, Column, Integer, Text, Boolean, Date
 from sqlalchemy.orm import relationship
 
 import sickrage
 from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, dateTimeFormat, SKIPPED, NAMING_EXTEND, \
     NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
-from sickrage.core.databases.main import MainDB, MainDBBase
+from sickrage.core.databases.main import MainDBBase
 from sickrage.core.exceptions import NoNFOException, \
     EpisodeNotFoundException, EpisodeDeletedException
 from sickrage.core.helpers import is_media_file, try_int, replaceExtension, \
@@ -54,7 +54,7 @@ class TVEpisode(MainDBBase):
     )
 
     showid = Column(Integer, index=True, primary_key=True)
-    indexer_id = Column(Integer, index=True)
+    indexer_id = Column(Integer, index=True, default=0)
     indexer = Column(Integer, index=True, primary_key=True)
     season = Column(Integer, index=True, primary_key=True)
     episode = Column(Integer, index=True, primary_key=True)
@@ -65,7 +65,7 @@ class TVEpisode(MainDBBase):
     subtitles = Column(Text, default='')
     subtitles_searchcount = Column(Integer, default=0)
     subtitles_lastsearch = Column(Integer, default=0)
-    airdate = Column(Integer, default=0)
+    airdate = Column(Date, default=datetime.date.fromordinal(1))
     hasnfo = Column(Boolean, default=False)
     hastbn = Column(Boolean, default=False)
     status = Column(Integer, default=0)
@@ -82,26 +82,13 @@ class TVEpisode(MainDBBase):
 
     def __init__(self, **kwargs):
         super(TVEpisode, self).__init__(**kwargs)
-        from sickrage.core.scene_numbering import get_scene_absolute_numbering, get_scene_numbering
-
-        if self.scene_absolute_number == 0:
-            self.scene_absolute_number = get_scene_absolute_numbering(
-                self.show.indexer_id,
-                self.show.indexer,
-                self.absolute_number
-            )
-
-        if self.scene_season == 0 or self.scene_episode == 0:
-            self.scene_season, self.scene_episode = get_scene_numbering(
-                self.show.indexer_id,
-                self.show.indexer,
-                self.season, self.episode
-            )
-
-        self.relatedEps = []
-        self.wantedQuality = []
-
         self.checkForMetaFiles()
+
+    @property
+    def relatedEps(self):
+        if not hasattr(self, '_relatedEps'):
+            setattr(self, '_relatedEps', [])
+        return getattr(self, '_relatedEps')
 
     def refresh_subtitles(self):
         """Look for subtitles files and refresh the subtitles property"""
@@ -274,10 +261,11 @@ class TVEpisode(MainDBBase):
         self.description = safe_getattr(myEp, 'overview', self.description)
 
         firstaired = safe_getattr(myEp, 'firstaired') or datetime.date.fromordinal(1)
+
         try:
             rawAirdate = [int(x) for x in str(firstaired).split("-")]
             self.airdate = datetime.date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
-        except (ValueError, IndexError):
+        except (ValueError, IndexError, TypeError):
             sickrage.app.log.warning(
                 "Malformed air date of {} retrieved from {} for ({} - S{:02d}E{:02d})".format(
                     firstaired, indexer_name, self.show.name, season or 0, episode or 0))
@@ -467,15 +455,13 @@ class TVEpisode(MainDBBase):
         return result
 
     def deleteEpisode(self, full=False):
-
         sickrage.app.log.debug(
             "Deleting %s S%02dE%02d from the DB" % (self.show.name, self.season or 0, self.episode or 0))
 
         # delete myself from the DB
         sickrage.app.log.debug("Deleting myself from the database")
 
-        sickrage.app.main_db.delete(TVEpisode, showid=self.show.indexer_id, season=self.season,
-                                    episode=self.episode)
+        sickrage.app.main_db.delete(TVEpisode, showid=self.show.indexer_id, season=self.season, episode=self.episode)
 
         data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate([(self.season, self.episode)])
         if sickrage.app.config.use_trakt and sickrage.app.config.trakt_sync_watchlist and data:
@@ -601,7 +587,8 @@ class TVEpisode(MainDBBase):
 
         # move related files
         for cur_related_file in related_files:
-            # We need to fix something here because related files can be in subfolders and the original code doesn't handle this (at all)
+            # We need to fix something here because related files can be in subfolders and the original code doesn't
+            # handle this (at all)
             cur_related_dir = os.path.dirname(os.path.abspath(cur_related_file))
             subfolder = cur_related_dir.replace(os.path.dirname(os.path.abspath(self.location)), '')
             # We now have a subfolder. We need to add that to the absolute_proper_path.
@@ -622,11 +609,10 @@ class TVEpisode(MainDBBase):
                 sickrage.app.log.warning(str(self.indexer_id) + ": Unable to rename file " + cur_related_sub)
 
         # save the ep
-        with self.lock:
-            if result:
-                self.location = absolute_proper_path + file_ext
-                for relEp in self.relatedEps:
-                    relEp.location = absolute_proper_path + file_ext
+        if result:
+            self.location = absolute_proper_path + file_ext
+            for relEp in self.relatedEps:
+                relEp.location = absolute_proper_path + file_ext
 
         # in case something changed with the metadata just do a quick check
         for curEp in [self] + self.relatedEps:

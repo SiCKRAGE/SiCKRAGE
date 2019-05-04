@@ -933,7 +933,7 @@ class DisplayShowHandler(BaseHandler, ABC):
 
             if curEp.airdate != 1:
                 today = datetime.datetime.now().replace(tzinfo=sickrage.app.tz)
-                air_date = datetime.datetime.fromordinal(curEp.airdate)
+                air_date = curEp.airdate
                 if air_date.year >= 1970 or show_obj.network:
                     air_date = srDateTime(
                         sickrage.app.tz_updater.parse_date_time(curEp.airdate, show_obj.airs, show_obj.network),
@@ -1471,11 +1471,10 @@ class DeleteEpisodeHandler(BaseHandler, ABC):
                 if not ep_obj:
                     return self._genericMessage(_("Error"), _("Episode couldn't be retrieved"))
 
-                with ep_obj.lock:
-                    try:
-                        ep_obj.deleteEpisode(full=True)
-                    except EpisodeDeletedException:
-                        pass
+                try:
+                    ep_obj.deleteEpisode(full=True)
+                except EpisodeDeletedException:
+                    pass
 
         if direct:
             return self.write(json_encode({'result': 'success'}))
@@ -1750,12 +1749,9 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         show = self.get_query_argument('show', None)
 
-        episodes = []
-
         # Queued Searches
         search_status = 'queued'
-        for episode_ids in sickrage.app.search_queue.get_all_episode_ids_from_queue(show):
-            episodes += self.get_episodes(show, episode_ids, search_status)
+        episodes = self.get_episodes(show, sickrage.app.search_queue.get_all_episode_ids_from_queue(show), search_status)
 
         # Running Searches
         search_status = 'searching'
@@ -1771,7 +1767,7 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
         search_status = 'finished'
         for search_thread in MANUAL_SEARCH_HISTORY:
             if show is not None:
-                if not str(search_thread.show.indexer_id) == show:
+                if not str(search_thread.show_id) == show:
                     continue
 
             if isinstance(search_thread, (ManualSearchQueueItem, FailedQueueItem)):

@@ -723,7 +723,7 @@ class PostProcessor(object):
                     # Found no result, try with season 0
                     try:
                         dbData = TVEpisode.query.filter_by(showid=show.indexer_id, indexer=show.indexer,
-                                                                  airdate=airdate).one()
+                                                           airdate=airdate).one()
                         season = int(dbData.season)
                         episodes = [int(dbData.episode)]
                     except orm.exc.NoResultFound:
@@ -1060,39 +1060,36 @@ class PostProcessor(object):
 
         # update the ep info before we rename so the quality & release name go into the name properly
         for cur_ep in [ep_obj] + ep_obj.relatedEps:
-            with cur_ep.lock:
-                if self.release_name:
-                    self._log("Found release name " + self.release_name, sickrage.app.log.DEBUG)
-                    cur_ep.release_name = self.release_name
-                else:
-                    cur_ep.release_name = ""
+            if self.release_name:
+                self._log("Found release name " + self.release_name, sickrage.app.log.DEBUG)
+                cur_ep.release_name = self.release_name
+            else:
+                cur_ep.release_name = ""
 
-                if ep_obj.status in Quality.SNATCHED_BEST:
-                    cur_ep.status = Quality.composite_status(ARCHIVED, new_ep_quality)
-                else:
-                    cur_ep.status = Quality.composite_status(DOWNLOADED, new_ep_quality)
+            if ep_obj.status in Quality.SNATCHED_BEST:
+                cur_ep.status = Quality.composite_status(ARCHIVED, new_ep_quality)
+            else:
+                cur_ep.status = Quality.composite_status(DOWNLOADED, new_ep_quality)
 
-                cur_ep.subtitles = ''
+            cur_ep.subtitles = ''
 
-                cur_ep.subtitles_searchcount = 0
+            cur_ep.subtitles_searchcount = 0
 
-                cur_ep.subtitles_lastsearch = '0001-01-01 00:00:00'
+            cur_ep.subtitles_lastsearch = '0001-01-01 00:00:00'
 
-                cur_ep.is_proper = self.is_proper
+            cur_ep.is_proper = self.is_proper
 
-                cur_ep.version = new_ep_version
+            cur_ep.version = new_ep_version
 
-                if self.release_group:
-                    cur_ep.release_group = self.release_group
-                else:
-                    cur_ep.release_group = ""
-
-                # cur_ep.save_to_db()
+            if self.release_group:
+                cur_ep.release_group = self.release_group
+            else:
+                cur_ep.release_group = ""
 
         # Just want to keep this consistent for failed handling right now
         releaseName = show_names.determine_release_name(self.folder_path, self.nzb_name)
         if releaseName is not None:
-            FailedHistory.logSuccess(releaseName)
+            FailedHistory.log_success(releaseName)
         else:
             self._log("Couldn't find release in snatch history", sickrage.app.log.WARNING)
 
@@ -1160,28 +1157,25 @@ class PostProcessor(object):
         # download subtitles
         if sickrage.app.config.use_subtitles and ep_obj.show.subtitles:
             for cur_ep in [ep_obj] + ep_obj.relatedEps:
-                with cur_ep.lock:
-                    cur_ep.location = os.path.join(dest_path, new_file_name)
-                    cur_ep.refresh_subtitles()
-                    cur_ep.download_subtitles()
+                cur_ep.location = os.path.join(dest_path, new_file_name)
+                cur_ep.refresh_subtitles()
+                cur_ep.download_subtitles()
 
         # put the new location in the database
         for cur_ep in [ep_obj] + ep_obj.relatedEps:
-            with cur_ep.lock:
-                cur_ep.location = os.path.join(dest_path, new_file_name)
-                # cur_ep.save_to_db()
+            cur_ep.location = os.path.join(dest_path, new_file_name)
 
         # set file modify stamp to show airdate
         if sickrage.app.config.airdate_episodes:
             for cur_ep in [ep_obj] + ep_obj.relatedEps:
-                with cur_ep.lock:
-                    cur_ep.airdateModifyStamp()
+                cur_ep.airdateModifyStamp()
 
         # generate nfo/tbn
         ep_obj.createMetaFiles()
 
         # log it to history
-        History.logDownload(ep_obj, self.file_path, new_ep_quality, self.release_group, new_ep_version)
+        History.log_download(ep_obj.showid, ep_obj.indexer_id, self.file_path, new_ep_quality, self.release_group,
+                             new_ep_version)
 
         # If any notification fails, don't stop postProcessor
         try:

@@ -654,18 +654,15 @@
                 </td>
 
                 <td class="table-fit col-airdate">
-                    % if int(epResult.airdate) != 1:
-                    <% airDate = datetime.datetime.fromordinal(epResult.airdate) %>
+                    <% airDate = epResult.airdate %>
 
                     % if airDate.year >= 1970 or show.network:
                         <% airDate = srdatetime.srDateTime(sickrage.app.tz_updater.parse_date_time(epResult.airdate, show.airs, show.network), convert=True).dt %>
                     % endif
-                        <time datetime="${airDate.isoformat()}" class="date text-nowrap">
-                            ${srdatetime.srDateTime(airDate).srfdatetime()}
-                        </time>
-                    % else:
-                        ${_('Never')}
-                    % endif
+
+                    <time datetime="${airDate.isoformat()}" class="date text-nowrap">
+                        ${srdatetime.srDateTime(airDate).srfdatetime()}
+                    </time>
                 </td>
 
                 <td class="table-fit">

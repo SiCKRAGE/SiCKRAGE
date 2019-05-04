@@ -108,7 +108,6 @@ class DailySearcher(object):
             if cur_status == DOWNLOADED and show.skip_downloaded:
                 continue
 
-            ep_obj.wantedQuality = [i for i in all_qualities if (i > cur_quality and i != Quality.UNKNOWN)]
             wanted.append(ep_obj.indexer_id)
 
         return wanted

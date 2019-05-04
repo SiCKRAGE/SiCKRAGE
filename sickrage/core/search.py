@@ -95,32 +95,30 @@ def snatch_episode(result, endStatus=SNATCHED):
     if not dlResult:
         return False
 
-    FailedHistory.logSnatch(result)
+    FailedHistory.log_snatch(result)
 
     sickrage.app.alerts.message(_('Episode snatched'), result.name)
 
-    History.logSnatch(result)
+    History.log_snatch(result)
 
     # don't notify when we re-download an episode
     trakt_data = []
-    for curEpObj in result.episodes:
-        with curEpObj.lock:
-            if is_first_best_match(result):
-                curEpObj.status = Quality.composite_status(SNATCHED_BEST, result.quality)
-            else:
-                curEpObj.status = Quality.composite_status(endStatus, result.quality)
+    for episode_id in result.episode_ids:
+        episode_obj = find_episode(result.show_id, episode_id)
 
-            # save episode to DB
-            # curEpObj.save_to_db()
+        if is_first_best_match(result):
+            episode_obj.status = Quality.composite_status(SNATCHED_BEST, result.quality)
+        else:
+            episode_obj.status = Quality.composite_status(endStatus, result.quality)
 
-        if curEpObj.status not in Quality.DOWNLOADED:
+        if episode_obj.status not in Quality.DOWNLOADED:
             try:
                 Notifiers.mass_notify_snatch(
-                    curEpObj._format_pattern('%SN - %Sx%0E - %EN - %QN') + " from " + result.provider.name)
+                    episode_obj._format_pattern('%SN - %Sx%0E - %EN - %QN') + " from " + result.provider.name)
             except Exception:
                 sickrage.app.log.debug("Failed to send snatch notification")
 
-            trakt_data.append((curEpObj.season, curEpObj.episode))
+            trakt_data.append((episode_obj.season, episode_obj.episode))
 
     data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate(trakt_data)
 
@@ -147,17 +145,17 @@ def pick_best_result(results):
 
     # find the best result for the current episode
     for cur_result in results:
-        show = find_show(cur_result.indexer_id)
+        show_obj = find_show(cur_result.show_id)
 
         # build the black And white list
-        if show.is_anime:
-            if not show.release_groups.is_valid(cur_result):
+        if show_obj.is_anime:
+            if not show_obj.release_groups.is_valid(cur_result):
                 continue
 
         sickrage.app.log.info(
             "Quality of " + cur_result.name + " is " + Quality.qualityStrings[cur_result.quality])
 
-        any_qualities, best_qualities = Quality.split_quality(show.quality)
+        any_qualities, best_qualities = Quality.split_quality(show_obj.quality)
 
         if cur_result.quality not in any_qualities + best_qualities:
             sickrage.app.log.debug(cur_result.name + " is a quality we know we don't want, rejecting it")
@@ -177,15 +175,16 @@ def pick_best_result(results):
                                       "{}".format(cur_result.name, cur_result.leechers))
                 continue
 
-        if show.rls_ignore_words and show_names.contains_at_least_one_word(cur_result.name, show.rls_ignore_words):
+        if show_obj.rls_ignore_words and show_names.contains_at_least_one_word(cur_result.name,
+                                                                               show_obj.rls_ignore_words):
             sickrage.app.log.info(
-                "Ignoring " + cur_result.name + " based on ignored words filter: " + show.rls_ignore_words)
+                "Ignoring " + cur_result.name + " based on ignored words filter: " + show_obj.rls_ignore_words)
             continue
 
-        if show.rls_require_words and not show_names.contains_at_least_one_word(cur_result.name,
-                                                                                show.rls_require_words):
+        if show_obj.rls_require_words and not show_names.contains_at_least_one_word(cur_result.name,
+                                                                                    show_obj.rls_require_words):
             sickrage.app.log.info(
-                "Ignoring " + cur_result.name + " based on required words filter: " + show.rls_require_words)
+                "Ignoring " + cur_result.name + " based on required words filter: " + show_obj.rls_require_words)
             continue
 
         if not show_names.filter_bad_releases(cur_result.name, parse=False):
@@ -194,7 +193,7 @@ def pick_best_result(results):
             continue
 
         if hasattr(cur_result, 'size'):
-            if FailedHistory.hasFailed(cur_result.name, cur_result.size, cur_result.provider.name):
+            if FailedHistory.has_failed(cur_result.name, cur_result.size, cur_result.provider.name):
                 sickrage.app.log.info(cur_result.name + " has previously failed, rejecting it")
                 continue
 

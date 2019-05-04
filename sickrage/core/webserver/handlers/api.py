@@ -939,36 +939,34 @@ class CMD_EpisodeSetStatus(ApiCall):
         segments = {}
 
         for epObj in ep_list:
-            with epObj.lock:
-                if self.status == WANTED:
-                    # figure out what episodes are wanted so we can backlog them
-                    if epObj.season in segments:
-                        segments[epObj.season].append(epObj)
-                    else:
-                        segments[epObj.season] = [epObj]
+            if self.status == WANTED:
+                # figure out what episodes are wanted so we can backlog them
+                if epObj.season in segments:
+                    segments[epObj.season].append(epObj)
+                else:
+                    segments[epObj.season] = [epObj]
 
-                # don't let them mess up UNAIRED episodes
-                if epObj.status == UNAIRED:
-                    if self.e is not None:  # setting the status of a unaired is only considert a failure if we directly wanted this episode, but is ignored on a season request
-                        ep_results.append(
-                            _epResult(RESULT_FAILURE, epObj, "Refusing to change status because it is UNAIRED"))
-                        failure = True
-                    continue
-
-                # allow the user to force setting the status for an already downloaded episode
-                if epObj.status in Quality.DOWNLOADED + Quality.ARCHIVED and not self.force:
-                    ep_results.append(_epResult(RESULT_FAILURE, epObj,
-                                                "Refusing to change status because it is already marked as DOWNLOADED"))
+            # don't let them mess up UNAIRED episodes
+            if epObj.status == UNAIRED:
+                if self.e is not None:  # setting the status of a unaired is only considert a failure if we directly wanted this episode, but is ignored on a season request
+                    ep_results.append(
+                        _epResult(RESULT_FAILURE, epObj, "Refusing to change status because it is UNAIRED"))
                     failure = True
-                    continue
+                continue
 
-                epObj.status = self.status
-                # epObj.save_to_db()
+            # allow the user to force setting the status for an already downloaded episode
+            if epObj.status in Quality.DOWNLOADED + Quality.ARCHIVED and not self.force:
+                ep_results.append(_epResult(RESULT_FAILURE, epObj,
+                                            "Refusing to change status because it is already marked as DOWNLOADED"))
+                failure = True
+                continue
 
-                if self.status == WANTED:
-                    start_backlog = True
+            epObj.status = self.status
 
-                ep_results.append(_epResult(RESULT_SUCCESS, epObj))
+            if self.status == WANTED:
+                start_backlog = True
+
+            ep_results.append(_epResult(RESULT_SUCCESS, epObj))
 
         extra_msg = ""
         if start_backlog:
