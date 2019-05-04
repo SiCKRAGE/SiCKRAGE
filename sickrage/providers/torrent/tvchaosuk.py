@@ -23,6 +23,7 @@ import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import sanitizeSceneName, show_names, bs4_parser, try_int, convert_size
+from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.providers import TorrentProvider
 
 
@@ -50,43 +51,44 @@ class TVChaosUKProvider(TorrentProvider):
 
         raise AuthException('Your authentication credentials for ' + self.name + ' are missing, check your config.')
 
-    def _get_season_search_strings(self, ep_obj):
+    def _get_season_search_strings(self, show_id, episode_id):
 
         search_string = {'Season': []}
 
-        for show_name in set(show_names.allPossibleShowNames(ep_obj.show)):
+        episode_obj = find_episode(show_id, episode_id)
+
+        for show_name in set(show_names.allPossibleShowNames(show_id)):
             for sep in ' ', ' - ':
                 season_string = show_name + sep + 'Series '
-                if ep_obj.show.air_by_date or ep_obj.show.sports:
-                    season_string += str(ep_obj.airdate).split('-')[0]
-                elif ep_obj.show.anime:
-                    season_string += '%d' % ep_obj.scene_absolute_number
+                if episode_obj.show.air_by_date or episode_obj.show.sports:
+                    season_string += str(episode_obj.airdate).split('-')[0]
+                elif episode_obj.show.anime:
+                    season_string += '%d' % episode_obj.scene_absolute_number
                 else:
-                    season_string += '%d' % int(ep_obj.scene_season)
+                    season_string += '%d' % int(episode_obj.scene_season)
 
                 search_string['Season'].append(re.sub(r'\s+', ' ', season_string.replace('.', ' ').strip()))
 
         return [search_string]
 
-    def _get_episode_search_strings(self, ep_obj, add_string=''):
+    def _get_episode_search_strings(self, show_id, episode_id, add_string=''):
 
         search_string = {'Episode': []}
 
-        if not ep_obj:
-            return []
+        episode_obj = find_episode(show_id, episode_id)
 
-        for show_name in set(show_names.allPossibleShowNames(ep_obj.show)):
+        for show_name in set(show_names.allPossibleShowNames(show_id)):
             for sep in ' ', ' - ':
                 ep_string = sanitizeSceneName(show_name) + sep
-                if ep_obj.show.air_by_date:
-                    ep_string += str(ep_obj.airdate).replace('-', '|')
-                elif ep_obj.show.sports:
-                    ep_string += str(ep_obj.airdate).replace('-', '|') + '|' + ep_obj.airdate.strftime('%b')
-                elif ep_obj.show.anime:
-                    ep_string += '%i' % int(ep_obj.scene_absolute_number)
+                if episode_obj.show.air_by_date:
+                    ep_string += str(episode_obj.airdate).replace('-', '|')
+                elif episode_obj.show.sports:
+                    ep_string += str(episode_obj.airdate).replace('-', '|') + '|' + episode_obj.airdate.strftime('%b')
+                elif episode_obj.show.anime:
+                    ep_string += '%i' % int(episode_obj.scene_absolute_number)
                 else:
-                    ep_string += sickrage.app.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                   'episodenumber': ep_obj.scene_episode}
+                    ep_string += sickrage.app.naming_ep_type[2] % {'seasonnumber': episode_obj.scene_season,
+                                                                   'episodenumber': episode_obj.scene_episode}
 
                 if add_string:
                     ep_string += ' %s' % add_string
