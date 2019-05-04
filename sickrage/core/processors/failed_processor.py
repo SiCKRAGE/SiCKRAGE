@@ -76,13 +76,14 @@ class FailedProcessor(object):
         sickrage.app.log.debug(" - " + str(parsed.air_date))
 
         for episode in parsed.episode_numbers:
-            segment = parsed.show.get_episode(parsed.season_number, episode)
+            episode_obj = parsed.show.get_episode(parsed.season_number, episode)
 
-            curStatus, curQuality = Quality.split_composite_status(segment.status)
-            if curStatus not in {SNATCHED, SNATCHED_BEST, SNATCHED_PROPER}:
+            cur_status, cur_quality = Quality.split_composite_status(episode_obj.status)
+            if cur_status not in {SNATCHED, SNATCHED_BEST, SNATCHED_PROPER}:
                 continue
 
-            sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, FailedQueueItem(parsed.show, [segment]))
+            sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put,
+                                              FailedQueueItem(parsed.show, episode_obj.indexer_id))
 
         return True
 

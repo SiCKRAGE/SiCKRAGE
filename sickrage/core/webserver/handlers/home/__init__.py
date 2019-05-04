@@ -47,6 +47,7 @@ from sickrage.core.scene_numbering import get_scene_numbering_for_show, get_xem_
     get_scene_absolute_numbering, get_scene_numbering
 from sickrage.core.traktapi import TraktAPI
 from sickrage.core.tv.episode import TVEpisode
+from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
 from sickrage.indexers import IndexerApi
@@ -1510,6 +1511,7 @@ class SetStatusHandler(BaseHandler, ABC):
 
         segments = {}
         trakt_data = []
+
         if eps:
             for curEp in eps.split('|'):
 
@@ -1534,41 +1536,37 @@ class SetStatusHandler(BaseHandler, ABC):
                 if int(status) in [WANTED, FAILED]:
                     # figure out what episodes are wanted so we can backlog them
                     if ep_obj.season in segments:
-                        segments[ep_obj.season].append(ep_obj)
+                        segments[ep_obj.season].append(ep_obj.indexer_id)
                     else:
-                        segments[ep_obj.season] = [ep_obj]
+                        segments[ep_obj.season] = [ep_obj.indexer_id]
 
-                with ep_obj.lock:
-                    # don't let them mess up UNAIRED episodes
-                    if ep_obj.status == UNAIRED:
-                        sickrage.app.log.warning(
-                            "Refusing to change status of " + curEp + " because it is UNAIRED")
-                        continue
+                # don't let them mess up UNAIRED episodes
+                if ep_obj.status == UNAIRED:
+                    sickrage.app.log.warning(
+                        "Refusing to change status of " + curEp + " because it is UNAIRED")
+                    continue
 
-                    if int(status) in Quality.DOWNLOADED and ep_obj.status not in Quality.SNATCHED + \
-                            Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.DOWNLOADED + [
-                        IGNORED] and not os.path.isfile(ep_obj.location):
-                        sickrage.app.log.warning(
-                            "Refusing to change status of " + curEp + " to DOWNLOADED because it's not SNATCHED/DOWNLOADED")
-                        continue
+                if int(status) in Quality.DOWNLOADED and ep_obj.status not in Quality.SNATCHED + \
+                        Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.DOWNLOADED + [
+                    IGNORED] and not os.path.isfile(ep_obj.location):
+                    sickrage.app.log.warning(
+                        "Refusing to change status of " + curEp + " to DOWNLOADED because it's not SNATCHED/DOWNLOADED")
+                    continue
 
-                    if int(status) == FAILED and ep_obj.status not in Quality.SNATCHED + Quality.SNATCHED_PROPER + \
-                            Quality.SNATCHED_BEST + Quality.DOWNLOADED + Quality.ARCHIVED:
-                        sickrage.app.log.warning(
-                            "Refusing to change status of " + curEp + " to FAILED because it's not SNATCHED/DOWNLOADED")
-                        continue
+                if int(status) == FAILED and ep_obj.status not in Quality.SNATCHED + Quality.SNATCHED_PROPER + \
+                        Quality.SNATCHED_BEST + Quality.DOWNLOADED + Quality.ARCHIVED:
+                    sickrage.app.log.warning(
+                        "Refusing to change status of " + curEp + " to FAILED because it's not SNATCHED/DOWNLOADED")
+                    continue
 
-                    if ep_obj.status in Quality.DOWNLOADED + Quality.ARCHIVED and int(status) == WANTED:
-                        sickrage.app.log.info("Removing release_name for episode as you want to set a downloaded "
-                                              "episode back to wanted, so obviously you want it replaced")
-                        ep_obj.release_name = ""
+                if ep_obj.status in Quality.DOWNLOADED + Quality.ARCHIVED and int(status) == WANTED:
+                    sickrage.app.log.info("Removing release_name for episode as you want to set a downloaded "
+                                          "episode back to wanted, so obviously you want it replaced")
+                    ep_obj.release_name = ""
 
-                    ep_obj.status = int(status)
+                ep_obj.status = int(status)
 
-                    # save to database
-                    # ep_obj.save_to_db()
-
-                    trakt_data.append((ep_obj.season, ep_obj.episode))
+                trakt_data.append((ep_obj.season, ep_obj.episode))
 
             data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate(trakt_data)
             if data and sickrage.app.config.use_trakt and sickrage.app.config.trakt_sync_watchlist:
@@ -1576,13 +1574,13 @@ class SetStatusHandler(BaseHandler, ABC):
                     sickrage.app.log.debug(
                         "Add episodes, showid: indexer_id " + str(show_obj.indexer_id) + ", Title " + str(
                             show_obj.name) + " to Watchlist")
-                    sickrage.app.notifier_providers['trakt'].update_watchlist(show_obj, data_episode=data,
+                    sickrage.app.notifier_providers['trakt'].update_watchlist(show_obj.indexer_id, data_episode=data,
                                                                               update="add")
                 elif int(status) in [IGNORED, SKIPPED] + Quality.DOWNLOADED + Quality.ARCHIVED:
                     sickrage.app.log.debug(
                         "Remove episodes, showid: indexer_id " + str(show_obj.indexer_id) + ", Title " + str(
                             show_obj.name) + " from Watchlist")
-                    sickrage.app.notifier_providers['trakt'].update_watchlist(show_obj, data_episode=data,
+                    sickrage.app.notifier_providers['trakt'].update_watchlist(show_obj.indexer_id, data_episode=data,
                                                                               update="remove")
 
         if int(status) == WANTED and not show_obj.paused:
@@ -1591,7 +1589,8 @@ class SetStatusHandler(BaseHandler, ABC):
             msg += '<ul>'
 
             for season, segment in segments.items():
-                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(show_obj, segment))
+                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put,
+                                                  BacklogQueueItem(show_obj.indexer_id, segment))
 
                 msg += "<li>" + _("Season ") + str(season) + "</li>"
                 sickrage.app.log.info("Sending backlog for " + show_obj.name + " season " + str(
@@ -1602,8 +1601,8 @@ class SetStatusHandler(BaseHandler, ABC):
             if segments:
                 sickrage.app.alerts.message(_("Backlog started"), msg)
         elif int(status) == WANTED and show_obj.paused:
-            sickrage.app.log.info(
-                "Some episodes were set to wanted, but " + show_obj.name + " is paused. Not adding to Backlog until show is unpaused")
+            sickrage.app.log.info("Some episodes were set to wanted, but {} is paused. Not adding to Backlog until "
+                                  "show is unpaused".format(show_obj.name))
 
         if int(status) == FAILED:
             msg = _(
@@ -1611,11 +1610,13 @@ class SetStatusHandler(BaseHandler, ABC):
             msg += '<ul>'
 
             for season, segment in segments.items():
-                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, FailedQueueItem(show_obj, segment))
+                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put,
+                                                  FailedQueueItem(show_obj.indexer_id, segment[0]))
 
                 msg += "<li>" + _("Season ") + str(season) + "</li>"
-                sickrage.app.log.info("Retrying Search for " + show_obj.name + " season " + str(
-                    season) + " because some eps were set to failed")
+                sickrage.app.log.info(
+                    "Retrying Search for {} season {} because some eps were set to failed".format(show_obj.name,
+                                                                                                  season))
 
             msg += "</ul>"
 
@@ -1703,7 +1704,7 @@ class DoRenameHandler(BaseHandler, ABC):
 
             try:
                 ep_result = TVEpisode.query.filter_by(showid=int(show), season=int(ep_info[0]),
-                                                             episode=int(ep_info[1])).one()
+                                                      episode=int(ep_info[1])).one()
             except orm.exc.NoResultFound:
                 sickrage.app.log.warning("Unable to find an episode for " + curEp + ", skipping")
                 continue
@@ -1734,11 +1735,13 @@ class SearchEpisodeHandler(BaseHandler, ABC):
         ep_obj = _get_episode(show, season, episode)
         if isinstance(ep_obj, TVEpisode):
             # make a queue item for it and put it on the queue
-            ep_queue_item = ManualSearchQueueItem(ep_obj.show, ep_obj, bool(int(down_cur_quality)))
+            ep_queue_item = ManualSearchQueueItem(ep_obj.show.indexer_id, ep_obj.indexer_id,
+                                                  bool(int(down_cur_quality)))
 
             sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, ep_queue_item)
             if not all([ep_queue_item.started, ep_queue_item.success]):
                 return self.write(json_encode({'result': 'success'}))
+
         return self.write(json_encode({'result': 'failure'}))
 
 
@@ -1751,16 +1754,18 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
 
         # Queued Searches
         search_status = 'queued'
-        for search_thread in sickrage.app.search_queue.get_all_ep_from_queue(show):
-            episodes += self.get_episodes(search_thread, search_status)
+        for episode_ids in sickrage.app.search_queue.get_all_episode_ids_from_queue(show):
+            episodes += self.get_episodes(show, episode_ids, search_status)
 
         # Running Searches
         search_status = 'searching'
-        if sickrage.app.search_queue.is_manualsearch_in_progress():
+        if sickrage.app.search_queue.is_manual_search_in_progress():
             for search_thread in sickrage.app.search_queue.processing:
                 if search_thread.success:
                     search_status = 'finished'
-                episodes += self.get_episodes(search_thread, search_status)
+                episode_ids = [search_thread.episode_id] if hasattr(search_thread,
+                                                                    'episode_id') else search_thread.episode_ids
+                episodes += self.get_episodes(show, episode_ids, search_status)
 
         # Finished Searches
         search_status = 'finished'
@@ -1769,52 +1774,35 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
                 if not str(search_thread.show.indexer_id) == show:
                     continue
 
-            if isinstance(search_thread, ManualSearchQueueItem):
-                if not [x for x in episodes if x['episodeindexid'] == search_thread.segment.indexer_id]:
-                    episodes += self.get_episodes(search_thread, search_status)
+            if isinstance(search_thread, (ManualSearchQueueItem, FailedQueueItem)):
+                if not [x for x in episodes if x['episodeindexid'] == search_thread.episode_id]:
+                    episodes += self.get_episodes(show, [search_thread.episode_id], search_status)
             else:
-                # These are only Failed Downloads/Retry SearchThreadItems.. lets loop through the segement/episodes
-                if not [i for i, j in zip(search_thread.segment, episodes) if i.indexer_id == j['episodeindexid']]:
-                    episodes += self.get_episodes(search_thread, search_status)
+                # These are only Failed Downloads/Retry SearchThreadItems.. lets loop through the episode IDs
+                if not [i for i, j in zip(search_thread.episode_ids, episodes) if i.indexer_id == j['episodeindexid']]:
+                    episodes += self.get_episodes(show, search_thread.episode_ids, search_status)
 
         return self.write(json_encode({'episodes': episodes}))
 
-    def get_episodes(self, search_thread, search_status):
-        show_obj = find_show(int(search_thread.show.indexer_id))
-
+    def get_episodes(self, show_id, episode_ids, search_status):
         results = []
 
-        if not show_obj:
-            sickrage.app.log.warning(
-                'No Show Object found for show with indexerID: ' + str(search_thread.show.indexer_id))
-            return results
-
-        if isinstance(search_thread, ManualSearchQueueItem):
-            results.append({'show': search_thread.show.indexer_id,
-                            'episode': search_thread.segment.episode,
-                            'episodeindexid': search_thread.segment.indexer_id,
-                            'season': search_thread.segment.season,
+        for episode_id in episode_ids:
+            episode_obj = find_episode(show_id, episode_id)
+            results.append({'show': show_id,
+                            'episode': episode_obj.episode,
+                            'episodeindexid': episode_id,
+                            'season': episode_obj.season,
                             'searchstatus': search_status,
-                            'status': statusStrings[search_thread.segment.status],
-                            'quality': self.get_quality_class(search_thread.segment),
+                            'status': statusStrings[episode_obj.status],
+                            'quality': self.get_quality_class(episode_obj.status),
                             'overview': Overview.overviewStrings[
-                                show_obj.get_overview(int(search_thread.segment.status or -1))]})
-        else:
-            for epObj in search_thread.segment:
-                results.append({'show': epObj.show.indexer_id,
-                                'episode': epObj.episode,
-                                'episodeindexid': epObj.indexer_id,
-                                'season': epObj.season,
-                                'searchstatus': search_status,
-                                'status': statusStrings[epObj.status],
-                                'quality': self.get_quality_class(epObj),
-                                'overview': Overview.overviewStrings[
-                                    show_obj.get_overview(int(epObj.status or -1))]})
+                                episode_obj.show.get_overview(int(episode_obj.status or -1))]})
 
         return results
 
-    def get_quality_class(self, ep_obj):
-        __, ep_quality = Quality.split_composite_status(ep_obj.status)
+    def get_quality_class(self, status):
+        __, ep_quality = Quality.split_composite_status(status)
         if ep_quality in Quality.cssClassStrings:
             quality_class = Quality.cssClassStrings[ep_quality]
         else:
