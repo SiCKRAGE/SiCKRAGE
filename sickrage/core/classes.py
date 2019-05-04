@@ -35,7 +35,7 @@ class SearchResult(object):
         # release name
         self.name = ""
 
-        # release show object
+        # release show ID
         self.show_id = None
 
         # URL to the NZB/torrent file
@@ -44,7 +44,7 @@ class SearchResult(object):
         # used by some providers to store extra info associated with the result
         self.extraInfo = []
 
-        # list of TVEpisode objects that this result is associated with
+        # list of episode IDs that this result is associated with
         self.episode_ids = episodes_ids
 
         # quality of the release
@@ -93,9 +93,9 @@ class SearchResult(object):
         for extra in self.extraInfo:
             myString += "  " + extra + "\n"
 
-        myString += "Episodes:\n"
-        for ep in self.episodes:
-            myString += "  " + str(ep) + "\n"
+        myString += "Episode IDs:\n"
+        for episode_id in self.episode_ids:
+            myString += "  " + str(episode_id) + "\n"
 
         myString += "Quality: " + Quality.qualityStrings[self.quality] + "\n"
         myString += "Name: " + self.name + "\n"
@@ -103,10 +103,6 @@ class SearchResult(object):
         myString += "Release Group: " + str(self.release_group) + "\n"
 
         return myString
-
-    def fileName(self):
-        return self.episodes[0].pretty_name() + "." + self.resultType
-
 
 class NZBSearchResult(SearchResult):
     """

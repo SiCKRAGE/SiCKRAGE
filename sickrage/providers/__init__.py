@@ -245,11 +245,11 @@ class GenericProvider(object):
 
     def find_search_results(self, show_id, episode_ids, search_mode, manualSearch=False, downCurQuality=False,
                             cacheOnly=False):
-        results = {}
+        provider_results = {}
         item_list = []
 
         if not self._check_auth:
-            return results
+            return provider_results
 
         show = find_show(show_id)
 
@@ -260,10 +260,10 @@ class GenericProvider(object):
             # search cache for episode result
             cache_result = self.cache.search_cache(show_id, episode_id, manualSearch, downCurQuality)
             if cache_result:
-                if episode_id not in results:
-                    results[episode_id] = cache_result[episode_id]
+                if episode_id not in provider_results:
+                    provider_results[episode_id] = cache_result[episode_id]
                 else:
-                    results[episode_id].extend(cache_result[episode_id])
+                    provider_results[episode_id].extend(cache_result[episode_id])
 
                 # found result, search next episode
                 continue
@@ -308,8 +308,8 @@ class GenericProvider(object):
                             'First search_string had rid, but returned no results, searching with string query')
 
         # if we found what we needed already from cache then return results and exit
-        if len(results) == len(episode_ids):
-            return results
+        if len(provider_results) == len(episode_ids):
+            return provider_results
 
         # sort list by quality
         if item_list:
@@ -332,67 +332,70 @@ class GenericProvider(object):
 
         # filter results
         for item in item_list:
-            result = self.getResult()
+            provider_result = self.getResult()
 
-            result.name, result.url = self._get_title_and_url(item)
+            provider_result.name, provider_result.url = self._get_title_and_url(item)
 
             # ignore invalid urls
-            if not validate_url(result.url) and not result.url.startswith('magnet'):
+            if not validate_url(provider_result.url) and not provider_result.url.startswith('magnet'):
                 continue
 
             try:
-                parse_result = NameParser(show_id=show_id).parse(result.name)
+                parse_result = NameParser(show_id=show_id).parse(provider_result.name)
             except (InvalidNameException, InvalidShowException) as e:
                 sickrage.app.log.debug("{}".format(e))
                 continue
 
-            result.show_id = parse_result.indexer_id
-            result.quality = parse_result.quality
-            result.release_group = parse_result.release_group
-            result.version = parse_result.version
-            result.size = self._get_size(item)
-            result.seeders, result.leechers = self._get_result_stats(item)
+            provider_result.show_id = parse_result.indexer_id
+            provider_result.quality = parse_result.quality
+            provider_result.release_group = parse_result.release_group
+            provider_result.version = parse_result.version
+            provider_result.size = self._get_size(item)
+            provider_result.seeders, provider_result.leechers = self._get_result_stats(item)
 
-            sickrage.app.log.debug("Adding item from search to cache: {}".format(result.name))
-            self.cache.addCacheEntry(result.name, result.url, result.seeders, result.leechers, result.size)
+            sickrage.app.log.debug("Adding item from search to cache: {}".format(provider_result.name))
+            self.cache.addCacheEntry(provider_result.name, provider_result.url, provider_result.seeders,
+                                     provider_result.leechers, provider_result.size)
 
-            if not result.show_id:
+            if not provider_result.show_id:
                 continue
 
-            result_show_obj = find_show(result.show_id)
-            if not (result_show_obj.air_by_date or result_show_obj.sports):
+            provider_result_show_obj = find_show(provider_result.show_id)
+            if not (provider_result_show_obj.air_by_date or provider_result_show_obj.sports):
                 if search_mode == 'sponly':
                     if len(parse_result.episode_numbers):
                         sickrage.app.log.debug("This is supposed to be a season pack search but the result {} is not "
-                                               "a valid season pack, skipping it".format(result.name))
+                                               "a valid season pack, skipping it".format(provider_result.name))
                         continue
                     if len(parse_result.episode_numbers) and (parse_result.season_number not in set(
-                            [find_episode(result.show_id, eid).season for eid in episode_ids]) or not [eid for eid in
-                                                                                                       episode_ids if
-                                                                                                       find_episode(
-                                                                                                           result.show_id,
-                                                                                                           eid).scene_episode in parse_result.episode_numbers]):
+                            [find_episode(provider_result.show_id, eid).season for eid in episode_ids]) or not [eid for
+                                                                                                                eid in
+                                                                                                                episode_ids
+                                                                                                                if
+                                                                                                                find_episode(
+                                                                                                                    provider_result.show_id,
+                                                                                                                    eid).scene_episode in parse_result.episode_numbers]):
                         sickrage.app.log.debug("The result {} doesn't seem to be a valid episode that we are trying "
-                                               "to snatch, ignoring".format(result.name))
+                                               "to snatch, ignoring".format(provider_result.name))
                         continue
                 else:
                     if not len(parse_result.episode_numbers) and parse_result.season_number and not [eid for eid in
                                                                                                      episode_ids if
                                                                                                      find_episode(
-                                                                                                         result.show_id,
+                                                                                                         provider_result.show_id,
                                                                                                          eid).season == parse_result.season_number and find_episode(
                                                                                                          show_id,
                                                                                                          eid).episode in parse_result.episode_numbers]:
                         sickrage.app.log.debug("The result {} doesn't seem to be a valid season that we are trying to "
-                                               "snatch, ignoring".format(result.name))
+                                               "snatch, ignoring".format(provider_result.name))
                         continue
                     elif len(parse_result.episode_numbers) and not [eid for eid in episode_ids if
-                                                                    find_episode(result.show_id,
+                                                                    find_episode(provider_result.show_id,
                                                                                  eid).season == parse_result.season_number and find_episode(
-                                                                            result.show_id,
-                                                                            eid).episode in parse_result.episode_numbers]:
+                                                                        provider_result.show_id,
+                                                                        eid).episode in parse_result.episode_numbers]:
                         sickrage.app.log.debug("The result {} doesn't seem to be a valid episode that we are trying "
-                                               "to snatch, ignoring".format(result.name))
+                                               "to snatch, ignoring".format(provider_result.name))
                         continue
 
                 # we just use the existing info for normal searches
@@ -401,39 +404,43 @@ class GenericProvider(object):
             else:
                 if not parse_result.is_air_by_date:
                     sickrage.app.log.debug("This is supposed to be a date search but the result {} didn't parse as "
-                                           "one, skipping it".format(result.name))
+                                           "one, skipping it".format(provider_result.name))
                     continue
                 else:
                     airdate = parse_result.air_date.toordinal()
                     try:
-                        dbData = TVEpisode.query.filter_by(showid=result_show_obj.indexer_id, airdate=airdate).one()
+                        dbData = TVEpisode.query.filter_by(showid=provider_result_show_obj.indexer_id,
+                                                           airdate=airdate).one()
                         actual_season = int(dbData.season)
                         actual_episodes = [int(dbData.episode)]
                     except orm.exc.NoResultFound:
                         sickrage.app.log.warning("Tried to look up the date for the episode {} but the database "
-                                                 "didn't give proper results, skipping it".format(result.name))
+                                                 "didn't give proper results, skipping it".format(provider_result.name))
                         continue
 
             # make sure we want the episode
-            result.episode_ids = []
+            provider_result.episode_ids = []
             for epNo in actual_episodes:
-                result_episode_obj = result_show_obj.get_episode(actual_season, epNo)
-                if result_show_obj.want_episode(result_show_obj.indexer_id, result_episode_obj.indexer_id,
-                                                result.quality, manualSearch, downCurQuality):
-                    result.episode_ids.append(result_episode_obj.indexer_id)
+                provider_result_episode_obj = provider_result_show_obj.get_episode(actual_season, epNo)
+                if provider_result_show_obj.want_episode(provider_result_show_obj.indexer_id,
+                                                         provider_result_episode_obj.indexer_id,
+                                                         provider_result.quality, manualSearch, downCurQuality):
+                    provider_result.episode_ids.append(provider_result_episode_obj.indexer_id)
                 else:
                     sickrage.app.log.info(
-                        "RESULT:[{}] QUALITY:[{}] IGNORED!".format(result.name, Quality.qualityStrings[result.quality]))
+                        "RESULT:[{}] QUALITY:[{}] IGNORED!".format(provider_result.name,
+                                                                   Quality.qualityStrings[provider_result.quality]))
 
             sickrage.app.log.debug(
-                "FOUND RESULT:[{}] QUALITY:[{}] URL:[{}]".format(result.name, Quality.qualityStrings[result.quality],
-                                                                 result.url)
+                "FOUND RESULT:[{}] QUALITY:[{}] URL:[{}]".format(provider_result.name,
+                                                                 Quality.qualityStrings[provider_result.quality],
+                                                                 provider_result.url)
             )
 
-            if len(result.episode_ids) == 1:
-                eid = result.episode_ids[0]
+            if len(provider_result.episode_ids) == 1:
+                eid = provider_result.episode_ids[0]
                 sickrage.app.log.debug("Single episode result.")
-            elif len(result.episode_ids) > 1:
+            elif len(provider_result.episode_ids) > 1:
                 eid = MULTI_EP_RESULT
                 sickrage.app.log.debug(
                     "Separating multi-episode result to check for later - result contains episodes: " + str(
@@ -442,12 +449,12 @@ class GenericProvider(object):
                 eid = SEASON_RESULT
                 sickrage.app.log.debug("Separating full season result to check for later")
 
-            if eid not in results:
-                results[eid] = [result]
+            if eid not in provider_results:
+                provider_results[eid] = [provider_result]
             else:
-                results[eid] += [result]
+                provider_results[eid] += [provider_result]
 
-        return results
+        return provider_results
 
     def find_propers(self, show_id, episode_ids):
         results = []

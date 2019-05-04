@@ -55,8 +55,8 @@ def snatchEpisode(result, endStatus=SNATCHED):
     result.priority = 0  # -1 = low, 0 = normal, 1 = high
     if sickrage.app.config.allow_high_priority:
         # if it aired recently make it high priority
-        for curEp in result.episodes:
-            if date.today() - curEp.airdate <= timedelta(days=7):
+        for episode_id in result.episode_ids:
+            if date.today() - find_episode(result.show_id, episode_id).airdate <= timedelta(days=7):
                 result.priority = 1
 
     if re.search(r'(^|[. _-])(proper|repack)([. _-]|$)', result.name, re.I) is not None:
@@ -183,7 +183,8 @@ def pickBestResult(results):
                 "Ignoring " + cur_result.name + " based on ignored words filter: " + show.rls_ignore_words)
             continue
 
-        if show.rls_require_words and not show_names.contains_at_least_one_word(cur_result.name, show.rls_require_words):
+        if show.rls_require_words and not show_names.contains_at_least_one_word(cur_result.name,
+                                                                                show.rls_require_words):
             sickrage.app.log.info(
                 "Ignoring " + cur_result.name + " based on required words filter: " + show.rls_require_words)
             continue
@@ -305,24 +306,24 @@ def searchProviders(show_id, episode_ids, manualSearch=False, downCurQuality=Fal
     """
     Walk providers for information on shows
 
-    :param show_id: Show we are looking for
-    :param episode_ids: Episodes we hope to find
+    :param show_id: Show ID we are looking for
+    :param episode_ids: Episode IDs we hope to find
     :param manualSearch: Boolean, is this a manual search?
-    :param downCurQuality: Boolean, should we redownload currently avaialble quality file
+    :param downCurQuality: Boolean, should we re-download currently available quality file
     :return: results for search
     """
 
-    show = find_show(show_id)
-
-    # build name cache for show
-    sickrage.app.name_cache.build(show)
-
-    origThreadName = threading.currentThread().getName()
+    orig_thread_name = threading.currentThread().getName()
 
     def perform_searches(show_id, episode_ids):
         search_results = {}
         found_results = {}
         final_results = []
+
+        show = find_show(show_id)
+
+        # build name cache for show
+        sickrage.app.name_cache.build(show)
 
         for providerID, providerObj in sickrage.app.search_providers.sort(
                 randomize=sickrage.app.config.randomize_providers).items():
@@ -355,7 +356,7 @@ def searchProviders(show_id, episode_ids, manualSearch=False, downCurQuality=Fal
                 search_count += 1
 
                 try:
-                    threading.currentThread().setName(origThreadName + "::[" + providerObj.name + "]")
+                    threading.currentThread().setName(orig_thread_name + "::[" + providerObj.name + "]")
 
                     if len(episode_ids):
                         if search_mode == 'eponly':
@@ -364,12 +365,14 @@ def searchProviders(show_id, episode_ids, manualSearch=False, downCurQuality=Fal
                             sickrage.app.log.info("Performing season pack search for " + show.name)
 
                     # search provider for episodes
-                    search_results = providerObj.find_search_results(show.indexer_id,
-                                                                     episode_ids,
-                                                                     search_mode,
-                                                                     manualSearch,
-                                                                     downCurQuality,
-                                                                     cacheOnly)
+                    search_results = providerObj.find_search_results(
+                        show_id,
+                        episode_ids,
+                        search_mode,
+                        manualSearch,
+                        downCurQuality,
+                        cacheOnly
+                    )
                 except AuthException as e:
                     sickrage.app.log.warning("Authentication error: {}".format(e))
                     break
@@ -377,7 +380,7 @@ def searchProviders(show_id, episode_ids, manualSearch=False, downCurQuality=Fal
                     sickrage.app.log.error("Error while searching " + providerObj.name + ", skipping: {}".format(e))
                     break
                 finally:
-                    threading.currentThread().setName(origThreadName)
+                    threading.currentThread().setName(orig_thread_name)
 
                 if len(search_results):
                     # make a list of all the results for this provider
