@@ -178,17 +178,17 @@ def pickBestResult(results):
                                       "{}".format(cur_result.name, cur_result.leechers))
                 continue
 
-        if show.rls_ignore_words and show_names.containsAtLeastOneWord(cur_result.name, show.rls_ignore_words):
+        if show.rls_ignore_words and show_names.contains_at_least_one_word(cur_result.name, show.rls_ignore_words):
             sickrage.app.log.info(
                 "Ignoring " + cur_result.name + " based on ignored words filter: " + show.rls_ignore_words)
             continue
 
-        if show.rls_require_words and not show_names.containsAtLeastOneWord(cur_result.name, show.rls_require_words):
+        if show.rls_require_words and not show_names.contains_at_least_one_word(cur_result.name, show.rls_require_words):
             sickrage.app.log.info(
                 "Ignoring " + cur_result.name + " based on required words filter: " + show.rls_require_words)
             continue
 
-        if not show_names.filterBadReleases(cur_result.name, parse=False):
+        if not show_names.filter_bad_releases(cur_result.name, parse=False):
             sickrage.app.log.info(
                 "Ignoring " + cur_result.name + " because its not a valid scene release that we want")
             continue

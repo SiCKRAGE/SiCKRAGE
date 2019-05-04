@@ -33,10 +33,10 @@ from sickrage.core.tv.show import TVShow
 
 class SceneTests(tests.SiCKRAGETestDBCase):
     def _test_sceneToNormalShowNames(self, name, expected):
-        result = show_names.sceneToNormalShowNames(name)
+        result = show_names.scene_to_normal_show_names(name)
         self.assertTrue(len(set(expected).intersection(set(result))) == len(expected))
 
-        dot_result = show_names.sceneToNormalShowNames(name.replace(' ', '.'))
+        dot_result = show_names.scene_to_normal_show_names(name.replace(' ', '.'))
         dot_expected = [x.replace(' ', '.') for x in expected]
         self.assertTrue(len(set(dot_expected).intersection(set(dot_result))) == len(dot_expected))
 
@@ -47,11 +47,11 @@ class SceneTests(tests.SiCKRAGETestDBCase):
         s = TVShow(1, indexer_id)
         s.name = name
 
-        result = show_names.allPossibleShowNames(s)
+        result = show_names.all_possible_show_names(s)
         self.assertTrue(len(set(expected).intersection(set(result))) == len(expected))
 
     def _test_filterBadReleases(self, name, expected):
-        result = show_names.filterBadReleases(name)
+        result = show_names.filter_bad_releases(name)
         self.assertEqual(result, expected)
 
     def test_sceneToNormalShowNames(self):

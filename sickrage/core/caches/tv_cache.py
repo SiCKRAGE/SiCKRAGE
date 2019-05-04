@@ -279,7 +279,7 @@ class TVCache(object):
                 continue
 
             # ignored/required words, and non-tv junk
-            if not show_names.filterBadReleases(curResult["name"]):
+            if not show_names.filter_bad_releases(curResult["name"]):
                 continue
 
             # get the show object, or if it's not one of our shows then ignore it

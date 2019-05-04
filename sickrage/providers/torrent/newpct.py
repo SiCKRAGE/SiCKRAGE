@@ -27,7 +27,7 @@ from unidecode import unidecode
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser, convert_size
-from sickrage.core.helpers.show_names import allPossibleShowNames
+from sickrage.core.helpers.show_names import all_possible_show_names
 from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.core.tv.show import find_show
 from sickrage.providers import TorrentProvider
@@ -65,7 +65,7 @@ class NewpctProvider(TorrentProvider):
 
         episode_obj = find_episode(show_id, episode_id)
 
-        for show_name in allPossibleShowNames(show_id, episode_obj.scene_season):
+        for show_name in all_possible_show_names(show_id, episode_obj.scene_season):
             for season_string in season_strings:
                 season_string = season_string % (
                     show_name.replace(' ', '-'), episode_obj.scene_season, episode_obj.scene_episode
@@ -91,7 +91,7 @@ class NewpctProvider(TorrentProvider):
                            '%s/capitulo-%s%s/hdtv-1080p-ac3-5-1/',
                            '%s/capitulo-%s%s/bluray-1080p/']
 
-        for show_name in allPossibleShowNames(show_id, episode_obj.scene_season):
+        for show_name in all_possible_show_names(show_id, episode_obj.scene_season):
             for episode_string in episode_strings:
                 episode_string = episode_string % (
                     show_name.replace(' ', '-'), episode_obj.scene_season, episode_obj.scene_episode

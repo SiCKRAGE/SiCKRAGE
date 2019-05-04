@@ -47,7 +47,7 @@ class FailedProcessor(object):
         """
         self._log("Failed download detected: (" + str(self.nzb_name) + ", " + str(self.dir_name) + ")")
 
-        release_name = show_names.determineReleaseName(self.dir_name, self.nzb_name)
+        release_name = show_names.determine_release_name(self.dir_name, self.nzb_name)
         if release_name is None:
             self._log("Warning: unable to find a valid release name.", sickrage.app.log.WARNING)
             raise FailedPostProcessingFailedException()

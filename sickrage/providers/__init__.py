@@ -45,7 +45,7 @@ from sickrage.core.helpers import chmod_as_parent, sanitizeFileName, clean_url, 
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.core.tv.show.helpers import find_show
-from sickrage.core.helpers.show_names import allPossibleShowNames
+from sickrage.core.helpers.show_names import all_possible_show_names
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
 from sickrage.core.scene_exceptions import get_scene_exceptions
 from sickrage.core.websession import WebSession
@@ -155,7 +155,7 @@ class GenericProvider(object):
 
         episode_obj = find_episode(show_id, episode_id)
 
-        for show_name in allPossibleShowNames(show_id, episode_obj.scene_season):
+        for show_name in all_possible_show_names(show_id, episode_obj.scene_season):
             episode_string = show_name + ' '
 
             if episode_obj.show.air_by_date or episode_obj.show.sports:
@@ -182,7 +182,7 @@ class GenericProvider(object):
 
         episode_obj = find_episode(show_id, episode_id)
 
-        for show_name in allPossibleShowNames(show_id, episode_obj.scene_season):
+        for show_name in all_possible_show_names(show_id, episode_obj.scene_season):
             episode_string = show_name + self.search_separator
             episode_string_fallback = None
 

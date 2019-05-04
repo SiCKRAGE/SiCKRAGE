@@ -1090,7 +1090,7 @@ class PostProcessor(object):
                 # cur_ep.save_to_db()
 
         # Just want to keep this consistent for failed handling right now
-        releaseName = show_names.determineReleaseName(self.folder_path, self.nzb_name)
+        releaseName = show_names.determine_release_name(self.folder_path, self.nzb_name)
         if releaseName is not None:
             FailedHistory.logSuccess(releaseName)
         else:

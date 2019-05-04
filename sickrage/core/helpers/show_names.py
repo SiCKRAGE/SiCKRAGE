@@ -27,6 +27,7 @@ import sickrage
 from sickrage.core.common import DOWNLOADED, Quality, SNATCHED, WANTED, \
     countryList
 from sickrage.core.helpers import sanitizeSceneName, strip_accents
+from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.core.tv.show import find_show
 
 resultFilters = [
@@ -41,7 +42,7 @@ if hasattr('General', 'ignored_subs_list') and sickrage.app.config.ignored_subs_
     resultFilters.append("(" + sickrage.app.config.ignored_subs_list.replace(",", "|") + ")sub(bed|ed|s)?")
 
 
-def containsAtLeastOneWord(name, words):
+def contains_at_least_one_word(name, words):
     """
     Filters out results based on filter_words
 
@@ -64,7 +65,7 @@ def containsAtLeastOneWord(name, words):
     return False
 
 
-def filterBadReleases(name, parse=True):
+def filter_bad_releases(name, parse=True):
     """
     Filters out non-english and just all-around stupid releases by comparing them
     to the resultFilters contents.
@@ -94,7 +95,7 @@ def filterBadReleases(name, parse=True):
     if sickrage.app.config.ignore_words:
         ignore_words.extend(sickrage.app.config.ignore_words.split(','))
 
-    word = containsAtLeastOneWord(name, ignore_words)
+    word = contains_at_least_one_word(name, ignore_words)
     if word:
         sickrage.app.log.debug("Release: " + name + " contains " + word + ", ignoring it")
         return False
@@ -102,7 +103,7 @@ def filterBadReleases(name, parse=True):
     # if any of the good strings aren't in the name then say no
     if sickrage.app.config.require_words:
         require_words = sickrage.app.config.require_words
-        if not containsAtLeastOneWord(name, require_words):
+        if not contains_at_least_one_word(name, require_words):
             sickrage.app.log.debug("Release: " + name + " doesn't contain any of " +
                                    ', '.join(set(require_words)) + ", ignoring it")
             return False
@@ -110,7 +111,7 @@ def filterBadReleases(name, parse=True):
     return True
 
 
-def sceneToNormalShowNames(name):
+def scene_to_normal_show_names(name):
     """
         Takes a show name from a scene dirname and converts it to a more "human-readable" format.
 
@@ -146,12 +147,12 @@ def sceneToNormalShowNames(name):
     return list(set(results))
 
 
-def makeSceneShowSearchStrings(show, season=-1, anime=False):
+def make_scene_show_search_strings(show_id, season=-1, anime=False):
     """
 
     :rtype: list[unicode]
     """
-    showNames = allPossibleShowNames(show, season=season)
+    showNames = all_possible_show_names(show_id, season=season)
 
     # scenify the names
     if anime:
@@ -161,17 +162,19 @@ def makeSceneShowSearchStrings(show, season=-1, anime=False):
         return map(sanitizeSceneName, showNames)
 
 
-def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
+def make_scene_season_search_string(show_id, episode_id, extraSearchType=None):
     numseasons = 0
 
-    if show.air_by_date or show.sports:
+    episode_obj = find_episode(show_id, episode_id)
+
+    if episode_obj.show.air_by_date or episode_obj.show.sports:
         # the search string for air by date shows is just
-        seasonStrings = [str(ep_obj.airdate).split('-')[0]]
-    elif show.is_anime:
-        seasonEps = show.get_all_episodes(ep_obj.season)
+        seasonStrings = [str(episode_obj.airdate).split('-')[0]]
+    elif episode_obj.show.is_anime:
+        seasonEps = episode_obj.show.get_all_episodes(episode_obj.season)
 
         # get show qualities
-        anyQualities, bestQualities = Quality.split_quality(show.quality)
+        anyQualities, bestQualities = Quality.split_quality(episode_obj.show.quality)
 
         # compile a list of all the episode numbers we need in this 'season'
         seasonStrings = []
@@ -195,10 +198,10 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
                     seasonStrings.append("%02d" % ab_number)
 
     else:
-        numseasons = len({x.season for x in show.episodes if x.season > 0})
-        seasonStrings = ["S%02d" % int(ep_obj.scene_season)]
+        numseasons = len({x.season for x in episode_obj.show.episodes if x.season > 0})
+        seasonStrings = ["S%02d" % int(episode_obj.scene_season)]
 
-    showNames = set(makeSceneShowSearchStrings(show, ep_obj.scene_season))
+    showNames = set(make_scene_show_search_strings(show_id, episode_obj.scene_season))
 
     toReturn = []
 
@@ -212,10 +215,10 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
             # for providers that don't allow multiple searches in one request we only search for Sxx style stuff
             else:
                 for cur_season in seasonStrings:
-                    if ep_obj.show.is_anime:
-                        if ep_obj.show.release_groups is not None:
-                            if len(show.release_groups.whitelist) > 0:
-                                for keyword in show.release_groups.whitelist:
+                    if episode_obj.show.is_anime:
+                        if episode_obj.show.release_groups is not None:
+                            if len(episode_obj.show.release_groups.whitelist) > 0:
+                                for keyword in episode_obj.show.release_groups.whitelist:
                                     toReturn.append(keyword + '.' + curShow + "." + cur_season)
                     else:
                         toReturn.append(curShow + "." + cur_season)
@@ -223,34 +226,36 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
     return toReturn
 
 
-def makeSceneSearchString(show, ep_obj):
+def make_scene_search_string(show_id, episode_id):
     toReturn = []
 
-    numseasons = len({x.season for x in show.episodes if x.season > 0})
+    episode_obj = find_episode(show_id, episode_id)
+
+    numseasons = len({x.season for x in episode_obj.show.episodes if x.season > 0})
 
     # see if we should use dates instead of episodes
-    if (show.air_by_date or show.sports) and ep_obj.airdate != date.fromordinal(1):
-        epStrings = [str(ep_obj.airdate)]
-    elif show.is_anime:
-        epStrings = [
-            "%02i" % int(ep_obj.scene_absolute_number if ep_obj.scene_absolute_number > 0 else ep_obj.scene_episode)]
+    if (episode_obj.show.air_by_date or episode_obj.show.sports) and episode_obj.airdate != date.fromordinal(1):
+        epStrings = [str(episode_obj.airdate)]
+    elif episode_obj.show.is_anime:
+        epStrings = ["%02i" % int(
+            episode_obj.scene_absolute_number if episode_obj.scene_absolute_number > 0 else episode_obj.scene_episode)]
     else:
-        epStrings = ["S%02iE%02i" % (int(ep_obj.scene_season), int(ep_obj.scene_episode)),
-                     "%ix%02i" % (int(ep_obj.scene_season), int(ep_obj.scene_episode))]
+        epStrings = ["S%02iE%02i" % (int(episode_obj.scene_season), int(episode_obj.scene_episode)),
+                     "%ix%02i" % (int(episode_obj.scene_season), int(episode_obj.scene_episode))]
 
     # for single-season shows just search for the show name -- if total ep count (exclude s0) is less than 11
     # due to the amount of qualities and releases, it is easy to go over the 50 result limit on rss feeds otherwise
-    if numseasons == 1 and not ep_obj.show.is_anime:
+    if numseasons == 1 and not episode_obj.show.is_anime:
         epStrings = []
 
-    for curShow in set(makeSceneShowSearchStrings(show, ep_obj.scene_season)):
+    for curShow in set(make_scene_show_search_strings(show_id, episode_obj.scene_season)):
         for curEpString in epStrings:
-            if ep_obj.show.is_anime:
-                if ep_obj.show.release_groups is not None:
-                    if len(ep_obj.show.release_groups.whitelist) > 0:
-                        for keyword in ep_obj.show.release_groups.whitelist:
+            if episode_obj.show.is_anime:
+                if episode_obj.show.release_groups is not None:
+                    if len(episode_obj.show.release_groups.whitelist) > 0:
+                        for keyword in episode_obj.show.release_groups.whitelist:
                             toReturn.append(keyword + '.' + curShow + '.' + curEpString)
-                    elif len(ep_obj.show.release_groups.blacklist) == 0:
+                    elif len(episode_obj.show.release_groups.blacklist) == 0:
                         # If we have neither whitelist or blacklist we just append what we have
                         toReturn.append(curShow + '.' + curEpString)
             else:
@@ -261,7 +266,7 @@ def makeSceneSearchString(show, ep_obj):
     return toReturn
 
 
-def allPossibleShowNames(show_id, season=-1):
+def all_possible_show_names(show_id, season=-1):
     """
     Figures out every possible variation of the name for a particular show. Includes TVDB name, TVRage name,
     country codes on the end, eg. "Show Name (AU)", and any scene exception names.
@@ -313,7 +318,7 @@ def allPossibleShowNames(show_id, season=-1):
     return list(set(show_names))
 
 
-def determineReleaseName(dir_name=None, nzb_name=None):
+def determine_release_name(dir_name=None, nzb_name=None):
     """Determine a release name from an nzb and/or folder name
     :param dir_name:
     :param nzb_name:
@@ -339,13 +344,13 @@ def determineReleaseName(dir_name=None, nzb_name=None):
         if len(results) == 1:
             found_file = os.path.basename(results[0])
             found_file = found_file.rpartition('.')[0]
-            if filterBadReleases(found_file):
+            if filter_bad_releases(found_file):
                 sickrage.app.log.info("Release name ({}) found from file ({})".format(found_file, results[0]))
                 return found_file.rpartition('.')[0]
 
     # If that fails, we try the folder
     folder = os.path.basename(dir_name)
-    if filterBadReleases(folder):
+    if filter_bad_releases(folder):
         # NOTE: Multiple failed downloads will change the folder name.
         # (e.g., appending #s)
         # Should we handle that?

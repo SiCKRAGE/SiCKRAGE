@@ -57,7 +57,7 @@ class TVChaosUKProvider(TorrentProvider):
 
         episode_obj = find_episode(show_id, episode_id)
 
-        for show_name in set(show_names.allPossibleShowNames(show_id)):
+        for show_name in set(show_names.all_possible_show_names(show_id)):
             for sep in ' ', ' - ':
                 season_string = show_name + sep + 'Series '
                 if episode_obj.show.air_by_date or episode_obj.show.sports:
@@ -77,7 +77,7 @@ class TVChaosUKProvider(TorrentProvider):
 
         episode_obj = find_episode(show_id, episode_id)
 
-        for show_name in set(show_names.allPossibleShowNames(show_id)):
+        for show_name in set(show_names.all_possible_show_names(show_id)):
             for sep in ' ', ' - ':
                 ep_string = sanitizeSceneName(show_name) + sep
                 if episode_obj.show.air_by_date:
