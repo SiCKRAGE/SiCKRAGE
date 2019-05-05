@@ -403,21 +403,16 @@
             % elif 'calendar' == layout:
             <% dates = [today.date() + datetime.timedelta(days = i) for i in range(7)] %>
             <% tbl_day = 0 %>
-
-                <div class="table-responsive">
-                    <table class="table mx-auto text-center">
-                        <thead>
-                        <tr>
-                            % for day in dates:
-                            <% tbl_day += 1 %>
+                <div class="table-responsive justify-content-center d-flex">
+                    % for day in dates:
+                        <table class="table w-auto text-center">
+                            <thead>
+                            <tr>
                                 <th>${day.strftime('%A %d').capitalize()}</th>
-                            % endfor
-                        </tr>
-                        </thead>
+                            </tr>
+                            </thead>
 
-                        <tbody>
-                        <tr>
-                            % for day in dates:
+                            <tbody>
                                 <% day_has_show = False %>
                                 % for cur_result in results:
                                     % if not int(cur_result['paused']) or sickrage.app.config.coming_eps_display_paused:
@@ -426,47 +421,50 @@
                                         <% airday = cur_result['localtime'].date() %>
 
                                         % if airday == day:
-                                        % try:
-                                        <% day_has_show = True %>
-                                        <% airtime = srdatetime.srDateTime(datetime.datetime.fromtimestamp(time.mktime(cur_result['localtime'].timetuple()))).srftime() %>
-                                        % if sickrage.app.config.trim_zero:
-                                            <% airtime = re.sub(r'0(\d:\d\d)', r'\1', airtime, 0, re.IGNORECASE | re.MULTILINE) %>
-                                        % endif
-                                        % except OverflowError:
-                                        <% airtime = "Invalid" %>
-                                        % endtry
+                                            % try:
+                                            <% day_has_show = True %>
+                                            <% airtime = srdatetime.srDateTime(datetime.datetime.fromtimestamp(time.mktime(cur_result['localtime'].timetuple()))).srftime() %>
+                                            % if sickrage.app.config.trim_zero:
+                                                <% airtime = re.sub(r'0(\d:\d\d)', r'\1', airtime, 0, re.IGNORECASE | re.MULTILINE) %>
+                                            % endif
+                                            % except OverflowError:
+                                            <% airtime = "Invalid" %>
+                                            % endtry
 
-                                            <td class="table-fit">
-                                                <a title="${cur_result['show_name']}"
-                                                   href="${srWebRoot}/home/displayShow?show=${cur_result['showid']}">
-                                                    <img class="rounded shadow"
-                                                         src="${srWebRoot}${showImage(cur_result['showid'], 'poster_thumb').url}"/>
-                                                </a>
-                                                <div class="small">
+                                            <tr>
+                                                <td style="padding: 0 !important">
+                                                    <a title="${cur_result['show_name']}"
+                                                       href="${srWebRoot}/home/displayShow?show=${cur_result['showid']}">
+                                                        <img class="rounded shadow"
+                                                             src="${srWebRoot}${showImage(cur_result['showid'], 'poster_thumb').url}"/>
+                                                    </a>
+                                                    <div class="small">
                                                     <span class="airtime">
                                                         ${airtime} on ${cur_result["network"]}
                                                     </span>
-                                                    <br/>
-                                                    <span class="episode-title" title="${cur_result['name']}">
+                                                        <br/>
+                                                        <span class="episode-title" title="${cur_result['name']}">
                                                         ${'S{:02d}E{:02d}'.format(int(cur_result['season']), int(cur_result['episode']))}
-                                                        - ${cur_result['name']}
+                                                            - ${cur_result['name']}
                                                     </span>
-                                                </div>
-                                            </td>
+                                                    </div>
+                                                </td>
+                                            </tr>
                                         % endif
                                     % endif
                                 % endfor
                                 % if not day_has_show:
-                                    <td>
-                                    <span class="show-status">
-                                        No shows for this day
-                                    </span>
-                                    </td>
+                                    <tr>
+                                        <td>
+                                            <span class="show-status">
+                                                No shows for this day
+                                            </span>
+                                        </td>
+                                    </tr>
                                 % endif
-                            % endfor
-                        </tr>
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    % endfor
                 </div>
             </div>
             </div>
