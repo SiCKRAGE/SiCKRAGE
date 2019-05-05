@@ -432,7 +432,7 @@
                                             % endtry
 
                                             <tr>
-                                                <td style="padding: 0 !important">
+                                                <td>
                                                     <a title="${cur_result['show_name']}"
                                                        href="${srWebRoot}/home/displayShow?show=${cur_result['showid']}">
                                                         <img class="rounded shadow"
