@@ -43,7 +43,7 @@ def upgrade(migrate_engine):
     tv_episodes.c.airdate.alter(type=String)
 
     for row in migrate_engine.execute(tv_episodes.select()):
-        migrate_engine.execute(tv_episodes.update().where(tv_episodes.c.airdate == row.airdate).values(
+        migrate_engine.execute(tv_episodes.update().where(tv_episodes.c.indexer_id == row.indexer_id).values(
             airdate=datetime.date.fromordinal(int(row.airdate))))
 
     tv_episodes.c.airdate.alter(type=Date)
@@ -56,7 +56,7 @@ def downgrade(migrate_engine):
     tv_episodes.c.airdate.alter(type=String)
 
     for row in migrate_engine.execute(tv_episodes.select()):
-        migrate_engine.execute(tv_episodes.update().where(tv_episodes.c.airdate == row.airdate).values(
+        migrate_engine.execute(tv_episodes.update().where(tv_episodes.c.indexer_id == row.indexer_id).values(
             airdate=str(row.airdate.toordinal())))
 
     tv_episodes.c.airdate.alter(type=Integer)
