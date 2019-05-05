@@ -65,6 +65,7 @@ class QuicksearchCache(object):
             self.cache['shows'][indexer_id] = qsData
             sickrage.app.cache_db.add(CacheDB.QuickSearchShow(**qsData))
 
+            sql_t = []
             for e in show.episodes:
                 qsData = {
                     'category': 'episodes',
@@ -77,8 +78,11 @@ class QuicksearchCache(object):
                     'img': sickrage.app.config.web_root + showImage(e.showid, 'poster_thumb').url
                 }
 
+                sql_t.append(qsData)
+
                 self.cache['episodes'][e.indexer_id] = qsData
-                sickrage.app.cache_db.add(CacheDB.QuickSearchEpisode(**qsData))
+
+            sickrage.app.cache_db.bulk_add(CacheDB.QuickSearchEpisode, sql_t)
 
     def del_show(self, indexer_id):
         show = find_show(indexer_id)

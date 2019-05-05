@@ -21,6 +21,7 @@ import functools
 import os
 import pickle
 import shutil
+from sqlite3 import OperationalError
 from time import sleep
 
 import sqlalchemy
@@ -28,6 +29,7 @@ from migrate import DatabaseAlreadyControlledError
 from migrate.versioning import api
 from sqlalchemy import create_engine, event
 from sqlalchemy.engine import Engine
+from sqlalchemy.exc import DatabaseError
 from sqlalchemy.orm import sessionmaker, scoped_session
 
 import sickrage
@@ -80,14 +82,18 @@ class ContextSession(sqlalchemy.orm.Session):
             try:
                 self.commit()
                 break
-            except Exception:
-                sickrage.app.log.debug('Retrying database commit, attempt {}'.format(attempt))
+            except OperationalError as e:
                 self.rollback()
                 if not attempt < self.max_attempts:
                     raise
                 sleep(1)
+            except Exception as e:
+                self.rollback()
+                raise
 
             attempt += 1
+
+            sickrage.app.log.debug('Retrying database commit, attempt {}'.format(attempt))
 
         self.close()
 
@@ -181,11 +187,14 @@ class srDatabase(object):
                 except Exception:
                     pass
 
-                for row in rows:
-                    try:
-                        self.add(self.tables[table](**row))
-                    except Exception as e:
-                        pass
+                try:
+                    self.bulk_add(self.tables[table], rows)
+                except Exception:
+                    for row in rows:
+                        try:
+                            self.add(self.tables[table](**row))
+                        except Exception as e:
+                            pass
 
             shutil.move(migrate_file, backup_file)
 
@@ -223,6 +232,10 @@ class srDatabase(object):
             # autocommit=True)
             _Session = functools.partial(self.Session, *args, **kwargs)
             return decorator
+
+    def bulk_add(self, table, rows):
+        with self.Session() as session:
+            session.bulk_insert_mappings(table, rows)
 
     def add(self, instance):
         with self.Session() as session:
