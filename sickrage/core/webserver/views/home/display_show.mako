@@ -584,7 +584,7 @@
             >
             % endif
             <tr class="${Overview.overviewStrings[epCats[epStr]]} season-${curSeason} seasonstyle font-weight-bold text-dark"
-                id="S${str(epResult.season)}E${str(epResult.episode)}">
+                id="episode-id-${str(epResult.indexer_id)}">
 
                 <td class="table-fit col-checkbox">
                     % if int(epResult.status) != UNAIRED:

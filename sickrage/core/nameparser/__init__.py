@@ -266,13 +266,11 @@ class NameParser(object):
 
             # if we have an air-by-date show then get the real season/episode numbers
             if best_result.is_air_by_date:
-                airdate = best_result.air_date.toordinal()
-
                 try:
                     from sickrage.core.tv.episode import TVEpisode
                     dbData = TVEpisode.query.filter_by(showid=show_obj.indexer_id,
                                                        indexer=show_obj.indexer,
-                                                       airdate=airdate).one()
+                                                       airdate=best_result.air_date).one()
                     season_number = int(dbData.season)
                     episode_numbers = [int(dbData.episode)]
                 except orm.exc.NoResultFound:

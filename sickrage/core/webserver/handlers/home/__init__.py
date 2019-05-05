@@ -134,7 +134,7 @@ class HomeHandler(BaseHandler, ABC):
             'total_size': 0
         }
 
-        today = datetime.date.today().toordinal()
+        today = datetime.date.today()
 
         status_quality = Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST
         status_download = Quality.DOWNLOADED + Quality.ARCHIVED
@@ -151,8 +151,8 @@ class HomeHandler(BaseHandler, ABC):
                     show_stat[show.indexer_id]['ep_snatched'] = 0
                     show_stat[show.indexer_id]['ep_downloaded'] = 0
                     show_stat[show.indexer_id]['ep_total'] = 0
-                    show_stat[show.indexer_id]['ep_airs_next'] = 0
-                    show_stat[show.indexer_id]['ep_airs_prev'] = 0
+                    show_stat[show.indexer_id]['ep_airs_next'] = datetime.date.min
+                    show_stat[show.indexer_id]['ep_airs_prev'] = datetime.date.min
                     show_stat[show.indexer_id]['total_size'] = 0
 
                 season = epData.season
@@ -161,7 +161,7 @@ class HomeHandler(BaseHandler, ABC):
                 status = epData.status
                 file_size = epData.file_size
 
-                if season > 0 and episode > 0 and airdate > 1:
+                if season > 0 and episode > 0 and airdate > datetime.date.min:
                     if status in status_quality:
                         show_stat[show.indexer_id]['ep_snatched'] += 1
                         overall_stats['episodes']['snatched'] += 1
@@ -177,8 +177,7 @@ class HomeHandler(BaseHandler, ABC):
                     if show_stat[show.indexer_id]['ep_total'] > max_download_count:
                         max_download_count = show_stat[show.indexer_id]['ep_total']
 
-                    if airdate >= today and status in [WANTED, UNAIRED] and not show_stat[show.indexer_id][
-                        'ep_airs_next']:
+                    if airdate >= today and show_stat[show.indexer_id]['ep_airs_next'] == datetime.date.min:
                         show_stat[show.indexer_id]['ep_airs_next'] = airdate
                     elif airdate < today > show_stat[show.indexer_id]['ep_airs_prev'] and status != UNAIRED:
                         show_stat[show.indexer_id]['ep_airs_prev'] = airdate
@@ -931,7 +930,7 @@ class DisplayShowHandler(BaseHandler, ABC):
         for curEp in episode_results:
             cur_ep_cat = show_obj.get_overview(int(curEp.status or -1))
 
-            if curEp.airdate != 1:
+            if curEp.airdate > datetime.date.min:
                 today = datetime.datetime.now().replace(tzinfo=sickrage.app.tz)
                 air_date = curEp.airdate
                 if air_date.year >= 1970 or show_obj.network:
@@ -1751,7 +1750,8 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
 
         # Queued Searches
         search_status = 'queued'
-        episodes = self.get_episodes(show, sickrage.app.search_queue.get_all_episode_ids_from_queue(show), search_status)
+        episodes = self.get_episodes(show, sickrage.app.search_queue.get_all_episode_ids_from_queue(show),
+                                     search_status)
 
         # Running Searches
         search_status = 'searching'

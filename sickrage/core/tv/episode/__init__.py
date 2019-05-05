@@ -65,10 +65,10 @@ class TVEpisode(MainDBBase):
     subtitles = Column(Text, default='')
     subtitles_searchcount = Column(Integer, default=0)
     subtitles_lastsearch = Column(Integer, default=0)
-    airdate = Column(Date, default=datetime.date.fromordinal(1))
+    airdate = Column(Date, default=datetime.datetime.min)
     hasnfo = Column(Boolean, default=False)
     hastbn = Column(Boolean, default=False)
-    status = Column(Integer, default=0)
+    status = Column(Integer, default=UNKNOWN)
     location = Column(Text, default='')
     file_size = Column(Integer, default=0)
     release_name = Column(Text, default='')
@@ -260,7 +260,7 @@ class TVEpisode(MainDBBase):
 
         self.description = safe_getattr(myEp, 'overview', self.description)
 
-        firstaired = safe_getattr(myEp, 'firstaired') or datetime.date.fromordinal(1)
+        firstaired = safe_getattr(myEp, 'firstaired') or datetime.date.min
 
         try:
             rawAirdate = [int(x) for x in str(firstaired).split("-")]
@@ -295,7 +295,7 @@ class TVEpisode(MainDBBase):
                                     self.location))
 
         if not os.path.isfile(self.location):
-            if self.airdate >= datetime.date.today() or self.airdate == datetime.date.fromordinal(1):
+            if self.airdate >= datetime.date.today() or not self.airdate > datetime.date.min:
                 sickrage.app.log.debug(
                     "Episode airs in the future or has no airdate, marking it %s" % statusStrings[
                         UNAIRED])
@@ -397,7 +397,7 @@ class TVEpisode(MainDBBase):
 
                     self.description = epDetails.findtext('plot') or self.description
 
-                    self.airdate = datetime.date.fromordinal(1)
+                    self.airdate = datetime.date.min
                     if epDetails.findtext('aired'):
                         rawAirdate = [int(x) for x in epDetails.findtext('aired').split("-")]
                         self.airdate = datetime.date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
@@ -418,7 +418,7 @@ class TVEpisode(MainDBBase):
         toReturn += "subtitles: %r\n" % ",".join(self.subtitles)
         toReturn += "subtitles_searchcount: %r\n" % self.subtitles_searchcount
         toReturn += "subtitles_lastsearch: %r\n" % self.subtitles_lastsearch
-        toReturn += "airdate: %r (%r)\n" % (self.airdate.toordinal(), self.airdate)
+        toReturn += "airdate: %r\n" % self.airdate
         toReturn += "hasnfo: %r\n" % self.hasnfo
         toReturn += "hastbn: %r\n" % self.hastbn
         toReturn += "status: %r\n" % self.status
@@ -629,17 +629,15 @@ class TVEpisode(MainDBBase):
                     self.show.network]): return
 
         try:
-            airdate_ordinal = self.airdate.toordinal()
-            if airdate_ordinal < 1:
+            if not self.airdate > datetime.date.min:
                 return
 
-            airdatetime = sickrage.app.tz_updater.parse_date_time(airdate_ordinal, self.show.airs, self.show.network)
+            airdatetime = sickrage.app.tz_updater.parse_date_time(self.airdate, self.show.airs, self.show.network)
 
             if sickrage.app.config.file_timestamp_timezone == 'local':
                 airdatetime = airdatetime.astimezone(sickrage.app.tz)
 
-            filemtime = datetime.datetime.fromtimestamp(os.path.getmtime(self.location)).replace(
-                tzinfo=sickrage.app.tz)
+            filemtime = datetime.datetime.fromtimestamp(os.path.getmtime(self.location)).replace(tzinfo=sickrage.app.tz)
 
             if filemtime != airdatetime:
                 import time

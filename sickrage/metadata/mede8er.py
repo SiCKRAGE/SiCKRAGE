@@ -254,7 +254,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
 
                 # default to today's date for specials if firstaired is not set
                 if curEpToWrite.season == 0 and not getattr(myEp, 'firstaired', None):
-                    myEp['firstaired'] = str(datetime.date.fromordinal(1))
+                    myEp['firstaired'] = str(datetime.date.min)
 
                 if not (getattr(myEp, 'episodename', None) and getattr(myEp, 'firstaired', None)):
                     return None

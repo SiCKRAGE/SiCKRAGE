@@ -246,7 +246,7 @@ class KODI_12PlusMetadata(GenericMetadata):
                 return None
 
             if not getattr(myEp, 'firstaired', None):
-                myEp["firstaired"] = str(datetime.date.fromordinal(1))
+                myEp["firstaired"] = str(datetime.date.min)
 
             if not getattr(myEp, 'episodename', None):
                 sickrage.app.log.debug("Not generating nfo because the ep has no title")
@@ -277,7 +277,7 @@ class KODI_12PlusMetadata(GenericMetadata):
             uniqueid = SubElement(episode, "uniqueid")
             uniqueid.text = str(curEpToWrite.indexer_id)
 
-            if curEpToWrite.airdate != datetime.date.fromordinal(1):
+            if curEpToWrite.airdate > datetime.date.min:
                 aired = SubElement(episode, "aired")
                 aired.text = str(curEpToWrite.airdate)
 

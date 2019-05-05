@@ -110,10 +110,8 @@ class TVShow(MainDBBase):
         next_aired = 0
 
         if not self.paused:
-            cur_date = datetime.date.today()
-
             dbData = TVEpisode.query.filter_by(showid=self.indexer_id).filter(
-                TVEpisode.airdate >= cur_date.toordinal(),
+                TVEpisode.airdate >= datetime.date.today(),
                 TVEpisode.status.in_([UNAIRED, WANTED])).order_by(TVEpisode.airdate).first()
 
             if dbData:
@@ -183,8 +181,7 @@ class TVShow(MainDBBase):
                 pass
 
             try:
-                self.startyear = try_int(
-                    str(safe_getattr(myEp, 'firstaired') or datetime.date.fromordinal(1)).split('-')[0])
+                self.startyear = try_int(str(safe_getattr(myEp, 'firstaired') or datetime.date.min).split('-')[0])
             except:
                 pass
 
@@ -317,9 +314,10 @@ class TVShow(MainDBBase):
         if self.status.lower() == 'continuing':
             return True
 
-        # run logic against the current show latest aired and next unaired data to see if we should bypass 'Ended' status
+        # run logic against the current show latest aired and next unaired data to see if we should bypass 'Ended'
+        # status
         graceperiod = datetime.timedelta(days=30)
-        last_airdate = datetime.date.fromordinal(1)
+        last_airdate = datetime.date.min
 
         # get latest aired episode to compare against today - graceperiod and today + graceperiod
         try:
@@ -495,7 +493,7 @@ class TVShow(MainDBBase):
         sickrage.app.log.debug(str(self.indexer_id) + ": Creating episode object from " + filename)
 
         try:
-            parse_result = NameParser(showObj=self).parse(filename, skip_scene_detection=True)
+            parse_result = NameParser(show_id=self.indexer_id).parse(filename, skip_scene_detection=True)
         except InvalidNameException:
             sickrage.app.log.debug("Unable to parse the filename " + filename + " into a valid episode")
             return None

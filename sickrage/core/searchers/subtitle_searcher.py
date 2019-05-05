@@ -26,7 +26,6 @@ from sqlalchemy import or_, and_
 import sickrage
 import sickrage.subtitles
 from sickrage.core.common import dateTimeFormat
-from sickrage.core.databases.main import MainDB
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 
@@ -65,8 +64,6 @@ class SubtitleSearcher(object):
         #  - search count < 2 and diff(airdate, now) > 1 week : now -> 1d
         #  - search count < 7 and diff(airdate, now) <= 1 week : now -> 4h -> 8h -> 16h -> 1d -> 1d -> 1d
 
-        today = datetime.date.today().toordinal()
-
         results = []
         for s in get_show_list():
             if s.subtitles != 1:
@@ -77,7 +74,7 @@ class SubtitleSearcher(object):
                         sickrage.subtitles.wanted_languages()
                     ), or_(TVEpisode.subtitles_searchcount <= 2,
                            and_(TVEpisode.subtitles_searchcount <= 7,
-                                today - TVEpisode.airdate))):
+                                datetime.date.today() - TVEpisode.airdate))):
                 results += [{
                     'show_name': s.name,
                     'showid': e.showid,
@@ -88,7 +85,7 @@ class SubtitleSearcher(object):
                     'searchcount': e.subtitles_searchcount,
                     'lastsearch': e.subtitles_lastsearch,
                     'location': e.location,
-                    'airdate_daydiff': (today - e.airdate)
+                    'airdate_daydiff': (datetime.date.today() - e.airdate)
                 }]
 
         if len(results) == 0:

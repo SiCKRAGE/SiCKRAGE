@@ -20,19 +20,16 @@
 import os
 import threading
 import traceback
-from datetime import date
-
-from tornado.ioloop import IOLoop
+import datetime
 
 import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.common import SKIPPED, WANTED, UNKNOWN
-from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import sanitizeFileName, makeDir, chmod_as_parent
-from sickrage.core.tv.episode import TVEpisode
-from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.queues.search import BacklogQueueItem
 from sickrage.core.traktapi import TraktAPI
+from sickrage.core.tv.episode import TVEpisode
+from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.indexers import IndexerApi
 
 
@@ -42,7 +39,7 @@ def set_episode_to_wanted(show, s, e):
     """
     epObj = show.get_episode(int(s), int(e))
     if epObj:
-        if epObj.status != SKIPPED or epObj.airdate == date.fromordinal(1):
+        if epObj.status != SKIPPED or not epObj.airdate > datetime.date.min:
             return
 
         sickrage.app.log.info("Setting episode %s S%02dE%02d to wanted" % (show.name, s, e))

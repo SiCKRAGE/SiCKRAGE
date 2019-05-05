@@ -81,12 +81,10 @@ class ComingEpisodes:
         if sort not in ComingEpisodes.sorts.keys():
             sort = 'date'
 
-        today = datetime.date.today().toordinal()
-        next_week = (datetime.date.today() + datetime.timedelta(days=7)).toordinal()
+        today = datetime.date.today()
+        next_week = datetime.date.today() + datetime.timedelta(days=7)
 
-        recently = (
-                datetime.date.today() - datetime.timedelta(
-            days=sickrage.app.config.coming_eps_missed_range)).toordinal()
+        recently = datetime.date.today() - datetime.timedelta(days=sickrage.app.config.coming_eps_missed_range)
 
         qualities_list = Quality.DOWNLOADED + \
                          Quality.SNATCHED + \
@@ -129,7 +127,7 @@ class ComingEpisodes:
                 continue
 
             result['airs'] = str(result['airs']).replace('am', ' AM').replace('pm', ' PM').replace('  ', ' ')
-            result['airdate'] = result['localtime'].toordinal()
+            result['airdate'] = result['localtime']
 
             if result['airdate'] < today:
                 category = 'missed'
@@ -148,10 +146,10 @@ class ComingEpisodes:
 
             result['quality'] = get_quality_string(result['quality'])
             result['airs'] = srDateTime(result['localtime']).srftime(t_preset=timeFormat).lstrip('0').replace(' 0', ' ')
-            result['weekday'] = 1 + datetime.date.fromordinal(result['airdate']).weekday()
+            result['weekday'] = 1 + result['airdate'].weekday()
             result['tvdbid'] = result['indexer_id']
             result['airdate'] = srDateTime(result['localtime']).srfdate(d_preset=dateFormat)
-            result['localtime'] = result['localtime'].toordinal()
+            result['localtime'] = result['localtime']
 
             grouped_results[category].append(result)
 

@@ -3,6 +3,7 @@
     import re
     import calendar
     import unidecode
+    import datetime
     from functools import cmp_to_key
 
     import sickrage
@@ -228,7 +229,7 @@
                                     </div>
 
                                     <div class="show-date" style="color: grey">
-                                        % if cur_airs_next:
+                                        % if cur_airs_next > datetime.date.min:
                                             <% ldatetime = srdatetime.srDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
                                             <%
                                                 try:
@@ -378,7 +379,7 @@
                                             network_class_name = network_class_name.lower()
                                     %>
                                     <tr>
-                                        % if cur_airs_next:
+                                        % if cur_airs_next > datetime.date.min:
                                         <% airDate = srdatetime.srDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
                                         % try:
                                             <td class="table-fit align-middle">
@@ -392,7 +393,7 @@
                                             <td class="table-fit"></td>
                                         % endif
 
-                                        % if cur_airs_prev:
+                                        % if cur_airs_prev > datetime.date.min:
                                         <% airDate = srdatetime.srDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_prev, curShow.airs, curShow.network), convert=True).dt %>
                                         % try:
                                             <td class="table-fit align-middle">

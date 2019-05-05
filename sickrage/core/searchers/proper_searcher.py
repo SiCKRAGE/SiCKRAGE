@@ -87,7 +87,7 @@ class ProperSearcher(object):
 
             recently_aired_episode_ids = []
             for episode_obj in TVEpisode.query.filter_by(showid=show.indexer_id).filter(
-                    TVEpisode.airdate >= search_date.toordinal(),
+                    TVEpisode.airdate >= search_date,
                     TVEpisode.status.in_(Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST)):
                 recently_aired_episode_ids += [episode_obj.indexer_id]
 

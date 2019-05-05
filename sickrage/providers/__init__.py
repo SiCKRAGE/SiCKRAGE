@@ -407,10 +407,9 @@ class GenericProvider(object):
                                            "one, skipping it".format(provider_result.name))
                     continue
                 else:
-                    airdate = parse_result.air_date.toordinal()
                     try:
                         dbData = TVEpisode.query.filter_by(showid=provider_result_show_obj.indexer_id,
-                                                           airdate=airdate).one()
+                                                           airdate=parse_result.air_date).one()
                         actual_season = int(dbData.season)
                         actual_episodes = [int(dbData.episode)]
                     except orm.exc.NoResultFound:
@@ -755,7 +754,7 @@ class TorrentProvider(GenericProvider):
             if result.content:
                 decoded_data = bdecode(result.content)
                 if not decoded_data.get('announce-list'):
-                    decoded_data[b'announce-list'] = []
+                    decoded_data['announce-list'] = []
 
                 for tracker in trackers_list:
                     if tracker not in decoded_data['announce-list']:

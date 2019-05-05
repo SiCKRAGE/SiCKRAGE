@@ -62,8 +62,8 @@ class CalendarHandler(BaseHandler, ABC):
         ical += 'PRODID://SiCKRAGE Upcoming Episodes//\r\n'
 
         # Limit dates
-        past_date = (datetime.date.today() + datetime.timedelta(weeks=-52)).toordinal()
-        future_date = (datetime.date.today() + datetime.timedelta(weeks=52)).toordinal()
+        past_date = datetime.date.today() + datetime.timedelta(weeks=-52)
+        future_date = datetime.date.today() + datetime.timedelta(weeks=52)
 
         # Get all the shows that are not paused and are currently on air (from kjoconnor Fork)
         for show in get_show_list():
@@ -71,7 +71,7 @@ class CalendarHandler(BaseHandler, ABC):
                 continue
 
             for episode in show.episodes:
-                if not past_date <= TVEpisode.airdate < future_date:
+                if not past_date <= episode.airdate < future_date:
                     continue
 
                 air_date_time = sickrage.app.tz_updater.parse_date_time(episode.airdate, show.airs,

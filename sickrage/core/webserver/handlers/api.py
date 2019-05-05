@@ -813,9 +813,9 @@ class CMD_Episode(ApiCall):
                 episode.location = ""
 
             # convert stuff to human form
-            if try_int(episode.airdate, 1) > 693595:  # 1900
+            if episode.airdate > datetime.date.min:  # 1900
                 episode.airdate = srdatetime.srDateTime(srdatetime.srDateTime(
-                    sickrage.app.tz_updater.parse_date_time(int(episode.airdate), showObj.airs, showObj.network),
+                    sickrage.app.tz_updater.parse_date_time(episode.airdate, showObj.airs, showObj.network),
                     convert=True).dt).srfdate(d_preset=dateFormat)
             else:
                 episode.airdate = 'Never'
@@ -2451,7 +2451,7 @@ class CMD_ShowSeasons(ApiCall):
                 row.status = _get_status_strings(status)
                 row.quality = get_quality_string(quality)
 
-                if try_int(row.airdate, 1) > 693595:  # 1900
+                if row.airdate > datetime.date.min:
                     dtEpisodeAirs = srdatetime.srDateTime(
                         sickrage.app.tz_updater.parse_date_time(row.airdate, showObj.airs, showObj.network),
                         convert=True).dt
@@ -2476,7 +2476,7 @@ class CMD_ShowSeasons(ApiCall):
                 status, quality = Quality.split_composite_status(int(row.status))
                 row.status = _get_status_strings(status)
                 row.quality = get_quality_string(quality)
-                if try_int(row.airdate, 1) > 693595:  # 1900
+                if row.airdate > datetime.date.min:
                     dtEpisodeAirs = srdatetime.srDateTime(
                         sickrage.app.tz_updater.parse_date_time(row.airdate, showObj.airs, showObj.network),
                         convert=True).dt

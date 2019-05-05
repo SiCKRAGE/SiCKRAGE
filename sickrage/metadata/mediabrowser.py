@@ -440,7 +440,7 @@ class MediaBrowserMetadata(GenericMetadata):
 
                 # default to today's date for specials if firstaired is not set
                 if ep_obj.season == 0 and not getattr(myEp, 'firstaired', None):
-                    myEp['firstaired'] = str(datetime.date.fromordinal(1))
+                    myEp['firstaired'] = str(datetime.date.min)
 
                 if not (getattr(myEp, 'episodename', None) and getattr(myEp, 'firstaired', None)):
                     return None
@@ -465,7 +465,7 @@ class MediaBrowserMetadata(GenericMetadata):
                     absolute_number = SubElement(episode, "absolute_number")
                     absolute_number.text = str(myEp['absolute_number'])
 
-                if curEpToWrite.airdate != datetime.date.fromordinal(1):
+                if curEpToWrite.airdate > datetime.date.min:
                     FirstAired = SubElement(episode, "FirstAired")
                     FirstAired.text = str(curEpToWrite.airdate)
 

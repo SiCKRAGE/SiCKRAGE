@@ -118,7 +118,11 @@ class srDatabase(object):
 
             for table, rows in migrate_tables.items():
                 sickrage.app.log.info('Migrating {} database table {}'.format(self.name, table))
-                self.delete(self.tables[table])
+
+                try:
+                    self.delete(self.tables[table])
+                except Exception:
+                    pass
 
                 for row in rows:
                     try:

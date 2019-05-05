@@ -680,7 +680,6 @@ class PostProcessor(object):
 
         # attempt every possible method to get our info
         for cur_attempt in attempt_list:
-
             try:
                 (cur_show, cur_season, cur_episodes, cur_quality, cur_version) = cur_attempt()
             except (InvalidNameException, InvalidShowException) as e:
@@ -701,37 +700,35 @@ class PostProcessor(object):
 
             if cur_season is not None:
                 season = cur_season
+
             if cur_episodes:
                 episodes = cur_episodes
 
             # for air-by-date shows we need to look up the season/episode from database
             if season == -1 and show and episodes:
-                self._log(
-                    "Looks like this is an air-by-date or sports show, attempting to convert the date to season/episode",
-                    sickrage.app.log.DEBUG)
-                airdate = episodes[0].toordinal()
+                self._log("Looks like this is an air-by-date or sports show, attempting to convert the date to "
+                          "season/episode", sickrage.app.log.DEBUG)
 
                 # Ignore season 0 when searching for episode(Conflict between special and regular episode,
                 # same air date)
                 try:
                     dbData = TVEpisode.query.filter_by(
-                        showid=show.indexer_id, indexer=show.indexer, airdate=airdate
-                    ).filter(TVEpisode.season != 0).one()
+                        showid=show.indexer_id, indexer=show.indexer, airdate=episodes[0]
+                    ).filter(TVEpisode.season > 0).one()
+
                     season = int(dbData.season)
                     episodes = [int(dbData.episode)]
                 except orm.exc.NoResultFound:
                     # Found no result, try with season 0
                     try:
-                        dbData = TVEpisode.query.filter_by(showid=show.indexer_id, indexer=show.indexer,
-                                                           airdate=airdate).one()
+                        dbData = TVEpisode.query.filter_by(
+                            showid=show.indexer_id, indexer=show.indexer, airdate=episodes[0]).one()
+
                         season = int(dbData.season)
                         episodes = [int(dbData.episode)]
                     except orm.exc.NoResultFound:
-                        self._log(
-                            "Unable to find episode with date " +
-                            str(episodes[0]) + " for show " + str(show.indexer_id) + ", skipping",
-                            sickrage.app.log.DEBUG
-                        )
+                        self._log("Unable to find episode with date {} for show {}"
+                                  ", skipping".format(episodes[0], show.indexer_id), sickrage.app.log.DEBUG)
 
                         # we don't want to leave dates in the episode list if we couldn't convert them to real
                         # episode numbers

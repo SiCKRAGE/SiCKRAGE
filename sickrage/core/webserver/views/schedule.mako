@@ -267,13 +267,13 @@
                                     % elif cur_ep_enddate >= today and cur_ep_airdate < next_week.date():
                                         % if cur_ep_airdate == today.date():
                                             <br/>
-                                            <h2 class="day">${datetime.date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').capitalize()}
+                                            <h2 class="day">${cur_ep_airdate.strftime('%A').capitalize()}
                                                 <span style="font-size: 14px; vertical-align: top;">[Today]</span>
                                             </h2>
                                         <% today_header = True %>
                                         % else:
                                             <br/>
-                                            <h2 class="day">${datetime.date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').capitalize()}</h2>
+                                            <h2 class="day">${cur_ep_airdate.strftime('%A').capitalize()}</h2>
                                         % endif
                                     % endif
                                     <% cur_segment = cur_ep_airdate %>
@@ -282,7 +282,7 @@
                                 % if cur_ep_airdate == today.date() and not today_header:
                                     <div>
                                         <br/>
-                                        <h2 class="day">${datetime.date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').capitalize()}
+                                        <h2 class="day">${cur_ep_airdate.strftime('%A').capitalize()}
                                             <span style="font-size: 14px; vertical-align: top;">[Today]</span>
                                         </h2>
                                     </div>

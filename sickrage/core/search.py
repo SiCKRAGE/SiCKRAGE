@@ -38,13 +38,13 @@ from sickrage.notifiers import Notifiers
 from sickrage.providers import NZBProvider, NewznabProvider, TorrentProvider, TorrentRssProvider
 
 
-def snatch_episode(result, endStatus=SNATCHED):
+def snatch_episode(result, end_status=SNATCHED):
     """
     Contains the internal logic necessary to actually "snatch" a result that
     has been found.
 
     :param result: SearchResult instance to be snatched.
-    :param endStatus: the episode status that should be used for the episode object once it's snatched.
+    :param end_status: the episode status that should be used for the episode object once it's snatched.
     :return: boolean, True on success
     """
 
@@ -59,7 +59,7 @@ def snatch_episode(result, endStatus=SNATCHED):
                 result.priority = 1
 
     if re.search(r'(^|[. _-])(proper|repack)([. _-]|$)', result.name, re.I) is not None:
-        endStatus = SNATCHED_PROPER
+        end_status = SNATCHED_PROPER
 
     # get result content
     result.content = result.provider.get_content(result.url)
@@ -71,7 +71,7 @@ def snatch_episode(result, endStatus=SNATCHED):
         elif sickrage.app.config.nzb_method == "sabnzbd":
             dlResult = SabNZBd.sendNZB(result)
         elif sickrage.app.config.nzb_method == "nzbget":
-            is_proper = True if endStatus == SNATCHED_PROPER else False
+            is_proper = True if end_status == SNATCHED_PROPER else False
             dlResult = NZBGet.sendNZB(result, is_proper)
         else:
             sickrage.app.log.error("Unknown NZB action specified in config: " + sickrage.app.config.nzb_method)
@@ -96,10 +96,9 @@ def snatch_episode(result, endStatus=SNATCHED):
         return False
 
     FailedHistory.log_snatch(result)
+    History.log_snatch(result)
 
     sickrage.app.alerts.message(_('Episode snatched'), result.name)
-
-    History.log_snatch(result)
 
     # don't notify when we re-download an episode
     trakt_data = []
@@ -109,7 +108,7 @@ def snatch_episode(result, endStatus=SNATCHED):
         if is_first_best_match(result):
             episode_obj.status = Quality.composite_status(SNATCHED_BEST, result.quality)
         else:
-            episode_obj.status = Quality.composite_status(endStatus, result.quality)
+            episode_obj.status = Quality.composite_status(end_status, result.quality)
 
         if episode_obj.status not in Quality.DOWNLOADED:
             try:
@@ -288,7 +287,7 @@ def is_first_best_match(result):
     sickrage.app.log.debug(
         "Checking if we should archive our first best quality match for episode " + result.name)
 
-    show_obj = result.episodes[0].show
+    show_obj = find_show(result.show_id)
 
     any_qualities, best_qualities = Quality.split_quality(show_obj.quality)
 

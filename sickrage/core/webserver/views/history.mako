@@ -7,6 +7,7 @@
 
     import sickrage
     from sickrage.core.helpers import srdatetime
+    from sickrage.core.tv.episode.helpers import find_episode
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED, DOWNLOADED, SUBTITLED
     from sickrage.core.common import Quality, statusStrings, Overview
     from sickrage.core.tv.show.history import History
@@ -61,6 +62,7 @@
 
                                 <tbody>
                                     % for hItem in historyResults:
+                                        <% episode_obj = find_episode(hItem['show_id'], hItem['episode_id']) %>
                                         <% curStatus, curQuality = Quality.split_composite_status(int(hItem["action"])) %>
                                         <tr>
                                             <td class="table-fit">
@@ -69,9 +71,9 @@
                                                 <time datetime="${isoDate}" class="date">${airDate}</time>
                                             </td>
                                             <td class="tvShow">
-                                                <a href="${srWebRoot}/home/displayShow?show=${hItem["show_id"]}#S${hItem["season"]}E${hItem["episode"]}">
+                                                <a href="${srWebRoot}/home/displayShow?show=${hItem["show_id"]}#episode-id-${hItem["episode_id"]}">
                                                     ${hItem["show_name"]}
-                                                    - ${"S{:02d}".format(int(hItem["season"]))}${"E{:02d}".format(int(hItem["episode"]))} ${('', '<span class="badge badge-success">Proper</span>')["proper" in hItem["resource"].lower() or "repack" in hItem["resource"].lower()]}
+                                                    - ${"S{:02d}".format(episode_obj.season)}${"E{:02d}".format(episode_obj.episode)}${('', ' <span class="badge badge-success">Proper</span>')['proper' in hItem["resource"].lower() or 'repack' in hItem["resource"].lower()]}
                                                 </a>
                                             </td>
                                             <td class="table-fit" ${('', 'class="subtitles_column"')[curStatus == SUBTITLED]}>
@@ -128,6 +130,7 @@
 
                                 <tbody>
                                     % for hItem in compactResults:
+                                        <% episode_obj = find_episode(hItem['show_id'], hItem['episode_id']) %>
                                         <tr>
                                             <td class="table-fit">
                                                 <% airDate = srdatetime.srDateTime(datetime.datetime.strptime(str(hItem["actions"][0]["time"]), History.date_format)).srfdatetime(show_seconds=True) %>
@@ -135,12 +138,12 @@
                                                 <time datetime="${isoDate}" class="date">${airDate}</time>
                                             </td>
                                             <td class="tvShow" width="25%">
-                                                                <span>
-                                                                    <a href="${srWebRoot}/home/displayShow?show=${hItem["show_id"]}#season-${hItem["season"]}">
-                                                                        ${hItem["show_name"]}
-                                                                        - ${"S{:02d}".format(int(hItem["season"]))}${"E{:02d}".format(int(hItem["episode"]))}${('', ' <span class="badge badge-success">Proper</span>')['proper' in hItem["resource"].lower() or 'repack' in hItem["resource"].lower()]}
-                                                                    </a>
-                                                                </span>
+                                                <span>
+                                                    <a href="${srWebRoot}/home/displayShow?show=${hItem["show_id"]}#episode-id-${hItem["episode_id"]}">
+                                                        ${hItem["show_name"]}
+                                                        - ${"S{:02d}".format(episode_obj.season)}${"E{:02d}".format(episode_obj.episode)}${('', ' <span class="badge badge-success">Proper</span>')['proper' in hItem["resource"].lower() or 'repack' in hItem["resource"].lower()]}
+                                                    </a>
+                                                </span>
                                             </td>
                                             <td class="table-fit"
                                                 data-provider="${sorted(hItem["actions"], key=lambda x:sorted(x.keys()))[0]["provider"]}">

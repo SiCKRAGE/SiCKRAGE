@@ -20,7 +20,7 @@
 import fnmatch
 import os
 import re
-from datetime import date
+import datetime
 from functools import partial
 
 import sickrage
@@ -234,7 +234,7 @@ def make_scene_search_string(show_id, episode_id):
     numseasons = len({x.season for x in episode_obj.show.episodes if x.season > 0})
 
     # see if we should use dates instead of episodes
-    if (episode_obj.show.air_by_date or episode_obj.show.sports) and episode_obj.airdate != date.fromordinal(1):
+    if (episode_obj.show.air_by_date or episode_obj.show.sports) and episode_obj.airdate > datetime.date.min:
         epStrings = [str(episode_obj.airdate)]
     elif episode_obj.show.is_anime:
         epStrings = ["%02i" % int(

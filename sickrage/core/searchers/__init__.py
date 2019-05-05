@@ -30,13 +30,14 @@ def new_episode_finder():
     curDate += datetime.timedelta(days=1)
     curTime = datetime.datetime.now(sickrage.app.tz)
 
-    for episode in TVEpisode.query.filter_by(status=UNAIRED).filter(TVEpisode.season > 0, TVEpisode.airdate > 1):
+    for episode in TVEpisode.query.filter_by(status=UNAIRED).filter(TVEpisode.season > 0,
+                                                                    TVEpisode.airdate > datetime.date.min):
         if episode.show.paused:
             continue
 
-        air_date = datetime.date.fromordinal(episode.airdate)
+        air_date = episode.airdate
         air_date += datetime.timedelta(days=episode.show.search_delay)
-        if not curDate.toordinal() >= air_date.toordinal():
+        if not curDate >= air_date:
             continue
 
         if episode.show.airs and episode.show.network:

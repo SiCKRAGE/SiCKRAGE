@@ -83,7 +83,7 @@ class DailySearcher(object):
 
         # check through the list of statuses to see if we want any
         for ep_obj in show.episodes:
-            if not ep_obj.season > 0 or not ep_obj.airdate >= from_date.toordinal():
+            if not ep_obj.season > 0 or not ep_obj.airdate >= from_date:
                 continue
 
             cur_status, cur_quality = Quality.split_composite_status(int(ep_obj.status or -1))

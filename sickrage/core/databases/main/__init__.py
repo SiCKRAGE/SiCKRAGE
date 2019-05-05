@@ -118,14 +118,14 @@ class MainDB(srDatabase):
         __tablename__ = 'history'
 
         id = Column(Integer, primary_key=True)
-        showid = Column(Integer)
-        episode_id = Column(Integer)
-        resource = Column(Text)
-        action = Column(Integer)
+        showid = Column(Integer, nullable=False)
+        episode_id = Column(Integer, nullable=False)
+        resource = Column(Text, nullable=False)
+        action = Column(Integer, nullable=False)
         version = Column(Integer, default=-1)
-        provider = Column(Text)
-        date = Column(Integer)
-        quality = Column(Integer)
+        provider = Column(Text, nullable=False)
+        date = Column(Integer, nullable=False)
+        quality = Column(Integer, nullable=False)
 
     class FailedSnatchHistory(MainDBBase):
         __tablename__ = 'failed_snatch_history'

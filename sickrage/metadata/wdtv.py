@@ -211,7 +211,7 @@ class WDTVMetadata(GenericMetadata):
                 return None
 
             if ep_obj.season == 0 and not getattr(myEp, 'firstaired', None):
-                myEp["firstaired"] = str(datetime.date.fromordinal(1))
+                myEp["firstaired"] = str(datetime.date.min)
 
             if not (getattr(myEp, 'episodename', None) and getattr(myEp, 'firstaired', None)):
                 return None
@@ -244,7 +244,7 @@ class WDTVMetadata(GenericMetadata):
 
             firstAired = SubElement(episode, "firstaired")
 
-            if curEpToWrite.airdate != datetime.date.fromordinal(1):
+            if curEpToWrite.airdate > datetime.date.min:
                 firstAired.text = str(curEpToWrite.airdate)
 
             if getattr(myShow, 'firstaired', None):

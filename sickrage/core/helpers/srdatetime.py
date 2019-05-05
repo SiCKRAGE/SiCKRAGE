@@ -93,7 +93,10 @@ class srDateTime(object):
     def __init__(self, dt, convert=False):
         self.dt = dt
         if convert and sickrage.app.config.timezone_display == 'local':
-            self.dt = dt.astimezone(sickrage.app.tz)
+            try:
+                self.dt = dt.astimezone(sickrage.app.tz)
+            except Exception as e:
+                pass
 
         self.has_locale = True
         self.en_US_norm = locale.normalize('en_US.utf-8')

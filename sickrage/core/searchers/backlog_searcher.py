@@ -69,8 +69,8 @@ class BacklogSearcher(object):
         self.amPaused = False
 
         show_list = which_shows or get_show_list()
-        cur_date = datetime.date.today().toordinal()
-        from_date = datetime.date.fromordinal(1)
+        cur_date = datetime.date.today()
+        from_date = datetime.date.min
 
         if not which_shows and self.forced:
             sickrage.app.log.info("Running limited backlog on missed episodes " + str(
@@ -94,7 +94,7 @@ class BacklogSearcher(object):
 
             # don't consider this an actual backlog search if we only did recent eps
             # or if we only did certain shows
-            if from_date == datetime.date.fromordinal(1) and not which_shows:
+            if from_date == datetime.date.min and not which_shows:
                 self._set_last_backlog_search(curShow, cur_date)
 
         self.amActive = False
@@ -108,7 +108,7 @@ class BacklogSearcher(object):
         # check through the list of statuses to see if we want any
         wanted = []
         for ep_obj in show.episodes:
-            if not ep_obj.season > 0 or not datetime.date.today().toordinal() > ep_obj.airdate > from_date.toordinal():
+            if not ep_obj.season > 0 or not datetime.date.today() > ep_obj.airdate > from_date:
                 continue
 
             cur_status, cur_quality = Quality.split_composite_status(int(ep_obj.status or -1))
@@ -151,6 +151,6 @@ class BacklogSearcher(object):
         sickrage.app.log.debug("Setting the last backlog in the DB to {}".format(when))
 
         try:
-            show.last_backlog_search = when
+            show.last_backlog_search = when.toordinal()
         except orm.exc.NoResultFound:
             pass

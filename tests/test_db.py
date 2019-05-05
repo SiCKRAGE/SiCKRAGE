@@ -59,7 +59,7 @@ class DBBasicTests(tests.SiCKRAGETestDBCase):
         count = 0
 
         for episode in TVEpisode.query:
-            if all([episode.status == UNAIRED, episode.season > 0, episode.airdate > 1]):
+            if all([episode.status == UNAIRED, episode.season > 0, episode.airdate > datetime.date.min]):
                 count += 1
 
                 show = find_show(int(episode.showid))

@@ -21,6 +21,7 @@ from abc import ABC
 from tornado.web import authenticated
 
 import sickrage
+from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.core.tv.show.history import History
 from sickrage.core.webserver.handlers.base import BaseHandler
 
@@ -43,9 +44,8 @@ class HistoryHandler(BaseHandler, ABC):
         sickrage.app.config.save()
 
         compact = []
-        data = History().get(limit)
 
-        for row in data:
+        for row in History().get(limit):
             action = {
                 'action': row['action'],
                 'provider': row['provider'],
@@ -54,16 +54,14 @@ class HistoryHandler(BaseHandler, ABC):
             }
 
             if not any((history['show_id'] == row['show_id'] and
-                        history['season'] == row['season'] and
-                        history['episode'] == row['episode'] and
+                        history['episode_id'] == row['episode_id'] and
                         history['quality'] == row['quality']) for history in compact):
 
                 history = {
                     'actions': [action],
-                    'episode': row['episode'],
                     'quality': row['quality'],
                     'resource': row['resource'],
-                    'season': row['season'],
+                    'episode_id': row['episode_id'],
                     'show_id': row['show_id'],
                     'show_name': row['show_name']
                 }
@@ -72,8 +70,7 @@ class HistoryHandler(BaseHandler, ABC):
             else:
                 index = [i for i, item in enumerate(compact)
                          if item['show_id'] == row['show_id'] and
-                         item['season'] == row['season'] and
-                         item['episode'] == row['episode'] and
+                         item['episode_id'] == row['episode_id'] and
                          item['quality'] == row['quality']][0]
 
                 history = compact[index]
@@ -90,7 +87,7 @@ class HistoryHandler(BaseHandler, ABC):
 
         return self.render(
             "/history.mako",
-            historyResults=data,
+            historyResults=History().get(limit),
             compactResults=compact,
             limit=limit,
             submenu=submenu,
