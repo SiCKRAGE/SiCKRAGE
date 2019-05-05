@@ -79,6 +79,10 @@ def load_imdb_info(indexer_id):
             return
 
         imdb_info = dict((k.lower(), v) for k, v in imdb_info.items())
+        if not all([imdb_info.get('imdb_id'), imdb_info.get('votes'), imdb_info.get('rating'), imdb_info.get('genre')]):
+            sickrage.app.log.debug(str(indexer_id) + ': IMDb info obtained does not meet our requirements')
+            return
+
         for column in imdb_info.copy():
             if column in imdb_info_mapper:
                 imdb_info[imdb_info_mapper[column]] = imdb_info[column]

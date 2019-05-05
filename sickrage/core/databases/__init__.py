@@ -16,16 +16,18 @@
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 import datetime
+import errno
+import functools
 import os
 import pickle
 import shutil
-from contextlib import contextmanager
 
+import sqlalchemy
 from migrate import DatabaseAlreadyControlledError
 from migrate.versioning import api
-from sqlalchemy import create_engine, event, inspect
+from sqlalchemy import create_engine, event
 from sqlalchemy.engine import Engine
-from sqlalchemy.orm import sessionmaker, scoped_session, mapperlib
+from sqlalchemy.orm import sessionmaker, scoped_session
 
 import sickrage
 
@@ -34,7 +36,49 @@ import sickrage
 def set_sqlite_pragma(dbapi_connection, connection_record):
     cursor = dbapi_connection.cursor()
     cursor.execute("PRAGMA journal_mode=WAL")
+    # cursor.execute('PRAGMA busy_timeout=%i;' % 15000)
     cursor.close()
+
+
+class ContextSession(sqlalchemy.orm.Session):
+    """:class:`sqlalchemy.orm.Session` which can be used as context manager"""
+
+    def __init__(self, *args, **kwargs):
+        super(ContextSession, self).__init__(*args, **kwargs)
+        self.lockfile = self.bind.url.database + '-lock'
+
+    @property
+    def has_lock(self):
+        return os.path.exists(self.lockfile)
+
+    def write_lock(self):
+        if self.has_lock:
+            return
+
+        with open(self.lockfile, 'w', encoding='utf-8') as f:
+            f.write('PID: %s\n' % os.getpid())
+
+    def release_lock(self):
+        if not self.has_lock:
+            return
+
+        try:
+            os.remove(self.lockfile)
+        except OSError as e:
+            if e.errno != errno.ENOENT:
+                raise
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        try:
+            if exc_type is None:
+                self.commit()
+            else:
+                self.rollback()
+        finally:
+            self.close()
 
 
 class srDatabase(object):
@@ -44,8 +88,10 @@ class srDatabase(object):
 
         self.db_path = os.path.join(sickrage.app.data_dir, '{}.db'.format(self.name))
         self.db_repository = os.path.join(os.path.dirname(__file__), self.name, 'db_repository')
-        self.engine = create_engine('sqlite:///{}'.format(self.db_path), echo=False)
-        self.Session = scoped_session(sessionmaker(bind=self.engine, autocommit=True))
+        self.engine = create_engine('sqlite:///{}'.format(self.db_path), echo=False,
+                                    connect_args={'check_same_thread': False, 'timeout': 10})
+        self.Session = scoped_session(
+            sessionmaker(bind=self.engine, class_=ContextSession, autoflush=False))
 
         if not os.path.exists(self.db_path):
             api.version_control(self.engine, self.db_repository, api.version(self.db_repository))
@@ -122,13 +168,13 @@ class srDatabase(object):
                 try:
                     self.delete(self.tables[table])
                 except Exception:
-                    self.session.rollback()
+                    pass
 
                 for row in rows:
                     try:
                         self.add(self.tables[table](**row))
                     except Exception as e:
-                        self.session.rollback()
+                        pass
 
             shutil.move(migrate_file, backup_file)
 
@@ -136,17 +182,41 @@ class srDatabase(object):
             del migrate_tables
             del rows
 
-    @property
-    def session(self):
-        return self.Session()
+    def with_session(self, *args, **kwargs):
+        """"
+        A decorator which creates a new session if one was not passed via keyword argument to the function.
+
+        Automatically commits and closes the session if one was created, caller is responsible for commit if passed in.
+
+        If arguments are given when used as a decorator, they will automatically be passed to the created Session when
+        one is not supplied.
+        """
+
+        def decorator(func):
+            def wrapper(*args, **kwargs):
+                if kwargs.get('session'):
+                    return func(*args, **kwargs)
+                with _Session() as session:
+                    kwargs['session'] = session
+                    return func(*args, **kwargs)
+
+            return wrapper
+
+        if len(args) == 1 and not kwargs and callable(args[0]):
+            # Used without arguments, e.g. @with_session
+            # We default to expire_on_commit being false, in case the decorated function returns db instances
+            _Session = functools.partial(self.Session, expire_on_commit=False)
+            return decorator(args[0])
+        else:
+            # Arguments were specified, turn them into arguments for Session creation e.g. @with_session(
+            # autocommit=True)
+            _Session = functools.partial(self.Session, *args, **kwargs)
+            return decorator
 
     def add(self, instance):
-        self.session.add(instance)
-        self.session.flush()
+        with self.Session() as session:
+            session.add(instance)
 
     def delete(self, table, *args, **kwargs):
-        self.session.query(table).filter_by(**kwargs).filter(*args).delete()
-        self.session.flush()
-
-    def flush(self):
-        self.session.flush()
+        with self.Session() as session:
+            session.query(table).filter_by(**kwargs).filter(*args).delete()
