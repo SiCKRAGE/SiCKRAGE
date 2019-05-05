@@ -21,6 +21,7 @@ import functools
 import os
 import pickle
 import shutil
+from time import sleep
 
 import sqlalchemy
 from migrate import DatabaseAlreadyControlledError
@@ -36,7 +37,7 @@ import sickrage
 def set_sqlite_pragma(dbapi_connection, connection_record):
     cursor = dbapi_connection.cursor()
     cursor.execute("PRAGMA journal_mode=WAL")
-    # cursor.execute('PRAGMA busy_timeout=%i;' % 15000)
+    cursor.execute('PRAGMA busy_timeout=%i;' % 15000)
     cursor.close()
 
 
@@ -46,6 +47,7 @@ class ContextSession(sqlalchemy.orm.Session):
     def __init__(self, *args, **kwargs):
         super(ContextSession, self).__init__(*args, **kwargs)
         self.lockfile = self.bind.url.database + '-lock'
+        self.max_attempts = 5
 
     @property
     def has_lock(self):
@@ -72,13 +74,22 @@ class ContextSession(sqlalchemy.orm.Session):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        try:
-            if exc_type is None:
+        attempt = 0
+
+        while attempt <= self.max_attempts:
+            try:
                 self.commit()
-            else:
+                break
+            except Exception:
+                sickrage.app.log.debug('Retrying database commit, attempt {}'.format(attempt))
                 self.rollback()
-        finally:
-            self.close()
+                if not attempt < self.max_attempts:
+                    raise
+                sleep(1)
+
+            attempt += 1
+
+        self.close()
 
 
 class srDatabase(object):
