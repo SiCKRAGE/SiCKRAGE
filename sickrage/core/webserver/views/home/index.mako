@@ -8,7 +8,7 @@
 
     import sickrage
     from sickrage.core.tv.show.helpers import get_show_list
-    from sickrage.core.helpers import srdatetime, pretty_filesize
+    from sickrage.core.helpers import srdatetime, pretty_file_size
     from sickrage.core.media.util import showImage
 %>
 <%block name="metas">
@@ -470,7 +470,7 @@
                                         </td>
 
                                         <td class="table-fit align-middle" data-show-size="${show_size}">
-                                            ${pretty_filesize(show_size)}
+                                            ${pretty_file_size(show_size)}
                                         </td>
 
                                         <td class="table-fit align-middle">

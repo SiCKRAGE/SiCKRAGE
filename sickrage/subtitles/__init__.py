@@ -26,7 +26,7 @@ from babelfish import language_converters, Language
 from subliminal import save_subtitles
 
 import sickrage
-from sickrage.core.helpers import chmod_as_parent, makeDir
+from sickrage.core.helpers import chmod_as_parent, make_dir
 from sickrage.subtitles.providers.utils import hash_itasa
 
 for provider in ['itasa = sickrage.subtitles.providers.itasa:ItaSAProvider',
@@ -231,7 +231,7 @@ def get_subtitles_path(video_path):
         new_subtitles_path = sickrage.app.config.subtitles_dir
     elif sickrage.app.config.subtitles_dir:
         new_subtitles_path = os.path.join(os.path.dirname(video_path), sickrage.app.config.subtitles_dir)
-        dir_exists = makeDir(new_subtitles_path)
+        dir_exists = make_dir(new_subtitles_path)
         if not dir_exists:
             sickrage.app.log.warning('Unable to create subtitles folder {}'.format(new_subtitles_path))
         else:

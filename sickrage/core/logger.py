@@ -30,7 +30,7 @@ from raven.handlers.logging import SentryHandler
 from unidecode import unidecode
 
 import sickrage
-from sickrage.core import makeDir
+from sickrage.core import make_dir
 from sickrage.core.classes import ErrorViewer, WarningViewer
 
 
@@ -121,7 +121,7 @@ class Logger(logging.getLoggerClass()):
         if self.logFile:
             # make logs folder if it doesn't exist
             if not os.path.exists(os.path.dirname(self.logFile)):
-                if not makeDir(os.path.dirname(self.logFile)):
+                if not make_dir(os.path.dirname(self.logFile)):
                     return
 
             if sickrage.app.developer:

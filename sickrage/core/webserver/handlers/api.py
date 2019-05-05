@@ -69,8 +69,8 @@ from sickrage.core.common import ARCHIVED, DOWNLOADED, IGNORED, \
     timeFormat
 from sickrage.core.exceptions import CantUpdateShowException, CantRemoveShowException, CantRefreshShowException, \
     EpisodeNotFoundException
-from sickrage.core.helpers import chmod_as_parent, makeDir, \
-    pretty_filesize, sanitizeFileName, srdatetime, try_int, readFileBuffered, backupSR
+from sickrage.core.helpers import chmod_as_parent, make_dir, \
+    pretty_file_size, sanitize_file_name, srdatetime, try_int, read_file_buffered, backup_app_data
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.media.banner import Banner
 from sickrage.core.media.fanart import FanArt
@@ -709,7 +709,7 @@ class CMD_Backup(ApiCall):
 
     def run(self):
         """ Performs application backup """
-        if backupSR(self.backup_dir):
+        if backup_app_data(self.backup_dir):
             response = _responds(RESULT_SUCCESS, msg='Backup successful')
         else:
             response = _responds(RESULT_FAILURE, msg='Backup failed')
@@ -824,7 +824,7 @@ class CMD_Episode(ApiCall):
             status, quality = Quality.split_composite_status(int(episode.status))
             episode.status = _get_status_strings(status)
             episode.quality = get_quality_string(quality)
-            episode.file_size_human = pretty_filesize(episode.file_size)
+            episode.file_size_human = pretty_file_size(episode.file_size)
 
             return _responds(RESULT_SUCCESS, episode)
         except orm.exc.NoResultFound:
@@ -1242,8 +1242,8 @@ class CMD_Logs(ApiCall):
         try:
             if os.path.isfile(sickrage.app.config.log_file):
                 data += list(reversed(re.findall("((?:^.+?{}.+?$))".format(""),
-                                                 "\n".join(next(readFileBuffered(sickrage.app.config.log_file,
-                                                                                 reverse=True)).splitlines()),
+                                                 "\n".join(next(read_file_buffered(sickrage.app.config.log_file,
+                                                                                   reverse=True)).splitlines()),
                                                  re.S + re.M + re.I)))
                 maxLines -= len(data)
                 if len(data) == maxLines:
@@ -2106,7 +2106,7 @@ class CMD_ShowAddNew(ApiCall):
         first_aired = indexer_result['data']['results'][0]['first_aired']
 
         # moved the logic check to the end in an attempt to eliminate empty directory being created from previous errors
-        show_path = os.path.join(self.location, sanitizeFileName(indexer_name))
+        show_path = os.path.join(self.location, sanitize_file_name(indexer_name))
         if self.add_show_year and not re.match(r'.*\(\d+\)$', show_path):
             show_path = "{} ({})".format(show_path, re.search(r'\d{4}', first_aired).group(0))
 
@@ -2114,7 +2114,7 @@ class CMD_ShowAddNew(ApiCall):
         if sickrage.app.config.add_shows_wo_dir:
             sickrage.app.log.info("Skipping initial creation of " + show_path + " due to config.ini setting")
         else:
-            dir_exists = makeDir(show_path)
+            dir_exists = make_dir(show_path)
             if not dir_exists:
                 sickrage.app.log.warning(
                     "Unable to create the folder " + show_path + ", can't add the show")

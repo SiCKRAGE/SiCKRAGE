@@ -22,7 +22,7 @@ from requests.utils import dict_from_cookiejar
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.exceptions import AuthException
-from sickrage.core.helpers import sanitizeSceneName, show_names, bs4_parser, try_int, convert_size
+from sickrage.core.helpers import sanitize_scene_name, show_names, bs4_parser, try_int, convert_size
 from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.providers import TorrentProvider
 
@@ -79,7 +79,7 @@ class TVChaosUKProvider(TorrentProvider):
 
         for show_name in set(show_names.all_possible_show_names(show_id)):
             for sep in ' ', ' - ':
-                ep_string = sanitizeSceneName(show_name) + sep
+                ep_string = sanitize_scene_name(show_name) + sep
                 if episode_obj.show.air_by_date:
                     ep_string += str(episode_obj.airdate).replace('-', '|')
                 elif episode_obj.show.sports:

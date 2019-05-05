@@ -25,7 +25,7 @@ from tornado.web import authenticated
 import sickrage
 from sickrage.core import common
 from sickrage.core.common import Quality
-from sickrage.core.helpers import generateApiKey, checkbox_to_value, try_int
+from sickrage.core.helpers import generate_api_key, checkbox_to_value, try_int
 from sickrage.core.webserver import ConfigHandler
 from sickrage.core.webserver.handlers.base import BaseHandler
 
@@ -47,7 +47,7 @@ class ConfigGeneralHandler(BaseHandler, ABC):
 class GenerateApiKeyHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        return self.write(generateApiKey())
+        return self.write(generate_api_key())
 
 
 class SaveRootDirsHandler(BaseHandler, ABC):

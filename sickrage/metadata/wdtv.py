@@ -26,7 +26,7 @@ from xml.etree.ElementTree import Element, ElementTree, SubElement
 import sickrage
 from sickrage.core.common import dateFormat
 from sickrage.core.exceptions import ShowNotFoundException
-from sickrage.core.helpers import replaceExtension, indentXML
+from sickrage.core.helpers import replace_extension, indent_xml
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_episodenotfound, \
     indexer_error, indexer_seasonnotfound, indexer_shownotfound
@@ -123,7 +123,7 @@ class WDTVMetadata(GenericMetadata):
         ep_obj: a TVEpisode instance for which to create the thumbnail
         """
         if os.path.isfile(ep_obj.location):
-            tbn_filename = replaceExtension(ep_obj.location, 'metathumb')
+            tbn_filename = replace_extension(ep_obj.location, 'metathumb')
         else:
             return None
 
@@ -286,6 +286,6 @@ class WDTVMetadata(GenericMetadata):
                 overview.text = curEpToWrite.description
 
         # Make it purdy
-        indentXML(rootNode)
+        indent_xml(rootNode)
         data = ElementTree(rootNode)
         return data

@@ -26,7 +26,7 @@ from xml.etree.ElementTree import Element, ElementTree, SubElement
 import sickrage
 from sickrage.core.common import dateFormat
 from sickrage.core.exceptions import ShowNotFoundException
-from sickrage.core.helpers import replaceExtension, indentXML
+from sickrage.core.helpers import replace_extension, indent_xml
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_episodenotfound, \
     indexer_error, indexer_seasonnotfound, indexer_shownotfound
@@ -112,7 +112,7 @@ class MediaBrowserMetadata(GenericMetadata):
         """
 
         if os.path.isfile(ep_obj.location):
-            xml_file_name = replaceExtension(os.path.basename(ep_obj.location), self._ep_nfo_extension)
+            xml_file_name = replace_extension(os.path.basename(ep_obj.location), self._ep_nfo_extension)
             metadata_dir_name = os.path.join(os.path.dirname(ep_obj.location), 'metadata')
             xml_file_path = os.path.join(metadata_dir_name, xml_file_name)
         else:
@@ -131,7 +131,7 @@ class MediaBrowserMetadata(GenericMetadata):
         """
 
         if os.path.isfile(ep_obj.location):
-            tbn_file_name = replaceExtension(os.path.basename(ep_obj.location), 'jpg')
+            tbn_file_name = replace_extension(os.path.basename(ep_obj.location), 'jpg')
             metadata_dir_name = os.path.join(os.path.dirname(ep_obj.location), 'metadata')
             tbn_file_path = os.path.join(metadata_dir_name, tbn_file_name)
         else:
@@ -380,7 +380,7 @@ class MediaBrowserMetadata(GenericMetadata):
                     cur_actor_role = SubElement(cur_actor, "Role")
                     cur_actor_role.text = actor['role'].strip()
 
-        indentXML(tv_node)
+        indent_xml(tv_node)
 
         data = ElementTree(tv_node)
 
@@ -560,7 +560,7 @@ class MediaBrowserMetadata(GenericMetadata):
             if getattr(myEp, 'writer', None):
                 persons_dict['Writer'] += [x.strip() for x in myEp['writer'].split('|') if x.strip()]
 
-        indentXML(rootNode)
+        indent_xml(rootNode)
         data = ElementTree(rootNode)
 
         return data

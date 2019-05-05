@@ -25,7 +25,7 @@ from sqlalchemy import orm, or_
 
 import sickrage
 from sickrage.core.databases.cache import CacheDB
-from sickrage.core.helpers import full_sanitizeSceneName, strip_accents
+from sickrage.core.helpers import full_sanitize_scene_name, strip_accents
 from sickrage.core.scene_exceptions import retrieve_exceptions, get_scene_seasons, get_scene_exceptions
 from sickrage.core.tv.show.helpers import get_show_list
 
@@ -52,7 +52,7 @@ class NameCache(object):
         """
 
         # standardize the name we're using to account for small differences in providers
-        name = full_sanitizeSceneName(name)
+        name = full_sanitize_scene_name(name)
 
         self.cache[name] = int(indexer_id)
 
@@ -71,7 +71,7 @@ class NameCache(object):
         :param name: The show name to look up.
         :return: the TVDB id that resulted from the cache lookup or None if the show wasn't found in the cache
         """
-        name = full_sanitizeSceneName(name)
+        name = full_sanitize_scene_name(name)
         if name in self.cache:
             return int(self.cache[name])
 

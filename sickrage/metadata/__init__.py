@@ -25,7 +25,7 @@ from xml.etree.ElementTree import ElementTree
 
 import fanart
 import sickrage
-from sickrage.core.helpers import chmod_as_parent, replaceExtension, try_int
+from sickrage.core.helpers import chmod_as_parent, replace_extension, try_int
 from sickrage.core.websession import WebSession
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_error, indexer_episodenotfound, indexer_seasonnotfound
@@ -158,7 +158,7 @@ class GenericMetadata(object):
         return os.path.join(show_obj.location, self._show_metadata_filename)
 
     def get_episode_file_path(self, ep_obj):
-        return replaceExtension(ep_obj.location, self._ep_nfo_extension)
+        return replace_extension(ep_obj.location, self._ep_nfo_extension)
 
     def get_fanart_path(self, show_obj):
         return os.path.join(show_obj.location, self.fanart_name)

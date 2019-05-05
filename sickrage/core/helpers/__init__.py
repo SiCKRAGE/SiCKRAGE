@@ -64,7 +64,7 @@ def try_int(value, default=0):
         return default
 
 
-def readFileBuffered(filename, reverse=False):
+def read_file_buffered(filename, reverse=False):
     blocksize = (1 << 15)
     with open(filename, 'r', encoding='utf-8') as fh:
         if reverse:
@@ -87,7 +87,7 @@ def readFileBuffered(filename, reverse=False):
             del data
 
 
-def argToBool(x):
+def arg_to_bool(x):
     """
     convert argument of unknown type to a bool:
     """
@@ -103,7 +103,7 @@ def argToBool(x):
 
 
 def auto_type(s):
-    for fn in (int, float, argToBool):
+    for fn in (int, float, arg_to_bool):
         try:
             return fn(s)
         except ValueError:
@@ -112,12 +112,12 @@ def auto_type(s):
     return (s, '')[s.lower() == "none"]
 
 
-def fixGlob(path):
+def fix_glob(path):
     path = re.sub(r'\[', '[[]', path)
     return re.sub(r'(?<!\[)\]', '[]]', path)
 
 
-def indentXML(elem, level=0):
+def indent_xml(elem, level=0):
     """
     Does our pretty printing, makes Matt very happy
     """
@@ -128,7 +128,7 @@ def indentXML(elem, level=0):
         if not elem.tail or not elem.tail.strip():
             elem.tail = i
         for elem in elem:
-            indentXML(elem, level + 1)
+            indent_xml(elem, level + 1)
         if not elem.tail or not elem.tail.strip():
             elem.tail = i
     else:
@@ -233,17 +233,17 @@ def remove_non_release_groups(name):
     return _name
 
 
-def replaceExtension(filename, newExt):
+def replace_extension(filename, newExt):
     """
-    >>> replaceExtension('foo.avi', 'mkv')
+    >>> replace_extension('foo.avi', 'mkv')
     'foo.mkv'
-    >>> replaceExtension('.vimrc', 'arglebargle')
+    >>> replace_extension('.vimrc', 'arglebargle')
     '.vimrc'
-    >>> replaceExtension('a.b.c', 'd')
+    >>> replace_extension('a.b.c', 'd')
     'a.b.d'
-    >>> replaceExtension('', 'a')
+    >>> replace_extension('', 'a')
     ''
-    >>> replaceExtension('foo.bar', '')
+    >>> replace_extension('foo.bar', '')
     'foo.'
     """
     sepFile = filename.rpartition(".")
@@ -330,15 +330,15 @@ def is_rar_file(filename):
     return ret
 
 
-def sanitizeFileName(name):
+def sanitize_file_name(name):
     """
-    >>> sanitizeFileName('a/b/c')
+    >>> sanitize_file_name('a/b/c')
     'a-b-c'
-    >>> sanitizeFileName('abc')
+    >>> sanitize_file_name('abc')
     'abc'
-    >>> sanitizeFileName('a"b')
+    >>> sanitize_file_name('a"b')
     'ab'
-    >>> sanitizeFileName('.a.b..')
+    >>> sanitize_file_name('.a.b..')
     'a.b'
     """
 
@@ -353,7 +353,7 @@ def sanitizeFileName(name):
     return name
 
 
-def makeDir(path):
+def make_dir(path):
     """
     Make a directory on the filesystem
 
@@ -704,7 +704,7 @@ def fix_set_group_id(child_path):
                                    "group ID {})".format(child_path, parent_gid))
 
 
-def sanitizeSceneName(name, anime=False):
+def sanitize_scene_name(name, anime=False):
     """
     Takes a show name and returns the "scenified" version of it.
 
@@ -817,8 +817,8 @@ def anon_url(*url):
     return '{}{}'.format(sickrage.app.config.anon_redirect, url)
 
 
-def full_sanitizeSceneName(name):
-    return re.sub('[. -]', ' ', sanitizeSceneName(name)).lower().lstrip()
+def full_sanitize_scene_name(name):
+    return re.sub('[. -]', ' ', sanitize_scene_name(name)).lower().lstrip()
 
 
 def is_hidden_folder(folder):
@@ -906,7 +906,7 @@ def create_zipfile(fileList, archive, arcname=None):
         return False
 
 
-def restoreConfigZip(archive, targetDir, restore_database=True, restore_config=True, restore_cache=True):
+def restore_config_zip(archive, targetDir, restore_database=True, restore_config=True, restore_cache=True):
     """
     Restores a backup ZIP file back in place
 
@@ -948,7 +948,7 @@ def restoreConfigZip(archive, targetDir, restore_database=True, restore_config=T
         shutil.rmtree(targetDir)
 
 
-def backupSR(backupDir, keep_latest=False):
+def backup_app_data(backupDir, keep_latest=False):
     source = []
 
     files_list = [
@@ -990,7 +990,7 @@ def backupSR(backupDir, keep_latest=False):
     return create_zipfile(source, target, sickrage.app.data_dir)
 
 
-def restoreSR(srcDir, dstDir):
+def restore_app_data(srcDir, dstDir):
     try:
         files_list = ['main.db',
                       'cache.db',
@@ -1024,7 +1024,7 @@ def restoreSR(srcDir, dstDir):
         return False
 
 
-def touchFile(fname, atime=None):
+def touch_file(fname, atime=None):
     """
     Touch a file (change modification date)
 
@@ -1068,7 +1068,7 @@ def get_size(start_path='.'):
     return total_size
 
 
-def generateApiKey():
+def generate_api_key():
     """ Return a new randomized API_KEY"""
 
     from hashlib import md5
@@ -1087,7 +1087,7 @@ def generateApiKey():
     return m.hexdigest()
 
 
-def pretty_filesize(size, use_decimal=False, **kwargs):
+def pretty_file_size(size, use_decimal=False, **kwargs):
     """
     Return a human readable representation of the provided ``size``.
 
@@ -1127,51 +1127,40 @@ def generate_secret():
 
 
 def verify_freespace(src, dest, oldfile=None):
-    """
-    Checks if the target system has enough free space to copy or move a file.
+    """Check if the target system has enough free space to copy or move a file.
 
     :param src: Source filename
     :param dest: Destination path
     :param oldfile: File to be replaced (defaults to None)
-    :return: True if there is enough space for the file, False if there isn't. Also returns True if the OS doesn't support this option
+    :return: True if there is enough space for the file,
+             False if there isn't. Also returns True if the OS doesn't support this option
     """
 
     if not isinstance(oldfile, list):
         oldfile = [oldfile]
 
-    sickrage.app.log.debug("Trying to determine free space on destination drive")
-
-    if hasattr(os, 'statvfs'):  # POSIX
-        def disk_usage(path):
-            st = os.statvfs(path)
-            free = st.f_bavail * st.f_frsize
-            return free
-
-    elif os.name == 'nt':  # Windows
-
-        def disk_usage(path):
-            __, total, free = ctypes.c_ulonglong(), ctypes.c_ulonglong(), ctypes.c_ulonglong()
-            fun = ctypes.windll.kernel32.GetDiskFreeSpaceExW
-            ret = fun(path, ctypes.byref(__), ctypes.byref(total), ctypes.byref(free))
-            if ret == 0:
-                sickrage.app.log.warning("Unable to determine free space, something went wrong")
-                raise ctypes.WinError()
-            return free.value
-    else:
-        sickrage.app.log.info("Unable to determine free space on your OS")
-        return True
-
+    sickrage.app.log.debug(u'Trying to determine free space on destination drive')
     if not os.path.isfile(src):
-        sickrage.app.log.warning("A path to a file is required for the source. " + src + " is not a file.")
+        sickrage.app.log.warning('A path to a file is required for the source.'
+                                 ' {source} is not a file.', {'source': src})
         return True
 
     try:
-        diskfree = disk_usage(dest)
+        diskfree = get_disk_space_usage(dest, False)
+        if not diskfree:
+            sickrage.app.log.warning('Unable to determine the free space on your OS.')
+            return True
     except Exception:
-        sickrage.app.log.warning("Unable to determine free space, so I will assume there is enough.")
+        sickrage.app.log.warning('Unable to determine free space, assuming there is '
+                                 'enough.')
         return True
 
-    neededspace = int(os.path.getsize(src))
+    try:
+        neededspace = os.path.getsize(src)
+    except OSError as error:
+        sickrage.app.log.warning('Unable to determine needed space. Aborting.'
+                                 ' Error: {msg}', {'msg': error})
+        return False
 
     if oldfile:
         for f in oldfile:
@@ -1181,9 +1170,14 @@ def verify_freespace(src, dest, oldfile=None):
     if diskfree > neededspace:
         return True
     else:
-        sickrage.app.log.warning("Not enough free space: Needed: %s bytes ( %s ), found: %s bytes ( %s )"
-                                 % (neededspace, pretty_filesize(neededspace), diskfree,
-                                    pretty_filesize(diskfree)))
+        sickrage.app.log.warning(
+            'Not enough free space.'
+            ' Needed: {0} bytes ({1}),'
+            ' found: {2} bytes ({3})',
+            neededspace, pretty_file_size(neededspace),
+            diskfree, pretty_file_size(diskfree)
+        )
+
         return False
 
 
@@ -1207,7 +1201,7 @@ def pretty_time_delta(seconds):
     return time_delta
 
 
-def isFileLocked(checkfile, writeLockCheck=False):
+def is_file_locked(checkfile, writeLockCheck=False):
     """
     Checks to see if a file is locked. Performs three checks
         1. Checks if the file even exists
@@ -1245,32 +1239,33 @@ def isFileLocked(checkfile, writeLockCheck=False):
     return False
 
 
-def getDiskSpaceUsage(diskPath=None):
+def get_disk_space_usage(disk_path=None, pretty=True):
+    """Return the free space in human readable bytes for a given path or False if no path given.
+
+    :param disk_path: the filesystem path being checked
+    :param pretty: return as bytes if None
     """
-    returns the free space in human readable bytes for a given path or False if no path given
-    :param diskPath: the filesystem path being checked
-    """
-    if diskPath and os.path.exists(diskPath):
+    if disk_path and os.path.exists(disk_path):
         if platform.system() == 'Windows':
             free_bytes = ctypes.c_ulonglong(0)
-            ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(diskPath), None, None,
+            ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(disk_path), None, None,
                                                        ctypes.pointer(free_bytes))
-            return pretty_filesize(free_bytes.value)
+            return pretty_file_size(free_bytes.value) if pretty else free_bytes.value
         else:
-            st = os.statvfs(diskPath)
-            return pretty_filesize(st.f_bavail * st.f_frsize)
+            st = os.statvfs(disk_path)
+            file_size = st.f_bavail * st.f_frsize
+            return pretty_file_size(file_size) if pretty else file_size
     else:
         return False
 
 
-def getFreeSpace(directories):
+def get_free_space(directories):
     single = not isinstance(directories, (tuple, list))
     if single:
         directories = [directories]
 
     free_space = {}
     for folder in directories:
-
         size = None
         if os.path.isdir(folder):
             if os.name == 'nt':
@@ -1285,14 +1280,15 @@ def getFreeSpace(directories):
 
                 size = [s.f_blocks * s.f_frsize / (1024 * 1024), (s.f_bavail * s.f_frsize) / (1024 * 1024)]
 
-        if single: return size
+        if single:
+            return size
 
         free_space[folder] = size
 
     return free_space
 
 
-def restoreVersionedFile(backup_file, version):
+def restore_versioned_file(backup_file, version):
     """
     Restore a file version to original state
 
@@ -1393,7 +1389,7 @@ def bs4_parser(markup, features="html5lib", *args, **kwargs):
         _soup.clear(True)
 
 
-def getFileSize(file):
+def get_file_size(file):
     try:
         return os.path.getsize(file) / 1024 / 1024
     except:
@@ -1446,7 +1442,7 @@ def convert_size(size, default=0, units=None):
     return max(int(size), 0)
 
 
-def randomString(size=8, chars=string.ascii_uppercase + string.digits):
+def random_string(size=8, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for __ in range(size))
 
 
@@ -1638,10 +1634,10 @@ def memory_usage():
         try:
             import psutil
             p = psutil.Process(sickrage.app.pid)
-            return pretty_filesize(int(p.memory_info().rss))
+            return pretty_file_size(int(p.memory_info().rss))
         except ImportError:
             import resource
-            return pretty_filesize(int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss) * 1024)
+            return pretty_file_size(int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss) * 1024)
     except Exception:
         pass
 
@@ -1711,10 +1707,6 @@ def episode_num(season=None, episode=None, **kwargs):
     elif numbering == 'absolute':
         if not (season and episode) and (season or episode):
             return '{0:0>3}'.format(season or episode)
-
-
-def touch_file(file):
-    open(file, 'a').close()
 
 
 def strip_accents(name):

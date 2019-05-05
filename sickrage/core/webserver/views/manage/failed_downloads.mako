@@ -5,7 +5,7 @@
     import re
 
     import sickrage
-    from sickrage.core.helpers import pretty_filesize
+    from sickrage.core.helpers import pretty_file_size
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings, statusStrings, Overview
 %>
@@ -46,7 +46,7 @@
                                         <td class="text-nowrap">${hItem["release"]}</td>
                                         <td class="table-fit">
                                             % if hItem["size"] != -1:
-                                                ${pretty_filesize(hItem["size"])}
+                                                ${pretty_file_size(hItem["size"])}
                                             % else:
                                                 ?
                                             % endif

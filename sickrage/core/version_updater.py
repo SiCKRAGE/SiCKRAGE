@@ -29,7 +29,7 @@ from tempfile import NamedTemporaryFile
 from time import sleep
 
 import sickrage
-from sickrage.core.helpers import backupSR
+from sickrage.core.helpers import backup_app_data
 from sickrage.core.websession import WebSession
 from sickrage.core.websocket import WebSocketMessage
 from sickrage.notifiers import Notifiers
@@ -85,7 +85,7 @@ class VersionUpdater(object):
             if not os.path.isdir(backupDir):
                 os.mkdir(backupDir)
 
-            if backupSR(backupDir, keep_latest=True):
+            if backup_app_data(backupDir, keep_latest=True):
                 sickrage.app.log.info("Config backup successful, updating...")
                 sickrage.app.alerts.message(_('Updater'),
                                             _('Config backup successful, updating...'))

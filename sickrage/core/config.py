@@ -40,8 +40,8 @@ import sickrage
 from sickrage.core.api import API
 from sickrage.core.api.account import AccountAPI
 from sickrage.core.common import SD, WANTED, SKIPPED, Quality
-from sickrage.core.helpers import makeDir, generate_secret, auto_type, get_lan_ip, \
-    extract_zipfile, try_int, checkbox_to_value, generateApiKey, backup_versioned_file, encryption, md5_file_hash
+from sickrage.core.helpers import make_dir, generate_secret, auto_type, get_lan_ip, \
+    extract_zipfile, try_int, checkbox_to_value, generate_api_key, backup_versioned_file, encryption, md5_file_hash
 from sickrage.core.websession import WebSession
 
 
@@ -718,7 +718,7 @@ class Config(object):
                 'web_use_gzip': True,
                 'dailysearch_frequency': 40,
                 'ignore_words': 'german,french,core2hd,dutch,swedish,reenc,MrLss',
-                'api_key': self.api_key or generateApiKey(),
+                'api_key': self.api_key or generate_api_key(),
                 'check_propers_interval': 'daily',
                 'nzb_method': 'blackhole',
                 'web_cookie_secret': self.web_cookie_secret or generate_secret(),
@@ -1062,7 +1062,7 @@ class Config(object):
             return True
 
         if os.path.normpath(self.https_cert) != os.path.normpath(https_cert):
-            if makeDir(os.path.dirname(os.path.abspath(https_cert))):
+            if make_dir(os.path.dirname(os.path.abspath(https_cert))):
                 self.https_cert = os.path.normpath(https_cert)
                 sickrage.app.log.info("Changed https cert path to " + https_cert)
             else:
@@ -1082,7 +1082,7 @@ class Config(object):
             return True
 
         if os.path.normpath(self.https_key) != os.path.normpath(https_key):
-            if makeDir(os.path.dirname(os.path.abspath(https_key))):
+            if make_dir(os.path.dirname(os.path.abspath(https_key))):
                 self.https_key = os.path.normpath(https_key)
                 sickrage.app.log.info("Changed https key path to " + https_key)
             else:
@@ -1102,7 +1102,7 @@ class Config(object):
             return True
 
         if os.path.normpath(self.nzb_dir) != os.path.normpath(nzb_dir):
-            if makeDir(nzb_dir):
+            if make_dir(nzb_dir):
                 self.nzb_dir = os.path.normpath(nzb_dir)
                 sickrage.app.log.info("Changed NZB folder to " + nzb_dir)
             else:
@@ -1122,7 +1122,7 @@ class Config(object):
             return True
 
         if os.path.normpath(self.torrent_dir) != os.path.normpath(torrent_dir):
-            if makeDir(torrent_dir):
+            if make_dir(torrent_dir):
                 self.torrent_dir = os.path.normpath(torrent_dir)
                 sickrage.app.log.info("Changed torrent folder to " + torrent_dir)
             else:
@@ -1142,7 +1142,7 @@ class Config(object):
             return True
 
         if os.path.normpath(self.tv_download_dir) != os.path.normpath(tv_download_dir):
-            if makeDir(tv_download_dir):
+            if make_dir(tv_download_dir):
                 self.tv_download_dir = os.path.normpath(tv_download_dir)
                 sickrage.app.log.info("Changed TV download folder to " + tv_download_dir)
             else:

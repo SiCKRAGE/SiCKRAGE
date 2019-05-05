@@ -6,7 +6,7 @@
 
     import sickrage
     from sickrage.core.api import API
-    from sickrage.core.helpers import pretty_filesize, memory_usage
+    from sickrage.core.helpers import pretty_file_size, memory_usage
 %>
 
 <%namespace file="../includes/modals.mako" import="mainModals"/>
@@ -373,7 +373,7 @@
             <div>
                 % if overall_stats:
                 <%
-                    total_size = pretty_filesize(overall_stats['total_size'])
+                    total_size = pretty_file_size(overall_stats['total_size'])
                     ep_downloaded = overall_stats['episodes']['downloaded']
                     ep_snatched = overall_stats['episodes']['snatched']
                     ep_total = overall_stats['episodes']['total']

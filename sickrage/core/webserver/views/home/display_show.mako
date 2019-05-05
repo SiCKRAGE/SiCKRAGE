@@ -9,7 +9,7 @@
     import sickrage.subtitles
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, FAILED, DOWNLOADED
     from sickrage.core.common import Quality, qualityPresets, statusStrings, Overview
-    from sickrage.core.helpers import anon_url, srdatetime, pretty_filesize, get_size
+    from sickrage.core.helpers import anon_url, srdatetime, pretty_file_size, get_size
     from sickrage.core.media.util import showImage
     from sickrage.indexers import IndexerApi
 %>
@@ -268,7 +268,7 @@
 
                                 <tr>
                                     <td class="show-legend">${_('Size:')}</td>
-                                    <td>${pretty_filesize(show.show_size)}</td>
+                                    <td>${pretty_file_size(show.show_size)}</td>
                                 </tr>
 
                                 <tr>
@@ -650,7 +650,7 @@
                 </td>
 
                 <td class="table-fit text-nowrap col-ep">
-                    ${pretty_filesize(epResult.file_size)}
+                    ${pretty_file_size(epResult.file_size)}
                 </td>
 
                 <td class="table-fit col-airdate">

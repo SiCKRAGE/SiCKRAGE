@@ -23,7 +23,7 @@ from abc import ABC
 from tornado.web import authenticated
 
 import sickrage
-from sickrage.core.helpers import backupSR, checkbox_to_value, restoreConfigZip
+from sickrage.core.helpers import backup_app_data, checkbox_to_value, restore_config_zip
 from sickrage.core.webserver import ConfigHandler
 from sickrage.core.webserver.handlers.base import BaseHandler
 
@@ -50,7 +50,7 @@ class ConfigBackupHandler(BaseHandler, ABC):
         final_result = ''
 
         if backup_dir:
-            if backupSR(backup_dir):
+            if backup_app_data(backup_dir):
                 final_result += _("Backup SUCCESSFUL")
             else:
                 final_result += _("Backup FAILED!")
@@ -80,7 +80,7 @@ class ConfigRestoreHandler(BaseHandler, ABC):
             restore_config = checkbox_to_value(restore_config)
             restore_cache = checkbox_to_value(restore_cache)
 
-            if restoreConfigZip(source, target_dir, restore_database, restore_config, restore_cache):
+            if restore_config_zip(source, target_dir, restore_database, restore_config, restore_cache):
                 final_result += _("Successfully extracted restore files to " + target_dir)
                 final_result += _("<br>Restart sickrage to complete the restore.")
             else:

@@ -29,7 +29,7 @@ from tornado.web import authenticated
 
 import sickrage
 from sickrage.core.common import Quality
-from sickrage.core.helpers import sanitizeFileName, makeDir, chmod_as_parent, checkbox_to_value, \
+from sickrage.core.helpers import sanitize_file_name, make_dir, chmod_as_parent, checkbox_to_value, \
     try_int
 from sickrage.core.helpers.anidb import short_group_names
 from sickrage.core.imdb_popular import imdbPopular
@@ -351,7 +351,7 @@ class AddShowByIDHandler(BaseHandler, ABC):
             sickrage.app.log.warning("There was an error creating the show, no root directory setting found")
             return self.write(_('No root directories setup, please go back and add one.'))
 
-        show_dir = os.path.join(location, sanitizeFileName(show_name))
+        show_dir = os.path.join(location, sanitize_file_name(show_name))
 
         response = await self.http_client.fetch(
             url_concat(
@@ -448,7 +448,7 @@ class AddNewShowHandler(BaseHandler, ABC):
         if fullShowPath:
             show_dir = os.path.normpath(fullShowPath)
         else:
-            show_dir = os.path.join(rootDir, sanitizeFileName(show_name))
+            show_dir = os.path.join(rootDir, sanitize_file_name(show_name))
             if add_show_year and not re.match(r'.*\(\d+\)$', show_dir):
                 show_dir = "{} ({})".format(show_dir, re.search(r'\d{4}', series_pieces[5]).group(0))
 
@@ -463,7 +463,7 @@ class AddNewShowHandler(BaseHandler, ABC):
             sickrage.app.log.info(
                 "Skipping initial creation of " + show_dir + " due to sickrage.CONFIG.ini setting")
         else:
-            dir_exists = makeDir(show_dir)
+            dir_exists = make_dir(show_dir)
             if not dir_exists:
                 sickrage.app.log.warning("Unable to create the folder " + show_dir + ", can't add the show")
                 sickrage.app.alerts.error(_("Unable to add show"),

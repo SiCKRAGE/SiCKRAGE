@@ -32,8 +32,8 @@ from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, dateT
 from sickrage.core.databases.main import MainDBBase
 from sickrage.core.exceptions import NoNFOException, \
     EpisodeNotFoundException, EpisodeDeletedException
-from sickrage.core.helpers import is_media_file, try_int, replaceExtension, \
-    touchFile, sanitizeSceneName, remove_non_release_groups, remove_extension, sanitizeFileName, \
+from sickrage.core.helpers import is_media_file, try_int, replace_extension, \
+    touch_file, sanitize_scene_name, remove_non_release_groups, remove_extension, sanitize_file_name, \
     safe_getattr, make_dirs, move_file, delete_empty_folders
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_seasonnotfound, indexer_error, indexer_episodenotfound
@@ -86,9 +86,11 @@ class TVEpisode(MainDBBase):
 
     @property
     def relatedEps(self):
-        if not hasattr(self, '_relatedEps'):
-            setattr(self, '_relatedEps', [])
-        return getattr(self, '_relatedEps')
+        return getattr(self, '_relatedEps', [])
+
+    @relatedEps.setter
+    def relatedEps(self, value):
+        setattr(self, '_relatedEps', value)
 
     def refresh_subtitles(self):
         """Look for subtitles files and refresh the subtitles property"""
@@ -345,7 +347,7 @@ class TVEpisode(MainDBBase):
                         Quality.status_from_name(self.location, anime=self.show.is_anime)))
                     self.status = Quality.status_from_name(self.location, anime=self.show.is_anime)
 
-            nfoFile = replaceExtension(self.location, "nfo")
+            nfoFile = replace_extension(self.location, "nfo")
             sickrage.app.log.debug(str(self.show.indexer_id) + ": Using NFO name " + nfoFile)
 
             self.hasnfo = False
@@ -405,24 +407,10 @@ class TVEpisode(MainDBBase):
                     self.hasnfo = True
 
             self.hastbn = False
-            if os.path.isfile(replaceExtension(nfoFile, "tbn")):
+            if os.path.isfile(replace_extension(nfoFile, "tbn")):
                 self.hastbn = True
 
         return self.hasnfo
-
-    def __str__(self):
-        toReturn = ""
-        toReturn += "%r - S%02rE%02r - %r\n" % (self.show.name, self.season, self.episode, self.name)
-        toReturn += "location: %r\n" % self.location
-        toReturn += "description: %r\n" % self.description
-        toReturn += "subtitles: %r\n" % ",".join(self.subtitles)
-        toReturn += "subtitles_searchcount: %r\n" % self.subtitles_searchcount
-        toReturn += "subtitles_lastsearch: %r\n" % self.subtitles_lastsearch
-        toReturn += "airdate: %r\n" % self.airdate
-        toReturn += "hasnfo: %r\n" % self.hasnfo
-        toReturn += "hastbn: %r\n" % self.hastbn
-        toReturn += "status: %r\n" % self.status
-        return toReturn
 
     def createMetaFiles(self, force=False):
 
@@ -647,7 +635,7 @@ class TVEpisode(MainDBBase):
                     str(self.show.indexer_id) + ": About to modify date of '" + self.location +
                     "' to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
                 try:
-                    if touchFile(self.location, time.mktime(airdatetime)):
+                    if touch_file(self.location, time.mktime(airdatetime)):
                         sickrage.app.log.info(
                             str(self.show.indexer_id) + ": Changed modify date of " + os.path.basename(self.location)
                             + " to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
@@ -710,7 +698,7 @@ class TVEpisode(MainDBBase):
         ep_name = self._ep_name()
 
         def dot(name):
-            return sanitizeSceneName(name)
+            return sanitize_scene_name(name)
 
         def us(name):
             return re.sub('[ -]', '_', name)
@@ -821,9 +809,9 @@ class TVEpisode(MainDBBase):
         # do the replacements
         for cur_replacement in sorted(replace_map.keys(), reverse=True):
             result_name = result_name.replace(cur_replacement,
-                                              sanitizeFileName(replace_map[cur_replacement]))
+                                              sanitize_file_name(replace_map[cur_replacement]))
             result_name = result_name.replace(cur_replacement.lower(),
-                                              sanitizeFileName(replace_map[cur_replacement].lower()))
+                                              sanitize_file_name(replace_map[cur_replacement].lower()))
 
         return result_name
 
@@ -1015,7 +1003,7 @@ class TVEpisode(MainDBBase):
         # split off the dirs only, if they exist
         name_groups = re.split(r'[\\/]', pattern)
 
-        return sanitizeFileName(self._format_pattern(name_groups[-1], multi, anime_type))
+        return sanitize_file_name(self._format_pattern(name_groups[-1], multi, anime_type))
 
     def formatted_dir(self, pattern=None, multi=None):
         """
@@ -1086,3 +1074,18 @@ class TVEpisode(MainDBBase):
         delete_empty_folders(os.path.dirname(cur_path))
 
         return True
+
+    def __str__(self):
+        to_return = ""
+        to_return += "%r - S%02rE%02r - %r\n" % (self.show.name, self.season, self.episode, self.name)
+        to_return += "location: %r\n" % self.location
+        to_return += "description: %r\n" % self.description
+        to_return += "subtitles: %r\n" % ",".join(self.subtitles)
+        to_return += "subtitles_searchcount: %r\n" % self.subtitles_searchcount
+        to_return += "subtitles_lastsearch: %r\n" % self.subtitles_lastsearch
+        to_return += "airdate: %r\n" % self.airdate
+        to_return += "hasnfo: %r\n" % self.hasnfo
+        to_return += "hastbn: %r\n" % self.hastbn
+        to_return += "status: %r\n" % self.status
+
+        return to_return

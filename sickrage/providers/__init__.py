@@ -41,7 +41,7 @@ from sickrage.core.classes import NZBSearchResult, SearchResult, TorrentSearchRe
 from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT, cpu_presets
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import EpisodeNotFoundException
-from sickrage.core.helpers import chmod_as_parent, sanitizeFileName, clean_url, bs4_parser, \
+from sickrage.core.helpers import chmod_as_parent, sanitize_file_name, clean_url, bs4_parser, \
     validate_url, try_int, convert_size
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.episode.helpers import find_episode
@@ -734,7 +734,7 @@ class TorrentProvider(GenericProvider):
         return (title or '').replace(' ', '.')
 
     def make_filename(self, name):
-        return os.path.join(sickrage.app.config.torrent_dir, '{}.torrent'.format(sanitizeFileName(name)))
+        return os.path.join(sickrage.app.config.torrent_dir, '{}.torrent'.format(sanitize_file_name(name)))
 
     def add_trackers(self, result):
         """
@@ -844,7 +844,7 @@ class NZBProvider(GenericProvider):
                 sickrage.app.log.error("Error trying to save NZB to black hole: {}".format(e))
 
     def make_filename(self, name):
-        return os.path.join(sickrage.app.config.nzb_dir, '{}.nzb'.format(sanitizeFileName(name)))
+        return os.path.join(sickrage.app.config.nzb_dir, '{}.nzb'.format(sanitize_file_name(name)))
 
     @classmethod
     def getProviders(cls):

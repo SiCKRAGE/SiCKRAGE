@@ -26,7 +26,7 @@ import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.common import SKIPPED, WANTED, UNKNOWN
 from sickrage.core.exceptions import EpisodeNotFoundException
-from sickrage.core.helpers import sanitizeFileName, makeDir, chmod_as_parent
+from sickrage.core.helpers import sanitize_file_name, make_dir, chmod_as_parent
 from sickrage.core.queues.search import BacklogQueueItem
 from sickrage.core.traktapi import TraktAPI
 from sickrage.core.tv.episode import TVEpisode
@@ -423,8 +423,8 @@ class TraktSearcher(object):
                 location = None
 
             if location:
-                showPath = os.path.join(location, sanitizeFileName(name))
-                dir_exists = makeDir(showPath)
+                showPath = os.path.join(location, sanitize_file_name(name))
+                dir_exists = make_dir(showPath)
 
                 if not dir_exists:
                     sickrage.app.log.warning("Unable to create the folder %s , can't add the show" % showPath)

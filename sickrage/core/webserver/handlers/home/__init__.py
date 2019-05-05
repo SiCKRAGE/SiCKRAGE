@@ -38,7 +38,7 @@ from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AnidbAdbaConnectionException, CantRefreshShowException, NoNFOException, \
     CantUpdateShowException, CantRemoveShowException, EpisodeDeletedException, EpisodeNotFoundException, \
     MultipleEpisodesInDatabaseException
-from sickrage.core.helpers import clean_url, clean_host, clean_hosts, getDiskSpaceUsage, checkbox_to_value, try_int
+from sickrage.core.helpers import clean_url, clean_host, clean_hosts, get_disk_space_usage, checkbox_to_value, try_int
 from sickrage.core.helpers.anidb import get_release_groups_for_anime, short_group_names
 from sickrage.core.helpers.srdatetime import srDateTime
 from sickrage.core.queues.search import BacklogQueueItem, FailedQueueItem, ManualSearchQueueItem, MANUAL_SEARCH_HISTORY
@@ -665,7 +665,7 @@ class GetPushbulletDevicesHandler(BaseHandler, ABC):
 class StatusHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        tvdir_free = getDiskSpaceUsage(sickrage.app.config.tv_download_dir)
+        tvdir_free = get_disk_space_usage(sickrage.app.config.tv_download_dir)
         root_dir = {}
         if sickrage.app.config.root_dirs:
             backend_pieces = sickrage.app.config.root_dirs.split('|')
@@ -675,7 +675,7 @@ class StatusHandler(BaseHandler, ABC):
 
         if len(backend_dirs):
             for subject in backend_dirs:
-                root_dir[subject] = getDiskSpaceUsage(subject)
+                root_dir[subject] = get_disk_space_usage(subject)
 
         return self.render(
             "/home/status.mako",

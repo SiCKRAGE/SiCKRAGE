@@ -45,8 +45,8 @@ from sickrage.core.common import SD, SKIPPED, WANTED
 from sickrage.core.config import Config
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.databases.main import MainDB
-from sickrage.core.helpers import generate_secret, makeDir, get_lan_ip, restoreSR, \
-    getDiskSpaceUsage, getFreeSpace, launch_browser, torrent_webui_url, encryption
+from sickrage.core.helpers import generate_secret, make_dir, get_lan_ip, restore_app_data, \
+    get_disk_space_usage, get_free_space, launch_browser, torrent_webui_url, encryption
 from sickrage.core.logger import Logger
 from sickrage.core.nameparser.validator import check_force_season_folders
 from sickrage.core.processors import auto_postprocessor
@@ -197,7 +197,7 @@ class Core(object):
 
         # Check if we need to perform a restore first
         if os.path.exists(os.path.abspath(os.path.join(self.data_dir, 'restore'))):
-            success = restoreSR(os.path.abspath(os.path.join(self.data_dir, 'restore')), self.data_dir)
+            success = restore_app_data(os.path.abspath(os.path.join(self.data_dir, 'restore')), self.data_dir)
             self.log.info("Restoring SiCKRAGE backup: %s!" % ("FAILED", "SUCCESSFUL")[success])
             if success:
                 shutil.rmtree(os.path.abspath(os.path.join(self.data_dir, 'restore')), ignore_errors=True)
@@ -248,7 +248,7 @@ class Core(object):
 
         # Check available space
         try:
-            total_space, available_space = getFreeSpace(self.data_dir)
+            total_space, available_space = get_free_space(self.data_dir)
             if available_space < 100:
                 self.log.error('Shutting down as SiCKRAGE needs some space to work. You\'ll get corrupted data '
                                'otherwise. Only %sMB left', available_space)

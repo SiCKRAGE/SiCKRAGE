@@ -24,7 +24,7 @@ from abc import ABC
 from tornado.web import authenticated
 
 import sickrage
-from sickrage.core.helpers import readFileBuffered
+from sickrage.core.helpers import read_file_buffered
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
@@ -130,7 +130,7 @@ class LogsViewHandler(BaseHandler, ABC):
         try:
             for logFile in [x for x in log_files if os.path.isfile(x)]:
                 data += list(reversed(re.findall("((?:^.+?{}.+?$))".format(log_search),
-                                                 "\n".join(next(readFileBuffered(logFile, reverse=True)).splitlines()),
+                                                 "\n".join(next(read_file_buffered(logFile, reverse=True)).splitlines()),
                                                  re.M + re.I)))
                 max_lines -= len(data)
                 if len(data) == max_lines:

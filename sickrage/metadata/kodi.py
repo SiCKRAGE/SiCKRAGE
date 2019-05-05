@@ -20,7 +20,7 @@
 
 import os
 
-from sickrage.core.helpers import replaceExtension
+from sickrage.core.helpers import replace_extension
 from sickrage.metadata.kodi_12plus import KODI_12PlusMetadata
 
 
@@ -98,7 +98,7 @@ class KODIMetadata(KODI_12PlusMetadata):
         ep_obj: a TVEpisode instance for which to create the thumbnail
         """
         if os.path.isfile(ep_obj.location):
-            tbn_filename = replaceExtension(ep_obj.location, 'tbn')
+            tbn_filename = replace_extension(ep_obj.location, 'tbn')
         else:
             return None
 

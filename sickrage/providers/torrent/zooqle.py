@@ -22,7 +22,7 @@ import re
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import try_int, show_names, sanitizeSceneName
+from sickrage.core.helpers import try_int, show_names, sanitize_scene_name
 from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.providers import TorrentProvider
 
@@ -76,7 +76,7 @@ class ZooqleProvider(TorrentProvider):
 
         for show_name in set(show_names.all_possible_show_names(show_id)):
             for sep in ' ', ' - ':
-                ep_string = sanitizeSceneName(show_name) + sep
+                ep_string = sanitize_scene_name(show_name) + sep
                 if episode_obj.show.air_by_date:
                     ep_string += str(episode_obj.airdate)
                 elif episode_obj.show.sports:

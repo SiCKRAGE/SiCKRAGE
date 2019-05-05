@@ -25,7 +25,7 @@ from xml.etree.ElementTree import Element, ElementTree, SubElement
 import sickrage
 from sickrage.core.common import dateFormat
 from sickrage.core.exceptions import ShowNotFoundException
-from sickrage.core.helpers import replaceExtension, indentXML, chmod_as_parent
+from sickrage.core.helpers import replace_extension, indent_xml, chmod_as_parent
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_episodenotfound, \
     indexer_error, indexer_seasonnotfound, indexer_shownotfound
@@ -82,11 +82,11 @@ class Mede8erMetadata(MediaBrowserMetadata):
         # self.eg_season_all_banner = "<i>not supported</i>"
 
     def get_episode_file_path(self, ep_obj):
-        return replaceExtension(ep_obj.location, self._ep_nfo_extension)
+        return replace_extension(ep_obj.location, self._ep_nfo_extension)
 
     @staticmethod
     def get_episode_thumb_path(ep_obj):
-        return replaceExtension(ep_obj.location, 'jpg')
+        return replace_extension(ep_obj.location, 'jpg')
 
     def _show_data(self, show_obj):
         """
@@ -194,7 +194,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
                 cur_actor = SubElement(cast, "actor")
                 cur_actor.text = actor['name'].strip()
 
-        indentXML(rootNode)
+        indent_xml(rootNode)
 
         data = ElementTree(rootNode)
 
@@ -336,7 +336,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
                     else:
                         Overview.text = Overview.text + "\r" + curEpToWrite.description
 
-        indentXML(rootNode)
+        indent_xml(rootNode)
         data = ElementTree(rootNode)
 
         return data

@@ -21,7 +21,7 @@ from abc import ABC
 from tornado.web import authenticated
 
 import sickrage
-from sickrage.core.helpers import argToBool
+from sickrage.core.helpers import arg_to_bool
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
@@ -46,12 +46,12 @@ class HomeProcessEpisodeHandler(BaseHandler, ABC):
             'nzbname': self.get_body_argument('nzbname', ''),
             'process_method': self.get_body_argument('process_method'),
             'proc_type': self.get_body_argument('proc_type'),
-            'force': argToBool(self.get_body_argument('force', 'false')),
-            'is_priority': argToBool(self.get_body_argument('is_priority', 'false')),
-            'delete_on': argToBool(self.get_body_argument('delete_on', 'false')),
-            'force_next': argToBool(self.get_body_argument('force_next', 'false')),
-            'failed': argToBool(self.get_body_argument('failed', 'false')),
-            'quiet': argToBool(self.get_body_argument('quiet', 'false')),
+            'force': arg_to_bool(self.get_body_argument('force', 'false')),
+            'is_priority': arg_to_bool(self.get_body_argument('is_priority', 'false')),
+            'delete_on': arg_to_bool(self.get_body_argument('delete_on', 'false')),
+            'force_next': arg_to_bool(self.get_body_argument('force_next', 'false')),
+            'failed': arg_to_bool(self.get_body_argument('failed', 'false')),
+            'quiet': arg_to_bool(self.get_body_argument('quiet', 'false')),
         }
 
         proc_dir = pp_options.pop("proc_dir")

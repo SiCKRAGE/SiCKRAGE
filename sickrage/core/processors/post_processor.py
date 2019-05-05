@@ -31,10 +31,10 @@ from sickrage.core.common import Quality, ARCHIVED, DOWNLOADED
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import EpisodeNotFoundException, EpisodePostProcessingFailedException, \
     NoFreeSpaceException
-from sickrage.core.helpers import show_names, replaceExtension, makeDir, \
+from sickrage.core.helpers import show_names, replace_extension, make_dir, \
     chmod_as_parent, move_file, copy_file, hardlink_file, move_and_symlink_file, remove_non_release_groups, \
     remove_extension, \
-    isFileLocked, verify_freespace, delete_empty_folders, make_dirs, symlink, is_rar_file, glob_escape, touch_file
+    is_file_locked, verify_freespace, delete_empty_folders, make_dirs, symlink, is_rar_file, glob_escape, touch_file
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.helpers.anidb import get_anime_episode
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
@@ -365,11 +365,11 @@ class PostProcessor(object):
                 new_file_name = new_base_name + '.' + cur_extension
             # if we're not renaming we still want to change extensions sometimes
             else:
-                new_file_name = replaceExtension(cur_file_name, cur_extension)
+                new_file_name = replace_extension(cur_file_name, cur_extension)
 
             if sickrage.app.config.subtitles_dir and cur_extension in subtitle_extensions:
                 subs_new_path = os.path.join(new_path, sickrage.app.config.subtitles_dir)
-                dir_exists = makeDir(subs_new_path)
+                dir_exists = make_dir(subs_new_path)
                 if not dir_exists:
                     sickrage.app.log.warning("Unable to create subtitles folder " + subs_new_path)
                 else:
@@ -1017,7 +1017,7 @@ class PostProcessor(object):
                       "one")
 
         # try to find out if we have enough space to perform the copy or move action.
-        if not isFileLocked(self.file_path, False):
+        if not is_file_locked(self.file_path, False):
             if not verify_freespace(self.file_path, show.location, [ep_obj] + ep_obj.relatedEps):
                 self._log("Not enough space to continue PostProcessing, exiting", sickrage.app.log.WARNING)
                 # return False
@@ -1123,12 +1123,12 @@ class PostProcessor(object):
         try:
             # move the episode and associated files to the show dir
             if self.process_method == self.PROCESS_METHOD_COPY:
-                if isFileLocked(self.file_path, False):
+                if is_file_locked(self.file_path, False):
                     raise EpisodePostProcessingFailedException("File is locked for reading")
                 self._copy(self.file_path, dest_path, new_base_name, sickrage.app.config.move_associated_files,
                            sickrage.app.config.use_subtitles and show.subtitles)
             elif self.process_method == self.PROCESS_METHOD_MOVE:
-                if isFileLocked(self.file_path, True):
+                if is_file_locked(self.file_path, True):
                     raise EpisodePostProcessingFailedException("File is locked for reading/writing")
                 self._move(self.file_path, dest_path, new_base_name, sickrage.app.config.move_associated_files,
                            sickrage.app.config.use_subtitles and show.subtitles)
@@ -1136,7 +1136,7 @@ class PostProcessor(object):
                 self._hardlink(self.file_path, dest_path, new_base_name, sickrage.app.config.move_associated_files,
                                sickrage.app.config.use_subtitles and show.subtitles)
             elif self.process_method == self.PROCESS_METHOD_SYMLINK:
-                if isFileLocked(self.file_path, True):
+                if is_file_locked(self.file_path, True):
                     raise EpisodePostProcessingFailedException("File is locked for reading/writing")
                 self._moveAndSymlink(self.file_path, dest_path, new_base_name,
                                      sickrage.app.config.move_associated_files,

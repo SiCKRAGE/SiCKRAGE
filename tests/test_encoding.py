@@ -23,7 +23,7 @@ import os.path
 import unittest
 
 import tests
-from sickrage.core.helpers import sanitizeFileName
+from sickrage.core.helpers import sanitize_file_name
 
 
 class EncodingTests(tests.SiCKRAGETestCase):
@@ -32,7 +32,7 @@ class EncodingTests(tests.SiCKRAGETestCase):
         strings = ['Les Enfants De La T\xe9l\xe9', 'RT� One']
 
         for s in strings:
-            show_dir = os.path.join(rootDir, sanitizeFileName(s))
+            show_dir = os.path.join(rootDir, sanitize_file_name(s))
             self.assertIsInstance(show_dir, str)
 
 

@@ -26,7 +26,7 @@ from functools import partial
 import sickrage
 from sickrage.core.common import DOWNLOADED, Quality, SNATCHED, WANTED, \
     countryList
-from sickrage.core.helpers import sanitizeSceneName, strip_accents
+from sickrage.core.helpers import sanitize_scene_name, strip_accents
 from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.core.tv.show import find_show
 
@@ -156,10 +156,10 @@ def make_scene_show_search_strings(show_id, season=-1, anime=False):
 
     # scenify the names
     if anime:
-        sanitizeSceneNameAnime = partial(sanitizeSceneName, anime=True)
+        sanitizeSceneNameAnime = partial(sanitize_scene_name, anime=True)
         return map(sanitizeSceneNameAnime, showNames)
     else:
-        return map(sanitizeSceneName, showNames)
+        return map(sanitize_scene_name, showNames)
 
 
 def make_scene_season_search_string(show_id, episode_id, extraSearchType=None):

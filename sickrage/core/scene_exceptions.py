@@ -28,7 +28,7 @@ from sqlalchemy import orm
 
 import sickrage
 from sickrage.core.databases.cache import CacheDB
-from sickrage.core.helpers import full_sanitizeSceneName, sanitizeSceneName
+from sickrage.core.helpers import full_sanitize_scene_name, sanitize_scene_name
 from sickrage.core.tv.show.helpers import get_show_list
 from sickrage.core.websession import WebSession
 from sickrage.indexers import IndexerApi
@@ -234,7 +234,7 @@ def get_scene_exception_by_name_multiple(show_name):
         cur_indexer_id = int(cur_exception.indexer_id)
         cur_season = int(cur_exception.season)
 
-        if show_name.lower() == sanitizeSceneName(cur_exception_name).lower().replace('.', ' '):
+        if show_name.lower() == sanitize_scene_name(cur_exception_name).lower().replace('.', ' '):
             sickrage.app.log.debug("Scene exception lookup got indexer ID {}, using that".format(cur_indexer_id))
             out.append((cur_indexer_id, cur_season))
 
@@ -340,7 +340,7 @@ def check_against_names(name_in_question, show, season=-1):
     show_names.extend(get_scene_exceptions(show.indexer_id, season=season))
 
     for showName in show_names:
-        name_from_list = full_sanitizeSceneName(showName)
+        name_from_list = full_sanitize_scene_name(showName)
         if name_from_list == name_in_question:
             return True
 

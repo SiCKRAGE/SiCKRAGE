@@ -25,7 +25,7 @@ import xmlrpc.client
 import sickrage
 from sickrage.core import scene_exceptions
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import sanitizeSceneName, episode_num, try_int
+from sickrage.core.helpers import sanitize_scene_name, episode_num, try_int
 from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.providers import TorrentProvider
 
@@ -191,7 +191,7 @@ class BTNProvider(TorrentProvider):
                 set(scene_exceptions.get_scene_exceptions(episode_obj.show.indexer_id) + [episode_obj.show.name]))
             for name in name_exceptions:
                 # Search by name if we don't have tvdb id
-                params['series'] = sanitizeSceneName(name)
+                params['series'] = sanitize_scene_name(name)
                 searches.append(params)
 
         # extend air by date searches to include season numbering
