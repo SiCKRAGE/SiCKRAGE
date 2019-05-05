@@ -147,3 +147,6 @@ class srDatabase(object):
     def delete(self, table, *args, **kwargs):
         self.session.query(table).filter_by(**kwargs).filter(*args).delete()
         self.session.flush()
+
+    def flush(self):
+        self.session.flush()
