@@ -429,9 +429,9 @@ def search_providers(show_id, episode_ids, manualSearch=False, downCurQuality=Fa
             sickrage.app.log.debug("The quality of the season " + best_season_result.provider.type + " is " +
                                    Quality.qualityStrings[season_qual])
 
-            all_episode_ids = [x.indexer_id for x in show.episodes if x.season in searched_seasons]
+            all_episode_ids = set([x.indexer_id for x in show.episodes if x.season in searched_seasons])
 
-            sickrage.app.log.debug("Episode ID list: {}".format(','.join(all_episode_ids)))
+            sickrage.app.log.debug("Episode ID list: {}".format(','.join(map(str, all_episode_ids))))
 
             all_wanted = True
             any_wanted = False

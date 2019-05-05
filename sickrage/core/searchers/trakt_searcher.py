@@ -25,6 +25,7 @@ import datetime
 import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.common import SKIPPED, WANTED, UNKNOWN
+from sickrage.core.exceptions import EpisodeNotFoundException
 from sickrage.core.helpers import sanitizeFileName, makeDir, chmod_as_parent
 from sickrage.core.queues.search import BacklogQueueItem
 from sickrage.core.traktapi import TraktAPI
@@ -37,8 +38,8 @@ def set_episode_to_wanted(show, s, e):
     """
     Sets an episode to wanted, only if it is currently skipped
     """
-    epObj = show.get_episode(int(s), int(e))
-    if epObj:
+    try:
+        epObj = show.get_episode(int(s), int(e))
         if epObj.status != SKIPPED or not epObj.airdate > datetime.date.min:
             return
 
@@ -51,7 +52,8 @@ def set_episode_to_wanted(show, s, e):
 
         sickrage.app.log.info(
             "Starting backlog search for %s S%02dE%02d because some episodes were set to wanted" % (show.name, s, e))
-
+    except EpisodeNotFoundException as e:
+        pass
 
 class TraktSearcher(object):
     def __init__(self):

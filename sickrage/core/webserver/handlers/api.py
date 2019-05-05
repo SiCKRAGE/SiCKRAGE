@@ -67,7 +67,8 @@ from sickrage.core.common import ARCHIVED, DOWNLOADED, IGNORED, \
     Overview, Quality, SKIPPED, SNATCHED, SNATCHED_PROPER, UNAIRED, UNKNOWN, \
     WANTED, dateFormat, dateTimeFormat, get_quality_string, statusStrings, \
     timeFormat
-from sickrage.core.exceptions import CantUpdateShowException, CantRemoveShowException, CantRefreshShowException
+from sickrage.core.exceptions import CantUpdateShowException, CantRemoveShowException, CantRefreshShowException, \
+    EpisodeNotFoundException
 from sickrage.core.helpers import chmod_as_parent, makeDir, \
     pretty_filesize, sanitizeFileName, srdatetime, try_int, readFileBuffered, backupSR
 from sickrage.core.tv.show.helpers import find_show, get_show_list
@@ -857,8 +858,9 @@ class CMD_EpisodeSearch(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         # retrieve the episode object and fail if we can't get one
-        epObj = showObj.get_episode(int(self.s), int(self.e))
-        if isinstance(epObj, str):
+        try:
+            epObj = showObj.get_episode(int(self.s), int(self.e))
+        except EpisodeNotFoundException:
             return _responds(RESULT_FAILURE, msg="Episode not found")
 
         # make a queue item for it and put it on the queue
@@ -906,8 +908,8 @@ class CMD_EpisodeSetStatus(ApiCall):
 
     def run(self):
         """ Set the status of an episode or a season (when no episode is provided) """
-        showObj = find_show(int(self.indexer_id))
-        if not showObj:
+        show_obj = find_show(int(self.indexer_id))
+        if not show_obj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         # convert the string status to a int
@@ -919,15 +921,14 @@ class CMD_EpisodeSetStatus(ApiCall):
             # the allowed values has at least one item that could not be matched against the internal status strings
             raise ApiError("The status string could not be matched to a status. Report to Devs!")
 
-        ep_list = []
         if self.e:
-            epObj = showObj.get_episode(self.s, self.e)
-            if epObj is None:
+            try:
+                ep_list = [show_obj.get_episode(self.s, self.e)]
+            except EpisodeNotFoundException as e:
                 return _responds(RESULT_FAILURE, msg="Episode not found")
-            ep_list = [epObj]
         else:
             # get all episode numbers frome self,season
-            ep_list = showObj.get_all_episodes(season=self.s)
+            ep_list = show_obj.get_all_episodes(season=self.s)
 
         def _epResult(result_code, ep, msg=""):
             return {'season': ep.season, 'episode': ep.episode, 'status': _get_status_strings(ep.status),
@@ -971,8 +972,8 @@ class CMD_EpisodeSetStatus(ApiCall):
         extra_msg = ""
         if start_backlog:
             for season, segment in segments.items():
-                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(showObj, segment))
-                sickrage.app.log.info("Starting backlog for " + showObj.name + " season " + str(
+                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(show_obj, segment))
+                sickrage.app.log.info("Starting backlog for " + show_obj.name + " season " + str(
                     season) + " because some episodes were set to WANTED")
 
             extra_msg = " Backlog started"
@@ -1010,15 +1011,16 @@ class CMD_SubtitleSearch(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         # retrieve the episode object and fail if we can't get one
-        epObj = showObj.get_episode(int(self.s), int(self.e))
-        if isinstance(epObj, str):
+        try:
+            epObj = showObj.get_episode(int(self.s), int(self.e))
+        except EpisodeNotFoundException as e:
             return _responds(RESULT_FAILURE, msg="Episode not found")
 
         # try do download subtitles for that episode
         previous_subtitles = epObj.subtitles
 
         try:
-            subtitles = epObj.download_subtitles()
+            epObj.download_subtitles()
         except Exception:
             return _responds(RESULT_FAILURE, msg='Unable to find subtitles')
 

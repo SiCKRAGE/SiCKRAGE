@@ -36,7 +36,8 @@ from sickrage.core.common import Overview, Quality, cpu_presets, statusStrings, 
     SKIPPED
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AnidbAdbaConnectionException, CantRefreshShowException, NoNFOException, \
-    CantUpdateShowException, CantRemoveShowException, EpisodeDeletedException
+    CantUpdateShowException, CantRemoveShowException, EpisodeDeletedException, EpisodeNotFoundException, \
+    MultipleEpisodesInDatabaseException
 from sickrage.core.helpers import clean_url, clean_host, clean_hosts, getDiskSpaceUsage, checkbox_to_value, try_int
 from sickrage.core.helpers.anidb import get_release_groups_for_anime, short_group_names
 from sickrage.core.helpers.srdatetime import srDateTime
@@ -63,14 +64,14 @@ def _get_episode(show, season=None, episode=None, absolute=None):
     if show_obj is None:
         return _("Invalid show paramaters")
 
-    if absolute:
-        ep_obj = show_obj.get_episode(absolute_number=int(absolute))
-    elif season and episode:
-        ep_obj = show_obj.get_episode(int(season), int(episode))
-    else:
-        return _("Invalid paramaters")
-
-    if ep_obj is None:
+    try:
+        if absolute:
+            ep_obj = show_obj.get_episode(absolute_number=int(absolute))
+        elif season and episode:
+            ep_obj = show_obj.get_episode(int(season), int(episode))
+        else:
+            return _("Invalid paramaters")
+    except (EpisodeNotFoundException, MultipleEpisodesInDatabaseException):
         return _("Episode couldn't be retrieved")
 
     return ep_obj
@@ -1466,8 +1467,9 @@ class DeleteEpisodeHandler(BaseHandler, ABC):
                             ep_info[0], ep_info[1]))
                     continue
 
-                ep_obj = show_obj.get_episode(int(ep_info[0]), int(ep_info[1]))
-                if not ep_obj:
+                try:
+                    ep_obj = show_obj.get_episode(int(ep_info[0]), int(ep_info[1]))
+                except EpisodeNotFoundException as e:
                     return self._genericMessage(_("Error"), _("Episode couldn't be retrieved"))
 
                 try:
@@ -1526,9 +1528,9 @@ class SetStatusHandler(BaseHandler, ABC):
                             ep_info[0], ep_info[1]))
                     continue
 
-                ep_obj = show_obj.get_episode(int(ep_info[0]), int(ep_info[1]))
-
-                if not ep_obj:
+                try:
+                    ep_obj = show_obj.get_episode(int(ep_info[0]), int(ep_info[1]))
+                except EpisodeNotFoundException as e:
                     return self._genericMessage(_("Error"), _("Episode couldn't be retrieved"))
 
                 if int(status) in [WANTED, FAILED]:

@@ -293,7 +293,8 @@ class QueueItemAdd(ShowQueueItem):
             if not s:
                 return self._finish_early()
 
-            # this usually only happens if they have an NFO in their show dir which gave us a Indexer ID that has no proper english version of the show
+            # this usually only happens if they have an NFO in their show dir which gave us a Indexer ID that has no
+            # proper english version of the show
             if not getattr(s, 'seriesname'):
                 sickrage.app.log.warning(
                     "Show in {} has no name on {}, probably the wrong language used to search with".format(self.showDir,
@@ -589,7 +590,7 @@ class QueueItemUpdate(ShowQueueItem):
                     try:
                         self.show.get_episode(curSeason, curEpisode).deleteEpisode()
                     except EpisodeDeletedException:
-                        pass
+                        continue
 
         # cleanup
         scrub(DBEpList)

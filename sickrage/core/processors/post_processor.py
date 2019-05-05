@@ -766,17 +766,17 @@ class PostProcessor(object):
 
             # now that we've figured out which episode this file is just load it manually
             try:
-                curEp = show.get_episode(season, cur_episode)
+                cur_ep = show.get_episode(season, cur_episode)
             except EpisodeNotFoundException as e:
                 self._log("Unable to create episode: {}".format(e)), sickrage.app.log.DEBUG
                 raise EpisodePostProcessingFailedException()
 
             # associate all the episodes together under a single root episode
             if root_ep is None:
-                root_ep = curEp
+                root_ep = cur_ep
                 root_ep.relatedEps = []
-            elif curEp not in root_ep.relatedEps:
-                root_ep.relatedEps.append(curEp)
+            elif cur_ep not in root_ep.relatedEps:
+                root_ep.relatedEps.append(cur_ep)
 
         return root_ep
 

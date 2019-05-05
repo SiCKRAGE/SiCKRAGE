@@ -40,6 +40,7 @@ from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.classes import NZBSearchResult, SearchResult, TorrentSearchResult
 from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT, cpu_presets
 from sickrage.core.databases.main import MainDB
+from sickrage.core.exceptions import EpisodeNotFoundException
 from sickrage.core.helpers import chmod_as_parent, sanitizeFileName, clean_url, bs4_parser, \
     validate_url, try_int, convert_size
 from sickrage.core.tv.episode import TVEpisode
@@ -420,7 +421,11 @@ class GenericProvider(object):
             # make sure we want the episode
             provider_result.episode_ids = []
             for epNo in actual_episodes:
-                provider_result_episode_obj = provider_result_show_obj.get_episode(actual_season, epNo)
+                try:
+                    provider_result_episode_obj = provider_result_show_obj.get_episode(actual_season, epNo)
+                except EpisodeNotFoundException:
+                    continue
+
                 if provider_result_show_obj.want_episode(provider_result_episode_obj.indexer_id,
                                                          provider_result.quality, manualSearch, downCurQuality):
                     provider_result.episode_ids.append(provider_result_episode_obj.indexer_id)

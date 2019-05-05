@@ -174,11 +174,11 @@ def split_nzb_result(result):
             parse_result_show_obj = find_show(parse_result.indexer_id)
             parse_result_episode_obj = parse_result_show_obj.get_episode(season, epNo)
             if not parse_result_show_obj.want_episode(parse_result_episode_obj.indexer_id, result.quality):
-                sickrage.app.log.info("Ignoring result {} because we don't want an episode that is {}".format(newNZB,
-                                                                                                              Quality.qualityStrings[
-                                                                                                                  result.quality]))
+                sickrage.app.log.info("Ignoring result {} because we don't want an episode "
+                                      "that is {}".format(newNZB, Quality.qualityStrings[result.quality]))
                 want_ep = False
                 break
+
         if not want_ep:
             continue
 

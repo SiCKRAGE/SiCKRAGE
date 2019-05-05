@@ -19,7 +19,7 @@ from tornado.ioloop import IOLoop
 
 import sickrage
 from sickrage.core.common import Quality, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST
-from sickrage.core.exceptions import FailedPostProcessingFailedException
+from sickrage.core.exceptions import FailedPostProcessingFailedException, EpisodeNotFoundException
 from sickrage.core.helpers import show_names
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
@@ -76,7 +76,10 @@ class FailedProcessor(object):
         sickrage.app.log.debug(" - " + str(parsed.air_date))
 
         for episode in parsed.episode_numbers:
-            episode_obj = parsed.show.get_episode(parsed.season_number, episode)
+            try:
+                episode_obj = parsed.show.get_episode(parsed.season_number, episode)
+            except EpisodeNotFoundException as e:
+                continue
 
             cur_status, cur_quality = Quality.split_composite_status(episode_obj.status)
             if cur_status not in {SNATCHED, SNATCHED_BEST, SNATCHED_PROPER}:
