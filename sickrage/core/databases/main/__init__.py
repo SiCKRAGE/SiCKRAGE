@@ -50,35 +50,35 @@ class MainDB(srDatabase):
 
         indexer_id = Column(Integer, primary_key=True)
         imdb_id = Column(Text, index=True, unique=True)
-        rated = Column(Text)
-        title = Column(Text)
-        production = Column(Text)
-        website = Column(Text)
-        writer = Column(Text)
-        actors = Column(Text)
-        type = Column(Text)
-        votes = Column(Text)
-        seasons = Column(Integer)
-        poster = Column(Text)
-        director = Column(Text)
-        released = Column(Text)
-        awards = Column(Text)
-        genre = Column(Text)
-        rating = Column(Text)
-        language = Column(Text)
-        country = Column(Text)
-        runtime = Column(Text)
-        metascore = Column(Text)
-        year = Column(Integer)
-        plot = Column(Text)
-        last_update = Column(Integer)
+        rated = Column(Text, nullable=False)
+        title = Column(Text, nullable=False)
+        production = Column(Text, nullable=False)
+        website = Column(Text, nullable=False)
+        writer = Column(Text, nullable=False)
+        actors = Column(Text, nullable=False)
+        type = Column(Text, nullable=False)
+        votes = Column(Text, nullable=False)
+        seasons = Column(Integer, nullable=False)
+        poster = Column(Text, nullable=False)
+        director = Column(Text, nullable=False)
+        released = Column(Text, nullable=False)
+        awards = Column(Text, nullable=False)
+        genre = Column(Text, nullable=False)
+        rating = Column(Text, nullable=False)
+        language = Column(Text, nullable=False)
+        country = Column(Text, nullable=False)
+        runtime = Column(Text, nullable=False)
+        metascore = Column(Text, nullable=False)
+        year = Column(Integer, nullable=False)
+        plot = Column(Text, nullable=False)
+        last_update = Column(Integer, nullable=False)
 
     class XEMRefresh(MainDBBase):
         __tablename__ = 'xem_refresh'
 
         indexer_id = Column(Integer, primary_key=True)
         indexer = Column(Integer, primary_key=True)
-        last_refreshed = Column(Integer)
+        last_refreshed = Column(Integer, nullable=False)
 
     class SceneNumbering(MainDBBase):
         __tablename__ = 'scene_numbering'
@@ -87,32 +87,32 @@ class MainDB(srDatabase):
         indexer_id = Column(Integer, primary_key=True)
         season = Column(Integer, primary_key=True)
         episode = Column(Integer, primary_key=True)
-        scene_season = Column(Integer)
-        scene_episode = Column(Integer)
-        absolute_number = Column(Integer)
-        scene_absolute_number = Column(Integer)
+        scene_season = Column(Integer, nullable=False)
+        scene_episode = Column(Integer, nullable=False)
+        absolute_number = Column(Integer, nullable=False)
+        scene_absolute_number = Column(Integer, nullable=False)
 
     class IndexerMapping(MainDBBase):
         __tablename__ = 'indexer_mapping'
 
         indexer_id = Column(Integer, primary_key=True)
         indexer = Column(Integer, primary_key=True)
-        mindexer_id = Column(Integer)
+        mindexer_id = Column(Integer, nullable=False)
         mindexer = Column(Integer, primary_key=True)
 
     class Blacklist(MainDBBase):
         __tablename__ = 'blacklist'
 
         id = Column(Integer, primary_key=True)
-        show_id = Column(Integer)
-        keyword = Column(Text)
+        show_id = Column(Integer, nullable=False)
+        keyword = Column(Text, nullable=False)
 
     class Whitelist(MainDBBase):
         __tablename__ = 'whitelist'
 
         id = Column(Integer, primary_key=True)
-        show_id = Column(Integer)
-        keyword = Column(Text)
+        show_id = Column(Integer, nullable=False)
+        keyword = Column(Text, nullable=False)
 
     class History(MainDBBase):
         __tablename__ = 'history'
@@ -131,18 +131,18 @@ class MainDB(srDatabase):
         __tablename__ = 'failed_snatch_history'
 
         id = Column(Integer, primary_key=True)
-        date = Column(Integer)
-        size = Column(Integer)
-        release = Column(Text)
-        provider = Column(Text)
-        showid = Column(Integer)
-        episode_id = Column(Integer)
-        old_status = Column(Integer)
+        date = Column(Integer, nullable=False)
+        size = Column(Integer, nullable=False)
+        release = Column(Text, nullable=False)
+        provider = Column(Text, nullable=False)
+        showid = Column(Integer, nullable=False)
+        episode_id = Column(Integer, nullable=False)
+        old_status = Column(Integer, nullable=False)
 
     class FailedSnatch(MainDBBase):
         __tablename__ = 'failed_snatches'
 
         id = Column(Integer, primary_key=True)
-        release = Column(Text)
-        size = Column(Integer)
-        provider = Column(Text)
+        release = Column(Text, nullable=False)
+        size = Column(Integer, nullable=False)
+        provider = Column(Text, nullable=False)

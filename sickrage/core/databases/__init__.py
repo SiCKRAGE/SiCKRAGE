@@ -122,13 +122,13 @@ class srDatabase(object):
                 try:
                     self.delete(self.tables[table])
                 except Exception:
-                    pass
+                    self.session.rollback()
 
                 for row in rows:
                     try:
                         self.add(self.tables[table](**row))
                     except Exception as e:
-                        pass
+                        self.session.rollback()
 
             shutil.move(migrate_file, backup_file)
 
@@ -142,6 +142,8 @@ class srDatabase(object):
 
     def add(self, instance):
         self.session.add(instance)
+        self.session.flush()
 
     def delete(self, table, *args, **kwargs):
         self.session.query(table).filter_by(**kwargs).filter(*args).delete()
+        self.session.flush()
