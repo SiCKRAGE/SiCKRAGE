@@ -33,13 +33,14 @@ class BlackAndWhiteList(object):
         self.show_id = show_id
         self.load()
 
-    def load(self):
+    @MainDB.with_session
+    def load(self, session=None):
         """
         Builds black and whitelist
         """
         sickrage.app.log.debug('Building black and white list for ' + str(self.show_id))
-        self.blacklist = self._load_list(MainDB.Blacklist.query.filter_by(show_id=self.show_id))
-        self.whitelist = self._load_list(MainDB.Whitelist.query.filter_by(show_id=self.show_id))
+        self.blacklist = self._load_list(session.query(MainDB.Blacklist).filter_by(show_id=self.show_id))
+        self.whitelist = self._load_list(session.query(MainDB.Whitelist).filter_by(show_id=self.show_id))
 
     def _add_keywords(self, table, values):
         """

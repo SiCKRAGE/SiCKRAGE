@@ -62,18 +62,17 @@ class History:
         for show in get_show_list():
             if limit == 0:
                 if len(actions) > 0:
-                    dbData = MainDB.History.query.filter_by(showid=show.indexer_id).filter(
+                    dbData = sickrage.app.main_db.session().query(MainDB.History).filter_by(showid=show.indexer_id).filter(
                         MainDB.History.action.in_(actions)).order_by(MainDB.History.date.desc())
                 else:
-                    dbData = MainDB.History.query.filter_by(showid=show.indexer_id).order_by(MainDB.History.date.desc())
+                    dbData = sickrage.app.main_db.session().query(MainDB.History).filter_by(showid=show.indexer_id).order_by(MainDB.History.date.desc())
             else:
                 if len(actions) > 0:
-                    dbData = MainDB.History.query.filter_by(showid=show.indexer_id).filter(
+                    dbData = sickrage.app.main_db.session().query(MainDB.History).filter_by(showid=show.indexer_id).filter(
                         MainDB.History.action.in_(actions)).order_by(MainDB.History.date.desc()).limit(limit)
                 else:
-                    dbData = MainDB.History.query.filter_by(showid=show.indexer_id).order_by(
-                        MainDB.History.date.desc()).limit(
-                        limit)
+                    dbData = sickrage.app.main_db.session().query(MainDB.History).filter_by(showid=show.indexer_id).order_by(
+                        MainDB.History.date.desc()).limit(limit)
 
             for result in dbData:
                 data.append({
@@ -218,7 +217,7 @@ class FailedHistory(object):
 
         release = FailedHistory.prepare_failed_name(release)
 
-        dbData = MainDB.FailedSnatchHistory.query.filter_by(release=release).all()
+        dbData = sickrage.app.main_db.session().query(MainDB.FailedSnatchHistory).filter_by(release=release).all()
 
         if len(dbData) == 0:
             sickrage.app.log.warning("{}, Release not found in snatch history.".format(release))
@@ -272,13 +271,13 @@ class FailedHistory(object):
         """
 
         release = FailedHistory.prepare_failed_name(release)
-        return MainDB.FailedSnatch.query.filter_by(release=release, size=size, provider=provider).count() > 0
+        return sickrage.app.main_db.session().query(MainDB.FailedSnatch).filter_by(release=release, size=size, provider=provider).count() > 0
 
     @staticmethod
     def revert_failed_episode(show_id, episode_id):
         """Restore the episodes of a failed download to their original state"""
         history_eps = dict(
-            (x.episode, x) for x in MainDB.FailedSnatchHistory.query.filter_by(showid=show_id, episode_id=episode_id))
+            (x.episode, x) for x in sickrage.app.main_db.session().query(MainDB.FailedSnatchHistory).filter_by(showid=show_id, episode_id=episode_id))
 
         episode_obj = find_episode(show_id, episode_id)
 
@@ -371,7 +370,7 @@ class FailedHistory(object):
 
         # Search for release in snatch history
         episode_obj = find_episode(show_id, episode_id)
-        for dbData in MainDB.FailedSnatchHistory.query.filter_by(showid=show_id, episode_id=episode_id):
+        for dbData in sickrage.app.main_db.session().query(MainDB.FailedSnatchHistory).filter_by(showid=show_id, episode_id=episode_id):
             release = str(dbData.release)
             provider = str(dbData.provider)
             date = dbData.date

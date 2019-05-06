@@ -18,11 +18,13 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 from sqlalchemy import orm
 
+import sickrage
+
 
 def find_episode(show_id, episode_id):
     from sickrage.core.tv.episode import TVEpisode
 
     try:
-        return TVEpisode.query.filter_by(showid=show_id, indexer_id=episode_id).one()
+        return sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=show_id, indexer_id=episode_id).one()
     except orm.exc.NoResultFound:
         return None

@@ -27,6 +27,7 @@ from dateutil import parser
 from sqlalchemy import orm
 
 import sickrage
+from sickrage.core.databases.main import MainDB
 from sickrage.core import scene_exceptions, common
 from sickrage.core.exceptions import MultipleShowObjectsException
 from sickrage.core.helpers import remove_extension, strip_accents
@@ -146,7 +147,8 @@ class NameParser(object):
                 else:
                     self.compiled_regexes.append((cur_pattern_num, cur_pattern_name, cur_regex))
 
-    def _parse_string(self, name, skip_scene_detection=False):
+    @MainDB.with_session
+    def _parse_string(self, name, skip_scene_detection=False, session=None):
         if not name:
             return
 
@@ -268,9 +270,7 @@ class NameParser(object):
             if best_result.is_air_by_date:
                 try:
                     from sickrage.core.tv.episode import TVEpisode
-                    dbData = TVEpisode.query.filter_by(showid=show_obj.indexer_id,
-                                                       indexer=show_obj.indexer,
-                                                       airdate=best_result.air_date).one()
+                    dbData = session.query(TVEpisode).filter_by(showid=show_obj.indexer_id, indexer=show_obj.indexer, airdate=best_result.air_date).one()
                     season_number = int(dbData.season)
                     episode_numbers = [int(dbData.episode)]
                 except orm.exc.NoResultFound:
@@ -293,8 +293,7 @@ class NameParser(object):
                     except indexer_episodenotfound:
                         if best_result.in_showlist:
                             sickrage.app.log.warning("Unable to find episode with date {air_date} for show {show}, "
-                                                     "skipping".format(air_date=best_result.air_date,
-                                                                       show=show_obj.name))
+                                                     "skipping".format(air_date=best_result.air_date, show=show_obj.name))
                         episode_numbers = []
                     except indexer_error as e:
                         sickrage.app.log.warning(

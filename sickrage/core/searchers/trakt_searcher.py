@@ -55,6 +55,7 @@ def set_episode_to_wanted(show, s, e):
     except EpisodeNotFoundException as e:
         pass
 
+
 class TraktSearcher(object):
     def __init__(self):
         self.name = "TRAKTSEARCHER"
@@ -268,7 +269,7 @@ class TraktSearcher(object):
         sickrage.app.log.debug("WATCHLIST::ADD::START - Look for Episodes to Add to Trakt Watchlist")
 
         for s in get_show_list():
-            for e in TVEpisode.query.filter_by(showid=s.indexer_id).filter(
+            for e in sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=s.indexer_id).filter(
                     ~TVEpisode.episode.in_(Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN] + [WANTED])):
                 trakt_id = IndexerApi(s.indexer).trakt_id
                 if self._checkInList(trakt_id, str(e.showid), e.season, e.episode):

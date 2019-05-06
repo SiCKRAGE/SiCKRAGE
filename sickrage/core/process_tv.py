@@ -447,7 +447,8 @@ class ProcessResult(object):
 
         return unpacked_dirs
 
-    def already_postprocessed(self, dirName, videofile, force):
+    @MainDB.with_session
+    def already_postprocessed(self, dirName, videofile, force, session=None):
         """
         Check if we already post processed a file
 
@@ -460,8 +461,7 @@ class ProcessResult(object):
             return False
 
         # Avoid processing the same dir again if we use a process method <> move
-        if TVEpisode.query.filter(or_(literal(dirName).contains(TVEpisode.release_name),
-                                      literal(videofile).contains(TVEpisode.release_name))):
+        if session.query(TVEpisode).filter(or_(literal(dirName).contains(TVEpisode.release_name), literal(videofile).contains(TVEpisode.release_name))):
             return True
 
         # Needed if we have downloaded the same episode @ different quality
@@ -472,16 +472,13 @@ class ProcessResult(object):
         except:
             parse_result = False
 
-        for h in MainDB.History.query.filter(MainDB.History.resource.endswith(videofile)):
-            for e in TVEpisode.query.filter_by(showid=h.showid, season=h.season, episode=h.episode).filter(
-                    TVEpisode.status.in_(Quality.DOWNLOADED)):
+        for h in session.query(MainDB.History).filter(MainDB.History.resource.endswith(videofile)):
+            for e in session.query(TVEpisode).filter_by(showid=h.showid, season=h.season, episode=h.episode).filter(TVEpisode.status.in_(Quality.DOWNLOADED)):
                 # If we find a showid, a season number, and one or more episode numbers then we need to use those in the
                 # query
-                if parse_result and (parse_result.indexer_id and parse_result.episode_numbers and
-                                     parse_result.season_number):
-                    if e.showid == int(parse_result.indexer_id) and \
-                            e.season == int(parse_result.season_number and
-                                            e.episode) == int(parse_result.episode_numbers[0]):
+                if parse_result and (parse_result.indexer_id and parse_result.episode_numbers and parse_result.season_number):
+                    if e.showid == int(parse_result.indexer_id) and e.season == int(parse_result.season_number and e.episode) == int(
+                            parse_result.episode_numbers[0]):
                         return True
                 else:
                     return True

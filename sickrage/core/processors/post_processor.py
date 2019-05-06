@@ -509,7 +509,8 @@ class PostProcessor(object):
         self._combined_file_operation(file_path, new_path, new_base_name, associated_files,
                                       action=_int_sym_link, subs=subtitles)
 
-    def _history_lookup(self):
+    @MainDB.with_session
+    def _history_lookup(self, session=None):
         """
         Look up the NZB name in the history and see if it contains a record for self.nzb_name
 
@@ -537,7 +538,7 @@ class PostProcessor(object):
         # search the database for a possible match and return immediately if we find one
         for curName in names:
             try:
-                dbData = MainDB.History.query.filter(MainDB.History.resource.contains(curName)).first()
+                dbData = session.query(MainDB.History).filter(MainDB.History.resource.contains(curName)).first()
                 if not dbData:
                     continue
             except orm.exc.NoResultFound:
@@ -648,7 +649,8 @@ class PostProcessor(object):
                 except Exception as e:
                     sickrage.app.log.debug('Exception message: {0!r}'.format(e))
 
-    def _find_info(self):
+    @MainDB.with_session
+    def _find_info(self, session=None):
         """
         For a given file try to find the showid, season, and episode.
 
@@ -714,18 +716,14 @@ class PostProcessor(object):
                 # Ignore season 0 when searching for episode(Conflict between special and regular episode,
                 # same air date)
                 try:
-                    dbData = TVEpisode.query.filter_by(
-                        showid=show.indexer_id, indexer=show.indexer, airdate=episodes[0]
-                    ).filter(TVEpisode.season > 0).one()
-
+                    dbData = session.query(TVEpisode).filter_by(showid=show.indexer_id, indexer=show.indexer,
+                                                                airdate=episodes[0]).filter(TVEpisode.season > 0).one()
                     season = dbData.season
                     episodes = [dbData.episode]
                 except orm.exc.NoResultFound:
                     # Found no result, try with season 0
                     try:
-                        dbData = TVEpisode.query.filter_by(
-                            showid=show.indexer_id, indexer=show.indexer, airdate=episodes[0]).one()
-
+                        dbData = session.query(TVEpisode).filter_by(showid=show.indexer_id, indexer=show.indexer, airdate=episodes[0]).one()
                         season = dbData.season
                         episodes = [dbData.episode]
                     except orm.exc.NoResultFound:

@@ -58,19 +58,15 @@ class DBBasicTests(tests.SiCKRAGETestDBCase):
     def test_unaired(self):
         count = 0
 
-        for episode in TVEpisode.query:
-            if all([episode.status == UNAIRED, episode.season > 0, episode.airdate > datetime.date.min]):
+        for episode_obj in sickrage.app.main_db.session().query(TVEpisode):
+            if all([episode_obj.status == UNAIRED, episode_obj.season > 0, episode_obj.airdate > datetime.date.min]):
                 count += 1
 
-                show = find_show(int(episode.showid))
-
-                ep = TVEpisode(**{'indexer':1, 'episode': episode.episode)
-                ep.indexer_id = episode.episode
-                ep.name = "test episode {}".format(episode.episode)
+                ep = TVEpisode(**{'indexer': 1, 'episode': episode_obj.episode})
+                ep.indexer_id = episode_obj.episode
+                ep.name = "test episode {}".format(episode_obj.episode)
                 ep.airdate = datetime.date.fromordinal(733832)
                 ep.status = UNAIRED
-
-                ep.save_to_db()
 
         self.assertEqual(count, 3)
 

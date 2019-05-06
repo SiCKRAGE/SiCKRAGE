@@ -41,7 +41,6 @@ from sickrage.core.exceptions import ShowNotFoundException, \
 from sickrage.core.helpers import list_media_files, is_media_file, try_int, safe_getattr
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from sickrage.core.tv.episode import TVEpisode
-from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.config import INDEXER_TVRAGE
@@ -87,8 +86,8 @@ class TVShow(MainDBBase):
     last_backlog_search = Column(Integer, default=datetime.datetime.now().toordinal())
     last_proper_search = Column(Integer, default=datetime.datetime.now().toordinal())
 
-    episodes = relationship('TVEpisode', back_populates='show')
-    imdb_info = relationship('IMDbInfo', uselist=False, backref='tv_shows')
+    episodes = relationship('TVEpisode', back_populates='show', lazy='joined')
+    imdb_info = relationship('IMDbInfo', uselist=False, backref='tv_shows', lazy='joined')
 
     @property
     def is_anime(self):
@@ -111,9 +110,8 @@ class TVShow(MainDBBase):
         next_aired = 0
 
         if not self.paused:
-            dbData = TVEpisode.query.filter_by(showid=self.indexer_id).filter(
-                TVEpisode.airdate >= datetime.date.today(),
-                TVEpisode.status.in_([UNAIRED, WANTED])).order_by(TVEpisode.airdate).first()
+            dbData = sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=self.indexer_id).filter(
+                TVEpisode.airdate >= datetime.date.today(), TVEpisode.status.in_([UNAIRED, WANTED])).order_by(TVEpisode.airdate).first()
 
             if dbData:
                 next_aired = dbData.airdate
@@ -191,7 +189,8 @@ class TVShow(MainDBBase):
             sickrage.app.log.warning(str(self.indexer_id) + ": NOT loading info from " + IndexerApi(
                 self.indexer).name + " as it is temporarily disabled.")
 
-    def load_episodes_from_indexer(self, cache=True):
+    @MainDB.with_session
+    def load_episodes_from_indexer(self, cache=True, session=None):
         scanned_eps = {}
 
         l_indexer_api_parms = IndexerApi(self.indexer).api_params.copy()
@@ -215,14 +214,14 @@ class TVShow(MainDBBase):
                     continue
 
                 try:
-                    episode_obj = self.get_episode(season, episode)
+                    episode_obj = self.get_episode(season, episode, session=session)
                 except EpisodeNotFoundException:
-                    sickrage.app.main_db.add(TVEpisode(**{'showid': self.indexer_id,
-                                                          'indexer': self.indexer,
-                                                          'season': season,
-                                                          'episode': episode,
-                                                          'location': ''}))
-                    episode_obj = self.get_episode(season, episode)
+                    session.add(TVEpisode(**{'showid': self.indexer_id,
+                                               'indexer': self.indexer,
+                                               'season': season,
+                                               'episode': episode,
+                                               'location': ''}))
+                    episode_obj = self.get_episode(season, episode, session=session)
                 else:
                     try:
                         episode_obj.load_from_indexer(tvapi=t)
@@ -264,8 +263,9 @@ class TVShow(MainDBBase):
                            r.location == cur_ep.location and
                            r.episode != cur_ep.episode]) > 0:
 
-                    related_eps_result = TVEpisode.query.filter_by(showid=self.indexer_id, season=cur_ep.season,
-                                                                   location=cur_ep.location).filter(
+                    related_eps_result = sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=self.indexer_id,
+                                                                                                   season=cur_ep.season,
+                                                                                                   location=cur_ep.location).filter(
                         TVEpisode.episode != cur_ep.episode).order_by(TVEpisode.episode)
 
                     for cur_related_ep in related_eps_result:
@@ -280,15 +280,16 @@ class TVShow(MainDBBase):
 
         return ep_list
 
-    def get_episode(self, season=None, episode=None, absolute_number=None):
+    @MainDB.with_session
+    def get_episode(self, season=None, episode=None, absolute_number=None, session=None):
         from sickrage.core.tv.episode import TVEpisode
 
         if self.is_anime and all([absolute_number is not None, season is None, episode is None]):
             try:
-                dbData = TVEpisode.query.filter_by(showid=self.indexer_id,
-                                                   absolute_number=absolute_number).filter(TVEpisode.season != 0).one()
-                episode = int(dbData.episode)
-                season = int(dbData.season)
+                dbData = session.query(TVEpisode).filter_by(showid=self.indexer_id,
+                                                            absolute_number=absolute_number).filter(TVEpisode.season != 0).one()
+                episode = dbData.episode
+                season = dbData.season
                 sickrage.app.log.debug("Found episode by absolute_number %s which is "
                                        "S%02dE%02d" % (absolute_number, season or 0, episode or 0))
             except orm.exc.MultipleResultsFound:
@@ -301,7 +302,7 @@ class TVShow(MainDBBase):
                 raise EpisodeNotFoundException
 
         try:
-            return TVEpisode.query.filter_by(showid=self.indexer_id, season=season, episode=episode).one()
+            return session.query(TVEpisode).filter_by(showid=self.indexer_id, season=season, episode=episode).one()
         except orm.exc.NoResultFound:
             raise EpisodeNotFoundException
 
@@ -317,7 +318,7 @@ class TVShow(MainDBBase):
 
         # get latest aired episode to compare against today - graceperiod and today + graceperiod
         try:
-            dbData = TVEpisode.query.filter_by(showid=self.indexer_id, status=1).filter(
+            dbData = sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=self.indexer_id, status=1).filter(
                 TVEpisode.season > 0,
                 TVEpisode.airdate > 1).order_by(
                 desc(TVEpisode.airdate)).one()
@@ -328,7 +329,7 @@ class TVShow(MainDBBase):
             pass
 
         try:
-            dbData = TVEpisode.query.filter_by(showid=self.indexer_id, status=1).filter(
+            dbData = sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=self.indexer_id, status=1).filter(
                 TVEpisode.season > 0,
                 TVEpisode.airdate > 1).order_by(
                 TVEpisode.airdate).one()
@@ -701,7 +702,7 @@ class TVShow(MainDBBase):
 
                         sickrage.app.log.debug("%s: Location for S%02dE%02d doesn't exist, "
                                                "removing it and changing our status to %s" % (
-                                               self.indexer_id, season or 0, episode or 0, statusStrings[new_status]))
+                                                   self.indexer_id, season or 0, episode or 0, statusStrings[new_status]))
 
                         curEp.status = new_status
                         curEp.subtitles = ''
@@ -776,7 +777,7 @@ class TVShow(MainDBBase):
 
     def want_episode(self, episode_id, quality, manualSearch=False, downCurQuality=False):
         try:
-            dbData = TVEpisode.query.filter_by(showid=self.indexer_id, indexer_id=episode_id).one()
+            dbData = sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=self.indexer_id, indexer_id=episode_id).one()
         except orm.exc.NoResultFound:
             sickrage.app.log.debug("Unable to find a matching episode in database, ignoring found episode")
             return False
@@ -894,7 +895,7 @@ class TVShow(MainDBBase):
             mapped[indexer] = self.indexer_id if int(indexer) == int(self.indexer) else 0
 
         # for each mapped entry
-        for dbData in MainDB.IndexerMapping.query.filter_by(indexer_id=self.indexer_id, indexer=self.indexer):
+        for dbData in sickrage.app.main_db.session().query(MainDB.IndexerMapping).filter_by(indexer_id=self.indexer_id, indexer=self.indexer):
             # Check if its mapped with both tvdb and tvrage.
             if len([i for i in dbData if i is not None]) >= 4:
                 sickrage.app.log.debug("Found indexer mapping in cache for show: " + self.name)
@@ -928,8 +929,9 @@ class TVShow(MainDBBase):
                     sickrage.app.log.debug("Adding indexer mapping to DB for show: " + self.name)
 
                     try:
-                        MainDB.IndexerMapping.query.filter_by(indexer_id=self.indexer_id, indexer=self.indexer,
-                                                              mindexer_id=int(mapped_show['id'])).one()
+                        sickrage.app.main_db.session().query(MainDB.IndexerMapping).filter_by(indexer_id=self.indexer_id,
+                                                                                              indexer=self.indexer,
+                                                                                              mindexer_id=int(mapped_show['id'])).one()
                     except orm.exc.NoResultFound:
                         sickrage.app.main_db.add(MainDB.IndexerMapping(**{
                             'indexer_id': self.indexer_id,

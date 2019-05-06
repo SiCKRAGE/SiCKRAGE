@@ -153,7 +153,7 @@ class MassAddTableHandler(BaseHandler, ABC):
 
                     # see if the folder is in database already
                     try:
-                        TVShow.query.filter_by(location=cur_path).one()
+                        sickrage.app.main_db.session().query(TVShow).filter_by(location=cur_path).one()
                         cur_dir['added_already'] = True
                     except orm.exc.NoResultFound:
                         cur_dir['added_already'] = False

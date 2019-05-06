@@ -409,10 +409,10 @@ class GenericProvider(object):
                     continue
                 else:
                     try:
-                        dbData = TVEpisode.query.filter_by(showid=provider_result_show_obj.indexer_id,
-                                                           airdate=parse_result.air_date).one()
-                        actual_season = int(dbData.season)
-                        actual_episodes = [int(dbData.episode)]
+                        dbData = sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=provider_result_show_obj.indexer_id,
+                                                                                           airdate=parse_result.air_date).one()
+                        actual_season = dbData.season
+                        actual_episodes = [dbData.episode]
                     except orm.exc.NoResultFound:
                         sickrage.app.log.warning("Tried to look up the date for the episode {} but the database "
                                                  "didn't give proper results, skipping it".format(provider_result.name))

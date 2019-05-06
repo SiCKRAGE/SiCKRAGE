@@ -62,7 +62,7 @@ class ProperSearcher(object):
         propers = self._getProperList()
 
         if propers:
-            self._downloadPropers(propers)
+            self._download_propers(propers)
         else:
             sickrage.app.log.info('No recently aired episodes, no propers to search for')
 
@@ -86,9 +86,8 @@ class ProperSearcher(object):
             self._lastProperSearch = self._get_last_proper_search(show.indexer_id)
 
             recently_aired_episode_ids = []
-            for episode_obj in TVEpisode.query.filter_by(showid=show.indexer_id).filter(
-                    TVEpisode.airdate >= search_date,
-                    TVEpisode.status.in_(Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST)):
+            for episode_obj in sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=show.indexer_id).filter(
+                    TVEpisode.airdate >= search_date, TVEpisode.status.in_(Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST)):
                 recently_aired_episode_ids += [episode_obj.indexer_id]
 
             self._set_last_proper_search(show.indexer_id, datetime.datetime.today().toordinal())
@@ -192,8 +191,9 @@ class ProperSearcher(object):
 
             # check if we actually want this proper (if it's the right quality)            
             try:
-                dbData = TVEpisode.query.filter_by(showid=best_result.indexer_id, season=best_result.season,
-                                                   episode=best_result.episode).one()
+                dbData = sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=best_result.indexer_id,
+                                                                                   season=best_result.season,
+                                                                                   episode=best_result.episode).one()
 
                 # only keep the proper if we have already retrieved the same quality ep (don't get better/worse ones)
                 old_status, old_quality = Quality.split_composite_status(int(dbData.status))
@@ -204,8 +204,9 @@ class ProperSearcher(object):
 
             # check if we actually want this proper (if it's the right release group and a higher version)
             if show.is_anime:
-                dbData = TVEpisode.query.filter_by(showid=best_result.indexer_id, season=best_result.season,
-                                                   episode=best_result.episode).one()
+                dbData = sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=best_result.indexer_id,
+                                                                                   season=best_result.season,
+                                                                                   episode=best_result.episode).one()
                 old_version = int(dbData.version)
                 old_release_group = dbData.release_group
                 if not -1 < old_version < best_result.version:
@@ -222,14 +223,14 @@ class ProperSearcher(object):
             # if the show is in our list and there hasn't been a proper already added for that particular episode
             # then add it to our list of propers
             if best_result.indexer_id != -1 and (
-                    best_result.indexer_id, best_result.season, best_result.episode) not in map(
-                operator.attrgetter('indexer_id', 'season', 'episode'), final_propers):
+                    best_result.indexer_id, best_result.season, best_result.episode) not in map(operator.attrgetter('indexer_id', 'season', 'episode'),
+                                                                                                final_propers):
                 sickrage.app.log.info("Found a proper that we need: " + str(best_result.name))
                 final_propers.append(best_result)
 
         return final_propers
 
-    def _downloadPropers(self, proper_list):
+    def _download_propers(self, proper_list):
         """
         Download proper (snatch it)
 
@@ -240,12 +241,12 @@ class ProperSearcher(object):
             history_limit = datetime.datetime.today() - datetime.timedelta(days=30)
 
             # make sure the episode has been downloaded before
-            history_results = [x for x in
-                               MainDB.History.query.filter_by(showid=curProper.indexer_id, season=curProper.season,
-                                                              episode=curProper.episode,
-                                                              quality=curProper.quality).filter(
-                                   MainDB.History.date >= history_limit.strftime(History.date_format),
-                                   MainDB.History.action.in_(Quality.SNATCHED + Quality.DOWNLOADED))]
+            episode_obj = find_show(curProper.indexer_id).get_episode(curProper.season, curProper.episode)
+
+            history_results = [x for x in sickrage.app.main_db.session().query(MainDB.History).filter_by(showid=curProper.indexer_id,
+                                                                                                         episode_id=episode_obj.indexer_id,
+                                                                                                         quality=curProper.quality).filter(
+                MainDB.History.date >= history_limit.strftime(History.date_format), MainDB.History.action.in_(Quality.SNATCHED + Quality.DOWNLOADED))]
 
             # if we didn't download this episode in the first place we don't know what quality to use for the proper
             # so we can't do it
@@ -270,9 +271,8 @@ class ProperSearcher(object):
                 continue
 
             # make the result object
-            show = find_show(curProper.indexer_id)
-            result = curProper.provider.getResult([show.get_episode(curProper.season, curProper.episode).indexer_id])
-            result.show_id = show.indexer_id
+            result = curProper.provider.getResult([episode_obj.indexer_id])
+            result.show_id = curProper.indexer_id
             result.url = curProper.url
             result.name = curProper.name
             result.quality = curProper.quality

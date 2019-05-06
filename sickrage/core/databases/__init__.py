@@ -29,8 +29,7 @@ from migrate import DatabaseAlreadyControlledError
 from migrate.versioning import api
 from sqlalchemy import create_engine, event
 from sqlalchemy.engine import Engine
-from sqlalchemy.exc import DatabaseError
-from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.orm import sessionmaker
 
 import sickrage
 
@@ -105,10 +104,7 @@ class srDatabase(object):
 
         self.db_path = os.path.join(sickrage.app.data_dir, '{}.db'.format(self.name))
         self.db_repository = os.path.join(os.path.dirname(__file__), self.name, 'db_repository')
-        self.engine = create_engine('sqlite:///{}'.format(self.db_path), echo=False,
-                                    connect_args={'check_same_thread': False, 'timeout': 10})
-        self.Session = scoped_session(
-            sessionmaker(bind=self.engine, class_=ContextSession, autoflush=False))
+        self.engine = create_engine('sqlite:///{}'.format(self.db_path), echo=False, connect_args={'check_same_thread': False, 'timeout': 10})
 
         if not os.path.exists(self.db_path):
             api.version_control(self.engine, self.db_repository, api.version(self.db_repository))
@@ -117,6 +113,10 @@ class srDatabase(object):
                 api.version_control(self.engine, self.db_repository)
             except DatabaseAlreadyControlledError:
                 pass
+
+    @property
+    def session(self):
+        return self.session
 
     @property
     def version(self):
@@ -189,7 +189,7 @@ class srDatabase(object):
 
                 try:
                     self.bulk_add(self.tables[table], rows)
-                except Exception:
+                except Exception as e:
                     for row in rows:
                         try:
                             self.add(self.tables[table](**row))
@@ -202,45 +202,14 @@ class srDatabase(object):
             del migrate_tables
             del rows
 
-    def with_session(self, *args, **kwargs):
-        """"
-        A decorator which creates a new session if one was not passed via keyword argument to the function.
-
-        Automatically commits and closes the session if one was created, caller is responsible for commit if passed in.
-
-        If arguments are given when used as a decorator, they will automatically be passed to the created Session when
-        one is not supplied.
-        """
-
-        def decorator(func):
-            def wrapper(*args, **kwargs):
-                if kwargs.get('session'):
-                    return func(*args, **kwargs)
-                with _Session() as session:
-                    kwargs['session'] = session
-                    return func(*args, **kwargs)
-
-            return wrapper
-
-        if len(args) == 1 and not kwargs and callable(args[0]):
-            # Used without arguments, e.g. @with_session
-            # We default to expire_on_commit being false, in case the decorated function returns db instances
-            _Session = functools.partial(self.Session, expire_on_commit=False)
-            return decorator(args[0])
-        else:
-            # Arguments were specified, turn them into arguments for Session creation e.g. @with_session(
-            # autocommit=True)
-            _Session = functools.partial(self.Session, *args, **kwargs)
-            return decorator
-
     def bulk_add(self, table, rows):
-        with self.Session() as session:
+        with self.session() as session:
             session.bulk_insert_mappings(table, rows)
 
     def add(self, instance):
-        with self.Session() as session:
+        with self.session() as session:
             session.add(instance)
 
     def delete(self, table, *args, **kwargs):
-        with self.Session() as session:
+        with self.session() as session:
             session.query(table).filter_by(**kwargs).filter(*args).delete()

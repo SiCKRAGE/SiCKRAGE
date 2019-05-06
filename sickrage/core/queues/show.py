@@ -210,7 +210,7 @@ class ShowQueueItem(srQueueItem):
         super(ShowQueueItem, self).__init__(ShowQueueActions.names[action_id], action_id)
 
         try:
-            self.show = TVShow.query.filter_by(indexer_id=indexer_id).one()
+            self.show = sickrage.app.main_db.session().query(TVShow).filter_by(indexer_id=indexer_id).one()
         except orm.exc.NoResultFound:
             self.show = None
 
@@ -342,9 +342,8 @@ class QueueItemAdd(ShowQueueItem):
             return self._finish_early()
 
         try:
-            self.show = TVShow(**{'indexer': self.indexer, 'indexer_id': self.indexer_id, 'lang': self.lang})
-
             # add show to database
+            self.show = TVShow(**{'indexer': self.indexer, 'indexer_id': self.indexer_id, 'lang': self.lang})
             sickrage.app.main_db.add(self.show)
 
             self.show.load_from_indexer()

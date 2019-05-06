@@ -57,7 +57,7 @@ class NameCache(object):
         self.cache[name] = int(indexer_id)
 
         try:
-            CacheDB.SceneName.query.filter_by(name=name, indexer_id=indexer_id).one()
+            sickrage.app.cache_db.session().query(CacheDB.SceneName).filter_by(name=name, indexer_id=indexer_id).one()
         except orm.exc.NoResultFound:
             sickrage.app.cache_db.add(CacheDB.SceneName(**{
                 'indexer_id': indexer_id,
@@ -81,25 +81,34 @@ class NameCache(object):
         """
         if any([indexer_id, name]):
             sickrage.app.cache_db.delete(CacheDB.SceneName,
-                             or_(CacheDB.SceneName.indexer_id == indexer_id, CacheDB.SceneName.name == name))
+                                         or_(CacheDB.SceneName.indexer_id == indexer_id,
+                                             CacheDB.SceneName.name == name))
 
             for key, value in self.cache.copy().items():
                 if value == indexer_id or key == name:
                     del self.cache[key]
 
     def load(self):
-        self.cache = dict([(x.name, x.indexer_id) for x in CacheDB.SceneName.query])
+        self.cache = dict([(x.name, x.indexer_id) for x in sickrage.app.cache_db.session().query(CacheDB.SceneName)])
 
     def save(self):
-        """Commit cache to database file"""
+        """
+        Commit cache to database file
+        """
+
+        sql_t = []
+
         for name, indexer_id in self.cache.items():
             try:
-                CacheDB.SceneName.query.filter_by(name=name, indexer_id=indexer_id).one()
+                sickrage.app.cache_db.session().query(CacheDB.SceneName).filter_by(name=name,
+                                                                                   indexer_id=indexer_id).one()
             except orm.exc.NoResultFound:
-                sickrage.app.cache_db.add(CacheDB.SceneName(**{
+                sql_t.append({
                     'indexer_id': indexer_id,
                     'name': name
-                }))
+                })
+
+        sickrage.app.cache_db.bulk_add(CacheDB.SceneName, sql_t)
 
     def build(self, show):
         """Build internal name cache

@@ -26,31 +26,34 @@ from sickrage.core.api.imdb import IMDbAPI
 from sickrage.core.databases.main import MainDB
 
 
-def find_show(indexer_id):
+@MainDB.with_session
+def find_show(indexer_id, session=None):
     from sickrage.core.tv.show import TVShow
 
     try:
-        return TVShow.query.filter_by(indexer_id=indexer_id).one()
+        return session.query(TVShow).filter_by(indexer_id=indexer_id).one()
     except orm.exc.NoResultFound:
         return None
 
 
-def find_show_by_name(term):
+@MainDB.with_session
+def find_show_by_name(term, session=None):
     from sickrage.core.tv.show import TVShow
 
     try:
-        return TVShow.query.filter(TVShow.name.like('%{}%'.format(term))).one()
+        return session.query(TVShow).filter(TVShow.name.like('%{}%'.format(term))).one()
     except (orm.exc.NoResultFound, orm.exc.MultipleResultsFound):
         return None
 
 
-def get_show_list():
+@MainDB.with_session
+def get_show_list(session=None):
     from sickrage.core.tv.show import TVShow
+    return session.query(TVShow)
 
-    return list(TVShow.query)
 
-
-def load_imdb_info(indexer_id):
+@MainDB.with_session
+def load_imdb_info(indexer_id, session=None):
     imdb_info_mapper = {
         'imdbvotes': 'votes',
         'imdbrating': 'rating',
@@ -58,7 +61,7 @@ def load_imdb_info(indexer_id):
         'imdbid': 'imdb_id'
     }
 
-    show = find_show(indexer_id)
+    show = find_show(indexer_id, session=session)
 
     if not show.imdb_id:
         resp = IMDbAPI().search_by_imdb_title(show.name)
@@ -79,16 +82,16 @@ def load_imdb_info(indexer_id):
             return
 
         imdb_info = dict((k.lower(), v) for k, v in imdb_info.items())
-        if not all([imdb_info.get('imdb_id'), imdb_info.get('votes'), imdb_info.get('rating'), imdb_info.get('genre')]):
-            sickrage.app.log.debug(str(indexer_id) + ': IMDb info obtained does not meet our requirements')
-            return
-
         for column in imdb_info.copy():
             if column in imdb_info_mapper:
                 imdb_info[imdb_info_mapper[column]] = imdb_info[column]
 
             if column not in MainDB.IMDbInfo.__table__.columns.keys():
                 del imdb_info[column]
+
+        if not all([imdb_info.get('imdb_id'), imdb_info.get('votes'), imdb_info.get('rating'), imdb_info.get('genre')]):
+            sickrage.app.log.debug(str(indexer_id) + ': IMDb info obtained does not meet our requirements')
+            return
 
         sickrage.app.log.debug(str(indexer_id) + ": Obtained IMDb info ->" + str(imdb_info))
 
@@ -99,7 +102,7 @@ def load_imdb_info(indexer_id):
         })
 
         try:
-            dbData = MainDB.IMDbInfo.query.filter_by(indexer_id=indexer_id).one()
+            dbData = session.query(MainDB.IMDbInfo).filter_by(indexer_id=indexer_id).one()
             dbData.update(**imdb_info)
         except orm.exc.NoResultFound:
-            sickrage.app.main_db.add(MainDB.IMDbInfo(**imdb_info))
+            session.add(MainDB.IMDbInfo(**imdb_info))

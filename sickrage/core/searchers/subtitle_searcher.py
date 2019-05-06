@@ -73,7 +73,7 @@ class SubtitleSearcher(object):
             if s.subtitles != 1:
                 continue
 
-            for e in TVEpisode.query.filter_by(showid=s.indexer_id).filter(
+            for e in sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=s.indexer_id).filter(
                     TVEpisode.location != '', ~TVEpisode.subtitles.in_(
                         sickrage.subtitles.wanted_languages()
                     ), or_(TVEpisode.subtitles_searchcount <= 2,

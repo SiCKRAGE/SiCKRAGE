@@ -26,35 +26,35 @@ from sickrage.core.tv.episode import TVEpisode
 
 
 def new_episode_finder():
-    curDate = datetime.date.today()
-    curDate += datetime.timedelta(days=1)
-    curTime = datetime.datetime.now(sickrage.app.tz)
+    cur_date = datetime.date.today()
+    cur_date += datetime.timedelta(days=1)
+    cur_time = datetime.datetime.now(sickrage.app.tz)
 
-    for episode in TVEpisode.query.filter_by(status=UNAIRED).filter(TVEpisode.season > 0,
-                                                                    TVEpisode.airdate > datetime.date.min):
-        if episode.show.paused:
-            continue
-
-        air_date = episode.airdate
-        air_date += datetime.timedelta(days=episode.show.search_delay)
-        if not curDate >= air_date:
-            continue
-
-        if episode.show.airs and episode.show.network:
-            # This is how you assure it is always converted to local time
-            air_time = sickrage.app.tz_updater.parse_date_time(episode.airdate,
-                                                               episode.show.airs,
-                                                               episode.show.network).astimezone(sickrage.app.tz)
-
-            # filter out any episodes that haven't started airing yet,
-            # but set them to the default status while they are airing
-            # so they are snatched faster
-            if air_time > curTime:
+    with sickrage.app.main_db.session() as session:
+        for episode in session.query(TVEpisode).filter_by(status=UNAIRED).filter(TVEpisode.season > 0, TVEpisode.airdate > datetime.date.min):
+            if episode.show.paused:
                 continue
 
-        episode.status = episode.show.default_ep_status if episode.ep_obj.season > 0 else SKIPPED
-        sickrage.app.log.info('Setting status ({status}) for show airing today: {name} {special}'.format(
-            name=episode.pretty_name(),
-            status=statusStrings[episode.status],
-            special='(specials are not supported)' if not episode.season > 0 else '',
-        ))
+            air_date = episode.airdate
+            air_date += datetime.timedelta(days=episode.show.search_delay)
+            if not cur_date >= air_date:
+                continue
+
+            if episode.show.airs and episode.show.network:
+                # This is how you assure it is always converted to local time
+                air_time = sickrage.app.tz_updater.parse_date_time(episode.airdate,
+                                                                   episode.show.airs,
+                                                                   episode.show.network).astimezone(sickrage.app.tz)
+
+                # filter out any episodes that haven't started airing yet,
+                # but set them to the default status while they are airing
+                # so they are snatched faster
+                if air_time > cur_time:
+                    continue
+
+            episode.status = episode.show.default_ep_status if episode.ep_obj.season > 0 else SKIPPED
+            sickrage.app.log.info('Setting status ({status}) for show airing today: {name} {special}'.format(
+                name=episode.pretty_name(),
+                status=statusStrings[episode.status],
+                special='(specials are not supported)' if not episode.season > 0 else '',
+            ))

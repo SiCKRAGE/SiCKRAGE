@@ -30,10 +30,11 @@ class QuicksearchCache(object):
         }
 
     def load(self):
-        for x in CacheDB.QuickSearchShow.query:
-            self.cache['shows'][x.showid] = x.as_dict()
-        for x in CacheDB.QuickSearchEpisode.query:
-            self.cache['episodes'][x.episodeid] = x.as_dict()
+        with sickrage.app.cache_db.session() as session:
+            for x in session.query(CacheDB.QuickSearchShow):
+                self.cache['shows'][x.showid] = x.as_dict()
+            for x in session.query(CacheDB.QuickSearchEpisode):
+                self.cache['episodes'][x.episodeid] = x.as_dict()
 
         sickrage.app.log.debug("Loaded {} shows to QuickSearch cache".format(len(self.cache['shows'])))
         sickrage.app.log.debug("Loaded {} episodes to QuickSearch cache".format(len(self.cache['episodes'])))

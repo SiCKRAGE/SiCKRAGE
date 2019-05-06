@@ -81,7 +81,7 @@ class FailedSnatchSearcher(object):
         self.amActive = False
 
     def snatched_episodes(self):
-        return (x for x in MainDB.History.query.filter(
+        return (x for x in sickrage.app.main_db.session().query(MainDB.History).filter(
             MainDB.History.action.in_(Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER),
             24 >= int((datetime.datetime.now() -
                        datetime.datetime.strptime(
@@ -91,4 +91,4 @@ class FailedSnatchSearcher(object):
 
     def downloaded_releases(self):
         return ((x.showid, x.episode_id) for x in
-                MainDB.History.query.filter(MainDB.History.action.in_(Quality.DOWNLOADED)))
+                sickrage.app.main_db.session().query(MainDB.History).filter(MainDB.History.action.in_(Quality.DOWNLOADED)))

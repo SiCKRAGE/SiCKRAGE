@@ -53,9 +53,8 @@ class ShowEpisodeStatusesHandler(BaseHandler, ABC):
             status_list = Quality.SNATCHED + Quality.SNATCHED_PROPER
 
         result = {}
-        for dbData in TVEpisode.query.filter_by(showid=int(indexer_id)).filter(TVEpisode.season != 0,
-                                                                                      TVEpisode.status.in_(
-                                                                                          status_list)):
+        for dbData in sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=int(indexer_id)).filter(TVEpisode.season != 0,
+                                                                                                               TVEpisode.status.in_(status_list)):
             cur_season = int(dbData.season)
             cur_episode = int(dbData.episode)
 
@@ -134,8 +133,8 @@ class ChangeEpisodeStatusesHandler(BaseHandler, ABC):
             # get a list of all the eps we want to change if they just said "all"
             if 'all' in to_change[cur_indexer_id]:
                 all_eps = ['{}x{}'.format(x.season, x.episode) for x in
-                           TVEpisode.query.filter_by(showid=int(cur_indexer_id)).filter(
-                               TVEpisode.status.in_(status_list), TVEpisode.season != 0)]
+                           sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=int(cur_indexer_id)).filter(TVEpisode.status.in_(status_list),
+                                                                                                                        TVEpisode.season != 0)]
                 to_change[cur_indexer_id] = all_eps
 
             await self.http_client.fetch(
@@ -156,17 +155,16 @@ class ShowSubtitleMissedHandler(BaseHandler, ABC):
         which_subs = self.get_query_argument('whichSubs')
 
         result = {}
-        for dbData in TVEpisode.query.filter_by(showid=int(indexer_id)).filter(
-                TVEpisode.status.endswith(4),
-                TVEpisode.season != 0):
+        for dbData in sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=int(indexer_id)).filter(TVEpisode.status.endswith(4),
+                                                                                                               TVEpisode.season != 0):
             if which_subs == 'all':
-                if not frozenset(wanted_languages()).difference(dbData["subtitles"].split(',')):
+                if not frozenset(wanted_languages()).difference(dbData.subtitles.split(',')):
                     continue
-            elif which_subs in dbData["subtitles"]:
+            elif which_subs in dbData.subtitles:
                 continue
 
-            cur_season = int(dbData["season"])
-            cur_episode = int(dbData["episode"])
+            cur_season = dbData.season
+            cur_episode = dbData.episode
 
             if cur_season not in result:
                 result[cur_season] = {}
@@ -174,9 +172,9 @@ class ShowSubtitleMissedHandler(BaseHandler, ABC):
             if cur_episode not in result[cur_season]:
                 result[cur_season][cur_episode] = {}
 
-            result[cur_season][cur_episode]["name"] = dbData["name"]
+            result[cur_season][cur_episode]["name"] = dbData.name
 
-            result[cur_season][cur_episode]["subtitles"] = dbData["subtitles"]
+            result[cur_season][cur_episode]["subtitles"] = dbData.subtitles
 
         return self.write(json_encode(result))
 
@@ -253,7 +251,7 @@ class DownloadSubtitleMissedHandler(BaseHandler, ABC):
             # get a list of all the eps we want to download subtitles if they just said "all"
             if 'all' in to_download[cur_indexer_id]:
                 to_download[cur_indexer_id] = ['{}x{}'.format(x.season, x.episode) for x in
-                                               TVEpisode.query.filter_by(showid=int(cur_indexer_id)).filter(
+                                               sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=int(cur_indexer_id)).filter(
                                                    TVEpisode.status.endswith(4), TVEpisode.season != 0)]
 
             for epResult in to_download[cur_indexer_id]:
@@ -753,9 +751,9 @@ class FailedDownloadsHandler(BaseHandler, ABC):
         to_remove = self.get_query_argument('toRemove', None)
 
         if int(limit) == 0:
-            dbData = MainDB.FailedSnatch.query.all()
+            dbData = sickrage.app.main_db.session().query(MainDB.FailedSnatch).all()
         else:
-            dbData = MainDB.FailedSnatch.query.limit(int(limit))
+            dbData = sickrage.app.main_db.session().query(MainDB.FailedSnatch).limit(int(limit))
 
         to_remove = to_remove.split("|") if to_remove is not None else []
         if to_remove:
