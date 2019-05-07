@@ -1171,7 +1171,7 @@ class EditShowHandler(BaseHandler, ABC):
         if bool(show_obj.flatten_folders) != bool(flatten_folders):
             show_obj.flatten_folders = flatten_folders
             try:
-                sickrage.app.show_queue.refreshShow(show_obj, True)
+                sickrage.app.show_queue.refresh_show(show_obj, True)
             except CantRefreshShowException as e:
                 errors.append(_("Unable to refresh this show: {}").format(e))
 
@@ -1203,7 +1203,7 @@ class EditShowHandler(BaseHandler, ABC):
                 try:
                     show_obj.location = location
                     try:
-                        sickrage.app.show_queue.refreshShow(show_obj, True)
+                        sickrage.app.show_queue.refresh_show(show_obj, True)
                     except CantRefreshShowException as e:
                         errors.append(_("Unable to refresh this show:{}").format(e))
                         # grab updated info from TVDB
@@ -1217,7 +1217,7 @@ class EditShowHandler(BaseHandler, ABC):
         # force the update
         if do_update:
             try:
-                sickrage.app.show_queue.updateShow(show_obj, force=True)
+                sickrage.app.show_queue.update_show(show_obj, force=True)
                 await gen.sleep(cpu_presets[sickrage.app.config.cpu_preset])
             except CantUpdateShowException as e:
                 errors.append(_("Unable to update show: {}").format(e))
@@ -1285,7 +1285,7 @@ class DeleteShowHandler(BaseHandler, ABC):
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         try:
-            sickrage.app.show_queue.removeShow(show_obj, bool(full))
+            sickrage.app.show_queue.remove_show(show_obj, bool(full))
             sickrage.app.alerts.message(
                 _('%s has been %s %s') %
                 (
@@ -1314,7 +1314,7 @@ class RefreshShowHandler(BaseHandler, ABC):
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         try:
-            sickrage.app.show_queue.refreshShow(show_obj, True)
+            sickrage.app.show_queue.refresh_show(show_obj, True)
         except CantRefreshShowException as e:
             sickrage.app.alerts.error(_('Unable to refresh this show.'), str(e))
 
@@ -1336,7 +1336,7 @@ class UpdateShowHandler(BaseHandler, ABC):
 
         # force the update
         try:
-            sickrage.app.show_queue.updateShow(show_obj, force=bool(force))
+            sickrage.app.show_queue.update_show(show_obj, force=bool(force))
         except CantUpdateShowException as e:
             sickrage.app.alerts.error(_("Unable to update this show."), str(e))
 

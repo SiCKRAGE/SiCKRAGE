@@ -82,9 +82,9 @@ class ShowUpdater(object):
 
             try:
                 if show.indexer_id in updated_shows:
-                    pi_list.append(sickrage.app.show_queue.updateShow(show, indexer_update_only=True, force=False))
+                    pi_list.append(sickrage.app.show_queue.update_show(show, indexer_update_only=True, force=False))
                 elif (datetime.datetime.now() - datetime.datetime.fromordinal(show.last_update)).days >= 7:
-                    pi_list.append(sickrage.app.show_queue.updateShow(show, force=False))
+                    pi_list.append(sickrage.app.show_queue.update_show(show, force=False))
             except (CantUpdateShowException, CantRefreshShowException) as e:
                 sickrage.app.log.debug("Automatic update failed: {}".format(e))
 

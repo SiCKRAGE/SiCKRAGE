@@ -1956,7 +1956,7 @@ class CMD_ShowAddExisting(ApiCall):
         if iqualityID or aqualityID:
             newQuality = Quality.combine_qualities(iqualityID, aqualityID)
 
-        sickrage.app.show_queue.addShow(
+        sickrage.app.show_queue.add_show(
             int(indexer), int(self.indexer_id), self.location, default_status=sickrage.app.config.status_default,
             quality=newQuality, flatten_folders=int(self.flatten_folders), subtitles=self.subtitles,
             default_status_after=sickrage.app.config.status_default_after, skip_downloaded=self.skip_downloaded
@@ -2123,7 +2123,7 @@ class CMD_ShowAddNew(ApiCall):
             else:
                 chmod_as_parent(show_path)
 
-        sickrage.app.show_queue.addShow(
+        sickrage.app.show_queue.add_show(
             int(indexer), int(self.indexer_id), show_path, default_status=new_status, quality=new_quality,
             flatten_folders=int(self.flatten_folders), lang=self.lang, subtitles=self.subtitles, anime=self.anime,
             scene=self.scene, default_status_after=default_ep_status_after, skip_downloaded=self.skip_downloaded
@@ -2197,7 +2197,7 @@ class CMD_ShowDelete(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         try:
-            sickrage.app.show_queue.removeShow(showObj, bool(self.removefiles))
+            sickrage.app.show_queue.remove_show(showObj, bool(self.removefiles))
         except CantRemoveShowException as exception:
             return _responds(RESULT_FAILURE, msg=str(exception))
 
@@ -2384,7 +2384,7 @@ class CMD_ShowRefresh(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         try:
-            sickrage.app.show_queue.refreshShow(showObj)
+            sickrage.app.show_queue.refresh_show(showObj)
         except CantRefreshShowException as e:
             return _responds(RESULT_FAILURE, msg=str(e))
 
@@ -2665,7 +2665,7 @@ class CMD_ShowUpdate(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         try:
-            sickrage.app.show_queue.updateShow(showObj, force=True)
+            sickrage.app.show_queue.update_show(showObj, force=True)
             return _responds(RESULT_SUCCESS, msg=str(showObj.name) + " has queued to be updated")
         except CantUpdateShowException as e:
             sickrage.app.log.debug("API::Unable to update show: {}".format(e))

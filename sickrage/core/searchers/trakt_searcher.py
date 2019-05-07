@@ -329,7 +329,7 @@ class TraktSearcher(object):
                     return
 
                 if progress.status in ['canceled', 'ended']:
-                    sickrage.app.show_queue.removeShow(show, full=True)
+                    sickrage.app.show_queue.remove_show(show, full=True)
                     sickrage.app.log.debug("Show: %s has been removed from SiCKRAGE" % show.name)
 
         sickrage.app.log.debug("SHOW_SICKRAGE::REMOVE::FINISH - Trakt Show Watchlist")
@@ -434,13 +434,13 @@ class TraktSearcher(object):
                 else:
                     chmod_as_parent(showPath)
 
-                sickrage.app.show_queue.addShow(int(indexer), int(indexer_id), showPath,
-                                                default_status=status,
-                                                quality=int(sickrage.app.config.quality_default),
-                                                flatten_folders=int(sickrage.app.config.flatten_folders_default),
-                                                paused=sickrage.app.config.trakt_start_paused,
-                                                default_status_after=status,
-                                                skip_downloaded=sickrage.app.config.skip_downloaded_default)
+                sickrage.app.show_queue.add_show(int(indexer), int(indexer_id), showPath,
+                                                 default_status=status,
+                                                 quality=int(sickrage.app.config.quality_default),
+                                                 flatten_folders=int(sickrage.app.config.flatten_folders_default),
+                                                 paused=sickrage.app.config.trakt_start_paused,
+                                                 default_status_after=status,
+                                                 skip_downloaded=sickrage.app.config.skip_downloaded_default)
             else:
                 sickrage.app.log.warning(
                     "There was an error creating the show, no root directory setting found")

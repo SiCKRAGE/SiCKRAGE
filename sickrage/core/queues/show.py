@@ -92,7 +92,7 @@ class ShowQueue(srQueue):
     def _get_loading_show_list(self):
         return [x for x in self._get_queue_items() if x.is_loading]
 
-    def updateShow(self, show, indexer_update_only=False, force=False):
+    def update_show(self, show, indexer_update_only=False, force=False):
         if self.is_being_added(show):
             raise CantUpdateShowException("{} is still being added, please wait until it is finished before trying to "
                                           "update.".format(show.name))
@@ -110,7 +110,7 @@ class ShowQueue(srQueue):
         else:
             sickrage.app.io_loop.add_callback(self.put, QueueItemUpdate(show.indexer_id, indexer_update_only))
 
-    def refreshShow(self, show, force=False):
+    def refresh_show(self, show, force=False):
         if (self.is_being_refreshed(show) or self.is_in_refresh_queue(show)) and not force:
             raise CantRefreshShowException("This show is already being refreshed or queued to be refreshed, skipping "
                                            "this request.")
@@ -123,15 +123,15 @@ class ShowQueue(srQueue):
 
         sickrage.app.io_loop.add_callback(self.put, QueueItemRefresh(show.indexer_id, force=force))
 
-    def renameShowEpisodes(self, show):
+    def rename_show_episodes(self, show):
         sickrage.app.io_loop.add_callback(self.put, QueueItemRename(show.indexer_id))
 
     def download_subtitles(self, show):
         sickrage.app.io_loop.add_callback(self.put, QueueItemSubtitle(show.indexer_id))
 
-    def addShow(self, indexer, indexer_id, showDir, default_status=None, quality=None, flatten_folders=None,
-                lang=None, subtitles=None, sub_use_sr_metadata=None, anime=None, scene=None, paused=None,
-                blacklist=None, whitelist=None, default_status_after=None, skip_downloaded=None):
+    def add_show(self, indexer, indexer_id, showDir, default_status=None, quality=None, flatten_folders=None,
+                 lang=None, subtitles=None, sub_use_sr_metadata=None, anime=None, scene=None, paused=None,
+                 blacklist=None, whitelist=None, default_status_after=None, skip_downloaded=None):
 
         if lang is None:
             lang = sickrage.app.config.indexer_default_language
@@ -153,7 +153,7 @@ class ShowQueue(srQueue):
                                                                  default_status_after=default_status_after,
                                                                  skip_downloaded=skip_downloaded))
 
-    def removeShow(self, show, full=False):
+    def remove_show(self, show, full=False):
         if not show:
             raise CantRemoveShowException('Failed removing show: Show does not exist')
         elif not hasattr(show, 'indexer_id'):
@@ -448,7 +448,7 @@ class QueueItemAdd(ShowQueueItem):
                                                                       self.showDir))
 
     def _finish_early(self):
-        if self.show: sickrage.app.show_queue.removeShow(self.show)
+        if self.show: sickrage.app.show_queue.remove_show(self.show)
 
 
 class QueueItemRefresh(ShowQueueItem):
@@ -598,7 +598,7 @@ class QueueItemUpdate(ShowQueueItem):
 
         # refresh show
         if not self.indexer_update_only:
-            sickrage.app.show_queue.refreshShow(self.show, self.force)
+            sickrage.app.show_queue.refresh_show(self.show, self.force)
 
 
 class QueueItemForceUpdate(QueueItemUpdate):

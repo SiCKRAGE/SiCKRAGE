@@ -61,7 +61,7 @@ def load_imdb_info(indexer_id, session=None):
         'imdbid': 'imdb_id'
     }
 
-    show = find_show(indexer_id, session=session)
+    show = find_show(indexer_id)
 
     if not show.imdb_id:
         resp = IMDbAPI().search_by_imdb_title(show.name)

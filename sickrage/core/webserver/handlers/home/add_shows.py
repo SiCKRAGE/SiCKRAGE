@@ -496,22 +496,22 @@ class AddNewShowHandler(BaseHandler, ABC):
             newQuality = Quality.combine_qualities(map(int, anyQualities), map(int, bestQualities))
 
         # add the show
-        sickrage.app.show_queue.addShow(indexer=indexer,
-                                        indexer_id=indexer_id,
-                                        showDir=show_dir,
-                                        default_status=int(defaultStatus),
-                                        quality=newQuality,
-                                        flatten_folders=flatten_folders,
-                                        lang=indexerLang,
-                                        subtitles=subtitles,
-                                        sub_use_sr_metadata=sub_use_sr_metadata,
-                                        anime=anime,
-                                        scene=scene,
-                                        paused=None,
-                                        blacklist=blacklist,
-                                        whitelist=whitelist,
-                                        default_status_after=int(defaultStatusAfter),
-                                        skip_downloaded=skip_downloaded)
+        sickrage.app.show_queue.add_show(indexer=indexer,
+                                         indexer_id=indexer_id,
+                                         showDir=show_dir,
+                                         default_status=int(defaultStatus),
+                                         quality=newQuality,
+                                         flatten_folders=flatten_folders,
+                                         lang=indexerLang,
+                                         subtitles=subtitles,
+                                         sub_use_sr_metadata=sub_use_sr_metadata,
+                                         anime=anime,
+                                         scene=scene,
+                                         paused=None,
+                                         blacklist=blacklist,
+                                         whitelist=whitelist,
+                                         default_status_after=int(defaultStatusAfter),
+                                         skip_downloaded=skip_downloaded)
 
         sickrage.app.alerts.message(_('Adding Show'), _('Adding the specified show into ') + show_dir)
 
@@ -567,17 +567,17 @@ class AddExistingShowsHandler(BaseHandler, ABC):
 
             if indexer is not None and indexer_id is not None:
                 # add the show
-                sickrage.app.show_queue.addShow(indexer,
-                                                indexer_id,
-                                                show_dir,
-                                                default_status=sickrage.app.config.status_default,
-                                                quality=sickrage.app.config.quality_default,
-                                                flatten_folders=sickrage.app.config.flatten_folders_default,
-                                                subtitles=sickrage.app.config.subtitles_default,
-                                                anime=sickrage.app.config.anime_default,
-                                                scene=sickrage.app.config.scene_default,
-                                                default_status_after=sickrage.app.config.status_default_after,
-                                                skip_downloaded=sickrage.app.config.skip_downloaded_default)
+                sickrage.app.show_queue.add_show(indexer,
+                                                 indexer_id,
+                                                 show_dir,
+                                                 default_status=sickrage.app.config.status_default,
+                                                 quality=sickrage.app.config.quality_default,
+                                                 flatten_folders=sickrage.app.config.flatten_folders_default,
+                                                 subtitles=sickrage.app.config.subtitles_default,
+                                                 anime=sickrage.app.config.anime_default,
+                                                 scene=sickrage.app.config.scene_default,
+                                                 default_status_after=sickrage.app.config.status_default_after,
+                                                 skip_downloaded=sickrage.app.config.skip_downloaded_default)
                 num_added += 1
 
         if num_added:

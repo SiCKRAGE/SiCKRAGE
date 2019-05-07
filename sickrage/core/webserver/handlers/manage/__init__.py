@@ -680,18 +680,18 @@ class MassUpdateHandler(BaseHandler, ABC):
                 continue
 
             if curShowID in to_delete:
-                sickrage.app.show_queue.removeShow(show_obj, True)
+                sickrage.app.show_queue.remove_show(show_obj, True)
                 # don't do anything else if it's being deleted
                 continue
 
             if curShowID in to_remove:
-                sickrage.app.show_queue.removeShow(show_obj)
+                sickrage.app.show_queue.remove_show(show_obj)
                 # don't do anything else if it's being remove
                 continue
 
             if curShowID in to_update:
                 try:
-                    sickrage.app.show_queue.updateShow(show_obj, force=True)
+                    sickrage.app.show_queue.update_show(show_obj, force=True)
                     updates.append(show_obj.name)
                 except CantUpdateShowException as e:
                     errors.append(_("Unable to update show: {}").format(e))
@@ -699,13 +699,13 @@ class MassUpdateHandler(BaseHandler, ABC):
             # don't bother refreshing shows that were updated anyway
             if curShowID in to_refresh and curShowID not in to_update:
                 try:
-                    sickrage.app.show_queue.refreshShow(show_obj, True)
+                    sickrage.app.show_queue.refresh_show(show_obj, True)
                     refreshes.append(show_obj.name)
                 except CantRefreshShowException as e:
                     errors.append(_("Unable to refresh show ") + show_obj.name + ": {}".format(e))
 
             if curShowID in to_rename:
-                sickrage.app.show_queue.renameShowEpisodes(show_obj)
+                sickrage.app.show_queue.rename_show_episodes(show_obj)
                 renames.append(show_obj.name)
 
             if curShowID in to_subtitle:
