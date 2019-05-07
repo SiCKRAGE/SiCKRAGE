@@ -339,8 +339,8 @@ class QueueItemAdd(ShowQueueItem):
 
         try:
             # add show to database
-            self.session.add(TVShow(**{'indexer': self.indexer, 'indexer_id': self.indexer_id, 'lang': self.lang}))
-            self.show = find_show(self.indexer_id, session=self.session)
+            self.show = TVShow(**{'indexer': self.indexer, 'indexer_id': self.indexer_id, 'lang': self.lang})
+            self.session.add(self.show)
 
             self.show.load_from_indexer()
 
@@ -360,6 +360,9 @@ class QueueItemAdd(ShowQueueItem):
                 "Setting all current episodes to the specified default status: " + str(self.default_status))
 
             self.show.default_ep_status = self.default_status
+
+            # save to database
+            self.session.commit()
 
             if self.show.anime:
                 if self.blacklist:
@@ -429,7 +432,7 @@ class QueueItemAdd(ShowQueueItem):
                 sickrage.app.notifier_providers['trakt'].update_watchlist(show_obj=self.show)
 
         # Load XEM data to DB for show
-        xem_refresh(self.show.indexer_id, self.show.indexer, force=True)
+        xem_refresh(self.show.indexer_id, self.show.indexer, force=True, session=self.session)
 
         # check if show has XEM mapping so we can determin if searches should go by scene numbering or indexer
         # numbering.

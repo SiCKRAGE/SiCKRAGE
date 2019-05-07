@@ -491,12 +491,14 @@ def xem_refresh(indexer_id, indexer, force=False, session=None):
             url = "http://thexem.de/map/havemap?origin=%s" % IndexerApi(indexer).config['xem_origin']
 
             try:
-                parsedJSON = WebSession().get(url).json()
-                if indexer_id not in map(int, parsedJSON['data']):
+                parsed_json = WebSession().get(url).json()
+                if indexer_id not in map(int, parsed_json['data']):
                     raise Exception
             except Exception:
                 for dbData in session.query(TVEpisode).filter_by(showid=indexer_id):
-                    dbData.scene_season = dbData.scene_episode = dbData.scene_absolute_number = 0
+                    dbData.scene_season = 0
+                    dbData.scene_episode = 0
+                    dbData.scene_absolute_number = 0
                 return
 
             # XEM API URL
@@ -504,14 +506,14 @@ def xem_refresh(indexer_id, indexer, force=False, session=None):
                 indexer_id, IndexerApi(indexer).config['xem_origin'])
 
             try:
-                parsedJSON = WebSession().get(url).json()
-                if 'success' not in parsedJSON['result']:
+                parsed_json = WebSession().get(url).json()
+                if 'success' not in parsed_json['result']:
                     raise Exception
             except Exception:
                 sickrage.app.log.info('No XEM data for show "%s on %s"' % (indexer_id, IndexerApi(indexer).name,))
                 return
 
-            for entry in parsedJSON['data']:
+            for entry in parsed_json['data']:
                 try:
                     dbData = session.query(TVEpisode).filter_by(showid=indexer_id, season=entry[IndexerApi(indexer).config['xem_origin']]['season'],
                                                                 episode=entry[IndexerApi(indexer).config['xem_origin']]['episode']).one()

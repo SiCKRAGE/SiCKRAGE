@@ -62,7 +62,7 @@ class TVShow(MainDBBase):
     runtime = Column(Integer, default=0)
     quality = Column(Integer, default=-1)
     airs = Column(Text, default='')
-    status = Column(Integer, default=UNKNOWN)
+    status = Column(Text, default='')
     flatten_folders = Column(Boolean, default=0)
     paused = Column(Boolean, default=0)
     air_by_date = Column(Boolean, default=0)
