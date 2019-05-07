@@ -19,12 +19,14 @@
 from sqlalchemy import orm
 
 import sickrage
+from sickrage.core.databases.main import MainDB
 
 
-def find_episode(show_id, episode_id):
+@MainDB.with_session
+def find_episode(show_id, episode_id, session=None):
     from sickrage.core.tv.episode import TVEpisode
 
     try:
-        return sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=show_id, indexer_id=episode_id).one()
+        return session.query(TVEpisode).filter_by(showid=show_id, indexer_id=episode_id).one()
     except orm.exc.NoResultFound:
         return None

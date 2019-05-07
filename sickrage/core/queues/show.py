@@ -22,10 +22,9 @@ import os
 import time
 import traceback
 
-from sqlalchemy import orm
-
 import sickrage
 from sickrage.core.common import WANTED
+from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import CantRefreshShowException, \
     CantRemoveShowException, CantUpdateShowException, EpisodeDeletedException, \
     MultipleShowObjectsException
@@ -34,10 +33,9 @@ from sickrage.core.queues import srQueue, srQueueItem, srQueuePriorities
 from sickrage.core.scene_numbering import xem_refresh, get_xem_numbering_for_show
 from sickrage.core.traktapi import TraktAPI
 from sickrage.core.tv.show import TVShow
-from sickrage.core.tv.show.helpers import load_imdb_info
+from sickrage.core.tv.show.helpers import load_imdb_info, find_show
 from sickrage.indexers import IndexerApi
-from sickrage.indexers.exceptions import indexer_attributenotfound, \
-    indexer_error, indexer_exception
+from sickrage.indexers.exceptions import indexer_attributenotfound, indexer_error, indexer_exception
 
 
 class ShowQueue(srQueue):
@@ -206,13 +204,11 @@ class ShowQueueItem(srQueueItem):
     - show being subtitled
     """
 
-    def __init__(self, indexer_id, action_id):
+    @MainDB.with_session
+    def __init__(self, indexer_id, action_id, session=None):
         super(ShowQueueItem, self).__init__(ShowQueueActions.names[action_id], action_id)
-
-        try:
-            self.show = sickrage.app.main_db.session().query(TVShow).filter_by(indexer_id=indexer_id).one()
-        except orm.exc.NoResultFound:
-            self.show = None
+        self.session = session
+        self.show = find_show(indexer_id, session=session)
 
     def is_in_queue(self):
         return self in sickrage.app.show_queue.queue_items
@@ -343,8 +339,8 @@ class QueueItemAdd(ShowQueueItem):
 
         try:
             # add show to database
-            self.show = TVShow(**{'indexer': self.indexer, 'indexer_id': self.indexer_id, 'lang': self.lang})
-            sickrage.app.main_db.add(self.show)
+            self.session.add(TVShow(**{'indexer': self.indexer, 'indexer_id': self.indexer_id, 'lang': self.lang}))
+            self.show = find_show(self.indexer_id, session=self.session)
 
             self.show.load_from_indexer()
 

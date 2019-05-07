@@ -69,7 +69,7 @@ class APIBulderHandler(BaseHandler, ABC):
             return (remove_article(x), x)[not x or sickrage.app.config.sort_article]
 
         episodes = {}
-        for result in sickrage.app.main_db.session().query(TVEpisode).order_by(TVEpisode.season, TVEpisode.episode):
+        for result in self.db_session.query(TVEpisode).order_by(TVEpisode.season, TVEpisode.episode):
             if result.showid not in episodes:
                 episodes[result.showid] = {}
 

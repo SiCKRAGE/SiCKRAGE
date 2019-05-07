@@ -103,7 +103,7 @@ class SearchIndexersForShowNameHandler(BaseHandler, ABC):
         for i, shows in results.items():
             final_results.extend([[IndexerApi(i).name, i, IndexerApi(i).config["show_url"],
                                    int(show['id']), show['seriesname'], show['firstaired'],
-                                   ('', 'disabled')[find_show(show['id']) is not None]] for show in shows])
+                                   ('', 'disabled')[find_show(show['id'], session=self.db_session) is not None]] for show in shows])
 
         lang_id = IndexerApi().indexer().languages[lang] or 7
         return self.write(json_encode({'results': final_results, 'langid': lang_id}))
@@ -153,7 +153,7 @@ class MassAddTableHandler(BaseHandler, ABC):
 
                     # see if the folder is in database already
                     try:
-                        sickrage.app.main_db.session().query(TVShow).filter_by(location=cur_path).one()
+                        self.db_session.query(TVShow).filter_by(location=cur_path).one()
                         cur_dir['added_already'] = True
                     except orm.exc.NoResultFound:
                         cur_dir['added_already'] = False
@@ -179,7 +179,7 @@ class MassAddTableHandler(BaseHandler, ABC):
                                 showid = i
 
                     cur_dir['existing_info'] = (showid, show_name, indexer)
-                    if showid and find_show(showid):
+                    if showid and find_show(showid, session=self.db_session):
                         cur_dir['added_already'] = True
                 except Exception:
                     pass
@@ -265,7 +265,7 @@ class TraktShowsHandler(BaseHandler, ABC):
                                                                     limit=int(limit) + len(get_show_list())), False
 
         while len(trakt_shows) < int(limit):
-            trakt_shows += [x for x in shows if 'tvdb' in x.ids and not find_show(int(x.ids['tvdb']))]
+            trakt_shows += [x for x in shows if 'tvdb' in x.ids and not find_show(int(x.ids['tvdb']), session=self.db_session)]
 
         return self.render("/home/trakt_shows.mako",
                            title="Trakt {} Shows".format(show_list.capitalize()),

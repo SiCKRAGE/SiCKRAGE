@@ -34,7 +34,7 @@ from tornado.web import RequestHandler
 
 import sickrage
 from sickrage.core import helpers
-
+from sickrage.core.databases.main import MainDB
 
 class BaseHandler(RequestHandler, ABC):
     def __init__(self, application, request, **kwargs):
@@ -60,6 +60,10 @@ class BaseHandler(RequestHandler, ABC):
                 }
             }
         )
+
+    @MainDB.with_session
+    def prepare(self, session=None):
+        self.db_session = session
 
     def get_user_locale(self):
         return locale.get(sickrage.app.config.gui_lang)

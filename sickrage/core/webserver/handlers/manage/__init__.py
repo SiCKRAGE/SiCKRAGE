@@ -53,8 +53,7 @@ class ShowEpisodeStatusesHandler(BaseHandler, ABC):
             status_list = Quality.SNATCHED + Quality.SNATCHED_PROPER
 
         result = {}
-        for dbData in sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=int(indexer_id)).filter(TVEpisode.season != 0,
-                                                                                                               TVEpisode.status.in_(status_list)):
+        for dbData in self.db_session.query(TVEpisode).filter_by(showid=int(indexer_id)).filter(TVEpisode.season != 0, TVEpisode.status.in_(status_list)):
             cur_season = int(dbData.season)
             cur_episode = int(dbData.episode)
 
@@ -133,8 +132,8 @@ class ChangeEpisodeStatusesHandler(BaseHandler, ABC):
             # get a list of all the eps we want to change if they just said "all"
             if 'all' in to_change[cur_indexer_id]:
                 all_eps = ['{}x{}'.format(x.season, x.episode) for x in
-                           sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=int(cur_indexer_id)).filter(TVEpisode.status.in_(status_list),
-                                                                                                                        TVEpisode.season != 0)]
+                           self.db_session.query(TVEpisode).filter_by(showid=int(cur_indexer_id)).filter(TVEpisode.status.in_(status_list),
+                                                                                                         TVEpisode.season != 0)]
                 to_change[cur_indexer_id] = all_eps
 
             await self.http_client.fetch(
@@ -155,8 +154,8 @@ class ShowSubtitleMissedHandler(BaseHandler, ABC):
         which_subs = self.get_query_argument('whichSubs')
 
         result = {}
-        for dbData in sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=int(indexer_id)).filter(TVEpisode.status.endswith(4),
-                                                                                                               TVEpisode.season != 0):
+        for dbData in self.db_session.query(TVEpisode).filter_by(showid=int(indexer_id)).filter(TVEpisode.status.endswith(4),
+                                                                                                TVEpisode.season != 0):
             if which_subs == 'all':
                 if not frozenset(wanted_languages()).difference(dbData.subtitles.split(',')):
                     continue
@@ -251,7 +250,7 @@ class DownloadSubtitleMissedHandler(BaseHandler, ABC):
             # get a list of all the eps we want to download subtitles if they just said "all"
             if 'all' in to_download[cur_indexer_id]:
                 to_download[cur_indexer_id] = ['{}x{}'.format(x.season, x.episode) for x in
-                                               sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=int(cur_indexer_id)).filter(
+                                               self.db_session.query(TVEpisode).filter_by(showid=int(cur_indexer_id)).filter(
                                                    TVEpisode.status.endswith(4), TVEpisode.season != 0)]
 
             for epResult in to_download[cur_indexer_id]:
@@ -751,13 +750,13 @@ class FailedDownloadsHandler(BaseHandler, ABC):
         to_remove = self.get_query_argument('toRemove', None)
 
         if int(limit) == 0:
-            dbData = sickrage.app.main_db.session().query(MainDB.FailedSnatch).all()
+            dbData = self.db_session.query(MainDB.FailedSnatch).all()
         else:
-            dbData = sickrage.app.main_db.session().query(MainDB.FailedSnatch).limit(int(limit))
+            dbData = self.db_session.query(MainDB.FailedSnatch).limit(int(limit))
 
         to_remove = to_remove.split("|") if to_remove is not None else []
         if to_remove:
-            sickrage.app.main_db.delete(MainDB.FailedSnatch, MainDB.FailedSnatch.release.in_(to_remove))
+            self.db_session.query(MainDB.FailedSnatch).filter(MainDB.FailedSnatch.release.in_(to_remove)).delete()
             return self.redirect('/manage/failedDownloads/')
 
         return self.render(
