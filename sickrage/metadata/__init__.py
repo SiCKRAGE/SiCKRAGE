@@ -26,6 +26,7 @@ from xml.etree.ElementTree import ElementTree
 import fanart
 import sickrage
 from sickrage.core.helpers import chmod_as_parent, replace_extension, try_int
+from sickrage.indexers.helpers import map_indexers
 from sickrage.core.websession import WebSession
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_error, indexer_episodenotfound, indexer_seasonnotfound
@@ -820,7 +821,7 @@ class GenericMetadata(object):
         sickrage.app.log.debug("Searching for any " + img_type + " images on Fanart.tv for " + show.name)
 
         try:
-            indexer_id = show.map_indexers()[1]
+            indexer_id = map_indexers(show.indexer, show.indexer_id, show.name)[1]
             if indexer_id:
                 request = fanart.Request(
                     apikey=sickrage.app.config.fanart_api_key,

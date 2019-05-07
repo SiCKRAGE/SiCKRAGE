@@ -418,11 +418,11 @@ class QueueItemAdd(ShowQueueItem):
 
         if sickrage.app.config.use_trakt:
             # if there are specific episodes that need to be added by trakt
-            sickrage.app.trakt_searcher.manageNewShow(self.show)
+            sickrage.app.trakt_searcher.manage_new_show(self.show)
 
             # add show to trakt.tv library
             if sickrage.app.config.trakt_sync:
-                sickrage.app.trakt_searcher.addShowToTraktLibrary(self.show)
+                sickrage.app.trakt_searcher.add_show_to_trakt_library(self.show)
 
             if sickrage.app.config.trakt_sync_watchlist:
                 sickrage.app.log.info("update watchlist")
@@ -632,7 +632,7 @@ class QueueItemRemove(ShowQueueItem):
 
         if sickrage.app.config.use_trakt:
             try:
-                sickrage.app.trakt_searcher.removeShowFromTraktLibrary(self.show)
+                sickrage.app.trakt_searcher.remove_show_from_trakt_library(self.show)
             except Exception as e:
                 sickrage.app.log.warning(
                     "Unable to delete show from Trakt: %s. Error: %s" % (self.show.name, e))

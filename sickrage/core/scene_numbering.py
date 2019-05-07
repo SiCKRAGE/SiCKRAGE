@@ -480,7 +480,7 @@ def xem_refresh(indexer_id, indexer, force=False, session=None):
             dbData = session.query(MainDB.XEMRefresh).filter_by(indexer_id=indexer_id).one()
             dbData.last_refreshed = int(time.mktime(datetime.datetime.today().timetuple()))
         except orm.exc.NoResultFound:
-            sickrage.app.main_db.add(MainDB.XEMRefresh(**{
+            session.add(MainDB.XEMRefresh(**{
                 'indexer': indexer,
                 'last_refreshed': int(time.mktime(datetime.datetime.today().timetuple())),
                 'indexer_id': indexer_id

@@ -26,7 +26,7 @@ import stat
 import traceback
 
 import send2trash
-from sqlalchemy import orm, desc, Column, Integer, Boolean, Text
+from sqlalchemy import orm, Column, Integer, Boolean, Text
 from sqlalchemy.orm import relationship
 from unidecode import unidecode
 
@@ -41,11 +41,11 @@ from sickrage.core.exceptions import ShowNotFoundException, \
 from sickrage.core.helpers import list_media_files, is_media_file, try_int, safe_getattr
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from sickrage.core.tv.episode import TVEpisode
+from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.config import INDEXER_TVRAGE
 from sickrage.indexers.exceptions import indexer_attributenotfound
-from sickrage.indexers.ui import ShowListUI
 
 
 class TVShow(MainDBBase):
@@ -306,45 +306,45 @@ class TVShow(MainDBBase):
         except orm.exc.NoResultFound:
             raise EpisodeNotFoundException
 
-    def should_update(self, update_date=datetime.date.today()):
-        # if show status 'Ended' always update (status 'Continuing')
-        if self.status.lower() == 'continuing':
-            return True
-
-        # run logic against the current show latest aired and next unaired data to see if we should bypass 'Ended'
-        # status
-        graceperiod = datetime.timedelta(days=30)
-        last_airdate = datetime.date.min
-
-        # get latest aired episode to compare against today - graceperiod and today + graceperiod
-        try:
-            dbData = sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=self.indexer_id, status=1).filter(
-                TVEpisode.season > 0,
-                TVEpisode.airdate > 1).order_by(
-                desc(TVEpisode.airdate)).one()
-            last_airdate = datetime.date.fromordinal(dbData.airdate)
-            if (update_date - graceperiod) <= last_airdate <= (update_date + graceperiod):
-                return True
-        except orm.exc.NoResultFound:
-            pass
-
-        try:
-            dbData = sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=self.indexer_id, status=1).filter(
-                TVEpisode.season > 0,
-                TVEpisode.airdate > 1).order_by(
-                TVEpisode.airdate).one()
-            next_airdate = datetime.date.fromordinal(dbData.airdate)
-            if next_airdate <= (update_date + graceperiod):
-                return True
-        except orm.exc.NoResultFound:
-            pass
-
-        # in the first year after ended (last airdate), update every 30 days
-        if (update_date - last_airdate) < datetime.timedelta(days=450) and (
-                update_date - datetime.date.fromordinal(self.last_update)) > datetime.timedelta(days=30):
-            return True
-
-        return False
+    # def should_update(self, update_date=datetime.date.today()):
+    #     # if show status 'Ended' always update (status 'Continuing')
+    #     if self.status.lower() == 'continuing':
+    #         return True
+    #
+    #     # run logic against the current show latest aired and next unaired data to see if we should bypass 'Ended'
+    #     # status
+    #     graceperiod = datetime.timedelta(days=30)
+    #     last_airdate = datetime.date.min
+    #
+    #     # get latest aired episode to compare against today - graceperiod and today + graceperiod
+    #     try:
+    #         dbData = sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=self.indexer_id, status=1).filter(
+    #             TVEpisode.season > 0,
+    #             TVEpisode.airdate > 1).order_by(
+    #             desc(TVEpisode.airdate)).one()
+    #         last_airdate = datetime.date.fromordinal(dbData.airdate)
+    #         if (update_date - graceperiod) <= last_airdate <= (update_date + graceperiod):
+    #             return True
+    #     except orm.exc.NoResultFound:
+    #         pass
+    #
+    #     try:
+    #         dbData = sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=self.indexer_id, status=1).filter(
+    #             TVEpisode.season > 0,
+    #             TVEpisode.airdate > 1).order_by(
+    #             TVEpisode.airdate).one()
+    #         next_airdate = datetime.date.fromordinal(dbData.airdate)
+    #         if next_airdate <= (update_date + graceperiod):
+    #             return True
+    #     except orm.exc.NoResultFound:
+    #         pass
+    #
+    #     # in the first year after ended (last airdate), update every 30 days
+    #     if (update_date - last_airdate) < datetime.timedelta(days=450) and (
+    #             update_date - datetime.date.fromordinal(self.last_update)) > datetime.timedelta(days=30):
+    #         return True
+    #
+    #     return False
 
     def write_show_nfo(self, force=False):
 
@@ -777,7 +777,7 @@ class TVShow(MainDBBase):
 
     def want_episode(self, episode_id, quality, manualSearch=False, downCurQuality=False):
         try:
-            dbData = sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=self.indexer_id, indexer_id=episode_id).one()
+            dbData = find_episode(self.indexer_id, episode_id).one()
         except orm.exc.NoResultFound:
             sickrage.app.log.debug("Unable to find a matching episode in database, ignoring found episode")
             return False
@@ -804,8 +804,7 @@ class TVShow(MainDBBase):
 
         # if we know we don't want it then just say no
         if ep_status in Quality.ARCHIVED + [UNAIRED, SKIPPED, IGNORED] and not manualSearch:
-            sickrage.app.log.debug(
-                "Existing episode status is unaired/skipped/ignored/archived, ignoring found episode")
+            sickrage.app.log.debug("Existing episode status is unaired/skipped/ignored/archived, ignoring found episode")
             return False
 
         cur_status, cur_quality = Quality.split_composite_status(ep_status)
@@ -816,23 +815,20 @@ class TVShow(MainDBBase):
             return True
         elif manualSearch:
             if (downCurQuality and quality >= cur_quality) or (not downCurQuality and quality > cur_quality):
-                sickrage.app.log.debug(
-                    "Usually ignoring found episode, but forced search allows the quality, getting found episode")
+                sickrage.app.log.debug("Usually ignoring found episode, but forced search allows the quality, getting found episode")
                 return True
 
         # if we are re-downloading then we only want it if it's in our bestQualities list and better than what we
         # have, or we only have one bestQuality and we do not have that quality yet
         if ep_status in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER and quality in best_qualities and (
                 quality > cur_quality or cur_quality not in best_qualities):
-            sickrage.app.log.debug(
-                "Episode already exists but the found episode quality is wanted more, getting found episode")
+            sickrage.app.log.debug("Episode already exists but the found episode quality is wanted more, getting found episode")
             return True
         elif cur_quality == UNKNOWN and manualSearch:
             sickrage.app.log.debug("Episode already exists but quality is Unknown, getting found episode")
             return True
         else:
-            sickrage.app.log.debug(
-                "Episode already exists and the found episode has same/lower quality, ignoring found episode")
+            sickrage.app.log.debug("Episode already exists and the found episode has same/lower quality, ignoring found episode")
 
         sickrage.app.log.debug("None of the conditions were met, ignoring found episode")
         return False
@@ -886,61 +882,6 @@ class TVShow(MainDBBase):
                 return Overview.GOOD
         else:
             sickrage.app.log.error('Could not parse episode status into a valid overview status: {}'.format(epStatus))
-
-    def map_indexers(self):
-        mapped = {}
-
-        # init mapped indexers object
-        for indexer in IndexerApi().indexers:
-            mapped[indexer] = self.indexer_id if int(indexer) == int(self.indexer) else 0
-
-        # for each mapped entry
-        for dbData in sickrage.app.main_db.session().query(MainDB.IndexerMapping).filter_by(indexer_id=self.indexer_id, indexer=self.indexer):
-            # Check if its mapped with both tvdb and tvrage.
-            if len([i for i in dbData if i is not None]) >= 4:
-                sickrage.app.log.debug("Found indexer mapping in cache for show: " + self.name)
-                mapped[int(dbData.mindexer)] = int(dbData.mindexer_id)
-                return mapped
-        else:
-            for indexer in IndexerApi().indexers:
-                if indexer == self.indexer:
-                    mapped[indexer] = self.indexer_id
-                    continue
-
-                lINDEXER_API_PARMS = IndexerApi(indexer).api_params.copy()
-                lINDEXER_API_PARMS['custom_ui'] = ShowListUI
-                t = IndexerApi(indexer).indexer(**lINDEXER_API_PARMS)
-
-                try:
-                    mapped_show = t[self.name]
-                except Exception:
-                    sickrage.app.log.debug("Unable to map " + IndexerApi(
-                        self.indexer).name + "->" + IndexerApi(
-                        indexer).name + " for show: " + self.name + ", skipping it")
-                    continue
-
-                if mapped_show and len(mapped_show) == 1:
-                    sickrage.app.log.debug("Mapping " + IndexerApi(
-                        self.indexer).name + "->" + IndexerApi(
-                        indexer).name + " for show: " + self.name)
-
-                    mapped[indexer] = int(mapped_show['id'])
-
-                    sickrage.app.log.debug("Adding indexer mapping to DB for show: " + self.name)
-
-                    try:
-                        sickrage.app.main_db.session().query(MainDB.IndexerMapping).filter_by(indexer_id=self.indexer_id,
-                                                                                              indexer=self.indexer,
-                                                                                              mindexer_id=int(mapped_show['id'])).one()
-                    except orm.exc.NoResultFound:
-                        sickrage.app.main_db.add(MainDB.IndexerMapping(**{
-                            'indexer_id': self.indexer_id,
-                            'indexer': self.indexer,
-                            'mindexer_id': int(mapped_show['id']),
-                            'mindexer': indexer
-                        }))
-
-        return mapped
 
     def get_all_episodes_from_absolute_number(self, absolute_numbers):
         episodes = []

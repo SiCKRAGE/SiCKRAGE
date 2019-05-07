@@ -18,7 +18,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import sickrage
 from sickrage.core.databases.main import MainDB
 
@@ -42,7 +41,8 @@ class BlackAndWhiteList(object):
         self.blacklist = self._load_list(session.query(MainDB.Blacklist).filter_by(show_id=self.show_id))
         self.whitelist = self._load_list(session.query(MainDB.Whitelist).filter_by(show_id=self.show_id))
 
-    def _add_keywords(self, table, values):
+    @MainDB.with_session
+    def _add_keywords(self, table, values, session=None):
         """
         DB: Adds keywords into database for current show
 
@@ -50,29 +50,35 @@ class BlackAndWhiteList(object):
         :param values: Values to be inserted in table
         """
         for value in values:
-            sickrage.app.main_db.add(table(**{
+            session.add(table(**{
                 'show_id': self.show_id,
                 'keyword': value
             }))
 
-    def set_black_keywords(self, values):
+    @MainDB.with_session
+    def set_black_keywords(self, values, session=None):
         """
         Sets blacklist to new value
 
         :param values: Complete list of keywords to be set as blacklist
+        :param session: Database session
         """
-        sickrage.app.main_db.delete(MainDB.Blacklist, show_id=self.show_id)
+
+        session.query(MainDB.Blacklist).filter_by(show_id=self.show_id).delete()
         self._add_keywords(MainDB.Blacklist, values)
         self.blacklist = values
         sickrage.app.log.debug('Blacklist set to: %s' % self.blacklist)
 
-    def set_white_keywords(self, values):
+    @MainDB.with_session
+    def set_white_keywords(self, values, session=None):
         """
         Sets whitelist to new value
 
         :param values: Complete list of keywords to be set as whitelist
+        :param session: Database session
         """
-        sickrage.app.main_db.delete(MainDB.Whitelist, show_id=self.show_id)
+
+        session.query(MainDB.Whitelist).filter_by(show_id=self.show_id).delete()
         self._add_keywords(MainDB.Whitelist, values)
         self.whitelist = values
         sickrage.app.log.debug('Whitelist set to: %s' % self.whitelist)

@@ -25,6 +25,7 @@ from tornado import gen
 
 import sickrage
 from sickrage.core.common import cpu_presets
+from sickrage.core.databases.main import MainDB
 from sickrage.core.queues import srQueue, srQueueItem, srQueuePriorities
 from sickrage.core.search import search_providers, snatch_episode
 from sickrage.core.tv.episode.helpers import find_episode
@@ -276,7 +277,8 @@ class FailedQueueItem(srQueueItem):
         self.success = False
         self.started = False
 
-    def run(self):
+    @MainDB.with_session
+    def run(self, session=None):
         self.started = True
 
         show_obj = find_show(self.show_id)
@@ -284,7 +286,7 @@ class FailedQueueItem(srQueueItem):
         try:
             sickrage.app.log.info("Starting failed download search for: [" + show_obj.name + "]")
 
-            episode_obj = find_episode(self.show_id, self.episode_id)
+            episode_obj = find_episode(self.show_id, self.episode_id, session=session)
 
             sickrage.app.log.info("Marking episode as bad: [" + episode_obj.pretty_name() + "]")
 

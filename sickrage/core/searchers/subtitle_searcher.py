@@ -26,9 +26,10 @@ from sqlalchemy import or_, and_
 import sickrage
 import sickrage.subtitles
 from sickrage.core.common import dateTimeFormat
+from sickrage.core.databases.main import MainDB
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.episode.helpers import find_episode
-from sickrage.core.tv.show.helpers import find_show, get_show_list
+from sickrage.core.tv.show.helpers import get_show_list
 
 
 class SubtitleSearcher(object):
@@ -41,7 +42,8 @@ class SubtitleSearcher(object):
         self.name = "SUBTITLESEARCHER"
         self.amActive = False
 
-    def run(self, force=False):
+    @MainDB.with_session
+    def run(self, force=False, session=None):
         if self.amActive or (not sickrage.app.config.use_subtitles or sickrage.app.developer) and not force:
             return
 
@@ -51,9 +53,7 @@ class SubtitleSearcher(object):
         threading.currentThread().setName(self.name)
 
         if len(sickrage.subtitles.getEnabledServiceList()) < 1:
-            sickrage.app.log.warning(
-                'Not enough services selected. At least 1 service is required to search subtitles in the background'
-            )
+            sickrage.app.log.warning('Not enough services selected. At least 1 service is required to search subtitles in the background')
             return
 
         sickrage.app.log.info('Checking for subtitles')
@@ -65,7 +65,7 @@ class SubtitleSearcher(object):
         #  - search count < 2 and diff(airdate, now) > 1 week : now -> 1d
         #  - search count < 7 and diff(airdate, now) <= 1 week : now -> 4h -> 8h -> 16h -> 1d -> 1d -> 1d
 
-        rules = self._getRules()
+        rules = self._get_rules()
         now = datetime.datetime.now()
 
         results = []
@@ -73,7 +73,7 @@ class SubtitleSearcher(object):
             if s.subtitles != 1:
                 continue
 
-            for e in sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=s.indexer_id).filter(
+            for e in session.query(TVEpisode).filter_by(showid=s.indexer_id).filter(
                     TVEpisode.location != '', ~TVEpisode.subtitles.in_(
                         sickrage.subtitles.wanted_languages()
                     ), or_(TVEpisode.subtitles_searchcount <= 2,
@@ -96,7 +96,7 @@ class SubtitleSearcher(object):
             return
 
         for epToSub in results:
-            episode_obj = find_episode(epToSub["show_id"], epToSub["episode_id"])
+            episode_obj = find_episode(epToSub["show_id"], epToSub["episode_id"], session=session)
 
             if not os.path.isfile(epToSub['location']):
                 sickrage.app.log.debug(
@@ -136,10 +136,10 @@ class SubtitleSearcher(object):
         self.amActive = False
 
     @staticmethod
-    def _getRules():
+    def _get_rules():
         """
         Define the hours to wait between 2 subtitles search depending on:
         - the episode: new or old
-        - the number of searches done so far (searchcount), represented by the index of the list
+        - the number of searches done so far (search count), represented by the index of the list
         """
         return {'old': [0, 24], 'new': [0, 4, 8, 4, 16, 24, 24]}

@@ -72,6 +72,7 @@ from sickrage.core.exceptions import CantUpdateShowException, CantRemoveShowExce
 from sickrage.core.helpers import chmod_as_parent, make_dir, \
     pretty_file_size, sanitize_file_name, srdatetime, try_int, read_file_buffered, backup_app_data
 from sickrage.core.tv.show.helpers import find_show, get_show_list
+from sickrage.indexers.helpers import map_indexers
 from sickrage.core.media.banner import Banner
 from sickrage.core.media.fanart import FanArt
 from sickrage.core.media.network import Network
@@ -119,14 +120,14 @@ class ApiHandler(RequestHandler):
 
         # set the output callback
         # default json
-        outputCallbackDict = {
+        output_callback_dict = {
             'default': self._out_as_json,
             'image': self._out_as_image,
         }
 
         if sickrage.app.config.api_key == self.path_args[0]:
-            accessMsg = "IP:{} - ACCESS GRANTED".format(self.request.remote_ip)
-            sickrage.app.log.debug(accessMsg)
+            access_msg = "IP:{} - ACCESS GRANTED".format(self.request.remote_ip)
+            sickrage.app.log.debug(access_msg)
 
             # set the original call_dispatcher as the local _call_dispatcher
             _call_dispatcher = self.call_dispatcher
@@ -139,25 +140,23 @@ class ApiHandler(RequestHandler):
                 del self.request.arguments["profile"]
 
             try:
-                outDict = self.route(_call_dispatcher, **self.request.arguments)
+                out_dict = self.route(_call_dispatcher, **self.request.arguments)
             except Exception as e:
                 sickrage.app.log.error(str(e))
-                errorData = {"error_msg": e, "request arguments": self.request.arguments}
-                outDict = _responds(RESULT_FATAL,
-                                    errorData,
-                                    "SiCKRAGE encountered an internal error! Please report to the Devs")
+                error_data = {"error_msg": e, "request arguments": self.request.arguments}
+                out_dict = _responds(RESULT_FATAL, error_data, "SiCKRAGE encountered an internal error! Please report to the Devs")
         else:
-            accessMsg = "IP:{} - ACCESS DENIED".format(self.request.remote_ip)
-            sickrage.app.log.debug(accessMsg)
+            access_msg = "IP:{} - ACCESS DENIED".format(self.request.remote_ip)
+            sickrage.app.log.debug(access_msg)
 
-            errorData = {"error_msg": accessMsg, "request arguments": self.request.arguments}
-            outDict = _responds(RESULT_DENIED, errorData, accessMsg)
+            error_data = {"error_msg": access_msg, "request arguments": self.request.arguments}
+            out_dict = _responds(RESULT_DENIED, error_data, access_msg)
 
-        outputCallback = outputCallbackDict['default']
-        if 'outputType' in outDict:
-            outputCallback = outputCallbackDict[outDict['outputType']]
+        output_callback = output_callback_dict['default']
+        if 'outputType' in out_dict:
+            output_callback = output_callback_dict[out_dict['outputType']]
 
-        self.finish(outputCallback(outDict))
+        self.finish(output_callback(out_dict))
 
     def route(self, function, **kwargs):
         kwargs = recursive_unicode(kwargs)
@@ -1866,7 +1865,7 @@ class CMD_Show(ApiCall):
         showDict["skip_downloaded"] = (0, 1)[showObj.skip_downloaded]
 
         showDict["indexer_id"] = showObj.indexer_id
-        showDict["tvdbid"] = showObj.map_indexers()[1]
+        showDict["tvdbid"] = map_indexers(showObj.indexer, showObj.indexer_id, showObj.name)[1]
         showDict["imdbid"] = showObj.imdb_id
 
         showDict["network"] = showObj.network
@@ -2695,7 +2694,7 @@ class CMD_Shows(ApiCall):
             if self.paused is not None and bool(self.paused) != bool(curShow.paused):
                 continue
 
-            indexerShow = curShow.map_indexers()
+            indexerShow = map_indexers(curShow.indexer, curShow.indexer_id, curShow.name)
 
             showDict = {
                 "paused": (0, 1)[curShow.paused],
