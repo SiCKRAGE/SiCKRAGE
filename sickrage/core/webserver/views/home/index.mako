@@ -134,7 +134,7 @@
 
                     % for curShow in sorted(curShowlist, key=cmp_to_key(lambda x, y: x.name < y.name)):
                     <%
-                        cur_airs_next = ''
+                        cur_airs_next = datetime.date.min
                         cur_snatched = 0
                         cur_downloaded = 0
                         cur_total = 0
@@ -325,8 +325,8 @@
                             <tbody class="">
                                 % for curShow in sorted(curShowlist, key=cmp_to_key(lambda x, y: x.name < y.name)):
                                     <%
-                                        cur_airs_next = ''
-                                        cur_airs_prev = ''
+                                        cur_airs_next = datetime.date.min
+                                        cur_airs_prev = datetime.date.min
                                         cur_snatched = 0
                                         cur_downloaded = 0
                                         cur_total = 0

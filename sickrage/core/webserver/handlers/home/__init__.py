@@ -144,7 +144,7 @@ class HomeHandler(BaseHandler, ABC):
         max_download_count = 1000
 
         for show in get_show_list():
-            if sickrage.app.show_queue.is_being_added(show) or sickrage.app.show_queue.is_being_removed(show):
+            if sickrage.app.show_queue.is_being_added(show.indexer_id) or sickrage.app.show_queue.is_being_removed(show.indexer_id):
                 continue
 
             for epData in show.episodes:
@@ -832,29 +832,29 @@ class DisplayShowHandler(BaseHandler, ABC):
 
         show_message = ''
 
-        if sickrage.app.show_queue.is_being_added(show_obj):
+        if sickrage.app.show_queue.is_being_added(show_obj.indexer_id):
             show_message = _('This show is in the process of being downloaded - the info below is incomplete.')
 
-        elif sickrage.app.show_queue.is_being_updated(show_obj):
+        elif sickrage.app.show_queue.is_being_updated(show_obj.indexer_id):
             show_message = _('The information on this page is in the process of being updated.')
 
-        elif sickrage.app.show_queue.is_being_refreshed(show_obj):
+        elif sickrage.app.show_queue.is_being_refreshed(show_obj.indexer_id):
             show_message = _('The episodes below are currently being refreshed from disk')
 
-        elif sickrage.app.show_queue.is_being_subtitled(show_obj):
+        elif sickrage.app.show_queue.is_being_subtitled(show_obj.indexer_id):
             show_message = _('Currently downloading subtitles for this show')
 
-        elif sickrage.app.show_queue.is_in_refresh_queue(show_obj):
+        elif sickrage.app.show_queue.is_in_refresh_queue(show_obj.indexer_id):
             show_message = _('This show is queued to be refreshed.')
 
-        elif sickrage.app.show_queue.is_in_update_queue(show_obj):
+        elif sickrage.app.show_queue.is_in_update_queue(show_obj.indexer_id):
             show_message = _('This show is queued and awaiting an update.')
 
-        elif sickrage.app.show_queue.is_in_subtitle_queue(show_obj):
+        elif sickrage.app.show_queue.is_in_subtitle_queue(show_obj.indexer_id):
             show_message = _('This show is queued and awaiting subtitles download.')
 
-        if not sickrage.app.show_queue.is_being_added(show_obj):
-            if not sickrage.app.show_queue.is_being_updated(show_obj):
+        if not sickrage.app.show_queue.is_being_added(show_obj.indexer_id):
+            if not sickrage.app.show_queue.is_being_updated(show_obj.indexer_id):
                 if show_obj.paused:
                     submenu.append({
                         'title': _('Resume'),
@@ -909,7 +909,7 @@ class DisplayShowHandler(BaseHandler, ABC):
                 })
 
                 if sickrage.app.config.use_subtitles and show_obj.subtitles:
-                    if not sickrage.app.show_queue.is_being_subtitled(show_obj):
+                    if not sickrage.app.show_queue.is_being_subtitled(show_obj.indexer_id):
                         submenu.append({
                             'title': _('Download Subtitles'),
                             'path': '/home/subtitleShow?show=%d' % show_obj.indexer_id,
@@ -1171,7 +1171,7 @@ class EditShowHandler(BaseHandler, ABC):
         if bool(show_obj.flatten_folders) != bool(flatten_folders):
             show_obj.flatten_folders = flatten_folders
             try:
-                sickrage.app.show_queue.refresh_show(show_obj, True)
+                sickrage.app.show_queue.refresh_show(show_obj.indexer_id, True)
             except CantRefreshShowException as e:
                 errors.append(_("Unable to refresh this show: {}").format(e))
 
@@ -1203,7 +1203,7 @@ class EditShowHandler(BaseHandler, ABC):
                 try:
                     show_obj.location = location
                     try:
-                        sickrage.app.show_queue.refresh_show(show_obj, True)
+                        sickrage.app.show_queue.refresh_show(show_obj.indexer_id, True)
                     except CantRefreshShowException as e:
                         errors.append(_("Unable to refresh this show:{}").format(e))
                         # grab updated info from TVDB
@@ -1217,7 +1217,7 @@ class EditShowHandler(BaseHandler, ABC):
         # force the update
         if do_update:
             try:
-                sickrage.app.show_queue.update_show(show_obj, force=True)
+                sickrage.app.show_queue.update_show(show_obj.indexer_id, force=True)
                 await gen.sleep(cpu_presets[sickrage.app.config.cpu_preset])
             except CantUpdateShowException as e:
                 errors.append(_("Unable to update show: {}").format(e))
@@ -1285,7 +1285,7 @@ class DeleteShowHandler(BaseHandler, ABC):
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         try:
-            sickrage.app.show_queue.remove_show(show_obj, bool(full))
+            sickrage.app.show_queue.remove_show(show_obj.indexer_id, bool(full))
             sickrage.app.alerts.message(
                 _('%s has been %s %s') %
                 (
@@ -1314,7 +1314,7 @@ class RefreshShowHandler(BaseHandler, ABC):
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         try:
-            sickrage.app.show_queue.refresh_show(show_obj, True)
+            sickrage.app.show_queue.refresh_show(show_obj.indexer_id, True)
         except CantRefreshShowException as e:
             sickrage.app.alerts.error(_('Unable to refresh this show.'), str(e))
 
@@ -1336,7 +1336,7 @@ class UpdateShowHandler(BaseHandler, ABC):
 
         # force the update
         try:
-            sickrage.app.show_queue.update_show(show_obj, force=bool(force))
+            sickrage.app.show_queue.update_show(show_obj.indexer_id, force=bool(force))
         except CantUpdateShowException as e:
             sickrage.app.alerts.error(_("Unable to update this show."), str(e))
 
@@ -1357,7 +1357,7 @@ class SubtitleShowHandler(BaseHandler, ABC):
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         # search and download subtitles
-        sickrage.app.show_queue.download_subtitles(show_obj)
+        sickrage.app.show_queue.download_subtitles(show_obj.indexer_id)
 
         await gen.sleep(cpu_presets[sickrage.app.config.cpu_preset])
 

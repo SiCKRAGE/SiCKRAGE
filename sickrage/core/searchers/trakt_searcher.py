@@ -329,7 +329,7 @@ class TraktSearcher(object):
                     return
 
                 if progress.status in ['canceled', 'ended']:
-                    sickrage.app.show_queue.remove_show(show, full=True)
+                    sickrage.app.show_queue.remove_show(show.indexer_id, full=True)
                     sickrage.app.log.debug("Show: %s has been removed from SiCKRAGE" % show.name)
 
         sickrage.app.log.debug("SHOW_SICKRAGE::REMOVE::FINISH - Trakt Show Watchlist")

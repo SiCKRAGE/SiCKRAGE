@@ -485,6 +485,8 @@ def xem_refresh(indexer_id, indexer, force=False, session=None):
                 'last_refreshed': int(time.mktime(datetime.datetime.today().timetuple())),
                 'indexer_id': indexer_id
             }))
+        finally:
+            session.commit()
 
         try:
             # XEM MAP URL
@@ -499,6 +501,8 @@ def xem_refresh(indexer_id, indexer, force=False, session=None):
                     dbData.scene_season = 0
                     dbData.scene_episode = 0
                     dbData.scene_absolute_number = 0
+                    session.commit()
+
                 return
 
             # XEM API URL
@@ -528,6 +532,8 @@ def xem_refresh(indexer_id, indexer, force=False, session=None):
                     dbData.scene_season = entry['scene_2']['season']
                     dbData.scene_episode = entry['scene_2']['episode']
                     dbData.scene_absolute_number = entry['scene_2']['absolute']
+
+                session.commit()
         except Exception as e:
             sickrage.app.log.warning("Exception while refreshing XEM data for show {} on {}: {}".format(indexer_id, IndexerApi(indexer).name, e))
             sickrage.app.log.debug(traceback.format_exc())

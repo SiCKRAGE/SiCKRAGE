@@ -2197,7 +2197,7 @@ class CMD_ShowDelete(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         try:
-            sickrage.app.show_queue.remove_show(showObj, bool(self.removefiles))
+            sickrage.app.show_queue.remove_show(showObj.indexer_id, bool(self.removefiles))
         except CantRemoveShowException as exception:
             return _responds(RESULT_FAILURE, msg=str(exception))
 
@@ -2384,7 +2384,7 @@ class CMD_ShowRefresh(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         try:
-            sickrage.app.show_queue.refresh_show(showObj)
+            sickrage.app.show_queue.refresh_show(showObj.indexer_id)
         except CantRefreshShowException as e:
             return _responds(RESULT_FAILURE, msg=str(e))
 
@@ -2665,7 +2665,7 @@ class CMD_ShowUpdate(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         try:
-            sickrage.app.show_queue.update_show(showObj, force=True)
+            sickrage.app.show_queue.update_show(showObj.indexer_id, force=True)
             return _responds(RESULT_SUCCESS, msg=str(showObj.name) + " has queued to be updated")
         except CantUpdateShowException as e:
             sickrage.app.log.debug("API::Unable to update show: {}".format(e))

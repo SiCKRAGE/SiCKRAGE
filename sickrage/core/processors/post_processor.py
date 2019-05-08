@@ -1168,7 +1168,7 @@ class PostProcessor(object):
                 cur_ep.airdateModifyStamp()
 
         # generate nfo/tbn
-        ep_obj.createMetaFiles()
+        ep_obj.create_meta_files()
 
         # log it to history
         History.log_download(ep_obj.showid, ep_obj.indexer_id, self.file_path, new_ep_quality, self.release_group,

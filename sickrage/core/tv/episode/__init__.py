@@ -20,6 +20,7 @@
 import datetime
 import os
 import re
+import traceback
 from collections import OrderedDict
 from xml.etree.ElementTree import ElementTree
 
@@ -413,29 +414,28 @@ class TVEpisode(MainDBBase):
 
         return self.hasnfo
 
-    def createMetaFiles(self, force=False):
-
+    def create_meta_files(self, force=False):
         if not os.path.isdir(self.show.location):
-            sickrage.app.log.info(
-                str(self.show.indexer_id) + ": The show dir is missing, not bothering to try to create metadata")
+            sickrage.app.log.info(str(self.show.indexer_id) + ": The show dir is missing, not bothering to try to create metadata")
             return
 
-        self.createNFO(force)
-        self.createThumbnail(force)
+        self.create_nfo(force)
+        self.create_thumbnail(force)
 
         self.checkForMetaFiles()
 
-    def createNFO(self, force=False):
-
+    def create_nfo(self, force=False):
         result = False
 
         for cur_provider in sickrage.app.metadata_providers.values():
-            result = cur_provider.create_episode_metadata(self, force) or result
+            try:
+                result = cur_provider.create_episode_metadata(self, force) or result
+            except Exception as e:
+                traceback.print_exc()
 
         return result
 
-    def createThumbnail(self, force=False):
-
+    def create_thumbnail(self, force=False):
         result = False
 
         for cur_provider in sickrage.app.metadata_providers.values():

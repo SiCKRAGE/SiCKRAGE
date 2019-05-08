@@ -217,10 +217,11 @@ class TVShow(MainDBBase):
                     episode_obj = self.get_episode(season, episode, session=session)
                 except EpisodeNotFoundException:
                     session.add(TVEpisode(**{'showid': self.indexer_id,
-                                               'indexer': self.indexer,
-                                               'season': season,
-                                               'episode': episode,
-                                               'location': ''}))
+                                             'indexer': self.indexer,
+                                             'season': season,
+                                             'episode': episode,
+                                             'location': ''}))
+                    session.commit()
                     episode_obj = self.get_episode(season, episode, session=session)
                 else:
                     try:
@@ -361,7 +362,6 @@ class TVShow(MainDBBase):
         return result
 
     def write_metadata(self, show_only=False, force=False):
-
         if not os.path.isdir(self.location):
             sickrage.app.log.info(str(self.indexer_id) + ": Show dir doesn't exist, skipping NFO generation")
             return
@@ -374,7 +374,6 @@ class TVShow(MainDBBase):
             self.write_episode_nfos(force)
 
     def write_episode_nfos(self, force=False):
-
         if not os.path.isdir(self.location):
             sickrage.app.log.info(str(self.indexer_id) + ": Show dir doesn't exist, skipping NFO generation")
             return
@@ -385,10 +384,9 @@ class TVShow(MainDBBase):
             if self.location == '':
                 continue
 
-            sickrage.app.log.debug(str(self.indexer_id) + ": Retrieving/creating episode S%02dE%02d"
-                                   % (episode_obj.season or 0, episode_obj.episode or 0))
+            sickrage.app.log.debug(str(self.indexer_id) + ": Retrieving/creating episode S%02dE%02d" % (episode_obj.season or 0, episode_obj.episode or 0))
 
-            episode_obj.createMetaFiles(force)
+            episode_obj.create_meta_files(force)
 
     # find all media files in the show folder and create episodes for as many as possible
     def load_episodes_from_dir(self):
@@ -591,7 +589,7 @@ class TVShow(MainDBBase):
 
         # creating metafiles on the root should be good enough
         if root_ep:
-            root_ep.createMetaFiles()
+            root_ep.create_meta_files()
 
         return root_ep
 

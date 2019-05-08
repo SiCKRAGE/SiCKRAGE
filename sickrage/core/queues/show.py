@@ -46,45 +46,44 @@ class ShowQueue(srQueue):
     def loading_show_list(self):
         return self._get_loading_show_list()
 
-    def _is_in_queue(self, show, actions):
-        return show.indexer_id in [x.show.indexer_id if x.show else 0 for x in self.queue_items if
-                                   x.action_id in actions] if show else False
+    def _is_in_queue(self, indexer_id, actions):
+        return indexer_id in [x.indexer_id for x in self.queue_items if x.action_id in actions]
 
-    def _is_being(self, show, actions):
+    def _is_being(self, indexer_id, actions):
         for x in self.queue_items:
-            if show == x.show and x.action_id in actions:
+            if indexer_id == x.indexer_id and x.action_id in actions:
                 return True
         return False
 
-    def is_in_update_queue(self, show):
-        return self._is_in_queue(show, [ShowQueueActions.UPDATE, ShowQueueActions.FORCEUPDATE])
+    def is_in_update_queue(self, indexer_id):
+        return self._is_in_queue(indexer_id, [ShowQueueActions.UPDATE, ShowQueueActions.FORCEUPDATE])
 
-    def is_in_refresh_queue(self, show):
-        return self._is_in_queue(show, [ShowQueueActions.REFRESH])
+    def is_in_refresh_queue(self, indexer_id):
+        return self._is_in_queue(indexer_id, [ShowQueueActions.REFRESH])
 
-    def is_in_rename_queue(self, show):
-        return self._is_in_queue(show, [ShowQueueActions.RENAME])
+    def is_in_rename_queue(self, indexer_id):
+        return self._is_in_queue(indexer_id, [ShowQueueActions.RENAME])
 
-    def is_in_subtitle_queue(self, show):
-        return self._is_in_queue(show, [ShowQueueActions.SUBTITLE])
+    def is_in_subtitle_queue(self, indexer_id):
+        return self._is_in_queue(indexer_id, [ShowQueueActions.SUBTITLE])
 
-    def is_being_removed(self, show):
-        return self._is_being(show, [ShowQueueActions.REMOVE])
+    def is_being_removed(self, indexer_id):
+        return self._is_being(indexer_id, [ShowQueueActions.REMOVE])
 
-    def is_being_added(self, show):
-        return self._is_being(show, [ShowQueueActions.ADD])
+    def is_being_added(self, indexer_id):
+        return self._is_being(indexer_id, [ShowQueueActions.ADD])
 
-    def is_being_updated(self, show):
-        return self._is_being(show, [ShowQueueActions.UPDATE, ShowQueueActions.FORCEUPDATE])
+    def is_being_updated(self, indexer_id):
+        return self._is_being(indexer_id, [ShowQueueActions.UPDATE, ShowQueueActions.FORCEUPDATE])
 
-    def is_being_refreshed(self, show):
-        return self._is_being(show, [ShowQueueActions.REFRESH])
+    def is_being_refreshed(self, indexer_id):
+        return self._is_being(indexer_id, [ShowQueueActions.REFRESH])
 
-    def is_being_renamed(self, show):
-        return self._is_being(show, [ShowQueueActions.RENAME])
+    def is_being_renamed(self, indexer_id):
+        return self._is_being(indexer_id, [ShowQueueActions.RENAME])
 
-    def is_being_subtitled(self, show):
-        return self._is_being(show, [ShowQueueActions.SUBTITLE])
+    def is_being_subtitled(self, indexer_id):
+        return self._is_being(indexer_id, [ShowQueueActions.SUBTITLE])
 
     def _get_queue_items(self):
         return self.queue_items
@@ -92,42 +91,42 @@ class ShowQueue(srQueue):
     def _get_loading_show_list(self):
         return [x for x in self._get_queue_items() if x.is_loading]
 
-    def update_show(self, show, indexer_update_only=False, force=False):
-        if self.is_being_added(show):
-            raise CantUpdateShowException("{} is still being added, please wait until it is finished before trying to "
-                                          "update.".format(show.name))
+    def update_show(self, indexer_id, indexer_update_only=False, force=False):
+        show_obj = find_show(indexer_id)
 
-        if self.is_being_updated(show):
-            raise CantUpdateShowException("{} is already being updated, can't update again until "
-                                          "it's done.".format(show.name))
+        if self.is_being_added(indexer_id):
+            raise CantUpdateShowException("{} is still being added, please wait until it is finished before trying to update.".format(show_obj.name))
 
-        if self.is_in_update_queue(show):
-            raise CantUpdateShowException("{} is in the process of being updated, can't update again until "
-                                          "it's done.".format(show.name))
+        if self.is_being_updated(indexer_id):
+            raise CantUpdateShowException("{} is already being updated, can't update again until it's done.".format(show_obj.name))
+
+        if self.is_in_update_queue(indexer_id):
+            raise CantUpdateShowException("{} is in the process of being updated, can't update again until it's done.".format(show_obj.name))
 
         if force:
-            sickrage.app.io_loop.add_callback(self.put, QueueItemForceUpdate(show.indexer_id, indexer_update_only))
+            sickrage.app.io_loop.add_callback(self.put, QueueItemForceUpdate(indexer_id, indexer_update_only))
         else:
-            sickrage.app.io_loop.add_callback(self.put, QueueItemUpdate(show.indexer_id, indexer_update_only))
+            sickrage.app.io_loop.add_callback(self.put, QueueItemUpdate(indexer_id, indexer_update_only))
 
-    def refresh_show(self, show, force=False):
-        if (self.is_being_refreshed(show) or self.is_in_refresh_queue(show)) and not force:
-            raise CantRefreshShowException("This show is already being refreshed or queued to be refreshed, skipping "
-                                           "this request.")
+    def refresh_show(self, indexer_id, force=False):
+        show_obj = find_show(indexer_id)
 
-        if show.paused and not force:
-            sickrage.app.log.debug('Skipping show [{}] because it is paused.'.format(show.name))
+        if (self.is_being_refreshed(indexer_id) or self.is_in_refresh_queue(indexer_id)) and not force:
+            raise CantRefreshShowException("This show is already being refreshed or queued to be refreshed, skipping this request.")
+
+        if show_obj.paused and not force:
+            sickrage.app.log.debug('Skipping show [{}] because it is paused.'.format(show_obj.name))
             return
 
-        sickrage.app.log.debug("Queueing show refresh for {}".format(show.name))
+        sickrage.app.log.debug("Queueing show refresh for {}".format(show_obj.name))
 
-        sickrage.app.io_loop.add_callback(self.put, QueueItemRefresh(show.indexer_id, force=force))
+        sickrage.app.io_loop.add_callback(self.put, QueueItemRefresh(indexer_id, force=force))
 
-    def rename_show_episodes(self, show):
-        sickrage.app.io_loop.add_callback(self.put, QueueItemRename(show.indexer_id))
+    def rename_show_episodes(self, indexer_id):
+        sickrage.app.io_loop.add_callback(self.put, QueueItemRename(indexer_id))
 
-    def download_subtitles(self, show):
-        sickrage.app.io_loop.add_callback(self.put, QueueItemSubtitle(show.indexer_id))
+    def download_subtitles(self, indexer_id):
+        sickrage.app.io_loop.add_callback(self.put, QueueItemSubtitle(indexer_id))
 
     def add_show(self, indexer, indexer_id, showDir, default_status=None, quality=None, flatten_folders=None,
                  lang=None, subtitles=None, sub_use_sr_metadata=None, anime=None, scene=None, paused=None,
@@ -153,20 +152,22 @@ class ShowQueue(srQueue):
                                                                  default_status_after=default_status_after,
                                                                  skip_downloaded=skip_downloaded))
 
-    def remove_show(self, show, full=False):
-        if not show:
+    def remove_show(self, indexer_id, full=False):
+        show_obj = find_show(indexer_id)
+
+        if not show_obj:
             raise CantRemoveShowException('Failed removing show: Show does not exist')
-        elif not hasattr(show, 'indexer_id'):
+        elif not hasattr(show_obj, 'indexer_id'):
             raise CantRemoveShowException('Failed removing show: Show does not have an indexer id')
-        elif self._is_in_queue(show, (ShowQueueActions.REMOVE,)):
-            raise CantRemoveShowException("{} is already queued to be removed".format(show))
+        elif self._is_in_queue(show_obj.indexer_id, (ShowQueueActions.REMOVE,)):
+            raise CantRemoveShowException("{} is already queued to be removed".format(show_obj))
 
         # remove other queued actions for this show.
         for x in self.queue_items:
-            if show.indexer_id == x.show.indexer_id:
+            if indexer_id == x.indexer_id:
                 self.queue.remove(x)
 
-        sickrage.app.io_loop.add_callback(self.put, QueueItemRemove(indexer_id=show.indexer_id, full=full))
+        sickrage.app.io_loop.add_callback(self.put, QueueItemRemove(indexer_id=indexer_id, full=full))
 
 
 class ShowQueueActions(object):
@@ -204,18 +205,16 @@ class ShowQueueItem(srQueueItem):
     - show being subtitled
     """
 
-    @MainDB.with_session
-    def __init__(self, indexer_id, action_id, session=None):
+    def __init__(self, indexer_id, action_id):
         super(ShowQueueItem, self).__init__(ShowQueueActions.names[action_id], action_id)
-        self.session = session
-        self.show = find_show(indexer_id, session=session)
+        self.indexer_id = indexer_id
 
     def is_in_queue(self):
         return self in sickrage.app.show_queue.queue_items
 
     @property
     def show_name(self):
-        return str(self.show.indexer_id)
+        return str(self.indexer_id)
 
     @property
     def is_loading(self):
@@ -252,7 +251,9 @@ class QueueItemAdd(ShowQueueItem):
         Returns the show name if there is a show object created, if not returns
         the dir that the show is being added to.
         """
-        return self.show.name if self.show else os.path.basename(self.showDir)
+
+        show_obj = find_show(self.indexer_id)
+        return show_obj.name if show_obj else os.path.basename(self.showDir)
 
     @property
     def is_loading(self):
@@ -260,10 +261,11 @@ class QueueItemAdd(ShowQueueItem):
         Returns True if we've gotten far enough to have a show object, or False
         if we still only know the folder name.
         """
-        if self.show is None:
+        if find_show(self.indexer_id) is None:
             return True
 
-    def run(self):
+    @MainDB.with_session
+    def run(self, session=None):
         start_time = time.time()
 
         sickrage.app.log.info("Started adding show {} from show dir: {}".format(self.show_name, self.showDir))
@@ -337,44 +339,44 @@ class QueueItemAdd(ShowQueueItem):
 
             return self._finish_early()
 
-        try:
-            # add show to database
-            self.show = TVShow(**{'indexer': self.indexer, 'indexer_id': self.indexer_id, 'lang': self.lang})
-            self.session.add(self.show)
+        # add show to database
+        show_obj = TVShow(**{'indexer': self.indexer, 'indexer_id': self.indexer_id, 'lang': self.lang})
+        session.add(show_obj)
 
-            self.show.load_from_indexer()
+        try:
+            show_obj.load_from_indexer()
 
             # set up initial values
-            self.show.location = self.showDir
-            self.show.subtitles = self.subtitles or sickrage.app.config.subtitles_default
-            self.show.sub_use_sr_metadata = self.sub_use_sr_metadata
-            self.show.quality = self.quality or sickrage.app.config.quality_default
-            self.show.flatten_folders = self.flatten_folders or sickrage.app.config.flatten_folders_default
-            self.show.anime = self.anime or sickrage.app.config.anime_default
-            self.show.scene = self.scene or sickrage.app.config.scene_default
-            self.show.skip_downloaded = self.skip_downloaded or sickrage.app.config.skip_downloaded_default
-            self.show.paused = self.paused or False
+            show_obj.location = self.showDir
+            show_obj.subtitles = self.subtitles or sickrage.app.config.subtitles_default
+            show_obj.sub_use_sr_metadata = self.sub_use_sr_metadata
+            show_obj.quality = self.quality or sickrage.app.config.quality_default
+            show_obj.flatten_folders = self.flatten_folders or sickrage.app.config.flatten_folders_default
+            show_obj.anime = self.anime or sickrage.app.config.anime_default
+            show_obj.scene = self.scene or sickrage.app.config.scene_default
+            show_obj.skip_downloaded = self.skip_downloaded or sickrage.app.config.skip_downloaded_default
+            show_obj.paused = self.paused or False
 
             # set up default new/missing episode status
             sickrage.app.log.info(
                 "Setting all current episodes to the specified default status: " + str(self.default_status))
 
-            self.show.default_ep_status = self.default_status
+            show_obj.default_ep_status = self.default_status
 
             # save to database
-            self.session.commit()
+            session.commit()
 
-            if self.show.anime:
+            if show_obj.anime:
                 if self.blacklist:
-                    self.show.release_groups.set_black_keywords(self.blacklist)
+                    show_obj.release_groups.set_black_keywords(self.blacklist)
                 if self.whitelist:
-                    self.show.release_groups.set_white_keywords(self.whitelist)
+                    show_obj.release_groups.set_white_keywords(self.whitelist)
         except indexer_exception as e:
             sickrage.app.log.warning(
                 _("Unable to add show due to an error with ") + IndexerApi(self.indexer).name + ": {}".format(e))
-            if self.show:
+            if show_obj:
                 sickrage.app.alerts.error(
-                    _("Unable to add ") + str(self.show.name) + _(" due to an error with ") + IndexerApi(
+                    _("Unable to add ") + str(show_obj.name) + _(" due to an error with ") + IndexerApi(
                         self.indexer).name + "")
             else:
                 sickrage.app.alerts.error(
@@ -394,56 +396,56 @@ class QueueItemAdd(ShowQueueItem):
 
         try:
             sickrage.app.log.debug(_("Attempting to retrieve show info from IMDb"))
-            load_imdb_info(self.show.indexer_id)
+            load_imdb_info(show_obj.indexer_id)
         except Exception as e:
             sickrage.app.log.error(_("Error loading IMDb info: {}").format(e))
 
         try:
-            self.show.load_episodes_from_indexer()
+            show_obj.load_episodes_from_indexer()
         except Exception as e:
             sickrage.app.log.error(
-                _("Error with ") + IndexerApi(self.show.indexer).name + _(", not creating episode list: {}").format(e))
+                _("Error with ") + IndexerApi(show_obj.indexer).name + _(", not creating episode list: {}").format(e))
             sickrage.app.log.debug(traceback.format_exc())
 
         try:
-            self.show.load_episodes_from_dir()
+            show_obj.load_episodes_from_dir()
         except Exception as e:
             sickrage.app.log.debug("Error searching dir for episodes: {}".format(e))
             sickrage.app.log.debug(traceback.format_exc())
 
         # if they set default ep status to WANTED then run the backlog to search for episodes
-        if self.show.default_ep_status == WANTED:
+        if show_obj.default_ep_status == WANTED:
             sickrage.app.log.info(_("Launching backlog for this show since its episodes are WANTED"))
-            sickrage.app.backlog_searcher.search_backlog([self.show])
+            sickrage.app.backlog_searcher.search_backlog([show_obj])
 
-        self.show.write_metadata(force=True)
-        self.show.populate_cache()
+        show_obj.write_metadata(force=True)
+        show_obj.populate_cache()
 
         if sickrage.app.config.use_trakt:
             # if there are specific episodes that need to be added by trakt
-            sickrage.app.trakt_searcher.manage_new_show(self.show)
+            sickrage.app.trakt_searcher.manage_new_show(show_obj)
 
             # add show to trakt.tv library
             if sickrage.app.config.trakt_sync:
-                sickrage.app.trakt_searcher.add_show_to_trakt_library(self.show)
+                sickrage.app.trakt_searcher.add_show_to_trakt_library(show_obj)
 
             if sickrage.app.config.trakt_sync_watchlist:
                 sickrage.app.log.info("update watchlist")
-                sickrage.app.notifier_providers['trakt'].update_watchlist(show_obj=self.show)
+                sickrage.app.notifier_providers['trakt'].update_watchlist(show_obj=show_obj)
 
         # Load XEM data to DB for show
-        xem_refresh(self.show.indexer_id, self.show.indexer, force=True, session=self.session)
+        xem_refresh(show_obj.indexer_id, show_obj.indexer, force=True, session=session)
 
         # check if show has XEM mapping so we can determin if searches should go by scene numbering or indexer
         # numbering.
-        if not self.scene and get_xem_numbering_for_show(self.show.indexer_id, self.show.indexer):
-            self.show.scene = 1
+        if not self.scene and get_xem_numbering_for_show(show_obj.indexer_id, show_obj.indexer):
+            show_obj.scene = 1
 
-        self.show.default_ep_status = self.default_status_after
+        show_obj.default_ep_status = self.default_status_after
 
-        sickrage.app.name_cache.build(self.show)
+        sickrage.app.name_cache.build(show_obj)
 
-        sickrage.app.quicksearch_cache.add_show(self.show.indexer_id)
+        sickrage.app.quicksearch_cache.add_show(show_obj.indexer_id)
 
         sickrage.app.log.info(
             "Finished adding show {} in {}s from show dir: {}".format(self.show_name,
@@ -451,7 +453,10 @@ class QueueItemAdd(ShowQueueItem):
                                                                       self.showDir))
 
     def _finish_early(self):
-        if self.show: sickrage.app.show_queue.remove_show(self.show)
+        try:
+            sickrage.app.show_queue.remove_show(self.indexer_id)
+        except CantRemoveShowException:
+            pass
 
 
 class QueueItemRefresh(ShowQueueItem):
@@ -461,40 +466,46 @@ class QueueItemRefresh(ShowQueueItem):
         # force refresh certain items
         self.force = force
 
-    def run(self):
+    @MainDB.with_session
+    def run(self, session=None):
+        show_obj = find_show(self.indexer_id, session=session)
+
         start_time = time.time()
 
-        sickrage.app.log.info("Performing refresh for show: {}".format(self.show.name))
+        sickrage.app.log.info("Performing refresh for show: {}".format(show_obj.name))
 
-        self.show.refresh_dir()
+        show_obj.refresh_dir()
 
-        self.show.write_metadata(force=self.force)
-        self.show.populate_cache(force=self.force)
+        show_obj.write_metadata(force=self.force)
+        show_obj.populate_cache(force=self.force)
 
         # Load XEM data to DB for show
-        # xem_refresh(self.show.indexer_id, self.show.indexer)
+        # xem_refresh(show.indexer_id, show.indexer)
 
-        self.show.last_refresh = datetime.date.today().toordinal()
+        show_obj.last_refresh = datetime.date.today().toordinal()
 
         sickrage.app.log.info(
-            "Finished refresh in {}s for show: {}".format(round(time.time() - start_time, 2), self.show.name))
+            "Finished refresh in {}s for show: {}".format(round(time.time() - start_time, 2), show_obj.name))
 
 
 class QueueItemRename(ShowQueueItem):
     def __init__(self, indexer_id=None):
         super(QueueItemRename, self).__init__(indexer_id, ShowQueueActions.RENAME)
 
-    def run(self):
-        sickrage.app.log.info("Performing renames for show: {}".format(self.show.name))
+    @MainDB.with_session
+    def run(self, session=None):
+        show_obj = find_show(self.indexer_id, session=session)
 
-        if not os.path.isdir(self.show.location):
+        sickrage.app.log.info("Performing renames for show: {}".format(show_obj.name))
+
+        if not os.path.isdir(show_obj.location):
             sickrage.app.log.warning(
-                "Can't perform rename on " + self.show.name + " when the show dir is missing.")
+                "Can't perform rename on " + show_obj.name + " when the show dir is missing.")
             return
 
         ep_obj_rename_list = []
 
-        ep_obj_list = self.show.get_all_episodes(has_location=True)
+        ep_obj_list = show_obj.get_all_episodes(has_location=True)
         for cur_ep_obj in ep_obj_list:
             # Only want to rename if we have a location
             if cur_ep_obj.location:
@@ -514,19 +525,22 @@ class QueueItemRename(ShowQueueItem):
         for cur_ep_obj in ep_obj_rename_list:
             cur_ep_obj.rename()
 
-        sickrage.app.log.info("Finished renames for show: {}".format(self.show.name))
+        sickrage.app.log.info("Finished renames for show: {}".format(show_obj.name))
 
 
 class QueueItemSubtitle(ShowQueueItem):
     def __init__(self, indexer_id=None):
         super(QueueItemSubtitle, self).__init__(indexer_id, ShowQueueActions.SUBTITLE)
 
-    def run(self):
-        sickrage.app.log.info("Started downloading subtitles for show: {}".format(self.show.name))
+    @MainDB.with_session
+    def run(self, session=None):
+        show_obj = find_show(self.indexer_id, session=session)
 
-        self.show.download_subtitles()
+        sickrage.app.log.info("Started downloading subtitles for show: {}".format(show_obj.name))
 
-        sickrage.app.log.info("Finished downloading subtitles for show: {}".format(self.show.name))
+        show_obj.download_subtitles()
+
+        sickrage.app.log.info("Finished downloading subtitles for show: {}".format(show_obj.name))
 
 
 class QueueItemUpdate(ShowQueueItem):
@@ -535,73 +549,76 @@ class QueueItemUpdate(ShowQueueItem):
         self.indexer_update_only = indexer_update_only
         self.force = False
 
-    def run(self):
+    @MainDB.with_session
+    def run(self, session=None):
+        show_obj = find_show(self.indexer_id, session=session)
+
         start_time = time.time()
 
-        sickrage.app.log.info("Performing updates for show: {}".format(self.show.name))
+        sickrage.app.log.info("Performing updates for show: {}".format(show_obj.name))
 
         try:
-            sickrage.app.log.debug("Retrieving show info from " + IndexerApi(self.show.indexer).name + "")
-            self.show.load_from_indexer(cache=False)
+            sickrage.app.log.debug("Retrieving show info from " + IndexerApi(show_obj.indexer).name + "")
+            show_obj.load_from_indexer(cache=False)
         except indexer_error as e:
             sickrage.app.log.warning(
-                "Unable to contact " + IndexerApi(self.show.indexer).name + ", aborting: {}".format(e))
+                "Unable to contact " + IndexerApi(show_obj.indexer).name + ", aborting: {}".format(e))
             return
         except indexer_attributenotfound as e:
             sickrage.app.log.warning(
-                "Data retrieved from " + IndexerApi(self.show.indexer).name + " was incomplete, aborting: {}".format(e))
+                "Data retrieved from " + IndexerApi(show_obj.indexer).name + " was incomplete, aborting: {}".format(e))
             return
 
         try:
             if not self.indexer_update_only:
                 sickrage.app.log.debug("Attempting to retrieve show info from IMDb")
-                load_imdb_info(self.show.indexer_id)
+                load_imdb_info(show_obj.indexer_id)
         except Exception as e:
-            sickrage.app.log.warning("Error loading IMDb info for {}: {}".format(IndexerApi(self.show.indexer).name, e))
+            sickrage.app.log.warning("Error loading IMDb info for {}: {}".format(IndexerApi(show_obj.indexer).name, e))
 
         # get episode list from DB
-        DBEpList = self.show.load_episodes_from_db()
-        IndexerEpList = None
+        db_ep_list = show_obj.load_episodes_from_db()
+        indexer_ep_list = None
 
         # get episode list from TVDB
         try:
-            IndexerEpList = self.show.load_episodes_from_indexer()
+            indexer_ep_list = show_obj.load_episodes_from_indexer()
         except indexer_exception as e:
             sickrage.app.log.error("Unable to get info from " + IndexerApi(
-                self.show.indexer).name + ", the show info will not be refreshed: {}".format(e))
+                show_obj.indexer).name + ", the show info will not be refreshed: {}".format(e))
 
-        if not IndexerEpList:
+        if not indexer_ep_list:
             sickrage.app.log.error(
-                "No data returned from " + IndexerApi(self.show.indexer).name + ", unable to update this show")
+                "No data returned from " + IndexerApi(show_obj.indexer).name + ", unable to update this show")
         else:
             # for each ep we found on indexer delete it from the DB list
-            for curSeason in IndexerEpList:
-                for curEpisode in IndexerEpList[curSeason]:
-                    if curSeason in DBEpList and curEpisode in DBEpList[curSeason]:
-                        del DBEpList[curSeason][curEpisode]
+            for curSeason in indexer_ep_list:
+                for curEpisode in indexer_ep_list[curSeason]:
+                    if curSeason in db_ep_list and curEpisode in db_ep_list[curSeason]:
+                        del db_ep_list[curSeason][curEpisode]
 
             # remaining episodes in the DB list are not on the indexer, just delete them from the DB
-            for curSeason in DBEpList:
-                for curEpisode in DBEpList[curSeason]:
+            for curSeason in db_ep_list:
+                for curEpisode in db_ep_list[curSeason]:
                     sickrage.app.log.info(
                         "Permanently deleting episode " + str(curSeason) + "x" + str(curEpisode) + " from the database")
                     try:
-                        self.show.get_episode(curSeason, curEpisode).deleteEpisode()
+                        show_obj.get_episode(curSeason, curEpisode).deleteEpisode()
                     except EpisodeDeletedException:
                         continue
 
         # cleanup
-        scrub(DBEpList)
-        scrub(IndexerEpList)
+        scrub(db_ep_list)
+        scrub(indexer_ep_list)
 
-        sickrage.app.quicksearch_cache.update_show(self.show.indexer_id)
+        sickrage.app.quicksearch_cache.update_show(show_obj.indexer_id)
 
         sickrage.app.log.info(
-            "Finished updates in {}s for show: {}".format(round(time.time() - start_time, 2), self.show.name))
+            "Finished updates in {}s for show: {}".format(round(time.time() - start_time, 2), show_obj.name))
 
         # refresh show
         if not self.indexer_update_only:
-            sickrage.app.show_queue.refresh_show(self.show, self.force)
+            sickrage.app.show_queue.refresh_show(show_obj.indexer_id, self.force)
 
 
 class QueueItemForceUpdate(QueueItemUpdate):
@@ -626,18 +643,21 @@ class QueueItemRemove(ShowQueueItem):
         """
         return False
 
-    def run(self):
-        sickrage.app.log.info("Removing show: {}".format(self.show.name))
+    @MainDB.with_session
+    def run(self, session=None):
+        show_obj = find_show(self.indexer_id, session=session)
 
-        sickrage.app.quicksearch_cache.del_show(self.show.indexer_id)
+        sickrage.app.log.info("Removing show: {}".format(show_obj.name))
 
-        self.show.delete_show(full=self.full)
+        sickrage.app.quicksearch_cache.del_show(show_obj.indexer_id)
+
+        show_obj.delete_show(full=self.full)
 
         if sickrage.app.config.use_trakt:
             try:
-                sickrage.app.trakt_searcher.remove_show_from_trakt_library(self.show)
+                sickrage.app.trakt_searcher.remove_show_from_trakt_library(show_obj)
             except Exception as e:
                 sickrage.app.log.warning(
-                    "Unable to delete show from Trakt: %s. Error: %s" % (self.show.name, e))
+                    "Unable to delete show from Trakt: %s. Error: %s" % (show_obj.name, e))
 
-        sickrage.app.log.info("Finished removing show: {}".format(self.show.name))
+        sickrage.app.log.info("Finished removing show: {}".format(show_obj.name))
