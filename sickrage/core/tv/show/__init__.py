@@ -171,23 +171,22 @@ class TVShow(MainDBBase):
             self.classification = safe_getattr(myEp, 'classification', self.classification)
             self.genre = safe_getattr(myEp, 'genre', self.genre)
             self.network = safe_getattr(myEp, 'network', self.network)
-            self.runtime = safe_getattr(myEp, 'runtime', self.runtime)
+            self.runtime = try_int(safe_getattr(myEp, 'runtime', self.runtime))
             self.imdb_id = safe_getattr(myEp, 'imdbid', self.imdb_id)
 
             try:
                 self.airs = (safe_getattr(myEp, 'airsdayofweek') + " " + safe_getattr(myEp, 'airstime')).strip()
             except:
-                pass
+                self.airs = ''
 
             try:
                 self.startyear = try_int(str(safe_getattr(myEp, 'firstaired') or datetime.date.min).split('-')[0])
             except:
-                pass
+                self.startyear = 0
 
             self.status = safe_getattr(myEp, 'status', self.status)
         else:
-            sickrage.app.log.warning(str(self.indexer_id) + ": NOT loading info from " + IndexerApi(
-                self.indexer).name + " as it is temporarily disabled.")
+            sickrage.app.log.warning(str(self.indexer_id) + ": NOT loading info from " + IndexerApi(self.indexer).name + " as it is temporarily disabled.")
 
     @MainDB.with_session
     def load_episodes_from_indexer(self, cache=True, session=None):
