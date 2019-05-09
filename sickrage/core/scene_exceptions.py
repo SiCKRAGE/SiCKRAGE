@@ -43,26 +43,27 @@ exceptionsSeasonCache = {}
 exceptionLock = threading.Lock()
 
 
-def shouldRefresh(exList):
+@CacheDB.with_session
+def should_refresh(ex_list, session=None):
     """
-    Check if we should refresh cache for items in exList
+    Check if we should refresh cache for items in ex_list
 
-    :param exList: exception list to check if needs a refresh
+    :param ex_list: exception list to check if needs a refresh
     :return: True if refresh is needed
     """
 
     max_refresh_age_secs = 86400  # 1 day
 
     try:
-        with sickrage.app.cache_db.session() as session:
-            dbData = session.query(CacheDB.SceneExceptionRefresh).filter_by(exception_list=exList).one()
-            last_refresh = int(dbData.last_refreshed)
+        dbData = session.query(CacheDB.SceneExceptionRefresh).filter_by(exception_list=ex_list).one()
+        last_refresh = int(dbData.last_refreshed)
         return int(time.mktime(datetime.datetime.today().timetuple())) > last_refresh + max_refresh_age_secs
     except orm.exc.NoResultFound:
         return True
 
 
-def setLastRefresh(ex_list):
+@CacheDB.with_session
+def set_last_refresh(ex_list, session=None):
     """
     Update last cache update time for shows in list
 
@@ -70,17 +71,17 @@ def setLastRefresh(ex_list):
     """
 
     try:
-        with sickrage.app.cache_db.session() as session:
-            dbData = session.query(CacheDB.SceneExceptionRefresh).filter_by(exception_list=ex_list).one()
-            dbData.last_refreshed = int(time.mktime(datetime.datetime.today().timetuple()))
+        dbData = session.query(CacheDB.SceneExceptionRefresh).filter_by(exception_list=ex_list).one()
+        dbData.last_refreshed = int(time.mktime(datetime.datetime.today().timetuple()))
     except orm.exc.NoResultFound:
-        sickrage.app.cache_db.add(CacheDB.SceneExceptionRefresh(**{
+        session.add(CacheDB.SceneExceptionRefresh(**{
             'last_refreshed': int(time.mktime(datetime.datetime.today().timetuple())),
             'exception_list': ex_list
         }))
 
 
-def retrieve_exceptions(get_xem=True, get_anidb=True):
+@CacheDB.with_session
+def retrieve_exceptions(get_xem=True, get_anidb=True, session=None):
     """
     Looks up the exceptions on github, parses them into a dict, and inserts them into the
     scene_exceptions table in cache db and also clears the scene name cache.
@@ -91,7 +92,7 @@ def retrieve_exceptions(get_xem=True, get_anidb=True):
     for indexer in IndexerApi().indexers:
         indexer_name = IndexerApi(indexer).name
 
-        if shouldRefresh(indexer_name):
+        if should_refresh(indexer_name):
             sickrage.app.log.info("Checking for SiCKRAGE scene exception updates on {}".format(indexer_name))
             loc = IndexerApi(indexer).config['scene_loc']
 
@@ -112,7 +113,7 @@ def retrieve_exceptions(get_xem=True, get_anidb=True):
                     continue
 
                 # refreshed successfully
-                setLastRefresh(indexer_name)
+                set_last_refresh(indexer_name)
             except Exception:
                 continue
 
@@ -128,9 +129,7 @@ def retrieve_exceptions(get_xem=True, get_anidb=True):
         if not len(cur_exception_dict):
             continue
 
-        existing_exceptions = [x.show_name for x in
-                               sickrage.app.cache_db.session().query(CacheDB.SceneException).filter_by(
-                                   indexer_id=cur_indexer_id)]
+        existing_exceptions = [x.show_name for x in session.query(CacheDB.SceneException).filter_by(indexer_id=cur_indexer_id)]
 
         sql_t = []
 
@@ -143,7 +142,7 @@ def retrieve_exceptions(get_xem=True, get_anidb=True):
                 })
                 updated_exceptions = True
 
-        sickrage.app.cache_db.bulk_add(CacheDB.SceneException, sql_t)
+        session.bulk_insert_mappings(CacheDB.SceneException, sql_t)
 
     if updated_exceptions:
         sickrage.app.log.debug("Updated scene exceptions")
@@ -154,35 +153,36 @@ def retrieve_exceptions(get_xem=True, get_anidb=True):
     xem_exception_dict.clear()
 
 
-def get_scene_exceptions(indexer_id, season=-1):
+@CacheDB.with_session
+def get_scene_exceptions(indexer_id, season=-1, session=None):
     """
     Given a indexer_id, return a list of all the scene exceptions.
     """
 
-    exceptionsList = []
+    exceptions_list = []
 
     if indexer_id not in exceptionsCache or season not in exceptionsCache[indexer_id]:
         try:
-            exceptionsList = list(set([cur_exception.show_name for cur_exception in
-                                       sickrage.app.cache_db.session().query(CacheDB.SceneException).filter_by(
-                                           indexer_id=indexer_id, season=season)]))
+            exceptions_list = list(set([cur_exception.show_name for cur_exception in session.query(CacheDB.SceneException).filter_by(indexer_id=indexer_id,
+                                                                                                                                     season=season)]))
 
             if indexer_id not in exceptionsCache:
                 exceptionsCache[indexer_id] = {}
 
-            exceptionsCache[indexer_id][season] = exceptionsList
+            exceptionsCache[indexer_id][season] = exceptions_list
         except:
             pass
     else:
-        exceptionsList = exceptionsCache[indexer_id][season]
+        exceptions_list = exceptionsCache[indexer_id][season]
 
     if season == 1:  # if we where looking for season 1 we can add generic names
-        exceptionsList += get_scene_exceptions(indexer_id, season=-1)
+        exceptions_list += get_scene_exceptions(indexer_id, season=-1)
 
-    return exceptionsList
+    return exceptions_list
 
 
-def get_all_scene_exceptions(indexer_id):
+@CacheDB.with_session
+def get_all_scene_exceptions(indexer_id, session=None):
     """
     Get all scene exceptions for a show ID
 
@@ -192,7 +192,7 @@ def get_all_scene_exceptions(indexer_id):
 
     exceptions_dict = {}
 
-    for cur_exception in sickrage.app.cache_db.session().query(CacheDB.SceneException).filter_by(indexer_id=indexer_id):
+    for cur_exception in session.query(CacheDB.SceneException).filter_by(indexer_id=indexer_id):
         if cur_exception.season not in exceptions_dict:
             exceptions_dict[cur_exception.season] = []
         exceptions_dict[cur_exception.season].append(cur_exception.show_name)
@@ -200,15 +200,14 @@ def get_all_scene_exceptions(indexer_id):
     return exceptions_dict
 
 
-def get_scene_seasons(indexer_id):
+@CacheDB.with_session
+def get_scene_seasons(indexer_id, session=None):
     """
     return a list of season numbers that have scene exceptions
     """
 
     if indexer_id not in exceptionsSeasonCache:
-        exceptions_season_list = list(set([int(x.season) for x in
-                                           sickrage.app.cache_db.session().query(CacheDB.SceneException).filter_by(
-                                               indexer_id=indexer_id)]))
+        exceptions_season_list = list(set([x.season for x in session.query(CacheDB.SceneException).filter_by(indexer_id=indexer_id)]))
 
         if indexer_id not in exceptionsSeasonCache:
             exceptionsSeasonCache[indexer_id] = {}
@@ -224,7 +223,8 @@ def get_scene_exception_by_name(show_name):
     return get_scene_exception_by_name_multiple(show_name)[0]
 
 
-def get_scene_exception_by_name_multiple(show_name):
+@CacheDB.with_session
+def get_scene_exception_by_name_multiple(show_name, session=None):
     """
     Given a show name, return the indexer_id of the exception, None if no exception
     is present.
@@ -233,14 +233,12 @@ def get_scene_exception_by_name_multiple(show_name):
     out = []
 
     # try the obvious case first
-    exception_result = sickrage.app.cache_db.session().query(CacheDB.SceneException).filter_by(
-        show_name=show_name.lower()).order_by(CacheDB.SceneException.season)
+    exception_result = session.query(CacheDB.SceneException).filter_by(show_name=show_name.lower()).order_by(CacheDB.SceneException.season)
 
     if exception_result.count():
         return [(int(x.indexer_id), int(x.season)) for x in exception_result]
 
-    for cur_exception in sickrage.app.cache_db.session().query(CacheDB.SceneException).order_by(
-            CacheDB.SceneException.season):
+    for cur_exception in session.query(CacheDB.SceneException).order_by(CacheDB.SceneException.season):
         cur_exception_name = cur_exception.show_name
         cur_indexer_id = int(cur_exception.indexer_id)
         cur_season = int(cur_exception.season)
@@ -255,12 +253,13 @@ def get_scene_exception_by_name_multiple(show_name):
     return [(None, None)]
 
 
-def update_scene_exceptions(indexer_id, scene_exceptions, season=-1):
+@CacheDB.with_session
+def update_scene_exceptions(indexer_id, scene_exceptions, season=-1, session=None):
     """
     Given a indexer_id, and a list of all show scene exceptions, update the db.
     """
 
-    sickrage.app.cache_db.delete(CacheDB.SceneException, indexer_id=indexer_id, season=season)
+    session.query(CacheDB.SceneException).filter_by(indexer_id=indexer_id, season=season).delete()
 
     sickrage.app.log.info("Updating scene exceptions")
 
@@ -279,11 +278,11 @@ def update_scene_exceptions(indexer_id, scene_exceptions, season=-1):
             'season': season
         })
 
-    sickrage.app.cache_db.bulk_add(CacheDB.SceneException, sql_t)
+    session.bulk_insert_mappings(CacheDB.SceneException, sql_t)
 
 
 def _anidb_exceptions_fetcher():
-    if shouldRefresh('anidb'):
+    if should_refresh('anidb'):
         sickrage.app.log.info("Checking for AniDB scene exception updates")
         for show in get_show_list():
             if show.is_anime and show.indexer == 1:
@@ -295,7 +294,7 @@ def _anidb_exceptions_fetcher():
                     if anime.name and anime.name != show.name:
                         anidb_exception_dict[show.indexer_id] = [{anime.name: -1}]
 
-        setLastRefresh('anidb')
+        set_last_refresh('anidb')
 
     for anidb_ex in anidb_exception_dict:
         if anidb_ex in exception_dict:
@@ -307,7 +306,7 @@ def _anidb_exceptions_fetcher():
 
 
 def _xem_exceptions_fetcher():
-    if shouldRefresh('xem'):
+    if should_refresh('xem'):
         sickrage.app.log.info("Checking for XEM scene exception updates")
 
         for indexer in IndexerApi().indexers:
@@ -333,7 +332,7 @@ def _xem_exceptions_fetcher():
                         "XEM: Rejected entry: indexer_id:{0}; names:{1}".format(indexer_id, names))
                     sickrage.app.log.debug("XEM: Rejected entry error message:{}".format(e))
 
-        setLastRefresh('xem')
+        set_last_refresh('xem')
 
     for xem_ex in xem_exception_dict:
         if xem_ex in exception_dict:

@@ -600,7 +600,7 @@ class QueueItemUpdate(ShowQueueItem):
                 for curEpisode in db_ep_list[curSeason]:
                     sickrage.app.log.info("Permanently deleting episode " + str(curSeason) + "x" + str(curEpisode) + " from the database")
                     try:
-                        show_obj.get_episode(curSeason, curEpisode).deleteEpisode()
+                        show_obj.get_episode(curSeason, curEpisode).delete_episode()
                     except EpisodeDeletedException:
                         continue
 

@@ -355,8 +355,8 @@ class GenericProvider(object):
             provider_result.seeders, provider_result.leechers = self._get_result_stats(item)
 
             sickrage.app.log.debug("Adding item from search to cache: {}".format(provider_result.name))
-            self.cache.addCacheEntry(provider_result.name, provider_result.url, provider_result.seeders,
-                                     provider_result.leechers, provider_result.size)
+            self.cache.add_cache_entry(provider_result.name, provider_result.url, provider_result.seeders,
+                                       provider_result.leechers, provider_result.size)
 
             if not provider_result.show_id:
                 continue

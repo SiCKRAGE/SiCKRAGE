@@ -227,7 +227,7 @@ class TVEpisode(MainDBBase):
 
             # if I'm no longer on the Indexers but I once was then delete myself from the DB
             if self.indexer_id != -1:
-                self.deleteEpisode()
+                self.delete_episode()
             return False
 
         self.name = safe_getattr(myEp, 'episodename', self.name)
@@ -274,7 +274,7 @@ class TVEpisode(MainDBBase):
                     firstaired, indexer_name, self.show.name, season or 0, episode or 0))
             # if I'm incomplete on the indexer but I once was complete then just delete myself from the DB for now
             if self.indexer_id != -1:
-                self.deleteEpisode()
+                self.delete_episode()
             return False
 
         # early conversion to int so that episode doesn't get marked dirty
@@ -282,7 +282,7 @@ class TVEpisode(MainDBBase):
         if self.indexer_id is None:
             sickrage.app.log.warning("Failed to retrieve ID from " + IndexerApi(self.indexer).name)
             if self.indexer_id != -1:
-                self.deleteEpisode()
+                self.delete_episode()
             return False
 
         # don't update show status if show dir is missing, unless it's missing on purpose
@@ -443,7 +443,7 @@ class TVEpisode(MainDBBase):
 
         return result
 
-    def deleteEpisode(self, full=False):
+    def delete_episode(self, full=False):
         sickrage.app.log.debug(
             "Deleting %s S%02dE%02d from the DB" % (self.show.name, self.season or 0, self.episode or 0))
 

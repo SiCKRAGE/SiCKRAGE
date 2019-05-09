@@ -1474,7 +1474,7 @@ class DeleteEpisodeHandler(BaseHandler, ABC):
                     return self._genericMessage(_("Error"), _("Episode couldn't be retrieved"))
 
                 try:
-                    ep_obj.deleteEpisode(full=True)
+                    ep_obj.delete_episode(full=True)
                 except EpisodeDeletedException:
                     pass
 

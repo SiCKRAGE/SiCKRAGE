@@ -42,9 +42,10 @@ class TVCache(object):
         self.min_time = kwargs.pop('min_time', 10)
         self.search_strings = kwargs.pop('search_strings', dict(RSS=['']))
 
-    def clear(self):
+    @CacheDB.with_session
+    def clear(self, session=None):
         if self.shouldClearCache():
-            sickrage.app.cache_db.delete(CacheDB.Provider, provider=self.providerID)
+            session.query(CacheDB.Provider).filter_by(provider=self.providerID).delete()
 
     def _get_title_and_url(self, item):
         return self.provider._get_title_and_url(item)
@@ -114,7 +115,7 @@ class TVCache(object):
         self.check_item(title, url)
 
         if title and url:
-            self.addCacheEntry(self._translateTitle(title), self._translateLinkURL(url), seeders, leechers, size)
+            self.add_cache_entry(self._translateTitle(title), self._translateLinkURL(url), seeders, leechers, size)
         else:
             sickrage.app.log.debug(
                 "The data returned from the " + self.provider.name + " feed is incomplete, this result is unusable")
@@ -132,20 +133,22 @@ class TVCache(object):
         return datetime.datetime.fromtimestamp(lastTime)
 
     @last_update.setter
-    def last_update(self, toDate):
+    @CacheDB.with_session
+    def last_update(self, toDate, session=None):
         try:
-            dbData = CacheDB.LastUpdate.query.filter_by(provider=self.providerID).one()
+            dbData = session.query(CacheDB.LastUpdate).filter_by(provider=self.providerID).one()
             dbData.time = int(time.mktime(toDate.timetuple()))
         except orm.exc.NoResultFound:
-            sickrage.app.cache_db.add(CacheDB.LastUpdate(**{
+            session.add(CacheDB.LastUpdate(**{
                 'provider': self.providerID,
                 'time': int(time.mktime(toDate.timetuple()))
             }))
 
     @property
-    def last_search(self):
+    @CacheDB.with_session
+    def last_search(self, session=None):
         try:
-            dbData = CacheDB.LastSearch.query.filter_by(provider=self.providerID).one()
+            dbData = session.query(CacheDB.LastSearch).filter_by(provider=self.providerID).one()
             lastTime = int(dbData.time)
             if lastTime > int(time.mktime(datetime.datetime.today().timetuple())):
                 lastTime = 0
@@ -155,12 +158,13 @@ class TVCache(object):
         return datetime.datetime.fromtimestamp(lastTime)
 
     @last_search.setter
-    def last_search(self, toDate):
+    @CacheDB.with_session
+    def last_search(self, toDate, session=None):
         try:
-            dbData = CacheDB.LastSearch.query.filter_by(provider=self.providerID).one()
+            dbData = session.query(CacheDB.LastSearch).filter_by(provider=self.providerID).one()
             dbData.time = int(time.mktime(toDate.timetuple()))
         except orm.exc.NoResultFound:
-            sickrage.app.cache_db.add(CacheDB.LastSearch(**{
+            session.add(CacheDB.LastSearch(**{
                 'provider': self.providerID,
                 'time': int(time.mktime(toDate.timetuple()))
             }))
@@ -180,11 +184,10 @@ class TVCache(object):
             return False
         return True
 
-    def addCacheEntry(self, name, url, seeders, leechers, size):
+    @CacheDB.with_session
+    def add_cache_entry(self, name, url, seeders, leechers, size, session=None):
         # check for existing entry in cache
-        try:
-            CacheDB.Provider.query.filter_by(provider=self.providerID, url=url).one()
-        except orm.exc.NoResultFound:
+        if session.query(CacheDB.Provider).filter_by(provider=self.providerID, url=url).one_or_none():
             return
 
         # ignore invalid and private IP address urls
@@ -231,7 +234,7 @@ class TVCache(object):
                     }
 
                     # add to internal database
-                    sickrage.app.cache_db.add(CacheDB.Provider(**dbData))
+                    session.add(CacheDB.Provider(**dbData))
 
                     # add to external provider cache database
                     if sickrage.app.config.enable_api_providers_cache and not self.provider.private:
@@ -244,7 +247,8 @@ class TVCache(object):
         except (InvalidShowException, InvalidNameException):
             pass
 
-    def search_cache(self, show_id, episode_id, manualSearch=False, downCurQuality=False):
+    @CacheDB.with_session
+    def search_cache(self, show_id, episode_id, manualSearch=False, downCurQuality=False, session=None):
         episode_obj = find_episode(show_id, episode_id)
 
         season = episode_obj.scene_season if episode_obj.show.scene else episode_obj.season
@@ -261,9 +265,10 @@ class TVCache(object):
                 pass
 
         # get data from internal database
-        dbData += [x.as_dict() for x in
-                   CacheDB.Provider.query.filter_by(provider=self.providerID, indexer_id=show_id, season=season) if
-                   "|{}|".format(episode) in x.episodes]
+        dbData += [
+            x.as_dict() for x in session.query(CacheDB.Provider).filter_by(provider=self.providerID, indexer_id=show_id, season=season) if
+            "|{}|".format(episode) in x.episodes
+        ]
 
         # for each cache entry
         for curResult in dbData:
@@ -296,8 +301,7 @@ class TVCache(object):
                 continue
 
             try:
-                result.episode_ids = [show.get_episode(curSeason, int(curEp)) for curEp in
-                                      filter(None, curResult["episodes"].split("|"))]
+                result.episode_ids = [show.get_episode(curSeason, int(curEp)) for curEp in filter(None, curResult["episodes"].split("|"))]
             except EpisodeNotFoundException:
                 continue
 
@@ -312,8 +316,7 @@ class TVCache(object):
                     wantEp = True
 
             if not wantEp:
-                sickrage.app.log.info("Skipping " + curResult["name"] + " because we don't want an episode that's " +
-                                      Quality.qualityStrings[result.quality])
+                sickrage.app.log.info("Skipping " + curResult["name"] + " because we don't want an episode that's " + Quality.qualityStrings[result.quality])
                 continue
 
             # build a result object
