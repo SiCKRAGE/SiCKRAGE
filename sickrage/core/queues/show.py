@@ -396,7 +396,7 @@ class QueueItemAdd(ShowQueueItem):
 
         try:
             sickrage.app.log.debug(_("Attempting to retrieve show info from IMDb"))
-            load_imdb_info(show_obj.indexer_id)
+            load_imdb_info(show_obj.indexer_id, session=session)
         except Exception as e:
             sickrage.app.log.error(_("Error loading IMDb info: {}").format(e))
 
@@ -560,19 +560,18 @@ class QueueItemUpdate(ShowQueueItem):
         try:
             sickrage.app.log.debug("Retrieving show info from " + IndexerApi(show_obj.indexer).name + "")
             show_obj.load_from_indexer(cache=False)
+            session.commit()
         except indexer_error as e:
-            sickrage.app.log.warning(
-                "Unable to contact " + IndexerApi(show_obj.indexer).name + ", aborting: {}".format(e))
+            sickrage.app.log.warning("Unable to contact " + IndexerApi(show_obj.indexer).name + ", aborting: {}".format(e))
             return
         except indexer_attributenotfound as e:
-            sickrage.app.log.warning(
-                "Data retrieved from " + IndexerApi(show_obj.indexer).name + " was incomplete, aborting: {}".format(e))
+            sickrage.app.log.warning("Data retrieved from " + IndexerApi(show_obj.indexer).name + " was incomplete, aborting: {}".format(e))
             return
 
         try:
             if not self.indexer_update_only:
                 sickrage.app.log.debug("Attempting to retrieve show info from IMDb")
-                load_imdb_info(show_obj.indexer_id)
+                load_imdb_info(show_obj.indexer_id, session=session)
         except Exception as e:
             sickrage.app.log.warning("Error loading IMDb info for {}: {}".format(IndexerApi(show_obj.indexer).name, e))
 
@@ -588,8 +587,7 @@ class QueueItemUpdate(ShowQueueItem):
                 show_obj.indexer).name + ", the show info will not be refreshed: {}".format(e))
 
         if not indexer_ep_list:
-            sickrage.app.log.error(
-                "No data returned from " + IndexerApi(show_obj.indexer).name + ", unable to update this show")
+            sickrage.app.log.error("No data returned from " + IndexerApi(show_obj.indexer).name + ", unable to update this show")
         else:
             # for each ep we found on indexer delete it from the DB list
             for curSeason in indexer_ep_list:
@@ -600,8 +598,7 @@ class QueueItemUpdate(ShowQueueItem):
             # remaining episodes in the DB list are not on the indexer, just delete them from the DB
             for curSeason in db_ep_list:
                 for curEpisode in db_ep_list[curSeason]:
-                    sickrage.app.log.info(
-                        "Permanently deleting episode " + str(curSeason) + "x" + str(curEpisode) + " from the database")
+                    sickrage.app.log.info("Permanently deleting episode " + str(curSeason) + "x" + str(curEpisode) + " from the database")
                     try:
                         show_obj.get_episode(curSeason, curEpisode).deleteEpisode()
                     except EpisodeDeletedException:
@@ -613,8 +610,7 @@ class QueueItemUpdate(ShowQueueItem):
 
         sickrage.app.quicksearch_cache.update_show(show_obj.indexer_id)
 
-        sickrage.app.log.info(
-            "Finished updates in {}s for show: {}".format(round(time.time() - start_time, 2), show_obj.name))
+        sickrage.app.log.info("Finished updates in {}s for show: {}".format(round(time.time() - start_time, 2), show_obj.name))
 
         # refresh show
         if not self.indexer_update_only:

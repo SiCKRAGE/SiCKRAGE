@@ -106,3 +106,5 @@ def load_imdb_info(indexer_id, session=None):
             dbData.update(**imdb_info)
         except orm.exc.NoResultFound:
             session.add(MainDB.IMDbInfo(**imdb_info))
+        finally:
+            session.commit()
