@@ -27,9 +27,9 @@ from time import sleep
 import sqlalchemy
 from migrate import DatabaseAlreadyControlledError
 from migrate.versioning import api
-from sqlalchemy import create_engine, event
+from sqlalchemy import create_engine, event, inspect
 from sqlalchemy.engine import Engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, mapper
 
 import sickrage
 
@@ -40,6 +40,16 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
     cursor.execute("PRAGMA journal_mode=WAL")
     cursor.execute('PRAGMA busy_timeout=%i;' % 15000)
     cursor.close()
+
+
+@event.listens_for(mapper, "init")
+def instant_defaults_listener(target, args, kwargs):
+    for key, column in inspect(target.__class__).columns.items():
+        if column.default is not None:
+            if callable(column.default.arg):
+                setattr(target, key, column.default.arg(target))
+            else:
+                setattr(target, key, column.default.arg)
 
 
 class ContextSession(sqlalchemy.orm.Session):

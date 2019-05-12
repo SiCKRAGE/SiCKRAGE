@@ -107,14 +107,15 @@ class TVShow(MainDBBase):
 
     @property
     def next_aired(self):
-        next_aired = 0
+        next_aired = datetime.date.min
 
         if not self.paused:
-            dbData = sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=self.indexer_id).filter(
-                TVEpisode.airdate >= datetime.date.today(), TVEpisode.status.in_([UNAIRED, WANTED])).order_by(TVEpisode.airdate).first()
-
-            if dbData:
-                next_aired = dbData.airdate
+            try:
+                result = sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=self.indexer_id).filter(
+                    TVEpisode.airdate >= datetime.date.today(), TVEpisode.status.in_([UNAIRED, WANTED])).order_by(TVEpisode.airdate.asc()).limit(1).one()
+                next_aired = result.airdate
+            except orm.exc.NoResultFound:
+                pass
 
         return next_aired
 
@@ -129,17 +130,6 @@ class TVShow(MainDBBase):
     def release_groups(self):
         if self.is_anime:
             return BlackAndWhiteList(self.indexer_id)
-
-    # @property
-    # def location(self):
-    #     return self._location
-    #
-    # @location.setter
-    # def location(self, new_location):
-    #     if sickrage.app.config.add_shows_wo_dir or os.path.isdir(new_location):
-    #         sickrage.app.log.debug("Show location set to " + new_location)
-    #         self.dirty = True
-    #         self._location = new_location
 
     def load_from_indexer(self, cache=True, tvapi=None):
         if self.indexer is not INDEXER_TVRAGE:
@@ -222,15 +212,10 @@ class TVShow(MainDBBase):
                                              'location': ''}))
                     session.commit()
                     episode_obj = self.get_episode(season, episode, session=session)
-                else:
-                    try:
-                        episode_obj.load_from_indexer(tvapi=t)
-                    except EpisodeDeletedException:
-                        sickrage.app.log.info("The episode was deleted, skipping the rest of the load")
-                        continue
 
                 sickrage.app.log.debug("%s: Loading info from %s for episode S%02dE%02d" % (
-                    self.indexer_id, IndexerApi(self.indexer).name, season or 0, episode or 0))
+                    self.indexer_id, IndexerApi(self.indexer).name, season or 0, episode or 0
+                ))
 
                 episode_obj.load_from_indexer(season, episode, tvapi=t)
 
@@ -398,10 +383,10 @@ class TVShow(MainDBBase):
             str(self.indexer_id) + ": Loading all episodes from the show directory " + self.location)
 
         # get file list
-        mediaFiles = list_media_files(self.location)
+        media_files = list_media_files(self.location)
 
         # create TVEpisodes from each media file (if possible)
-        for mediaFile in mediaFiles:
+        for mediaFile in media_files:
             curEpisode = None
 
             sickrage.app.log.debug(str(self.indexer_id) + ": Creating episode from " + mediaFile)
@@ -505,8 +490,7 @@ class TVShow(MainDBBase):
         for curEpNum in parse_result.episode_numbers:
             episode = int(curEpNum)
 
-            sickrage.app.log.debug(
-                "%s: %s parsed to %s S%02dE%02d" % (self.indexer_id, filename, self.name, season or 0, episode or 0))
+            sickrage.app.log.debug("%s: %s parsed to %s S%02dE%02d" % (self.indexer_id, filename, self.name, season or 0, episode or 0))
 
             check_quality_again = False
 

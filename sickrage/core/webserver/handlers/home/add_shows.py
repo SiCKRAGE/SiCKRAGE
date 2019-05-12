@@ -460,8 +460,7 @@ class AddNewShowHandler(BaseHandler, ABC):
 
         # don't create show dir if config says not to
         if sickrage.app.config.add_shows_wo_dir:
-            sickrage.app.log.info(
-                "Skipping initial creation of " + show_dir + " due to sickrage.CONFIG.ini setting")
+            sickrage.app.log.info("Skipping initial creation of " + show_dir + " due to SiCKRAGE configuation setting")
         else:
             dir_exists = make_dir(show_dir)
             if not dir_exists:

@@ -52,7 +52,7 @@ from sickrage.core.helpers import encryption
 
 def safe_getattr(object, name, default=None):
     try:
-        return getattr(object, name, default)
+        return getattr(object, name, default) or default
     except:
         return default
 

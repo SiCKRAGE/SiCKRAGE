@@ -294,28 +294,22 @@ class QueueItemAdd(ShowQueueItem):
             # this usually only happens if they have an NFO in their show dir which gave us a Indexer ID that has no
             # proper english version of the show
             if not getattr(s, 'seriesname'):
-                sickrage.app.log.warning(
-                    "Show in {} has no name on {}, probably the wrong language used to search with".format(self.showDir,
-                                                                                                           index_name))
+                sickrage.app.log.warning("Show in {} has no name on {}, probably the wrong language used to search with".format(self.showDir, index_name))
                 sickrage.app.alerts.error(_("Unable to add show"),
                                           _("Show in {} has no name on {}, probably the wrong language. Delete .nfo "
-                                            "and add manually in the correct language").format(self.showDir,
-                                                                                               index_name))
+                                            "and add manually in the correct language").format(self.showDir, index_name))
                 return self._finish_early()
 
             # if the show has no episodes/seasons
             if not len(s):
-                sickrage.app.log.warning("Show " + str(s['seriesname']) + " is on " + str(
-                    IndexerApi(self.indexer).name) + " but contains no season/episode data.")
+                sickrage.app.log.warning(
+                    "Show " + str(s['seriesname']) + " is on " + str(IndexerApi(self.indexer).name) + " but contains no season/episode data.")
                 sickrage.app.alerts.error(_("Unable to add show"),
-                                          _("Show ") + str(s['seriesname']) + _(" is on ") + str(
-                                              IndexerApi(
-                                                  self.indexer).name) + _(
+                                          _("Show ") + str(s['seriesname']) + _(" is on ") + str(IndexerApi(self.indexer).name) + _(
                                               " but contains no season/episode data."))
                 return self._finish_early()
         except Exception as e:
-            sickrage.app.log.error(
-                "{}: Error while loading information from indexer {}. Error: {}".format(self.indexer_id, index_name, e))
+            sickrage.app.log.error("{}: Error while loading information from indexer {}. Error: {}".format(self.indexer_id, index_name, e))
 
             sickrage.app.alerts.error(
                 _("Unable to add show"),
@@ -340,14 +334,13 @@ class QueueItemAdd(ShowQueueItem):
             return self._finish_early()
 
         # add show to database
-        show_obj = TVShow(**{'indexer': self.indexer, 'indexer_id': self.indexer_id, 'lang': self.lang})
+        show_obj = TVShow(**{'indexer': self.indexer, 'indexer_id': self.indexer_id, 'lang': self.lang, 'location': self.showDir})
         session.add(show_obj)
 
         try:
             show_obj.load_from_indexer()
 
             # set up initial values
-            show_obj.location = self.showDir
             show_obj.subtitles = self.subtitles or sickrage.app.config.subtitles_default
             show_obj.sub_use_sr_metadata = self.sub_use_sr_metadata
             show_obj.quality = self.quality or sickrage.app.config.quality_default
@@ -358,8 +351,7 @@ class QueueItemAdd(ShowQueueItem):
             show_obj.paused = self.paused or False
 
             # set up default new/missing episode status
-            sickrage.app.log.info(
-                "Setting all current episodes to the specified default status: " + str(self.default_status))
+            sickrage.app.log.info("Setting all current episodes to the specified default status: " + str(self.default_status))
 
             show_obj.default_ep_status = self.default_status
 
@@ -372,15 +364,11 @@ class QueueItemAdd(ShowQueueItem):
                 if self.whitelist:
                     show_obj.release_groups.set_white_keywords(self.whitelist)
         except indexer_exception as e:
-            sickrage.app.log.warning(
-                _("Unable to add show due to an error with ") + IndexerApi(self.indexer).name + ": {}".format(e))
+            sickrage.app.log.warning(_("Unable to add show due to an error with ") + IndexerApi(self.indexer).name + ": {}".format(e))
             if show_obj:
-                sickrage.app.alerts.error(
-                    _("Unable to add ") + str(show_obj.name) + _(" due to an error with ") + IndexerApi(
-                        self.indexer).name + "")
+                sickrage.app.alerts.error(_("Unable to add ") + str(show_obj.name) + _(" due to an error with ") + IndexerApi(self.indexer).name + "")
             else:
-                sickrage.app.alerts.error(
-                    _("Unable to add show due to an error with ") + IndexerApi(self.indexer).name + "")
+                sickrage.app.alerts.error(_("Unable to add show due to an error with ") + IndexerApi(self.indexer).name + "")
             return self._finish_early()
 
         except MultipleShowObjectsException:
@@ -403,8 +391,7 @@ class QueueItemAdd(ShowQueueItem):
         try:
             show_obj.load_episodes_from_indexer()
         except Exception as e:
-            sickrage.app.log.error(
-                _("Error with ") + IndexerApi(show_obj.indexer).name + _(", not creating episode list: {}").format(e))
+            sickrage.app.log.error(_("Error with ") + IndexerApi(show_obj.indexer).name + _(", not creating episode list: {}").format(e))
             sickrage.app.log.debug(traceback.format_exc())
 
         try:
