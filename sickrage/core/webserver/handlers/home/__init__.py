@@ -1085,7 +1085,7 @@ class EditShowHandler(BaseHandler, ABC):
                 return self.write(err_string)
             return self._genericMessage(_("Error"), err_string)
 
-        show_obj.exceptions = get_scene_exceptions(show_obj.indexer_id)
+        show_obj.exceptions = await self.run_task(get_scene_exceptions, show_obj.indexer_id)
 
         flatten_folders = not checkbox_to_value(flatten_folders)  # UI inverts this value
         dvdorder = checkbox_to_value(dvdorder)

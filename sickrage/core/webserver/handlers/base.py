@@ -36,10 +36,14 @@ import sickrage
 from sickrage.core import helpers
 from sickrage.core.databases.main import MainDB
 
+
 class BaseHandler(RequestHandler, ABC):
     def __init__(self, application, request, **kwargs):
         super(BaseHandler, self).__init__(application, request, **kwargs)
         self.startTime = time.time()
+
+        # main database session
+        self.db_session = sickrage.app.main_db.session()
 
         # template settings
         self.mako_lookup = TemplateLookup(
@@ -60,10 +64,6 @@ class BaseHandler(RequestHandler, ABC):
                 }
             }
         )
-
-    @MainDB.with_session
-    def prepare(self, session=None):
-        self.db_session = session
 
     def get_user_locale(self):
         return locale.get(sickrage.app.config.gui_lang)
@@ -207,3 +207,10 @@ class BaseHandler(RequestHandler, ABC):
             return func(*args, **kwargs)
 
         return await sickrage.app.io_loop.run_in_executor(None, worker, func, *args, **kwargs)
+
+    def on_finish(self):
+        if self.db_session:
+            self.db_session.commit()
+            self.db_session.close()
+
+        super(BaseHandler, self).on_finish()
