@@ -173,9 +173,6 @@ class PostProcessorItem(srQueueItem):
             )
 
             sickrage.app.log.info("Finished {} post-processing job for: {}".format(self.proc_type, self.dirName))
-
-            # give the CPU a break
-            sleep(cpu_presets[sickrage.app.config.cpu_preset])
         except Exception:
             sickrage.app.log.debug(traceback.format_exc())
             self.result = '{}'.format(traceback.format_exc())
