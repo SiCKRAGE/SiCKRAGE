@@ -1765,11 +1765,11 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
     def get_episodes(self, show_id, episode_ids, search_status):
         results = []
 
+        if not show_id:
+            return results
+
         for episode_id in episode_ids:
             episode_obj = find_episode(show_id, episode_id)
-            if not episode_obj:
-                continue
-
             results.append({'show': show_id,
                             'episode': episode_obj.episode,
                             'episodeindexid': episode_id,
