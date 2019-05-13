@@ -733,9 +733,8 @@ class TVShow(MainDBBase):
         return result
 
     def want_episode(self, episode_id, quality, manualSearch=False, downCurQuality=False):
-        try:
-            dbData = find_episode(self.indexer_id, episode_id).one()
-        except orm.exc.NoResultFound:
+        dbData = find_episode(self.indexer_id, episode_id)
+        if not dbData:
             sickrage.app.log.debug("Unable to find a matching episode in database, ignoring found episode")
             return False
 

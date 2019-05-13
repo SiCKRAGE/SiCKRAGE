@@ -26,8 +26,8 @@ import sickrage
 from sickrage.clients import get_client_instance
 from sickrage.clients.nzbget import NZBGet
 from sickrage.clients.sabnzbd import SabNZBd
-from sickrage.core.common import Quality, SEASON_RESULT, SNATCHED_BEST, \
-    SNATCHED_PROPER, SNATCHED, MULTI_EP_RESULT
+from sickrage.core.common import Quality, SEASON_RESULT, SNATCHED_BEST, SNATCHED_PROPER, SNATCHED, MULTI_EP_RESULT
+from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import show_names
 from sickrage.core.nzbSplitter import split_nzb_result
@@ -38,7 +38,8 @@ from sickrage.notifiers import Notifiers
 from sickrage.providers import NZBProvider, NewznabProvider, TorrentProvider, TorrentRssProvider
 
 
-def snatch_episode(result, end_status=SNATCHED):
+@MainDB.with_session
+def snatch_episode(result, end_status=SNATCHED, session=None):
     """
     Contains the internal logic necessary to actually "snatch" a result that
     has been found.
@@ -103,7 +104,7 @@ def snatch_episode(result, end_status=SNATCHED):
     # don't notify when we re-download an episode
     trakt_data = []
     for episode_id in result.episode_ids:
-        episode_obj = find_episode(result.show_id, episode_id)
+        episode_obj = find_episode(result.show_id, episode_id, session=session)
 
         if is_first_best_match(result):
             episode_obj.status = Quality.composite_status(SNATCHED_BEST, result.quality)
@@ -112,8 +113,7 @@ def snatch_episode(result, end_status=SNATCHED):
 
         if episode_obj.status not in Quality.DOWNLOADED:
             try:
-                Notifiers.mass_notify_snatch(
-                    episode_obj._format_pattern('%SN - %Sx%0E - %EN - %QN') + " from " + result.provider.name)
+                Notifiers.mass_notify_snatch(episode_obj._format_pattern('%SN - %Sx%0E - %EN - %QN') + " from " + result.provider.name)
             except Exception:
                 sickrage.app.log.debug("Failed to send snatch notification")
 

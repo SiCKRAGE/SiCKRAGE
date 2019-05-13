@@ -301,7 +301,7 @@ class TVCache(object):
                 continue
 
             try:
-                result.episode_ids = [show.get_episode(curSeason, int(curEp)) for curEp in filter(None, curResult["episodes"].split("|"))]
+                result.episode_ids = [show.get_episode(curSeason, int(curEp)).indexer_id for curEp in filter(None, curResult["episodes"].split("|"))]
             except EpisodeNotFoundException:
                 continue
 

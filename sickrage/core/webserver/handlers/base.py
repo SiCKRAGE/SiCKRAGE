@@ -163,8 +163,7 @@ class BaseHandler(RequestHandler, ABC):
             kwargs['backtrace'] = RichTraceback()
             template_kwargs.update(kwargs)
 
-            sickrage.app.log.error(
-                "%s: %s" % (str(kwargs['backtrace'].error.__class__.__name__), kwargs['backtrace'].error))
+            sickrage.app.log.error("%s: %s" % (str(kwargs['backtrace'].error.__class__.__name__), kwargs['backtrace'].error))
 
             return self.mako_lookup.get_template('/errors/500.mako').render_unicode(**template_kwargs)
 
