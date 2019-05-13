@@ -131,8 +131,7 @@ class BaseHandler(RequestHandler, ABC):
             'controller': "home",
             'action': "index",
             'srPID': sickrage.app.pid,
-            'srHttpsEnabled': sickrage.app.config.enable_https or bool(
-                self.request.headers.get('X-Forwarded-Proto') == 'https'),
+            'srHttpsEnabled': sickrage.app.config.enable_https or bool(self.request.headers.get('X-Forwarded-Proto') == 'https'),
             'srHost': self.request.headers.get('X-Forwarded-Host', self.request.host.split(':')[0]),
             'srHttpPort': self.request.headers.get('X-Forwarded-Port', sickrage.app.config.web_port),
             'srHttpsPort': sickrage.app.config.web_port,

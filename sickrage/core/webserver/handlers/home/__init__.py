@@ -1733,8 +1733,7 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
 
         # Queued Searches
         search_status = 'queued'
-        episodes = self.get_episodes(show, sickrage.app.search_queue.get_all_episode_ids_from_queue(show),
-                                     search_status)
+        episodes = self.get_episodes(show, sickrage.app.search_queue.get_all_episode_ids_from_queue(show), search_status)
 
         # Running Searches
         search_status = 'searching'
@@ -1768,6 +1767,9 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
 
         for episode_id in episode_ids:
             episode_obj = find_episode(show_id, episode_id)
+            if not episode_obj:
+                continue
+
             results.append({'show': show_id,
                             'episode': episode_obj.episode,
                             'episodeindexid': episode_id,
@@ -1775,8 +1777,7 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
                             'searchstatus': search_status,
                             'status': statusStrings[episode_obj.status],
                             'quality': self.get_quality_class(episode_obj.status),
-                            'overview': Overview.overviewStrings[
-                                episode_obj.show.get_overview(int(episode_obj.status or -1))]})
+                            'overview': Overview.overviewStrings[episode_obj.show.get_overview(int(episode_obj.status or -1))]})
 
         return results
 
