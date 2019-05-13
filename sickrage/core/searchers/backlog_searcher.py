@@ -87,8 +87,7 @@ class BacklogSearcher(object):
 
             episode_ids = self._get_episode_ids(curShow, from_date)
             if episode_ids:
-                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(curShow.indexer_id,
-                                                                                                  episode_ids))
+                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(curShow.indexer_id, episode_ids))
             else:
                 sickrage.app.log.debug("Nothing needs to be downloaded for {}, skipping".format(curShow.name))
 

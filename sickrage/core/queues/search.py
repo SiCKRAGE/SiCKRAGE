@@ -174,9 +174,6 @@ class DailySearchQueueItem(srQueueItem):
                     # just use the first result for now
                     sickrage.app.log.info("Downloading " + result.name + " from " + result.provider.name)
                     snatch_episode(result)
-
-                    # give the CPU a break
-                    time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
             else:
                 sickrage.app.log.info("Unable to find search results for: [" + show_obj.name + "]")
         except Exception:
@@ -211,10 +208,6 @@ class ManualSearchQueueItem(srQueueItem):
                 sickrage.app.log.info(
                     "Downloading " + search_result[0].name + " from " + search_result[0].provider.name)
                 self.success = snatch_episode(search_result[0])
-
-                # give the CPU a break
-                time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
-
             else:
                 sickrage.app.alerts.message(
                     _('No downloads were found'),
@@ -241,7 +234,7 @@ class BacklogQueueItem(srQueueItem):
         self.success = False
         self.started = False
 
-    async def run(self):
+    def run(self):
         self.started = True
 
         show_obj = find_show(self.show_id)
@@ -255,9 +248,6 @@ class BacklogQueueItem(srQueueItem):
                     # just use the first result for now
                     sickrage.app.log.info("Downloading " + result.name + " from " + result.provider.name)
                     snatch_episode(result)
-
-                    # give the CPU a break
-                    await gen.sleep(cpu_presets[sickrage.app.config.cpu_preset])
             else:
                 sickrage.app.log.info("Unable to find search results for: [" + show_obj.name + "]")
         except Exception:
@@ -305,9 +295,6 @@ class FailedQueueItem(srQueueItem):
                     # just use the first result for now
                     sickrage.app.log.info("Downloading " + result.name + " from " + result.provider.name)
                     snatch_episode(result)
-
-                    # give the CPU a break
-                    time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
         except Exception:
             sickrage.app.log.debug(traceback.format_exc())
         finally:
