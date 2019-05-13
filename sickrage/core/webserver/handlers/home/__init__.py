@@ -952,7 +952,7 @@ class DisplayShowHandler(BaseHandler, ABC):
         if show_obj.is_anime:
             bwl = show_obj.release_groups
 
-        show_obj.exceptions = get_scene_exceptions(show_obj.indexer_id)
+        show_obj.exceptions = await self.run_task(get_scene_exceptions, show_obj.indexer_id)
 
         indexer_id = int(show_obj.indexer_id)
         indexer = int(show_obj.indexer)
@@ -984,10 +984,10 @@ class DisplayShowHandler(BaseHandler, ABC):
             epCounts=ep_counts,
             epCats=ep_cats,
             all_scene_exceptions=show_obj.exceptions,
-            scene_numbering=get_scene_numbering_for_show(indexer_id, indexer),
-            xem_numbering=get_xem_numbering_for_show(indexer_id, indexer),
-            scene_absolute_numbering=get_scene_absolute_numbering_for_show(indexer_id, indexer),
-            xem_absolute_numbering=get_xem_absolute_numbering_for_show(indexer_id, indexer),
+            scene_numbering=await self.run_task(get_scene_numbering_for_show, indexer_id, indexer),
+            xem_numbering=await self.run_task(get_xem_numbering_for_show, indexer_id, indexer),
+            scene_absolute_numbering=await self.run_task(get_scene_absolute_numbering_for_show, indexer_id, indexer),
+            xem_absolute_numbering=await self.run_task(get_xem_absolute_numbering_for_show, indexer_id, indexer),
             title=show_obj.name,
             controller='home',
             action="display_show"

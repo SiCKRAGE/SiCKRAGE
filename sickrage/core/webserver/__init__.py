@@ -78,7 +78,7 @@ from sickrage.core.webserver.handlers.manage.queues import ManageQueuesHandler, 
 from sickrage.core.webserver.handlers.root import RobotsDotTxtHandler, MessagesDotPoHandler, \
     APIBulderHandler, SetHomeLayoutHandler, SetPosterSortByHandler, SetPosterSortDirHandler, \
     ToggleDisplayShowSpecialsHandler, SetScheduleLayoutHandler, ToggleScheduleDisplayPausedHandler, \
-    SetScheduleSortHandler, ScheduleHanlder, UnlinkHandler, QuicksearchDotJsonHandler
+    SetScheduleSortHandler, ScheduleHandler, UnlinkHandler, QuicksearchDotJsonHandler
 from sickrage.core.webserver.handlers.web_file_browser import WebFileBrowserHandler, WebFileBrowserCompleteHandler
 from sickrage.core.websocket import WebSocketUIHandler
 
@@ -229,7 +229,7 @@ class WebServer(object):
             (r'%s/toggleDisplayShowSpecials(/?)' % sickrage.app.config.web_root, ToggleDisplayShowSpecialsHandler),
             (r'%s/toggleScheduleDisplayPaused(/?)' % sickrage.app.config.web_root, ToggleScheduleDisplayPausedHandler),
             (r'%s/setScheduleSort(/?)' % sickrage.app.config.web_root, SetScheduleSortHandler),
-            (r'%s/schedule(/?)' % sickrage.app.config.web_root, ScheduleHanlder),
+            (r'%s/schedule(/?)' % sickrage.app.config.web_root, ScheduleHandler),
             (r'%s/unlink(/?)' % sickrage.app.config.web_root, UnlinkHandler),
             (r'%s/setScheduleLayout(/?)' % sickrage.app.config.web_root, SetScheduleLayoutHandler),
             (r'%s/calendar(/?)' % sickrage.app.config.web_root, CalendarHandler),

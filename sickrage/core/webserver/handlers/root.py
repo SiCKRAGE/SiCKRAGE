@@ -192,22 +192,21 @@ class SetScheduleSortHandler(BaseHandler, ABC):
         return self.redirect("/schedule/")
 
 
-class ScheduleHanlder(BaseHandler, ABC):
+class ScheduleHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
         layout = self.get_query_argument('layout', sickrage.app.config.coming_eps_layout)
 
-        next_week = datetime.date.today() + datetime.timedelta(days=7)
-        next_week1 = datetime.datetime.combine(next_week,
-                                               datetime.datetime.now().time().replace(tzinfo=sickrage.app.tz))
-        results = ComingEpisodes.get_coming_episodes(ComingEpisodes.categories,
-                                                     sickrage.app.config.coming_eps_sort,
-                                                     False)
+        next_week = datetime.datetime.combine(datetime.date.today() + datetime.timedelta(days=7),
+                                              datetime.datetime.now().time().replace(tzinfo=sickrage.app.tz))
+
         today = datetime.datetime.now().replace(tzinfo=sickrage.app.tz)
+
+        results = await self.run_task(ComingEpisodes.get_coming_episodes, ComingEpisodes.categories, sickrage.app.config.coming_eps_sort, False)
 
         return self.render(
             'schedule.mako',
-            next_week=next_week1,
+            next_week=next_week,
             today=today,
             results=results,
             layout=layout,
