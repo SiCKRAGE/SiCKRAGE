@@ -92,7 +92,7 @@ class MainDB(srDatabase):
         actors = Column(Text)
         type = Column(Text)
         votes = Column(Text, nullable=False)
-        seasons = Column(Integer)
+        seasons = Column(Text)
         poster = Column(Text)
         director = Column(Text)
         released = Column(Text)
@@ -103,7 +103,7 @@ class MainDB(srDatabase):
         country = Column(Text)
         runtime = Column(Text)
         metascore = Column(Text)
-        year = Column(Integer)
+        year = Column(Text)
         plot = Column(Text)
         last_update = Column(Integer, nullable=False)
 

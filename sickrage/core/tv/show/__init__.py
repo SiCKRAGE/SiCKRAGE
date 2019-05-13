@@ -205,13 +205,12 @@ class TVShow(MainDBBase):
                 try:
                     episode_obj = self.get_episode(season, episode, session=session)
                 except EpisodeNotFoundException:
-                    session.add(TVEpisode(**{'showid': self.indexer_id,
-                                             'indexer': self.indexer,
-                                             'season': season,
-                                             'episode': episode,
-                                             'location': ''}))
-                    session.commit()
-                    episode_obj = self.get_episode(season, episode, session=session)
+                    episode_obj = TVEpisode(**{'showid': self.indexer_id,
+                                               'indexer': self.indexer,
+                                               'season': season,
+                                               'episode': episode,
+                                               'location': ''})
+                    session.add(episode_obj)
 
                 sickrage.app.log.debug("%s: Loading info from %s for episode S%02dE%02d" % (
                     self.indexer_id, IndexerApi(self.indexer).name, season or 0, episode or 0
@@ -223,6 +222,8 @@ class TVShow(MainDBBase):
 
         # Done updating save last update date
         self.last_update = datetime.date.today().toordinal()
+
+        session.commit()
 
         return scanned_eps
 
@@ -332,7 +333,6 @@ class TVShow(MainDBBase):
     #     return False
 
     def write_show_nfo(self, force=False):
-
         result = False
 
         if not os.path.isdir(self.location):
@@ -365,7 +365,7 @@ class TVShow(MainDBBase):
         sickrage.app.log.debug(str(self.indexer_id) + ": Writing NFOs for all episodes")
 
         for episode_obj in self.episodes:
-            if self.location == '':
+            if episode_obj.location == '':
                 continue
 
             sickrage.app.log.debug(str(self.indexer_id) + ": Retrieving/creating episode S%02dE%02d" % (episode_obj.season or 0, episode_obj.episode or 0))
@@ -375,12 +375,10 @@ class TVShow(MainDBBase):
     # find all media files in the show folder and create episodes for as many as possible
     def load_episodes_from_dir(self):
         if not os.path.isdir(self.location):
-            sickrage.app.log.debug(
-                str(self.indexer_id) + ": Show dir doesn't exist, not loading episodes from disk")
+            sickrage.app.log.debug(str(self.indexer_id) + ": Show dir doesn't exist, not loading episodes from disk")
             return
 
-        sickrage.app.log.debug(
-            str(self.indexer_id) + ": Loading all episodes from the show directory " + self.location)
+        sickrage.app.log.debug(str(self.indexer_id) + ": Loading all episodes from the show directory " + self.location)
 
         # get file list
         media_files = list_media_files(self.location)
@@ -422,28 +420,6 @@ class TVShow(MainDBBase):
                 except Exception:
                     sickrage.app.log.error("%s: Could not refresh subtitles" % self.indexer_id)
                     sickrage.app.log.debug(traceback.format_exc())
-
-    def load_episodes_from_db(self):
-        scanned_eps = {}
-
-        sickrage.app.log.debug("{}: Loading all episodes for show from DB".format(self.indexer_id))
-
-        for dbData in self.episodes:
-            cur_season = int(dbData.season)
-            cur_episode = int(dbData.episode)
-
-            if cur_season not in scanned_eps:
-                scanned_eps[cur_season] = {}
-
-            try:
-                sickrage.app.log.debug("{}: Loading episode S{:02d}E{:02d} "
-                                       "info".format(self.indexer_id, cur_season or 0, cur_episode or 0))
-
-                scanned_eps[cur_season][cur_episode] = True
-            except EpisodeDeletedException:
-                continue
-
-        return scanned_eps
 
     def get_images(self, fanart=None, poster=None):
         fanart_result = poster_result = banner_result = False

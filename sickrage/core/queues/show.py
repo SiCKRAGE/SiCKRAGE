@@ -384,7 +384,7 @@ class QueueItemAdd(ShowQueueItem):
 
         try:
             sickrage.app.log.debug(_("Attempting to retrieve show info from IMDb"))
-            load_imdb_info(show_obj.indexer_id, session=session)
+            load_imdb_info(show_obj.indexer_id)
         except Exception as e:
             sickrage.app.log.error(_("Error loading IMDb info: {}").format(e))
 
@@ -563,15 +563,14 @@ class QueueItemUpdate(ShowQueueItem):
             sickrage.app.log.warning("Error loading IMDb info for {}: {}".format(IndexerApi(show_obj.indexer).name, e))
 
         # get episode list from DB
-        db_ep_list = show_obj.load_episodes_from_db()
+        db_ep_list = {dbData.season: {dbData.episode: True} for dbData in show_obj.episodes}
         indexer_ep_list = None
 
         # get episode list from TVDB
         try:
-            indexer_ep_list = show_obj.load_episodes_from_indexer()
+            indexer_ep_list = show_obj.load_episodes_from_indexer(session=session)
         except indexer_exception as e:
-            sickrage.app.log.error("Unable to get info from " + IndexerApi(
-                show_obj.indexer).name + ", the show info will not be refreshed: {}".format(e))
+            sickrage.app.log.error("Unable to get info from " + IndexerApi(show_obj.indexer).name + ", the show info will not be refreshed: {}".format(e))
 
         if not indexer_ep_list:
             sickrage.app.log.error("No data returned from " + IndexerApi(show_obj.indexer).name + ", unable to update this show")
@@ -591,13 +590,11 @@ class QueueItemUpdate(ShowQueueItem):
                     except EpisodeDeletedException:
                         continue
 
-        # cleanup
-        scrub(db_ep_list)
-        scrub(indexer_ep_list)
-
         sickrage.app.quicksearch_cache.update_show(show_obj.indexer_id)
 
         sickrage.app.log.info("Finished updates in {}s for show: {}".format(round(time.time() - start_time, 2), show_obj.name))
+
+        session.commit()
 
         # refresh show
         if not self.indexer_update_only:
