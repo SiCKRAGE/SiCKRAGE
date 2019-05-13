@@ -1374,8 +1374,6 @@ $(document).ready(function ($) {
                     // call this function to copy the column selection code into the popover
                     $.tablesorter.columnSelector.attachTo($('#showListTable'), '#popover-target');
                 });
-
-                SICKRAGE.ajax_search.init();
             },
 
             history: function () {
