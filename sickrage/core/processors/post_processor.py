@@ -733,9 +733,6 @@ class PostProcessor(object):
         root_ep = None
         for episode_id in episode_ids:
             episode_object = find_episode(show_id, episode_id, session=session)
-            # if not episode_object:
-            #     self._log("Unable to create episode: {}".format(e)), sickrage.app.log.DEBUG
-            #     raise EpisodePostProcessingFailedException()
 
             self._log("Retrieving episode object for " + str(episode_object.season) + "x" + str(episode_object.episode), sickrage.app.log.DEBUG)
 
