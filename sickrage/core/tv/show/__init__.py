@@ -119,27 +119,6 @@ class TVShow(MainDBBase):
         return unidecode(self.network).lower()
 
     @property
-    def next_aired(self):
-        next_aired = datetime.date.min
-
-        if not self.paused:
-            try:
-                result = sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=self.indexer_id).filter(
-                    TVEpisode.airdate >= datetime.date.today(), TVEpisode.status.in_([UNAIRED, WANTED])).order_by(TVEpisode.airdate.asc()).limit(1).one()
-                next_aired = result.airdate
-            except orm.exc.NoResultFound:
-                pass
-
-        return next_aired
-
-    @property
-    def show_size(self):
-        total_size = 0
-        for x in self.episodes:
-            total_size += x.file_size
-        return total_size
-
-    @property
     def release_groups(self):
         if self.is_anime:
             return BlackAndWhiteList(self.indexer_id)

@@ -268,7 +268,7 @@
 
                                 <tr>
                                     <td class="show-legend">${_('Size:')}</td>
-                                    <td>${pretty_file_size(show.show_size)}</td>
+                                    <td>${pretty_file_size(show.total_size)}</td>
                                 </tr>
 
                                 <tr>

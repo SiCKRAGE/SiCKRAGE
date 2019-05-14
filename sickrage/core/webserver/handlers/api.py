@@ -1844,9 +1844,9 @@ class CMD_Show(ApiCall):
             showDict["network"] = ""
         showDict["status"] = showObj.status
 
-        if try_int(showObj.next_aired, 1) > 693595:
+        if try_int(showObj.airs_next, 1) > 693595:
             dtEpisodeAirs = srdatetime.srDateTime(
-                sickrage.app.tz_updater.parse_date_time(showObj.next_aired, showDict['airs'], showDict['network']),
+                sickrage.app.tz_updater.parse_date_time(showObj.airs_next, showDict['airs'], showDict['network']),
                 convert=True).dt
             showDict['airs'] = srdatetime.srDateTime(dtEpisodeAirs).srftime(t_preset=timeFormat).lstrip('0').replace(
                 ' 0', ' ')
@@ -2682,9 +2682,9 @@ class CMD_Shows(ApiCall):
                 "subtitles": (0, 1)[curShow.subtitles],
             }
 
-            if try_int(curShow.next_aired, 1) > 693595:  # 1900
+            if try_int(curShow.airs_next, 1) > 693595:  # 1900
                 dtEpisodeAirs = srdatetime.srDateTime(
-                    sickrage.app.tz_updater.parse_date_time(curShow.next_aired, curShow.airs, showDict['network']),
+                    sickrage.app.tz_updater.parse_date_time(curShow.airs_next, curShow.airs, showDict['network']),
                     convert=True).dt
                 showDict['next_ep_airdate'] = srdatetime.srDateTime(dtEpisodeAirs).srfdate(d_preset=dateFormat)
             else:

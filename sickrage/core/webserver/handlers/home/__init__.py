@@ -152,15 +152,12 @@ class HomeHandler(BaseHandler, ABC):
             show_stat[show.indexer_id]['ep_snatched'] = episodes.filter(TVEpisode.status.in_(status_snatched)).count()
             show_stat[show.indexer_id]['ep_downloaded'] = episodes.filter(TVEpisode.status.in_(status_download)).count()
             show_stat[show.indexer_id]['ep_total'] = episodes.filter(TVEpisode.status.in_(status_snatched + status_download)).count()
-            show_stat[show.indexer_id]['ep_airs_next'] = show.airs_next or datetime.date.min
-            show_stat[show.indexer_id]['ep_airs_prev'] = show.airs_prev or datetime.date.min
-            show_stat[show.indexer_id]['total_size'] = show.total_size
 
             if show_stat[show.indexer_id]['ep_total'] > max_download_count:
                 max_download_count = show_stat[show.indexer_id]['ep_total']
 
             overall_stats['episodes']['total'] += show_stat[show.indexer_id]['ep_total']
-            overall_stats['total_size'] += show_stat[show.indexer_id]['total_size']
+            overall_stats['total_size'] += show.total_size
 
         max_download_count *= 100
 

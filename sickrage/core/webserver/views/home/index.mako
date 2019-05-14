@@ -148,7 +148,7 @@
                                 display_status = _('Ended')
 
                         if curShow.indexer_id in show_stat:
-                            cur_airs_next = show_stat[curShow.indexer_id]['ep_airs_next']
+                            cur_airs_next = curShow.airs_next
 
                             cur_snatched = show_stat[curShow.indexer_id]['ep_snatched']
                             if not cur_snatched:
@@ -330,12 +330,11 @@
                                         cur_snatched = 0
                                         cur_downloaded = 0
                                         cur_total = 0
-                                        show_size = 0
                                         download_stat_tip = ''
 
                                         if curShow.indexer_id in show_stat:
-                                            cur_airs_next = show_stat[curShow.indexer_id]['ep_airs_next']
-                                            cur_airs_prev = show_stat[curShow.indexer_id]['ep_airs_prev']
+                                            cur_airs_next = curShow.airs_next
+                                            cur_airs_prev = curShow.airs_prev
 
                                             cur_snatched = show_stat[curShow.indexer_id]['ep_snatched']
                                             if not cur_snatched:
@@ -349,7 +348,7 @@
                                             if not cur_total:
                                                 cur_total = 0
 
-                                            show_size = show_stat[curShow.indexer_id]['total_size']
+                                            show_size = curShow.total_size
 
                                         if cur_total != 0:
                                             download_stat = str(cur_downloaded)
