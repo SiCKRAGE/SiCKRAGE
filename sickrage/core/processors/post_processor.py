@@ -29,16 +29,18 @@ from sqlalchemy import orm
 import sickrage
 from sickrage.core.common import Quality, ARCHIVED, DOWNLOADED
 from sickrage.core.databases.main import MainDB
-from sickrage.core.exceptions import EpisodeNotFoundException, EpisodePostProcessingFailedException, \
+from sickrage.core.exceptions import EpisodePostProcessingFailedException, \
     NoFreeSpaceException
 from sickrage.core.helpers import show_names, replace_extension, make_dir, \
     chmod_as_parent, move_file, copy_file, hardlink_file, move_and_symlink_file, remove_non_release_groups, \
     remove_extension, \
     is_file_locked, verify_freespace, delete_empty_folders, make_dirs, symlink, is_rar_file, glob_escape, touch_file
-from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.helpers.anidb import get_anime_episode
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
+from sickrage.core.tv.episode import TVEpisode
+from sickrage.core.tv.episode.helpers import find_episode
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.tv.show.history import FailedHistory, History  # memory intensive
 from sickrage.notifiers import Notifiers
 from sickrage.subtitles import subtitle_extensions, wanted_languages
@@ -517,11 +519,11 @@ class PostProcessor(object):
         :return: A (indexer_id, season, [], quality, version) tuple. The first two may be None if none were found.
         """
 
-        to_return = (None, None, [], None, None)
+        self.in_history = False
+        to_return = None, [], None, None
 
         # if we don't have either of these then there's nothing to use to search the history for anyway
         if not self.nzb_name and not self.file_name:
-            self.in_history = False
             return to_return
 
         # make a list of possible names to use in the search
@@ -537,34 +539,29 @@ class PostProcessor(object):
 
         # search the database for a possible match and return immediately if we find one
         for curName in names:
-            try:
-                dbData = session.query(MainDB.History).filter(MainDB.History.resource.contains(curName)).first()
-                if not dbData:
-                    continue
-            except orm.exc.NoResultFound:
+            dbData = session.query(MainDB.History).filter(MainDB.History.resource.contains(curName)).first()
+            if not dbData:
                 continue
 
-            indexer_id = int(dbData.showid)
-            season = int(dbData.season)
-            quality = int(dbData.quality)
-            version = int(dbData.version)
+            show_id = dbData.showid
+            episode_id = dbData.episode_id
+            quality = dbData.quality
+            version = dbData.version
 
             if quality == Quality.UNKNOWN:
                 quality = None
 
-            show = find_show(indexer_id)
+            self.version = version
+            to_return = show_id, [episode_id], quality, version
+
+            quality_string = Quality.qualityStrings[quality] if quality is not None else quality
+
+            self._log("Found result in history for {} - Episode ID: {} - Quality: {} - Version: {}".format(curName, episode_id, quality_string, version),
+                      sickrage.app.log.DEBUG)
 
             self.in_history = True
-            self.version = version
-            to_return = (show, season, [], quality, version)
+            break
 
-            qual_str = Quality.qualityStrings[quality] if quality is not None else quality
-            self._log("Found result in history for {} - Season: {} - Quality: {} - Version: {}".format(
-                show.name if show else "UNDEFINED", season, qual_str, version), sickrage.app.log.DEBUG)
-
-            return to_return
-
-        self.in_history = False
         return to_return
 
     def _finalize(self, parse_result):
@@ -582,12 +579,10 @@ class PostProcessor(object):
         # if the result is complete then remember that for later
         # if the result is complete then set release name
         if parse_result.series_name and (
-                (parse_result.season_number is not None and parse_result.episode_numbers) or parse_result.air_date) \
-                and parse_result.release_group:
+                (parse_result.season_number is not None and parse_result.episode_numbers) or parse_result.air_date) and parse_result.release_group:
 
             if not self.release_name:
-                self.release_name = remove_non_release_groups(
-                    remove_extension(os.path.basename(parse_result.original_name)))
+                self.release_name = remove_non_release_groups(remove_extension(os.path.basename(parse_result.original_name)))
 
         else:
             sickrage.app.log.debug("Parse result not sufficient (all following have to be set). will not save release "
@@ -598,7 +593,8 @@ class PostProcessor(object):
             sickrage.app.log.debug("Parse result(air_date): " + str(parse_result.air_date))
             sickrage.app.log.debug("Parse result(release_group): " + str(parse_result.release_group))
 
-    def _analyze_name(self, name):
+    @MainDB.with_session
+    def _analyze_name(self, name, session=None):
         """
         Takes a name and tries to figure out a show, season, and episode from it.
 
@@ -608,7 +604,7 @@ class PostProcessor(object):
         if none were found.
         """
 
-        to_return = (None, None, [], None, None)
+        to_return = None, [], None, None
 
         if not name:
             return to_return
@@ -620,16 +616,28 @@ class PostProcessor(object):
         # parse the name to break it into show name, season, and episode
         parse_result = NameParser(True).parse(name)
 
+        episode_ids = []
         if parse_result.is_air_by_date:
-            season = -1
-            episodes = [parse_result.air_date]
+            self._log("Looks like this is an air-by-date or sports show, attempting to convert the date to episode ID", sickrage.app.log.DEBUG)
+            try:
+                episode_object = session.query(TVEpisode).filter_by(showid=parse_result.indexer_id, airdate=parse_result.air_date).one()
+                episode_ids += [episode_object.indexer_id]
+            except orm.exc.NoResultFound:
+                self._log("Unable to find episode with date {} for show {}, skipping".format(parse_result.is_air_by_date, parse_result.indexer_id),
+                          sickrage.app.log.DEBUG)
         else:
-            season = parse_result.season_number
-            episodes = parse_result.episode_numbers
+            for episode_number in parse_result.episode_numbers:
+                try:
+                    episode_object = session.query(TVEpisode).filter_by(showid=parse_result.indexer_id, season=parse_result.season_number,
+                                                                        episode=episode_number).one()
+                    episode_ids += [episode_object.indexer_id]
+                except orm.exc.NoResultFound:
+                    continue
 
-        to_return = (parse_result.indexer_id, season, episodes, parse_result.quality, None)
+        to_return = (parse_result.indexer_id, episode_ids, parse_result.quality, None)
 
         self._finalize(parse_result)
+
         return to_return
 
     def _add_to_anidb_mylist(self, filePath):
@@ -654,13 +662,13 @@ class PostProcessor(object):
         """
         For a given file try to find the showid, season, and episode.
 
-        :return: A (show, season, episodes, quality, version) tuple
+        :return: A (show_id, episode_id, quality, version) tuple
         """
 
-        from sickrage.core.tv.episode import TVEpisode
-
-        show = season = quality = version = None
-        episodes = []
+        show_id = None
+        quality = None
+        version = None
+        episode_ids = []
 
         # try to look up the nzb in history
         attempt_list = [
@@ -685,7 +693,7 @@ class PostProcessor(object):
         # attempt every possible method to get our info
         for cur_attempt in attempt_list:
             try:
-                (cur_show_id, cur_season, cur_episodes, cur_quality, cur_version) = cur_attempt()
+                (cur_show_id, cur_episode_ids, cur_quality, cur_version) = cur_attempt()
             except (InvalidNameException, InvalidShowException) as e:
                 sickrage.app.log.debug("Unable to parse, skipping: {}".format(e))
                 continue
@@ -693,7 +701,10 @@ class PostProcessor(object):
             if not cur_show_id:
                 continue
 
-            show = find_show(cur_show_id)
+            show_id = cur_show_id
+
+            if len(cur_episode_ids):
+                episode_ids = cur_episode_ids
 
             if cur_quality and not (self.in_history and quality):
                 quality = cur_quality
@@ -702,81 +713,38 @@ class PostProcessor(object):
             if cur_version is not None:
                 version = cur_version
 
-            if cur_season is not None:
-                season = cur_season
+            if all([show_id, len(episode_ids) > 0, quality, version]):
+                break
 
-            if cur_episodes:
-                episodes = cur_episodes
+        return show_id, episode_ids, quality, version
 
-            # for air-by-date shows we need to look up the season/episode from database
-            if season == -1 and show and episodes:
-                self._log("Looks like this is an air-by-date or sports show, attempting to convert the date to "
-                          "season/episode", sickrage.app.log.DEBUG)
-
-                # Ignore season 0 when searching for episode(Conflict between special and regular episode,
-                # same air date)
-                try:
-                    dbData = session.query(TVEpisode).filter_by(showid=show.indexer_id, indexer=show.indexer,
-                                                                airdate=episodes[0]).filter(TVEpisode.season > 0).one()
-                    season = dbData.season
-                    episodes = [dbData.episode]
-                except orm.exc.NoResultFound:
-                    # Found no result, try with season 0
-                    try:
-                        dbData = session.query(TVEpisode).filter_by(showid=show.indexer_id, indexer=show.indexer, airdate=episodes[0]).one()
-                        season = dbData.season
-                        episodes = [dbData.episode]
-                    except orm.exc.NoResultFound:
-                        self._log("Unable to find episode with date {} for show {}"
-                                  ", skipping".format(episodes[0], show.indexer_id), sickrage.app.log.DEBUG)
-
-                        # we don't want to leave dates in the episode list if we couldn't convert them to real
-                        # episode numbers
-                        episodes = []
-                        continue
-
-            # if there's no season then we can hopefully just use 1 automatically
-            elif season is None and show:
-                if len({x.season for x in show.episodes if x.season > 0}) == 1:
-                    self._log("Don't have a season number, but this show appears to only have 1 season, setting "
-                              "season number to 1...", sickrage.app.log.DEBUG)
-                    season = 1
-
-            if show and season and episodes:
-                return show, season, episodes, quality, version
-
-        return show, season, episodes, quality, version
-
-    def _get_ep_obj(self, show, season, episodes):
+    @MainDB.with_session
+    def _get_ep_obj(self, show_id, episode_ids, session=None):
         """
         Retrieve the TVEpisode object requested.
 
-        :param show: The show object belonging to the show we want to process
-        :param season: The season of the episode (int)
-        :param episodes: A list of episodes to find (list of ints)
+        :param show_id: The show object belonging to the show we want to process
+        :param episode_ids: A list of episode IDs to find (list of ints)
 
         :return: If the episode(s) can be found then a TVEpisode object with the correct related eps will
         be instantiated and returned. If the episode can't be found then None will be returned.
         """
 
         root_ep = None
-        for cur_episode in episodes:
-            self._log("Retrieving episode object for " + str(season) + "x" + str(cur_episode),
-                      sickrage.app.log.DEBUG)
+        for episode_id in episode_ids:
+            episode_object = find_episode(show_id, episode_id, session=session)
+            # if not episode_object:
+            #     self._log("Unable to create episode: {}".format(e)), sickrage.app.log.DEBUG
+            #     raise EpisodePostProcessingFailedException()
 
-            # now that we've figured out which episode this file is just load it manually
-            try:
-                cur_ep = show.get_episode(season, cur_episode)
-            except EpisodeNotFoundException as e:
-                self._log("Unable to create episode: {}".format(e)), sickrage.app.log.DEBUG
-                raise EpisodePostProcessingFailedException()
+            self._log("Retrieving episode object for " + str(episode_object.season) + "x" + str(episode_object.episode), sickrage.app.log.DEBUG)
 
             # associate all the episodes together under a single root episode
             if root_ep is None:
-                root_ep = cur_ep
+                root_ep = episode_object
                 root_ep.relatedEps = []
-            elif cur_ep not in root_ep.relatedEps:
-                root_ep.relatedEps.append(cur_ep)
+            elif episode_object not in root_ep.relatedEps:
+                root_ep.relatedEps.append(episode_object)
 
         return root_ep
 
@@ -923,8 +891,8 @@ class PostProcessor(object):
     def _add_processed_marker_file(self, file_path):
         touch_file(file_path + '.sr_processed')
 
-    @property
-    def process(self):
+    @MainDB.with_session
+    def process(self, session=None):
         """
         Post-process a given file
 
@@ -953,22 +921,23 @@ class PostProcessor(object):
         self.anidbEpisode = None
 
         # try to find the file info
-        (show, season, episodes, quality, version) = self._find_info()
-        if not show:
-            self._log("This show isn't in your list, you need to add it to SR before post-processing an episode")
+        show_id, episode_ids, quality, version = self._find_info()
+
+        show_object = find_show(show_id)
+        if not show_object:
+            self._log("This show isn't in your list, you need to add it to SiCKRAGE before post-processing an episode")
             raise EpisodePostProcessingFailedException()
-        elif season is None or not episodes:
+        elif not len(episode_ids):
             self._log("Not enough information to determine what episode this is. Quitting post-processing")
             return False
 
         # retrieve/create the corresponding TVEpisode objects
-        ep_obj = self._get_ep_obj(show, season, episodes)
+        ep_obj = self._get_ep_obj(show_id, episode_ids, session=session)
         __, old_ep_quality = Quality.split_composite_status(ep_obj.status)
 
         # get the quality of the episode we're processing
         if quality and not Quality.qualityStrings[quality] == 'Unknown':
-            self._log("Snatch history had a quality in it, using that: " + Quality.qualityStrings[quality],
-                      sickrage.app.log.DEBUG)
+            self._log("Snatch history had a quality in it, using that: " + Quality.qualityStrings[quality], sickrage.app.log.DEBUG)
             new_ep_quality = quality
         else:
             new_ep_quality = self._get_quality(ep_obj)
@@ -1016,7 +985,7 @@ class PostProcessor(object):
 
         # try to find out if we have enough space to perform the copy or move action.
         if not is_file_locked(self.file_path, False):
-            if not verify_freespace(self.file_path, show.location, [ep_obj] + ep_obj.relatedEps):
+            if not verify_freespace(self.file_path, show_object.location, [ep_obj] + ep_obj.relatedEps):
                 self._log("Not enough space to continue PostProcessing, exiting", sickrage.app.log.WARNING)
                 # return False
                 raise NoFreeSpaceException
@@ -1030,7 +999,7 @@ class PostProcessor(object):
 
                 # clean up any left over folders
                 if cur_ep.location:
-                    delete_empty_folders(os.path.dirname(cur_ep.location), keep_dir=show.location)
+                    delete_empty_folders(os.path.dirname(cur_ep.location), keep_dir=show_object.location)
             except (OSError, IOError):
                 raise EpisodePostProcessingFailedException("Unable to delete the existing files")
 
@@ -1039,21 +1008,21 @@ class PostProcessor(object):
                 #    curEp.status = Quality.compositeStatus(SNATCHED, new_ep_quality)
 
         # if the show directory doesn't exist then make it if allowed
-        if not os.path.isdir(show.location) and sickrage.app.config.create_missing_show_dirs:
+        if not os.path.isdir(show_object.location) and sickrage.app.config.create_missing_show_dirs:
             self._log("Show directory doesn't exist, creating it", sickrage.app.log.DEBUG)
 
             try:
-                os.mkdir(show.location)
-                chmod_as_parent(show.location)
+                os.mkdir(show_object.location)
+                chmod_as_parent(show_object.location)
 
                 # do the library update for synoindex
-                sickrage.app.notifier_providers['synoindex'].addFolder(show.location)
+                sickrage.app.notifier_providers['synoindex'].addFolder(show_object.location)
             except (OSError, IOError):
                 raise EpisodePostProcessingFailedException(
-                    "Unable to create the show directory: " + show.location)
+                    "Unable to create the show directory: " + show_object.location)
 
             # write metadata for the show (but not episode because it hasn't been fully processed)
-            show.write_metadata(True)
+            show_object.write_metadata(True)
 
         # update the ep info before we rename so the quality & release name go into the name properly
         for cur_ep in [ep_obj] + ep_obj.relatedEps:
@@ -1091,12 +1060,12 @@ class PostProcessor(object):
             self._log("Couldn't find release in snatch history", sickrage.app.log.WARNING)
 
         # find the destination folder
-        if not os.path.isdir(show.location):
+        if not os.path.isdir(show_object.location):
             raise EpisodePostProcessingFailedException(
                 "Unable to post-process an episode if the show dir doesn't exist, quitting")
 
         proper_path = ep_obj.proper_path()
-        proper_absolute_path = os.path.join(show.location, proper_path)
+        proper_absolute_path = os.path.join(show_object.location, proper_path)
         dest_path = os.path.dirname(proper_absolute_path)
 
         self._log("Destination folder for this episode: " + dest_path, sickrage.app.log.DEBUG)
@@ -1115,7 +1084,7 @@ class PostProcessor(object):
             new_file_name = self.file_name
 
         # add to anidb
-        if show.is_anime and sickrage.app.config.anidb_use_mylist:
+        if show_object.is_anime and sickrage.app.config.anidb_use_mylist:
             self._add_to_anidb_mylist(self.file_path)
 
         try:
@@ -1124,24 +1093,24 @@ class PostProcessor(object):
                 if is_file_locked(self.file_path, False):
                     raise EpisodePostProcessingFailedException("File is locked for reading")
                 self._copy(self.file_path, dest_path, new_base_name, sickrage.app.config.move_associated_files,
-                           sickrage.app.config.use_subtitles and show.subtitles)
+                           sickrage.app.config.use_subtitles and show_object.subtitles)
             elif self.process_method == self.PROCESS_METHOD_MOVE:
                 if is_file_locked(self.file_path, True):
                     raise EpisodePostProcessingFailedException("File is locked for reading/writing")
                 self._move(self.file_path, dest_path, new_base_name, sickrage.app.config.move_associated_files,
-                           sickrage.app.config.use_subtitles and show.subtitles)
+                           sickrage.app.config.use_subtitles and show_object.subtitles)
             elif self.process_method == self.PROCESS_METHOD_HARDLINK:
                 self._hardlink(self.file_path, dest_path, new_base_name, sickrage.app.config.move_associated_files,
-                               sickrage.app.config.use_subtitles and show.subtitles)
+                               sickrage.app.config.use_subtitles and show_object.subtitles)
             elif self.process_method == self.PROCESS_METHOD_SYMLINK:
                 if is_file_locked(self.file_path, True):
                     raise EpisodePostProcessingFailedException("File is locked for reading/writing")
                 self._moveAndSymlink(self.file_path, dest_path, new_base_name,
                                      sickrage.app.config.move_associated_files,
-                                     sickrage.app.config.use_subtitles and show.subtitles)
+                                     sickrage.app.config.use_subtitles and show_object.subtitles)
             elif self.process_method == self.PROCESS_METHOD_SYMLINK_REVERSED:
                 self._symlink(self.file_path, dest_path, new_base_name, sickrage.app.config.move_associated_files,
-                              sickrage.app.config.use_subtitles and show.subtitles)
+                              sickrage.app.config.use_subtitles and show_object.subtitles)
             else:
                 sickrage.app.log.error("Unknown process method: " + str(self.process_method))
                 raise EpisodePostProcessingFailedException("Unable to move the files to their new home")
@@ -1152,7 +1121,7 @@ class PostProcessor(object):
         self._add_processed_marker_file(self.file_path)
 
         # download subtitles
-        if sickrage.app.config.use_subtitles and show.subtitles:
+        if sickrage.app.config.use_subtitles and show_object.subtitles:
             for cur_ep in [ep_obj] + ep_obj.relatedEps:
                 cur_ep.location = os.path.join(dest_path, new_file_name)
                 cur_ep.refresh_subtitles()
@@ -1171,8 +1140,7 @@ class PostProcessor(object):
         ep_obj.create_meta_files()
 
         # log it to history
-        History.log_download(ep_obj.showid, ep_obj.indexer_id, self.file_path, new_ep_quality, self.release_group,
-                             new_ep_version)
+        History.log_download(ep_obj.showid, ep_obj.indexer_id, self.file_path, new_ep_quality, self.release_group, new_ep_version)
 
         # If any notification fails, don't stop postProcessor
         try:
@@ -1180,13 +1148,13 @@ class PostProcessor(object):
             Notifiers.mass_notify_download(ep_obj._format_pattern('%SN - %Sx%0E - %EN - %QN'))
 
             # do the library update for KODI
-            sickrage.app.notifier_providers['kodi'].update_library(show.name)
+            sickrage.app.notifier_providers['kodi'].update_library(show_object.name)
 
             # do the library update for Plex
             sickrage.app.notifier_providers['plex'].update_library(ep_obj)
 
             # do the library update for EMBY
-            sickrage.app.notifier_providers['emby'].update_library(ep_obj.show)
+            sickrage.app.notifier_providers['emby'].update_library(show_object)
 
             # do the library update for NMJ
             # nmj_notifier kicks off its library update when the notify_download is issued (inside notifiers)

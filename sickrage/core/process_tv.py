@@ -512,7 +512,7 @@ class ProcessResult(object):
 
             try:
                 processor = post_processor.PostProcessor(cur_video_file_path, nzbName, process_method, is_priority)
-                self.result = processor.process
+                self.result = processor.process()
                 process_fail_message = ""
             except EpisodePostProcessingFailedException as e:
                 self.result = False
