@@ -148,7 +148,7 @@
                                 display_status = _('Ended')
 
                         if curShow.indexer_id in show_stat:
-                            cur_airs_next = curShow.airs_next
+                            cur_airs_next = curShow.airs_next or datetime.date.min
 
                             cur_snatched = show_stat[curShow.indexer_id]['ep_snatched']
                             if not cur_snatched:
@@ -333,8 +333,8 @@
                                         download_stat_tip = ''
 
                                         if curShow.indexer_id in show_stat:
-                                            cur_airs_next = curShow.airs_next
-                                            cur_airs_prev = curShow.airs_prev
+                                            cur_airs_next = curShow.airs_next or datetime.date.min
+                                            cur_airs_prev = curShow.airs_prev or datetime.date.min
 
                                             cur_snatched = show_stat[curShow.indexer_id]['ep_snatched']
                                             if not cur_snatched:
