@@ -26,8 +26,8 @@ import stat
 import traceback
 
 import send2trash
-from sqlalchemy import orm, Column, Integer, Boolean, Text
-from sqlalchemy.orm import relationship
+from sqlalchemy import orm, Column, Integer, Boolean, Text, select, func
+from sqlalchemy.orm import relationship, column_property
 from unidecode import unidecode
 
 import sickrage
@@ -85,6 +85,19 @@ class TVShow(MainDBBase):
     last_refresh = Column(Integer, default=datetime.datetime.now().toordinal())
     last_backlog_search = Column(Integer, default=datetime.datetime.now().toordinal())
     last_proper_search = Column(Integer, default=datetime.datetime.now().toordinal())
+
+    airs_next = column_property(
+        select([TVEpisode.airdate]).where(TVEpisode.showid == indexer_id).where(TVEpisode.airdate >= datetime.date.today()).where(
+            TVEpisode.status.in_([UNAIRED, WANTED])).order_by(TVEpisode.airdate).limit(1)
+    )
+
+    airs_prev = column_property(
+        select([TVEpisode.airdate]).where(TVEpisode.showid == indexer_id).where(TVEpisode.status != UNAIRED).order_by(TVEpisode.airdate.desc()).limit(1)
+    )
+
+    total_size = column_property(
+        select([func.sum(TVEpisode.file_size)]).where(TVEpisode.showid == indexer_id).as_scalar()
+    )
 
     episodes = relationship('TVEpisode', back_populates='show', lazy='joined')
     imdb_info = relationship('IMDbInfo', uselist=False, backref='tv_shows', lazy='joined')

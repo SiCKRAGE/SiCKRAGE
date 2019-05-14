@@ -152,20 +152,9 @@ class HomeHandler(BaseHandler, ABC):
             show_stat[show.indexer_id]['ep_snatched'] = episodes.filter(TVEpisode.status.in_(status_snatched)).count()
             show_stat[show.indexer_id]['ep_downloaded'] = episodes.filter(TVEpisode.status.in_(status_download)).count()
             show_stat[show.indexer_id]['ep_total'] = episodes.filter(TVEpisode.status.in_(status_snatched + status_download)).count()
-
-            try:
-                show_stat[show.indexer_id]['ep_airs_next'] = episodes.filter(TVEpisode.airdate >= today, TVEpisode.status.in_([UNAIRED, WANTED])).order_by(
-                    TVEpisode.airdate.asc()).limit(1).one().airdate
-            except orm.exc.NoResultFound:
-                show_stat[show.indexer_id]['ep_airs_next'] = datetime.date.min
-
-            try:
-                show_stat[show.indexer_id]['ep_airs_prev'] = episodes.filter(TVEpisode.status != UNAIRED).order_by(
-                    TVEpisode.airdate.desc()).limit(1).one().airdate
-            except orm.exc.NoResultFound:
-                show_stat[show.indexer_id]['ep_airs_prev'] = datetime.date.min
-
-            show_stat[show.indexer_id]['total_size'] = self.db_session.query(func.sum(TVEpisode.file_size)).filter_by(showid=show.indexer_id).scalar()
+            show_stat[show.indexer_id]['ep_airs_next'] = show.airs_next or datetime.date.min
+            show_stat[show.indexer_id]['ep_airs_prev'] = show.airs_prev or datetime.date.min
+            show_stat[show.indexer_id]['total_size'] = show.total_size
 
             if show_stat[show.indexer_id]['ep_total'] > max_download_count:
                 max_download_count = show_stat[show.indexer_id]['ep_total']
