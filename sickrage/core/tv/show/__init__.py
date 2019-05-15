@@ -88,15 +88,27 @@ class TVShow(MainDBBase):
 
     airs_next = column_property(
         select([TVEpisode.airdate]).where(TVEpisode.showid == indexer_id).where(TVEpisode.airdate >= datetime.date.today()).where(
-            TVEpisode.status.in_([UNAIRED, WANTED])).order_by(TVEpisode.airdate).limit(1)
+            TVEpisode.status.in_([UNAIRED, WANTED])).order_by(TVEpisode.airdate).limit(1).correlate_except(TVEpisode)
     )
 
     airs_prev = column_property(
-        select([TVEpisode.airdate]).where(TVEpisode.showid == indexer_id).where(TVEpisode.status != UNAIRED).order_by(TVEpisode.airdate.desc()).limit(1)
+        select([TVEpisode.airdate]).where(TVEpisode.showid == indexer_id).where(
+            TVEpisode.status != UNAIRED).order_by(TVEpisode.airdate.desc()).limit(1).correlate_except(TVEpisode)
+    )
+
+    episodes_snatched = column_property(
+        select([func.count(TVEpisode.indexer_id)]).where(TVEpisode.showid == indexer_id).where(
+            TVEpisode.status.in_(Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST)).as_scalar().correlate_except(TVEpisode)
+    )
+
+    episodes_downloaded = column_property(
+        select([func.count(TVEpisode.indexer_id)]).where(TVEpisode.showid == indexer_id).where(
+            TVEpisode.status.in_(Quality.DOWNLOADED + Quality.ARCHIVED)).as_scalar().correlate_except(TVEpisode)
     )
 
     total_size = column_property(
-        select([func.sum(TVEpisode.file_size)]).where(TVEpisode.showid == indexer_id).as_scalar()
+        select([func.sum(TVEpisode.file_size)]).where(
+            TVEpisode.showid == indexer_id).as_scalar().correlate_except(TVEpisode)
     )
 
     episodes = relationship('TVEpisode', back_populates='show', lazy='joined')

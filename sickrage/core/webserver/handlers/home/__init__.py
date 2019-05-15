@@ -23,7 +23,7 @@ from abc import ABC
 from collections import OrderedDict
 from urllib.parse import unquote_plus, quote_plus
 
-from sqlalchemy import orm, func
+from sqlalchemy import orm
 from tornado import gen
 from tornado.escape import json_encode
 from tornado.httputil import url_concat
@@ -104,7 +104,7 @@ class HomeHandler(BaseHandler, ABC):
         else:
             showlists['Shows'] = get_show_list()
 
-        show_stats = self.show_statistics()
+        overall_stats = self.overall_statistics()
 
         return self.render(
             "/home/index.mako",
@@ -112,16 +112,13 @@ class HomeHandler(BaseHandler, ABC):
             header="Show List",
             topmenu="home",
             showlists=showlists,
-            show_stat=show_stats[0],
-            overall_stats=show_stats[1],
-            max_download_count=show_stats[2],
+            overall_stats=overall_stats[0],
+            max_download_count=overall_stats[1],
             controller='home',
             action='index'
         )
 
-    def show_statistics(self):
-        show_stat = {}
-
+    def overall_statistics(self):
         overall_stats = {
             'episodes': {
                 'downloaded': 0,
@@ -135,33 +132,23 @@ class HomeHandler(BaseHandler, ABC):
             'total_size': 0
         }
 
-        today = datetime.date.today()
-
-        status_snatched = Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST
-        status_download = Quality.DOWNLOADED + Quality.ARCHIVED
-
         max_download_count = 1000
 
         for show in get_show_list():
             if sickrage.app.show_queue.is_being_added(show.indexer_id) or sickrage.app.show_queue.is_being_removed(show.indexer_id):
                 continue
 
-            episodes = self.db_session.query(TVEpisode).filter_by(showid=show.indexer_id)
+            show_total = show.episodes_snatched + show.episodes_downloaded
 
-            show_stat[show.indexer_id] = {}
-            show_stat[show.indexer_id]['ep_snatched'] = episodes.filter(TVEpisode.status.in_(status_snatched)).count()
-            show_stat[show.indexer_id]['ep_downloaded'] = episodes.filter(TVEpisode.status.in_(status_download)).count()
-            show_stat[show.indexer_id]['ep_total'] = episodes.filter(TVEpisode.status.in_(status_snatched + status_download)).count()
+            if show_total > max_download_count:
+                max_download_count = show_total
 
-            if show_stat[show.indexer_id]['ep_total'] > max_download_count:
-                max_download_count = show_stat[show.indexer_id]['ep_total']
-
-            overall_stats['episodes']['total'] += show_stat[show.indexer_id]['ep_total']
+            overall_stats['episodes']['total'] += show_total
             overall_stats['total_size'] += show.total_size
 
         max_download_count *= 100
 
-        return show_stat, overall_stats, max_download_count
+        return overall_stats, max_download_count
 
 
 class IsAliveHandler(BaseHandler, ABC):
