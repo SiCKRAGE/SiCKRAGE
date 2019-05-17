@@ -86,31 +86,6 @@ class TVShow(MainDBBase):
     last_backlog_search = Column(Integer, default=datetime.datetime.now().toordinal())
     last_proper_search = Column(Integer, default=datetime.datetime.now().toordinal())
 
-    airs_next = column_property(
-        select([TVEpisode.airdate]).where(TVEpisode.showid == indexer_id).where(TVEpisode.airdate >= datetime.date.today()).where(
-            TVEpisode.status.in_([UNAIRED, WANTED])).order_by(TVEpisode.airdate).limit(1).correlate_except(TVEpisode)
-    )
-
-    airs_prev = column_property(
-        select([TVEpisode.airdate]).where(TVEpisode.showid == indexer_id).where(
-            TVEpisode.status != UNAIRED).order_by(TVEpisode.airdate.desc()).limit(1).correlate_except(TVEpisode)
-    )
-
-    episodes_snatched = column_property(
-        select([func.count(TVEpisode.indexer_id)]).where(TVEpisode.showid == indexer_id).where(
-            TVEpisode.status.in_(Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST)).as_scalar().correlate_except(TVEpisode)
-    )
-
-    episodes_downloaded = column_property(
-        select([func.count(TVEpisode.indexer_id)]).where(TVEpisode.showid == indexer_id).where(
-            TVEpisode.status.in_(Quality.DOWNLOADED + Quality.ARCHIVED)).as_scalar().correlate_except(TVEpisode)
-    )
-
-    total_size = column_property(
-        select([func.sum(TVEpisode.file_size)]).where(
-            TVEpisode.showid == indexer_id).as_scalar().correlate_except(TVEpisode)
-    )
-
     episodes = relationship('TVEpisode', back_populates='show', lazy='joined')
     imdb_info = relationship('IMDbInfo', uselist=False, backref='tv_shows', lazy='joined')
 
@@ -129,6 +104,45 @@ class TVShow(MainDBBase):
     @property
     def network_logo_name(self):
         return unidecode(self.network).lower()
+
+    @property
+    def airs_next(self):
+        _airs_next = datetime.date.min
+        for episode_object in self.episodes:
+            if episode_object.status in [UNAIRED, WANTED] and episode_object.airdate >= datetime.date.today() and _airs_next == datetime.date.min:
+                _airs_next = episode_object.airdate
+        return _airs_next
+
+    @property
+    def airs_prev(self):
+        _airs_prev = datetime.date.min
+        for episode_object in self.episodes:
+            if episode_object.status != UNAIRED and  episode_object.airdate < datetime.date.today() > _airs_prev:
+                _airs_prev = episode_object.airdate
+        return _airs_prev
+
+    @property
+    def episodes_snatched(self):
+        _episodes_snatched = 0
+        for episode_object in self.episodes:
+            if episode_object.status in Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER:
+                _episodes_snatched += 1
+        return _episodes_snatched
+
+    @property
+    def episodes_downloaded(self):
+        _episodes_downloaded = 0
+        for episode_object in self.episodes:
+            if episode_object.status in Quality.DOWNLOADED + Quality.ARCHIVED:
+                _episodes_downloaded += 1
+        return _episodes_downloaded
+
+    @property
+    def total_size(self):
+        _total_size = 0
+        for episode_object in self.episodes:
+            _total_size += episode_object.file_size
+        return _total_size
 
     @property
     def release_groups(self):

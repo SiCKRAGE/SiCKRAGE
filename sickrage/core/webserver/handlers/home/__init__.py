@@ -138,13 +138,13 @@ class HomeHandler(BaseHandler, ABC):
             if sickrage.app.show_queue.is_being_added(show.indexer_id) or sickrage.app.show_queue.is_being_removed(show.indexer_id):
                 continue
 
-            show_total = show.episodes_snatched + show.episodes_downloaded
+            show_total = show.episodes_snatched or 0 + show.episodes_downloaded or 0
 
             if show_total > max_download_count:
                 max_download_count = show_total
 
             overall_stats['episodes']['total'] += show_total
-            overall_stats['total_size'] += show.total_size
+            overall_stats['total_size'] += show.total_size or 0
 
         max_download_count *= 100
 
