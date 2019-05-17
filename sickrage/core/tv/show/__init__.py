@@ -223,12 +223,13 @@ class TVShow(MainDBBase):
                 try:
                     episode_obj = self.get_episode(season, episode, session=session)
                 except EpisodeNotFoundException:
-                    episode_obj = TVEpisode(**{'showid': self.indexer_id,
+                    session.add(TVEpisode(**{'showid': self.indexer_id,
                                                'indexer': self.indexer,
                                                'season': season,
                                                'episode': episode,
-                                               'location': ''})
-                    session.add(episode_obj)
+                                               'location': ''}))
+                    session.commit()
+                    episode_obj = self.get_episode(season, episode, session=session)
 
                 sickrage.app.log.debug("%s: Loading info from %s for episode S%02dE%02d" % (
                     self.indexer_id, IndexerApi(self.indexer).name, season or 0, episode or 0
