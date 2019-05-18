@@ -17,7 +17,7 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 import functools
 
-from sqlalchemy import Column, Integer, Text, ForeignKeyConstraint
+from sqlalchemy import Column, Integer, Text, ForeignKeyConstraint, String
 from sqlalchemy.ext.declarative import as_declarative
 from sqlalchemy.orm import sessionmaker, scoped_session
 
@@ -39,8 +39,8 @@ class MainDBBase(object):
 class MainDB(srDatabase):
     session = sessionmaker(class_=ContextSession)
 
-    def __init__(self, name='main'):
-        super(MainDB, self).__init__(name)
+    def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
+        super(MainDB, self).__init__('main', db_type, db_prefix, db_host, db_port, db_username, db_password)
         MainDB.session.configure(bind=self.engine)
         MainDBBase.metadata.create_all(self.engine)
         for model in MainDBBase._decl_class_registry.values():
@@ -83,7 +83,7 @@ class MainDB(srDatabase):
         )
 
         indexer_id = Column(Integer, primary_key=True)
-        imdb_id = Column(Text, index=True, unique=True)
+        imdb_id = Column(String(10), index=True, unique=True)
         rated = Column(Text)
         title = Column(Text)
         production = Column(Text)

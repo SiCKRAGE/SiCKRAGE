@@ -24,7 +24,7 @@ import traceback
 from collections import OrderedDict
 from xml.etree.ElementTree import ElementTree
 
-from sqlalchemy import ForeignKeyConstraint, Index, Column, Integer, Text, Boolean, Date
+from sqlalchemy import ForeignKeyConstraint, Index, Column, Integer, Text, Boolean, Date, BigInteger
 from sqlalchemy.orm import relationship
 
 import sickrage
@@ -48,14 +48,14 @@ class TVEpisode(MainDBBase):
     __table_args__ = (
         ForeignKeyConstraint(['showid', 'indexer'], ['tv_shows.indexer_id', 'tv_shows.indexer']),
         Index('idx_showid_indexer', 'showid', 'indexer'),
+        Index('idx_showid_indexerid', 'showid', 'indexer_id'),
         Index('idx_sta_epi_air', 'status', 'episode', 'airdate'),
-        Index('idx_sta_epi_sta_air', 'season', 'episode', 'status', 'airdate'),
-        Index('idx_status ', 'status', 'season', 'episode', 'airdate'),
-        Index('idx_tv_episodes_showid_airdate', 'indexer_id', 'airdate'),
+        Index('idx_sea_epi_sta_air', 'season', 'episode', 'status', 'airdate'),
+        Index('idx_indexer_id_airdate', 'indexer_id', 'airdate'),
     )
 
     showid = Column(Integer, index=True, primary_key=True)
-    indexer_id = Column(Integer, index=True, default=0)
+    indexer_id = Column(Integer, default=0)
     indexer = Column(Integer, index=True, primary_key=True)
     season = Column(Integer, index=True, primary_key=True)
     episode = Column(Integer, index=True, primary_key=True)
@@ -71,7 +71,7 @@ class TVEpisode(MainDBBase):
     hastbn = Column(Boolean, default=False)
     status = Column(Integer, default=UNKNOWN)
     location = Column(Text, default='')
-    file_size = Column(Integer, default=0)
+    file_size = Column(BigInteger, default=0)
     release_name = Column(Text, default='')
     is_proper = Column(Boolean, default=False)
     absolute_number = Column(Integer, default=0)
@@ -79,7 +79,7 @@ class TVEpisode(MainDBBase):
     version = Column(Integer, default=-1)
     release_group = Column(Text, default='')
 
-    show = relationship('TVShow', back_populates='episodes', lazy='joined')
+    show = relationship('TVShow', uselist=False, backref='tv_episodes', lazy='joined')
 
     def __init__(self, **kwargs):
         super(TVEpisode, self).__init__(**kwargs)

@@ -257,6 +257,24 @@ def main():
         parser.add_argument('--nolaunch',
                             action='store_true',
                             help='Suppress launching web browser on startup')
+        parser.add_argument('--db_type',
+                            default='sqlite',
+                            help='Database type: sqlite or mysql')
+        parser.add_argument('--db_prefix',
+                            default='sickrage',
+                            help='Database prefix you want prepended to database table names')
+        parser.add_argument('--db_host',
+                            default='localhost',
+                            help='Database hostname (not used for sqlite)')
+        parser.add_argument('--db_port',
+                            default='3306',
+                            help='Database port number (not used for sqlite)')
+        parser.add_argument('--db_username',
+                            default='sickrage',
+                            help='Database username (not used for sqlite)')
+        parser.add_argument('--db_password',
+                            default='sickrage',
+                            help='Database password (not used for sqlite)')
 
         # Parse startup args
         args = parser.parse_args()
@@ -265,6 +283,12 @@ def main():
         app.web_host = args.host
         app.no_launch = args.nolaunch
         app.developer = args.dev
+        app.db_type = args.db_type
+        app.db_prefix = args.db_prefix
+        app.db_host = args.db_host
+        app.db_port = args.db_port
+        app.db_username = args.db_username
+        app.db_password = args.db_password
         app.debug = args.debug
         app.data_dir = os.path.abspath(os.path.realpath(os.path.expanduser(args.datadir)))
         app.cache_dir = os.path.abspath(os.path.realpath(os.path.join(app.data_dir, 'cache')))

@@ -50,7 +50,7 @@ class ProperSearcher(object):
         Start looking for new propers
         :param force: Start even if already running (currently not used, defaults to False)
         """
-        if self.amActive or (not sickrage.app.config.download_propers or sickrage.app.developer) and not force:
+        if self.amActive or not sickrage.app.config.download_proper and not force:
             return
 
         self.amActive = True

@@ -17,7 +17,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import functools
 import json
 import re
@@ -318,6 +317,7 @@ class Tvdb:
                     'series': "/series/{id}/images/query?keyType=series",
                     'season': "/series/{id}/images/query?keyType=season&subKey={season}",
                     'seasonwide': "/series/{id}/images/query?keyType=seasonwide&subKey={season}",
+                    'params': "/series/{id}/images/query/params",
                     'prefix': "https://thetvdb.com/banners/{value}"
                 }
             }
@@ -648,6 +648,19 @@ class Tvdb:
         return self.shows[int(sid)]
 
     @login_required
+    def image_key_types(self, sid, language='en'):
+        key_types = {}
+
+        for data in self._request('get', self.config['api']['images']['params'].format(id=sid), language)['data']:
+            key_type = data['keytype']
+            resolution = data['resolution']
+
+            if language not in key_types:
+                key_types.update({key_type: bool(len(resolution))})
+
+        return key_types
+
+    @login_required
     def images(self, sid, key_type='poster', season=None):
         sickrage.app.log.debug('Getting {} images for {}'.format(key_type, sid))
 
@@ -656,13 +669,14 @@ class Tvdb:
             if len(images):
                 continue
 
+            if not self.image_key_types(sid, language).get(key_type):
+                continue
+
             try:
                 if not season:
-                    images = self._request('get', self.config['api']['images'][key_type].format(id=sid),
-                                           language)['data']
+                    images = self._request('get', self.config['api']['images'][key_type].format(id=sid), language)['data']
                 else:
-                    images = self._request('get', self.config['api']['images'][key_type].format(id=sid, season=season),
-                                           language)['data']
+                    images = self._request('get', self.config['api']['images'][key_type].format(id=sid, season=season), language)['data']
             except tvdb_error:
                 continue
 

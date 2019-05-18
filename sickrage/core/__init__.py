@@ -98,6 +98,12 @@ class Core(object):
         self.no_launch = None
         self.web_port = None
         self.developer = None
+        self.db_type = None
+        self.db_prefix = None
+        self.db_host = None
+        self.db_port = None
+        self.db_username = None
+        self.db_password = None
         self.debug = None
         self.newest_version_string = None
 
@@ -161,8 +167,8 @@ class Core(object):
         threading.currentThread().setName('CORE')
 
         # init core classes
-        self.main_db = MainDB()
-        self.cache_db = CacheDB()
+        self.main_db = MainDB(self.db_type, self.db_prefix, self.db_host, self.db_port, self.db_username, self.db_password)
+        self.cache_db = CacheDB(self.db_type, self.db_prefix, self.db_host, self.db_port, self.db_username, self.db_password)
         self.notifier_providers = NotifierProviders()
         self.metadata_providers = MetadataProviders()
         self.search_providers = SearchProviders()
@@ -482,7 +488,15 @@ class Core(object):
                                                                sickrage.app.config.web_host,
                                                                sickrage.app.config.web_port))
 
-        # start ioloop
+        self.log.info("SiCKRAGE :: STARTED")
+        self.log.info("SiCKRAGE :: APP VERSION:[{}]".format(sickrage.version()))
+        self.log.info("SiCKRAGE :: CONFIG VERSION:[v{}]".format(self.config.config_version))
+        self.log.info("SiCKRAGE :: DATABASE VERSION:[v{}]".format(self.main_db.version))
+        self.log.info("SiCKRAGE :: DATABASE TYPE:[{}]".format(self.db_type))
+        self.log.info("SiCKRAGE :: URL:[{}://{}:{}{}]".format(('http', 'https')[self.config.enable_https], self.config.web_host, self.config.web_port,
+                                                              self.config.web_root))
+
+        # start io_loop
         self.io_loop.start()
 
     def shutdown(self, restart=False):

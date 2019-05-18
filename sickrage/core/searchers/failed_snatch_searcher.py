@@ -44,7 +44,7 @@ class FailedSnatchSearcher(object):
         Runs the failed searcher, queuing selected episodes for search that have failed to snatch
         :param force: Force search
         """
-        if self.amActive or (not sickrage.app.config.use_failed_snatcher or sickrage.app.developer) and not force:
+        if self.amActive or not sickrage.app.config.use_failed_snatcher and not force:
             return
 
         self.amActive = True

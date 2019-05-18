@@ -17,7 +17,7 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 import functools
 
-from sqlalchemy import Column, Integer, Text
+from sqlalchemy import Column, Integer, Text, String
 from sqlalchemy.ext.declarative import as_declarative
 from sqlalchemy.orm import sessionmaker, scoped_session
 
@@ -37,8 +37,8 @@ class CacheDBBase(object):
 class CacheDB(srDatabase):
     session = sessionmaker(class_=ContextSession)
 
-    def __init__(self, name='cache'):
-        super(CacheDB, self).__init__(name)
+    def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
+        super(CacheDB, self).__init__('cache', db_type, db_prefix, db_host, db_port, db_username, db_password)
         CacheDB.session.configure(bind=self.engine)
         CacheDBBase.metadata.create_all(self.engine)
         for model in CacheDBBase._decl_class_registry.values():
@@ -77,7 +77,7 @@ class CacheDB(srDatabase):
     class LastUpdate(CacheDBBase):
         __tablename__ = 'last_update'
 
-        provider = Column(Text, primary_key=True)
+        provider = Column(String(32), primary_key=True)
         time = Column(Integer)
 
     class LastSearch(CacheDBBase):
@@ -105,13 +105,13 @@ class CacheDB(srDatabase):
     class NetworkTimezone(CacheDBBase):
         __tablename__ = 'network_timezones'
 
-        network_name = Column(Text, primary_key=True)
+        network_name = Column(String(256), primary_key=True)
         timezone = Column(Text)
 
     class SceneExceptionRefresh(CacheDBBase):
         __tablename__ = 'scene_exceptions_refresh'
 
-        exception_list = Column(Text, primary_key=True)
+        exception_list = Column(String(32), primary_key=True)
         last_refreshed = Column(Integer)
 
     class Provider(CacheDBBase):
@@ -123,7 +123,7 @@ class CacheDB(srDatabase):
         season = Column(Integer)
         episodes = Column(Text)
         indexer_id = Column(Integer)
-        url = Column(Text, index=True, unique=True)
+        url = Column(String(256), index=True, unique=True)
         time = Column(Integer)
         quality = Column(Integer)
         release_group = Column(Text)

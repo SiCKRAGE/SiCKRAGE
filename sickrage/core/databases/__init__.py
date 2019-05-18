@@ -17,15 +17,15 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 import datetime
 import errno
-import functools
 import os
 import pickle
 import shutil
+from collections import OrderedDict
 from sqlite3 import OperationalError
 from time import sleep
 
 import sqlalchemy
-from migrate import DatabaseAlreadyControlledError
+from migrate import DatabaseAlreadyControlledError, DatabaseNotControlledError
 from migrate.versioning import api
 from sqlalchemy import create_engine, event, inspect
 from sqlalchemy.engine import Engine
@@ -36,10 +36,11 @@ import sickrage
 
 @event.listens_for(Engine, "connect")
 def set_sqlite_pragma(dbapi_connection, connection_record):
-    cursor = dbapi_connection.cursor()
-    cursor.execute("PRAGMA journal_mode=WAL")
-    cursor.execute('PRAGMA busy_timeout=%i;' % 15000)
-    cursor.close()
+    if 'sqlite' in str(dbapi_connection):
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA journal_mode=WAL")
+        cursor.execute('PRAGMA busy_timeout=%i;' % 15000)
+        cursor.close()
 
 
 @event.listens_for(mapper, "init")
@@ -108,15 +109,30 @@ class ContextSession(sqlalchemy.orm.Session):
 
 
 class srDatabase(object):
-    def __init__(self, name):
+    def __init__(self, name, db_type='sqlite', db_prefix='sickrage', db_host='localhost', db_port='3306', db_username='sickrage', db_password='sickrage'):
         self.name = name
+        self.db_type = db_type
+        self.db_prefix = db_prefix
+        self.db_host = db_host
+        self.db_port = db_port
+        self.db_username = db_username
+        self.db_password = db_password
+
         self.tables = {}
 
         self.db_path = os.path.join(sickrage.app.data_dir, '{}.db'.format(self.name))
         self.db_repository = os.path.join(os.path.dirname(__file__), self.name, 'db_repository')
-        self.engine = create_engine('sqlite:///{}'.format(self.db_path), echo=False, connect_args={'check_same_thread': False, 'timeout': 10})
 
-        if not os.path.exists(self.db_path):
+        if self.db_type == 'sqlite':
+            self.engine = create_engine('sqlite:///{}'.format(self.db_path), echo=False, connect_args={'check_same_thread': False, 'timeout': 10})
+        elif self.db_type == 'mysql':
+            mysql_engine = create_engine('mysql+pymysql://{}:{}@{}:{}/'.format(self.db_username, self.db_password, self.db_host, self.db_port), echo=False)
+            mysql_engine.execute("CREATE DATABASE IF NOT EXISTS {}_{}".format(self.db_prefix, self.name))
+            self.engine = create_engine(
+                'mysql+pymysql://{}:{}@{}:{}/{}_{}'.format(self.db_username, self.db_password, self.db_host, self.db_port, self.db_prefix, self.name),
+                echo=False)
+
+        if not self.version:
             api.version_control(self.engine, self.db_repository, api.version(self.db_repository))
         else:
             try:
@@ -130,7 +146,10 @@ class srDatabase(object):
 
     @property
     def version(self):
-        return int(api.db_version(self.engine, self.db_repository))
+        try:
+            return int(api.db_version(self.engine, self.db_repository))
+        except DatabaseNotControlledError:
+            return 0
 
     def upgrade(self):
         if self.version < int(api.version(self.db_repository)):
@@ -165,14 +184,18 @@ class srDatabase(object):
             with open(migrate_file, 'rb') as f:
                 rows = pickle.load(f, encoding='bytes')
 
-            migrate_tables = {}
+            migrate_tables = OrderedDict({
+                'tv_shows': [],
+                'tv_episodes': []
+            })
+
             for row in rows:
                 table = row.pop('_t')
                 if table not in self.tables:
                     continue
 
                 if table not in migrate_tables:
-                    migrate_tables[table] = []
+                    continue
 
                 for column in row.copy():
                     if column not in self.tables[table].__table__.columns:
@@ -183,13 +206,21 @@ class srDatabase(object):
 
                         del row[column]
 
-                    if table == 'tv_episodes':
+                    if table == 'tv_shows':
+                        if column == 'runtime':
+                            row[column] = int(row[column] or 0)
+                    elif table == 'tv_episodes':
                         if column == 'airdate':
                             row[column] = datetime.date.fromordinal(row[column])
+                        elif column == 'subtitles_lastsearch':
+                            row[column] = 0
 
                 migrate_tables[table] += [row]
 
             for table, rows in migrate_tables.items():
+                if not len(rows):
+                    continue
+
                 sickrage.app.log.info('Migrating {} database table {}'.format(self.name, table))
 
                 try:
@@ -200,11 +231,7 @@ class srDatabase(object):
                 try:
                     self.bulk_add(self.tables[table], rows)
                 except Exception as e:
-                    for row in rows:
-                        try:
-                            self.add(self.tables[table](**row))
-                        except Exception as e:
-                            pass
+                    pass
 
             shutil.move(migrate_file, backup_file)
 

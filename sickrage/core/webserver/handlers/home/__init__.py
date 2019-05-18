@@ -104,7 +104,7 @@ class HomeHandler(BaseHandler, ABC):
         else:
             showlists['Shows'] = get_show_list()
 
-        overall_stats = self.overall_statistics()
+        statistics = self.statistics()
 
         return self.render(
             "/home/index.mako",
@@ -112,13 +112,16 @@ class HomeHandler(BaseHandler, ABC):
             header="Show List",
             topmenu="home",
             showlists=showlists,
-            overall_stats=overall_stats[0],
-            max_download_count=overall_stats[1],
+            show_stats=statistics[0],
+            overall_stats=statistics[1],
+            max_download_count=statistics[2],
             controller='home',
             action='index'
         )
 
-    def overall_statistics(self):
+    def statistics(self):
+        show_stat = {}
+
         overall_stats = {
             'episodes': {
                 'downloaded': 0,
@@ -134,21 +137,30 @@ class HomeHandler(BaseHandler, ABC):
 
         max_download_count = 1000
 
-        for show in get_show_list():
+        for show in get_show_list(session=self.db_session):
             if sickrage.app.show_queue.is_being_added(show.indexer_id) or sickrage.app.show_queue.is_being_removed(show.indexer_id):
                 continue
 
-            show_total = show.episodes_snatched or 0 + show.episodes_downloaded or 0
+            show_stat[show.indexer_id] = {
+                'ep_airs_next': show.airs_next or datetime.date.min,
+                'ep_airs_prev': show.airs_prev or datetime.date.min,
+                'ep_snatched': show.episodes_snatched or 0,
+                'ep_downloaded': show.episodes_downloaded or 0,
+                'ep_total': show.episodes.count(),
+                'total_size': show.total_size or 0
+            }
 
-            if show_total > max_download_count:
-                max_download_count = show_total
+            overall_stats['episodes']['snatched'] += show_stat[show.indexer_id]['ep_snatched']
+            overall_stats['episodes']['downloaded'] += show_stat[show.indexer_id]['ep_downloaded']
+            overall_stats['episodes']['total'] += show_stat[show.indexer_id]['ep_total']
+            overall_stats['total_size'] += show_stat[show.indexer_id]['total_size']
 
-            overall_stats['episodes']['total'] += show_total
-            overall_stats['total_size'] += show.total_size or 0
+            if show_stat[show.indexer_id]['ep_total'] > max_download_count:
+                max_download_count = show_stat[show.indexer_id]['ep_total']
 
         max_download_count *= 100
 
-        return overall_stats, max_download_count
+        return show_stat, overall_stats, max_download_count
 
 
 class IsAliveHandler(BaseHandler, ABC):

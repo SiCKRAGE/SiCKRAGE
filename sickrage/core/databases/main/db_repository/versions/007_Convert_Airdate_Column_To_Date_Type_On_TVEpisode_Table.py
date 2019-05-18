@@ -26,7 +26,7 @@ def upgrade(migrate_engine):
     meta = MetaData(bind=migrate_engine)
     tv_episodes = Table('tv_episodes', meta, autoload=True)
 
-    tv_episodes.c.airdate.alter(type=String)
+    tv_episodes.c.airdate.alter(type=String(32))
 
     with migrate_engine.begin() as conn:
         for row in migrate_engine.execute(tv_episodes.select()):
@@ -39,7 +39,7 @@ def downgrade(migrate_engine):
     meta = MetaData(bind=migrate_engine)
     tv_episodes = Table('tv_episodes', meta, autoload=True)
 
-    tv_episodes.c.airdate.alter(type=String)
+    tv_episodes.c.airdate.alter(type=String(32))
 
     with migrate_engine.begin() as conn:
         for row in migrate_engine.execute(tv_episodes.select()):

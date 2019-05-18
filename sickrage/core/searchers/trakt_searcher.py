@@ -69,7 +69,7 @@ class TraktSearcher(object):
         self.amActive = False
 
     def run(self, force=False):
-        if self.amActive or (not sickrage.app.config.use_trakt or sickrage.app.developer) and not force:
+        if self.amActive or not sickrage.app.config.use_trakt and not force:
             return
 
         self.amActive = True

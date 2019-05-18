@@ -23,21 +23,23 @@ from sqlalchemy import *
 def upgrade(migrate_engine):
     meta = MetaData(bind=migrate_engine)
     history = Table('history', meta, autoload=True)
-    episode_id = Column('episode_id', Integer, default=0)
-    episode_id.create(history)
-    history.c.season.drop()
-    history.c.episode.drop()
-    history.drop()
-    history.create()
+    if not hasattr(history.c, 'episode_id'):
+        episode_id = Column('episode_id', Integer, default=0)
+        episode_id.create(history)
+        history.c.season.drop()
+        history.c.episode.drop()
+        history.drop()
+        history.create()
 
 
 def downgrade(migrate_engine):
     meta = MetaData(bind=migrate_engine)
     history = Table('history', meta, autoload=True)
-    season = Column('season', Integer, default=0)
-    episode = Column('episode', Integer, default=0)
-    history.c.episode_id.drop()
-    season.create(history)
-    episode.create(history)
-    history.drop()
-    history.create()
+    if hasattr(history.c, 'episode_id'):
+        season = Column('season', Integer, default=0)
+        episode = Column('episode', Integer, default=0)
+        history.c.episode_id.drop()
+        season.create(history)
+        episode.create(history)
+        history.drop()
+        history.create()

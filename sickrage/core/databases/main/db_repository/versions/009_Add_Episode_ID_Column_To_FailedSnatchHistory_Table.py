@@ -23,21 +23,23 @@ from sqlalchemy import *
 def upgrade(migrate_engine):
     meta = MetaData(bind=migrate_engine)
     failed_snatch_history = Table('failed_snatch_history', meta, autoload=True)
-    episode_id = Column('episode_id', Integer, default=0)
-    episode_id.create(failed_snatch_history)
-    failed_snatch_history.c.season.drop()
-    failed_snatch_history.c.episode.drop()
-    failed_snatch_history.drop()
-    failed_snatch_history.create()
+    if not hasattr(failed_snatch_history.c, 'episode_id'):
+        episode_id = Column('episode_id', Integer, default=0)
+        episode_id.create(failed_snatch_history)
+        failed_snatch_history.c.season.drop()
+        failed_snatch_history.c.episode.drop()
+        failed_snatch_history.drop()
+        failed_snatch_history.create()
 
 
 def downgrade(migrate_engine):
     meta = MetaData(bind=migrate_engine)
     failed_snatch_history = Table('failed_snatch_history', meta, autoload=True)
-    season = Column('season', Integer, default=0)
-    episode = Column('episode', Integer, default=0)
-    failed_snatch_history.c.episode_id.drop()
-    season.create(failed_snatch_history)
-    episode.create(failed_snatch_history)
-    failed_snatch_history.drop()
-    failed_snatch_history.create()
+    if hasattr(failed_snatch_history.c, 'episode_id'):
+        season = Column('season', Integer, default=0)
+        episode = Column('episode', Integer, default=0)
+        failed_snatch_history.c.episode_id.drop()
+        season.create(failed_snatch_history)
+        episode.create(failed_snatch_history)
+        failed_snatch_history.drop()
+        failed_snatch_history.create()

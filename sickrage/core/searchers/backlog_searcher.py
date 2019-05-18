@@ -41,7 +41,7 @@ class BacklogSearcher(object):
         self.forced = False
 
     def run(self, force=False):
-        if self.amActive or sickrage.app.developer and not force:
+        if self.amActive or not force:
             return
 
         # set thread name

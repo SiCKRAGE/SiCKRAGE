@@ -134,10 +134,6 @@
 
                     % for curShow in sorted(curShowlist, key=cmp_to_key(lambda x, y: x.name < y.name)):
                     <%
-                        cur_airs_next = datetime.date.min
-                        cur_snatched = 0
-                        cur_downloaded = 0
-                        cur_total = 0
                         download_stat_tip = ''
                         display_status = curShow.status
 
@@ -147,10 +143,10 @@
                             elif re.search(r'(?i)(?:nded)', curShow.status):
                                 display_status = _('Ended')
 
-                        cur_airs_next = curShow.airs_next or datetime.date.min
-                        cur_snatched = curShow.episodes_snatched or 0
-                        cur_downloaded = curShow.episodes_downloaded or 0
-                        cur_total = cur_snatched + cur_downloaded
+                        cur_airs_next = show_stats[curShow.indexer_id]['ep_airs_next']
+                        cur_snatched = show_stats[curShow.indexer_id]['ep_snatched']
+                        cur_downloaded = show_stats[curShow.indexer_id]['ep_downloaded']
+                        cur_total = show_stats[curShow.indexer_id]['ep_total']
 
                         if cur_total != 0:
                             download_stat = str(cur_downloaded)
@@ -317,12 +313,12 @@
                                     <%
                                         download_stat_tip = ''
 
-                                        cur_airs_next = curShow.airs_next or datetime.date.min
-                                        cur_airs_prev = curShow.airs_prev or datetime.date.min
-                                        cur_snatched = curShow.episodes_snatched or 0
-                                        cur_downloaded = curShow.episodes_downloaded or 0
-                                        cur_total = cur_snatched + cur_downloaded
-                                        show_size = curShow.total_size or 0
+                                        cur_airs_next = show_stats[curShow.indexer_id]['ep_airs_next']
+                                        cur_airs_prev = show_stats[curShow.indexer_id]['ep_airs_prev']
+                                        cur_snatched = show_stats[curShow.indexer_id]['ep_snatched']
+                                        cur_downloaded = show_stats[curShow.indexer_id]['ep_downloaded']
+                                        cur_total = show_stats[curShow.indexer_id]['ep_total']
+                                        show_size = show_stats[curShow.indexer_id]['total_size']
 
                                         if cur_total != 0:
                                             download_stat = str(cur_downloaded)

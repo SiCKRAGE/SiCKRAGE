@@ -386,19 +386,6 @@ class WebServer(object):
 
         try:
             self.server.listen(sickrage.app.config.web_port)
-
-            sickrage.app.log.info(
-                "SiCKRAGE :: STARTED")
-            sickrage.app.log.info(
-                "SiCKRAGE :: APP VERSION:[{}]".format(sickrage.version()))
-            sickrage.app.log.info(
-                "SiCKRAGE :: CONFIG VERSION:[v{}]".format(sickrage.app.config.config_version))
-            sickrage.app.log.info(
-                "SiCKRAGE :: DATABASE VERSION:[v{}]".format(sickrage.app.main_db.version))
-            sickrage.app.log.info(
-                "SiCKRAGE :: URL:[{}://{}:{}{}]".format(('http', 'https')[sickrage.app.config.enable_https],
-                                                        sickrage.app.config.web_host, sickrage.app.config.web_port,
-                                                        sickrage.app.config.web_root))
         except socket.error as e:
             sickrage.app.log.warning(e.strerror)
             raise SystemExit

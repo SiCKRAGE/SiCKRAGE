@@ -44,7 +44,7 @@ class SubtitleSearcher(object):
 
     @MainDB.with_session
     def run(self, force=False, session=None):
-        if self.amActive or (not sickrage.app.config.use_subtitles or sickrage.app.developer) and not force:
+        if self.amActive or not sickrage.app.config.use_subtitles and not force:
             return
 
         self.amActive = True

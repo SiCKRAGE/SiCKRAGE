@@ -153,7 +153,10 @@ class VersionUpdater(object):
         :param force: if true the version_notify setting will be ignored and a check will be forced
         """
 
-        if not self.updater or (not sickrage.app.config.version_notify or sickrage.app.developer) and not force:
+        if sickrage.app.developer:
+            return False
+
+        if not self.updater or not sickrage.app.config.version_notify and not force:
             return False
 
         if self.updater.need_update():

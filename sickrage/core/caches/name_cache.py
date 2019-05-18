@@ -82,7 +82,11 @@ class NameCache(object):
         Deletes all entries from the cache matching the indexer_id or name.
         """
         if any([indexer_id, name]):
-            session.query(CacheDB.SceneName).filter(or_(CacheDB.SceneName.indexer_id == indexer_id, CacheDB.SceneName.name == name)).delete()
+            if indexer_id:
+                session.query(CacheDB.SceneName).filter_by(indexer_id=indexer_id).delete()
+            elif name:
+                session.query(CacheDB.SceneName).filter_by(name=name).delete()
+
             for key, value in self.cache.copy().items():
                 if value == indexer_id or key == name:
                     del self.cache[key]
@@ -121,7 +125,7 @@ class NameCache(object):
         if self.should_update(show):
             self.last_update[show.name] = datetime.fromtimestamp(int(time.mktime(datetime.today().timetuple())))
 
-            self.clear(show.indexer_id)
+            self.clear(indexer_id=show.indexer_id)
 
             show_names = []
             for curSeason in [-1] + get_scene_seasons(show.indexer_id):
@@ -131,7 +135,7 @@ class NameCache(object):
                     show_names.append(strip_accents(name).replace("'", " "))
 
             for show_name in set(show_names):
-                self.clear(show_name)
+                self.clear(name=show_name)
                 self.put(show_name, show.indexer_id)
 
     def build_all(self):
