@@ -111,7 +111,7 @@ class TVShow(MainDBBase):
             TVEpisode.showid == indexer_id).as_scalar().correlate_except(TVEpisode)
     )
 
-    episodes = relationship('TVEpisode', uselist=True, backref='tv_shows', lazy='dynamic', cascade="all, delete-orphan", passive_deletes=True)
+    episodes = relationship('TVEpisode', uselist=True, backref='tv_shows', lazy='joined')
     imdb_info = relationship('IMDbInfo', uselist=False, backref='tv_shows', lazy='joined')
 
     @property
