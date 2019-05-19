@@ -332,8 +332,10 @@ class QueueItemAdd(ShowQueueItem):
             return self._finish_early()
 
         # add show to database
-        show_obj = TVShow(**{'indexer': self.indexer, 'indexer_id': self.indexer_id, 'lang': self.lang, 'location': self.showDir})
-        session.add(show_obj)
+        session.add(TVShow(**{'indexer': self.indexer, 'indexer_id': self.indexer_id, 'lang': self.lang, 'location': self.showDir}))
+        session.commit()
+
+        show_obj = find_show(self.indexer_id)
 
         try:
             show_obj.load_from_indexer()
