@@ -1136,8 +1136,10 @@ class PostProcessor(object):
         # generate nfo/tbn
         ep_obj.create_meta_files()
 
+        session.commit()
+
         # log it to history
-        History.log_download(ep_obj.showid, ep_obj.indexer_id, self.file_path, new_ep_quality, self.release_group, new_ep_version)
+        History.log_download(ep_obj.showid, ep_obj.indexer_id, ep_obj.status, self.file_path, new_ep_quality, self.release_group, new_ep_version)
 
         # If any notification fails, don't stop postProcessor
         try:

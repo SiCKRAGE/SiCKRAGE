@@ -144,7 +144,7 @@ class History:
             History._log_history_item(action, search_result.show_id, episode_id, quality, resource, provider, version)
 
     @staticmethod
-    def log_download(show_id, episode_id, filename, new_ep_quality, release_group=None, version=-1):
+    def log_download(show_id, episode_id, status, filename, new_ep_quality, release_group=None, version=-1):
         """
         Log history of download
 
@@ -155,12 +155,7 @@ class History:
         :param version: Version of file (defaults to -1)
         """
 
-        quality = new_ep_quality
-        provider = release_group or -1
-
-        action = find_episode(show_id, episode_id).status
-
-        History._log_history_item(action, show_id, episode_id, quality, filename, provider, version)
+        History._log_history_item(status, show_id, episode_id, new_ep_quality, filename, release_group or -1, version)
 
     @staticmethod
     def log_subtitle(show_id, episode_id, status, subtitleResult):
