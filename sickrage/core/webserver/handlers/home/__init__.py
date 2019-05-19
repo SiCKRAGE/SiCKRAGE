@@ -139,16 +139,23 @@ class HomeHandler(BaseHandler, ABC):
 
         for show in get_show_list(session=self.db_session):
             if sickrage.app.show_queue.is_being_added(show.indexer_id) or sickrage.app.show_queue.is_being_removed(show.indexer_id):
-                continue
-
-            show_stat[show.indexer_id] = {
-                'ep_airs_next': show.airs_next or datetime.date.min,
-                'ep_airs_prev': show.airs_prev or datetime.date.min,
-                'ep_snatched': show.episodes_snatched or 0,
-                'ep_downloaded': show.episodes_downloaded or 0,
-                'ep_total': len(show.episodes),
-                'total_size': show.total_size or 0
-            }
+                show_stat[show.indexer_id] = {
+                    'ep_airs_next': datetime.date.min,
+                    'ep_airs_prev': datetime.date.min,
+                    'ep_snatched': 0,
+                    'ep_downloaded': 0,
+                    'ep_total': 0,
+                    'total_size': 0
+                }
+            else:
+                show_stat[show.indexer_id] = {
+                    'ep_airs_next': show.airs_next or datetime.date.min,
+                    'ep_airs_prev': show.airs_prev or datetime.date.min,
+                    'ep_snatched': show.episodes_snatched or 0,
+                    'ep_downloaded': show.episodes_downloaded or 0,
+                    'ep_total': len(show.episodes),
+                    'total_size': show.total_size or 0
+                }
 
             overall_stats['episodes']['snatched'] += show_stat[show.indexer_id]['ep_snatched']
             overall_stats['episodes']['downloaded'] += show_stat[show.indexer_id]['ep_downloaded']
