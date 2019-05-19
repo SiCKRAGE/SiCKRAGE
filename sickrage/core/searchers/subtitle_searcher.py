@@ -104,17 +104,10 @@ class SubtitleSearcher(object):
                         episode_obj.season, episode_obj.episode, epToSub['show_name']))
                 continue
 
-            # http://bugs.python.org/issue7980#msg221094
-            # I dont think this needs done here, but keeping to be safe
-            datetime.datetime.strptime('20110101', '%Y%m%d')
-
-            if ((epToSub['airdate_daydiff'] > 7 and epToSub[
-                'searchcount'] < 2 and now - datetime.datetime.strptime(
-                epToSub['lastsearch'], dateTimeFormat) > datetime.timedelta(
-                hours=rules['old'][epToSub['searchcount']])) or
+            if ((epToSub['airdate_daydiff'] > 7 and epToSub['searchcount'] < 2 and now - datetime.datetime.fromordinal(
+                    epToSub['lastsearch']) > datetime.timedelta(hours=rules['old'][epToSub['searchcount']])) or
                     (epToSub['airdate_daydiff'] <= 7 and epToSub['searchcount'] < 7 and
-                     now - datetime.datetime.strptime(epToSub['lastsearch'], dateTimeFormat) > datetime.timedelta(
-                                hours=rules['new'][epToSub['searchcount']]))):
+                     now - datetime.datetime.fromordinal(epToSub['lastsearch']) > datetime.timedelta(hours=rules['new'][epToSub['searchcount']]))):
 
                 sickrage.app.log.debug('Downloading subtitles for episode %dx%d of show %s' % (
                     episode_obj.season, episode_obj.episode, epToSub['show_name']))

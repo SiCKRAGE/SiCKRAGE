@@ -236,7 +236,7 @@ class TVShow(MainDBBase):
                     self.indexer_id, IndexerApi(self.indexer).name, season or 0, episode or 0
                 ))
 
-                episode_obj.load_from_indexer(season, episode, tvapi=t)
+                episode_obj.populate_episode(season, episode, tvapi=t)
 
                 scanned_eps[season][episode] = True
 
@@ -739,7 +739,7 @@ class TVShow(MainDBBase):
                         curEp.status = new_status
                         curEp.subtitles = ''
                         curEp.subtitles_searchcount = 0
-                        curEp.subtitles_lastsearch = str(datetime.datetime.min)
+                        curEp.subtitles_lastsearch = 0
 
                     curEp.location = ''
                     curEp.hasnfo = False

@@ -521,7 +521,7 @@ def _ordinal_to_date_form(ordinal):
 
 
 def _history_date_to_datetime_form(timeString):
-    date = datetime.datetime.strptime(timeString, History.date_format)
+    date = datetime.datetime.fromordinal(timeString)
     return date.strftime(dateTimeFormat)
 
 

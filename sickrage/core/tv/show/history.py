@@ -31,8 +31,6 @@ from sickrage.core.tv.show.helpers import get_show_list
 
 
 class History:
-    date_format = '%Y%m%d%H%M%S'
-
     @MainDB.with_session
     def clear(self, session=None):
         """
@@ -79,7 +77,7 @@ class History:
             for result in dbData:
                 data.append({
                     'action': result.action,
-                    'date': int(result.date),
+                    'date': result.date,
                     'provider': result.provider,
                     'quality': result.quality,
                     'resource': result.resource,
@@ -95,7 +93,7 @@ class History:
         Remove all elements older than 30 days from the history
         """
 
-        date = (datetime.today() - timedelta(days=30)).strftime(History.date_format)
+        date = (datetime.today() - timedelta(days=30))
         sickrage.app.main_db.delete(MainDB.History, MainDB.History.date < date)
 
     @staticmethod
@@ -112,7 +110,7 @@ class History:
         :param provider: provider used
         :param version: tracked version of file (defaults to -1)
         """
-        logDate = datetime.today().strftime(History.date_format)
+        logDate = datetime.today()
         resource = resource
 
         session.add(MainDB.History(**{
@@ -324,7 +322,7 @@ class FailedHistory(object):
 
         :param search_result: Search result that was successful
         """
-        logDate = datetime.today().strftime(History.date_format)
+        logDate = datetime.today()
         release = FailedHistory.prepare_failed_name(search_result.name)
         provider = search_result.provider.name if search_result.provider else "unknown"
 
@@ -356,7 +354,7 @@ class FailedHistory(object):
     @MainDB.with_session
     def trim_history(session=None):
         """Trims history table to 1 month of history from today"""
-        date = str((datetime.today() - timedelta(days=30)).strftime(History.date_format))
+        date = (datetime.today() - timedelta(days=30))
         session.query(MainDB.FailedSnatchHistory).filter(MainDB.FailedSnatchHistory.date < date).delete()
 
     @staticmethod

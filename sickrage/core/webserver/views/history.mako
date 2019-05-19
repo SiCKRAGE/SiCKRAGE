@@ -66,8 +66,8 @@
                                         <% curStatus, curQuality = Quality.split_composite_status(int(hItem["action"])) %>
                                         <tr>
                                             <td class="table-fit">
-                                                <% airDate = srdatetime.srDateTime(datetime.datetime.strptime(str(hItem["date"]), History.date_format)).srfdatetime(show_seconds=True) %>
-                                                <% isoDate = datetime.datetime.strptime(str(hItem["date"]), History.date_format).isoformat() %>
+                                                <% airDate = srdatetime.srDateTime(hItem["date"]).srfdatetime(show_seconds=True) %>
+                                                <% isoDate = hItem["date"].isoformat() %>
                                                 <time datetime="${isoDate}" class="date">${airDate}</time>
                                             </td>
                                             <td class="tvShow">
@@ -133,8 +133,8 @@
                                         <% episode_obj = find_episode(hItem['show_id'], hItem['episode_id']) %>
                                         <tr>
                                             <td class="table-fit">
-                                                <% airDate = srdatetime.srDateTime(datetime.datetime.strptime(str(hItem["actions"][0]["time"]), History.date_format)).srfdatetime(show_seconds=True) %>
-                                                <% isoDate = datetime.datetime.strptime(str(hItem["actions"][0]["time"]), History.date_format).isoformat() %>
+                                                <% airDate = srdatetime.srDateTime(hItem["actions"][0]["time"]).srfdatetime(show_seconds=True) %>
+                                                <% isoDate = hItem["actions"][0]["time"].isoformat() %>
                                                 <time datetime="${isoDate}" class="date">${airDate}</time>
                                             </td>
                                             <td class="tvShow" width="25%">

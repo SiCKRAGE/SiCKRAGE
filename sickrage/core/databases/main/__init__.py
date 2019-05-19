@@ -17,7 +17,7 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 import functools
 
-from sqlalchemy import Column, Integer, Text, ForeignKeyConstraint, String
+from sqlalchemy import Column, Integer, Text, ForeignKeyConstraint, String, DateTime
 from sqlalchemy.ext.declarative import as_declarative
 from sqlalchemy.orm import sessionmaker, scoped_session
 
@@ -158,14 +158,14 @@ class MainDB(srDatabase):
         action = Column(Integer, nullable=False)
         version = Column(Integer, default=-1)
         provider = Column(Text, nullable=False)
-        date = Column(Integer, nullable=False)
+        date = Column(DateTime, nullable=False)
         quality = Column(Integer, nullable=False)
 
     class FailedSnatchHistory(MainDBBase):
         __tablename__ = 'failed_snatch_history'
 
         id = Column(Integer, primary_key=True)
-        date = Column(Integer, nullable=False)
+        date = Column(DateTime, nullable=False)
         size = Column(Integer, nullable=False)
         release = Column(Text, nullable=False)
         provider = Column(Text, nullable=False)

@@ -269,69 +269,71 @@ class TVCache(object):
 
         # for each cache entry
         for curResult in dbData:
-            show = find_show(int(curResult["indexer_id"]))
+            with sickrage.app.main_db.session() as main_db_session:
+                show = find_show(int(curResult["indexer_id"]), session=main_db_session)
 
-            result = self.provider.getResult()
+                result = self.provider.getResult()
 
-            # ignore invalid and private IP address urls
-            if not validate_url(curResult["url"]):
-                if not curResult["url"].startswith('magnet'):
+                # ignore invalid and private IP address urls
+                if not validate_url(curResult["url"]):
+                    if not curResult["url"].startswith('magnet'):
+                        continue
+                elif is_ip_private(curResult["url"].split(r'//')[-1].split(r'/')[0]):
                     continue
-            elif is_ip_private(curResult["url"].split(r'//')[-1].split(r'/')[0]):
-                continue
 
-            # ignored/required words, and non-tv junk
-            if not show_names.filter_bad_releases(curResult["name"]):
-                continue
+                # ignored/required words, and non-tv junk
+                if not show_names.filter_bad_releases(curResult["name"]):
+                    continue
 
-            # get the show object, or if it's not one of our shows then ignore it
-            result.show_id = int(curResult["indexer_id"])
+                # get the show object, or if it's not one of our shows then ignore it
+                result.show_id = int(curResult["indexer_id"])
 
-            # skip if provider is anime only and show is not anime
-            if self.provider.anime_only and not show.is_anime:
-                sickrage.app.log.debug("" + str(show.name) + " is not an anime, skiping")
-                continue
+                # skip if provider is anime only and show is not anime
+                if self.provider.anime_only and not show.is_anime:
+                    sickrage.app.log.debug("" + str(show.name) + " is not an anime, skiping")
+                    continue
 
-            # get season and ep data (ignoring multi-eps for now)
-            curSeason = int(curResult["season"])
-            if curSeason == -1:
-                continue
+                # get season and ep data (ignoring multi-eps for now)
+                curSeason = int(curResult["season"])
+                if curSeason == -1:
+                    continue
 
-            try:
-                result.episode_ids = [show.get_episode(curSeason, int(curEp)).indexer_id for curEp in filter(None, curResult["episodes"].split("|"))]
-            except EpisodeNotFoundException:
-                continue
+                try:
+                    result.episode_ids = [show.get_episode(curSeason, int(curEp)).indexer_id for curEp in filter(None, curResult["episodes"].split("|"))]
+                except EpisodeNotFoundException:
+                    continue
 
-            result.quality = int(curResult["quality"])
-            result.release_group = curResult["release_group"]
-            result.version = curResult["version"]
+                result.quality = int(curResult["quality"])
+                result.release_group = curResult["release_group"]
+                result.version = curResult["version"]
 
-            # make sure we want the episode
-            wantEp = False
-            for episode_id in result.episode_ids:
-                if show.want_episode(episode_id, result.quality, manualSearch, downCurQuality):
-                    wantEp = True
+                # make sure we want the episode
+                wantEp = False
+                for episode_id in result.episode_ids:
+                    if show.want_episode(episode_id, result.quality, manualSearch, downCurQuality):
+                        wantEp = True
 
-            if not wantEp:
-                sickrage.app.log.info("Skipping " + curResult["name"] + " because we don't want an episode that's " + Quality.qualityStrings[result.quality])
-                continue
+                if not wantEp:
+                    sickrage.app.log.info(
+                        "Skipping " + curResult["name"] + " because we don't want an episode that's " + Quality.qualityStrings[result.quality])
+                    continue
 
-            # build a result object
-            result.name = curResult["name"]
-            result.url = curResult["url"]
+                # build a result object
+                result.name = curResult["name"]
+                result.url = curResult["url"]
 
-            sickrage.app.log.info("Found result " + result.name + " at " + result.url)
+                sickrage.app.log.info("Found result " + result.name + " at " + result.url)
 
-            result.seeders = curResult.get("seeders", -1)
-            result.leechers = curResult.get("leechers", -1)
-            result.size = curResult.get("size", -1)
-            result.content = None
+                result.seeders = curResult.get("seeders", -1)
+                result.leechers = curResult.get("leechers", -1)
+                result.size = curResult.get("size", -1)
+                result.content = None
 
-            # add it to the list
-            if episode_id not in neededEps:
-                neededEps[episode_id] = [result]
-            else:
-                neededEps[episode_id] += [result]
+                # add it to the list
+                if episode_id not in neededEps:
+                    neededEps[episode_id] = [result]
+                else:
+                    neededEps[episode_id] += [result]
 
         # datetime stamp this search so cache gets cleared
         self.last_search = datetime.datetime.today()

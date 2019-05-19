@@ -238,11 +238,10 @@ class ProperSearcher(object):
             # make sure the episode has been downloaded before
             episode_obj = find_show(curProper.indexer_id, session=session).get_episode(curProper.season, curProper.episode)
 
-            history_results = [
-                x for x in
-                session.query(MainDB.History).filter_by(showid=curProper.indexer_id, episode_id=episode_obj.indexer_id, quality=curProper.quality).filter(
-                    MainDB.History.date >= history_limit.strftime(History.date_format), MainDB.History.action.in_(Quality.SNATCHED + Quality.DOWNLOADED))
-            ]
+            history_results = [x for x in session.query(MainDB.History).filter_by(
+                showid=curProper.indexer_id, episode_id=episode_obj.indexer_id,
+                quality=curProper.quality).filter(MainDB.History.date >= history_limit.toordinal(),
+                                                  MainDB.History.action.in_(Quality.SNATCHED + Quality.DOWNLOADED))]
 
             # if we didn't download this episode in the first place we don't know what quality to use for the proper
             # so we can't do it

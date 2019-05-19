@@ -38,9 +38,9 @@ class HistoryHandler(BaseHandler, ABC):
         else:
             limit = int(limit)
 
-        sickrage.app.config.history_limit = limit
-
-        sickrage.app.config.save()
+        if sickrage.app.config.history_limit != limit:
+            sickrage.app.config.history_limit = limit
+            sickrage.app.config.save()
 
         compact = []
 

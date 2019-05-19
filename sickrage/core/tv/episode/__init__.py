@@ -25,7 +25,7 @@ from collections import OrderedDict
 from xml.etree.ElementTree import ElementTree
 
 from sqlalchemy import ForeignKeyConstraint, Index, Column, Integer, Text, Boolean, Date, BigInteger
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, object_session
 
 import sickrage
 from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, dateTimeFormat, SKIPPED, NAMING_EXTEND, \
@@ -111,7 +111,7 @@ class TVEpisode(MainDBBase):
         self.subtitles, newSubtitles = download_subtitles(self)
 
         self.subtitles_searchcount += 1 if self.subtitles_searchcount else 1
-        self.subtitles_lastsearch = datetime.datetime.now().strftime(dateTimeFormat)
+        self.subtitles_lastsearch = datetime.datetime.now().toordinal()
 
         if newSubtitles:
             subtitle_list = ", ".join([name_from_code(newSub) for newSub in newSubtitles])
@@ -153,7 +153,7 @@ class TVEpisode(MainDBBase):
         # if either setting has changed return true, if not return false
         return oldhasnfo != self.hasnfo or oldhastbn != self.hastbn
 
-    def populate_episode(self, season, episode):
+    def populate_episode(self, season, episode, tvapi=None):
         # attempt populating episode
         success = {
             'nfo': False,
@@ -161,8 +161,8 @@ class TVEpisode(MainDBBase):
         }
 
         for method, func in OrderedDict([
-            ('nfo', lambda: self.loadFromNFO(self.location)),
-            ('indexer', lambda: self.load_from_indexer(season, episode)),
+            ('nfo', lambda: self.load_from_nfo(self.location)),
+            ('indexer', lambda: self.load_from_indexer(season, episode, tvapi=tvapi)),
         ]).items():
 
             try:
@@ -249,13 +249,13 @@ class TVEpisode(MainDBBase):
             self.show.indexer_id,
             self.show.indexer,
             self.absolute_number
-        )
+        ) or self.absolute_number
 
         self.scene_season, self.scene_episode = get_scene_numbering(
             self.show.indexer_id,
             self.show.indexer,
             self.season, self.episode
-        )
+        ) or (self.season, self.episode)
 
         self.description = safe_getattr(myEp, 'overview', self.description)
 
@@ -324,9 +324,11 @@ class TVEpisode(MainDBBase):
             sickrage.app.log.debug("6 Status changes from " + str(self.status) + " to " + str(UNKNOWN))
             self.status = UNKNOWN
 
+        object_session(self).commit()
+
         return True
 
-    def loadFromNFO(self, location):
+    def load_from_nfo(self, location):
         if not os.path.isdir(self.show.location):
             sickrage.app.log.info(
                 "{}: The show dir is missing, not bothering to try loading the episode NFO".format(
@@ -362,9 +364,8 @@ class TVEpisode(MainDBBase):
                     raise NoNFOException("Error in NFO format")
 
                 for epDetails in showXML.iter('episodedetails'):
-                    if epDetails.findtext('season') is None or int(
-                            epDetails.findtext('season')) != self.season or epDetails.findtext(
-                        'episode') is None or int(epDetails.findtext('episode')) != self.episode:
+                    if epDetails.findtext('season') is None or int(epDetails.findtext('season')) != self.season or epDetails.findtext(
+                            'episode') is None or int(epDetails.findtext('episode')) != self.episode:
                         sickrage.app.log.debug("%s: NFO has an <episodedetails> block for a different episode - "
                                                "wanted S%02dE%02d but got "
                                                "S%02dE%02d" % (self.show.indexer_id,
@@ -387,13 +388,13 @@ class TVEpisode(MainDBBase):
                         self.show.indexer_id,
                         self.show.indexer,
                         self.absolute_number
-                    )
+                    ) or self.absolute_number
 
                     self.scene_season, self.scene_episode = get_scene_numbering(
                         self.show.indexer_id,
                         self.show.indexer,
                         self.season, self.episode
-                    )
+                    ) or (self.season, self.episode)
 
                     self.description = epDetails.findtext('plot') or self.description
 
@@ -407,6 +408,8 @@ class TVEpisode(MainDBBase):
             self.hastbn = False
             if os.path.isfile(replace_extension(nfoFile, "tbn")):
                 self.hastbn = True
+
+        object_session(self).commit()
 
         return self.hasnfo
 
