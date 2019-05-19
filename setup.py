@@ -4,9 +4,10 @@ import shutil
 
 from setuptools import setup, Command
 
-# Get the version number
-with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'sickrage', 'version.txt'))) as f:
-    version = f.read()
+
+def version():
+    with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'sickrage', 'version.txt'))) as f:
+        return f.read()
 
 
 def requires():
@@ -49,7 +50,7 @@ except ImportError:
 
 setup(
     name='sickrage',
-    version=version,
+    version=version(),
     description='Automatic Video Library Manager for TV Shows',
     author='echel0n',
     author_email='echel0n@sickrage.ca',
