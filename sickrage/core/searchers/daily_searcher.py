@@ -26,6 +26,7 @@ from sickrage.core.common import Quality, WANTED, DOWNLOADED, SNATCHED, SNATCHED
 from sickrage.core.queues.search import DailySearchQueueItem
 from sickrage.core.searchers import new_episode_finder
 from sickrage.core.tv.show.helpers import get_show_list
+from sickrage.core.databases.main import MainDB
 
 
 class DailySearcher(object):
@@ -34,7 +35,8 @@ class DailySearcher(object):
         self.lock = threading.Lock()
         self.amActive = False
 
-    def run(self, force=False):
+    @MainDB.with_session
+    def run(self, force=False, session=None):
         """
         Runs the daily searcher, queuing selected episodes for search
         :param force: Force search
@@ -50,7 +52,7 @@ class DailySearcher(object):
         # find new released episodes and update their statuses
         new_episode_finder()
 
-        for curShow in get_show_list():
+        for curShow in get_show_list(session=session):
             if curShow.paused:
                 sickrage.app.log.debug("Skipping search for {} because the show is paused".format(curShow.name))
                 continue

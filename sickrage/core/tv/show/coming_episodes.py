@@ -24,6 +24,7 @@ import sickrage
 from sickrage.core.common import Quality, get_quality_string, WANTED, UNAIRED, timeFormat, dateFormat
 from sickrage.core.helpers.srdatetime import srDateTime
 from sickrage.core.tv.show.helpers import get_show_list
+from sickrage.core.databases.main import MainDB
 
 
 class ComingEpisodes:
@@ -44,7 +45,8 @@ class ComingEpisodes:
         pass
 
     @staticmethod
-    def get_coming_episodes(categories, sort, group, paused=False):
+    @MainDB.with_session
+    def get_coming_episodes(categories, sort, group, paused=False, session=None):
         """
         :param categories: The categories of coming episodes. See ``ComingEpisodes.categories``
         :param sort: The sort to apply to the coming episodes. See ``ComingEpisodes.sorts``
@@ -94,7 +96,7 @@ class ComingEpisodes:
                          Quality.IGNORED
 
         results = []
-        for s in get_show_list():
+        for s in get_show_list(session=session):
             for e in s.episodes:
                 if e.season == 0:
                     continue

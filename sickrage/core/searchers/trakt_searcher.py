@@ -190,12 +190,13 @@ class TraktSearcher(object):
                         show_obj.name, repr(e)))
                 return
 
-    def add_episodes_to_trakt_collection(self):
+    @MainDB.with_session
+    def add_episodes_to_trakt_collection(self, session=None):
         trakt_data = []
 
         sickrage.app.log.debug("COLLECTION::SYNC::START - Look for Episodes to Add to Trakt Collection")
 
-        for s in get_show_list():
+        for s in get_show_list(session=session):
             for e in s.episodes:
                 trakt_id = IndexerApi(s.indexer).trakt_id
                 if not self._check_in_list(trakt_id, str(e.showid), e.season, e.episode, 'Collection'):
@@ -212,13 +213,14 @@ class TraktSearcher(object):
 
         sickrage.app.log.debug("COLLECTION::ADD::FINISH - Look for Episodes to Add to Trakt Collection")
 
-    def remove_episodes_from_trakt_collection(self):
+    @MainDB.with_session
+    def remove_episodes_from_trakt_collection(self, session=None):
         trakt_data = []
 
         sickrage.app.log.debug(
             "COLLECTION::REMOVE::START - Look for Episodes to Remove From Trakt Collection")
 
-        for s in get_show_list():
+        for s in get_show_list(session=session):
             for e in s.episodes:
                 if e.location:
                     continue
@@ -239,13 +241,14 @@ class TraktSearcher(object):
         sickrage.app.log.debug(
             "COLLECTION::REMOVE::FINISH - Look for Episodes to Remove From Trakt Collection")
 
-    def remove_episodes_from_trakt_watch_list(self):
+    @MainDB.with_session
+    def remove_episodes_from_trakt_watch_list(self, session=None):
         trakt_data = []
 
         sickrage.app.log.debug(
             "WATCHLIST::REMOVE::START - Look for Episodes to Remove from Trakt Watchlist")
 
-        for s in get_show_list():
+        for s in get_show_list(session=session):
             for e in s.episodes:
                 trakt_id = IndexerApi(s.indexer).trakt_id
                 if self._check_in_list(trakt_id, str(e.showid), e.season, e.episode):
@@ -367,7 +370,8 @@ class TraktSearcher(object):
 
         sickrage.app.log.debug("SHOW_WATCHLIST::CHECK::FINISH - Trakt Show Watchlist")
 
-    def update_episodes(self):
+    @MainDB.with_session
+    def update_episodes(self, session=None):
         """
         Sets episodes to wanted that are in trakt watchlist
         """
@@ -389,10 +393,10 @@ class TraktSearcher(object):
             except KeyError:
                 continue
 
-            newShow = find_show(indexer_id)
+            show_object = find_show(indexer_id, session=session)
 
             try:
-                if newShow is None:
+                if show_object is None:
                     if indexer_id not in managed_show:
                         self.add_default_show(indexer, indexer_id, show.title, SKIPPED)
                         managed_show.append(indexer_id)
@@ -401,10 +405,10 @@ class TraktSearcher(object):
                             for episode_number, _ in season.episodes.items():
                                 self.todoWanted.append((int(indexer_id), int(season_number), int(episode_number)))
                 else:
-                    if newShow.indexer == indexer:
+                    if show_object.indexer == indexer:
                         for season_number, season in show.seasons.items():
                             for episode_number, _ in season.episodes.items():
-                                set_episode_to_wanted(newShow, int(season_number), int(episode_number))
+                                set_episode_to_wanted(show_object, int(season_number), int(episode_number))
             except TypeError:
                 sickrage.app.log.debug("Could not parse the output from trakt for %s " % show.title)
 

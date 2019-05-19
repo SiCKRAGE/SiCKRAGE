@@ -235,7 +235,7 @@ class TVShow(MainDBBase):
     def get_all_episodes(self, season=None, has_location=False):
         results = []
 
-        for x in self.episodes:
+        for x in self.episodes.all():
             if season and x.season != season:
                 continue
             if has_location and x.location == '':
@@ -243,7 +243,7 @@ class TVShow(MainDBBase):
             results += [x]
 
         ep_list = []
-        for cur_ep in self.episodes:
+        for cur_ep in self.episodes.all():
             cur_ep.relatedEps = []
             if cur_ep.location:
                 # if there is a location, check if it's a multi-episode (share_location > 0) and put them in relatedEps
@@ -369,7 +369,7 @@ class TVShow(MainDBBase):
 
         sickrage.app.log.debug(str(self.indexer_id) + ": Writing NFOs for all episodes")
 
-        for episode_obj in self.episodes:
+        for episode_obj in self.episodes.all():
             if episode_obj.location == '':
                 continue
 
@@ -639,7 +639,7 @@ class TVShow(MainDBBase):
         # run through all locations from DB, check that they exist
         sickrage.app.log.debug(str(self.indexer_id) + ": Loading all episodes with a location from the database")
 
-        for curEp in self.episodes:
+        for curEp in self.episodes.all():
             if curEp.location == '':
                 continue
 
@@ -688,7 +688,7 @@ class TVShow(MainDBBase):
         sickrage.app.log.debug("%s: Downloading subtitles" % self.indexer_id)
 
         try:
-            for episode in self.episodes:
+            for episode in self.episodes.all():
                 if episode.location == '':
                     continue
                 episode.download_subtitles()

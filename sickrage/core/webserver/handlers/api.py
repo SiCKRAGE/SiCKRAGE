@@ -1153,12 +1153,13 @@ class CMD_Backlog(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_Backlog, self).__init__(application, request, *args, **kwargs)
 
-    async def run(self):
+    @MainDB.with_session
+    async def run(self, session=None):
         """ Get the backlogged episodes """
 
         shows = []
 
-        for s in get_show_list():
+        for s in get_show_list(session=session):
             showEps = []
 
             if s.paused:

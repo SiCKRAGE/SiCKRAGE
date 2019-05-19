@@ -26,6 +26,7 @@ from xmlrpc.client import ServerProxy, ProtocolError
 import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.helpers import try_int
+from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.core.websession import WebSession
 
 
@@ -78,14 +79,17 @@ class NZBGet(object):
             return False
 
         # if it aired recently make it high priority and generate DupeKey/Score
-        for curEp in nzb.episodes:
+        for episode_id in nzb.episode_ids:
+            episode_object = find_episode(nzb.show_id, episode_id)
+
             if dupe_key == "":
-                if curEp.show.indexer == 1:
-                    dupe_key = "SiCKRAGE-" + str(curEp.show.indexer_id)
-                elif curEp.show.indexer == 2:
-                    dupe_key = "SiCKRAGE-tvr" + str(curEp.show.indexer_id)
-            dupe_key += "-" + str(curEp.season) + "." + str(curEp.episode)
-            if date.today() - curEp.airdate <= timedelta(days=7):
+                if episode_object.show.indexer == 1:
+                    dupe_key = "SiCKRAGE-" + str(episode_object.show.indexer_id)
+                elif episode_object.show.indexer == 2:
+                    dupe_key = "SiCKRAGE-tvr" + str(episode_object.show.indexer_id)
+
+            dupe_key += "-" + str(episode_object.season) + "." + str(episode_object.episode)
+            if date.today() - episode_object.airdate <= timedelta(days=7):
                 addToTop = True
                 nzbgetprio = sickrage.app.config.nzbget_priority
             else:

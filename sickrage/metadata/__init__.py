@@ -231,7 +231,6 @@ class GenericMetadata(object):
     def get_season_all_banner_path(self, show_obj):
         return os.path.join(show_obj.location, self.season_all_banner_name)
 
-    # pylint: disable=W0613,R0201
     def _show_data(self, show_obj):
         """
         This should be overridden by the implementing class. It should
@@ -239,7 +238,6 @@ class GenericMetadata(object):
         """
         return None
 
-    # pylint: disable=W0613,R0201
     def _ep_data(self, ep_obj):
         """
         This should be overridden by the implementing class. It should
@@ -249,8 +247,7 @@ class GenericMetadata(object):
 
     def create_show_metadata(self, show_obj, force=False):
         if self.show_metadata and show_obj and (not self._has_show_metadata(show_obj) or force):
-            sickrage.app.log.debug(
-                "Metadata provider " + self.name + " creating show metadata for " + show_obj.name)
+            sickrage.app.log.debug("Metadata provider " + self.name + " creating show metadata for " + show_obj.name)
             return self.write_show_file(show_obj)
         return False
 
@@ -280,8 +277,7 @@ class GenericMetadata(object):
 
     def create_episode_thumb(self, ep_obj, force=False):
         if self.episode_thumbnails and ep_obj and (not self._has_episode_thumb(ep_obj) or force):
-            sickrage.app.log.debug(
-                "Metadata provider " + self.name + " creating episode thumbnail for " + ep_obj.pretty_name())
+            sickrage.app.log.debug("Metadata provider " + self.name + " creating episode thumbnail for " + ep_obj.pretty_name())
             return self.save_thumbnail(ep_obj)
         return False
 
@@ -290,8 +286,7 @@ class GenericMetadata(object):
             result = []
             for ep_obj in show_obj.episodes:
                 if not self._has_season_poster(show_obj, ep_obj.season) or force:
-                    sickrage.app.log.debug(
-                        "Metadata provider " + self.name + " creating season posters for " + show_obj.name)
+                    sickrage.app.log.debug("Metadata provider " + self.name + " creating season posters for " + show_obj.name)
                     result = result + [self.save_season_poster(show_obj, ep_obj.season)]
             return all(result)
         return False
@@ -299,8 +294,7 @@ class GenericMetadata(object):
     def create_season_banners(self, show_obj, force=False):
         if self.season_banners and show_obj:
             result = []
-            sickrage.app.log.debug(
-                "Metadata provider " + self.name + " creating season banners for " + show_obj.name)
+            sickrage.app.log.debug("Metadata provider " + self.name + " creating season banners for " + show_obj.name)
             for ep_obj in show_obj.episodes:
                 if not self._has_season_banner(show_obj, ep_obj.season) or force:
                     result = result + [self.save_season_banner(show_obj, ep_obj.season)]
@@ -309,15 +303,13 @@ class GenericMetadata(object):
 
     def create_season_all_poster(self, show_obj, force=False):
         if self.season_all_poster and show_obj and (not self._has_season_all_poster(show_obj) or force):
-            sickrage.app.log.debug(
-                "Metadata provider " + self.name + " creating season all poster for " + show_obj.name)
+            sickrage.app.log.debug("Metadata provider " + self.name + " creating season all poster for " + show_obj.name)
             return self.save_season_all_poster(show_obj)
         return False
 
     def create_season_all_banner(self, show_obj, force=False):
         if self.season_all_banner and show_obj and (not self._has_season_all_banner(show_obj) or force):
-            sickrage.app.log.debug(
-                "Metadata provider " + self.name + " creating season all banner for " + show_obj.name)
+            sickrage.app.log.debug("Metadata provider " + self.name + " creating season all banner for " + show_obj.name)
             return self.save_season_all_banner(show_obj)
         return False
 

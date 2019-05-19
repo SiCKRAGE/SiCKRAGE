@@ -17,15 +17,15 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import datetime
 import fnmatch
 import os
 import re
-import datetime
 from functools import partial
 
 import sickrage
-from sickrage.core.common import DOWNLOADED, Quality, SNATCHED, WANTED, \
-    countryList
+from sickrage.core.common import DOWNLOADED, Quality, SNATCHED, WANTED, countryList
+from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import sanitize_scene_name, strip_accents
 from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.core.tv.show import find_show
@@ -162,10 +162,11 @@ def make_scene_show_search_strings(show_id, season=-1, anime=False):
         return map(sanitize_scene_name, showNames)
 
 
-def make_scene_season_search_string(show_id, episode_id, extraSearchType=None):
+@MainDB.with_session
+def make_scene_season_search_string(show_id, episode_id, extraSearchType=None, session=None):
     numseasons = 0
 
-    episode_obj = find_episode(show_id, episode_id)
+    episode_obj = find_episode(show_id, episode_id, session=session)
 
     if episode_obj.show.air_by_date or episode_obj.show.sports:
         # the search string for air by date shows is just
@@ -226,10 +227,11 @@ def make_scene_season_search_string(show_id, episode_id, extraSearchType=None):
     return toReturn
 
 
-def make_scene_search_string(show_id, episode_id):
+@MainDB.with_session
+def make_scene_search_string(show_id, episode_id, session=None):
     toReturn = []
 
-    episode_obj = find_episode(show_id, episode_id)
+    episode_obj = find_episode(show_id, episode_id, session=session)
 
     numseasons = len({x.season for x in episode_obj.show.episodes if x.season > 0})
 

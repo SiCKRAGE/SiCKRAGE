@@ -42,10 +42,6 @@ class CalendarHandler(BaseHandler, ABC):
     def calendar_auth(self):
         self.write(self.calendar())
 
-    # Raw iCalendar implementation by Pedro Jose Pereira Vieito (@pvieito).
-    #
-    # iCalendar (iCal) - Standard RFC 5545 <http://tools.ietf.org/html/rfc5546>
-    # Works with iCloud, Google Calendar and Outlook.
     def calendar(self):
         """ Provides a subscribeable URL for iCal subscriptions
         """
@@ -66,7 +62,7 @@ class CalendarHandler(BaseHandler, ABC):
         future_date = datetime.date.today() + datetime.timedelta(weeks=52)
 
         # Get all the shows that are not paused and are currently on air (from kjoconnor Fork)
-        for show in get_show_list():
+        for show in get_show_list(session=self.db_session):
             if show.status.lower() not in ['continuing', 'returning series'] or show.paused:
                 continue
 

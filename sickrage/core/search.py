@@ -299,7 +299,8 @@ def is_first_best_match(result):
     return False
 
 
-def search_providers(show_id, episode_ids, manualSearch=False, downCurQuality=False, cacheOnly=False):
+@MainDB.with_session
+def search_providers(show_id, episode_ids, manualSearch=False, downCurQuality=False, cacheOnly=False, session=None):
     """
     Walk providers for information on shows
 
@@ -316,7 +317,7 @@ def search_providers(show_id, episode_ids, manualSearch=False, downCurQuality=Fa
     found_results = {}
     final_results = []
 
-    show = find_show(show_id)
+    show = find_show(show_id, session=session)
 
     # build name cache for show
     sickrage.app.name_cache.build(show)
@@ -463,9 +464,9 @@ def search_providers(show_id, episode_ids, manualSearch=False, downCurQuality=Fa
                     individual_results = split_nzb_result(best_season_result)
                     for curResult in individual_results:
                         ep_num = -1
-                        if len(curResult.episodes_ids) == 1:
+                        if len(curResult.episode_ids) == 1:
                             ep_num = find_episode(curResult.show_id, curResult.episode_ids[0]).episode
-                        elif len(curResult.episodes_ids) > 1:
+                        elif len(curResult.episode_ids) > 1:
                             ep_num = MULTI_EP_RESULT
 
                         if ep_num in found_results[providerObj.name]:

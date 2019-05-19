@@ -82,7 +82,7 @@ class EpisodeStatusesHandler(BaseHandler, ABC):
 
         # if we have no status then this is as far as we need to go
         if len(status_list):
-            for show in sorted(get_show_list(), key=lambda d: d.name):
+            for show in sorted(get_show_list(session=self.db_session), key=lambda d: d.name):
                 for episode in show.episodes:
                     if episode.season != 0 and episode.status in status_list:
                         if show.indexer_id not in ep_counts:
@@ -189,7 +189,7 @@ class SubtitleMissedHandler(BaseHandler, ABC):
         status_results = []
 
         if which_subs:
-            for s in get_show_list():
+            for s in get_show_list(session=self.db_session):
                 if not s.subtitles == 1:
                     continue
 
@@ -282,7 +282,7 @@ class BacklogOverviewHandler(BaseHandler, ABC):
         show_cats = {}
         show_results = {}
 
-        for curShow in get_show_list():
+        for curShow in get_show_list(session=self.db_session):
             if curShow.paused:
                 continue
 

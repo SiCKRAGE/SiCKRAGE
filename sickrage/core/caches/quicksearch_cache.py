@@ -51,7 +51,7 @@ class QuicksearchCache(object):
 
     @CacheDB.with_session
     def add_show(self, indexer_id, session=None):
-        show = find_show(indexer_id)
+        show = find_show(indexer_id, session=session)
 
         if indexer_id not in self.cache['shows']:
             sickrage.app.log.debug("Adding show {} to QuickSearch cache".format(show.name))

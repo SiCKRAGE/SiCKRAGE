@@ -23,6 +23,7 @@ import datetime
 from urllib.parse import urljoin
 
 import sickrage
+from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.core.websession import WebSession
 
 
@@ -39,9 +40,10 @@ class SabNZBd(object):
             category = sickrage.app.config.sab_category_anime
 
         # if it aired more than 7 days ago, override with the backlog category IDs
-        for curEp in nzb.episodes:
-            if datetime.date.today() - curEp.airdate > datetime.timedelta(days=7):
-                category = sickrage.app.config.sab_category_anime_backlog if nzb.show.is_anime else sickrage.app.config.sab_category_backlog
+        for episode_id in nzb.episode_ids:
+            episode_object = find_episode(nzb.show_id, episode_id)
+            if datetime.date.today() - episode_object.airdate > datetime.timedelta(days=7):
+                category = sickrage.app.config.sab_category_anime_backlog if episode_object.show.is_anime else sickrage.app.config.sab_category_backlog
 
         # set up a dict with the URL params in it
         params = {'output': 'json'}

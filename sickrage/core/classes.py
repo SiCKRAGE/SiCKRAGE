@@ -29,7 +29,7 @@ class SearchResult(object):
     Represents a search result from an indexer.
     """
 
-    def __init__(self, episodes_ids):
+    def __init__(self, episode_ids):
         self.provider = None
 
         # release name
@@ -45,7 +45,7 @@ class SearchResult(object):
         self.extraInfo = []
 
         # list of episode IDs that this result is associated with
-        self.episode_ids = episodes_ids
+        self.episode_ids = episode_ids
 
         # quality of the release
         self.quality = Quality.UNKNOWN
