@@ -103,7 +103,7 @@ class SearchIndexersForShowNameHandler(BaseHandler, ABC):
         for i, shows in results.items():
             final_results.extend([[IndexerApi(i).name, i, IndexerApi(i).config["show_url"],
                                    int(show['id']), show['seriesname'], show['firstaired'],
-                                   ('', 'disabled')[find_show(show['id'], session=self.db_session) is not None]] for show in shows])
+                                   ('', 'disabled')[find_show(show['id']) is not None]] for show in shows])
 
         lang_id = IndexerApi().indexer().languages[lang] or 7
         return self.write(json_encode({'results': final_results, 'langid': lang_id}))

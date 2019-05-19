@@ -337,7 +337,8 @@ class TraktSearcher(object):
 
         sickrage.app.log.debug("SHOW_SICKRAGE::REMOVE::FINISH - Trakt Show Watchlist")
 
-    def update_shows(self):
+    @MainDB.with_session
+    def update_shows(self, session=None):
         sickrage.app.log.debug("SHOW_WATCHLIST::CHECK::START - Trakt Show Watchlist")
 
         if not len(self.ShowWatchlist):
@@ -361,7 +362,7 @@ class TraktSearcher(object):
                     self.add_default_show(indexer, indexer_id, show.title, WANTED)
 
                 if int(sickrage.app.config.trakt_method_add) == 1:
-                    newShow = find_show(indexer_id)
+                    newShow = find_show(indexer_id, session=session)
 
                     if newShow is not None:
                         set_episode_to_wanted(newShow, 1, 1)

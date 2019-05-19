@@ -335,7 +335,7 @@ class QueueItemAdd(ShowQueueItem):
         session.add(TVShow(**{'indexer': self.indexer, 'indexer_id': self.indexer_id, 'lang': self.lang, 'location': self.showDir}))
         session.commit()
 
-        show_obj = find_show(self.indexer_id)
+        show_obj = find_show(self.indexer_id, session=session)
 
         try:
             show_obj.load_from_indexer()
