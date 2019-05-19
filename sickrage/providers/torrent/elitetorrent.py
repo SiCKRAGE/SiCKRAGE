@@ -25,7 +25,7 @@ import re
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser, try_int
-from sickrage.core.tv.show import find_show
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.providers import TorrentProvider
 
 

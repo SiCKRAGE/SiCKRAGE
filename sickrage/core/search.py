@@ -32,7 +32,7 @@ from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import show_names
 from sickrage.core.nzbSplitter import split_nzb_result
 from sickrage.core.tv.episode.helpers import find_episode
-from sickrage.core.tv.show import find_show
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.tv.show.history import FailedHistory, History
 from sickrage.notifiers import Notifiers
 from sickrage.providers import NZBProvider, NewznabProvider, TorrentProvider, TorrentRssProvider

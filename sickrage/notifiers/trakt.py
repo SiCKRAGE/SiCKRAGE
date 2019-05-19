@@ -19,7 +19,7 @@
 
 import sickrage
 from sickrage.core.traktapi import TraktAPI
-from sickrage.core.tv.show import find_show
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.indexers import IndexerApi
 from sickrage.notifiers import Notifiers
 

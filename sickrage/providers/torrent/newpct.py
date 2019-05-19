@@ -29,7 +29,7 @@ from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser, convert_size
 from sickrage.core.helpers.show_names import all_possible_show_names
 from sickrage.core.tv.episode.helpers import find_episode
-from sickrage.core.tv.show import find_show
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.providers import TorrentProvider
 
 

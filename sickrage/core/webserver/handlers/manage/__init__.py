@@ -257,7 +257,7 @@ class DownloadSubtitleMissedHandler(BaseHandler, ABC):
                 season, episode = epResult.split('x')
 
                 show = find_show(int(cur_indexer_id), session=self.db_session)
-                show.get_episode(int(season), int(episode), session=self.db_session).download_subtitles()
+                show.get_episode(int(season), int(episode)).download_subtitles()
 
         return self.redirect('/manage/subtitleMissed/')
 

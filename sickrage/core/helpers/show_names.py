@@ -28,7 +28,7 @@ from sickrage.core.common import DOWNLOADED, Quality, SNATCHED, WANTED, countryL
 from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import sanitize_scene_name, strip_accents
 from sickrage.core.tv.episode.helpers import find_episode
-from sickrage.core.tv.show import find_show
+from sickrage.core.tv.show.helpers import find_show
 
 resultFilters = [
     "sub(bed|ed|pack|s)",

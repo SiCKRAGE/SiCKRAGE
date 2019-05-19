@@ -26,11 +26,12 @@ import stat
 import traceback
 
 import send2trash
-from sqlalchemy import orm, Column, Integer, Boolean, Text, select, func
-from sqlalchemy.orm import relationship, column_property
+from sqlalchemy import orm, Column, Integer, Boolean, Text
+from sqlalchemy.orm import relationship, object_session
 from unidecode import unidecode
 
 import sickrage
+from sickrage.core.api.imdb import IMDbAPI
 from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.caches.image_cache import ImageCache
 from sickrage.core.common import Quality, SKIPPED, WANTED, UNKNOWN, DOWNLOADED, IGNORED, SNATCHED, SNATCHED_PROPER, \
@@ -42,7 +43,6 @@ from sickrage.core.helpers import list_media_files, is_media_file, try_int, safe
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.episode.helpers import find_episode
-from sickrage.core.tv.show.helpers import find_show
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.config import INDEXER_TVRAGE
 from sickrage.indexers.exceptions import indexer_attributenotfound
@@ -113,7 +113,7 @@ class TVShow(MainDBBase):
     def airs_prev(self):
         _airs_prev = datetime.date.min
         for episode_object in self.episodes:
-            if episode_object.status != UNAIRED and  episode_object.airdate < datetime.date.today() > _airs_prev:
+            if episode_object.status != UNAIRED and episode_object.airdate < datetime.date.today() > _airs_prev:
                 _airs_prev = episode_object.airdate
         return _airs_prev
 
@@ -196,8 +196,9 @@ class TVShow(MainDBBase):
         else:
             sickrage.app.log.warning(str(self.indexer_id) + ": NOT loading info from " + IndexerApi(self.indexer).name + " as it is temporarily disabled.")
 
-    @MainDB.with_session
-    def load_episodes_from_indexer(self, cache=True, session=None):
+        object_session(self).commit()
+
+    def load_episodes_from_indexer(self, cache=True):
         scanned_eps = {}
 
         l_indexer_api_parms = IndexerApi(self.indexer).api_params.copy()
@@ -221,15 +222,15 @@ class TVShow(MainDBBase):
                     continue
 
                 try:
-                    episode_obj = self.get_episode(season, episode, session=session)
+                    episode_obj = self.get_episode(season, episode)
                 except EpisodeNotFoundException:
-                    session.add(TVEpisode(**{'showid': self.indexer_id,
-                                             'indexer': self.indexer,
-                                             'season': season,
-                                             'episode': episode,
-                                             'location': ''}))
-                    session.commit()
-                    episode_obj = self.get_episode(season, episode, session=session)
+                    object_session(self).add(TVEpisode(**{'showid': self.indexer_id,
+                                                          'indexer': self.indexer,
+                                                          'season': season,
+                                                          'episode': episode,
+                                                          'location': ''}))
+                    object_session(self).commit()
+                    episode_obj = self.get_episode(season, episode)
 
                 sickrage.app.log.debug("%s: Loading info from %s for episode S%02dE%02d" % (
                     self.indexer_id, IndexerApi(self.indexer).name, season or 0, episode or 0
@@ -242,7 +243,7 @@ class TVShow(MainDBBase):
         # Done updating save last update date
         self.last_update = datetime.date.today().toordinal()
 
-        session.commit()
+        object_session(self).commit()
 
         return scanned_eps
 
@@ -285,14 +286,13 @@ class TVShow(MainDBBase):
 
         return ep_list
 
-    @MainDB.with_session
-    def get_episode(self, season=None, episode=None, absolute_number=None, session=None):
+    def get_episode(self, season=None, episode=None, absolute_number=None):
         from sickrage.core.tv.episode import TVEpisode
 
         if self.is_anime and all([absolute_number is not None, season is None, episode is None]):
             try:
-                dbData = session.query(TVEpisode).filter_by(showid=self.indexer_id,
-                                                            absolute_number=absolute_number).filter(TVEpisode.season != 0).one()
+                dbData = object_session(self).query(TVEpisode).filter_by(showid=self.indexer_id,
+                                                                         absolute_number=absolute_number).filter(TVEpisode.season != 0).one()
                 episode = dbData.episode
                 season = dbData.season
                 sickrage.app.log.debug("Found episode by absolute_number %s which is "
@@ -307,7 +307,7 @@ class TVShow(MainDBBase):
                 raise EpisodeNotFoundException
 
         try:
-            return session.query(TVEpisode).filter_by(showid=self.indexer_id, season=season, episode=episode).one()
+            return object_session(self).query(TVEpisode).filter_by(showid=self.indexer_id, season=season, episode=episode).one()
         except orm.exc.NoResultFound:
             raise EpisodeNotFoundException
 
@@ -440,6 +440,60 @@ class TVShow(MainDBBase):
                     sickrage.app.log.error("%s: Could not refresh subtitles" % self.indexer_id)
                     sickrage.app.log.debug(traceback.format_exc())
 
+    def load_imdb_info(self):
+        imdb_info_mapper = {
+            'imdbvotes': 'votes',
+            'imdbrating': 'rating',
+            'totalseasons': 'seasons',
+            'imdbid': 'imdb_id'
+        }
+
+        if not self.imdb_id:
+            resp = IMDbAPI().search_by_imdb_title(self.name)
+            for x in resp['Search'] if 'Search' in resp else []:
+                try:
+                    if int(x.get('Year'), 0) == self.startyear and x.get('Title') in self.name:
+                        self.imdb_id = x.get('imdbID')
+                        break
+                except:
+                    continue
+
+        if self.imdb_id:
+            sickrage.app.log.debug(str(self.indexer_id) + ": Obtaining IMDb info")
+
+            imdb_info = IMDbAPI().search_by_imdb_id(self.imdb_id)
+            if not imdb_info:
+                sickrage.app.log.debug(str(self.indexer_id) + ': Unable to obtain IMDb info')
+                return
+
+            imdb_info = dict((k.lower(), v) for k, v in imdb_info.items())
+            for column in imdb_info.copy():
+                if column in imdb_info_mapper:
+                    imdb_info[imdb_info_mapper[column]] = imdb_info[column]
+
+                if column not in MainDB.IMDbInfo.__table__.columns.keys():
+                    del imdb_info[column]
+
+            if not all([imdb_info.get('imdb_id'), imdb_info.get('votes'), imdb_info.get('rating'), imdb_info.get('genre')]):
+                sickrage.app.log.debug(str(self.indexer_id) + ': IMDb info obtained does not meet our requirements')
+                return
+
+            sickrage.app.log.debug(str(self.indexer_id) + ": Obtained IMDb info ->" + str(imdb_info))
+
+            # save imdb info to database
+            imdb_info.update({
+                'indexer_id': self.indexer_id,
+                'last_update': datetime.date.today().toordinal()
+            })
+
+            try:
+                dbData = object_session(self).query(MainDB.IMDbInfo).filter_by(indexer_id=self.indexer_id).one()
+                dbData.update(**imdb_info)
+            except orm.exc.NoResultFound:
+                object_session(self).add(MainDB.IMDbInfo(**imdb_info))
+            finally:
+                object_session(self).commit()
+
     def get_images(self, fanart=None, poster=None):
         fanart_result = poster_result = banner_result = False
         season_posters_result = season_banners_result = season_all_poster_result = season_all_banner_result = False
@@ -456,7 +510,6 @@ class TVShow(MainDBBase):
 
         return fanart_result or poster_result or banner_result or season_posters_result or season_banners_result or season_all_poster_result or season_all_banner_result
 
-    # make a TVEpisode object from a media file
     def make_ep_from_file(self, filename):
         if not os.path.isfile(filename):
             sickrage.app.log.info(str(self.indexer_id) + ": That isn't even a real file dude... " + filename)
@@ -492,11 +545,12 @@ class TVShow(MainDBBase):
             try:
                 episode_obj = self.get_episode(season, episode)
             except EpisodeNotFoundException:
-                sickrage.app.main_db.add(TVEpisode(**{'showid': self.indexer_id,
+                object_session(self).add(TVEpisode(**{'showid': self.indexer_id,
                                                       'indexer': self.indexer,
                                                       'season': season,
                                                       'episode': episode,
                                                       'location': filename}))
+                object_session(self).commit()
                 episode_obj = self.get_episode(season, episode)
 
             # if there is a new file associated with this ep then re-check the quality
@@ -568,6 +622,8 @@ class TVShow(MainDBBase):
         # creating metafiles on the root should be good enough
         if root_ep:
             root_ep.create_meta_files()
+
+        object_session(self).commit()
 
         return root_ep
 
@@ -710,29 +766,6 @@ class TVShow(MainDBBase):
             sickrage.app.log.error(
                 "%s: Error occurred when downloading subtitles for %s" % (self.indexer_id, self.name))
 
-    def __str__(self):
-        toReturn = ""
-        toReturn += "indexer_id: " + str(self.indexer_id) + "\n"
-        toReturn += "indexer: " + str(self.indexer) + "\n"
-        toReturn += "name: " + self.name + "\n"
-        toReturn += "location: " + self.location + "\n"
-        if self.network:
-            toReturn += "network: " + self.network + "\n"
-        if self.airs:
-            toReturn += "airs: " + self.airs + "\n"
-        toReturn += "status: " + self.status + "\n"
-        toReturn += "startyear: " + str(self.startyear) + "\n"
-        if self.genre:
-            toReturn += "genre: " + self.genre + "\n"
-        toReturn += "overview: " + self.overview + "\n"
-        toReturn += "classification: " + self.classification + "\n"
-        toReturn += "runtime: " + str(self.runtime) + "\n"
-        toReturn += "quality: " + str(self.quality) + "\n"
-        toReturn += "scene: " + str(self.is_scene) + "\n"
-        toReturn += "sports: " + str(self.is_sports) + "\n"
-        toReturn += "anime: " + str(self.is_anime) + "\n"
-        return toReturn
-
     def qualitiesToString(self, qualities=None):
         if qualities is None:
             qualities = []
@@ -872,3 +905,26 @@ class TVShow(MainDBBase):
                     continue
 
         return season, episodes
+
+    def __str__(self):
+        toReturn = ""
+        toReturn += "indexer_id: " + str(self.indexer_id) + "\n"
+        toReturn += "indexer: " + str(self.indexer) + "\n"
+        toReturn += "name: " + self.name + "\n"
+        toReturn += "location: " + self.location + "\n"
+        if self.network:
+            toReturn += "network: " + self.network + "\n"
+        if self.airs:
+            toReturn += "airs: " + self.airs + "\n"
+        toReturn += "status: " + self.status + "\n"
+        toReturn += "startyear: " + str(self.startyear) + "\n"
+        if self.genre:
+            toReturn += "genre: " + self.genre + "\n"
+        toReturn += "overview: " + self.overview + "\n"
+        toReturn += "classification: " + self.classification + "\n"
+        toReturn += "runtime: " + str(self.runtime) + "\n"
+        toReturn += "quality: " + str(self.quality) + "\n"
+        toReturn += "scene: " + str(self.is_scene) + "\n"
+        toReturn += "sports: " + str(self.is_sports) + "\n"
+        toReturn += "anime: " + str(self.is_anime) + "\n"
+        return toReturn

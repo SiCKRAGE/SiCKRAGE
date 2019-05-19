@@ -25,15 +25,13 @@ import traceback
 import sickrage
 from sickrage.core.common import WANTED
 from sickrage.core.databases.main import MainDB
-from sickrage.core.exceptions import CantRefreshShowException, \
-    CantRemoveShowException, CantUpdateShowException, EpisodeDeletedException, \
+from sickrage.core.exceptions import CantRefreshShowException, CantRemoveShowException, CantUpdateShowException, EpisodeDeletedException, \
     MultipleShowObjectsException
-from sickrage.core.helpers import scrub
 from sickrage.core.queues import srQueue, srQueueItem, srQueuePriorities
 from sickrage.core.scene_numbering import xem_refresh, get_xem_numbering_for_show
 from sickrage.core.traktapi import TraktAPI
 from sickrage.core.tv.show import TVShow
-from sickrage.core.tv.show.helpers import load_imdb_info, find_show
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_attributenotfound, indexer_error, indexer_exception
 
@@ -384,7 +382,7 @@ class QueueItemAdd(ShowQueueItem):
 
         try:
             sickrage.app.log.debug(_("Attempting to retrieve show info from IMDb"))
-            load_imdb_info(show_obj.indexer_id)
+            show_obj.load_imdb_info()
         except Exception as e:
             sickrage.app.log.error(_("Error loading IMDb info: {}").format(e))
 
@@ -547,7 +545,6 @@ class QueueItemUpdate(ShowQueueItem):
         try:
             sickrage.app.log.debug("Retrieving show info from " + IndexerApi(show_obj.indexer).name + "")
             show_obj.load_from_indexer(cache=False)
-            session.commit()
         except indexer_error as e:
             sickrage.app.log.warning("Unable to contact " + IndexerApi(show_obj.indexer).name + ", aborting: {}".format(e))
             return
@@ -558,7 +555,7 @@ class QueueItemUpdate(ShowQueueItem):
         try:
             if not self.indexer_update_only:
                 sickrage.app.log.debug("Attempting to retrieve show info from IMDb")
-                load_imdb_info(show_obj.indexer_id, session=session)
+                show_obj.load_imdb_info()
         except Exception as e:
             sickrage.app.log.warning("Error loading IMDb info for {}: {}".format(IndexerApi(show_obj.indexer).name, e))
 
@@ -568,7 +565,7 @@ class QueueItemUpdate(ShowQueueItem):
 
         # get episode list from TVDB
         try:
-            indexer_ep_list = show_obj.load_episodes_from_indexer(session=session)
+            indexer_ep_list = show_obj.load_episodes_from_indexer()
         except indexer_exception as e:
             sickrage.app.log.error("Unable to get info from " + IndexerApi(show_obj.indexer).name + ", the show info will not be refreshed: {}".format(e))
 

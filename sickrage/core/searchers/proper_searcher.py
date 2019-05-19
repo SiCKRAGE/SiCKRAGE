@@ -236,7 +236,7 @@ class ProperSearcher(object):
             history_limit = datetime.datetime.today() - datetime.timedelta(days=30)
 
             # make sure the episode has been downloaded before
-            episode_obj = find_show(curProper.indexer_id).get_episode(curProper.season, curProper.episode, session=session)
+            episode_obj = find_show(curProper.indexer_id).get_episode(curProper.season, curProper.episode)
 
             history_results = [
                 x for x in

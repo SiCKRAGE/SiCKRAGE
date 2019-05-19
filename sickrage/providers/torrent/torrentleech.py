@@ -25,7 +25,7 @@ from urllib.parse import urljoin
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.tv.show import find_show
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.providers import TorrentProvider
 
 

@@ -29,7 +29,7 @@ from sickrage.core.databases.main import MainDB
 from sickrage.core.queues import srQueue, srQueueItem, srQueuePriorities
 from sickrage.core.search import search_providers, snatch_episode
 from sickrage.core.tv.episode.helpers import find_episode
-from sickrage.core.tv.show import find_show
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.tv.show.history import FailedHistory, History
 
 search_queue_lock = threading.Lock()

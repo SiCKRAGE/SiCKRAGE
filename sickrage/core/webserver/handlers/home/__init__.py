@@ -67,9 +67,9 @@ def _get_episode(show, season=None, episode=None, absolute=None, session=None):
 
     try:
         if absolute:
-            ep_obj = show_obj.get_episode(absolute_number=int(absolute), session=session)
+            ep_obj = show_obj.get_episode(absolute_number=int(absolute))
         elif season and episode:
-            ep_obj = show_obj.get_episode(int(season), int(episode), session=session)
+            ep_obj = show_obj.get_episode(int(season), int(episode))
         else:
             return _("Invalid paramaters")
     except (EpisodeNotFoundException, MultipleEpisodesInDatabaseException):

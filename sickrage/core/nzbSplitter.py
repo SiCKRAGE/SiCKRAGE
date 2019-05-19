@@ -26,7 +26,7 @@ from sickrage.core.classes import NZBDataSearchResult
 from sickrage.core.common import Quality
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
-from sickrage.core.tv.show import find_show
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.websession import WebSession
 
 
