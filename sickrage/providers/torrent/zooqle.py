@@ -84,8 +84,7 @@ class ZooqleProvider(TorrentProvider):
                 elif episode_obj.show.anime:
                     ep_string += '%i' % int(episode_obj.scene_absolute_number)
                 else:
-                    ep_string += sickrage.app.naming_ep_type[4] % {'seasonnumber': episode_obj.scene_season,
-                                                                   'episodenumber': episode_obj.scene_episode}
+                    ep_string += sickrage.app.naming_ep_type[4] % {'seasonnumber': episode_obj.scene_season, 'episodenumber': episode_obj.scene_episode}
 
                 if add_string:
                     ep_string += ' %s' % add_string

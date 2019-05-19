@@ -52,19 +52,10 @@ module.exports = function (grunt) {
             'build_docker_image': {
                 cmd: 'docker build --build-arg SOURCE_COMMIT=' + shell.exec("git rev-parse HEAD", {'silent': true}) + ' -t sickrage/sickrage:py3-alpha .'
             },
-            'tag_docker_image': {
-                cmd: 'docker tag sickrage/sickrage:py3-alpha registry.sickrage.ca/sickrage/sickrage:py3-alpha'
-            },
-            'push_docker_image_to_docker_hub': {
+            'push_docker_image': {
                 cmd: [
                     'docker login -u ' + process.env.DOCKER_REGISTRY_USERNAME + ' -p ' + process.env.DOCKER_REGISTRY_PASSWORD,
                     'docker push sickrage/sickrage:py3-alpha',
-                ].join('&&')
-            },
-            'push_docker_image_to_sickrage': {
-                cmd: [
-                    'docker login -u ' + process.env.SICKRAGE_REGISTRY_USERNAME + ' -p ' + process.env.SICKRAGE_REGISTRY_PASSWORD,
-                    'docker push registry.sickrage.ca/sickrage/sickrage:py3-alpha'
                 ].join('&&')
             },
 
@@ -225,12 +216,10 @@ module.exports = function (grunt) {
 
         const tasks = [
             'exec:build_docker_image',
-            'exec:tag_docker_image',
-            'exec:push_docker_image_to_docker_hub',
-            'exec:push_docker_image_to_sickrage',
+            'exec:push_docker_image',
         ];
 
-        if (process.env.DOCKER_REGISTRY_USERNAME && process.env.DOCKER_REGISTRY_PASSWORD && process.env.SICKRAGE_REGISTRY_USERNAME && process.env.SICKRAGE_REGISTRY_PASSWORD) {
+        if (process.env.DOCKER_REGISTRY_USERNAME && process.env.DOCKER_REGISTRY_PASSWORD) {
             grunt.task.run(tasks);
         } else {
             grunt.log.warn('Missing login variables for docker registry, aborting task.'.bold);
