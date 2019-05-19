@@ -573,13 +573,14 @@ def search_providers(show_id, episode_ids, manualSearch=False, downCurQuality=Fa
 
             # add result if its not a duplicate and
             found = False
-            for i, result in enumerate(final_results):
-                for bestResultEp in best_result.episodes:
-                    if bestResultEp in result.episodes:
+            for i, result in enumerate(final_results.copy()):
+                for best_result_episode_id in best_result.episode_ids:
+                    if best_result_episode_id in result.episode_ids:
                         if result.quality < best_result.quality:
                             final_results.pop(i)
                         else:
                             found = True
+
             if not found:
                 final_results += [best_result]
 
