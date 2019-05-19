@@ -61,7 +61,7 @@ class BacklogSearcher(object):
         return (not self.amWaiting) and self.amActive
 
     @MainDB.with_session
-    def search_backlog(self, which_shows=None, session=None):
+    def search_backlog(self, show_id=None, session=None):
         if self.amActive:
             sickrage.app.log.debug("Backlog is still running, not starting it again")
             return
@@ -69,13 +69,13 @@ class BacklogSearcher(object):
         self.amActive = True
         self.amPaused = False
 
-        show_list = which_shows or get_show_list(session=session)
+        show_list = [find_show(show_id, session=session)] if show_id else get_show_list(session=session)
+
         cur_date = datetime.date.today()
         from_date = datetime.date.min
 
-        if not which_shows and self.forced:
-            sickrage.app.log.info("Running limited backlog on missed episodes " + str(
-                sickrage.app.config.backlog_days) + " day(s) old")
+        if not show_id and self.forced:
+            sickrage.app.log.info("Running limited backlog on missed episodes " + str(sickrage.app.config.backlog_days) + " day(s) old")
             from_date = datetime.date.today() - datetime.timedelta(days=sickrage.app.config.backlog_days)
         else:
             sickrage.app.log.info('Running full backlog search on missed episodes for selected shows')
@@ -94,7 +94,7 @@ class BacklogSearcher(object):
 
             # don't consider this an actual backlog search if we only did recent eps
             # or if we only did certain shows
-            if from_date == datetime.date.min and not which_shows:
+            if from_date == datetime.date.min and not show_id:
                 self._set_last_backlog_search(curShow, cur_date)
 
         self.amActive = False

@@ -256,8 +256,8 @@ class DownloadSubtitleMissedHandler(BaseHandler, ABC):
             for epResult in to_download[cur_indexer_id]:
                 season, episode = epResult.split('x')
 
-                show = find_show(int(cur_indexer_id))
-                show.get_episode(int(season), int(episode)).download_subtitles()
+                show = find_show(int(cur_indexer_id), session=self.db_session)
+                show.get_episode(int(season), int(episode), session=self.db_session).download_subtitles()
 
         return self.redirect('/manage/subtitleMissed/')
 
@@ -267,10 +267,7 @@ class BacklogShowHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         indexer_id = self.get_query_argument('indexer_id')
 
-        show_obj = find_show(int(indexer_id))
-
-        if show_obj:
-            sickrage.app.backlog_searcher.search_backlog([show_obj])
+        sickrage.app.backlog_searcher.search_backlog(int(indexer_id))
 
         return self.redirect("/manage/backlogOverview/")
 
@@ -334,7 +331,7 @@ class MassEditHandler(BaseHandler, ABC):
         show_list = []
         show_names = []
         for curID in show_ids:
-            show_obj = find_show(curID)
+            show_obj = find_show(curID, session=self.db_session)
             if show_obj:
                 show_list.append(show_obj)
                 show_names.append(show_obj.name)
@@ -507,7 +504,7 @@ class MassEditHandler(BaseHandler, ABC):
             cur_warnings = []
             cur_errors = []
 
-            show_obj = find_show(int(curShow))
+            show_obj = find_show(int(curShow), session=self.db_session)
             if not show_obj:
                 continue
 
@@ -675,7 +672,7 @@ class MassUpdateHandler(BaseHandler, ABC):
             if curShowID == '':
                 continue
 
-            show_obj = find_show(int(curShowID))
+            show_obj = find_show(int(curShowID), session=self.db_session)
             if show_obj is None:
                 continue
 

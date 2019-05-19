@@ -1754,7 +1754,7 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
             return results
 
         for episode_id in episode_ids:
-            episode_obj = find_episode(show_id, episode_id)
+            episode_obj = find_episode(show_id, episode_id, session=self.db_session)
             results.append({'show': show_id,
                             'episode': episode_obj.episode,
                             'episodeindexid': episode_id,

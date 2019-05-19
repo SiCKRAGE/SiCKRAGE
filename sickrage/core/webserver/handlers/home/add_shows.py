@@ -339,7 +339,7 @@ class AddShowByIDHandler(BaseHandler, ABC):
             t = IndexerApi(1).indexer(**l_indexer_api_parms)
             indexer_id = t[indexer_id]['id']
 
-        if find_show(int(indexer_id)):
+        if find_show(int(indexer_id), session=self.db_session):
             return
 
         location = None

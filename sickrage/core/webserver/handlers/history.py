@@ -21,7 +21,6 @@ from abc import ABC
 from tornado.web import authenticated
 
 import sickrage
-from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.core.tv.show.history import History
 from sickrage.core.webserver.handlers.base import BaseHandler
 
