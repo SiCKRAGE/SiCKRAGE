@@ -50,49 +50,6 @@ class ZooqleProvider(TorrentProvider):
         # Cache
         self.cache = TVCache(self, min_time=15)
 
-    def _get_season_search_strings(self, show_id, episode_id):
-        search_string = {'Season': []}
-
-        episode_obj = find_episode(show_id, episode_id)
-
-        for show_name in set(show_names.all_possible_show_names(show_id)):
-            for sep in ' ', ' - ':
-                season_string = show_name + sep + 'Series '
-                if episode_obj.show.air_by_date or episode_obj.show.sports:
-                    season_string += str(episode_obj.airdate).split('-')[0]
-                elif episode_obj.show.anime:
-                    season_string += '%d' % episode_obj.scene_absolute_number
-                else:
-                    season_string += '%d' % int(episode_obj.scene_season)
-
-                search_string['Season'].append(re.sub(r'\s+', ' ', season_string.replace('.', ' ').strip()))
-
-        return [search_string]
-
-    def _get_episode_search_strings(self, show_id, episode_id, add_string=''):
-        search_string = {'Episode': []}
-
-        episode_obj = find_episode(show_id, episode_id)
-
-        for show_name in set(show_names.all_possible_show_names(show_id)):
-            for sep in ' ', ' - ':
-                ep_string = sanitize_scene_name(show_name) + sep
-                if episode_obj.show.air_by_date:
-                    ep_string += str(episode_obj.airdate)
-                elif episode_obj.show.sports:
-                    ep_string += str(episode_obj.airdate) + '|' + episode_obj.airdate.strftime('%b')
-                elif episode_obj.show.anime:
-                    ep_string += '%i' % int(episode_obj.scene_absolute_number)
-                else:
-                    ep_string += sickrage.app.naming_ep_type[4] % {'seasonnumber': episode_obj.scene_season, 'episodenumber': episode_obj.scene_episode}
-
-                if add_string:
-                    ep_string += ' %s' % add_string
-
-                search_string['Episode'].append(re.sub(r'\s+', ' ', ep_string.replace('.', ' ').strip()))
-
-        return [search_string]
-
     def _get_torrent_info(self, torrent_hash):
         try:
             return self.session.get(self.urls['api'] % torrent_hash).json()

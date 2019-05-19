@@ -25,8 +25,4 @@ from sickrage.core.databases.main import MainDB
 @MainDB.with_session
 def find_episode(show_id, episode_id, session=None):
     from sickrage.core.tv.episode import TVEpisode
-
-    try:
-        return session.query(TVEpisode).filter_by(showid=show_id, indexer_id=episode_id).one()
-    except orm.exc.NoResultFound:
-        return None
+    return session.query(TVEpisode).filter_by(showid=show_id, indexer_id=episode_id).one_or_none()
