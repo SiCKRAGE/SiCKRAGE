@@ -18,6 +18,7 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 import datetime
+import json
 import os
 from abc import ABC
 from functools import cmp_to_key
@@ -236,8 +237,8 @@ class UnlinkHandler(BaseHandler, ABC):
 
 class QuicksearchDotJsonHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
-        term = self.get_query_argument('term')
+    def post(self, *args, **kwargs):
+        term = self.get_body_argument('term')
 
         shows = sickrage.app.quicksearch_cache.get_shows(term)
         episodes = sickrage.app.quicksearch_cache.get_episodes(term)
@@ -251,4 +252,4 @@ class QuicksearchDotJsonHandler(BaseHandler, ABC):
                 'seasons': 0,
             }]
 
-        return self.write(json_encode(str(shows + episodes)))
+        return self.write(json.dumps(shows + episodes))

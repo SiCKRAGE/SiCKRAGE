@@ -43,7 +43,7 @@ class QuicksearchCache(object):
         return [d for d in self.cache['shows'].values() if term.lower() in d['name'].lower()]
 
     def get_episodes(self, term):
-        return [d for d in self.cache['episodes'].values() if term.lower() in d['name'].lower()]
+        return [d for d in self.cache['episodes'].values() if d and term.lower() in d['name'].lower()]
 
     def update_show(self, indexer_id):
         self.del_show(indexer_id)

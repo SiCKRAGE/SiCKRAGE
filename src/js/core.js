@@ -225,7 +225,7 @@ $(document).ready(function ($) {
                         $li.find('#show-seasons').append(item.seasons + ' seasons');
                     } else {
                         $a.attr({
-                            href: `${SICKRAGE.srWebRoot}/home/displayShow?show=${item.showid}#episode-id-${item.episode_id}`,
+                            href: `${SICKRAGE.srWebRoot}/home/displayShow?show=${item.showid}#episode-id-${item.episodeid}`,
                             class: 'btn btn-dark btn-block d-inline-block text-left'
                         });
 
@@ -243,7 +243,17 @@ $(document).ready(function ($) {
             $('#quicksearch').catcomplete({
                 delay: 1000,
                 minLength: 1,
-                source: `${SICKRAGE.srWebRoot}/quicksearch.json`,
+                source: function (request, response) {
+                    $.ajax({
+                        url: `${SICKRAGE.srWebRoot}/quicksearch.json`,
+                        dataType: "json",
+                        type: "POST",
+                        data: {term: request.term},
+                        success: function (data) {
+                            response(data);
+                        }
+                    })
+                },
                 // search: function () {
                 //     $("#quicksearch-icon").addClass('fas fa-spinner fa-spin');
                 // },
