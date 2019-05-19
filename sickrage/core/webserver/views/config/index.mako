@@ -66,6 +66,16 @@
                                 </div>
                             </div>
                             <br/>
+                        % elif os.environ.get('SOURCE_COMMIT'):
+                            <div class="form-row">
+                                <div class="col-lg-3 col-md-3 col-sm-3">
+                                    <i class="sickrage-core sickrage-core-commit"></i> ${_('SR Source Commit:')}
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-9">
+                                    ${os.environ.get('SOURCE_COMMIT')}
+                                </div>
+                            </div>
+                            <br/>
                         % endif
                         % if sr_user:
                             <div class="form-row">
