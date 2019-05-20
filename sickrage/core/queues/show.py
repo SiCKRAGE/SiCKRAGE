@@ -42,7 +42,7 @@ class ShowQueue(srQueue):
 
     @property
     def loading_show_list(self):
-        return self._get_loading_show_list()
+        return [{'name': x.name, 'indexer_id': x.indexer_id} for x in self._get_queue_items() if x.is_loading]
 
     def _is_in_queue(self, indexer_id, actions):
         return indexer_id in [x.indexer_id for x in self.queue_items if x.action_id in actions]

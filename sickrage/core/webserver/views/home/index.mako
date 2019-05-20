@@ -11,9 +11,9 @@
     from sickrage.core.helpers import srdatetime, pretty_file_size
     from sickrage.core.media.util import showImage
 %>
-<%block name="metas">
-    <meta data-var="max_download_count" data-content="${overall_stats['episodes']['total'] * 100}">
-</%block>
+## <%block name="metas">
+##     <meta data-var="max_download_count" data-content="${overall_stats['episodes']['total'] * 100}">
+## </%block>
 
 <%block name="sub_navbar">
     <div class="row submenu">
@@ -110,25 +110,23 @@
                  class="show-grid clearfix mx-auto">
                 <div class="posterview">
                     % for curLoadingShow in sickrage.app.show_queue.loading_show_list:
-                        % if not curLoadingShow.show:
-                            <div class="show-container" data-name="0" data-date="010101" data-network="0"
-                                 data-progress="101">
-                                <div class="card card-block text-white bg-dark m-1 shadow">
-                                    <img alt="" title="${curLoadingShow.name}" class="card-img-top"
-                                         src="${srWebRoot}/images/poster.png"/>
-                                    <div class="card-body text-truncate py-1 px-1 small">
-                                        <div class="show-title">
-                                            ${curLoadingShow.name}
-                                        </div>
+                        <div class="show-container" data-name="0" data-date="010101" data-network="0"
+                             data-progress="101">
+                            <div class="card card-block text-white bg-dark m-1 shadow">
+                                <img alt="" title="${curLoadingShow['name']}" class="card-img-top"
+                                     src="${srWebRoot}/images/poster.png"/>
+                                <div class="card-body text-truncate py-1 px-1 small">
+                                    <div class="show-title">
+                                        ${curLoadingShow['name']}
                                     </div>
-                                    <div class="card-footer show-details p-1">
-                                        <div class="show-details">
-                                            <div class="show-add text-center">${_('... Loading ...')}</div>
-                                        </div>
+                                </div>
+                                <div class="card-footer show-details p-1">
+                                    <div class="show-details">
+                                        <div class="show-add text-center">${_('... Loading ...')}</div>
                                     </div>
                                 </div>
                             </div>
-                        % endif
+                        </div>
                     % endfor
 
                     % for curShow in sorted(curShowlist, key=cmp_to_key(lambda x, y: x.name < y.name)):
@@ -142,10 +140,10 @@
                             elif re.search(r'(?i)(?:nded)', curShow.status):
                                 display_status = _('Ended')
 
-                        cur_airs_next = show_stats[curShow.indexer_id]['ep_airs_next']
-                        cur_snatched = show_stats[curShow.indexer_id]['ep_snatched']
-                        cur_downloaded = show_stats[curShow.indexer_id]['ep_downloaded']
-                        cur_total = show_stats[curShow.indexer_id]['ep_total']
+                        cur_airs_next = curShow.airs_next
+                        cur_snatched = curShow.episodes_snatched
+                        cur_downloaded = curShow.episodes_downloaded
+                        cur_total = len(curShow.episodes)
 
                         if cur_total != 0:
                             download_stat = str(cur_downloaded)
@@ -284,25 +282,19 @@
                             % if sickrage.app.show_queue.loading_show_list:
                                 <tbody>
                                     % for curLoadingShow in sickrage.app.show_queue.loading_show_list:
-                                        % if not curLoadingShow.show or curLoadingShow.show not in get_show_list():
-                                            <tr>
-                                                <td class="table-fit">(${_('loading')})</td>
-                                                <td></td>
-                                                <td>
-                                                    % if curLoadingShow.show is None:
-                                                        <span title="">${_('Loading...')} ${curLoadingShow.name}</span>
-                                                    % else:
-                                                        <a data-fancybox
-                                                           href="displayShow?show=${curLoadingShow.show.indexer_id}">${curLoadingShow.show.name}</a>
-                                                    % endif
-                                                </td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                            </tr>
-                                        % endif
+                                        <tr>
+                                            <td class="table-fit">(${_('loading')})</td>
+                                            <td></td>
+                                            <td>
+                                                <a data-fancybox
+                                                   href="displayShow?show=${curLoadingShow['indexer_id']}">${curLoadingShow['name']}</a>
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
                                     % endfor
                                 </tbody>
                             % endif
@@ -312,12 +304,12 @@
                                     <%
                                         download_stat_tip = ''
 
-                                        cur_airs_next = show_stats[curShow.indexer_id]['ep_airs_next']
-                                        cur_airs_prev = show_stats[curShow.indexer_id]['ep_airs_prev']
-                                        cur_snatched = show_stats[curShow.indexer_id]['ep_snatched']
-                                        cur_downloaded = show_stats[curShow.indexer_id]['ep_downloaded']
-                                        cur_total = show_stats[curShow.indexer_id]['ep_total']
-                                        show_size = show_stats[curShow.indexer_id]['total_size']
+                                        cur_airs_next = curShow.airs_next
+                                        cur_airs_prev = curShow.airs_prev
+                                        cur_snatched = curShow.episodes_snatched
+                                        cur_downloaded = curShow.episodes_downloaded
+                                        cur_total = len(curShow.episodes)
+                                        show_size = curShow.total_size
 
                                         if cur_total != 0:
                                             download_stat = str(cur_downloaded)

@@ -474,7 +474,7 @@ class Core(object):
 
         # fire off startup events
         self.event_queue.fire_event(self.quicksearch_cache.run)
-        self.event_queue.fire_event(self.name_cache.build_all)
+        self.event_queue.fire_event(self.name_cache.run)
         self.event_queue.fire_event(self.version_updater.run)
         self.event_queue.fire_event(self.tz_updater.run)
 

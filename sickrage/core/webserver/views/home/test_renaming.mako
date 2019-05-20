@@ -8,6 +8,7 @@
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings
     from sickrage.core.helpers import srdatetime
+    from sickrage.core.tv.episode.helpers import find_episode
 %>
 <%block name="content">
     <div class="row">
@@ -79,36 +80,37 @@
                                 <div class="card-body">
                                     <div class="table-responsive">
                                         <table id="testRenameTable" class="table">
-                                            % for cur_ep_obj in ep_obj_list:
+                                            % for episode_id in episode_ids:
                                             <%
-                                                curLoc = cur_ep_obj.location[len(cur_ep_obj.show.location)+1:]
+                                                episode_object = find_episode(show.indexer_id, episode_id)
+                                                curLoc = episode_object.location[len(episode_object.show.location)+1:]
                                                 curExt = curLoc.split('.')[-1]
-                                                newLoc = cur_ep_obj.proper_path() + '.' + curExt
+                                                newLoc = episode_object.proper_path() + '.' + curExt
                                             %>
-                                            % if int(cur_ep_obj.season) != curSeason:
+                                            % if int(episode_object.season) != curSeason:
                                                 <thead>
-                                                <tr id="season-${cur_ep_obj.season}">
+                                                <tr id="season-${episode_object.season}">
                                                     <td colspan="4">
-                                                        <h2>${('Season '+str(cur_ep_obj.season), 'Specials')[int(cur_ep_obj.season) == 0]}</h2>
+                                                        <h2>${('Season '+str(episode_object.season), 'Specials')[int(episode_object.season) == 0]}</h2>
                                                     </td>
                                                 </tr>
-                                                <tr class="seasoncols" id="season-${cur_ep_obj.season}-cols">
+                                                <tr class="seasoncols" id="season-${episode_object.season}-cols">
                                                     <th class="col-checkbox">
                                                         <input type="checkbox" class="seasonCheck"
-                                                               id="${cur_ep_obj.season}"/>
+                                                               id="${episode_object.season}"/>
                                                     </th>
                                                     <th>${_('Episode')}</th>
                                                     <th>${_('Old Location')}</th>
                                                     <th>${_('New Location')}</th>
                                                 </tr>
                                                 </thead>
-                                            <% curSeason = int(cur_ep_obj.season) %>
+                                            <% curSeason = int(episode_object.season) %>
                                             % endif
                                                 <tbody>
                                                     <%
                                                         odd = not odd
-                                                        epStr = str(cur_ep_obj.season) + "x" + str(cur_ep_obj.episode)
-                                                        epList = sorted([cur_ep_obj.episode] + [x.episode for x in cur_ep_obj.related_episodes])
+                                                        epStr = str(episode_object.season) + "x" + str(episode_object.episode)
+                                                        epList = sorted([episode_object.episode] + [x.episode for x in episode_object.related_episodes])
                                                         if len(epList) > 1:
                                                             epList = [min(epList), max(epList)]
                                                     %>
@@ -116,8 +118,8 @@
                                                     <td class="table-fit">
                                                         % if curLoc != newLoc:
                                                             <input type="checkbox" class="epCheck"
-                                                                   id="${"{}x{}".format(cur_ep_obj.season, cur_ep_obj.episode)}"
-                                                                   name="${"{}x{}".format(cur_ep_obj.season, cur_ep_obj.episode)}"/>
+                                                                   id="${"{}x{}".format(episode_object.season, episode_object.episode)}"
+                                                                   name="${"{}x{}".format(episode_object.season, episode_object.episode)}"/>
                                                         % endif
                                                     </td>
                                                     <td class="table-fit">${"-".join(map(str, epList))}</td>

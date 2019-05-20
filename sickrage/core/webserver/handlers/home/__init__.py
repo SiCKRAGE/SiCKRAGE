@@ -105,7 +105,7 @@ class HomeHandler(BaseHandler, ABC):
         else:
             showlists['Shows'] = get_show_list()
 
-        statistics = await self.run_task(self.statistics)
+        # statistics = await self.run_task(self.statistics)
 
         return self.render(
             "/home/index.mako",
@@ -113,8 +113,8 @@ class HomeHandler(BaseHandler, ABC):
             header="Show List",
             topmenu="home",
             showlists=showlists,
-            show_stats=statistics[0],
-            overall_stats=statistics[1],
+            # show_stats=statistics[0],
+            # overall_stats=statistics[1],
             controller='home',
             action='index'
         )
@@ -1602,19 +1602,17 @@ class TestRenameHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         show = self.get_query_argument('show')
 
-        show_obj = find_show(int(show), session=self.db_session)
+        show_object = find_show(int(show), session=self.db_session)
 
-        if show_obj is None:
+        if show_object is None:
             return self._genericMessage(_("Error"), _("Show not in show list"))
 
-        if not os.path.isdir(show_obj.location):
+        if not os.path.isdir(show_object.location):
             return self._genericMessage(_("Error"), _("Can't rename episodes when the show dir is missing."))
 
         ep_obj_rename_list = []
 
-        ep_obj_list = show_obj.get_all_episodes(has_location=True)
-
-        for cur_ep_obj in ep_obj_list:
+        for cur_ep_obj in show_object.get_all_episodes(has_location=True):
             if cur_ep_obj.location:
                 if cur_ep_obj.related_episodes:
                     for cur_related_ep in cur_ep_obj.related_episodes + [cur_ep_obj]:
@@ -1628,14 +1626,14 @@ class TestRenameHandler(BaseHandler, ABC):
             ep_obj_rename_list.reverse()
 
         submenu = [
-            {'title': _('Edit'), 'path': '/home/editShow?show=%d' % show_obj.indexer_id,
+            {'title': _('Edit'), 'path': '/home/editShow?show=%d' % show_object.indexer_id,
              'icon': 'fas fa-edit'}]
 
         return self.render(
             "/home/test_renaming.mako",
             submenu=submenu,
-            ep_obj_list=ep_obj_rename_list,
-            show=show_obj,
+            episode_ids=[x.indexer_id for x in ep_obj_rename_list],
+            show=show_object,
             title=_('Preview Rename'),
             header=_('Preview Rename'),
             controller='home',

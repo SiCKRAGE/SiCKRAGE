@@ -16,14 +16,12 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
-
-
+import threading
 import time
 from datetime import datetime, timedelta
 
-from sqlalchemy import orm, or_
+from sqlalchemy import orm
 
-import sickrage
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.helpers import full_sanitize_scene_name, strip_accents
 from sickrage.core.scene_exceptions import retrieve_exceptions, get_scene_seasons, get_scene_exceptions
@@ -36,6 +34,10 @@ class NameCache(object):
         self.min_time = 10
         self.last_update = {}
         self.cache = {}
+
+    def run(self):
+        threading.currentThread().setName(self.name)
+        self.build_all()
 
     def should_update(self, show):
         # if we've updated recently then skip the update
