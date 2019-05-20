@@ -35,7 +35,7 @@ class CacheDBBase(object):
 
 
 class CacheDB(srDatabase):
-    session = sessionmaker(class_=ContextSession)
+    session = scoped_session(sessionmaker(class_=ContextSession, expire_on_commit=False))
 
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
         super(CacheDB, self).__init__('cache', db_type, db_prefix, db_host, db_port, db_username, db_password)
@@ -64,15 +64,8 @@ class CacheDB(srDatabase):
 
             return wrapper
 
-        if len(args) == 1 and not kwargs and callable(args[0]):
-            # Used without arguments, e.g. @with_session
-            # We default to expire_on_commit being false, in case the decorated function returns db instances
-            _Session = functools.partial(CacheDB.session, expire_on_commit=False)
-            return decorator(args[0])
-        else:
-            # Arguments were specified, turn them into arguments for Session creation e.g. @with_session(autocommit=True)
-            _Session = functools.partial(CacheDB.session, *args, **kwargs)
-            return decorator
+        _Session = functools.partial(CacheDB.session)
+        return decorator(args[0])
 
     class LastUpdate(CacheDBBase):
         __tablename__ = 'last_update'

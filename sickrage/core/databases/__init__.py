@@ -123,15 +123,6 @@ class srDatabase(object):
         self.db_path = os.path.join(sickrage.app.data_dir, '{}.db'.format(self.name))
         self.db_repository = os.path.join(os.path.dirname(__file__), self.name, 'db_repository')
 
-        if self.db_type == 'sqlite':
-            self.engine = create_engine('sqlite:///{}'.format(self.db_path), echo=False, connect_args={'check_same_thread': False, 'timeout': 10})
-        elif self.db_type == 'mysql':
-            mysql_engine = create_engine('mysql+pymysql://{}:{}@{}:{}/'.format(self.db_username, self.db_password, self.db_host, self.db_port), echo=False)
-            mysql_engine.execute("CREATE DATABASE IF NOT EXISTS {}_{}".format(self.db_prefix, self.name))
-            self.engine = create_engine(
-                'mysql+pymysql://{}:{}@{}:{}/{}_{}'.format(self.db_username, self.db_password, self.db_host, self.db_port, self.db_prefix, self.name),
-                echo=False)
-
         if not self.version:
             api.version_control(self.engine, self.db_repository, api.version(self.db_repository))
         else:
@@ -139,6 +130,17 @@ class srDatabase(object):
                 api.version_control(self.engine, self.db_repository)
             except DatabaseAlreadyControlledError:
                 pass
+
+    @property
+    def engine(self):
+        if self.db_type == 'sqlite':
+            return create_engine('sqlite:///{}'.format(self.db_path), echo=False, connect_args={'check_same_thread': False, 'timeout': 10})
+        elif self.db_type == 'mysql':
+            mysql_engine = create_engine('mysql+pymysql://{}:{}@{}:{}/'.format(self.db_username, self.db_password, self.db_host, self.db_port), echo=False)
+            mysql_engine.execute("CREATE DATABASE IF NOT EXISTS {}_{}".format(self.db_prefix, self.name))
+            return create_engine(
+                'mysql+pymysql://{}:{}@{}:{}/{}_{}'.format(self.db_username, self.db_password, self.db_host, self.db_port, self.db_prefix, self.name),
+                echo=False)
 
     @property
     def session(self):

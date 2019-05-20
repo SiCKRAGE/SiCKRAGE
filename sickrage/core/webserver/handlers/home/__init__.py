@@ -21,10 +21,11 @@ import datetime
 import os
 from abc import ABC
 from collections import OrderedDict
+from functools import partial
 from urllib.parse import unquote_plus, quote_plus
 
 from sqlalchemy import orm
-from tornado import gen
+from tornado import gen, queues
 from tornado.escape import json_encode
 from tornado.httputil import url_concat
 from tornado.web import authenticated
@@ -89,7 +90,7 @@ def have_torrent():
 class HomeHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
-        if not len(get_show_list()):
+        if not get_show_list().count():
             return self.redirect('/home/addShows/')
 
         showlists = OrderedDict({'Shows': []})
@@ -104,7 +105,7 @@ class HomeHandler(BaseHandler, ABC):
         else:
             showlists['Shows'] = get_show_list()
 
-        statistics = await self.statistics()
+        statistics = await self.run_task(self.statistics)
 
         return self.render(
             "/home/index.mako",
@@ -114,12 +115,11 @@ class HomeHandler(BaseHandler, ABC):
             showlists=showlists,
             show_stats=statistics[0],
             overall_stats=statistics[1],
-            max_download_count=statistics[2],
             controller='home',
             action='index'
         )
 
-    async def statistics(self):
+    def statistics(self):
         show_stat = {}
 
         overall_stats = {
@@ -130,12 +130,10 @@ class HomeHandler(BaseHandler, ABC):
             },
             'shows': {
                 'active': len([show for show in get_show_list() if show.paused == 0 and show.status.lower() == 'continuing']),
-                'total': len(get_show_list()),
+                'total': get_show_list().count(),
             },
             'total_size': 0
         }
-
-        max_download_count = 1000
 
         for show in get_show_list(session=self.db_session):
             if sickrage.app.show_queue.is_being_added(show.indexer_id) or sickrage.app.show_queue.is_being_removed(show.indexer_id):
@@ -162,15 +160,7 @@ class HomeHandler(BaseHandler, ABC):
             overall_stats['episodes']['total'] += show_stat[show.indexer_id]['ep_total']
             overall_stats['total_size'] += show_stat[show.indexer_id]['total_size']
 
-            if show_stat[show.indexer_id]['ep_total'] > max_download_count:
-                max_download_count = show_stat[show.indexer_id]['ep_total']
-
-        # coros = [async_func(show) for show in get_show_list(session=self.db_session)]
-        # await gen.multi(coros)
-
-        max_download_count *= 100
-
-        return show_stat, overall_stats, max_download_count
+        return show_stat, overall_stats
 
 
 class IsAliveHandler(BaseHandler, ABC):
@@ -977,10 +967,10 @@ class DisplayShowHandler(BaseHandler, ABC):
             epCounts=ep_counts,
             epCats=ep_cats,
             all_scene_exceptions=show_obj.exceptions,
-            scene_numbering=await self.run_task(get_scene_numbering_for_show, indexer_id, indexer),
-            xem_numbering=await self.run_task(get_xem_numbering_for_show, indexer_id, indexer),
-            scene_absolute_numbering=await self.run_task(get_scene_absolute_numbering_for_show, indexer_id, indexer),
-            xem_absolute_numbering=await self.run_task(get_xem_absolute_numbering_for_show, indexer_id, indexer),
+            scene_numbering=get_scene_numbering_for_show(indexer_id, indexer),
+            xem_numbering=get_xem_numbering_for_show(indexer_id, indexer),
+            scene_absolute_numbering=get_scene_absolute_numbering_for_show(indexer_id, indexer),
+            xem_absolute_numbering=get_xem_absolute_numbering_for_show(indexer_id, indexer),
             title=show_obj.name,
             controller='home',
             action="display_show"
@@ -1625,22 +1615,16 @@ class TestRenameHandler(BaseHandler, ABC):
         ep_obj_list = show_obj.get_all_episodes(has_location=True)
 
         for cur_ep_obj in ep_obj_list:
-            # Only want to rename if we have a location
             if cur_ep_obj.location:
-                if cur_ep_obj.relatedEps:
-                    # do we have one of multi-episodes in the rename list already
-                    have_already = False
-                    for cur_related_ep in cur_ep_obj.relatedEps + [cur_ep_obj]:
+                if cur_ep_obj.related_episodes:
+                    for cur_related_ep in cur_ep_obj.related_episodes + [cur_ep_obj]:
                         if cur_related_ep in ep_obj_rename_list:
-                            have_already = True
                             break
-                        if not have_already:
-                            ep_obj_rename_list.append(cur_ep_obj)
+                        ep_obj_rename_list.append(cur_ep_obj)
                 else:
                     ep_obj_rename_list.append(cur_ep_obj)
 
         if ep_obj_rename_list:
-            # present season DESC episode DESC on screen
             ep_obj_rename_list.reverse()
 
         submenu = [
@@ -1687,12 +1671,12 @@ class DoRenameHandler(BaseHandler, ABC):
                 continue
 
             root_ep_obj = show_obj.get_episode(int(ep_info[0]), int(ep_info[1]))
-            root_ep_obj.relatedEps = []
+            root_ep_obj.related_episodes = []
 
             for cur_related_ep in self.db_session.query(TVEpisode).filter_by(location=ep_result.location).filter(TVEpisode.episode != int(ep_info[1])):
                 related_ep_obj = show_obj.get_episode(int(cur_related_ep.season), int(cur_related_ep.episode))
-                if related_ep_obj not in root_ep_obj.relatedEps:
-                    root_ep_obj.relatedEps.append(related_ep_obj)
+                if related_ep_obj not in root_ep_obj.related_episodes:
+                    root_ep_obj.related_episodes.append(related_ep_obj)
 
             root_ep_obj.rename()
 

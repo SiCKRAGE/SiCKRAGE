@@ -261,8 +261,7 @@ class TraktShowsHandler(BaseHandler, ABC):
 
         trakt_shows = []
 
-        shows, black_list = getattr(TraktAPI()['shows'], show_list)(extended="full",
-                                                                    limit=int(limit) + len(get_show_list())), False
+        shows, black_list = getattr(TraktAPI()['shows'], show_list)(extended="full", limit=int(limit) + get_show_list().count()), False
 
         while len(trakt_shows) < int(limit):
             trakt_shows += [x for x in shows if 'tvdb' in x.ids and not find_show(int(x.ids['tvdb']), session=self.db_session)]

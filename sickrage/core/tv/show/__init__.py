@@ -86,7 +86,7 @@ class TVShow(MainDBBase):
     last_backlog_search = Column(Integer, default=datetime.datetime.now().toordinal())
     last_proper_search = Column(Integer, default=datetime.datetime.now().toordinal())
 
-    episodes = relationship('TVEpisode', uselist=True, backref='tv_shows', lazy='joined')
+    episodes = relationship('TVEpisode', uselist=True, back_populates='show', lazy='joined')
     imdb_info = relationship('IMDbInfo', uselist=False, backref='tv_shows', lazy='joined')
 
     @property
@@ -259,9 +259,9 @@ class TVShow(MainDBBase):
 
         ep_list = []
         for cur_ep in self.episodes:
-            cur_ep.relatedEps = []
+            cur_ep.related_episodes = []
             if cur_ep.location:
-                # if there is a location, check if it's a multi-episode (share_location > 0) and put them in relatedEps
+                # if there is a location, check if it's a multi-episode (share_location > 0) and put them in related_episodes
                 if len([r for r in results
                         if r.showid == cur_ep.showid and
                            r.season == cur_ep.season and
@@ -277,8 +277,8 @@ class TVShow(MainDBBase):
                     for cur_related_ep in related_eps_result:
                         try:
                             related_ep = self.get_episode(int(cur_related_ep.season), int(cur_related_ep.episode))
-                            if related_ep not in cur_ep.relatedEps:
-                                cur_ep.relatedEps.append(related_ep)
+                            if related_ep not in cur_ep.related_episodes:
+                                cur_ep.related_episodes.append(related_ep)
                         except EpisodeNotFoundException:
                             pass
 
@@ -568,8 +568,8 @@ class TVShow(MainDBBase):
             if root_ep is None:
                 root_ep = episode_obj
             else:
-                if episode_obj not in root_ep.relatedEps:
-                    root_ep.relatedEps.append(episode_obj)
+                if episode_obj not in root_ep.related_episodes:
+                    root_ep.related_episodes.append(episode_obj)
 
             # if it's a new file then
             if not same_file:

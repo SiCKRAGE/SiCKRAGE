@@ -79,19 +79,19 @@ class TVEpisode(MainDBBase):
     version = Column(Integer, default=-1)
     release_group = Column(Text, default='')
 
-    show = relationship('TVShow', uselist=False, backref='tv_episodes', lazy='joined')
+    show = relationship('TVShow', uselist=False, back_populates='episodes', lazy='joined')
 
     def __init__(self, **kwargs):
         super(TVEpisode, self).__init__(**kwargs)
         self.checkForMetaFiles()
 
     @property
-    def relatedEps(self):
-        return getattr(self, '_relatedEps', [])
+    def related_episodes(self):
+        return getattr(self, '_related_episodes', [])
 
-    @relatedEps.setter
-    def relatedEps(self, value):
-        setattr(self, '_relatedEps', value)
+    @related_episodes.setter
+    def related_episodes(self, value):
+        setattr(self, '_related_episodes', value)
 
     def refresh_subtitles(self):
         """Look for subtitles files and refresh the subtitles property"""
@@ -599,11 +599,11 @@ class TVEpisode(MainDBBase):
         # save the ep
         if result:
             self.location = absolute_proper_path + file_ext
-            for relEp in self.relatedEps:
+            for relEp in self.related_episodes:
                 relEp.location = absolute_proper_path + file_ext
 
         # in case something changed with the metadata just do a quick check
-        for curEp in [self] + self.relatedEps:
+        for curEp in [self] + self.related_episodes:
             curEp.checkForMetaFiles()
 
     def airdateModifyStamp(self):
@@ -664,7 +664,7 @@ class TVEpisode(MainDBBase):
         single_name = True
         cur_good_name = None
 
-        for curName in [self.name] + [x.name for x in sorted(self.relatedEps, key=lambda k: k.episode)]:
+        for curName in [self.name] + [x.name for x in sorted(self.related_episodes, key=lambda k: k.episode)]:
             match = re.match(multi_name_regex, curName)
             if not match:
                 single_name = False
@@ -680,9 +680,9 @@ class TVEpisode(MainDBBase):
             good_name = cur_good_name or self.name
         else:
             good_name = self.name
-            if len(self.relatedEps):
+            if len(self.related_episodes):
                 good_name = "MultiPartEpisode"
-            # for relEp in self.relatedEps:
+            # for relEp in self.related_episodes:
             #     good_name += " & " + relEp.name
 
         return good_name
@@ -923,11 +923,11 @@ class TVEpisode(MainDBBase):
 
             # start with the ep string, eg. E03
             ep_string = self._format_string(ep_format.upper(), replace_map)
-            for other_ep in self.relatedEps:
+            for other_ep in self.related_episodes:
 
                 # for limited extend we only append the last ep
                 if multi in (NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED) and other_ep != \
-                        self.relatedEps[-1]:
+                        self.related_episodes[-1]:
                     continue
 
                 elif multi == NAMING_DUPLICATE:
@@ -957,7 +957,7 @@ class TVEpisode(MainDBBase):
                     elif anime_type == 2:  # total anime freak only need the absolute number ! (note: =)
                         ep_string = "%(#)03d" % {"#": curAbsolute_number}
 
-                    for relEp in self.relatedEps:
+                    for relEp in self.related_episodes:
                         if relEp.absolute_number != 0:
                             ep_string += '-' + "%(#)03d" % {"#": relEp.absolute_number}
                         else:
@@ -991,9 +991,9 @@ class TVEpisode(MainDBBase):
 
         if pattern is None:
             # we only use ABD if it's enabled, this is an ABD show, AND this is not a multi-ep
-            if self.show.air_by_date and sickrage.app.config.naming_custom_abd and not self.relatedEps:
+            if self.show.air_by_date and sickrage.app.config.naming_custom_abd and not self.related_episodes:
                 pattern = sickrage.app.config.naming_abd_pattern
-            elif self.show.sports and sickrage.app.config.naming_custom_sports and not self.relatedEps:
+            elif self.show.sports and sickrage.app.config.naming_custom_sports and not self.related_episodes:
                 pattern = sickrage.app.config.naming_sports_pattern
             elif self.show.anime and sickrage.app.config.naming_custom_anime:
                 pattern = sickrage.app.config.naming_anime_pattern
@@ -1012,9 +1012,9 @@ class TVEpisode(MainDBBase):
 
         if pattern is None:
             # we only use ABD if it's enabled, this is an ABD show, AND this is not a multi-ep
-            if self.show.air_by_date and sickrage.app.config.naming_custom_abd and not self.relatedEps:
+            if self.show.air_by_date and sickrage.app.config.naming_custom_abd and not self.related_episodes:
                 pattern = sickrage.app.config.naming_abd_pattern
-            elif self.show.sports and sickrage.app.config.naming_custom_sports and not self.relatedEps:
+            elif self.show.sports and sickrage.app.config.naming_custom_sports and not self.related_episodes:
                 pattern = sickrage.app.config.naming_sports_pattern
             elif self.show.anime and sickrage.app.config.naming_custom_anime:
                 pattern = sickrage.app.config.naming_anime_pattern

@@ -208,7 +208,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
         show_obj: a TVShow instance to create the NFO for
         """
 
-        eps_to_write = [ep_obj] + ep_obj.relatedEps
+        eps_to_write = [ep_obj] + ep_obj.related_episodes
 
         indexer_lang = ep_obj.show.lang or sickrage.app.config.indexer_default_language
 
@@ -292,7 +292,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
                     mpaa = SubElement(episode, "mpaa")
                     mpaa.text = myShow["contentrating"]
 
-                if not ep_obj.relatedEps and getattr(myEp, "rating", None):
+                if not ep_obj.related_episodes and getattr(myEp, "rating", None):
                     try:
                         rating = int((float(myEp['rating']) * 10))
                     except ValueError:

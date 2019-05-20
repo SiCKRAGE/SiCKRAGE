@@ -12,7 +12,7 @@
     from sickrage.core.media.util import showImage
 %>
 <%block name="metas">
-    <meta data-var="max_download_count" data-content="${max_download_count}">
+    <meta data-var="max_download_count" data-content="${overall_stats['episodes']['total'] * 100}">
 </%block>
 
 <%block name="sub_navbar">
@@ -21,8 +21,7 @@
             <div class="form-inline m-2">
                 % if sickrage.app.config.home_layout == 'poster':
                     <div class="px-1">
-                        <select id="postersort" class="form-control bg-secondary text-white-50"
-                                style="border: none;">
+                        <select id="postersort" class="form-control bg-secondary text-white-50" style="border: none;">
                             <option value="name"
                                     data-sort="${srWebRoot}/setPosterSortBy/?sort=name" ${('', 'selected')[sickrage.app.config.poster_sortby == 'name']}>
                                 ${_('Name')}

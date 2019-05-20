@@ -72,7 +72,7 @@ class TraktNotifier(Notifiers):
                 # Add Season and Episode + Related Episodes
                 data['shows'][0]['seasons'] = [{'number': ep_obj.season, 'episodes': []}]
 
-                for relEp_Obj in [ep_obj] + ep_obj.relatedEps:
+                for relEp_Obj in [ep_obj] + ep_obj.related_episodes:
                     data['shows'][0]['seasons'][0]['episodes'].append({'number': relEp_Obj.episode})
 
                 if sickrage.app.config.trakt_sync_watchlist:

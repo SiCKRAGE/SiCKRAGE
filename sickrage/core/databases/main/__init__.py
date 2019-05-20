@@ -37,7 +37,7 @@ class MainDBBase(object):
 
 
 class MainDB(srDatabase):
-    session = sessionmaker(class_=ContextSession)
+    session = scoped_session(sessionmaker(class_=ContextSession, expire_on_commit=False))
 
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
         super(MainDB, self).__init__('main', db_type, db_prefix, db_host, db_port, db_username, db_password)
@@ -66,15 +66,8 @@ class MainDB(srDatabase):
 
             return wrapper
 
-        if len(args) == 1 and not kwargs and callable(args[0]):
-            # Used without arguments, e.g. @with_session
-            # We default to expire_on_commit being false, in case the decorated function returns db instances
-            _Session = functools.partial(MainDB.session, expire_on_commit=False)
-            return decorator(args[0])
-        else:
-            # Arguments were specified, turn them into arguments for Session creation e.g. @with_session(autocommit=True)
-            _Session = functools.partial(MainDB.session, *args, **kwargs)
-            return decorator
+        _Session = functools.partial(MainDB.session)
+        return decorator(args[0])
 
     class IMDbInfo(MainDBBase):
         __tablename__ = 'imdb_info'

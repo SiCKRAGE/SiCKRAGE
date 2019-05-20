@@ -394,7 +394,7 @@ class MediaBrowserMetadata(GenericMetadata):
         show_obj: a TVShow instance to create the NFO for
         """
 
-        eps_to_write = [ep_obj] + ep_obj.relatedEps
+        eps_to_write = [ep_obj] + ep_obj.related_episodes
 
         persons_dict = {
             'Director': [],
@@ -454,14 +454,14 @@ class MediaBrowserMetadata(GenericMetadata):
                 EpisodeNumber = SubElement(episode, "EpisodeNumber")
                 EpisodeNumber.text = str(ep_obj.episode)
 
-                if ep_obj.relatedEps:
+                if ep_obj.related_episodes:
                     EpisodeNumberEnd = SubElement(episode, "EpisodeNumberEnd")
                     EpisodeNumberEnd.text = str(curEpToWrite.episode)
 
                 SeasonNumber = SubElement(episode, "SeasonNumber")
                 SeasonNumber.text = str(curEpToWrite.season)
 
-                if not ep_obj.relatedEps and getattr(myEp, 'absolute_number', None):
+                if not ep_obj.related_episodes and getattr(myEp, 'absolute_number', None):
                     absolute_number = SubElement(episode, "absolute_number")
                     absolute_number.text = str(myEp['absolute_number'])
 
@@ -476,7 +476,7 @@ class MediaBrowserMetadata(GenericMetadata):
                     Overview = SubElement(episode, "Overview")
                     Overview.text = curEpToWrite.description
 
-                if not ep_obj.relatedEps:
+                if not ep_obj.related_episodes:
                     if getattr(myEp, 'rating', None):
                         Rating = SubElement(episode, "Rating")
                         Rating.text = myEp['rating']

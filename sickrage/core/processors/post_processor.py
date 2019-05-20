@@ -739,9 +739,9 @@ class PostProcessor(object):
             # associate all the episodes together under a single root episode
             if root_ep is None:
                 root_ep = episode_object
-                root_ep.relatedEps = []
-            elif episode_object not in root_ep.relatedEps:
-                root_ep.relatedEps.append(episode_object)
+                root_ep.related_episodes = []
+            elif episode_object not in root_ep.related_episodes:
+                root_ep.related_episodes.append(episode_object)
 
         return root_ep
 
@@ -982,7 +982,7 @@ class PostProcessor(object):
 
         # try to find out if we have enough space to perform the copy or move action.
         if not is_file_locked(self.file_path, False):
-            if not verify_freespace(self.file_path, show_object.location, [ep_obj] + ep_obj.relatedEps):
+            if not verify_freespace(self.file_path, show_object.location, [ep_obj] + ep_obj.related_episodes):
                 self._log("Not enough space to continue PostProcessing, exiting", sickrage.app.log.WARNING)
                 # return False
                 raise NoFreeSpaceException
@@ -990,7 +990,7 @@ class PostProcessor(object):
             self._log("Unable to determine needed filespace as the source file is locked for access")
 
         # delete the existing file (and company)
-        for cur_ep in [ep_obj] + ep_obj.relatedEps:
+        for cur_ep in [ep_obj] + ep_obj.related_episodes:
             try:
                 self._delete(cur_ep.location, associated_files=True)
 
@@ -1001,7 +1001,7 @@ class PostProcessor(object):
                 raise EpisodePostProcessingFailedException("Unable to delete the existing files")
 
                 # set the status of the episodes
-                # for curEp in [ep_obj] + ep_obj.relatedEps:
+                # for curEp in [ep_obj] + ep_obj.related_episodes:
                 #    curEp.status = Quality.compositeStatus(SNATCHED, new_ep_quality)
 
         # if the show directory doesn't exist then make it if allowed
@@ -1022,7 +1022,7 @@ class PostProcessor(object):
             show_object.write_metadata(True)
 
         # update the ep info before we rename so the quality & release name go into the name properly
-        for cur_ep in [ep_obj] + ep_obj.relatedEps:
+        for cur_ep in [ep_obj] + ep_obj.related_episodes:
             if self.release_name:
                 self._log("Found release name " + self.release_name, sickrage.app.log.DEBUG)
                 cur_ep.release_name = self.release_name
@@ -1119,18 +1119,18 @@ class PostProcessor(object):
 
         # download subtitles
         if sickrage.app.config.use_subtitles and show_object.subtitles:
-            for cur_ep in [ep_obj] + ep_obj.relatedEps:
+            for cur_ep in [ep_obj] + ep_obj.related_episodes:
                 cur_ep.location = os.path.join(dest_path, new_file_name)
                 cur_ep.refresh_subtitles()
                 cur_ep.download_subtitles()
 
         # put the new location in the database
-        for cur_ep in [ep_obj] + ep_obj.relatedEps:
+        for cur_ep in [ep_obj] + ep_obj.related_episodes:
             cur_ep.location = os.path.join(dest_path, new_file_name)
 
         # set file modify stamp to show airdate
         if sickrage.app.config.airdate_episodes:
-            for cur_ep in [ep_obj] + ep_obj.relatedEps:
+            for cur_ep in [ep_obj] + ep_obj.related_episodes:
                 cur_ep.airdateModifyStamp()
 
         # generate nfo/tbn

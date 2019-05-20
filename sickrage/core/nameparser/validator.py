@@ -65,7 +65,7 @@ class FakeEpisode(object):
         self.scene_season = season
         self.scene_episode = episode
         self.scene_absolute_number = absolute_number
-        self.relatedEps = []
+        self.related_episodes = []
 
     def formatted_filename(self, *args, **kwargs):
         return TVEpisode.formatted_filename(self, *args, **kwargs)
@@ -233,14 +233,14 @@ def validate_name(pattern, multi=None, anime_type=None, file_only=False, abd=Fal
             return False
     elif anime_type != 3:
         if len(result.ab_episode_numbers) and result.ab_episode_numbers != [x.absolute_number for x in
-                                                                            [ep] + ep.relatedEps]:
+                                                                            [ep] + ep.related_episodes]:
             sickrage.app.log.debug("Absolute numbering incorrect in parsed episode, pattern isn't valid")
             return False
     else:
         if result.season_number != ep.season:
             sickrage.app.log.debug("Season number incorrect in parsed episode, pattern isn't valid")
             return False
-        if result.episode_numbers != [x.episode for x in [ep] + ep.relatedEps]:
+        if result.episode_numbers != [x.episode for x in [ep] + ep.related_episodes]:
             sickrage.app.log.debug("Episode numbering incorrect in parsed episode, pattern isn't valid")
             return False
 
@@ -279,7 +279,7 @@ def generate_sample_ep(multi=None, abd=False, sports=False, anime_type=None):
             second_ep.status = Quality.composite_status(DOWNLOADED, Quality.HDTV)
             second_ep.release_name = ep.release_name
 
-            ep.relatedEps.append(second_ep)
+            ep.related_episodes.append(second_ep)
         else:
             ep.release_name = 'Show.Name.S02E03E04E05.HDTV.XviD-RLSGROUP'
 
@@ -291,8 +291,8 @@ def generate_sample_ep(multi=None, abd=False, sports=False, anime_type=None):
             third_ep.status = Quality.composite_status(DOWNLOADED, Quality.HDTV)
             third_ep.release_name = ep.release_name
 
-            ep.relatedEps.append(second_ep)
-            ep.relatedEps.append(third_ep)
+            ep.related_episodes.append(second_ep)
+            ep.related_episodes.append(third_ep)
 
     return ep
 

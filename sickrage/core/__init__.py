@@ -473,14 +473,12 @@ class Core(object):
         self.io_loop.add_callback(self.event_queue.watch)
 
         # fire off startup events
+        self.event_queue.fire_event(self.quicksearch_cache.run)
         self.event_queue.fire_event(self.name_cache.build_all)
         self.event_queue.fire_event(self.version_updater.run)
         self.event_queue.fire_event(self.tz_updater.run)
 
-        # fire off async events
-        self.io_loop.spawn_callback(self.quicksearch_cache.add_shows)
-
-        # start webserver
+        # start web server
         self.wserver.start()
 
         # launch browser window
@@ -489,15 +487,17 @@ class Core(object):
                                                                sickrage.app.config.web_host,
                                                                sickrage.app.config.web_port))
 
-        self.log.info("SiCKRAGE :: STARTED")
-        self.log.info("SiCKRAGE :: APP VERSION:[{}]".format(sickrage.version()))
-        self.log.info("SiCKRAGE :: CONFIG VERSION:[v{}]".format(self.config.config_version))
-        self.log.info("SiCKRAGE :: DATABASE VERSION:[v{}]".format(self.main_db.version))
-        self.log.info("SiCKRAGE :: DATABASE TYPE:[{}]".format(self.db_type))
-        self.log.info("SiCKRAGE :: URL:[{}://{}:{}{}]".format(('http', 'https')[self.config.enable_https], self.config.web_host, self.config.web_port,
-                                                              self.config.web_root))
+        def started():
+            self.log.info("SiCKRAGE :: STARTED")
+            self.log.info("SiCKRAGE :: APP VERSION:[{}]".format(sickrage.version()))
+            self.log.info("SiCKRAGE :: CONFIG VERSION:[v{}]".format(self.config.config_version))
+            self.log.info("SiCKRAGE :: DATABASE VERSION:[v{}]".format(self.main_db.version))
+            self.log.info("SiCKRAGE :: DATABASE TYPE:[{}]".format(self.db_type))
+            self.log.info("SiCKRAGE :: URL:[{}://{}:{}{}]".format(('http', 'https')[self.config.enable_https], self.config.web_host, self.config.web_port,
+                                                                  self.config.web_root))
 
         # start io_loop
+        self.io_loop.add_callback(started)
         self.io_loop.start()
 
     def shutdown(self, restart=False):

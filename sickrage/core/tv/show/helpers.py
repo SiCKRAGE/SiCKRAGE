@@ -37,4 +37,4 @@ def find_show_by_name(term, session=None):
 @MainDB.with_session
 def get_show_list(session=None):
     from sickrage.core.tv.show import TVShow
-    return session.query(TVShow).all()
+    return session.query(TVShow)

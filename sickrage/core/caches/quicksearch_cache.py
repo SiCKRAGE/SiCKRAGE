@@ -15,6 +15,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
+import threading
+
 from tornado import gen
 
 import sickrage
@@ -25,10 +27,19 @@ from sickrage.core.tv.show.helpers import find_show, get_show_list
 
 class QuicksearchCache(object):
     def __init__(self):
+        self.name = "QUICKSEARCH-CACHE"
+
         self.cache = {
             'shows': {},
             'episodes': {}
         }
+
+    def run(self):
+        # set thread name
+        threading.currentThread().setName(self.name)
+
+        self.load()
+        [self.add_show(show.indexer_id) for show in get_show_list()]
 
     @CacheDB.with_session
     def load(self, session=None):
@@ -39,10 +50,6 @@ class QuicksearchCache(object):
 
         sickrage.app.log.debug("Loaded {} shows to QuickSearch cache".format(len(self.cache['shows'])))
         sickrage.app.log.debug("Loaded {} episodes to QuickSearch cache".format(len(self.cache['episodes'])))
-
-    async def add_shows(self):
-        await self.load()
-        await gen.multi([self.add_show(show.indexer_id) for show in get_show_list()])
 
     def get_shows(self, term):
         return [d for d in self.cache['shows'].values() if term.lower() in d['name'].lower()]
