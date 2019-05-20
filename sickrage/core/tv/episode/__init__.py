@@ -248,13 +248,15 @@ class TVEpisode(MainDBBase):
         self.scene_absolute_number = get_scene_absolute_numbering(
             self.show.indexer_id,
             self.show.indexer,
-            self.absolute_number
+            self.absolute_number,
+            session=object_session(self)
         ) or self.absolute_number
 
         self.scene_season, self.scene_episode = get_scene_numbering(
             self.show.indexer_id,
             self.show.indexer,
-            self.season, self.episode
+            self.season, self.episode,
+            session=object_session(self)
         ) or (self.season, self.episode)
 
         self.description = safe_getattr(myEp, 'overview', self.description)
@@ -387,13 +389,15 @@ class TVEpisode(MainDBBase):
                     self.scene_absolute_number = get_scene_absolute_numbering(
                         self.show.indexer_id,
                         self.show.indexer,
-                        self.absolute_number
+                        self.absolute_number,
+                        session=object_session(self)
                     ) or self.absolute_number
 
                     self.scene_season, self.scene_episode = get_scene_numbering(
                         self.show.indexer_id,
                         self.show.indexer,
-                        self.season, self.episode
+                        self.season, self.episode,
+                        session=object_session(self)
                     ) or (self.season, self.episode)
 
                     self.description = epDetails.findtext('plot') or self.description
