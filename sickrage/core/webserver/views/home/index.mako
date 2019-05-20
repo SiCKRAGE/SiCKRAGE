@@ -166,7 +166,7 @@
                         progressbar_percent = nom * 100 / den
 
                         data_date = '6000000000.0'
-                        if cur_airs_next:
+                        if cur_airs_next > datetime.date.min:
                             data_date = calendar.timegm(srdatetime.srDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt.timetuple())
                         elif display_status:
                             if 'nded' not in display_status and 1 == int(curShow.paused):
