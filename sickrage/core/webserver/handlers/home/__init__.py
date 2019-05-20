@@ -105,16 +105,12 @@ class HomeHandler(BaseHandler, ABC):
         else:
             showlists['Shows'] = get_show_list()
 
-        # statistics = await self.run_task(self.statistics)
-
         return self.render(
             "/home/index.mako",
             title="Home",
             header="Show List",
             topmenu="home",
             showlists=showlists,
-            # show_stats=statistics[0],
-            # overall_stats=statistics[1],
             controller='home',
             action='index'
         )
