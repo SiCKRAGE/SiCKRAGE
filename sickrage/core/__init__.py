@@ -35,6 +35,7 @@ from apscheduler.triggers.interval import IntervalTrigger
 from dateutil import tz
 from fake_useragent import UserAgent
 from keycloak.realm import KeycloakRealm
+from tornado import gen
 from tornado.ioloop import IOLoop
 
 import sickrage
@@ -273,9 +274,6 @@ class Core(object):
         # load name cache
         self.name_cache.load()
 
-        # load data for shows from database
-        self.load_shows()
-
         if self.config.default_page not in ('schedule', 'history', 'IRC'):
             self.config.default_page = 'home'
 
@@ -479,6 +477,9 @@ class Core(object):
         self.event_queue.fire_event(self.version_updater.run)
         self.event_queue.fire_event(self.tz_updater.run)
 
+        # fire off async events
+        self.io_loop.spawn_callback(self.quicksearch_cache.add_shows)
+
         # start webserver
         self.wserver.start()
 
@@ -529,18 +530,3 @@ class Core(object):
 
         if self.io_loop:
             self.io_loop.stop()
-
-    def load_shows(self):
-        """
-        Populates the showlist and quicksearch cache with shows and episodes from the database
-        """
-
-        self.quicksearch_cache.load()
-
-        from sickrage.core.tv.show.helpers import get_show_list
-        for show in get_show_list():
-            try:
-                self.log.debug("Loading data for show: [{}]".format(show.name))
-                self.quicksearch_cache.add_show(show.indexer_id)
-            except Exception as e:
-                self.log.debug("Show error in [%s]: %s" % (show.location, str(e)))

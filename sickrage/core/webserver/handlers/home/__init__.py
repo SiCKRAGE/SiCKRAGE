@@ -104,7 +104,7 @@ class HomeHandler(BaseHandler, ABC):
         else:
             showlists['Shows'] = get_show_list()
 
-        statistics = self.statistics()
+        statistics = await self.statistics()
 
         return self.render(
             "/home/index.mako",
@@ -119,7 +119,7 @@ class HomeHandler(BaseHandler, ABC):
             action='index'
         )
 
-    def statistics(self):
+    async def statistics(self):
         show_stat = {}
 
         overall_stats = {
@@ -164,6 +164,9 @@ class HomeHandler(BaseHandler, ABC):
 
             if show_stat[show.indexer_id]['ep_total'] > max_download_count:
                 max_download_count = show_stat[show.indexer_id]['ep_total']
+
+        # coros = [async_func(show) for show in get_show_list(session=self.db_session)]
+        # await gen.multi(coros)
 
         max_download_count *= 100
 
