@@ -31,6 +31,7 @@ from migrate.versioning import api
 from sqlalchemy import create_engine, event, inspect
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker, mapper
+from sqlalchemy.pool import StaticPool, QueuePool
 
 import sickrage
 
@@ -40,18 +41,18 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
     if not isinstance(dbapi_connection, sqlite3.Connection):
         return
 
-    old_isolation = dbapi_connection.isolation_level
-    dbapi_connection.isolation_level = None
     cursor = dbapi_connection.cursor()
 
     try:
+        cursor.execute('PRAGMA foreign_keys=ON;')
+        cursor.execute('PRAGMA page_size=4096;')
         cursor.execute("PRAGMA journal_mode=WAL")
+        cursor.execute('PRAGMA synchronous=NORMAL;')
         cursor.execute('PRAGMA busy_timeout=%i;' % 15000)
     except OperationalError:
         pass
 
     cursor.close()
-    dbapi_connection.isolation_level = old_isolation
 
 
 @event.listens_for(mapper, "init")
@@ -145,7 +146,8 @@ class srDatabase(object):
     @property
     def engine(self):
         if self.db_type == 'sqlite':
-            return create_engine('sqlite:///{}'.format(self.db_path), echo=False, connect_args={'check_same_thread': False, 'timeout': 10})
+            return create_engine('sqlite:///{}'.format(self.db_path), echo=False, pool_size=100, poolclass=QueuePool,
+                                 connect_args={'check_same_thread': False, 'timeout': 10})
         elif self.db_type == 'mysql':
             mysql_engine = create_engine('mysql+pymysql://{}:{}@{}:{}/'.format(self.db_username, self.db_password, self.db_host, self.db_port), echo=False)
             mysql_engine.execute("CREATE DATABASE IF NOT EXISTS {}_{}".format(self.db_prefix, self.name))
