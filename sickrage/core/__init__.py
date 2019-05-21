@@ -35,7 +35,6 @@ from apscheduler.triggers.interval import IntervalTrigger
 from dateutil import tz
 from fake_useragent import UserAgent
 from keycloak.realm import KeycloakRealm
-from tornado import gen
 from tornado.ioloop import IOLoop
 
 import sickrage
@@ -46,13 +45,12 @@ from sickrage.core.common import SD, SKIPPED, WANTED
 from sickrage.core.config import Config
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.databases.main import MainDB
-from sickrage.core.helpers import generate_secret, make_dir, get_lan_ip, restore_app_data, \
-    get_disk_space_usage, get_free_space, launch_browser, torrent_webui_url, encryption
+from sickrage.core.helpers import generate_secret, make_dir, get_lan_ip, restore_app_data, get_disk_space_usage, get_free_space, launch_browser, \
+    torrent_webui_url, encryption
 from sickrage.core.logger import Logger
 from sickrage.core.nameparser.validator import check_force_season_folders
 from sickrage.core.processors import auto_postprocessor
 from sickrage.core.processors.auto_postprocessor import AutoPostProcessor
-from sickrage.core.queues.event import EventQueue
 from sickrage.core.queues.postprocessor import PostProcessorQueue
 from sickrage.core.queues.search import SearchQueue
 from sickrage.core.queues.show import ShowQueue
@@ -144,7 +142,6 @@ class Core(object):
         self.show_queue = None
         self.search_queue = None
         self.postprocessor_queue = None
-        self.event_queue = None
         self.version_updater = None
         self.show_updater = None
         self.tz_updater = None
@@ -182,7 +179,6 @@ class Core(object):
         self.show_queue = ShowQueue()
         self.search_queue = SearchQueue()
         self.postprocessor_queue = PostProcessorQueue()
-        self.event_queue = EventQueue()
         self.version_updater = VersionUpdater()
         self.show_updater = ShowUpdater()
         self.tz_updater = TimeZoneUpdater()
@@ -470,22 +466,20 @@ class Core(object):
         self.io_loop.add_callback(self.search_queue.watch)
         self.io_loop.add_callback(self.show_queue.watch)
         self.io_loop.add_callback(self.postprocessor_queue.watch)
-        self.io_loop.add_callback(self.event_queue.watch)
 
         # fire off startup events
-        self.event_queue.fire_event(self.quicksearch_cache.run)
-        self.event_queue.fire_event(self.name_cache.run)
-        self.event_queue.fire_event(self.version_updater.run)
-        self.event_queue.fire_event(self.tz_updater.run)
+        self.io_loop.run_in_executor(None, self.quicksearch_cache.run)
+        self.io_loop.run_in_executor(None, self.name_cache.run)
+        self.io_loop.run_in_executor(None, self.version_updater.run)
+        self.io_loop.run_in_executor(None, self.tz_updater.run)
 
         # start web server
         self.wserver.start()
 
         # launch browser window
         if all([not sickrage.app.no_launch, sickrage.app.config.launch_browser]):
-            self.event_queue.fire_event(lambda: launch_browser(('http', 'https')[sickrage.app.config.enable_https],
-                                                               sickrage.app.config.web_host,
-                                                               sickrage.app.config.web_port))
+            self.io_loop.run_in_executor(None, lambda: launch_browser(('http', 'https')[sickrage.app.config.enable_https], sickrage.app.config.web_host,
+                                                                      sickrage.app.config.web_port))
 
         def started():
             self.log.info("SiCKRAGE :: STARTED")

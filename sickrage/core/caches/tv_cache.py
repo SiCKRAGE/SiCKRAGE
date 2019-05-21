@@ -236,7 +236,7 @@ class TVCache(object):
                     # add to external provider cache database
                     if sickrage.app.config.enable_api_providers_cache and not self.provider.private:
                         try:
-                            sickrage.app.event_queue.fire_event(ProviderCacheAPI().add, data=dbData)
+                            sickrage.app.io_loop.run_in_executor(None, ProviderCacheAPI().add, data=dbData)
                         except Exception:
                             pass
 
