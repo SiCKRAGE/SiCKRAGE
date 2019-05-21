@@ -585,8 +585,7 @@ class PostProcessor(object):
                 self.release_name = remove_non_release_groups(remove_extension(os.path.basename(parse_result.original_name)))
 
         else:
-            sickrage.app.log.debug("Parse result not sufficient (all following have to be set). will not save release "
-                                   "name")
+            sickrage.app.log.debug("Parse result not sufficient (all following have to be set). will not save release name")
             sickrage.app.log.debug("Parse result(series_name): " + str(parse_result.series_name))
             sickrage.app.log.debug("Parse result(season_number): " + str(parse_result.season_number))
             sickrage.app.log.debug("Parse result(episode_numbers): " + str(parse_result.episode_numbers))
@@ -948,8 +947,7 @@ class PostProcessor(object):
         # get the version of the episode we're processing
         new_ep_version = -1
         if version:
-            self._log("Snatch history had a version in it, using that: v" + str(version),
-                      sickrage.app.log.DEBUG)
+            self._log("Snatch history had a version in it, using that: v" + str(version), sickrage.app.log.DEBUG)
             new_ep_version = version
 
         # check for an existing file
@@ -1044,10 +1042,7 @@ class PostProcessor(object):
 
             cur_ep.version = new_ep_version
 
-            if self.release_group:
-                cur_ep.release_group = self.release_group
-            else:
-                cur_ep.release_group = ""
+            cur_ep.release_group = self.release_group or ""
 
         # Just want to keep this consistent for failed handling right now
         release_name = show_names.determine_release_name(self.folder_path, self.nzb_name)

@@ -97,6 +97,9 @@
 
 <%block name="content">
     <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
+
+    <% loading_show_list_ids = [] %>
+
     % for curListType, curShowlist in showlists.items():
         % if curListType == "Anime":
             <div class="row">
@@ -110,6 +113,7 @@
                  class="show-grid clearfix mx-auto">
                 <div class="posterview">
                     % for curLoadingShow in sickrage.app.show_queue.loading_show_list:
+                    <% loading_show_list_ids.append(curLoadingShow['indexer_id']) %>
                         <div class="show-container" data-name="0" data-date="010101" data-network="0"
                              data-progress="101">
                             <div class="card card-block text-white bg-dark m-1 shadow">
@@ -131,6 +135,9 @@
 
                     % for curShow in sorted(curShowlist, key=cmp_to_key(lambda x, y: x.name < y.name)):
                     <%
+                        if curShow.indexer_id in loading_show_list_ids:
+                            continue
+
                         download_stat_tip = ''
                         display_status = curShow.status
 
@@ -282,6 +289,7 @@
                             % if sickrage.app.show_queue.loading_show_list:
                                 <tbody>
                                     % for curLoadingShow in sickrage.app.show_queue.loading_show_list:
+                                        <% loading_show_list_ids.append(curLoadingShow['indexer_id']) %>
                                         <tr>
                                             <td class="table-fit">(${_('loading')})</td>
                                             <td></td>
@@ -302,6 +310,9 @@
                             <tbody class="">
                                 % for curShow in sorted(curShowlist, key=cmp_to_key(lambda x, y: x.name < y.name)):
                                     <%
+                                        if curShow.indexer_id in loading_show_list_ids:
+                                            continue
+
                                         download_stat_tip = ''
 
                                         cur_airs_next = curShow.airs_next
