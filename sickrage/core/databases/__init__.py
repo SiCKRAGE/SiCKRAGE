@@ -20,6 +20,7 @@ import errno
 import os
 import pickle
 import shutil
+import sqlite3
 from collections import OrderedDict
 from sqlite3 import OperationalError
 from time import sleep
@@ -28,9 +29,29 @@ import sqlalchemy
 from migrate import DatabaseAlreadyControlledError, DatabaseNotControlledError
 from migrate.versioning import api
 from sqlalchemy import create_engine, event, inspect
+from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker, mapper
 
 import sickrage
+
+
+@event.listens_for(Engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    if not isinstance(dbapi_connection, sqlite3.Connection):
+        return
+
+    old_isolation = dbapi_connection.isolation_level
+    dbapi_connection.isolation_level = None
+    cursor = dbapi_connection.cursor()
+
+    try:
+        cursor.execute("PRAGMA journal_mode=WAL")
+        cursor.execute('PRAGMA busy_timeout=%i;' % 15000)
+    except OperationalError:
+        pass
+
+    cursor.close()
+    dbapi_connection.isolation_level = old_isolation
 
 
 @event.listens_for(mapper, "init")
@@ -112,13 +133,6 @@ class srDatabase(object):
 
         self.db_path = os.path.join(sickrage.app.data_dir, '{}.db'.format(self.name))
         self.db_repository = os.path.join(os.path.dirname(__file__), self.name, 'db_repository')
-
-        # enable WAL mode
-        if 'sqlite' in str(self.engine.url):
-            db_connection = self.engine.connect()
-            db_connection.execute('PRAGMA journal_mode=WAL')
-            db_connection.execute('PRAGMA busy_timeout=%i;' % 15000)
-            db_connection.close()
 
         if not self.version:
             api.version_control(self.engine, self.db_repository, api.version(self.db_repository))
