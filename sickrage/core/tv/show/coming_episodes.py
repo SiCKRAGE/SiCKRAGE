@@ -22,7 +22,7 @@ from functools import cmp_to_key
 
 import sickrage
 from sickrage.core.common import Quality, get_quality_string, WANTED, UNAIRED, timeFormat, dateFormat
-from sickrage.core.helpers.srdatetime import srDateTime
+from sickrage.core.helpers.srdatetime import SRDateTime
 from sickrage.core.tv.show.helpers import get_show_list
 from sickrage.core.databases.main import MainDB
 
@@ -113,7 +113,7 @@ class ComingEpisodes:
                     results += result(s, e)
 
         for index, item in enumerate(results):
-            results[index]['localtime'] = srDateTime(
+            results[index]['localtime'] = SRDateTime(
                 sickrage.app.tz_updater.parse_date_time(item['airdate'], item['airs'], item['network']),
                 convert=True).dt
 
@@ -147,10 +147,10 @@ class ComingEpisodes:
                 result['network'] = ''
 
             result['quality'] = get_quality_string(result['quality'])
-            result['airs'] = srDateTime(result['localtime']).srftime(t_preset=timeFormat).lstrip('0').replace(' 0', ' ')
+            result['airs'] = SRDateTime(result['localtime']).srftime(t_preset=timeFormat).lstrip('0').replace(' 0', ' ')
             result['weekday'] = 1 + result['airdate'].weekday()
             result['tvdbid'] = result['indexer_id']
-            result['airdate'] = srDateTime(result['localtime']).srfdate(d_preset=dateFormat)
+            result['airdate'] = SRDateTime(result['localtime']).srfdate(d_preset=dateFormat)
             result['localtime'] = result['localtime']
 
             grouped_results[category].append(result)

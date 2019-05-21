@@ -23,18 +23,18 @@ from functools import partial
 from tornado.ioloop import IOLoop
 
 import sickrage
-from sickrage.core.queues import srQueue, srQueueItem
+from sickrage.core.queues import SRQueue, SRQueueItem
 
 
-class EventQueue(srQueue):
+class EventQueue(SRQueue):
     def __init__(self):
-        srQueue.__init__(self, "EVENTQUEUE")
+        SRQueue.__init__(self, "EVENTQUEUE")
 
     def fire_event(self, event, **kwargs):
         sickrage.app.io_loop.add_callback(self.put, EventQueueItem(event, **kwargs))
 
 
-class EventQueueItem(srQueueItem):
+class EventQueueItem(SRQueueItem):
     """
     Represents an event in the queue waiting to be executed
     """

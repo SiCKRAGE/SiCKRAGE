@@ -129,15 +129,15 @@
 
                                         <tr class="${show_div}">
                                             <td class="table-fit text-nowrap">
-                                                <% airDate = srdatetime.srDateTime(cur_result['localtime'], convert=True).dt %>
+                                                <% airDate = srdatetime.SRDateTime(cur_result['localtime'], convert=True).dt %>
                                                 <time datetime="${airDate.isoformat()}"
-                                                      class="date">${srdatetime.srDateTime(airDate).srfdatetime()}</time>
+                                                      class="date">${srdatetime.SRDateTime(airDate).srfdatetime()}</time>
                                             </td>
 
                                             <td class="table-fit text-nowrap">
-                                                <% ends = srdatetime.srDateTime(cur_ep_enddate, convert=True).dt %>
+                                                <% ends = srdatetime.SRDateTime(cur_ep_enddate, convert=True).dt %>
                                                 <time datetime="${ends.isoformat()}"
-                                                      class="date">${srdatetime.srDateTime(ends).srfdatetime()}</time>
+                                                      class="date">${srdatetime.SRDateTime(ends).srfdatetime()}</time>
                                             </td>
 
                                             <td class="table-fit text-nowrap">
@@ -366,7 +366,7 @@
                                                         Airs:
                                                     </span>
                                             <span class="airdate">
-                                                ${srdatetime.srDateTime(cur_result['localtime']).srfdatetime()}
+                                                ${srdatetime.SRDateTime(cur_result['localtime']).srfdatetime()}
                                             </span>
                                             ${('', '<span> on %s</span>' % cur_result['network'])[bool(cur_result['network'])]}
                                         </div>
@@ -423,7 +423,7 @@
                                         % if airday == day:
                                             % try:
                                             <% day_has_show = True %>
-                                            <% airtime = srdatetime.srDateTime(datetime.datetime.fromtimestamp(time.mktime(cur_result['localtime'].timetuple()))).srftime() %>
+                                            <% airtime = srdatetime.SRDateTime(datetime.datetime.fromtimestamp(time.mktime(cur_result['localtime'].timetuple()))).srftime() %>
                                             % if sickrage.app.config.trim_zero:
                                                 <% airtime = re.sub(r'0(\d:\d\d)', r'\1', airtime, 0, re.IGNORECASE | re.MULTILINE) %>
                                             % endif

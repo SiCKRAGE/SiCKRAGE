@@ -41,7 +41,7 @@ from sickrage.core.exceptions import AnidbAdbaConnectionException, CantRefreshSh
     MultipleEpisodesInDatabaseException
 from sickrage.core.helpers import clean_url, clean_host, clean_hosts, get_disk_space_usage, checkbox_to_value, try_int
 from sickrage.core.helpers.anidb import get_release_groups_for_anime, short_group_names
-from sickrage.core.helpers.srdatetime import srDateTime
+from sickrage.core.helpers.srdatetime import SRDateTime
 from sickrage.core.queues.search import BacklogQueueItem, FailedQueueItem, ManualSearchQueueItem, MANUAL_SEARCH_HISTORY
 from sickrage.core.scene_exceptions import get_scene_exceptions, update_scene_exceptions
 from sickrage.core.scene_numbering import get_scene_numbering_for_show, get_xem_numbering_for_show, \
@@ -901,7 +901,7 @@ class DisplayShowHandler(BaseHandler, ABC):
                 today = datetime.datetime.now().replace(tzinfo=sickrage.app.tz)
                 air_date = curEp.airdate
                 if air_date.year >= 1970 or show_obj.network:
-                    air_date = srDateTime(sickrage.app.tz_updater.parse_date_time(curEp.airdate, show_obj.airs, show_obj.network), convert=True).dt
+                    air_date = SRDateTime(sickrage.app.tz_updater.parse_date_time(curEp.airdate, show_obj.airs, show_obj.network), convert=True).dt
 
                 if cur_ep_cat == Overview.WANTED and air_date < today:
                     cur_ep_cat = Overview.MISSED

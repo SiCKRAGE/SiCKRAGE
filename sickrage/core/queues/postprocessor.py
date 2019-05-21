@@ -25,7 +25,7 @@ from time import sleep
 import sickrage
 from sickrage.core.common import cpu_presets
 from sickrage.core.process_tv import ProcessResult
-from sickrage.core.queues import srQueue, srQueueItem, srQueuePriorities
+from sickrage.core.queues import SRQueue, SRQueueItem, SRQueuePriorities
 
 
 class PostProcessorQueueActions(object):
@@ -41,9 +41,9 @@ class PostProcessorQueueActions(object):
 postprocessor_queue_lock = threading.Lock()
 
 
-class PostProcessorQueue(srQueue):
+class PostProcessorQueue(SRQueue):
     def __init__(self):
-        srQueue.__init__(self, "POSTPROCESSORQUEUE")
+        SRQueue.__init__(self, "POSTPROCESSORQUEUE")
         self._output = []
 
     @property
@@ -138,7 +138,7 @@ class PostProcessorQueue(srQueue):
             return self.output + "<br\><span class='hidden'>Processing succeeded</span>"
 
 
-class PostProcessorItem(srQueueItem):
+class PostProcessorItem(SRQueueItem):
     def __init__(self, dirName, nzbName=None, process_method=None, force=False, is_priority=None, delete_on=False,
                  failed=False, proc_type="auto"):
         action_id = (PostProcessorQueueActions.MANUAL, PostProcessorQueueActions.AUTO)[proc_type == "auto"]
@@ -153,7 +153,7 @@ class PostProcessorItem(srQueueItem):
         self.failed = failed
         self.proc_type = proc_type
 
-        self.priority = (srQueuePriorities.HIGH, srQueuePriorities.NORMAL)[proc_type == 'auto']
+        self.priority = (SRQueuePriorities.HIGH, SRQueuePriorities.NORMAL)[proc_type == 'auto']
 
     def run(self):
         """

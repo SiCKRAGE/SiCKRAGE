@@ -120,7 +120,7 @@ class ContextSession(sqlalchemy.orm.Session):
         self.close()
 
 
-class srDatabase(object):
+class SRDatabase(object):
     def __init__(self, name, db_type='sqlite', db_prefix='sickrage', db_host='localhost', db_port='3306', db_username='sickrage', db_password='sickrage'):
         self.name = name
         self.db_type = db_type

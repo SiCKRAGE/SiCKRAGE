@@ -21,7 +21,7 @@ from sqlalchemy import Column, Integer, Text, ForeignKeyConstraint, String, Date
 from sqlalchemy.ext.declarative import as_declarative
 from sqlalchemy.orm import sessionmaker, scoped_session
 
-from sickrage.core.databases import srDatabase, ContextSession
+from sickrage.core.databases import SRDatabase, ContextSession
 
 
 @as_declarative()
@@ -36,7 +36,7 @@ class MainDBBase(object):
                 setattr(self, key, value)
 
 
-class MainDB(srDatabase):
+class MainDB(SRDatabase):
     session = sessionmaker(class_=ContextSession)
 
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):

@@ -27,7 +27,7 @@ from sickrage.core.common import WANTED
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import CantRefreshShowException, CantRemoveShowException, CantUpdateShowException, EpisodeDeletedException, \
     MultipleShowObjectsException
-from sickrage.core.queues import srQueue, srQueueItem, srQueuePriorities
+from sickrage.core.queues import SRQueue, SRQueueItem, SRQueuePriorities
 from sickrage.core.scene_numbering import xem_refresh, get_xem_numbering_for_show
 from sickrage.core.traktapi import TraktAPI
 from sickrage.core.tv.show import TVShow
@@ -36,9 +36,9 @@ from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_attributenotfound, indexer_error, indexer_exception
 
 
-class ShowQueue(srQueue):
+class ShowQueue(SRQueue):
     def __init__(self):
-        srQueue.__init__(self, "SHOWQUEUE")
+        SRQueue.__init__(self, "SHOWQUEUE")
 
     @property
     def loading_show_list(self):
@@ -191,7 +191,7 @@ class ShowQueueActions(object):
     }
 
 
-class ShowQueueItem(srQueueItem):
+class ShowQueueItem(SRQueueItem):
     """
     Represents an item in the queue waiting to be executed
 
@@ -241,7 +241,7 @@ class QueueItemAdd(ShowQueueItem):
         self.whitelist = whitelist
         self.default_status_after = default_status_after
         self.skip_downloaded = skip_downloaded
-        self.priority = srQueuePriorities.HIGH
+        self.priority = SRQueuePriorities.HIGH
 
     @property
     def show_name(self):
@@ -612,7 +612,7 @@ class QueueItemRemove(ShowQueueItem):
         super(QueueItemRemove, self).__init__(indexer_id, ShowQueueActions.REMOVE)
 
         # lets make sure this happens before any other high priority actions
-        self.priority = srQueuePriorities.EXTREME
+        self.priority = SRQueuePriorities.EXTREME
         self.full = full
 
     @property

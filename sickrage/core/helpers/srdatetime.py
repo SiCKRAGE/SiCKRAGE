@@ -18,7 +18,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import locale
 
 import sickrage
@@ -89,7 +88,7 @@ date_presets = (
 time_presets = ('%I:%M:%S %p', '%H:%M:%S')
 
 
-class srDateTime(object):
+class SRDateTime(object):
     def __init__(self, dt, convert=False):
         self.dt = dt
         if convert and sickrage.app.config.timezone_display == 'local':

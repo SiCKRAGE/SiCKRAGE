@@ -167,7 +167,7 @@
 
                         data_date = '6000000000.0'
                         if cur_airs_next > datetime.date.min:
-                            data_date = calendar.timegm(srdatetime.srDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt.timetuple())
+                            data_date = calendar.timegm(srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt.timetuple())
                         elif display_status:
                             if 'nded' not in display_status and 1 == int(curShow.paused):
                                 data_date = '5000000500.0'
@@ -213,10 +213,10 @@
 
                                     <div class="show-date" style="color: grey">
                                         % if cur_airs_next > datetime.date.min:
-                                            <% ldatetime = srdatetime.srDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
+                                            <% ldatetime = srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
                                             <%
                                                 try:
-                                                  out = srdatetime.srDateTime(ldatetime).srfdate()
+                                                  out = srdatetime.SRDateTime(ldatetime).srfdate()
                                                 except ValueError:
                                                   out = _('Invalid date')
                                             %>
@@ -340,11 +340,11 @@
                                     %>
                                     <tr>
                                         % if cur_airs_next > datetime.date.min:
-                                        <% airDate = srdatetime.srDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
+                                        <% airDate = srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
                                         % try:
                                             <td class="table-fit align-middle">
                                                 <time datetime="${airDate.isoformat()}"
-                                                      class="date">${srdatetime.srDateTime(airDate).srfdate()}</time>
+                                                      class="date">${srdatetime.SRDateTime(airDate).srfdate()}</time>
                                             </td>
                                         % except ValueError:
                                             <td class="table-fit"></td>
@@ -354,11 +354,11 @@
                                         % endif
 
                                         % if cur_airs_prev > datetime.date.min:
-                                        <% airDate = srdatetime.srDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_prev, curShow.airs, curShow.network), convert=True).dt %>
+                                        <% airDate = srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_prev, curShow.airs, curShow.network), convert=True).dt %>
                                         % try:
                                             <td class="table-fit align-middle">
                                                 <time datetime="${airDate.isoformat()}" class="date">
-                                                    ${srdatetime.srDateTime(airDate).srfdate()}
+                                                    ${srdatetime.SRDateTime(airDate).srfdate()}
                                                 </time>
                                             </td>
                                         % except ValueError:

@@ -657,11 +657,11 @@
                     <% airDate = epResult.airdate %>
 
                     % if airDate.year >= 1970 or show.network:
-                        <% airDate = srdatetime.srDateTime(sickrage.app.tz_updater.parse_date_time(epResult.airdate, show.airs, show.network), convert=True).dt %>
+                        <% airDate = srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(epResult.airdate, show.airs, show.network), convert=True).dt %>
                     % endif
 
                     <time datetime="${airDate.isoformat()}" class="date text-nowrap">
-                        ${srdatetime.srDateTime(airDate).srfdatetime()}
+                        ${srdatetime.SRDateTime(airDate).srfdatetime()}
                     </time>
                 </td>
 

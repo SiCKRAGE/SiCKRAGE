@@ -21,7 +21,7 @@ from sqlalchemy import Column, Integer, Text, String
 from sqlalchemy.ext.declarative import as_declarative
 from sqlalchemy.orm import sessionmaker, scoped_session
 
-from sickrage.core.databases import srDatabase, ContextSession
+from sickrage.core.databases import SRDatabase, ContextSession
 
 
 @as_declarative()
@@ -34,7 +34,7 @@ class CacheDBBase(object):
             setattr(self, key, value)
 
 
-class CacheDB(srDatabase):
+class CacheDB(SRDatabase):
     session = sessionmaker(class_=ContextSession)
 
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):

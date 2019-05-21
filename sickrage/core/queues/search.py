@@ -26,7 +26,7 @@ from tornado import gen
 import sickrage
 from sickrage.core.common import cpu_presets
 from sickrage.core.databases.main import MainDB
-from sickrage.core.queues import srQueue, srQueueItem, srQueuePriorities
+from sickrage.core.queues import SRQueue, SRQueueItem, SRQueuePriorities
 from sickrage.core.search import search_providers, snatch_episode
 from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.core.tv.show.helpers import find_show
@@ -49,9 +49,9 @@ def fifo(my_list, item, max_size=100):
     my_list.append(item)
 
 
-class SearchQueue(srQueue):
+class SearchQueue(SRQueue):
     def __init__(self):
-        srQueue.__init__(self, "SEARCHQUEUE")
+        SRQueue.__init__(self, "SEARCHQUEUE")
 
     def is_in_queue(self, show_id, episode_ids):
         for cur_item in self.queue_items:
@@ -151,7 +151,7 @@ class SearchQueue(srQueue):
             sickrage.app.log.debug("Not adding item, it's already in the queue")
 
 
-class DailySearchQueueItem(srQueueItem):
+class DailySearchQueueItem(SRQueueItem):
     def __init__(self, show_id, episode_ids):
         super(DailySearchQueueItem, self).__init__('Daily Search', DAILY_SEARCH)
         self.name = 'DAILY-{}'.format(show_id)
@@ -182,7 +182,7 @@ class DailySearchQueueItem(srQueueItem):
             sickrage.app.log.info("Finished daily search for: [" + show_obj.name + "]")
 
 
-class ManualSearchQueueItem(srQueueItem):
+class ManualSearchQueueItem(SRQueueItem):
     def __init__(self, show_id, episode_id, downCurQuality=False):
         super(ManualSearchQueueItem, self).__init__('Manual Search', MANUAL_SEARCH)
         self.name = 'MANUAL-{}'.format(show_id)
@@ -190,7 +190,7 @@ class ManualSearchQueueItem(srQueueItem):
         self.episode_id = episode_id
         self.success = False
         self.started = False
-        self.priority = srQueuePriorities.EXTREME
+        self.priority = SRQueuePriorities.EXTREME
         self.downCurQuality = downCurQuality
 
     def run(self):
@@ -224,13 +224,13 @@ class ManualSearchQueueItem(srQueueItem):
         fifo(MANUAL_SEARCH_HISTORY, self, MANUAL_SEARCH_HISTORY_SIZE)
 
 
-class BacklogQueueItem(srQueueItem):
+class BacklogQueueItem(SRQueueItem):
     def __init__(self, show_id, episode_ids):
         super(BacklogQueueItem, self).__init__('Backlog Search', BACKLOG_SEARCH)
         self.name = 'BACKLOG-{}'.format(show_id)
         self.show_id = show_id
         self.episode_ids = episode_ids
-        self.priority = srQueuePriorities.LOW
+        self.priority = SRQueuePriorities.LOW
         self.success = False
         self.started = False
 
@@ -256,13 +256,13 @@ class BacklogQueueItem(srQueueItem):
             sickrage.app.log.info("Finished backlog search for: [" + show_obj.name + "]")
 
 
-class FailedQueueItem(srQueueItem):
+class FailedQueueItem(SRQueueItem):
     def __init__(self, show_id, episode_id, downCurQuality=False):
         super(FailedQueueItem, self).__init__('Retry', FAILED_SEARCH)
         self.name = 'RETRY-{}'.format(show_id)
         self.show_id = show_id
         self.episode_id = episode_id
-        self.priority = srQueuePriorities.HIGH
+        self.priority = SRQueuePriorities.HIGH
         self.downCurQuality = downCurQuality
         self.success = False
         self.started = False

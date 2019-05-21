@@ -103,10 +103,10 @@
                                                     ${curResult.name}
                                                 </td>
                                                 <td>
-                                                    <% airDate = srdatetime.srDateTime(sickrage.app.tz_updater.parse_date_time(curResult.airdate, curShow.airs, curShow.network), convert=True).dt %>
+                                                    <% airDate = srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(curResult.airdate, curShow.airs, curShow.network), convert=True).dt %>
                                                     % if curResult.airdate > datetime.date.min:
                                                         <time datetime="${airDate.isoformat()}"
-                                                              class="date">${srdatetime.srDateTime(airDate).srfdatetime()}</time>
+                                                              class="date">${srdatetime.SRDateTime(airDate).srfdatetime()}</time>
                                                     % else:
                                                         Never
                                                     % endif

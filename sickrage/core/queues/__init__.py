@@ -28,7 +28,7 @@ from tornado.queues import Queue, PriorityQueue
 import sickrage
 
 
-class srQueuePriorities(object):
+class SRQueuePriorities(object):
     EXTREME = 5
     HIGH = 10
     NORMAL = 20
@@ -36,14 +36,14 @@ class srQueuePriorities(object):
     PAUSED = 99
 
 
-class srQueue(object):
+class SRQueue(object):
     def __init__(self, name="QUEUE"):
-        super(srQueue, self).__init__()
+        super(SRQueue, self).__init__()
         self.name = name
         self.queue = PriorityQueue()
         self._result_queue = Queue()
         self.processing = []
-        self.min_priority = srQueuePriorities.EXTREME
+        self.min_priority = SRQueuePriorities.EXTREME
         self.amActive = False
         self.stop = False
 
@@ -104,28 +104,28 @@ class srQueue(object):
 
     @property
     def is_paused(self):
-        return self.min_priority == srQueuePriorities.PAUSED
+        return self.min_priority == SRQueuePriorities.PAUSED
 
     def pause(self):
         """Pauses this queue"""
         sickrage.app.log.info("Pausing {}".format(self.name))
-        self.min_priority = srQueuePriorities.PAUSED
+        self.min_priority = SRQueuePriorities.PAUSED
 
     def unpause(self):
         """Unpauses this queue"""
         sickrage.app.log.info("Un-pausing {}".format(self.name))
-        self.min_priority = srQueuePriorities.EXTREME
+        self.min_priority = SRQueuePriorities.EXTREME
 
 
-class srQueueItem(object):
+class SRQueueItem(object):
     def __init__(self, name, action_id=0):
-        super(srQueueItem, self).__init__()
+        super(SRQueueItem, self).__init__()
         self.name = name.replace(" ", "-").upper()
         self.action_id = action_id
         self.added = None
         self.result = None
         self.result_queue = None
-        self.priority = srQueuePriorities.NORMAL
+        self.priority = SRQueuePriorities.NORMAL
         self.is_alive = False
 
     def __eq__(self, other):

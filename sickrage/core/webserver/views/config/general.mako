@@ -10,7 +10,7 @@ c<%inherit file="../layouts/config.mako"/>
     import sickrage
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets
-    from sickrage.core.helpers.srdatetime import srDateTime, date_presets, time_presets
+    from sickrage.core.helpers.srdatetime import SRDateTime, date_presets, time_presets
     from sickrage.core.helpers import anon_url
     from sickrage.indexers import IndexerApi
     from sickrage.metadata import GenericMetadata
@@ -619,7 +619,7 @@ c<%inherit file="../layouts/config.mako"/>
                             <select id="time_presets" name="time_preset" class="form-control"
                                     title="seconds are only shown on the History page">
                                 % for cur_preset in time_presets:
-                                    <option value="${cur_preset}" ${('', 'selected')[sickrage.app.config.time_preset_w_seconds == cur_preset]}>${srDateTime(datetime.datetime.now()).srftime(show_seconds=True, t_preset=cur_preset)}</option>
+                                    <option value="${cur_preset}" ${('', 'selected')[sickrage.app.config.time_preset_w_seconds == cur_preset]}>${SRDateTime(datetime.datetime.now()).srftime(show_seconds=True, t_preset=cur_preset)}</option>
                                 % endfor
                             </select>
                         </div>
