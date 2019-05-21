@@ -20,6 +20,7 @@ import errno
 import os
 import pickle
 import shutil
+import sqlite3
 from collections import OrderedDict
 from sqlite3 import OperationalError
 from time import sleep
@@ -36,11 +37,19 @@ import sickrage
 
 @event.listens_for(Engine, "connect")
 def set_sqlite_pragma(dbapi_connection, connection_record):
-    if 'sqlite' in str(dbapi_connection):
-        cursor = dbapi_connection.cursor()
+    if not isinstance(dbapi_connection, sqlite3.Connection):
+        return
+
+    old_isolation = dbapi_connection.isolation_level
+    dbapi_connection.isolation_level = None
+    cursor = dbapi_connection.cursor()
+
+    if 'wal' not in cursor.execute("PRAGMA journal_mode").fetchone():
         cursor.execute("PRAGMA journal_mode=WAL")
         cursor.execute('PRAGMA busy_timeout=%i;' % 15000)
-        cursor.close()
+
+    cursor.close()
+    dbapi_connection.isolation_level = old_isolation
 
 
 @event.listens_for(mapper, "init")

@@ -318,7 +318,7 @@ class Tvdb:
                     'season': "/series/{id}/images/query?keyType=season&subKey={season}",
                     'seasonwide': "/series/{id}/images/query?keyType=seasonwide&subKey={season}",
                     'params': "/series/{id}/images/query/params",
-                    'prefix': "https://thetvdb.com/banners/{value}"
+                    'prefix': "https://www.thetvdb.com/banners/{value}"
                 }
             }
         }
