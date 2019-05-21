@@ -42,7 +42,7 @@ class ShowQueue(SRQueue):
 
     @property
     def loading_show_list(self):
-        return [{'name': x.name, 'indexer_id': x.indexer_id} for x in self._get_queue_items() if x.is_loading]
+        return [{'name': x.show_name, 'indexer_id': x.indexer_id} for x in self.queue_items if x.is_loading]
 
     def _is_in_queue(self, indexer_id, actions):
         return indexer_id in [x.indexer_id for x in self.queue_items if x.action_id in actions]
@@ -82,12 +82,6 @@ class ShowQueue(SRQueue):
 
     def is_being_subtitled(self, indexer_id):
         return self._is_being(indexer_id, [ShowQueueActions.SUBTITLE])
-
-    def _get_queue_items(self):
-        return self.queue_items
-
-    def _get_loading_show_list(self):
-        return [x for x in self._get_queue_items() if x.is_loading]
 
     def update_show(self, indexer_id, indexer_update_only=False, force=False):
         show_obj = find_show(indexer_id)
@@ -220,9 +214,8 @@ class ShowQueueItem(SRQueueItem):
 
 
 class QueueItemAdd(ShowQueueItem):
-    def __init__(self, indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang, subtitles,
-                 sub_use_sr_metadata, anime, scene, paused, blacklist, whitelist, default_status_after,
-                 skip_downloaded):
+    def __init__(self, indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang, subtitles, sub_use_sr_metadata, anime, scene, paused,
+                 blacklist, whitelist, default_status_after, skip_downloaded):
         super(QueueItemAdd, self).__init__(None, ShowQueueActions.ADD)
 
         self.indexer = indexer
@@ -259,7 +252,7 @@ class QueueItemAdd(ShowQueueItem):
         Returns True if we've gotten far enough to have a show object, or False
         if we still only know the folder name.
         """
-        if find_show(self.indexer_id) is None:
+        if find_show(self.indexer_id):
             return True
 
     @MainDB.with_session
