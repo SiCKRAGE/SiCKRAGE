@@ -1840,8 +1840,7 @@ class SetSceneNumberingHandler(BaseHandler, ABC):
             result['success'] = False
             result['errorMessage'] = ep_obj
         elif show_obj.is_anime:
-            sickrage.app.log.debug("setAbsoluteSceneNumbering for %s from %s to %s" %
-                                   (show, for_absolute, scene_absolute))
+            sickrage.app.log.debug("setAbsoluteSceneNumbering for %s from %s to %s" % (show, for_absolute, scene_absolute))
 
             show = int(show)
             indexer = int(indexer)
@@ -1851,8 +1850,7 @@ class SetSceneNumberingHandler(BaseHandler, ABC):
 
             set_scene_numbering(show, indexer, absolute_number=for_absolute, sceneAbsolute=scene_absolute)
         else:
-            sickrage.app.log.debug("setEpisodeSceneNumbering for %s from %sx%s to %sx%s" %
-                                   (show, for_season, for_episode, scene_season, scene_episode))
+            sickrage.app.log.debug("setEpisodeSceneNumbering for %s from %sx%s to %sx%s" % (show, for_season, for_episode, scene_season, scene_episode))
 
             show = int(show)
             indexer = int(indexer)
@@ -1863,8 +1861,7 @@ class SetSceneNumberingHandler(BaseHandler, ABC):
             if scene_episode is not None:
                 scene_episode = int(scene_episode)
 
-            set_scene_numbering(show, indexer, season=for_season, episode=for_episode, sceneSeason=scene_season,
-                                sceneEpisode=scene_episode)
+            set_scene_numbering(show, indexer, season=for_season, episode=for_episode, sceneSeason=scene_season, sceneEpisode=scene_episode)
 
         if show_obj.is_anime:
             sn = get_scene_absolute_numbering(show, indexer, for_absolute)
