@@ -41,7 +41,7 @@ class DailySearcher(object):
         Runs the daily searcher, queuing selected episodes for search
         :param force: Force search
         """
-        if self.amActive or not force:
+        if self.amActive and not force:
             return
 
         self.amActive = True
