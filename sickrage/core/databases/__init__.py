@@ -180,11 +180,6 @@ class SRDatabase(object):
                 'tv_episodes': {
                     'indexerid': 'indexer_id'
                 },
-            },
-            'cache': {
-                'providers': {
-                    'indexerid': 'indexer_id'
-                }
             }
         }
 
@@ -201,7 +196,12 @@ class SRDatabase(object):
 
             migrate_tables = OrderedDict({
                 'tv_shows': [],
-                'tv_episodes': []
+                'tv_episodes': [],
+                'scene_numbering': [],
+                'blacklist': [],
+                'whitelist': [],
+                'scene_exceptions': [],
+                'scene_names': []
             })
 
             for row in rows:
