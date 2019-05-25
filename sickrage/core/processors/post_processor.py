@@ -96,8 +96,6 @@ class PostProcessor(object):
 
         self.in_history = False
 
-        self.release_group = None
-
         self.release_name = None
 
         self.is_proper = False
@@ -520,7 +518,7 @@ class PostProcessor(object):
         """
 
         self.in_history = False
-        to_return = None, [], None, None
+        to_return = None, [], None, None, None
 
         # if we don't have either of these then there's nothing to use to search the history for anyway
         if not self.nzb_name and not self.file_name:
@@ -547,12 +545,13 @@ class PostProcessor(object):
             episode_id = dbData.episode_id
             quality = dbData.quality
             version = dbData.version
+            release_group = dbData.release_group
 
             if quality == Quality.UNKNOWN:
                 quality = None
 
             self.version = version
-            to_return = show_id, [episode_id], quality, version
+            to_return = show_id, [episode_id], quality, version, release_group
 
             quality_string = Quality.qualityStrings[quality] if quality is not None else quality
 
@@ -570,8 +569,6 @@ class PostProcessor(object):
 
         :param parse_result: Result of parsers
         """
-        self.release_group = parse_result.release_group
-
         # remember whether it's a proper
         if parse_result.extra_info:
             self.is_proper = re.search(r'\b(proper|repack|real)\b', parse_result.extra_info, re.I) is not None
@@ -603,7 +600,7 @@ class PostProcessor(object):
         if none were found.
         """
 
-        to_return = None, [], None, None
+        to_return = None, [], None, None, None
 
         if not name:
             return to_return
@@ -633,7 +630,7 @@ class PostProcessor(object):
                 except orm.exc.NoResultFound:
                     continue
 
-        to_return = (parse_result.indexer_id, episode_ids, parse_result.quality, None)
+        to_return = (parse_result.indexer_id, episode_ids, parse_result.quality, None, parse_result.release_group)
 
         self._finalize(parse_result)
 
@@ -667,6 +664,7 @@ class PostProcessor(object):
         show_id = None
         quality = None
         version = None
+        release_group = None
         episode_ids = []
 
         # try to look up the nzb in history
@@ -692,7 +690,7 @@ class PostProcessor(object):
         # attempt every possible method to get our info
         for cur_attempt in attempt_list:
             try:
-                (cur_show_id, cur_episode_ids, cur_quality, cur_version) = cur_attempt()
+                (cur_show_id, cur_episode_ids, cur_quality, cur_version, cur_release_group) = cur_attempt()
             except (InvalidNameException, InvalidShowException) as e:
                 sickrage.app.log.debug("Unable to parse, skipping: {}".format(e))
                 continue
@@ -712,10 +710,13 @@ class PostProcessor(object):
             if cur_version is not None:
                 version = cur_version
 
+            if cur_release_group is not None:
+                release_group = cur_release_group
+
             if all([show_id, len(episode_ids) > 0, quality, version]):
                 break
 
-        return show_id, episode_ids, quality, version
+        return show_id, episode_ids, quality, version, release_group
 
     @MainDB.with_session
     def _get_ep_obj(self, show_id, episode_ids, session=None):
@@ -917,7 +918,7 @@ class PostProcessor(object):
         self.anidbEpisode = None
 
         # try to find the file info
-        show_id, episode_ids, quality, version = self._find_info()
+        show_id, episode_ids, quality, version, release_group = self._find_info()
 
         show_object = find_show(show_id)
         if not show_object:
@@ -1042,7 +1043,7 @@ class PostProcessor(object):
 
             cur_ep.version = new_ep_version
 
-            cur_ep.release_group = self.release_group or ""
+            cur_ep.release_group = release_group or ""
 
         # Just want to keep this consistent for failed handling right now
         release_name = show_names.determine_release_name(self.folder_path, self.nzb_name)
@@ -1134,7 +1135,7 @@ class PostProcessor(object):
         session.commit()
 
         # log it to history
-        History.log_download(ep_obj.showid, ep_obj.indexer_id, ep_obj.status, self.file_path, new_ep_quality, self.release_group, new_ep_version)
+        History.log_download(ep_obj.showid, ep_obj.indexer_id, ep_obj.status, self.file_path, new_ep_quality, release_group, new_ep_version)
 
         # If any notification fails, don't stop postProcessor
         try:

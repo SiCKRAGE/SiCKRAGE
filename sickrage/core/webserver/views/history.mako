@@ -56,6 +56,7 @@
                                     <th>${_('Episode')}</th>
                                     <th>${_('Action')}</th>
                                     <th>${_('Provider')}</th>
+                                    <th>${_('Release Group')}</th>
                                     <th>${_('Quality')}</th>
                                 </tr>
                                 </thead>
@@ -84,29 +85,19 @@
                                                       title="${os.path.basename(hItem['resource'])}">${statusStrings[curStatus]}</span>
                                             </td>
                                             <td class="table-fit">
-                                                % if curStatus in [DOWNLOADED, ARCHIVED]:
-                                                    % if hItem["provider"] != -1:
-                                                        <span style="vertical-align:middle;"><i>${hItem["provider"]}</i></span>
-                                                    % endif
-                                                % else:
-                                                    % if hItem["provider"]:
-                                                        % if curStatus in [SNATCHED, FAILED]:
-                                                            % if hItem["provider"].lower() in sickrage.app.search_providers.all():
-                                                            <% provider = sickrage.app.search_providers.all()[hItem["provider"].lower()] %>
-                                                                <i class="sickrage-providers sickrage-providers-${provider.id}"
-                                                                   style="vertical-align:middle;"></i><span
-                                                                    style="vertical-align:middle;">${provider.name}</span>
-                                                            % else:
-                                                                <span style="vertical-align:middle;">${hItem["provider"]}</span>
-                                                            % endif
-                                                        % else:
-                                                            <i class="sickrage-subtitles sickrage-subtitles-${hItem['provider']}"
-                                                               style="vertical-align:middle;"></i>
-                                                            <span style="vertical-align:middle;">${hItem["provider"].capitalize()}</span>
-                                                        % endif
+                                                % if hItem["provider"]:
+                                                    % if hItem["provider"].lower() in sickrage.app.search_providers.all():
+                                                    <% provider = sickrage.app.search_providers.all()[hItem["provider"].lower()] %>
+                                                        <i class="sickrage-providers sickrage-providers-${provider.id}"
+                                                           style="vertical-align:middle;">
+                                                        </i>
+                                                        <span style="vertical-align:middle;">${provider.name}</span>
+                                                    % else:
+                                                        <span style="vertical-align:middle;">${hItem["provider"]}</span>
                                                     % endif
                                                 % endif
                                             </td>
+                                            <td class="table-fit">${hItem['release_group']}</td>
                                             <td style="display: none;">${curQuality}</td>
                                             <td class="table-fit">${renderQualityPill(curQuality)}</td>
                                         </tr>
@@ -169,7 +160,7 @@
                                                     % if curStatus in [DOWNLOADED, ARCHIVED]:
                                                         % if action["provider"] != "-1":
                                                             <span style="cursor: help;"
-                                                                  title="${os.path.basename(action["resource"])}"><i>${action["provider"]}</i></span>
+                                                                  title="${os.path.basename(action["resource"])}"><i>${action["release_group"]}</i></span>
                                                         % else:
                                                             <span style="cursor: help;"
                                                                   title="${os.path.basename(action["resource"])}"></span>

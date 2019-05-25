@@ -48,6 +48,7 @@ class HistoryHandler(BaseHandler, ABC):
             action = {
                 'action': row['action'],
                 'provider': row['provider'],
+                'release_group': row['release_group'],
                 'resource': row['resource'],
                 'time': row['date']
             }

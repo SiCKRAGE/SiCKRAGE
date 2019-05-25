@@ -15,8 +15,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
-
-
+import os
 import re
 from datetime import datetime
 from datetime import timedelta
@@ -79,6 +78,7 @@ class History:
                     'action': result.action,
                     'date': result.date,
                     'provider': result.provider,
+                    'release_group': result.release_group,
                     'quality': result.quality,
                     'resource': result.resource,
                     'episode_id': result.episode_id,
@@ -98,7 +98,7 @@ class History:
 
     @staticmethod
     @MainDB.with_session
-    def _log_history_item(action, showid, episode_id, quality, resource, provider, version=-1, session=None):
+    def _log_history_item(action, showid, episode_id, quality, resource, provider, version=-1, release_group='', session=None):
         """
         Insert a history item in DB
 
@@ -121,7 +121,8 @@ class History:
             'quality': quality,
             'resource': resource,
             'provider': provider,
-            'version': version
+            'version': version,
+            'release_group': release_group
         }))
 
     @staticmethod
@@ -141,10 +142,13 @@ class History:
 
             resource = search_result.name
 
-            History._log_history_item(action, search_result.show_id, episode_id, quality, resource, provider, version)
+            release_group = search_result.release_group
+
+            History._log_history_item(action, search_result.show_id, episode_id, quality, resource, provider, version, release_group)
 
     @staticmethod
-    def log_download(show_id, episode_id, status, filename, new_ep_quality, release_group=None, version=-1):
+    @MainDB.with_session
+    def log_download(show_id, episode_id, status, filename, new_ep_quality, release_group='', version=-1, session=None):
         """
         Log history of download
 
@@ -155,7 +159,13 @@ class History:
         :param version: Version of file (defaults to -1)
         """
 
-        History._log_history_item(status, show_id, episode_id, new_ep_quality, filename, release_group or -1, version)
+        provider = ''
+
+        dbData = session.query(MainDB.History).filter(MainDB.History.resource.contains(os.path.basename(filename).rpartition(".")[0])).first()
+        if dbData:
+            provider = dbData.provider
+
+        History._log_history_item(status, show_id, episode_id, new_ep_quality, filename, provider, version, release_group)
 
     @staticmethod
     def log_subtitle(show_id, episode_id, status, subtitleResult):

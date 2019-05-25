@@ -153,6 +153,7 @@ class MainDB(SRDatabase):
         provider = Column(Text, nullable=False)
         date = Column(DateTime, nullable=False)
         quality = Column(Integer, nullable=False)
+        release_group = Column(Text, nullable=False)
 
     class FailedSnatchHistory(MainDBBase):
         __tablename__ = 'failed_snatch_history'
