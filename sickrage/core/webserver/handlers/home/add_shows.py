@@ -354,7 +354,7 @@ class AddShowByIDHandler(BaseHandler, ABC):
 
         response = await self.http_client.fetch(
             url_concat(
-                "/home/addShows/newShow",
+                self.get_url("/home/addShows/newShow"),
                 {'show_to_add': '1|{show_dir}|{indexer_id}|{show_name}'.format(**{'show_dir': show_dir,
                                                                                   'indexer_id': indexer_id,
                                                                                   'show_name': show_name})}

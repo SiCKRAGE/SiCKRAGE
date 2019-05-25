@@ -52,10 +52,10 @@ class QuicksearchCache(object):
         sickrage.app.log.debug("Loaded {} episodes to QuickSearch cache".format(len(self.cache['episodes'])))
 
     def get_shows(self, term):
-        return [d for d in self.cache['shows'].values() if term.lower() in d['name'].lower()]
+        return [d for d in self.cache['shows'].values() if d['name'] is not None and term.lower() in d['name'].lower()]
 
     def get_episodes(self, term):
-        return [d for d in self.cache['episodes'].values() if d and term.lower() in d['name'].lower()]
+        return [d for d in self.cache['episodes'].values() if d['name'] is not None and term.lower() in d['name'].lower()]
 
     def update_show(self, indexer_id):
         self.del_show(indexer_id)

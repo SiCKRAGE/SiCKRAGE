@@ -151,7 +151,7 @@ class ToggleDisplayShowSpecialsHandler(BaseHandler, ABC):
         show = self.get_query_argument('show')
 
         sickrage.app.config.display_show_specials = not sickrage.app.config.display_show_specials
-        return self.redirect(url_concat("/home/displayShow", {'show': show}))
+        return self.redirect(url_concat(self.get_url("/home/displayShow"), {'show': show}))
 
 
 class SetScheduleLayoutHandler(BaseHandler, ABC):
