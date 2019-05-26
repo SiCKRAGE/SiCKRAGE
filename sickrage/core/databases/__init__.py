@@ -34,6 +34,7 @@ from sqlalchemy.orm import sessionmaker, mapper
 from sqlalchemy.pool import StaticPool, QueuePool
 
 import sickrage
+from sickrage.core.helpers import backup_versioned_file
 
 
 @event.listens_for(Engine, "connect")
@@ -167,7 +168,10 @@ class SRDatabase(object):
             return 0
 
     def upgrade(self):
-        if self.version < int(api.version(self.db_repository)):
+        repo_version = int(api.version(self.db_repository))
+        if self.version < repo_version:
+            if self.db_type == 'sqlite':
+                backup_versioned_file(self.db_path, repo_version)
             api.upgrade(self.engine, self.db_repository)
             sickrage.app.log.info('Upgraded {} database to version {}'.format(self.name, self.version))
 
