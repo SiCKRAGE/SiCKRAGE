@@ -101,15 +101,15 @@ class HistoryHandler(BaseHandler, ABC):
 
 class HistoryClearHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
-        History().clear()
+    async def get(self, *args, **kwargs):
+        await self.run_task(History().clear)
         sickrage.app.alerts.message(_('History cleared'))
         return self.redirect("/history/")
 
 
 class HistoryTrimHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
-        History().trim()
+    async def get(self, *args, **kwargs):
+        await self.run_task(History().trim)
         sickrage.app.alerts.message(_('Removed history entries older than 30 days'))
         return self.redirect("/history/")
