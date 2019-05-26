@@ -96,7 +96,7 @@ class BaseHandler(RequestHandler, ABC):
                              <title>{error}</title>
                              <body>
                                 <button onclick="window.location='{webroot}/logs/';">View Log(Errors)</button>
-                                <button onclick="window.location='{webroot}/home/restart?force=1';">Restart SiCKRAGE</button>
+                                <button onclick="window.location='{webroot}/home/restart?pid={pid}&force=1';">Restart SiCKRAGE</button>
                                 <button onclick="window.location='{webroot}/logout';">Logout</button>
                                 <h2>Error</h2>
                                 <p>{error}</p>
@@ -105,7 +105,8 @@ class BaseHandler(RequestHandler, ABC):
                                 <h2>Request Info</h2>
                                 <p>{request}</p>
                              </body>
-                           </html>""".format(error=error,
+                           </html>""".format(pid=sickrage.app.pid,
+                                             error=error,
                                              traceback=trace_info,
                                              request=request_info,
                                              webroot=sickrage.app.config.web_root))
