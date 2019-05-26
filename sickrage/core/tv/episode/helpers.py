@@ -30,6 +30,6 @@ def find_episode(show_id, episode_id, session=None):
     try:
         return session.query(TVEpisode).filter_by(showid=show_id, indexer_id=episode_id).one_or_none()
     except MultipleResultsFound:
-        sickrage.app.log.error(
+        sickrage.app.log.warning(
             'Multiple episodes found with episode ID: {}, database may be corrupted, starting with a fresh database is recommended.'.format(episode_id))
         return None
