@@ -201,12 +201,14 @@ class BaseHandler(RequestHandler, ABC):
         url = urljoin("{}://{}".format(self.request.protocol, self.request.host), url)
         return url
 
-    async def run_task(self, func, *args, **kwargs):
+    async def run_task(self, func, await_task=True, *args, **kwargs):
         def worker(func, *args, **kwargs):
             threading.currentThread().setName('TORNADO')
             return func(*args, **kwargs)
 
-        return await sickrage.app.io_loop.run_in_executor(None, functools.partial(worker, func, *args, **kwargs))
+        future = sickrage.app.io_loop.run_in_executor(None, functools.partial(worker, func, *args, **kwargs))
+        if await_task:
+            return await future
 
     def on_finish(self):
         if self.db_session:
