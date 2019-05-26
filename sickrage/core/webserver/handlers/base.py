@@ -16,7 +16,7 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
-
+import functools
 import os
 import threading
 import time
@@ -206,7 +206,7 @@ class BaseHandler(RequestHandler, ABC):
             threading.currentThread().setName('TORNADO')
             return func(*args, **kwargs)
 
-        return await sickrage.app.io_loop.run_in_executor(None, worker, func, *args, **kwargs)
+        return await sickrage.app.io_loop.run_in_executor(None, functools.partial(worker, func, *args, **kwargs))
 
     def on_finish(self):
         if self.db_session:

@@ -108,7 +108,7 @@ class VersionUpdater(object):
         sickrage.app.alerts.message(_('Updater'),
                                     _("Waiting for jobs in post-processor queue to finish before updating"))
 
-        while sickrage.app.auto_postprocessor.is_busy:
+        while sickrage.app.auto_postprocessor.amActive:
             sleep(1)
 
         sickrage.app.show_queue.stop = True
