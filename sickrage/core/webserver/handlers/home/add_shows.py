@@ -373,7 +373,7 @@ class AddNewShowHandler(BaseHandler, ABC):
         provided then it forwards back to newShow, if not it goes to /home.
         """
 
-        whichSeries = self.get_body_argument('whichSeries')
+        whichSeries = self.get_body_argument('whichSeries', '')
         rootDir = self.get_body_argument('rootDir', None)
         fullShowPath = self.get_body_argument('fullShowPath', None)
         providedName = self.get_body_argument('providedName', None)
