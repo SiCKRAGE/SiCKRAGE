@@ -119,7 +119,7 @@ class BaseHandler(RequestHandler, ABC):
             self.set_secure_cookie('sr_access_token', token['access_token'])
             self.set_secure_cookie('sr_refresh_token', token['refresh_token'])
             return sickrage.app.oidc_client.userinfo(token['access_token'])
-        except (KeycloakClientError, HTTPError):
+        except (KeycloakClientError, HTTPError, OSError):
             pass
 
     def render_string(self, template_name, **kwargs):
