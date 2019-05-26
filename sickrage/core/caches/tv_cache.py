@@ -247,6 +247,8 @@ class TVCache(object):
     @CacheDB.with_session
     def search_cache(self, show_id, episode_id, manualSearch=False, downCurQuality=False, session=None):
         episode_obj = find_episode(show_id, episode_id)
+        if not episode_obj:
+            return {}
 
         season = episode_obj.scene_season if episode_obj.show.scene else episode_obj.season
         episode = episode_obj.scene_episode if episode_obj.show.scene else episode_obj.episode
