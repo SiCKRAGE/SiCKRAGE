@@ -953,7 +953,11 @@ def backup_app_data(backupDir, keep_latest=False):
 
     files_list = [
         'main.db',
+        'main.db-shm',
+        'main.db-wal',
         'cache.db',
+        'cache.db-shm',
+        'cache.db-wal',
         'privatekey.pem',
         os.path.basename(sickrage.app.config_file)
     ]
@@ -992,12 +996,18 @@ def backup_app_data(backupDir, keep_latest=False):
 
 def restore_app_data(srcDir, dstDir):
     try:
-        files_list = ['main.db',
-                      'cache.db',
-                      'main.codernitydb',
-                      'cache.codernitydb',
-                      'privatekey.pem',
-                      os.path.basename(sickrage.app.config_file)]
+        files_list = [
+            'main.db',
+            'main.db-shm',
+            'main.db-wal',
+            'cache.db',
+            'cache.db-shm',
+            'cache.db-wal',
+            'main.codernitydb',
+            'cache.codernitydb',
+            'privatekey.pem',
+            os.path.basename(sickrage.app.config_file)
+        ]
 
         for filename in files_list:
             srcFile = os.path.join(srcDir, filename)
@@ -1355,10 +1365,6 @@ def backup_versioned_file(old_file, version):
     while not os.path.isfile(new_file):
         if not os.path.isfile(old_file):
             sickrage.app.log.debug("Not creating backup, %s doesn't exist" % old_file)
-            break
-
-        if os.path.isfile(new_file):
-            sickrage.app.log.debug("Not creating backup, %s exists" % new_file)
             break
 
         try:
