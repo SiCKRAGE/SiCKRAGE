@@ -713,7 +713,7 @@ class UpdateCheckHandler(BaseHandler, ABC):
 
 class UpdateHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
+    def get(self, *args, **kwargs):
         pid = self.get_query_argument('pid')
 
         if str(pid) != str(sickrage.app.pid):
@@ -721,7 +721,7 @@ class UpdateHandler(BaseHandler, ABC):
 
         sickrage.app.alerts.message(_("Updater"), _('Updating SiCKRAGE'))
 
-        await self.run_task(sickrage.app.version_updater.update, await_task=False, webui=True)
+        self.run_task(sickrage.app.version_updater.update, webui=True)
 
         return self.redirect(self.previous_url())
 
