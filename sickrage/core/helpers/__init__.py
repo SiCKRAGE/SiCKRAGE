@@ -1361,13 +1361,13 @@ def backup_versioned_file(old_file, version):
             sickrage.app.log.debug("Trying to back up %s to %s" % (old_file, new_file))
             shutil.copyfile(old_file, new_file)
             encryption.encrypt_file(new_file, sickrage.app.public_key)
-            sickrage.app.log.debug("Backup done")
+            sickrage.app.log.debug("Backup completed: {}".format(new_file))
             break
         except Exception as e:
             sickrage.app.log.warning("Error while trying to back up %s to %s : %r" % (old_file, new_file, e))
             numTries += 1
             time.sleep(1)
-            sickrage.app.log.debug("Trying again.")
+            sickrage.app.log.debug("Trying to perform backup again.")
 
         if numTries >= 10:
             sickrage.app.log.error("Unable to back up %s to %s please do it manually." % (old_file, new_file))
