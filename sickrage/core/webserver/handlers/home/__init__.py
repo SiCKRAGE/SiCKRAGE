@@ -721,7 +721,7 @@ class UpdateHandler(BaseHandler, ABC):
 
         sickrage.app.alerts.message(_("Updater"), _('Updating SiCKRAGE'))
 
-        sickrage.app.io_loop.run_in_executor(None, sickrage.app.version_updater.update, webui=True)
+        self.run_task(sickrage.app.version_updater.update, webui=True)
 
         return self.redirect(self.previous_url())
 
