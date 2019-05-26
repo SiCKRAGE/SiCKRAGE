@@ -72,7 +72,7 @@ class MainDB(SRDatabase):
     class IMDbInfo(MainDBBase):
         __tablename__ = 'imdb_info'
         __table_args__ = (
-            ForeignKeyConstraint(['indexer_id'], ['tv_shows.indexer_id']),
+            ForeignKeyConstraint(['imdb_id'], ['tv_shows.imdb_id']),
         )
 
         indexer_id = Column(Integer, primary_key=True)
