@@ -28,8 +28,6 @@ def upgrade(migrate_engine):
         episode_id.create(history)
         history.c.season.drop()
         history.c.episode.drop()
-        history.drop()
-        history.create()
 
 
 def downgrade(migrate_engine):
@@ -41,5 +39,3 @@ def downgrade(migrate_engine):
         history.c.episode_id.drop()
         season.create(history)
         episode.create(history)
-        history.drop()
-        history.create()

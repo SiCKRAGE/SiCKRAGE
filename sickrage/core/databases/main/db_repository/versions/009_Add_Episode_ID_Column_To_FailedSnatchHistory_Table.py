@@ -28,8 +28,6 @@ def upgrade(migrate_engine):
         episode_id.create(failed_snatch_history)
         failed_snatch_history.c.season.drop()
         failed_snatch_history.c.episode.drop()
-        failed_snatch_history.drop()
-        failed_snatch_history.create()
 
 
 def downgrade(migrate_engine):
@@ -41,5 +39,3 @@ def downgrade(migrate_engine):
         failed_snatch_history.c.episode_id.drop()
         season.create(failed_snatch_history)
         episode.create(failed_snatch_history)
-        failed_snatch_history.drop()
-        failed_snatch_history.create()

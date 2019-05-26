@@ -41,8 +41,6 @@ def upgrade(migrate_engine):
     if not hasattr(history.c, 'release_group'):
         release_group = Column('release_group', Text, default='')
         release_group.create(history)
-        history.drop()
-        history.create()
 
 
 def downgrade(migrate_engine):
@@ -50,5 +48,3 @@ def downgrade(migrate_engine):
     history = Table('history', meta, autoload=True)
     if hasattr(history.c, 'release_group'):
         history.c.release_group.drop()
-        history.drop()
-        history.create()
