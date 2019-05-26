@@ -1357,6 +1357,10 @@ def backup_versioned_file(old_file, version):
             sickrage.app.log.debug("Not creating backup, %s doesn't exist" % old_file)
             break
 
+        if os.path.isfile(new_file):
+            sickrage.app.log.debug("Not creating backup, %s exists" % new_file)
+            break
+
         try:
             sickrage.app.log.debug("Trying to back up %s to %s" % (old_file, new_file))
             shutil.copyfile(old_file, new_file)
