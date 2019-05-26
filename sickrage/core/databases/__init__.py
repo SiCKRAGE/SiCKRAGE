@@ -168,10 +168,9 @@ class SRDatabase(object):
             return 0
 
     def upgrade(self):
-        repo_version = int(api.version(self.db_repository))
-        if self.version < repo_version:
+        if self.version < int(api.version(self.db_repository)):
             if self.db_type == 'sqlite':
-                backup_versioned_file(self.db_path, repo_version)
+                backup_versioned_file(self.db_path, self.version)
             api.upgrade(self.engine, self.db_repository)
             sickrage.app.log.info('Upgraded {} database to version {}'.format(self.name, self.version))
 
