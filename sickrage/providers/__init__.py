@@ -257,6 +257,8 @@ class GenericProvider(object):
         searched_scene_season = None
         for episode_id in episode_ids:
             episode_obj = find_episode(show_id, episode_id, session=session)
+            if not episode_obj:
+                continue
 
             # search cache for episode result
             cache_result = self.cache.search_cache(show_id, episode_id, manualSearch, downCurQuality)
