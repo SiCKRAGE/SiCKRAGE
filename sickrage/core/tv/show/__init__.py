@@ -74,7 +74,7 @@ class TVShow(MainDBBase):
     skip_downloaded = Column(Boolean, default=0)
     startyear = Column(Integer, default=0)
     lang = Column(Text, default='')
-    imdb_id = Column(Text, unique=True, default='')
+    imdb_id = Column(Text, default='')
     rls_ignore_words = Column(Text, default='')
     rls_require_words = Column(Text, default='')
     default_ep_status = Column(Integer, default=SKIPPED)

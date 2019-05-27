@@ -37,6 +37,8 @@ class MainDBBase(object):
 
 
 class MainDB(SRDatabase):
+    db_version = 12
+
     session = sessionmaker(class_=ContextSession)
 
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
@@ -72,7 +74,7 @@ class MainDB(SRDatabase):
     class IMDbInfo(MainDBBase):
         __tablename__ = 'imdb_info'
         __table_args__ = (
-            ForeignKeyConstraint(['imdb_id'], ['tv_shows.imdb_id']),
+            ForeignKeyConstraint(['indexer_id'], ['tv_shows.indexer_id']),
         )
 
         indexer_id = Column(Integer, primary_key=True)

@@ -264,8 +264,8 @@ class Core(object):
             # migrate database
             db.migrate()
 
-            # upgrade database
-            db.upgrade()
+            # sync database repo
+            db.sync_db_repo()
 
         # load name cache
         self.name_cache.load()

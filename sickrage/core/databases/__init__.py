@@ -167,14 +167,22 @@ class SRDatabase(object):
         except DatabaseNotControlledError:
             return 0
 
-    def upgrade(self):
-        if self.version < int(api.version(self.db_repository)):
+    def sync_db_repo(self):
+        if self.version < self.db_version:
             if self.db_type == 'sqlite':
                 backup_versioned_file(self.db_path, self.version)
                 backup_versioned_file(self.db_path + '-shm', self.version)
                 backup_versioned_file(self.db_path + '-wal', self.version)
             api.upgrade(self.engine, self.db_repository)
             sickrage.app.log.info('Upgraded {} database to version {}'.format(self.name, self.version))
+        elif self.version > self.db_version:
+            if self.db_type == 'sqlite':
+                backup_versioned_file(self.db_path, self.version)
+                backup_versioned_file(self.db_path + '-shm', self.version)
+                backup_versioned_file(self.db_path + '-wal', self.version)
+            api.downgrade(self.engine, self.db_repository, 12)
+            sickrage.app.log.info('Downgraded {} database to version {}'.format(self.name, self.version))
+
 
     def migrate(self):
         migration_table_column_mapper = {
