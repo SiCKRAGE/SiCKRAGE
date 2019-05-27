@@ -38,8 +38,12 @@ class BlackAndWhiteList(object):
         Builds black and whitelist
         """
         sickrage.app.log.debug('Building black and white list for ' + str(self.show_id))
+
         self.blacklist = self._load_list(session.query(MainDB.Blacklist).filter_by(show_id=self.show_id))
+        sickrage.app.log.debug('BWL: {} loaded keywords from {}: {}'.format(self.show_id, MainDB.Blacklist.__tablename__, self.blacklist))
+
         self.whitelist = self._load_list(session.query(MainDB.Whitelist).filter_by(show_id=self.show_id))
+        sickrage.app.log.debug('BWL: {} loaded keywords from {}: {}'.format(self.show_id, MainDB.Whitelist.__tablename__, self.whitelist))
 
     @MainDB.with_session
     def _add_keywords(self, table, values, session=None):
@@ -87,16 +91,12 @@ class BlackAndWhiteList(object):
         """
         DB: Fetch keywords for current show
 
-        :param table: Table to fetch list of keywords from
-
         :return: keywords in list
         """
         try:
             groups = [x.keyword for x in keyword_list]
         except KeyError:
             groups = []
-
-        sickrage.app.log.debug('BWL: {} loaded keywords from {}: {}'.format(self.show_id, table.__tablename__, groups))
 
         return groups
 

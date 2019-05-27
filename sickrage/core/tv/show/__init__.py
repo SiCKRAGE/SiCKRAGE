@@ -298,61 +298,19 @@ class TVShow(MainDBBase):
                                                                          absolute_number=absolute_number).filter(TVEpisode.season != 0).one()
                 episode = dbData.episode
                 season = dbData.season
-                sickrage.app.log.debug("Found episode by absolute_number %s which is "
-                                       "S%02dE%02d" % (absolute_number, season or 0, episode or 0))
+
+                sickrage.app.log.debug("Found episode by absolute_number %s which is S%02dE%02d" % (absolute_number, season or 0, episode or 0))
             except orm.exc.MultipleResultsFound:
-                sickrage.app.log.warning("Multiple entries for absolute number: " + str(
-                    absolute_number) + " in show: " + self.name + " found ")
+                sickrage.app.log.warning("Multiple entries for absolute number: " + str(absolute_number) + " in show: " + self.name + " found ")
                 raise MultipleEpisodesInDatabaseException
             except orm.exc.NoResultFound:
-                sickrage.app.log.debug(
-                    "No entries for absolute number: " + str(absolute_number) + " in show: " + self.name + " found.")
+                sickrage.app.log.debug("No entries for absolute number: " + str(absolute_number) + " in show: " + self.name + " found.")
                 raise EpisodeNotFoundException
 
         try:
             return object_session(self).query(TVEpisode).filter_by(showid=self.indexer_id, season=season, episode=episode).one()
         except orm.exc.NoResultFound:
             raise EpisodeNotFoundException
-
-    # def should_update(self, update_date=datetime.date.today()):
-    #     # if show status 'Ended' always update (status 'Continuing')
-    #     if self.status.lower() == 'continuing':
-    #         return True
-    #
-    #     # run logic against the current show latest aired and next unaired data to see if we should bypass 'Ended'
-    #     # status
-    #     graceperiod = datetime.timedelta(days=30)
-    #     last_airdate = datetime.date.min
-    #
-    #     # get latest aired episode to compare against today - graceperiod and today + graceperiod
-    #     try:
-    #         dbData = sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=self.indexer_id, status=1).filter(
-    #             TVEpisode.season > 0,
-    #             TVEpisode.airdate > 1).order_by(
-    #             desc(TVEpisode.airdate)).one()
-    #         last_airdate = datetime.date.fromordinal(dbData.airdate)
-    #         if (update_date - graceperiod) <= last_airdate <= (update_date + graceperiod):
-    #             return True
-    #     except orm.exc.NoResultFound:
-    #         pass
-    #
-    #     try:
-    #         dbData = sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=self.indexer_id, status=1).filter(
-    #             TVEpisode.season > 0,
-    #             TVEpisode.airdate > 1).order_by(
-    #             TVEpisode.airdate).one()
-    #         next_airdate = datetime.date.fromordinal(dbData.airdate)
-    #         if next_airdate <= (update_date + graceperiod):
-    #             return True
-    #     except orm.exc.NoResultFound:
-    #         pass
-    #
-    #     # in the first year after ended (last airdate), update every 30 days
-    #     if (update_date - last_airdate) < datetime.timedelta(days=450) and (
-    #             update_date - datetime.date.fromordinal(self.last_update)) > datetime.timedelta(days=30):
-    #         return True
-    #
-    #     return False
 
     def write_show_nfo(self, force=False):
         result = False
