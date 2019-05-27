@@ -180,7 +180,7 @@ class SRDatabase(object):
                 backup_versioned_file(self.db_path, self.version)
                 backup_versioned_file(self.db_path + '-shm', self.version)
                 backup_versioned_file(self.db_path + '-wal', self.version)
-            api.downgrade(self.engine, self.db_repository, 12)
+            api.downgrade(self.engine, self.db_repository, self.db_version)
             sickrage.app.log.info('Downgraded {} database to version {}'.format(self.name, self.version))
 
 
