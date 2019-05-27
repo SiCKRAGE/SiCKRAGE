@@ -88,13 +88,14 @@ class History:
 
         return data
 
-    def trim(self):
+    @MainDB.with_session
+    def trim(self, session=None):
         """
         Remove all elements older than 30 days from the history
         """
 
         date = (datetime.today() - timedelta(days=30))
-        sickrage.app.main_db.delete(MainDB.History, MainDB.History.date < date)
+        session.query(MainDB.History).filter(MainDB.History.date < date).delete()
 
     @staticmethod
     @MainDB.with_session

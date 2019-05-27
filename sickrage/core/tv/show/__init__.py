@@ -236,7 +236,10 @@ class TVShow(MainDBBase):
                     self.indexer_id, IndexerApi(self.indexer).name, season or 0, episode or 0
                 ))
 
-                episode_obj.populate_episode(season, episode, tvapi=t)
+                try:
+                    episode_obj.populate_episode(season, episode, tvapi=t)
+                except EpisodeNotFoundException:
+                    continue
 
                 scanned_eps[season][episode] = True
 
@@ -633,19 +636,19 @@ class TVShow(MainDBBase):
         action = ('delete', 'trash')[sickrage.app.config.trash_remove_show]
 
         # remove from tv episodes table
-        sickrage.app.main_db.delete(TVEpisode, showid=self.indexer_id)
+        object_session(self).query(TVEpisode).filter_by(showid=self.indexer_id).delete()
 
         # remove from tv shows table
-        sickrage.app.main_db.delete(TVShow, indexer_id=self.indexer_id)
+        object_session(self).query(self.__class__).filter_by(indexer_id=self.indexer_id).delete()
 
         # remove from imdb info table
-        sickrage.app.main_db.delete(MainDB.IMDbInfo, indexer_id=self.indexer_id)
+        object_session(self).query(MainDB.IMDbInfo).filter_by(indexer_id=self.indexer_id).delete()
 
         # remove from xem scene table
-        sickrage.app.main_db.delete(MainDB.XEMRefresh, indexer_id=self.indexer_id)
+        object_session(self).query(MainDB.XEMRefresh).filter_by(indexer_id=self.indexer_id).delete()
 
         # remove from scene numbering table
-        sickrage.app.main_db.delete(MainDB.SceneNumbering, indexer_id=self.indexer_id)
+        object_session(self).query(MainDB.SceneNumbering).filter_by(indexer_id=self.indexer_id).delete()
 
         # clear the cache
         image_cache_dir = os.path.join(sickrage.app.cache_dir, 'images')

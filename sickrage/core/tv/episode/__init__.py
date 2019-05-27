@@ -226,11 +226,25 @@ class TVEpisode(MainDBBase):
                 self.delete_episode()
             return False
 
+        # early conversion to int so that episode doesn't get marked dirty
+        self.indexer_id = try_int(safe_getattr(myEp, 'id'), self.indexer_id)
+        if self.indexer_id is None:
+            sickrage.app.log.warning("Failed to retrieve ID from " + IndexerApi(self.indexer).name)
+            object_session(self).rollback()
+            object_session(self).commit()
+            self.delete_episode()
+            return False
+        elif object_session(self).query(self.__class__).filter_by(showid=self.showid, indexer_id=self.indexer_id).count() > 1:
+            sickrage.app.log.warning("Episode ID {} already exists.".format(self.indexer_id))
+            object_session(self).rollback()
+            object_session(self).commit()
+            self.delete_episode()
+            return False
+
         self.name = safe_getattr(myEp, 'episodename', self.name)
         if not myEp.get('episodename'):
-            sickrage.app.log.info(
-                "This episode {} - S{:02d}E{:02d} has no name on {}. Setting to an empty string"
-                    .format(self.show.name, season or 0, episode or 0, indexer_name))
+            sickrage.app.log.info("This episode {} - S{:02d}E{:02d} has no name on {}. "
+                                  "Setting to an empty string".format(self.show.name, season or 0, episode or 0, indexer_name))
 
         if not myEp.get('absolutenumber'):
             sickrage.app.log.debug("This episode {} - S{:02d}E{:02d} has no absolute number on {}".format(
@@ -270,22 +284,15 @@ class TVEpisode(MainDBBase):
             sickrage.app.log.warning(
                 "Malformed air date of {} retrieved from {} for ({} - S{:02d}E{:02d})".format(
                     firstaired, indexer_name, self.show.name, season or 0, episode or 0))
-            # if I'm incomplete on the indexer but I once was complete then just delete myself from the DB for now
-            if self.indexer_id != -1:
-                self.delete_episode()
-            return False
 
-        # early conversion to int so that episode doesn't get marked dirty
-        self.indexer_id = try_int(safe_getattr(myEp, 'id'), self.indexer_id)
-        if self.indexer_id is None:
-            sickrage.app.log.warning("Failed to retrieve ID from " + IndexerApi(self.indexer).name)
-            if self.indexer_id != -1:
-                self.delete_episode()
+            # if I'm incomplete on the indexer but I once was complete then just delete myself from the DB for now
+            object_session(self).rollback()
+            object_session(self).commit()
+            self.delete_episode()
             return False
 
         # don't update show status if show dir is missing, unless it's missing on purpose
-        if not os.path.isdir(
-                self.show.location) and not sickrage.app.config.create_missing_show_dirs and not sickrage.app.config.add_shows_wo_dir:
+        if not os.path.isdir(self.show.location) and not sickrage.app.config.create_missing_show_dirs and not sickrage.app.config.add_shows_wo_dir:
             sickrage.app.log.info("The show dir %s is missing, not bothering to change the episode statuses since "
                                   "it'd probably be invalid" % self.show.location)
             return False
@@ -447,13 +454,13 @@ class TVEpisode(MainDBBase):
         return result
 
     def delete_episode(self, full=False):
-        sickrage.app.log.debug(
-            "Deleting %s S%02dE%02d from the DB" % (self.show.name, self.season or 0, self.episode or 0))
+        sickrage.app.log.debug("Deleting %s S%02dE%02d from the DB" % (self.show.name, self.season or 0, self.episode or 0))
 
         # delete myself from the DB
         sickrage.app.log.debug("Deleting myself from the database")
 
-        sickrage.app.main_db.delete(TVEpisode, showid=self.show.indexer_id, season=self.season, episode=self.episode)
+        object_session(self).query(self.__class__).filter_by(showid=self.show.indexer_id, season=self.season, episode=self.episode).delete()
+        object_session(self).commit()
 
         data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate([(self.season, self.episode)])
         if sickrage.app.config.use_trakt and sickrage.app.config.trakt_sync_watchlist and data:

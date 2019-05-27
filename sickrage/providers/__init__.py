@@ -40,7 +40,7 @@ from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.classes import NZBSearchResult, SearchResult, TorrentSearchResult
 from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT, cpu_presets
 from sickrage.core.databases.main import MainDB
-from sickrage.core.exceptions import EpisodeNotFoundException
+from sickrage.core.exceptions import EpisodeNotFoundException, MultipleEpisodesInDatabaseException
 from sickrage.core.helpers import chmod_as_parent, sanitize_file_name, clean_url, bs4_parser, \
     validate_url, try_int, convert_size
 from sickrage.core.tv.episode import TVEpisode
@@ -257,8 +257,6 @@ class GenericProvider(object):
         searched_scene_season = None
         for episode_id in episode_ids:
             episode_obj = find_episode(show_id, episode_id, session=session)
-            if not episode_obj:
-                continue
 
             # search cache for episode result
             cache_result = self.cache.search_cache(show_id, episode_id, manualSearch, downCurQuality)

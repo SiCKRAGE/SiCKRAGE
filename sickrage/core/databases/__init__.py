@@ -183,7 +183,6 @@ class SRDatabase(object):
             api.downgrade(self.engine, self.db_repository, self.db_version)
             sickrage.app.log.info('Downgraded {} database to version {}'.format(self.name, self.version))
 
-
     def migrate(self):
         migration_table_column_mapper = {
             'main': {
@@ -245,36 +244,25 @@ class SRDatabase(object):
 
                 migrate_tables[table] += [row]
 
-            for table, rows in migrate_tables.items():
-                if not len(rows):
-                    continue
+            with self.session() as session:
+                for table, rows in migrate_tables.items():
+                    if not len(rows):
+                        continue
 
-                sickrage.app.log.info('Migrating {} database table {}'.format(self.name, table))
+                    sickrage.app.log.info('Migrating {} database table {}'.format(self.name, table))
 
-                try:
-                    self.delete(self.tables[table])
-                except Exception:
-                    pass
+                    try:
+                        session.query(self.tables[table]).delete()
+                    except Exception:
+                        pass
 
-                try:
-                    self.bulk_add(self.tables[table], rows)
-                except Exception as e:
-                    pass
+                    try:
+                        session.bulk_insert_mappings(self.tables[table], rows)
+                    except Exception as e:
+                        pass
 
             shutil.move(migrate_file, backup_file)
 
             # cleanup
             del migrate_tables
             del rows
-
-    def bulk_add(self, table, rows):
-        with self.session() as session:
-            session.bulk_insert_mappings(table, rows)
-
-    def add(self, instance):
-        with self.session() as session:
-            session.add(instance)
-
-    def delete(self, table, *args, **kwargs):
-        with self.session() as session:
-            session.query(table).filter_by(**kwargs).filter(*args).delete()

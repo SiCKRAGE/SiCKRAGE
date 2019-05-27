@@ -16,11 +16,11 @@
 # 
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
-from sqlalchemy import orm
+
 from sqlalchemy.orm.exc import MultipleResultsFound
 
-import sickrage
 from sickrage.core.databases.main import MainDB
+from sickrage.core.exceptions import MultipleEpisodesInDatabaseException
 
 
 @MainDB.with_session
@@ -30,6 +30,4 @@ def find_episode(show_id, episode_id, session=None):
     try:
         return session.query(TVEpisode).filter_by(showid=show_id, indexer_id=episode_id).one_or_none()
     except MultipleResultsFound:
-        sickrage.app.log.warning(
-            'Multiple episodes found with episode ID: {}, database may be corrupted, starting with a fresh database is recommended.'.format(episode_id))
-        return None
+        raise MultipleEpisodesInDatabaseException
