@@ -21,7 +21,7 @@ import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import try_int
-from sickrage.core.tv.episode.helpers import find_episode
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.providers import TorrentProvider
 
 
@@ -54,7 +54,7 @@ class HDBitsProvider(TorrentProvider):
 
         return True
 
-    def _get_season_search_strings(self, show_id, episode_id):
+    def _get_season_search_strings(self, show_id, season, episode):
         post_data = {
             'username': self.username,
             'passkey': self.passkey,
@@ -62,27 +62,28 @@ class HDBitsProvider(TorrentProvider):
             # TV Category
         }
 
-        episode_obj = find_episode(show_id, episode_id)
+        show_object = find_show(show_id)
+        episode_object = show_object.get_episode(season, episode)
 
-        if episode_obj.show.air_by_date or episode_obj.show.sports:
+        if show_object.air_by_date or show_object.sports:
             post_data['tvdb'] = {
                 'id': show_id,
-                'season': str(episode_obj.airdate)[:7],
+                'season': str(episode_object.airdate)[:7],
             }
-        elif episode_obj.show.anime:
+        elif show_object.anime:
             post_data['tvdb'] = {
                 'id': show_id,
-                'season': "%d" % episode_obj.scene_absolute_number,
+                'season': "%d" % episode_object.scene_absolute_number,
             }
         else:
             post_data['tvdb'] = {
                 'id': show_id,
-                'season': episode_obj.scene_season,
+                'season': episode_object.scene_season,
             }
 
         return [json.dumps(post_data)]
 
-    def _get_episode_search_strings(self, show_id, episode_id, add_string=''):
+    def _get_episode_search_strings(self, show_id, season, episode, add_string=''):
         post_data = {
             'username': self.username,
             'passkey': self.passkey,
@@ -90,27 +91,29 @@ class HDBitsProvider(TorrentProvider):
             # TV Category
         }
 
-        episode_obj = find_episode(show_id, episode_id)
-        if episode_obj.show.air_by_date:
+        show_object = find_show(show_id)
+        episode_object = show_object.get_episode(season, episode)
+
+        if show_object.air_by_date:
             post_data['tvdb'] = {
                 'id': show_id,
-                'episode': str(episode_obj.airdate).replace('-', '|')
+                'episode': str(episode_object.airdate).replace('-', '|')
             }
-        elif episode_obj.show.sports:
+        elif show_object.sports:
             post_data['tvdb'] = {
                 'id': show_id,
-                'episode': episode_obj.airdate.strftime('%b')
+                'episode': episode_object.airdate.strftime('%b')
             }
-        elif episode_obj.show.anime:
+        elif show_object.anime:
             post_data['tvdb'] = {
                 'id': show_id,
-                'episode': "%i" % int(episode_obj.scene_absolute_number)
+                'episode': "%i" % int(episode_object.scene_absolute_number)
             }
         else:
             post_data['tvdb'] = {
                 'id': show_id,
-                'season': episode_obj.scene_season,
-                'episode': episode_obj.scene_episode
+                'season': episode_object.scene_season,
+                'episode': episode_object.scene_episode
             }
 
         return [json.dumps(post_data)]
@@ -124,7 +127,7 @@ class HDBitsProvider(TorrentProvider):
 
         return title, url
 
-    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, season=None, episode=None, **kwargs):
         results = []
 
         sickrage.app.log.debug("Search string: %s" % search_strings)

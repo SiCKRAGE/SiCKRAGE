@@ -26,7 +26,7 @@ import sickrage
 from sickrage.core import scene_exceptions
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import sanitize_scene_name, episode_num, try_int
-from sickrage.core.tv.episode.helpers import find_episode
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.providers import TorrentProvider
 
 
@@ -53,12 +53,11 @@ class BTNProvider(TorrentProvider):
             return False
         return True
 
-    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, season=None, episode=None, **kwargs):
         """
         Search a provider and parse the results.
         :param search_strings: A dict with {mode: search value}
         :param age: Not used
-        :param ep_obj: Not used
         :returns: A list of search results (structure)
         """
         results = []
@@ -74,7 +73,7 @@ class BTNProvider(TorrentProvider):
             sickrage.app.log.debug('Search mode: {}'.format(mode))
 
             if mode != 'RSS':
-                searches = self._search_params(show_id, episode_id, mode)
+                searches = self._search_params(show_id, season, episode, mode)
             else:
                 searches = [search_params]
 
@@ -156,47 +155,42 @@ class BTNProvider(TorrentProvider):
 
         return title, url
 
-    def _search_params(self, show_id, episode_id, mode, season_numbering=None):
+    def _search_params(self, show_id, season, episode, mode, season_numbering=None):
         searches = []
 
-        season = 'Season' if mode == 'Season' else ''
+        show_object = find_show(show_id)
+        episode_object = show_object.get_episode(season, episode)
 
-        episode_obj = find_episode(show_id, episode_id)
-
-        air_by_date = episode_obj.show.air_by_date
-        sports = episode_obj.show.sports
+        air_by_date = show_object.air_by_date
+        sports = show_object.sports
 
         if not season_numbering and (air_by_date or sports):
-            date_fmt = '%Y' if season else '%Y.%m.%d'
-            search_name = episode_obj.airdate.strftime(date_fmt)
+            date_fmt = '%Y' if mode == 'Season' else '%Y.%m.%d'
+            search_name = episode_object.airdate.strftime(date_fmt)
         else:
             search_name = '{type} {number}'.format(
-                type=season,
-                number=episode_obj.scene_season if season else episode_num(
-                    episode_obj.scene_season, episode_obj.scene_episode
-                ),
+                type='Season' if mode == 'Season' else '',
+                number=episode_object.scene_season if season else episode_num(episode_object.scene_season, episode_object.scene_episode),
             ).strip()
 
         params = {
-            'category': season or 'Episode',
+            'category': mode,
             'name': search_name,
         }
 
         # Search
-        if episode_obj.show.indexer == 1:
-            params['tvdb'] = episode_obj.show.indexer_id
+        if show_object.indexer == 1:
+            params['tvdb'] = show_object.indexer_id
             searches.append(params)
         else:
-            name_exceptions = list(
-                set(scene_exceptions.get_scene_exceptions(episode_obj.show.indexer_id) + [episode_obj.show.name]))
-            for name in name_exceptions:
+            for name in list(set(scene_exceptions.get_scene_exceptions(show_object.indexer_id) + [show_object.name])):
                 # Search by name if we don't have tvdb id
                 params['series'] = sanitize_scene_name(name)
                 searches.append(params)
 
         # extend air by date searches to include season numbering
         if air_by_date and not season_numbering:
-            searches.extend(self._search_params(show_id, episode_id, mode, season_numbering=True))
+            searches.extend(self._search_params(show_id, season, episode, mode, season_numbering=True))
 
         return searches
 

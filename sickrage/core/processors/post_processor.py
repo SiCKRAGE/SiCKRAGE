@@ -29,17 +29,13 @@ from sqlalchemy import orm
 import sickrage
 from sickrage.core.common import Quality, ARCHIVED, DOWNLOADED
 from sickrage.core.databases.main import MainDB
-from sickrage.core.exceptions import EpisodePostProcessingFailedException, \
-    NoFreeSpaceException
-from sickrage.core.helpers import show_names, replace_extension, make_dir, \
-    chmod_as_parent, move_file, copy_file, hardlink_file, move_and_symlink_file, remove_non_release_groups, \
-    remove_extension, \
-    is_file_locked, verify_freespace, delete_empty_folders, make_dirs, symlink, is_rar_file, glob_escape, touch_file
+from sickrage.core.exceptions import EpisodePostProcessingFailedException, NoFreeSpaceException
+from sickrage.core.helpers import show_names, replace_extension, make_dir, chmod_as_parent, move_file, copy_file, hardlink_file, move_and_symlink_file, \
+    remove_non_release_groups, remove_extension, is_file_locked, verify_freespace, delete_empty_folders, make_dirs, symlink, is_rar_file, glob_escape, \
+    touch_file
 from sickrage.core.helpers.anidb import get_anime_episode
-from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
-    NameParser
+from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
 from sickrage.core.tv.episode import TVEpisode
-from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.tv.show.history import FailedHistory, History  # memory intensive
 from sickrage.notifiers import Notifiers
@@ -518,7 +514,7 @@ class PostProcessor(object):
         """
 
         self.in_history = False
-        to_return = None, [], None, None, None
+        to_return = None, None, [], None, None, None
 
         # if we don't have either of these then there's nothing to use to search the history for anyway
         if not self.nzb_name and not self.file_name:
@@ -530,6 +526,7 @@ class PostProcessor(object):
             names.append(self.nzb_name)
             if '.' in self.nzb_name:
                 names.append(self.nzb_name.rpartition(".")[0])
+
         if self.file_name:
             names.append(self.file_name)
             if '.' in self.file_name:
@@ -542,7 +539,8 @@ class PostProcessor(object):
                 continue
 
             show_id = dbData.showid
-            episode_id = dbData.episode_id
+            season = dbData.season
+            episode = dbData.episode
             quality = dbData.quality
             version = dbData.version
             release_group = dbData.release_group
@@ -551,12 +549,12 @@ class PostProcessor(object):
                 quality = None
 
             self.version = version
-            to_return = show_id, [episode_id], quality, version, release_group
+            to_return = show_id, season, [episode], quality, version, release_group
 
             quality_string = Quality.qualityStrings[quality] if quality is not None else quality
 
-            self._log("Found result in history for {} - Episode ID: {} - Quality: {} - Version: {}".format(curName, episode_id, quality_string, version),
-                      sickrage.app.log.DEBUG)
+            self._log("Found result in history for {} - Season: {} - Episode: {} - Quality: {} - Version: {}".format(curName, season, episode, quality_string,
+                                                                                                                     version), sickrage.app.log.DEBUG)
 
             self.in_history = True
             break
@@ -600,7 +598,7 @@ class PostProcessor(object):
         if none were found.
         """
 
-        to_return = None, [], None, None, None
+        to_return = None, None, [], None, None, None
 
         if not name:
             return to_return
@@ -612,12 +610,15 @@ class PostProcessor(object):
         # parse the name to break it into show name, season, and episode
         parse_result = NameParser(True).parse(name)
 
-        episode_ids = []
+        season = None
+        episodes = []
+
         if parse_result.is_air_by_date:
             self._log("Looks like this is an air-by-date or sports show, attempting to convert the date to episode ID", sickrage.app.log.DEBUG)
             try:
                 episode_object = session.query(TVEpisode).filter_by(showid=parse_result.indexer_id, airdate=parse_result.air_date).one()
-                episode_ids += [episode_object.indexer_id]
+                season = episode_object.season
+                episodes += [episode_object.episode]
             except orm.exc.NoResultFound:
                 self._log("Unable to find episode with date {} for show {}, skipping".format(parse_result.is_air_by_date, parse_result.indexer_id),
                           sickrage.app.log.DEBUG)
@@ -626,11 +627,12 @@ class PostProcessor(object):
                 try:
                     episode_object = session.query(TVEpisode).filter_by(showid=parse_result.indexer_id, season=parse_result.season_number,
                                                                         episode=episode_number).one()
-                    episode_ids += [episode_object.indexer_id]
+                    season = episode_object.season
+                    episodes += [episode_object.episode]
                 except orm.exc.NoResultFound:
                     continue
 
-        to_return = (parse_result.indexer_id, episode_ids, parse_result.quality, None, parse_result.release_group)
+        to_return = (parse_result.indexer_id, season, episodes, parse_result.quality, None, parse_result.release_group)
 
         self._finalize(parse_result)
 
@@ -658,14 +660,15 @@ class PostProcessor(object):
         """
         For a given file try to find the showid, season, and episode.
 
-        :return: A (show_id, episode_id, quality, version) tuple
+        :return: A (show_id, season, episode, quality, version) tuple
         """
 
         show_id = None
         quality = None
         version = None
         release_group = None
-        episode_ids = []
+        season = None
+        episodes = []
 
         # try to look up the nzb in history
         attempt_list = [
@@ -690,7 +693,7 @@ class PostProcessor(object):
         # attempt every possible method to get our info
         for cur_attempt in attempt_list:
             try:
-                (cur_show_id, cur_episode_ids, cur_quality, cur_version, cur_release_group) = cur_attempt()
+                (cur_show_id, cur_season, cur_episodes, cur_quality, cur_version, cur_release_group) = cur_attempt()
             except (InvalidNameException, InvalidShowException) as e:
                 sickrage.app.log.debug("Unable to parse, skipping: {}".format(e))
                 continue
@@ -700,8 +703,11 @@ class PostProcessor(object):
 
             show_id = cur_show_id
 
-            if len(cur_episode_ids):
-                episode_ids = cur_episode_ids
+            if cur_season:
+                season = cur_season
+
+            if len(cur_episodes):
+                episodes = cur_episodes
 
             if cur_quality and not (self.in_history and quality):
                 quality = cur_quality
@@ -713,26 +719,27 @@ class PostProcessor(object):
             if cur_release_group is not None:
                 release_group = cur_release_group
 
-            if all([show_id, len(episode_ids) > 0, quality, version]):
+            if all([show_id, season, len(episodes) > 0, quality, version]):
                 break
 
-        return show_id, episode_ids, quality, version, release_group
+        return show_id, season, episodes, quality, version, release_group
 
     @MainDB.with_session
-    def _get_ep_obj(self, show_id, episode_ids, session=None):
+    def _get_ep_obj(self, show_id, season, episodes, session=None):
         """
         Retrieve the TVEpisode object requested.
 
         :param show_id: The show object belonging to the show we want to process
-        :param episode_ids: A list of episode IDs to find (list of ints)
 
         :return: If the episode(s) can be found then a TVEpisode object with the correct related eps will
         be instantiated and returned. If the episode can't be found then None will be returned.
         """
 
         root_ep = None
-        for episode_id in episode_ids:
-            episode_object = find_episode(show_id, episode_id, session=session)
+
+        show_object = find_show(show_id, session=session)
+        for episode in episodes:
+            episode_object = show_object.get_episode(season, episode)
 
             self._log("Retrieving episode object for " + str(episode_object.season) + "x" + str(episode_object.episode), sickrage.app.log.DEBUG)
 
@@ -918,18 +925,18 @@ class PostProcessor(object):
         self.anidbEpisode = None
 
         # try to find the file info
-        show_id, episode_ids, quality, version, release_group = self._find_info()
+        show_id, season, episodes, quality, version, release_group = self._find_info()
 
         show_object = find_show(show_id)
         if not show_object:
             self._log("This show isn't in your list, you need to add it to SiCKRAGE before post-processing an episode")
             raise EpisodePostProcessingFailedException()
-        elif not len(episode_ids):
+        elif not len(episodes):
             self._log("Not enough information to determine what episode this is. Quitting post-processing")
             return False
 
         # retrieve/create the corresponding TVEpisode objects
-        ep_obj = self._get_ep_obj(show_id, episode_ids, session=session)
+        ep_obj = self._get_ep_obj(show_id, season, episodes, session=session)
         __, old_ep_quality = Quality.split_composite_status(ep_obj.status)
 
         # get the quality of the episode we're processing
@@ -1135,7 +1142,7 @@ class PostProcessor(object):
         session.commit()
 
         # log it to history
-        History.log_download(ep_obj.showid, ep_obj.indexer_id, ep_obj.status, self.file_path, new_ep_quality, release_group, new_ep_version)
+        History.log_download(ep_obj.showid, ep_obj.season, ep_obj.episode, ep_obj.status, self.file_path, new_ep_quality, release_group, new_ep_version)
 
         # If any notification fails, don't stop postProcessor
         try:

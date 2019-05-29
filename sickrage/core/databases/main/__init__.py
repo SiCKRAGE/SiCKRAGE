@@ -37,7 +37,7 @@ class MainDBBase(object):
 
 
 class MainDB(SRDatabase):
-    db_version = 12
+    db_version = 10
 
     session = sessionmaker(class_=ContextSession)
 
@@ -148,7 +148,8 @@ class MainDB(SRDatabase):
 
         id = Column(Integer, primary_key=True)
         showid = Column(Integer, nullable=False)
-        episode_id = Column(Integer, nullable=False)
+        season = Column(Integer, nullable=False)
+        episode = Column(Integer, nullable=False)
         resource = Column(Text, nullable=False)
         action = Column(Integer, nullable=False)
         version = Column(Integer, default=-1)
@@ -166,7 +167,8 @@ class MainDB(SRDatabase):
         release = Column(Text, nullable=False)
         provider = Column(Text, nullable=False)
         showid = Column(Integer, nullable=False)
-        episode_id = Column(Integer, nullable=False)
+        season = Column(Integer, nullable=False)
+        episode = Column(Integer, nullable=False)
         old_status = Column(Integer, nullable=False)
 
     class FailedSnatch(MainDBBase):

@@ -36,7 +36,6 @@ from sickrage.core.nameparser import InvalidNameException, InvalidShowException,
 from sickrage.core.search import pick_best_result, snatch_episode
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show, get_show_list
-from sickrage.core.tv.show.history import History
 from sickrage.providers import NZBProvider, NewznabProvider, TorrentProvider, TorrentRssProvider
 
 
@@ -84,17 +83,12 @@ class ProperSearcher(object):
         orig_thread_name = threading.currentThread().getName()
 
         for show in get_show_list(session=session):
-            self._lastProperSearch = self._get_last_proper_search(show.indexer_id)
-
-            recently_aired_episode_ids = []
-            for episode_obj in session.query(TVEpisode).filter_by(showid=show.indexer_id).filter(
-                    TVEpisode.airdate >= search_date, TVEpisode.status.in_(Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST)):
-                recently_aired_episode_ids += [episode_obj.indexer_id]
-
-            self._set_last_proper_search(show.indexer_id, datetime.datetime.today().toordinal())
-
-            if not recently_aired_episode_ids:
+            wanted = self._get_wanted(show, search_date)
+            if not wanted:
+                sickrage.app.log.debug("Nothing needs to be downloaded for {}, skipping".format(show.name))
                 continue
+
+            self._lastProperSearch = self._get_last_proper_search(show.indexer_id)
 
             # for each provider get a list of the
             for providerID, providerObj in sickrage.app.search_providers.sort(randomize=sickrage.app.config.randomize_providers).items():
@@ -111,29 +105,28 @@ class ProperSearcher(object):
                 sickrage.app.log.info("Searching for any new PROPER releases from " + providerObj.name)
 
                 try:
-                    cur_propers = providerObj.find_propers(show.indexer_id, recently_aired_episode_ids)
+                    for season, episode in wanted:
+                        for x in providerObj.find_propers(show.indexer_id, season, episode):
+                            if not re.search(r'(^|[. _-])(proper|repack)([. _-]|$)', x.name, re.I):
+                                sickrage.app.log.debug('Found a non-proper, we have caught and skipped it.')
+                                continue
+
+                            name = self._generic_name(x.name)
+                            if name not in propers:
+                                sickrage.app.log.debug("Found new proper: " + x.name)
+                                x.provider = providerObj
+                                propers[name] = x
                 except AuthException as e:
                     sickrage.app.log.warning("Authentication error: {}".format(e))
                     continue
                 except Exception as e:
-                    sickrage.app.log.debug(
-                        "Error while searching " + providerObj.name + ", skipping: {}".format(e))
+                    sickrage.app.log.debug("Error while searching " + providerObj.name + ", skipping: {}".format(e))
                     sickrage.app.log.debug(traceback.format_exc())
                     continue
 
-                # if they haven't been added by a different provider than add the proper to the list
-                for x in cur_propers:
-                    if not re.search(r'(^|[. _-])(proper|repack)([. _-]|$)', x.name, re.I):
-                        sickrage.app.log.debug('findPropers returned a non-proper, we have caught and skipped it.')
-                        continue
-
-                    name = self._generic_name(x.name)
-                    if name not in propers:
-                        sickrage.app.log.debug("Found new proper: " + x.name)
-                        x.provider = providerObj
-                        propers[name] = x
-
                 threading.currentThread().setName(orig_thread_name)
+
+            self._set_last_proper_search(show.indexer_id, datetime.datetime.today().toordinal())
 
         # take the list of unique propers and get it sorted by
         sorted_propers = sorted(propers.values(), key=operator.attrgetter('date'), reverse=True)
@@ -141,8 +134,7 @@ class ProperSearcher(object):
             try:
                 parse_result = NameParser(False).parse(curProper.name)
             except InvalidNameException:
-                sickrage.app.log.debug(
-                    "Unable to parse the filename " + curProper.name + " into a valid episode")
+                sickrage.app.log.debug("Unable to parse the filename " + curProper.name + " into a valid episode")
                 continue
             except InvalidShowException:
                 sickrage.app.log.debug("Unable to parse the filename " + curProper.name + " into a valid show")
@@ -152,13 +144,11 @@ class ProperSearcher(object):
                 continue
 
             if not parse_result.episode_numbers:
-                sickrage.app.log.debug(
-                    "Ignoring " + curProper.name + " because it's for a full season rather than specific episode")
+                sickrage.app.log.debug("Ignoring " + curProper.name + " because it's for a full season rather than specific episode")
                 continue
 
             show = find_show(parse_result.indexer_id, session=session)
-            sickrage.app.log.debug(
-                "Successful match! Result " + parse_result.original_name + " matched to show " + show.name)
+            sickrage.app.log.debug("Successful match! Result " + parse_result.original_name + " matched to show " + show.name)
 
             # set the indexer_id in the db to the show's indexer_id
             curProper.indexer_id = parse_result.indexer_id
@@ -183,19 +173,17 @@ class ProperSearcher(object):
             # only get anime proper if it has release group and version
             if show.is_anime:
                 if not best_result.release_group and best_result.version == -1:
-                    sickrage.app.log.debug(
-                        "Proper " + best_result.name + " doesn't have a release group and version, ignoring it")
+                    sickrage.app.log.debug("Proper " + best_result.name + " doesn't have a release group and version, ignoring it")
                     continue
 
             # check if we actually want this proper (if it's the right quality)            
-            try:
-                dbData = session.query(TVEpisode).filter_by(showid=best_result.indexer_id, season=best_result.season, episode=best_result.episode).one()
+            dbData = session.query(TVEpisode).filter_by(showid=best_result.indexer_id, season=best_result.season, episode=best_result.episode).one_or_none()
+            if not dbData:
+                continue
 
-                # only keep the proper if we have already retrieved the same quality ep (don't get better/worse ones)
-                old_status, old_quality = Quality.split_composite_status(int(dbData.status))
-                if old_status not in (DOWNLOADED, SNATCHED) or old_quality != best_result.quality:
-                    continue
-            except orm.exc.NoResultFound:
+            # only keep the proper if we have already retrieved the same quality ep (don't get better/worse ones)
+            old_status, old_quality = Quality.split_composite_status(int(dbData.status))
+            if old_status not in (DOWNLOADED, SNATCHED) or old_quality != best_result.quality:
                 continue
 
             # check if we actually want this proper (if it's the right release group and a higher version)
@@ -207,8 +195,7 @@ class ProperSearcher(object):
                 if not -1 < old_version < best_result.version:
                     continue
 
-                sickrage.app.log.info(
-                    "Found new anime v" + str(best_result.version) + " to replace existing v" + str(old_version))
+                sickrage.app.log.info("Found new anime v" + str(best_result.version) + " to replace existing v" + str(old_version))
 
                 if old_release_group != best_result.release_group:
                     sickrage.app.log.info("Skipping proper from release group: {}, does not match existing release "
@@ -225,6 +212,16 @@ class ProperSearcher(object):
         return final_propers
 
     @MainDB.with_session
+    def _get_wanted(self, show, search_date, session=None):
+        wanted = []
+
+        for episode_object in session.query(TVEpisode).filter_by(showid=show.indexer_id).filter(
+                TVEpisode.airdate >= search_date, TVEpisode.status.in_(Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST)):
+            wanted += [(episode_object.season, episode_object.episode)]
+
+        return wanted
+
+    @MainDB.with_session
     def _download_propers(self, proper_list, session=None):
         """
         Download proper (snatch it)
@@ -236,10 +233,8 @@ class ProperSearcher(object):
             history_limit = datetime.datetime.today() - datetime.timedelta(days=30)
 
             # make sure the episode has been downloaded before
-            episode_obj = find_show(curProper.indexer_id, session=session).get_episode(curProper.season, curProper.episode)
-
             history_results = [x for x in session.query(MainDB.History).filter_by(
-                showid=curProper.indexer_id, episode_id=episode_obj.indexer_id,
+                showid=curProper.indexer_id, season=curProper.season, episode=curProper.episode,
                 quality=curProper.quality).filter(MainDB.History.date >= history_limit.toordinal(),
                                                   MainDB.History.action.in_(Quality.SNATCHED + Quality.DOWNLOADED))]
 
@@ -266,7 +261,7 @@ class ProperSearcher(object):
                 continue
 
             # make the result object
-            result = curProper.provider.getResult([episode_obj.indexer_id])
+            result = curProper.provider.getResult(curProper.season, [curProper.episode])
             result.show_id = curProper.indexer_id
             result.url = curProper.url
             result.name = curProper.name

@@ -42,7 +42,6 @@ from sickrage.core.exceptions import ShowNotFoundException, \
 from sickrage.core.helpers import list_media_files, is_media_file, try_int, safe_getattr
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from sickrage.core.tv.episode import TVEpisode
-from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.config import INDEXER_TVRAGE
 from sickrage.indexers.exceptions import indexer_attributenotfound
@@ -272,9 +271,8 @@ class TVShow(MainDBBase):
                            r.location == cur_ep.location and
                            r.episode != cur_ep.episode]) > 0:
 
-                    related_eps_result = sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=self.indexer_id,
-                                                                                                   season=cur_ep.season,
-                                                                                                   location=cur_ep.location).filter(
+                    related_eps_result = object_session(self).query(TVEpisode).filter_by(showid=self.indexer_id, season=cur_ep.season,
+                                                                                         location=cur_ep.location).filter(
                         TVEpisode.episode != cur_ep.episode).order_by(TVEpisode.episode)
 
                     for cur_related_ep in related_eps_result:
@@ -292,7 +290,7 @@ class TVShow(MainDBBase):
     def get_episode(self, season=None, episode=None, absolute_number=None):
         from sickrage.core.tv.episode import TVEpisode
 
-        if self.is_anime and all([absolute_number is not None, season is None, episode is None]):
+        if all([absolute_number is not None, season is None, episode is None]):
             try:
                 dbData = object_session(self).query(TVEpisode).filter_by(showid=self.indexer_id,
                                                                          absolute_number=absolute_number).filter(TVEpisode.season != 0).one()
@@ -300,6 +298,8 @@ class TVShow(MainDBBase):
                 season = dbData.season
 
                 sickrage.app.log.debug("Found episode by absolute_number %s which is S%02dE%02d" % (absolute_number, season or 0, episode or 0))
+
+                return dbData
             except orm.exc.MultipleResultsFound:
                 sickrage.app.log.warning("Multiple entries for absolute number: " + str(absolute_number) + " in show: " + self.name + " found ")
                 raise MultipleEpisodesInDatabaseException
@@ -746,14 +746,15 @@ class TVShow(MainDBBase):
 
         return result
 
-    def want_episode(self, episode_id, quality, manualSearch=False, downCurQuality=False):
-        dbData = find_episode(self.indexer_id, episode_id)
-        if not dbData:
+    def want_episode(self, season, episode, quality, manualSearch=False, downCurQuality=False):
+        try:
+            episode_object = self.get_episode(season, episode)
+        except EpisodeNotFoundException:
             sickrage.app.log.debug("Unable to find a matching episode in database, ignoring found episode")
             return False
 
         sickrage.app.log.debug("Checking if found episode %s S%02dE%02d is wanted at quality %s" % (
-            self.name, dbData.season or 0, dbData.episode or 0, Quality.qualityStrings[quality]))
+            self.name, episode_object.season or 0, episode_object.episode or 0, Quality.qualityStrings[quality]))
 
         # if the quality isn't one we want under any circumstances then just say no
         any_qualities, best_qualities = Quality.split_quality(self.quality)
@@ -767,7 +768,7 @@ class TVShow(MainDBBase):
             sickrage.app.log.debug("Don't want this quality, ignoring found episode")
             return False
 
-        ep_status = int(dbData.status)
+        ep_status = int(episode_object.status)
         ep_status_text = statusStrings[ep_status]
 
         sickrage.app.log.debug("Existing episode status: " + str(ep_status) + " (" + ep_status_text + ")")

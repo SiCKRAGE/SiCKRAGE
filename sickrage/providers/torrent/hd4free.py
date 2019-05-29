@@ -51,7 +51,7 @@ class HD4FreeProvider(TorrentProvider):
 
         return False
 
-    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, season=None, episode=None, **kwargs):
         results = []
         if not self._check_auth:
             return results

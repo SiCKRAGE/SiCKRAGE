@@ -57,18 +57,18 @@ class DailySearcher(object):
                 sickrage.app.log.debug("Skipping search for {} because the show is paused".format(curShow.name))
                 continue
 
-            episode_ids = self._get_episode_ids(curShow, datetime.date.today())
-            if episode_ids:
-                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put,
-                                                  DailySearchQueueItem(curShow.indexer_id,
-                                                                       episode_ids))
-            else:
+            wanted = self._get_wanted(curShow, datetime.date.today())
+            if not wanted:
                 sickrage.app.log.debug("Nothing needs to be downloaded for {}, skipping".format(curShow.name))
+                continue
+
+            for season, episode in wanted:
+                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, DailySearchQueueItem(curShow.indexer_id, season, episode))
 
         self.amActive = False
 
     @staticmethod
-    def _get_episode_ids(show, from_date):
+    def _get_wanted(show, from_date):
         """
         Get a list of episodes that we want to download
         :param show: Show these episodes are from
@@ -84,11 +84,11 @@ class DailySearcher(object):
         sickrage.app.log.debug("Seeing if we need anything for today from {}".format(show.name))
 
         # check through the list of statuses to see if we want any
-        for ep_obj in show.episodes:
-            if not ep_obj.season > 0 or not ep_obj.airdate >= from_date:
+        for episode_object in show.episodes:
+            if not episode_object.season > 0 or not episode_object.airdate >= from_date:
                 continue
 
-            cur_status, cur_quality = Quality.split_composite_status(int(ep_obj.status or -1))
+            cur_status, cur_quality = Quality.split_composite_status(int(episode_object.status or -1))
 
             # if we need a better one then say yes
             if cur_status not in (WANTED, DOWNLOADED, SNATCHED, SNATCHED_PROPER):
@@ -110,6 +110,6 @@ class DailySearcher(object):
             if cur_status == DOWNLOADED and show.skip_downloaded:
                 continue
 
-            wanted.append(ep_obj.indexer_id)
+            wanted += [(episode_object.season, episode_object.episode)]
 
         return wanted

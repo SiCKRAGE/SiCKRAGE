@@ -55,7 +55,7 @@ class YggtorrentProvider(TorrentProvider):
         # Cache
         self.cache = TVCache(self, min_time=20)
 
-    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, season=None, episode=None, **kwargs):
         """
         Search a provider and parse the results.
 

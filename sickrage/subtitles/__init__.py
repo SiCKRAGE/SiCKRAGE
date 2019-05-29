@@ -26,7 +26,10 @@ from babelfish import language_converters, Language
 from subliminal import save_subtitles
 
 import sickrage
+from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import chmod_as_parent, make_dir
+from sickrage.core.tv.show.helpers import find_show
+from sickrage.core.tv.show.history import History
 from sickrage.subtitles.providers.utils import hash_itasa
 
 for provider in ['itasa = sickrage.subtitles.providers.itasa:ItaSAProvider',
@@ -86,27 +89,28 @@ def getEnabledServiceList():
     return [x['name'] for x in sortedServiceList() if x['enabled']]
 
 
-def download_subtitles(episode):
-    existing_subtitles = episode.subtitles
+@MainDB.with_session
+def download_subtitles(show_id, season, episode, session=None):
+    show_object = find_show(show_id, session=session)
+    episode_object = show_object.get_episode(season, episode)
+
+    existing_subtitles = episode_object.subtitles
     if not isinstance(existing_subtitles, list):
         existing_subtitles = []
 
     # First of all, check if we need subtitles
     languages = get_needed_languages(existing_subtitles)
     if not languages:
-        sickrage.app.log.debug('%s: No missing subtitles for S%02dE%02d' % (
-            episode.show.indexer_id, episode.season, episode.episode))
+        sickrage.app.log.debug('%s: No missing subtitles for S%02dE%02d' % (show_id, season, episode))
         return existing_subtitles, None
 
-    subtitles_path = get_subtitles_path(episode.location)
-    video_path = episode.location
+    subtitles_path = get_subtitles_path(episode_object.location)
+    video_path = episode_object.location
     providers = getEnabledServiceList()
 
-    video = get_video(video_path, subtitles_path=subtitles_path, episode=episode)
+    video = get_video(video_path, subtitles_path=subtitles_path, episode_object=episode_object)
     if not video:
-        sickrage.app.log.debug('%s: Exception caught in subliminal.scan_video for S%02dE%02d' %
-                               (episode.show.indexer_id, episode.season,
-                                episode.episode))
+        sickrage.app.log.debug('%s: Exception caught in subliminal.scan_video for S%02dE%02d' % (show_id, season, episode))
         return existing_subtitles, None
 
     provider_configs = {
@@ -133,8 +137,7 @@ def download_subtitles(episode):
     try:
         subtitles_list = pool.list_subtitles(video, languages)
         if not subtitles_list:
-            sickrage.app.log.debug('%s: No subtitles found for S%02dE%02d on any provider' % (
-                episode.show.indexer_id, episode.season, episode.episode))
+            sickrage.app.log.debug('%s: No subtitles found for S%02dE%02d on any provider' % (show_id, season, episode))
             return existing_subtitles, None
 
         found_subtitles = pool.download_best_subtitles(subtitles_list, video, languages=languages,
@@ -143,9 +146,8 @@ def download_subtitles(episode):
 
         save_subtitles(video, found_subtitles, directory=subtitles_path, single=not sickrage.app.config.subtitles_multi)
 
-        if not sickrage.app.config.embedded_subtitles_all and sickrage.app.config.subtitles_extra_scripts and video_path.endswith(
-                ('.mkv', '.mp4')):
-            run_subs_extra_scripts(episode, found_subtitles, video, single=not sickrage.app.config.subtitles_multi)
+        if not sickrage.app.config.embedded_subtitles_all and sickrage.app.config.subtitles_extra_scripts and video_path.endswith(('.mkv', '.mp4')):
+            run_subs_extra_scripts(episode_object, found_subtitles, video, single=not sickrage.app.config.subtitles_multi)
 
         new_subtitles = sorted({subtitle.language.opensubtitles for subtitle in found_subtitles})
         current_subtitles = sorted({subtitle for subtitle in new_subtitles + existing_subtitles if subtitle})
@@ -160,11 +162,9 @@ def download_subtitles(episode):
         return existing_subtitles, None
 
     if sickrage.app.config.subtitles_history:
-        from sickrage.core.tv.show.history import History
         for subtitle in found_subtitles:
-            sickrage.app.log.debug(
-                'history.logSubtitle %s, %s' % (subtitle.provider_name, subtitle.language.opensubtitles))
-            History.log_subtitle(episode.showid, episode.episode_id, episode.status, subtitle)
+            sickrage.app.log.debug('history.logSubtitle %s, %s' % (subtitle.provider_name, subtitle.language.opensubtitles))
+            History.log_subtitle(show_id, season, episode, episode_object.status, subtitle)
 
     return current_subtitles, new_subtitles
 
@@ -179,22 +179,24 @@ def get_needed_languages(subtitles):
     return {from_code(language) for language in wanted_languages().difference(subtitles)}
 
 
-def refresh_subtitles(episode):
-    video = get_video(episode.location, episode=episode)
+@MainDB.with_session
+def refresh_subtitles(show_id, season, episode, session=None):
+    show_object = find_show(show_id, session=session)
+    episode_object = show_object.get_episode(season, episode)
+
+    video = get_video(episode_object.location, episode_object=episode_object)
     if not video:
         sickrage.app.log.debug("Exception caught in subliminal.scan_video, subtitles couldn't be refreshed")
-        return episode.subtitles, None
+        return episode_object.subtitles, None
     current_subtitles = get_subtitles(video)
-    if episode.subtitles == current_subtitles:
-        sickrage.app.log.debug('No changed subtitles for {}'.format(episode.pretty_name()))
-        return episode.subtitles, None
+    if episode_object.subtitles == current_subtitles:
+        sickrage.app.log.debug('No changed subtitles for {}'.format(episode_object.pretty_name()))
+        return episode_object.subtitles, None
     else:
         return current_subtitles, True
 
 
-def get_video(video_path, subtitles_path=None, subtitles=True, embedded_subtitles=None, episode=None):
-    from sickrage.core.scene_exceptions import get_scene_exceptions
-
+def get_video(video_path, subtitles_path=None, subtitles=True, embedded_subtitles=None, episode_object=None):
     if not subtitles_path:
         subtitles_path = get_subtitles_path(video_path)
 
@@ -215,10 +217,11 @@ def get_video(video_path, subtitles_path=None, subtitles=True, embedded_subtitle
             embedded_subtitles = bool(
                 not sickrage.app.config.embedded_subtitles_all and video_path.endswith('.mkv'))
 
-        subliminal.refine(video, episode_refiners=episode_refiners, embedded_subtitles=embedded_subtitles,
-                          release_name=episode.name, tv_episode=episode)
+        subliminal.refine(video, episode_refiners=episode_refiners, embedded_subtitles=embedded_subtitles, release_name=episode_object.name,
+                          tv_episode=episode_object)
 
-        video.alternative_series = list(get_scene_exceptions(episode.show.indexer_id))
+        from sickrage.core.scene_exceptions import get_scene_exceptions
+        video.alternative_series = list(get_scene_exceptions(episode_object.show.indexer_id))
 
         # remove format metadata
         video.format = ""
@@ -298,7 +301,7 @@ def code_from_code(code):
     return from_code(code).opensubtitles
 
 
-def run_subs_extra_scripts(episode, found_subtitles, video, single=False):
+def run_subs_extra_scripts(episode_object, found_subtitles, video, single=False):
     for curScriptName in sickrage.app.config.subtitles_extra_scripts:
         script_cmd = [piece for piece in re.split("( |\\\".*?\\\"|'.*?')", curScriptName) if piece.strip()]
         script_cmd[0] = os.path.abspath(script_cmd[0])
@@ -307,9 +310,8 @@ def run_subs_extra_scripts(episode, found_subtitles, video, single=False):
         for subtitle in found_subtitles:
             subtitle_path = subliminal.subtitle.get_subtitle_path(video.name, None if single else subtitle.language)
 
-            inner_cmd = script_cmd + [video.name, subtitle_path, subtitle.language.opensubtitles, episode.show.name,
-                                      str(episode.season), str(episode.episode), episode.name,
-                                      str(episode.show.indexer_id)]
+            inner_cmd = script_cmd + [video.name, subtitle_path, subtitle.language.opensubtitles, episode_object.show.name,
+                                      str(episode_object.season), str(episode_object.episode), episode_object.name, str(episode_object.show.indexer_id)]
 
             # use subprocess to run the command and capture output
             sickrage.app.log.info("Executing command: %s" % inner_cmd)

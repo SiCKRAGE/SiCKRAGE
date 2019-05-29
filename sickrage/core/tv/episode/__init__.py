@@ -28,19 +28,16 @@ from sqlalchemy import ForeignKeyConstraint, Index, Column, Integer, Text, Boole
 from sqlalchemy.orm import relationship, object_session
 
 import sickrage
-from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, dateTimeFormat, SKIPPED, NAMING_EXTEND, \
-    NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
+from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, SKIPPED, NAMING_EXTEND, NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, \
+    NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
 from sickrage.core.databases.main import MainDBBase
-from sickrage.core.exceptions import NoNFOException, \
-    EpisodeNotFoundException, EpisodeDeletedException
-from sickrage.core.helpers import is_media_file, try_int, replace_extension, \
-    touch_file, sanitize_scene_name, remove_non_release_groups, remove_extension, sanitize_file_name, \
-    safe_getattr, make_dirs, move_file, delete_empty_folders
+from sickrage.core.exceptions import NoNFOException, EpisodeNotFoundException, EpisodeDeletedException
+from sickrage.core.helpers import is_media_file, try_int, replace_extension, touch_file, sanitize_scene_name, remove_non_release_groups, remove_extension, \
+    sanitize_file_name, safe_getattr, make_dirs, move_file, delete_empty_folders
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_seasonnotfound, indexer_error, indexer_episodenotfound
 from sickrage.notifiers import Notifiers
-from sickrage.subtitles import subtitle_extensions, download_subtitles, refresh_subtitles, subtitle_code_filter, \
-    name_from_code
+from sickrage.subtitles import subtitle_extensions, download_subtitles, refresh_subtitles, subtitle_code_filter, name_from_code
 
 
 class TVEpisode(MainDBBase):
@@ -95,7 +92,7 @@ class TVEpisode(MainDBBase):
 
     def refresh_subtitles(self):
         """Look for subtitles files and refresh the subtitles property"""
-        subtitles, save_subtitles = refresh_subtitles(self)
+        subtitles, save_subtitles = refresh_subtitles(self.showid, self.season, self.episode)
         if save_subtitles:
             self.subtitles = subtitles
 
@@ -108,7 +105,7 @@ class TVEpisode(MainDBBase):
         sickrage.app.log.debug(
             "%s: Downloading subtitles for S%02dE%02d" % (self.show.indexer_id, self.season or 0, self.episode or 0))
 
-        self.subtitles, newSubtitles = download_subtitles(self)
+        self.subtitles, newSubtitles = download_subtitles(self.season, self.episode)
 
         self.subtitles_searchcount += 1 if self.subtitles_searchcount else 1
         self.subtitles_lastsearch = datetime.datetime.now().toordinal()
@@ -226,16 +223,9 @@ class TVEpisode(MainDBBase):
                 self.delete_episode()
             return False
 
-        # early conversion to int so that episode doesn't get marked dirty
         self.indexer_id = try_int(safe_getattr(myEp, 'id'), self.indexer_id)
-        if self.indexer_id is None:
+        if not self.indexer_id:
             sickrage.app.log.warning("Failed to retrieve ID from " + IndexerApi(self.indexer).name)
-            object_session(self).rollback()
-            object_session(self).commit()
-            self.delete_episode()
-            return False
-        elif object_session(self).query(self.__class__).filter_by(showid=self.showid, indexer_id=self.indexer_id).count() > 1:
-            sickrage.app.log.warning("Episode ID {} already exists.".format(self.indexer_id))
             object_session(self).rollback()
             object_session(self).commit()
             self.delete_episode()

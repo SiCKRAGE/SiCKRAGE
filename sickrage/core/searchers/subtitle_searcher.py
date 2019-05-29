@@ -25,11 +25,9 @@ from sqlalchemy import or_, and_
 
 import sickrage
 import sickrage.subtitles
-from sickrage.core.common import dateTimeFormat
 from sickrage.core.databases.main import MainDB
 from sickrage.core.tv.episode import TVEpisode
-from sickrage.core.tv.episode.helpers import find_episode
-from sickrage.core.tv.show.helpers import get_show_list
+from sickrage.core.tv.show.helpers import get_show_list, find_show
 
 
 class SubtitleSearcher(object):
@@ -82,7 +80,8 @@ class SubtitleSearcher(object):
                 results += [{
                     'show_name': s.name,
                     'show_id': s.indexer_id,
-                    'episode_id': e.indexer_id,
+                    'season': e.season,
+                    'episode': e.episode,
                     'status': e.status,
                     'subtitles': e.subtitles,
                     'searchcount': e.subtitles_searchcount,
@@ -96,12 +95,12 @@ class SubtitleSearcher(object):
             return
 
         for epToSub in results:
-            episode_obj = find_episode(epToSub["show_id"], epToSub["episode_id"], session=session)
+            show_object = find_show(epToSub['show_id'], session=session)
+            episode_object = show_object.get_episode(epToSub['season'], epToSub['episode'])
 
             if not os.path.isfile(epToSub['location']):
-                sickrage.app.log.debug(
-                    'Episode file does not exist, cannot download subtitles for episode %dx%d of show %s' % (
-                        episode_obj.season, episode_obj.episode, epToSub['show_name']))
+                sickrage.app.log.debug('Episode file does not exist, cannot download '
+                                       'subtitles for episode %dx%d of show %s' % (episode_object.season, episode_object.episode, epToSub['show_name']))
                 continue
 
             if ((epToSub['airdate_daydiff'] > 7 and epToSub['searchcount'] < 2 and now - datetime.datetime.fromordinal(
@@ -109,22 +108,22 @@ class SubtitleSearcher(object):
                     (epToSub['airdate_daydiff'] <= 7 and epToSub['searchcount'] < 7 and
                      now - datetime.datetime.fromordinal(epToSub['lastsearch']) > datetime.timedelta(hours=rules['new'][epToSub['searchcount']]))):
 
-                sickrage.app.log.debug('Downloading subtitles for episode %dx%d of show %s' % (
-                    episode_obj.season, episode_obj.episode, epToSub['show_name']))
+                sickrage.app.log.debug('Downloading subtitles for '
+                                       'episode %dx%d of show %s' % (episode_object.season, episode_object.episode, epToSub['show_name']))
 
-                existing_subtitles = episode_obj.subtitles
+                existing_subtitles = episode_object.subtitles
 
                 try:
-                    episode_obj.download_subtitles()
+                    episode_object.download_subtitles()
                 except Exception as e:
                     sickrage.app.log.debug('Unable to find subtitles')
                     sickrage.app.log.debug(str(e))
                     return
 
-                new_subtitles = frozenset(episode_obj.subtitles).difference(existing_subtitles)
+                new_subtitles = frozenset(episode_object.subtitles).difference(existing_subtitles)
                 if new_subtitles:
-                    sickrage.app.log.info('Downloaded subtitles for S%02dE%02d in %s' % (
-                        episode_obj.season, episode_obj.episode, ', '.join(new_subtitles)))
+                    sickrage.app.log.info('Downloaded subtitles '
+                                          'for S%02dE%02d in %s' % (episode_object.season, episode_object.episode, ', '.join(new_subtitles)))
 
         self.amActive = False
 

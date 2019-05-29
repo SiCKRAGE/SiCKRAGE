@@ -225,7 +225,7 @@ $(document).ready(function ($) {
                         $li.find('#show-seasons').append(item.seasons + ' seasons');
                     } else {
                         $a.attr({
-                            href: `${SICKRAGE.srWebRoot}/home/displayShow?show=${item.showid}#episode-id-${item.episodeid}`,
+                            href: `${SICKRAGE.srWebRoot}/home/displayShow?show=${item.showid}#S${item.season}E${item.episode}`,
                             class: 'btn btn-dark btn-block d-inline-block text-left'
                         });
 

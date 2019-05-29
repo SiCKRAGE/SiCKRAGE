@@ -28,7 +28,6 @@ import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser, convert_size
 from sickrage.core.helpers.show_names import all_possible_show_names
-from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.providers import TorrentProvider
 
@@ -49,7 +48,7 @@ class NewpctProvider(TorrentProvider):
 
         self.cache = NewpctCache(self, min_time=20)
 
-    def _get_season_search_strings(self, show_id, episode_id):
+    def _get_season_search_strings(self, show_id, season, episode):
         """
         Get season search strings.
         """
@@ -63,23 +62,25 @@ class NewpctProvider(TorrentProvider):
                           '%s/capitulo-%s%s/hdtv-1080p-ac3-5-1/',
                           '%s/capitulo-%s%s/bluray-1080p/']
 
-        episode_obj = find_episode(show_id, episode_id)
+        show_object = find_show(show_id)
+        episode_object = show_object.get_episode(season, episode)
 
-        for show_name in all_possible_show_names(show_id, episode_obj.scene_season):
+        for show_name in all_possible_show_names(show_id, episode_object.scene_season):
             for season_string in season_strings:
                 season_string = season_string % (
-                    show_name.replace(' ', '-'), episode_obj.scene_season, episode_obj.scene_episode
+                    show_name.replace(' ', '-'), episode_object.scene_season, episode_object.scene_episode
                 )
                 search_strings['Season'].append(season_string.strip())
 
         return [search_strings]
 
-    def _get_episode_search_strings(self, show_id, episode_id, add_string=''):
+    def _get_episode_search_strings(self, show_id, season, episode, add_string=''):
         """
         Get episode search strings.
         """
 
-        episode_obj = find_episode(show_id, episode_id)
+        show_object = find_show(show_id)
+        episode_object = show_object.get_episode(season, episode)
 
         search_strings = {
             'Episode': []
@@ -91,16 +92,16 @@ class NewpctProvider(TorrentProvider):
                            '%s/capitulo-%s%s/hdtv-1080p-ac3-5-1/',
                            '%s/capitulo-%s%s/bluray-1080p/']
 
-        for show_name in all_possible_show_names(show_id, episode_obj.scene_season):
+        for show_name in all_possible_show_names(show_id, episode_object.scene_season):
             for episode_string in episode_strings:
                 episode_string = episode_string % (
-                    show_name.replace(' ', '-'), episode_obj.scene_season, episode_obj.scene_episode
+                    show_name.replace(' ', '-'), episode_object.scene_season, episode_object.scene_episode
                 )
                 search_strings['Episode'].append(episode_string.strip())
 
         return [search_strings]
 
-    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, season=None, episode=None, **kwargs):
         results = []
 
         # Only search if user conditions are true

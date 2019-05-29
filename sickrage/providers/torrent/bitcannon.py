@@ -21,7 +21,7 @@ from urllib.parse import urljoin
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import try_int, convert_size, validate_url
-from sickrage.core.tv.episode.helpers import find_episode
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.providers import TorrentProvider
 
 
@@ -41,7 +41,7 @@ class BitCannonProvider(TorrentProvider):
 
         self.cache = TVCache(self, search_strings={'RSS': ['tv', 'anime']})
 
-    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, season=None, episode=None, **kwargs):
         results = []
 
         search_url = self.urls["search"]
@@ -51,11 +51,11 @@ class BitCannonProvider(TorrentProvider):
                 return results
             search_url = urljoin(self.custom_url, search_url.split(self.urls['base_url'])[1])
 
-        episode_obj = find_episode(show_id, episode_id)
+        show_object = find_show(show_id)
 
         # Search Params
         search_params = {
-            'category': ("tv", "anime")[bool(episode_obj.show.anime)],
+            'category': ("tv", "anime")[bool(show_object.anime)],
             'apiKey': self.api_key,
         }
 

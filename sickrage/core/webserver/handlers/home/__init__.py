@@ -21,11 +21,10 @@ import datetime
 import os
 from abc import ABC
 from collections import OrderedDict
-from functools import partial
 from urllib.parse import unquote_plus, quote_plus
 
 from sqlalchemy import orm
-from tornado import gen, queues
+from tornado import gen
 from tornado.escape import json_encode
 from tornado.httputil import url_concat
 from tornado.web import authenticated
@@ -49,7 +48,6 @@ from sickrage.core.scene_numbering import get_scene_numbering_for_show, get_xem_
     get_scene_absolute_numbering, get_scene_numbering
 from sickrage.core.traktapi import TraktAPI
 from sickrage.core.tv.episode import TVEpisode
-from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
 from sickrage.indexers import IndexerApi
@@ -783,9 +781,9 @@ class DisplayShowHandler(BaseHandler, ABC):
         if show_obj is None:
             return self._genericMessage(_("Error"), _("Show not in show list"))
 
-        episode_results = sorted(show_obj.episodes, key=lambda x: (x.season, x.episode), reverse=True)
+        episode_objects = sorted(show_obj.episodes, key=lambda x: (x.season, x.episode), reverse=True)
 
-        season_results = list({x.season for x in episode_results})
+        season_results = list({x.season for x in episode_objects})
 
         submenu.append({
             'title': _('Edit'),
@@ -894,20 +892,20 @@ class DisplayShowHandler(BaseHandler, ABC):
             Overview.MISSED: 0,
         }
 
-        for curEp in episode_results:
-            cur_ep_cat = show_obj.get_overview(int(curEp.status or -1))
+        for episode_object in episode_objects:
+            cur_ep_cat = show_obj.get_overview(int(episode_object.status or -1))
 
-            if curEp.airdate > datetime.date.min:
+            if episode_object.airdate > datetime.date.min:
                 today = datetime.datetime.now().replace(tzinfo=sickrage.app.tz)
-                air_date = curEp.airdate
+                air_date = episode_object.airdate
                 if air_date.year >= 1970 or show_obj.network:
-                    air_date = SRDateTime(sickrage.app.tz_updater.parse_date_time(curEp.airdate, show_obj.airs, show_obj.network), convert=True).dt
+                    air_date = SRDateTime(sickrage.app.tz_updater.parse_date_time(episode_object.airdate, show_obj.airs, show_obj.network), convert=True).dt
 
                 if cur_ep_cat == Overview.WANTED and air_date < today:
                     cur_ep_cat = Overview.MISSED
 
             if cur_ep_cat:
-                ep_cats[str(curEp.season) + "x" + str(curEp.episode)] = cur_ep_cat
+                ep_cats[str(episode_object.season) + "x" + str(episode_object.episode)] = cur_ep_cat
                 ep_counts[cur_ep_cat] += 1
 
         if sickrage.app.config.anime_split_home:
@@ -956,7 +954,7 @@ class DisplayShowHandler(BaseHandler, ABC):
             showLoc=show_loc,
             show_message=show_message,
             show=show_obj,
-            episodeResults=episode_results,
+            episode_objects=episode_objects,
             seasonResults=season_results,
             sortedShowLists=sorted_show_lists,
             bwl=bwl,
@@ -1606,20 +1604,20 @@ class TestRenameHandler(BaseHandler, ABC):
         if not os.path.isdir(show_object.location):
             return self._genericMessage(_("Error"), _("Can't rename episodes when the show dir is missing."))
 
-        ep_obj_rename_list = []
+        episode_objects = []
 
         for cur_ep_obj in show_object.get_all_episodes(has_location=True):
             if cur_ep_obj.location:
                 if cur_ep_obj.related_episodes:
                     for cur_related_ep in cur_ep_obj.related_episodes + [cur_ep_obj]:
-                        if cur_related_ep in ep_obj_rename_list:
+                        if cur_related_ep in episode_objects:
                             break
-                        ep_obj_rename_list.append(cur_ep_obj)
+                        episode_objects.append(cur_ep_obj)
                 else:
-                    ep_obj_rename_list.append(cur_ep_obj)
+                    episode_objects.append(cur_ep_obj)
 
-        if ep_obj_rename_list:
-            ep_obj_rename_list.reverse()
+        if episode_objects:
+            episode_objects.reverse()
 
         submenu = [
             {'title': _('Edit'), 'path': '/home/editShow?show=%d' % show_object.indexer_id,
@@ -1628,7 +1626,7 @@ class TestRenameHandler(BaseHandler, ABC):
         return self.render(
             "/home/test_renaming.mako",
             submenu=submenu,
-            episode_ids=[x.indexer_id for x in ep_obj_rename_list],
+            episode_objects=episode_objects,
             show=show_object,
             title=_('Preview Rename'),
             header=_('Preview Rename'),
@@ -1685,16 +1683,12 @@ class SearchEpisodeHandler(BaseHandler, ABC):
         episode = self.get_query_argument('episode')
         down_cur_quality = self.get_query_argument('downCurQuality')
 
-        # retrieve the episode object and fail if we can't get one
-        ep_obj = _get_episode(show, season, episode, session=self.db_session)
-        if isinstance(ep_obj, TVEpisode):
-            # make a queue item for it and put it on the queue
-            ep_queue_item = ManualSearchQueueItem(ep_obj.show.indexer_id, ep_obj.indexer_id,
-                                                  bool(int(down_cur_quality)))
+        # make a queue item for it and put it on the queue
+        ep_queue_item = ManualSearchQueueItem(show, season, episode, bool(int(down_cur_quality)))
 
-            sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, ep_queue_item)
-            if not all([ep_queue_item.started, ep_queue_item.success]):
-                return self.write(json_encode({'result': 'success'}))
+        sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, ep_queue_item)
+        if not all([ep_queue_item.started, ep_queue_item.success]):
+            return self.write(json_encode({'result': 'success'}))
 
         return self.write(json_encode({'result': 'failure'}))
 
@@ -1705,55 +1699,51 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
         show = self.get_query_argument('show', None)
 
         # Queued Searches
-        search_status = 'queued'
-        episodes = self.get_episodes(show, sickrage.app.search_queue.get_all_episode_ids_from_queue(show), search_status)
+        search_status = 'Queued'
+        episodes = self.get_episodes(show, sickrage.app.search_queue.get_all_items_from_queue(show), search_status)
 
         # Running Searches
-        search_status = 'searching'
+        search_status = 'Searching'
         if sickrage.app.search_queue.is_manual_search_in_progress():
             for search_thread in sickrage.app.search_queue.processing:
                 if search_thread.success:
-                    search_status = 'finished'
-                episode_ids = [search_thread.episode_id] if hasattr(search_thread,
-                                                                    'episode_id') else search_thread.episode_ids
-                episodes += self.get_episodes(show, episode_ids, search_status)
+                    search_status = 'Finished'
+                episodes += self.get_episodes(show, [search_thread], search_status)
 
         # Finished Searches
-        search_status = 'finished'
+        search_status = 'Finished'
         for search_thread in MANUAL_SEARCH_HISTORY:
             if show is not None:
                 if not str(search_thread.show_id) == show:
                     continue
 
             if isinstance(search_thread, (ManualSearchQueueItem, FailedQueueItem)):
-                if not [x for x in episodes if x['episodeindexid'] == search_thread.episode_id]:
-                    episodes += self.get_episodes(show, [search_thread.episode_id], search_status)
+                if not [x for x in episodes if x['season'] == search_thread.season and x['episode'] == search_thread.episode]:
+                    episodes += self.get_episodes(show, [search_thread], search_status)
             else:
-                # These are only Failed Downloads/Retry SearchThreadItems.. lets loop through the episode IDs
-                if not [i for i, j in zip(search_thread.episode_ids, episodes) if i.indexer_id == j['episodeindexid']]:
-                    episodes += self.get_episodes(show, search_thread.episode_ids, search_status)
+                # These are only Failed Downloads/Retry SearchThreadItems.. lets loop through the episodes
+                if not [i for i, j in zip(search_thread, episodes) if i.season == j['season'] and i.episode == j['episode']]:
+                    episodes += self.get_episodes(show, [search_thread], search_status)
 
         return self.write(json_encode({'episodes': episodes}))
 
-    def get_episodes(self, show_id, episode_ids, search_status):
+    def get_episodes(self, show_id, items, search_status):
         results = []
 
         if not show_id:
             return results
 
-        for episode_id in episode_ids:
-            episode_obj = find_episode(show_id, episode_id, session=self.db_session)
-            if not episode_obj:
-                continue
+        show_object = find_show(show_id, session=self.db_session)
 
+        for item in items:
+            episode_object = show_object.get_episode(item.season, item.episode)
             results.append({'show': show_id,
-                            'episode': episode_obj.episode,
-                            'episodeindexid': episode_id,
-                            'season': episode_obj.season,
+                            'season': episode_object.season,
+                            'episode': episode_object.episode,
                             'searchstatus': search_status,
-                            'status': statusStrings[episode_obj.status],
-                            'quality': self.get_quality_class(episode_obj.status),
-                            'overview': Overview.overviewStrings[episode_obj.show.get_overview(int(episode_obj.status or -1))]})
+                            'status': statusStrings[episode_object.status],
+                            'quality': self.get_quality_class(episode_object.status),
+                            'overview': Overview.overviewStrings[show_object.get_overview(int(episode_object.status or -1))]})
 
         return results
 
@@ -1891,14 +1881,13 @@ class RetryEpisodeHandler(BaseHandler, ABC):
         down_cur_quality = self.get_query_argument('downCurQuality')
 
         # retrieve the episode object and fail if we can't get one
-        ep_obj = _get_episode(show, season, episode, session=self.db_session)
-        if isinstance(ep_obj, TVEpisode):
-            # make a queue item for it and put it on the queue
-            ep_queue_item = FailedQueueItem(ep_obj.show, [ep_obj], bool(int(down_cur_quality)))
+        # make a queue item for it and put it on the queue
+        ep_queue_item = FailedQueueItem(show, season, episode, bool(int(down_cur_quality)))
 
-            sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, ep_queue_item)
-            if not all([ep_queue_item.started, ep_queue_item.success]):
-                return self.write(json_encode({'result': 'success'}))
+        sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, ep_queue_item)
+        if not all([ep_queue_item.started, ep_queue_item.success]):
+            return self.write(json_encode({'result': 'success'}))
+
         return self.write(json_encode({'result': 'failure'}))
 
 

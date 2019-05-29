@@ -80,7 +80,7 @@ class TorrentLeechProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, season=None, episode=None, **kwargs):
         results = []
 
         if not self.login():

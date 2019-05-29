@@ -29,7 +29,7 @@ class SearchResult(object):
     Represents a search result from an indexer.
     """
 
-    def __init__(self, episode_ids):
+    def __init__(self, season, episodes):
         self.provider = None
 
         # release name
@@ -44,8 +44,11 @@ class SearchResult(object):
         # used by some providers to store extra info associated with the result
         self.extraInfo = []
 
-        # list of episode IDs that this result is associated with
-        self.episode_ids = episode_ids
+        # season that this result is associated with
+        self.season = season
+
+        # list of episodes that this result is associated with
+        self.episodes = episodes
 
         # quality of the release
         self.quality = Quality.UNKNOWN
@@ -93,9 +96,11 @@ class SearchResult(object):
         for extra in self.extraInfo:
             myString += "  " + extra + "\n"
 
-        myString += "Episode IDs:\n"
-        for episode_id in self.episode_ids:
-            myString += "  " + str(episode_id) + "\n"
+        myString += "Season: " + self.season + "\n"
+
+        myString += "Episodes:\n"
+        for episode in self.episodes:
+            myString += "  " + str(episode) + "\n"
 
         myString += "Quality: " + Quality.qualityStrings[self.quality] + "\n"
         myString += "Name: " + self.name + "\n"
@@ -104,13 +109,14 @@ class SearchResult(object):
 
         return myString
 
+
 class NZBSearchResult(SearchResult):
     """
     Regular NZB result with an URL to the NZB
     """
 
-    def __init__(self, episode_ids):
-        super(NZBSearchResult, self).__init__(episode_ids)
+    def __init__(self, season, episodes):
+        super(NZBSearchResult, self).__init__(season, episodes)
         self.resultType = "nzb"
 
 
@@ -119,8 +125,8 @@ class NZBDataSearchResult(SearchResult):
     NZB result where the actual NZB XML data is stored in the extraInfo
     """
 
-    def __init__(self, episodes):
-        super(NZBDataSearchResult, self).__init__(episodes)
+    def __init__(self, season, episodes):
+        super(NZBDataSearchResult, self).__init__(season, episodes)
         self.resultType = "nzbdata"
 
 
@@ -129,8 +135,8 @@ class TorrentSearchResult(SearchResult):
     Torrent result with an URL to the torrent
     """
 
-    def __init__(self, episode_ids):
-        super(TorrentSearchResult, self).__init__(episode_ids)
+    def __init__(self, season, episodes):
+        super(TorrentSearchResult, self).__init__(season, episodes)
         self.resultType = "torrent"
 
 

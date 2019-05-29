@@ -46,7 +46,7 @@ class LimeTorrentsProvider(TorrentProvider):
 
         self.cache = TVCache(self)
 
-    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, season=None, episode=None, **kwargs):
         results = []
         for mode in search_strings:
             sickrage.app.log.debug("Search Mode: {}".format(mode))

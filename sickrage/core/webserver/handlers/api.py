@@ -763,45 +763,45 @@ class CMD_Episode(ApiCall):
         self.e, args = self.check_params("episode", None, True, "int", [], *args, **kwargs)
         self.fullPath, args = self.check_params("full_path", False, False, "bool", [], *args, **kwargs)
 
-    async def run(self):
+    @MainDB.with_session
+    async def run(self, session=None):
         """ Get detailed information about an episode """
         show_obj = find_show(int(self.indexer_id))
         if not show_obj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
-        with sickrage.app.main_db.session() as session:
-            try:
-                episode = session.query(TVEpisode).filter_by(showid=self.indexer_id, season=self.s, episode=self.e).one()
+        try:
+            episode = session.query(TVEpisode).filter_by(showid=self.indexer_id, season=self.s, episode=self.e).one()
 
-                show_path = show_obj.location
+            show_path = show_obj.location
 
-                # handle path options
-                # absolute vs relative vs broken
-                if bool(self.fullPath) is True and os.path.isdir(show_path):
-                    pass
-                elif bool(self.fullPath) is False and os.path.isdir(show_path):
-                    # using the length because lstrip removes to much
-                    show_path_length = len(show_path) + 1  # the / or \ yeah not that nice i know
-                    episode.location = episode.location[show_path_length:]
-                elif not os.path.isdir(show_path):  # show dir is broken ... episode path will be empty
-                    episode.location = ""
+            # handle path options
+            # absolute vs relative vs broken
+            if bool(self.fullPath) is True and os.path.isdir(show_path):
+                pass
+            elif bool(self.fullPath) is False and os.path.isdir(show_path):
+                # using the length because lstrip removes to much
+                show_path_length = len(show_path) + 1  # the / or \ yeah not that nice i know
+                episode.location = episode.location[show_path_length:]
+            elif not os.path.isdir(show_path):  # show dir is broken ... episode path will be empty
+                episode.location = ""
 
-                # convert stuff to human form
-                if episode.airdate > datetime.date.min:  # 1900
-                    episode.airdate = srdatetime.SRDateTime(srdatetime.SRDateTime(
-                        sickrage.app.tz_updater.parse_date_time(episode.airdate, show_obj.airs, show_obj.network),
-                        convert=True).dt).srfdate(d_preset=dateFormat)
-                else:
-                    episode.airdate = 'Never'
+            # convert stuff to human form
+            if episode.airdate > datetime.date.min:  # 1900
+                episode.airdate = srdatetime.SRDateTime(srdatetime.SRDateTime(
+                    sickrage.app.tz_updater.parse_date_time(episode.airdate, show_obj.airs, show_obj.network),
+                    convert=True).dt).srfdate(d_preset=dateFormat)
+            else:
+                episode.airdate = 'Never'
 
-                status, quality = Quality.split_composite_status(int(episode.status))
-                episode.status = _get_status_strings(status)
-                episode.quality = get_quality_string(quality)
-                episode.file_size_human = pretty_file_size(episode.file_size)
+            status, quality = Quality.split_composite_status(int(episode.status))
+            episode.status = _get_status_strings(status)
+            episode.quality = get_quality_string(quality)
+            episode.file_size_human = pretty_file_size(episode.file_size)
 
-                return _responds(RESULT_SUCCESS, episode)
-            except orm.exc.NoResultFound:
-                raise ApiError("Episode not found")
+            return _responds(RESULT_SUCCESS, episode)
+        except orm.exc.NoResultFound:
+            raise ApiError("Episode not found")
 
 
 class CMD_EpisodeSearch(ApiCall):
@@ -1134,14 +1134,15 @@ class CMD_Failed(ApiCall):
         super(CMD_Failed, self).__init__(application, request, *args, **kwargs)
         self.limit, args = self.check_params("limit", 100, False, "int", [], *args, **kwargs)
 
-    async def run(self):
+    @MainDB.with_session
+    async def run(self, session=None):
         """ Get the failed downloads """
 
         ulimit = min(int(self.limit), 100)
         if ulimit == 0:
-            dbData = sickrage.app.main_db.session().query(MainDB.FailedSnatch).all()
+            dbData = session.query(MainDB.FailedSnatch).all()
         else:
-            dbData = sickrage.app.main_db.session().query(MainDB.FailedSnatch).limit(ulimit)
+            dbData = session.query(MainDB.FailedSnatch).limit(ulimit)
 
         return _responds(RESULT_SUCCESS, dbData)
 
@@ -2381,13 +2382,14 @@ class CMD_ShowSeasonList(ApiCall):
         self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
         self.sort, args = self.check_params("sort", "desc", False, "string", ["asc", "desc"], *args, **kwargs)
 
-    async def run(self):
+    @MainDB.with_session
+    async def run(self, session=None):
         """ Get the list of seasons of a show """
         show_obj = find_show(int(self.indexer_id))
         if not show_obj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
-        season_list = set(x.season for x in sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=self.indexer_id).order_by(
+        season_list = set(x.season for x in session.query(TVEpisode).filter_by(showid=self.indexer_id).order_by(
             TVEpisode.season if not self.sort == 'desc' else TVEpisode.season.desc()))
 
         return _responds(RESULT_SUCCESS, season_list)
@@ -2411,58 +2413,56 @@ class CMD_ShowSeasons(ApiCall):
         self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
         self.season, args = self.check_params("season", None, False, "int", [], *args, **kwargs)
 
-    async def run(self):
+    @MainDB.with_session
+    async def run(self, session=None):
         """ Get the list of episodes for one or all seasons of a show """
         show_obj = find_show(int(self.indexer_id))
         if not show_obj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
-        with sickrage.app.main_db.session() as session:
-            if self.season is None:
-                seasons = {}
+        if self.season is None:
+            seasons = {}
 
-                for row in session(TVEpisode).filter_by(showid=self.indexer_id):
-                    status, quality = Quality.split_composite_status(int(row.status))
-                    row.status = _get_status_strings(status)
-                    row.quality = get_quality_string(quality)
+            for row in session(TVEpisode).filter_by(showid=self.indexer_id):
+                status, quality = Quality.split_composite_status(int(row.status))
+                row.status = _get_status_strings(status)
+                row.quality = get_quality_string(quality)
 
-                    if row.airdate > datetime.date.min:
-                        dtEpisodeAirs = srdatetime.SRDateTime(
-                            sickrage.app.tz_updater.parse_date_time(row.airdate, show_obj.airs, show_obj.network),
-                            convert=True).dt
-                        row.airdate = srdatetime.SRDateTime(dtEpisodeAirs).srfdate(d_preset=dateFormat)
-                    else:
-                        row.airdate = 'Never'
+                if row.airdate > datetime.date.min:
+                    dtEpisodeAirs = srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(row.airdate, show_obj.airs, show_obj.network),
+                                                          convert=True).dt
+                    row.airdate = srdatetime.SRDateTime(dtEpisodeAirs).srfdate(d_preset=dateFormat)
+                else:
+                    row.airdate = 'Never'
 
-                    curSeason = int(row.season)
-                    curEpisode = int(row.episode)
+                curSeason = int(row.season)
+                curEpisode = int(row.episode)
 
-                    if curSeason not in seasons:
-                        seasons[curSeason] = {}
+                if curSeason not in seasons:
+                    seasons[curSeason] = {}
 
-                    seasons[curSeason][curEpisode] = row
-            else:
-                seasons = {}
+                seasons[curSeason][curEpisode] = row
+        else:
+            seasons = {}
 
-                row = None
-                for row in session.query(TVEpisode).filter_by(showid=self.indexer_id, season=self.season):
-                    curEpisode = int(row.episode)
-                    status, quality = Quality.split_composite_status(int(row.status))
-                    row.status = _get_status_strings(status)
-                    row.quality = get_quality_string(quality)
-                    if row.airdate > datetime.date.min:
-                        dtEpisodeAirs = srdatetime.SRDateTime(
-                            sickrage.app.tz_updater.parse_date_time(row.airdate, show_obj.airs, show_obj.network),
-                            convert=True).dt
-                        row.airdate = srdatetime.SRDateTime(dtEpisodeAirs).srfdate(d_preset=dateFormat)
-                    else:
-                        row.airdate = 'Never'
-                    if curEpisode not in seasons:
-                        seasons[curEpisode] = {}
-                    seasons[curEpisode] = row
+            row = None
+            for row in session.query(TVEpisode).filter_by(showid=self.indexer_id, season=self.season):
+                curEpisode = int(row.episode)
+                status, quality = Quality.split_composite_status(int(row.status))
+                row.status = _get_status_strings(status)
+                row.quality = get_quality_string(quality)
+                if row.airdate > datetime.date.min:
+                    dtEpisodeAirs = srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(row.airdate, show_obj.airs, show_obj.network),
+                                                          convert=True).dt
+                    row.airdate = srdatetime.SRDateTime(dtEpisodeAirs).srfdate(d_preset=dateFormat)
+                else:
+                    row.airdate = 'Never'
+                if curEpisode not in seasons:
+                    seasons[curEpisode] = {}
+                seasons[curEpisode] = row
 
-                if row is None:
-                    return _responds(RESULT_FAILURE, msg="Season not found")
+            if row is None:
+                return _responds(RESULT_FAILURE, msg="Season not found")
 
         return _responds(RESULT_SUCCESS, seasons)
 
@@ -2530,7 +2530,8 @@ class CMD_ShowStats(ApiCall):
         super(CMD_ShowStats, self).__init__(application, request, *args, **kwargs)
         self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
 
-    async def run(self):
+    @MainDB.with_session
+    async def run(self, session=None):
         """ Get episode statistics for a given show """
         showObj = find_show(int(self.indexer_id))
         if not showObj:
@@ -2560,7 +2561,7 @@ class CMD_ShowStats(ApiCall):
             episode_qualities_counts_snatch[statusCode] = 0
 
         # the main loop that goes through all episodes
-        for row in sickrage.app.main_db.session().query(TVEpisode).filter_by(showid=self.indexer_id).filter(TVEpisode.season != 0):
+        for row in session.query(TVEpisode).filter_by(showid=self.indexer_id).filter(TVEpisode.season != 0):
             status, quality = Quality.split_composite_status(int(row.status))
             if quality in [Quality.NONE]:
                 continue

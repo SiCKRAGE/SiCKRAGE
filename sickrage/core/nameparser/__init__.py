@@ -32,8 +32,7 @@ from sickrage.core import scene_exceptions, common
 from sickrage.core.exceptions import MultipleShowObjectsException
 from sickrage.core.helpers import remove_extension, strip_accents
 from sickrage.core.nameparser import regexes
-from sickrage.core.scene_numbering import get_absolute_number_from_season_and_episode, get_indexer_absolute_numbering, \
-    get_indexer_numbering
+from sickrage.core.scene_numbering import get_absolute_number_from_season_and_episode, get_indexer_absolute_numbering, get_indexer_numbering
 from sickrage.core.tv.show.helpers import find_show_by_name, find_show
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_episodenotfound, indexer_error

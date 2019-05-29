@@ -23,7 +23,7 @@ import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import sanitize_scene_name, show_names, bs4_parser, try_int, convert_size
-from sickrage.core.tv.episode.helpers import find_episode
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.providers import TorrentProvider
 
 
@@ -51,44 +51,46 @@ class TVChaosUKProvider(TorrentProvider):
 
         raise AuthException('Your authentication credentials for ' + self.name + ' are missing, check your config.')
 
-    def _get_season_search_strings(self, show_id, episode_id):
+    def _get_season_search_strings(self, show_id, season, episode):
 
         search_string = {'Season': []}
 
-        episode_obj = find_episode(show_id, episode_id)
+        show_object = find_show(show_id)
+        episode_object = show_object.get_episode(season, episode)
 
         for show_name in set(show_names.all_possible_show_names(show_id)):
             for sep in ' ', ' - ':
                 season_string = show_name + sep + 'Series '
-                if episode_obj.show.air_by_date or episode_obj.show.sports:
-                    season_string += str(episode_obj.airdate).split('-')[0]
-                elif episode_obj.show.anime:
-                    season_string += '%d' % episode_obj.scene_absolute_number
+                if show_object.air_by_date or show_object.sports:
+                    season_string += str(episode_object.airdate).split('-')[0]
+                elif show_object.anime:
+                    season_string += '%d' % episode_object.scene_absolute_number
                 else:
-                    season_string += '%d' % int(episode_obj.scene_season)
+                    season_string += '%d' % int(episode_object.scene_season)
 
                 search_string['Season'].append(re.sub(r'\s+', ' ', season_string.replace('.', ' ').strip()))
 
         return [search_string]
 
-    def _get_episode_search_strings(self, show_id, episode_id, add_string=''):
+    def _get_episode_search_strings(self, show_id, season, episode, add_string=''):
 
         search_string = {'Episode': []}
 
-        episode_obj = find_episode(show_id, episode_id)
+        show_object = find_show(show_id)
+        episode_object = show_object.get_episode(season, episode)
 
         for show_name in set(show_names.all_possible_show_names(show_id)):
             for sep in ' ', ' - ':
                 ep_string = sanitize_scene_name(show_name) + sep
-                if episode_obj.show.air_by_date:
-                    ep_string += str(episode_obj.airdate).replace('-', '|')
-                elif episode_obj.show.sports:
-                    ep_string += str(episode_obj.airdate).replace('-', '|') + '|' + episode_obj.airdate.strftime('%b')
-                elif episode_obj.show.anime:
-                    ep_string += '%i' % int(episode_obj.scene_absolute_number)
+                if show_object.air_by_date:
+                    ep_string += str(episode_object.airdate).replace('-', '|')
+                elif show_object.sports:
+                    ep_string += str(episode_object.airdate).replace('-', '|') + '|' + episode_object.airdate.strftime('%b')
+                elif show_object.anime:
+                    ep_string += '%i' % int(episode_object.scene_absolute_number)
                 else:
-                    ep_string += sickrage.app.naming_ep_type[2] % {'seasonnumber': episode_obj.scene_season,
-                                                                   'episodenumber': episode_obj.scene_episode}
+                    ep_string += sickrage.app.naming_ep_type[2] % {'seasonnumber': episode_object.scene_season,
+                                                                   'episodenumber': episode_object.scene_episode}
 
                 if add_string:
                     ep_string += ' %s' % add_string
@@ -116,7 +118,7 @@ class TVChaosUKProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, season=None, episode=None, **kwargs):
         results = []
 
         search_params = {

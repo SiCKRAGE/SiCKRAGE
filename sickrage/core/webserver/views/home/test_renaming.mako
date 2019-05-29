@@ -8,7 +8,6 @@
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings
     from sickrage.core.helpers import srdatetime
-    from sickrage.core.tv.episode.helpers import find_episode
 %>
 <%block name="content">
     <div class="row">
@@ -80,9 +79,8 @@
                                 <div class="card-body">
                                     <div class="table-responsive">
                                         <table id="testRenameTable" class="table">
-                                            % for episode_id in episode_ids:
+                                            % for episode_object in episode_objects:
                                             <%
-                                                episode_object = find_episode(show.indexer_id, episode_id)
                                                 curLoc = episode_object.location[len(episode_object.show.location)+1:]
                                                 curExt = curLoc.split('.')[-1]
                                                 newLoc = episode_object.proper_path() + '.' + curExt

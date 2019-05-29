@@ -22,6 +22,7 @@ import re
 from xml.etree import ElementTree
 
 import sickrage
+from sickrage.core.databases.main import MainDB
 from sickrage.core.classes import NZBDataSearchResult
 from sickrage.core.common import Quality
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
@@ -115,7 +116,8 @@ def stripNS(element, ns):
     return element
 
 
-def split_nzb_result(result):
+@MainDB.with_session
+def split_nzb_result(result, session=None):
     """
     Split result into separate episodes
 
@@ -139,7 +141,6 @@ def split_nzb_result(result):
 
     # bust it up
     season = parse_result.season_number if parse_result.season_number is not None else 1
-
     separate_nzbs, xmlns = getSeasonNZBs(result.name, url_data, season)
 
     result_list = []
@@ -157,37 +158,26 @@ def split_nzb_result(result):
             return False
 
         # make sure the result is sane
-        if (parse_result.season_number is not None and parse_result.season_number != season) or (
-                parse_result.season_number is None and season != 1):
-            sickrage.app.log.warning(
-                "Found {} inside {} but it doesn't seem to belong to the same season, ignoring it".format(newNZB,
-                                                                                                          result.name))
+        if (parse_result.season_number is not None and parse_result.season_number != season) or (parse_result.season_number is None and season != 1):
+            sickrage.app.log.warning("Found {} inside {} but it doesn't seem to belong to the same season, ignoring it".format(newNZB, result.name))
             continue
         elif len(parse_result.episode_numbers) == 0:
-            sickrage.app.log.warning(
-                "Found {} inside {} but it doesn't seem to be a valid episode NZB, ignoring it".format(newNZB,
-                                                                                                       result.name))
+            sickrage.app.log.warning("Found {} inside {} but it doesn't seem to be a valid episode NZB, ignoring it".format(newNZB, result.name))
             continue
 
         want_ep = True
         for epNo in parse_result.episode_numbers:
-            parse_result_show_obj = find_show(parse_result.indexer_id)
-            parse_result_episode_obj = parse_result_show_obj.get_episode(season, epNo)
-            if not parse_result_show_obj.want_episode(parse_result_episode_obj.indexer_id, result.quality):
-                sickrage.app.log.info("Ignoring result {} because we don't want an episode "
-                                      "that is {}".format(newNZB, Quality.qualityStrings[result.quality]))
+            show_object = find_show(parse_result.indexer_id, session=session)
+            if not show_object.want_episode(parse_result.season_number, epNo, result.quality):
+                sickrage.app.log.info("Ignoring result {} because we don't want an episode that is {}".format(newNZB, Quality.qualityStrings[result.quality]))
                 want_ep = False
                 break
 
         if not want_ep:
             continue
 
-        # get all the associated episode objects
-        episode_ids = [find_show(parse_result.indexer_id).get_episode(season, curEp).indexer_id for curEp in
-                       parse_result.episode_numbers]
-
         # make a result
-        cur_result = NZBDataSearchResult(episode_ids)
+        cur_result = NZBDataSearchResult(season, parse_result.episode_numbers)
         cur_result.name = newNZB
         cur_result.provider = result.provider
         cur_result.quality = result.quality

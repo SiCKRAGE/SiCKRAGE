@@ -17,13 +17,9 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
-import re
-
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import try_int, show_names, sanitize_scene_name
-from sickrage.core.tv.episode.helpers import find_episode
+from sickrage.core.helpers import try_int
 from sickrage.providers import TorrentProvider
 
 
@@ -56,7 +52,7 @@ class ZooqleProvider(TorrentProvider):
         except Exception:
             return {}
 
-    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, season=None, episode=None, **kwargs):
         """
         Search a provider and parse the results.
 

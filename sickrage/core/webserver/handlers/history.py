@@ -54,14 +54,16 @@ class HistoryHandler(BaseHandler, ABC):
             }
 
             if not any((history['show_id'] == row['show_id'] and
-                        history['episode_id'] == row['episode_id'] and
+                        history['season'] == row['season'] and
+                        history['episode'] == row['episode'] and
                         history['quality'] == row['quality']) for history in compact):
 
                 history = {
                     'actions': [action],
                     'quality': row['quality'],
                     'resource': row['resource'],
-                    'episode_id': row['episode_id'],
+                    'season': row['season'],
+                    'episode': row['episode'],
                     'show_id': row['show_id'],
                     'show_name': row['show_name']
                 }
@@ -70,7 +72,8 @@ class HistoryHandler(BaseHandler, ABC):
             else:
                 index = [i for i, item in enumerate(compact)
                          if item['show_id'] == row['show_id'] and
-                         item['episode_id'] == row['episode_id'] and
+                         item['season'] == row['season'] and
+                         item['episode'] == row['episode'] and
                          item['quality'] == row['quality']][0]
 
                 history = compact[index]

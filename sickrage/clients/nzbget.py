@@ -26,7 +26,7 @@ from xmlrpc.client import ServerProxy, ProtocolError
 import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.helpers import try_int
-from sickrage.core.tv.episode.helpers import find_episode
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.websession import WebSession
 
 
@@ -78,9 +78,13 @@ class NZBGet(object):
                 sickrage.app.log.error("Protocol Error: " + e.errmsg)
             return False
 
+        show_object = find_show(nzb.show_id)
+        if not show_object:
+            return False
+
         # if it aired recently make it high priority and generate DupeKey/Score
-        for episode_id in nzb.episode_ids:
-            episode_object = find_episode(nzb.show_id, episode_id)
+        for episode_number in nzb.episodes:
+            episode_object = show_object.get_episode(nzb.season, episode_number)
 
             if dupe_key == "":
                 if episode_object.show.indexer == 1:

@@ -43,7 +43,7 @@ class EliteTorrentProvider(TorrentProvider):
 
         self.cache = TVCache(self)
 
-    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, season=None, episode=None, **kwargs):
         results = []
 
         lang_info = find_show(show_id).lang

@@ -18,17 +18,12 @@
 
 
 import threading
-import time
 import traceback
 
-from tornado import gen
-
 import sickrage
-from sickrage.core.common import cpu_presets
 from sickrage.core.databases.main import MainDB
 from sickrage.core.queues import SRQueue, SRQueueItem, SRQueuePriorities
 from sickrage.core.search import search_providers, snatch_episode
-from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.tv.show.history import FailedHistory, History
 
@@ -53,16 +48,15 @@ class SearchQueue(SRQueue):
     def __init__(self):
         SRQueue.__init__(self, "SEARCHQUEUE")
 
-    def is_in_queue(self, show_id, episode_ids):
+    def is_in_queue(self, show_id, season, episode):
         for cur_item in self.queue_items:
-            if isinstance(cur_item,
-                          BacklogQueueItem) and cur_item.show_id == show_id and cur_item.episode_ids == episode_ids:
+            if isinstance(cur_item, BacklogQueueItem) and all([cur_item.show_id == show_id, cur_item.season == season, cur_item.episode == episode]):
                 return True
         return False
 
-    def is_ep_in_queue(self, episode_id):
+    def is_ep_in_queue(self, season, episode):
         for cur_item in self.queue_items:
-            if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and cur_item.episode_id == episode_id:
+            if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and all([cur_item.season == season, cur_item.episode == episode]):
                 return True
         return False
 
@@ -72,12 +66,12 @@ class SearchQueue(SRQueue):
                 return True
         return False
 
-    def get_all_episode_ids_from_queue(self, show_id):
-        episode_ids = []
+    def get_all_items_from_queue(self, show_id):
+        items = []
         for cur_item in self.queue_items:
             if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and str(cur_item.show_id) == show_id:
-                episode_ids.append(cur_item.episode_id)
-        return episode_ids
+                items.append(cur_item)
+        return items
 
     def pause_daily_searcher(self):
         sickrage.app.scheduler.pause_job(sickrage.app.daily_searcher.name)
@@ -141,10 +135,10 @@ class SearchQueue(SRQueue):
         if isinstance(item, DailySearchQueueItem):
             # daily searches
             sickrage.app.io_loop.add_callback(super(SearchQueue, self).put, item)
-        elif isinstance(item, BacklogQueueItem) and not self.is_in_queue(item.show_id, item.episode_ids):
+        elif isinstance(item, BacklogQueueItem) and not self.is_in_queue(item.show_id, item.season, item.episode):
             # backlog searches
             sickrage.app.io_loop.add_callback(super(SearchQueue, self).put, item)
-        elif isinstance(item, (ManualSearchQueueItem, FailedQueueItem)) and not self.is_ep_in_queue(item.episode_id):
+        elif isinstance(item, (ManualSearchQueueItem, FailedQueueItem)) and not self.is_ep_in_queue(item.season, item.episode):
             # manual and failed searches
             sickrage.app.io_loop.add_callback(super(SearchQueue, self).put, item)
         else:
@@ -152,26 +146,27 @@ class SearchQueue(SRQueue):
 
 
 class DailySearchQueueItem(SRQueueItem):
-    def __init__(self, show_id, episode_ids):
+    def __init__(self, show_id, season, episode):
         super(DailySearchQueueItem, self).__init__('Daily Search', DAILY_SEARCH)
         self.name = 'DAILY-{}'.format(show_id)
         self.show_id = show_id
-        self.episode_ids = episode_ids
+        self.season = season
+        self.episode = episode
         self.success = False
         self.started = False
 
-    def run(self):
+    @MainDB.with_session
+    def run(self, session=None):
         self.started = True
 
-        show_obj = find_show(self.show_id)
+        show_obj = find_show(self.show_id, session=session)
 
         try:
             sickrage.app.log.info("Starting daily search for: [" + show_obj.name + "]")
 
-            search_result = search_providers(self.show_id, self.episode_ids, cacheOnly=sickrage.app.config.enable_rss_cache)
+            search_result = search_providers(self.show_id, self.season, self.episode, cacheOnly=sickrage.app.config.enable_rss_cache)
             if search_result:
                 for result in search_result:
-                    # just use the first result for now
                     sickrage.app.log.info("Downloading " + result.name + " from " + result.provider.name)
                     snatch_episode(result)
             else:
@@ -183,85 +178,88 @@ class DailySearchQueueItem(SRQueueItem):
 
 
 class ManualSearchQueueItem(SRQueueItem):
-    def __init__(self, show_id, episode_id, downCurQuality=False):
+    def __init__(self, show_id, season, episode, downCurQuality=False):
         super(ManualSearchQueueItem, self).__init__('Manual Search', MANUAL_SEARCH)
         self.name = 'MANUAL-{}'.format(show_id)
         self.show_id = show_id
-        self.episode_id = episode_id
+        self.season = season
+        self.episode = episode
         self.success = False
         self.started = False
         self.priority = SRQueuePriorities.EXTREME
         self.downCurQuality = downCurQuality
 
-    def run(self):
+    @MainDB.with_session
+    def run(self, session=None):
         self.started = True
 
-        episode_obj = find_episode(self.show_id, self.episode_id)
+        show_object = find_show(self.show_id, session=session)
+        episode_object = show_object.get_episode(self.season, self.episode)
 
         try:
-            sickrage.app.log.info("Starting manual search for: [" + episode_obj.pretty_name() + "]")
+            sickrage.app.log.info("Starting manual search for: [" + episode_object.pretty_name() + "]")
 
-            search_result = search_providers(self.show_id, [self.episode_id], manualSearch=True,
-                                             downCurQuality=self.downCurQuality)
+            search_result = search_providers(self.show_id, self.season, self.episode, manualSearch=True, downCurQuality=self.downCurQuality)
             if search_result:
                 # just use the first result for now
-                sickrage.app.log.info(
-                    "Downloading " + search_result[0].name + " from " + search_result[0].provider.name)
+                sickrage.app.log.info("Downloading " + search_result[0].name + " from " + search_result[0].provider.name)
                 self.success = snatch_episode(search_result[0])
             else:
                 sickrage.app.alerts.message(
                     _('No downloads were found'),
-                    _("Couldn't find a download for <i>%s</i>") % episode_obj.pretty_name()
+                    _("Couldn't find a download for <i>%s</i>") % episode_object.pretty_name()
                 )
 
-                sickrage.app.log.info("Unable to find a download for: [" + episode_obj.pretty_name() + "]")
+                sickrage.app.log.info("Unable to find a download for: [" + episode_object.pretty_name() + "]")
         except Exception:
             sickrage.app.log.debug(traceback.format_exc())
         finally:
-            sickrage.app.log.info("Finished manual search for: [" + episode_obj.pretty_name() + "]")
+            sickrage.app.log.info("Finished manual search for: [" + episode_object.pretty_name() + "]")
 
         # Keep a list with the 100 last executed searches
         fifo(MANUAL_SEARCH_HISTORY, self, MANUAL_SEARCH_HISTORY_SIZE)
 
 
 class BacklogQueueItem(SRQueueItem):
-    def __init__(self, show_id, episode_ids):
+    def __init__(self, show_id, season, episode):
         super(BacklogQueueItem, self).__init__('Backlog Search', BACKLOG_SEARCH)
         self.name = 'BACKLOG-{}'.format(show_id)
         self.show_id = show_id
-        self.episode_ids = episode_ids
+        self.season = season
+        self.episode = episode
         self.priority = SRQueuePriorities.LOW
         self.success = False
         self.started = False
 
-    def run(self):
+    @MainDB.with_session
+    def run(self, session=None):
         self.started = True
 
-        show_obj = find_show(self.show_id)
+        show_object = find_show(self.show_id, session=session)
 
         try:
-            sickrage.app.log.info("Starting backlog search for: [" + show_obj.name + "]")
+            sickrage.app.log.info("Starting backlog search for: [" + show_object.name + "]")
 
-            search_result = search_providers(self.show_id, self.episode_ids, manualSearch=False)
+            search_result = search_providers(self.show_id, self.season, self.episode, manualSearch=False)
             if search_result:
                 for result in search_result:
-                    # just use the first result for now
                     sickrage.app.log.info("Downloading " + result.name + " from " + result.provider.name)
                     snatch_episode(result)
             else:
-                sickrage.app.log.info("Unable to find search results for: [" + show_obj.name + "]")
+                sickrage.app.log.info("Unable to find search results for: [" + show_object.name + "]")
         except Exception:
             sickrage.app.log.debug(traceback.format_exc())
         finally:
-            sickrage.app.log.info("Finished backlog search for: [" + show_obj.name + "]")
+            sickrage.app.log.info("Finished backlog search for: [" + show_object.name + "]")
 
 
 class FailedQueueItem(SRQueueItem):
-    def __init__(self, show_id, episode_id, downCurQuality=False):
+    def __init__(self, show_id, season, episode, downCurQuality=False):
         super(FailedQueueItem, self).__init__('Retry', FAILED_SEARCH)
         self.name = 'RETRY-{}'.format(show_id)
         self.show_id = show_id
-        self.episode_id = episode_id
+        self.season = season
+        self.episode = episode
         self.priority = SRQueuePriorities.HIGH
         self.downCurQuality = downCurQuality
         self.success = False
@@ -271,34 +269,32 @@ class FailedQueueItem(SRQueueItem):
     def run(self, session=None):
         self.started = True
 
-        show_obj = find_show(self.show_id)
+        show_object = find_show(self.show_id, session=session)
+        episode_object = show_object.get_episode(self.season, self.episode)
 
         try:
-            sickrage.app.log.info("Starting failed download search for: [" + show_obj.name + "]")
+            sickrage.app.log.info("Starting failed download search for: [" + episode_object.name + "]")
 
-            episode_obj = find_episode(self.show_id, self.episode_id, session=session)
+            sickrage.app.log.info("Marking episode as bad: [" + episode_object.pretty_name() + "]")
 
-            sickrage.app.log.info("Marking episode as bad: [" + episode_obj.pretty_name() + "]")
+            FailedHistory.mark_failed(self.show_id, self.season, self.episode, session=session)
 
-            FailedHistory.mark_failed(episode_obj)
-
-            (release, provider) = FailedHistory.find_failed_release(episode_obj)
+            (release, provider) = FailedHistory.find_failed_release(self.show_id, self.season, self.episode, session=session)
             if release:
-                FailedHistory.log_failed(release)
-                History.log_failed(self.show_id, self.episode_id, release, provider)
+                FailedHistory.log_failed(release, session=session)
+                History.log_failed(self.show_id, self.season, self.episode, release, provider, session=session)
 
-            FailedHistory.revert_failed_episode(self.show_id, self.episode_id)
+            FailedHistory.revert_failed_episode(self.show_id, self.season, self.episode, session=session)
 
-            search_result = search_providers(show_obj, [self.episode_id], manualSearch=True, downCurQuality=False)
+            search_result = search_providers(self.show_id, self.season, self.episode, manualSearch=True, downCurQuality=False)
             if search_result:
                 for result in search_result:
-                    # just use the first result for now
                     sickrage.app.log.info("Downloading " + result.name + " from " + result.provider.name)
                     snatch_episode(result)
         except Exception:
             sickrage.app.log.debug(traceback.format_exc())
         finally:
-            sickrage.app.log.info("Finished failed download search for: [" + show_obj.name + "]")
+            sickrage.app.log.info("Finished failed download search for: [" + show_object.name + "]")
 
         # Keep a list with the 100 last executed searches
         fifo(MANUAL_SEARCH_HISTORY, self, MANUAL_SEARCH_HISTORY_SIZE)

@@ -21,16 +21,12 @@
 import datetime
 import threading
 
-from tornado.ioloop import IOLoop
-
 import sickrage
-from sickrage.core.tv.episode.helpers import find_episode
-from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.common import Quality, SNATCHED, SNATCHED_BEST, SNATCHED_PROPER
 from sickrage.core.databases.main import MainDB
 from sickrage.core.queues.search import FailedQueueItem
-from sickrage.core.tv.episode import TVEpisode
-from sickrage.core.tv.show.history import FailedHistory, History
+from sickrage.core.tv.show.helpers import find_show
+from sickrage.core.tv.show.history import FailedHistory
 
 
 class FailedSnatchSearcher(object):
@@ -39,7 +35,8 @@ class FailedSnatchSearcher(object):
         self.lock = threading.Lock()
         self.amActive = False
 
-    def run(self, force=False):
+    @MainDB.with_session
+    def run(self, force=False, session=None):
         """
         Runs the failed searcher, queuing selected episodes for search that have failed to snatch
         :param force: Force search
@@ -59,19 +56,18 @@ class FailedSnatchSearcher(object):
 
         failed_snatches = False
 
-        for snatched_episode_obj in [x for x in self.snatched_episodes() if
-                                     (x.showid, x.episode_id) not in self.downloaded_releases()]:
-
-            episode_obj = find_episode(snatched_episode_obj.showid, snatched_episode_obj.episode_id)
-            if episode_obj.show.paused:
+        for snatched_episode_obj in [x for x in self.snatched_episodes() if (x.showid, x.season, x.episode) not in self.downloaded_releases()]:
+            show_object = find_show(snatched_episode_obj.showid, session=session)
+            episode_object = show_object.get_episode(snatched_episode_obj.season, snatched_episode_obj.episode)
+            if episode_object.show.paused:
                 continue
 
-            cur_status, cur_quality = Quality.split_composite_status(episode_obj.status)
+            cur_status, cur_quality = Quality.split_composite_status(episode_object.status)
             if cur_status not in {SNATCHED, SNATCHED_BEST, SNATCHED_PROPER}:
                 continue
 
             sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put,
-                                              FailedQueueItem(episode_obj.showid, [episode_obj.episode_id], True))
+                                              FailedQueueItem(episode_object.showid, episode_object.season, episode_object.episode, True))
 
             failed_snatches = True
 
@@ -88,5 +84,4 @@ class FailedSnatchSearcher(object):
 
     @MainDB.with_session
     def downloaded_releases(self, session=None):
-        return ((x.showid, x.episode_id) for x in
-                session.query(MainDB.History).filter(MainDB.History.action.in_(Quality.DOWNLOADED)))
+        return ((x.showid, x.season, x.episode) for x in session.query(MainDB.History).filter(MainDB.History.action.in_(Quality.DOWNLOADED)))

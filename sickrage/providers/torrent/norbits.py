@@ -59,7 +59,7 @@ class NorbitsProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, season=None, episode=None, **kwargs):
         """ Do the actual searching and JSON parsing"""
 
         results = []

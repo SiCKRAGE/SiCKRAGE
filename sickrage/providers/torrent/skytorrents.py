@@ -46,7 +46,7 @@ class SkyTorrents(TorrentProvider):
         self.regex = re.compile(
             '(?P<seeders>\d+) seeder\(s\), (?P<leechers>\d+) leecher\(s\), (\d+) file\(s\) (?P<size>[^\]]*)')
 
-    def search(self, search_strings, age=0, show_id=None, episode_id=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, season=None, episode=None, **kwargs):
         results = []
 
         """
@@ -65,8 +65,7 @@ class SkyTorrents(TorrentProvider):
             sickrage.app.log.debug("Search Mode: {0}".format(mode))
             for search_string in search_strings[mode]:
                 if mode != "RSS":
-                    sickrage.app.log.debug("Search string: {0}".format
-                                                   (search_string))
+                    sickrage.app.log.debug("Search string: {0}".format(search_string))
 
                 search_url = self.urls["search"] % (("ed", "ad")[mode == "RSS"], 1, search_string)
 
