@@ -60,6 +60,7 @@ setup(
     packages=['sickrage'],
     install_requires=requires(),
     include_package_data=True,
+    python_requires='>=3',
     platforms='any',
     zip_safe=False,
     test_suite='tests',

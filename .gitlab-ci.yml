@@ -11,6 +11,7 @@ services:
   - docker:dind
 
 build_master:
+  stage: build
   image: docker:latest
   script:
     - echo $CONTAINER_IMAGE
@@ -25,6 +26,7 @@ build_master:
     - tags
 
 build_develop:
+  stage: build
   image: docker:latest
   script:
     - echo $CONTAINER_IMAGE
@@ -32,7 +34,7 @@ build_develop:
     - docker build --network host --build-arg SOURCE_COMMIT=$CI_COMMIT_REF -t $CONTAINER_IMAGE:$(cat sickrage/version.txt) .
     - docker tag $CONTAINER_IMAGE:$(cat sickrage/version.txt) $CONTAINER_IMAGE:latest
     - docker push $CONTAINER_IMAGE:$(cat sickrage/version.txt)
-    - docker push $CONTAINER_IMAGE:dev
+    - docker push $CONTAINER_IMAGE:develop
   only:
     - develop
   except:
