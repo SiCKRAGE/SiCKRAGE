@@ -1,80 +1,343 @@
 # Changelog
 
-- * 3bad5d0 - 2019-02-25: Migration from Python 2 to Python 3.7.x 
-- * a72ca25 - 2019-02-24: Release v9.4.77 
-- * b09d78a - 2019-02-24: Added Anime regex for Erai-raws 
-- * e0f2db6 - 2019-02-24: Release v9.4.76 
-- * ed84483 - 2019-02-24: Fixed IndexerErrors for TV cache. Added files to .gitignore related to AniDB. 
-- * abe73d7 - 2019-02-24: Release v9.4.75 
-- * f4b1e65 - 2019-02-24: Fixed issue with scene exceptions not being retrieved. Fixed issues with AniDB and Anime shows. Builds name cache and retrieves exceptions on startup as a background task. 
-- * 78d6b6e - 2019-02-24: Release v9.4.74 
-- * b690738 - 2019-02-24: Fixed issue with default add show options and add show year feature. 
-- * 90fa33d - 2019-02-24: Pre-Release v9.4.74.dev2 
-- * b2896ad - 2019-02-24: Updated AniDB code for post-processor. Added get episode function to AniDB helper. 
-- * 1ebefb4 - 2019-02-24: Pre-Release v9.4.74.dev1 
-- * c26e5b1 - 2019-02-24: Refactored AniDB code. 
-- * 41039e5 - 2019-02-24: Fixed KeyError for twitter notifier. 
-- * 135d868 - 2019-02-24: Fixed AttributeError for gktorrent provider. Refactored log messages for rss cache updater to debug. 
-- * ffd8fa4 - 2019-02-24: Release v9.4.73 
-- * 47572b6 - 2019-02-24: Release v9.4.72 
-- * b86d9d2 - 2019-02-23: Release v9.4.71 
-- * 342b1de - 2019-02-23: Added ability to save &#x60;add_show_year&#x60; as a default option when adding new shows. 
-- * ea526d2 - 2019-02-23: Release v9.4.70 
-- * 2e4fa85 - 2019-02-23: Pre-Release v9.4.70.dev1 
-- * 4a8b635 - 2019-02-23: Fixed issue with sending direct messages via twitter API. 
-- * 502eb01 - 2019-02-23: Release v9.4.69 
-- * ffa69b5 - 2019-02-23: Don&#x27;t attempt daily or backlog searches if nothing to search for. Version updater now moves entire folder at once instead of walking it for source updates. 
-- * 2f89453 - 2019-02-23: Pre-Release v9.4.69.dev1 
-- * 8324c57 - 2019-02-23: Added new release mapping %SY to allow appending the show year to episodes. Added new show option to append show year to show folder if needed. Added check for existing show year in show name, if found, do not append show year. 
-- * c3441ed - 2019-02-23: Release v9.4.68 
-- * 3f6df12 - 2019-02-23: Release v9.4.67 
-- * 83d1b88 - 2019-02-23: Moved RSS cache updates to separate background task that executes every 15 minutes. Parsed search results no longer grab their show id&#x27;s from TheTVDB or Trackt since we only care about shows existing in library. Search results returned for shows not existing in library are discarded. 
-- * 9c78d0b - 2019-02-23: Release v9.4.66 
-- * 8275fd1 - 2019-02-23: Release v9.4.65 
-- * 15ffdce - 2019-02-23: Release v9.4.64 
-- * 33a4acc - 2019-02-23: Release v9.4.63 
-- * e648c9e - 2019-02-23: Release v9.4.62 
-- * 04b3d37 - 2019-02-23: Pre-Release v9.4.62.dev1 
-- * 1e6bcf9 - 2019-02-23: Release v9.4.62 
-- * e39f7d8 - 2019-02-23: Moved RSS cache updates to separate background task that executes every 15 minutes. Parsed search results no longer grab their show id&#x27;s from TheTVDB or Trackt since we only care about shows existing in library. Search results returned for shows not existing in library are discarded. 
-- * 724fc6b - 2019-02-20: Release v9.4.61 
-- * 9467ad1 - 2019-02-20: Release v9.4.60 
-- * e9b99d5 - 2019-02-20: Only shows in library are cached. Calls to the API for caching provider results are now done in the background. Fixed cross-link device issues for version updater. 
-- * 13659fe - 2019-02-17: Release v9.4.59 
-- * 993ca34 - 2019-02-17: Fixed &quot;unable to verify the download url&quot; for Torrent9 provider 
-- * 01ad8b6 - 2019-02-15: Pre-Release v9.4.59.dev3 
-- * 3af8cda - 2019-02-15: Removed redundant automatic show refreshes as these happen during automatic show updates 
-- * 0a29873 - 2019-02-15: Pre-Release v9.4.59.dev1 
-- * 141d1ce - 2019-02-15: Only update indexer details for shows when performing show updates on shows marked as updated on indexer, full updates performed every 7 days. 
-- * d41e525 - 2019-02-11: Fixed issue with &quot;unable to verify the download url&quot; 
-- * 9a10462 - 2019-01-22: Release v9.4.58 
-- * 92b5423 - 2019-01-22: Dockerfile default TZ set to Canada/Pacific 
-- * c128f16 - 2019-01-22: Pre-Release v9.4.58.dev1 
-- * 8913178 - 2019-01-21: Release v9.4.57 
-- * f065a3e - 2019-01-21: Updated Dockerfile. 
-- * ae5c478 - 2019-01-21: Fixed auth issue causing redirect to home page every 5 minutes. 
-- * b2b9f0d - 2019-01-20: Release v9.4.56 
-- * a2596ce - 2019-01-20: Fixed typo in show schedule page, double web roots. 
-- * 468c19e - 2019-01-19: Decreased sleep timer from 5s to 2s for RARBG. Updated keycloak client requirement version. 
-- * 25bcd7f - 2019-01-12: Pre-Release v9.4.56.dev5 
-- * c94aafe - 2019-01-12: Added static app_id to RARBG torrent provider 
-- * 14f8938 - 2019-01-12: Pre-Release v9.4.56.dev4 
-- * c0aa31a - 2019-01-12: Added branch version checking for source installs 
-- * 79db85e - 2019-01-12: Pre-Release v9.4.56.dev3 
-- * a26f1df - 2019-01-12: Building of DEV docker images now implemented 
-- * baf04a1 - 2019-01-12: Fixed issue with connecting to RARBG torrent provider 
-- * 831f077 - 2019-01-13: Update .gitlab-ci.yml 
-- * 7c6290c - 2019-01-13: Update .gitlab-ci.yml 
-- * bf51f72 - 2019-01-13: Update .gitlab-ci.yml 
-- * 560357a - 2019-01-12: Update .gitlab-ci.yml 
-- * 2543e7c - 2019-01-12: Update .gitlab-ci.yml 
-- * 6e96928 - 2019-01-12: Refactored processed marker code 
-- * 60c219a - 2019-01-12: Update Dockerfile 
-- * 74f25eb - 2019-01-12: Update Dockerfile 
-- * 5fcae91 - 2019-01-12: Update Dockerfile 
-- * c27cdf7 - 2019-01-12: Update Dockerfile 
-- * 68a9176 - 2019-01-12: Update .gitlab-ci.yml 
-- * 3f76554 - 2019-01-12: Update .gitlab-ci.yml 
-- * d326930 - 2019-01-12: Update .gitlab-ci.yml 
+- * 8baf52440 - 2019-06-02: Fixed issue &#x60;install() got an unexpected keyword argument &#x27;unicode&#x27;&#x60; Refactored gitlab ci/cd script to build docker images for dev branch. Added missing session to find_show in API calls. 
+- * 81d9d7ce1 - 2019-05-28: Refactoring provider searches to search for one season/episode at a time, this will allow for better multi-thread handling of search queue items. 
+- * 3d8c87768 - 2019-05-27: Fixed issue &#x60;name &#x27;table&#x27; is not defined&#x60; 
+- * 9f4c8df89 - 2019-05-26: Removed remaining custom database functions no longer needed. Added code to check database for existing episode ID before adding from Indexers. 
+- * d59bf34e7 - 2019-05-26: Fixed issue #SICKRAGE-APP-PY3-8W (&#x27;NoneType&#x27; object has no attribute &#x27;scene_season&#x27;) 
+- * 0cf4b20fd - 2019-05-26: Downgraded main database from version 13 to 12 to revert changes made to imdb_info and tv_shows tables. 
+- * 77a73fb3b - 2019-05-26: Downgraded main database from version 13 to 12 to revert changes made to imdb_info and tv_shows tables. 
+- * 890a787d5 - 2019-05-26: Fixed issue SICKRAGE-APP-PY3-8T (&#x27;NoneType&#x27; object has no attribute &#x27;show&#x27;) 
+- * f8b9e2df2 - 2019-05-26: Refactored &#x60;run_task&#x60; function to not be async, returns future that can be awaited or fired and forgotten. 
+- * 8e3b8534b - 2019-05-26: Added ability to not wait on a task executed by &#x60;run_task&#x60; function 
+- * b69acd091 - 2019-05-26: Fixed issues with version updating. 
+- * f3e2f6409 - 2019-05-26: Refactored history clear and trim web handlers to be async. 
+- * ce23e73e9 - 2019-05-26: Added exception catch for &#x60;MultipleResultsFound&#x60; to &#x60;find_episode&#x60; helper function. 
+- * b335495ee - 2019-05-26: Added exception catch for &#x60;MultipleResultsFound&#x60; to &#x60;find_episode&#x60; helper function. 
+- * aa38d787d - 2019-05-26: Fixed issue &#x60;Missing argument whichSeries&#x60;. 
+- * eea340c95 - 2019-05-26: Fixed issue &#x60;Missing argument pid&#x60; 
+- * 57e5d92bf - 2019-05-26: Fixed issue &#x60;run_in_executor() got an unexpected keyword argument &#x27;webui&#x27;&#x60; 
+- * 302fb737c - 2019-05-26: Refactored code to backup/restore &#x60;-shm&#x60; and &#x60;-wal&#x60; database files. 
+- * 0a963af29 - 2019-05-26: Refactored code to backup/restore &#x60;-shm&#x60; and &#x60;-wal&#x60; database files. 
+- * 995002d9d - 2019-05-26: Added check in versioned backup function to see if file we are wanting to backup to exists and if so exit. 
+- * 52469e73d - 2019-05-26: Added code to perform database backup before upgrading scheme. 
+- * 762d418d2 - 2019-05-26: Added code to perform database backup before upgrading scheme. 
+- * 5ea032d7b - 2019-05-26: Added code to perform database backup before upgrading scheme. 
+- * 69abaf43e - 2019-05-26: Fixed issue with History table migrations. 
+- * 8e92b4f2b - 2019-05-26: Added exception to catch &#x60;Connection aborted&#x60; when attempting to get current user for web-ui. 
+- * c8de035ab - 2019-05-26: Fixed issues with ForeignKey constraints. 
+- * 97f4dcb80 - 2019-05-25: Added release_group column to History table. 
+- * bde4484f0 - 2019-05-25: Added missing &#x60;get_url&#x60; calls for internal web calls. 
+- * 9234ddd7f - 2019-05-23: Added more tables for migration from py2 to py3. 
+- * 9ba0a45a3 - 2019-05-23: Fixed error &#x60;&#x27;NoneType&#x27; object has no attribute &#x27;episode&#x27;&#x60; 
+- * 271a443f9 - 2019-05-23: Fixed issue with daily and backlog searches not running. 
+- * 2803fa9f3 - 2019-05-22: Refactoring scene numbering functions. 
+- * 255954995 - 2019-05-22: Fixed issue where scene_season, scene_episode, and scene_absolute_number got reset to zero if not found on XEM, caused search issues. 
+- * a530f0f92 - 2019-05-21: Added provider ExtraTorrent. 
+- * c76465fc9 - 2019-05-20: Fixed issue where main show page will show duplicate show entries when adding a new show. 
+- * 94777c951 - 2019-05-20: Removed event queue, replaced with Tornado ioloop run_in_executor. 
+- * 47e5445f7 - 2019-05-20: Fixed issue with show name not being displayed correctly when a show is being added to the database on main show display page. 
+- * b1e3ed92f - 2019-05-20: Refactoring of misc class names. 
+- * ab3d032de - 2019-05-20: Refactored database engine to use a QueuePool with a size of 100 connections. 
+- * e64ee73bd - 2019-05-20: Re-added back &#x60;set_sqlite_pragma&#x60; with exception catching, only way to ensure journal mode is set to WAL. 
+- * d0629b2eb - 2019-05-20: Removed event listener for setting WAL and moved to init function. 
+- * 99b8bb820 - 2019-05-20: Refactored &#x60;set_sqlite_pragma&#x60; function. 
+- * 85e874939 - 2019-05-20: Refactored &#x60;set_sqlite_pragma&#x60; function. 
+- * 3d9725a51 - 2019-05-20: Fixed issue &#x60;OverflowError: date value out of range&#x60; 
+- * d84f8634a - 2019-05-20: Reverted scoped_session as it was removing session binds from models. 
+- * 35bd12b0c - 2019-05-20: Fixed issue Parent instance &lt;TVEpisode at 0x7f7bdd62cc50&gt; is not bound to a Session; lazy load operation of attribute &#x27;show&#x27; cannot proceed 
+- * 2155d0508 - 2019-05-20: Fixed issue &#x27;NoneType&#x27; object has no attribute &#x27;commit&#x27; 
+- * b1dd65fa0 - 2019-05-20: Improved performance of loading main shows page by doing away with overall stats and moving stat gathering for shows to views. 
+- * ca56cadee - 2019-05-19: Improved performance of loading main shows page and gather statistics. Refactored database sessions to use scoped sessions. Refactored show statistics function to be async. Refactored relatedEps to related_episodes. 
+- * ad4708281 - 2019-05-19: Improved app performance in regards to startup time. 
+- * a2d0eb747 - 2019-05-19: Fixed issue with history of snatched episodes not having their statuses updated after being downloaded and post-processed. 
+- * 4931de04e - 2019-05-19: Migrated History table column date from Integer type to DateTime type. Scene number functions now always return data. Fixed issue with getting data from provider caches. 
+- * 289685be2 - 2019-05-19: Refactored variable to function call. 
+- * bbfd1cea1 - 2019-05-19: Fixed issue with displaying show stats when adding or removing a show. 
+- * a2040ab6a - 2019-05-19: Fixed Zooqle torrent provider search issues. 
+- * 03b214e6e - 2019-05-19: Refactored how a new TVShow object is added and retrieved when adding a new show. 
+- * 9faf599a0 - 2019-05-19: Refactored how a new TVShow object is added and retrieved when adding a new show. 
+- * 7c9b57d83 - 2019-05-19: Refactored session handling for TVShow and TVEpisode objects. 
+- * 1f9477e89 - 2019-05-19: Fixed Quicksearch, was incorrectly encoding data. 
+- * 0e375e144 - 2019-05-19: Fixed &#x27;InstrumentedList&#x27; object has no attribute &#x27;all&#x27; 
+- * 890748e45 - 2019-05-19: Added Grunt task to build and push docker images. 
+- * df15c000d - 2019-05-18: Added db_session where needed for web handlers. 
+- * 38677592b - 2019-05-18: Fixed issue with searches and picking best results when multiple results presented. 
+- * bd3934da7 - 2019-05-18: Switched back to using python properties for grabbing stats for shows. 
+- * a305c92b5 - 2019-05-18: Fixed a issue with relationships for tv shows and episodes 
+- * 4edb8907d - 2019-05-18: Added database session decorator where needed. 
+- * e3c53962f - 2019-05-18: Added function to Indexer API to return image key types before attempting to grab images that may result in a HTTP 404 error code. 
+- * 87ad69964 - 2019-05-17: Fixed &#x27;NoneType&#x27; object has no attribute &#x27;indexer_id&#x27; 
+- * a53079ed0 - 2019-05-17: Refactored show stat handling. 
+- * 3a9d09a46 - 2019-05-16: Refactored into transactional for converting airdate column to date type on TV Episodes table. 
+- * 948641bf4 - 2019-05-15: Testing new way of providing show stats. 
+- * ccf0d0ccf - 2019-05-14: Testing new way of providing show stats. 
+- * 6ef50bef8 - 2019-05-14: Testing new way of providing show stats. 
+- * 4a62775c4 - 2019-05-14: Testing new way of providing show stats. 
+- * 52147ba69 - 2019-05-13: Refactoring post-processor to pass show and episode IDs instead of objects. 
+- * c478bebc3 - 2019-05-13: Refactoring post-processor to pass show and episode IDs instead of objects. 
+- * dde770c9b - 2019-05-13: Implemented async for API app calls 
+- * a2fb2db61 - 2019-05-13: Removed un-required sleep for post-processor 
+- * 07dc6b47f - 2019-05-13: Fixed issue with backlog searches not working due to async not being properly implemented on queue items 
+- * 11903dd26 - 2019-05-13: Removed ajaxsearch init from schedule core js handler 
+- * fb7f6659b - 2019-05-13: Removed ajaxsearch init from schedule core js handler 
+- * 80ebdad5e - 2019-05-13: Fixed issue with polling for episode search status from scheduler page when no show ID is provided. 
+- * 0fb51c473 - 2019-05-13: Fixed AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;episode&#x27; 
+- * 4430d6d0a - 2019-05-13: Added function to commit database session after web session is finished. 
+- * 225936aea - 2019-05-13: Fixed issues with manual searches, added session decorator to snatch episode function. 
+- * e34a1ed82 - 2019-05-12: Converted schedule and display show handlers to async. 
+- * c6818d8b0 - 2019-05-12: Resolved issues with show updates and refreshes related to database sessions. 
+- * e8972ea74 - 2019-05-12: Added database event listener to apply defaults on init. Fixed issue with default not being used with getting attribute that returns NoneType. Misc issues resolved for adding new shows. 
+- * e82295e64 - 2019-05-09: Added code to convert runtime value from String to Integer when populating show data from Indexers. 
+- * 92cb32542 - 2019-05-08: Refactored TVEpisode object to use database object class. 
+- * a698d904a - 2019-05-08: Refactored TVEpisode object to use database object class. 
+- * 02d3bdc38 - 2019-05-07: Refactoring database calls to properly use session context. 
+- * 1a3071ad0 - 2019-05-07: Refactored TVEpisode object to use database object class. 
+- * e9517c5d2 - 2019-05-07: Refactored TVEpisode object to use database object class. 
+- * 5684a0948 - 2019-05-06: Refactoring database calls to properly use session context. 
+- * fc6cbc806 - 2019-05-06: Refactored TVEpisode object to use database object class. 
+- * ced892474 - 2019-05-05: Refactoring database calls to properly use session context. 
+- * b0d7afa37 - 2019-05-05: Added improved exception handling for database session context 
+- * f688a2f1f - 2019-05-05: Added retry code to database session context manager. 
+- * fc34daca5 - 2019-05-05: Refactored database calls to be more multi-thread friendly. 
+- * b73615052 - 2019-05-05: Refactored IMDbInfo table nullable columns allowance. 
+- * 8d7046525 - 2019-05-05: Refactored core main helpers module. 
+- * 8f8968bc9 - 2019-05-05: Refactored post-processor class code. 
+- * 6f3e01496 - 2019-05-05: Refactored schedule calendar view. 
+- * 413905a40 - 2019-05-05: Added flush function to database class. 
+- * 8d23b3554 - 2019-05-05: Added flush command to database add and delete calls. 
+- * 98f1d1c55 - 2019-05-05: Added database migration code to add column episode_id to History tables 
+- * d6c5d1461 - 2019-05-05: Added database migration code to convert TV Episode airdate to type Date 
+- * f9acdcf93 - 2019-05-04: Refactored TV Shows object &#x60;get_episode&#x60; function. 
+- * 50275d870 - 2019-05-04: Refactored schedule calendar view. 
+- * 053e40408 - 2019-05-04: Refactored TV Episode column &#x60;airdate&#x60; to return Date type. 
+- * c31c7c4e8 - 2019-05-04: Refactored History methods 
+- * f976caffb - 2019-05-04: Refactored &#x60;GetManualSearchStatusHandler&#x60; 
+- * 7fa3757e0 - 2019-05-04: Refactored &#x60;searchProviders&#x60; method 
+- * ac6ef8c15 - 2019-05-04: Refactored &#x60;find_search_results&#x60; function 
+- * 468638fb9 - 2019-05-04: Refactored &#x60;show_names&#x60; module 
+- * 57fef3382 - 2019-05-04: Refactored search provider NewPCT 
+- * 17bb034ff - 2019-05-04: Refactored search provider Zooqle 
+- * 944fb51eb - 2019-05-04: Refactored search provider TVChaosUK 
+- * 49b328633 - 2019-05-04: Refactored search provider HDBits 
+- * 4ae5aa9f4 - 2019-05-02: Refactored Proper Searcher 
+- * f739d7033 - 2019-05-02: Refactored Proper Searcher 
+- * 9af84dc60 - 2019-05-01: Refactored &#x60;FailedSnatchSearcher&#x60; 
+- * f52da1338 - 2019-05-01: Refactored &#x60;BacklogQueueItem&#x60; 
+- * c33773841 - 2019-05-01: Refactored &#x60;daily_searcher&#x60; module 
+- * f7cf3a184 - 2019-05-01: Refactored &#x60;backlog_searcher&#x60; module 
+- * f8ee03220 - 2019-05-01: Refactored &#x60;new_episode_finder&#x60; method 
+- * d0db0bbd9 - 2019-04-29: Refactored TVEpisode object to use database object class. 
+- * 8c13b3426 - 2019-04-29: Fixed issue with setting black and white keywords for Anime shows. 
+- * c96bbb02a - 2019-04-29: Fixed issue with setting black and white keywords for Anime shows. 
+- * d8ba1666c - 2019-04-29: Misc typo 
+- * 9acc7fb25 - 2019-04-29: Added exception for multiple results found when searching for absolute numbering off XEM. 
+- * 410b5fddd - 2019-04-29: Updated requirements 
+- * 5f870d9ba - 2019-04-28: Removed committing to add and delete database methods. 
+- * 49484331e - 2019-04-28: Added committing to add and delete database methods. 
+- * 0290810d5 - 2019-04-28: Added tagging of app_id and sub_id to Sentry remote logging. 
+- * f51950f0d - 2019-04-28: Added tagging of app_id and sub_id to Sentry remote logging. 
+- * faa157077 - 2019-04-28: Added tagging of app_id and sub_id to Sentry remote logging. 
+- * a4ee42fd7 - 2019-04-28: Fixed issue with viewing logs and max lines 
+- * 61cce7cde - 2019-04-28: Fixed issue with clearing errors and warnings 
+- * fea454aad - 2019-04-28: Fixed show display page to sort drop-down of shows non-case-sensitive 
+- * 4d9e81672 - 2019-04-28: Refactoring post-processor code. 
+- * 3c62f7133 - 2019-04-28: Added code to retry getting responses from TheTVDB API. 
+- * 2eb58478c - 2019-04-28: Fixed issue with looking up show in database using string search terms. 
+- * 129e48fcc - 2019-04-28: Fixed limits issue for adding new shows from Trakt.tv 
+- * 45cdfe1d2 - 2019-04-28: Fixed attribute issue for show object release groups 
+- * b91e49c14 - 2019-04-28: Misc code refactors for using show episode relationships 
+- * 1b7804979 - 2019-04-27: Refactored old code used for getting show episode images. 
+- * 356ab9356 - 2019-04-27: Fixed issue with forcing backlogs and finding nothing. 
+- * 3c3aed5d3 - 2019-04-27: Refactored backlog and daily log messages to indicate number of days its searching for. 
+- * 4375dffcc - 2019-04-27: Fixed issue with trimming history. 
+- * 887cb3a8b - 2019-04-27: Fixed web call to force daily searches. 
+- * 77ac496ba - 2019-04-27: Fixed issue with show not being added when trying to add show via queue. 
+- * b1e7d1d19 - 2019-04-27: Fixed issue with displaying existing shows from multiple root directories. 
+- * 9ddf71a71 - 2019-04-27: Enabled &#x60;autocommit&#x60; for database sessions. 
+- * b2d7407d9 - 2019-04-27: Refactoring show object code 
+- * c0cbb15f4 - 2019-04-26: Fixed issue with internal http client and auth 
+- * 2dd651887 - 2019-04-26: Working on fix for locked database issues 
+- * 7714f3e1d - 2019-04-25: Refactored methods for TVShow to helper module 
+- * f571a00ae - 2019-04-25: Refactored show queue to retrieve show objects from database via indexer_id attribute 
+- * c6f554333 - 2019-04-25: Working on fix for locked database issues 
+- * 521828f94 - 2019-04-24: Working on fix for locked database issues 
+- * 5b741954a - 2019-04-24: Fixed issue with getting IMDb info 
+- * 2834d7ac3 - 2019-04-24: Added migration routines 
+- * aca0067d8 - 2019-04-24: Fixed issue with automatic post-processing 
+- * fbe61c6d6 - 2019-04-24: Made minor adjustments to queue 
+- * 37be132ed - 2019-04-24: Added one-liners to convert &#x60;imdo_info&#x60; keys to lowercase 
+- * f1fc999ff - 2019-04-24: Refactored TVShow database table attribute and column names 
+- * 6b8ef374b - 2019-04-24: Update __init__.py 
+- * 89f40347f - 2019-04-24: Refactored AsyncHttpClient usage 
+- * 0fd669baa - 2019-04-23: Fixed issue with drop-down show list for display show page 
+- * d93dc9f62 - 2019-04-23: Fixed issue with loading of imdb_info attribute for shows 
+- * 6f6e1db25 - 2019-04-22: Refactoring code for performance 
+- * d30471a50 - 2019-04-22: Fixed remaining calls to variable &#x60;current_item&#x60; 
+- * f01d04b12 - 2019-04-22: Improved load time for main shows page by loading episodes into memory. 
+- * 78fa24f70 - 2019-04-21: Updated primary keys for quicksearch database tables 
+- * 093174872 - 2019-04-21: Added &#x60;last_proper_search&#x60; to TVShow database table. Resolved database migration issues coming from py2 app. Resolved &#x60;search_delay&#x60; TVShow database table column issue, changed from &#x60;Boolean&#x60; to &#x60;Integer&#x60; 
+- * a4b1b6188 - 2019-04-21: Fixed more logic with &#x60;max_queue_workers&#x60; 
+- * f3877e792 - 2019-04-21: Fixed a typo 
+- * 3f0169771 - 2019-04-21: Fixed &#x60;HTTP 405: Method Not Allowed&#x60; for backup/restore 
+- * faa271c4e - 2019-04-21: Fixed status page to display show queue item progress correctly 
+- * 5b0168246 - 2019-04-21: Changed logic for queue and &#x60;max_queue_workers&#x60; 
+- * 506ed4c38 - 2019-04-21: Fixed issue with queue and &#x60;max_queue_workers&#x60; variable 
+- * 8917d8874 - 2019-04-21: Fixed issue with queue and &#x60;max_queue_workers&#x60; variable 
+- * bf25d5bcb - 2019-04-21: Added &#x60;max_queue_workers&#x60; config variable to control maximum number of allowed items from queue to be processed at one time. 
+- * 48438eb66 - 2019-04-21: Fixed &#x60;In Progress&#x60; for show queue status in Mako code 
+- * caaf36a3e - 2019-04-21: Fixed Mako error for status page 
+- * 06aec91d6 - 2019-04-21: Fixed issue with post-processing manually and async. 
+- * afece7307 - 2019-04-21: Fixed missing params from get method for post processing handler 
+- * 2ac7b86d4 - 2019-04-21: Fixed missing handler for post-processing view 
+- * da7bd5cb8 - 2019-04-21: Added missing &#x60;authenticaed&#x60; decorator to get/post methods 
+- * 2ce606eb9 - 2019-04-21: Refactored queue to process all items that are queued at once instead of one at a time. 
+- * 0a7306e9d - 2019-04-21: Added stop function to queues to stop further processing of queued items 
+- * 3f934f661 - 2019-04-21: Refactored queue system to use Tornado coroutine&#x27;s 
+- * 1f9f2c413 - 2019-04-19: Restructured web view folders and classes. Refactored web views and handler code. 
+- * c55f37875 - 2019-04-15: Refactored tornado web handler to perform async calls 
+- * 9d884afba - 2019-04-14: Fixed issue with initial setting of app_id 
+- * 555d9603a - 2019-04-14: Moved call to register app-id 
+- * 1611791b1 - 2019-04-14: SiCKRAGE API registration of app-id now returns generated app-id from API 
+- * 695249b3c - 2019-04-14: Delete config from disk if it exists after its loaded, configs are saved to SiCKRAGE cloud encrypted. 
+- * 6fc5cbd2c - 2019-04-14: Backup of config from disk has been removed since config is store in SiCKRAGE cloud encrypted. 
+- * 208a6d03e - 2019-04-14: Refactored backup and restore functions to include &#x60;privatekey.pem&#x60; 
+- * 35455248a - 2019-04-14: Added API account functions for uploading encrypted config to SiCKRAGE cloud 
+- * 521d44ec6 - 2019-04-13: Updated SiCKRAGE API URL 
+- * aaefbb428 - 2019-04-13: Fixed issue with mapping when called by reduce, wrapped in list call. 
+- * 6a3db85e3 - 2019-04-13: Added startup argument to set listen address 
+- * ff4ea982a - 2019-04-13: Fixed displaying queue priorities from server status page 
+- * a228f02cc - 2019-04-12: Fixed &#x60;can&#x27;t have unbuffered text I/O&#x60; value error 
+- * e0b6cbec4 - 2019-04-11: Set sessions not to expire on commit 
+- * c3d923796 - 2019-04-11: Added main and cache database instances to core app 
+- * a4929e429 - 2019-04-10: Fixed issue with black and white lists 
+- * 88122b40a - 2019-04-09: Fixed typo in Trakt lib 
+- * a13c1efc6 - 2019-04-08: Refactored encryption functions 
+- * 326cdd71a - 2019-04-08: Moved encryption startup routines to its own function call Config only gets written if public key is present 
+- * 46437bc09 - 2019-04-08: Added season and episode as primary key constraints to tv_episodes table 
+- * 2fccd9622 - 2019-04-07: Refactored backup/restore functions to include public encryption key 
+- * 5d65e31cb - 2019-04-07: Refactored public encryption key to be saved only after private key is saved 
+- * 0ca805b13 - 2019-04-07: Added missing failed_snatch_searcher attribute to init for core 
+- * 174fb9a9d - 2019-04-07: Added public encryption key support Refactored loading of public and private encryption keys to wait till loaded and saved 
+- * 624a18ddb - 2019-04-07: Added logging info to indicate when attempting to save encryption key and when its saved 
+- * a4f3cc52c - 2019-04-07: Added loop to ensure encryption key is successfully saved to user profile via API 
+- * baf2f48ae - 2019-04-07: Fixed issue with slack and binary messages Fixed issue with saving and encryption config 
+- * 5375a1403 - 2019-04-07: Fixed &#x60;TypeError: must be str, not bytes&#x60; in post-processor 
+- * 64a3fbd03 - 2019-04-07: Fixed &#x60;TypeError: must be str, not bytes&#x60; in post-processor 
+- * 516bec5a2 - 2019-04-07: Fixed issues with parsing xml data for Plex and NZB 
+- * e69d7a772 - 2019-04-07: Fixed issue with history lookup returning NoneType 
+- * 1dc9ad934 - 2019-04-07: Refactored history lookup to return first result instead of only trying to return one or none 
+- * 4d7d73e42 - 2019-04-07: Refactored remaining database calls using old-style dictionary calls 
+- * cf316a699 - 2019-04-07: Added sqlalchemy-migrate to requirements Refactored database upgrade functions to use sqlalchemy-migrate 
+- * 7b833ac6d - 2019-04-07: Refactored database delete function to check count of query results before attempting delete to avoid errors 
+- * f05f45b22 - 2019-04-07: Refactored database update calls to merge object sessions before committing 
+- * 3382e1427 - 2019-04-07: Refactored main layout submenu creation to honor required setting 
+- * 7383dce62 - 2019-04-07: Refactored database update calls to grab session from object first that we want to update to use for committing the data 
+- * 87cabbd1a - 2019-04-07: Refactored scene numbering function conditionals 
+- * d55538a86 - 2019-04-07: Refactored database update calls 
+- * 2edaad776 - 2019-04-07: Refactored database update calls 
+- * eed91867c - 2019-04-07: Refactored pip_path to pip3_path 
+- * da76cd140 - 2019-04-06: Refactored remaining database query calls 
+- * a13a722c3 - 2019-04-06: Added table mapper function to database class 
+- * 8f59e6dc2 - 2019-04-06: Updated version to 9.5.1 
+- * 0fe5bf794 - 2019-04-06: Added python path env to grunt tasks Updated cfscape to 1.9.7 
+- * 412de15dc - 2019-04-06: Refactored database update calls 
+- * 87ae7363b - 2019-04-05: Refactired database update calls 
+- * 264d5c80e - 2019-04-05: Refactored xem_refresh database update call 
+- * a495abb03 - 2019-04-05: Refactoring database delete calls 
+- * cc9826094 - 2019-04-05: Misc cleanup of database models 
+- * c38266317 - 2019-04-05: Refactored database update calls 
+- * 1bff88aa8 - 2019-04-05: Refactored database insert calls 
+- * a5c700ffd - 2019-04-04: Refactored more database calls 
+- * 98df3016f - 2019-04-03: Refactoring database calls 
+- * b65e3acee - 2019-03-31: Refactored how we delete database rows 
+- * 622650abe - 2019-03-31: Fixed typo for restore function 
+- * c7a4409b7 - 2019-03-31: Updated python-keycloak-client to 0.2.2 
+- * 6c89ebd28 - 2019-03-31: Added code to attempt requirements install prior to performing updates when available. 
+- * 0e1b42e19 - 2019-03-31: Python 2 to 3 database migration happens against files in root of data directory instead of seperate migration folder. 
+- * 0fd0eb837 - 2019-03-31: Fixed issue with NoneType when loading plugins 
+- * 0e35b03fa - 2019-03-31: Fixed issue with NoneType when loading plugins 
+- * 78f528809 - 2019-03-28: Encrypt config only if able to save encryption key 
+- * 5ee00bc0a - 2019-03-28: Save user private key when saving config 
+- * 19708c3c9 - 2019-03-27: Refactored file headers 
+- * 124ce33cf - 2019-03-27: Refactored configuration encryption routines 
+- * 762a0f102 - 2019-03-24: Refactored configuration encryption routines 
+- * c8c19951b - 2019-02-25: Migration from Python 2 to Python 3.7.x 
+- * 7f5696f95 - 2019-02-25: Migration from Python 2 to Python 3.7.x 
+- * a72ca25f7 - 2019-02-24: Release v9.4.77 
+- * b09d78ad4 - 2019-02-24: Added Anime regex for Erai-raws 
+- * e0f2db685 - 2019-02-24: Release v9.4.76 
+- * ed8448311 - 2019-02-24: Fixed IndexerErrors for TV cache. Added files to .gitignore related to AniDB. 
+- * abe73d780 - 2019-02-24: Release v9.4.75 
+- * f4b1e65d9 - 2019-02-24: Fixed issue with scene exceptions not being retrieved. Fixed issues with AniDB and Anime shows. Builds name cache and retrieves exceptions on startup as a background task. 
+- * 78d6b6ecc - 2019-02-24: Release v9.4.74 
+- * b69073896 - 2019-02-24: Fixed issue with default add show options and add show year feature. 
+- * 90fa33d21 - 2019-02-24: Pre-Release v9.4.74.dev2 
+- * b2896ada3 - 2019-02-24: Updated AniDB code for post-processor. Added get episode function to AniDB helper. 
+- * 1ebefb42e - 2019-02-24: Pre-Release v9.4.74.dev1 
+- * c26e5b165 - 2019-02-24: Refactored AniDB code. 
+- * 41039e5ce - 2019-02-24: Fixed KeyError for twitter notifier. 
+- * 135d86855 - 2019-02-24: Fixed AttributeError for gktorrent provider. Refactored log messages for rss cache updater to debug. 
+- * ffd8fa479 - 2019-02-24: Release v9.4.73 
+- * 47572b673 - 2019-02-24: Release v9.4.72 
+- * b86d9d2ed - 2019-02-23: Release v9.4.71 
+- * 342b1de73 - 2019-02-23: Added ability to save &#x60;add_show_year&#x60; as a default option when adding new shows. 
+- * ea526d22f - 2019-02-23: Release v9.4.70 
+- * 2e4fa859c - 2019-02-23: Pre-Release v9.4.70.dev1 
+- * 4a8b635de - 2019-02-23: Fixed issue with sending direct messages via twitter API. 
+- * 502eb0163 - 2019-02-23: Release v9.4.69 
+- * ffa69b518 - 2019-02-23: Don&#x27;t attempt daily or backlog searches if nothing to search for. Version updater now moves entire folder at once instead of walking it for source updates. 
+- * 2f89453ad - 2019-02-23: Pre-Release v9.4.69.dev1 
+- * 8324c574e - 2019-02-23: Added new release mapping %SY to allow appending the show year to episodes. Added new show option to append show year to show folder if needed. Added check for existing show year in show name, if found, do not append show year. 
+- * c3441ed15 - 2019-02-23: Release v9.4.68 
+- * 3f6df121d - 2019-02-23: Release v9.4.67 
+- * 83d1b88d6 - 2019-02-23: Moved RSS cache updates to separate background task that executes every 15 minutes. Parsed search results no longer grab their show id&#x27;s from TheTVDB or Trackt since we only care about shows existing in library. Search results returned for shows not existing in library are discarded. 
+- * 9c78d0b1c - 2019-02-23: Release v9.4.66 
+- * 8275fd1eb - 2019-02-23: Release v9.4.65 
+- * 15ffdce80 - 2019-02-23: Release v9.4.64 
+- * 33a4acc8e - 2019-02-23: Release v9.4.63 
+- * e648c9e8b - 2019-02-23: Release v9.4.62 
+- * 04b3d3784 - 2019-02-23: Pre-Release v9.4.62.dev1 
+- * 1e6bcf974 - 2019-02-23: Release v9.4.62 
+- * e39f7d88e - 2019-02-23: Moved RSS cache updates to separate background task that executes every 15 minutes. Parsed search results no longer grab their show id&#x27;s from TheTVDB or Trackt since we only care about shows existing in library. Search results returned for shows not existing in library are discarded. 
+- * 724fc6ba7 - 2019-02-20: Release v9.4.61 
+- * 9467ad108 - 2019-02-20: Release v9.4.60 
+- * e9b99d5b0 - 2019-02-20: Only shows in library are cached. Calls to the API for caching provider results are now done in the background. Fixed cross-link device issues for version updater. 
+- * 13659fef5 - 2019-02-17: Release v9.4.59 
+- * 993ca3451 - 2019-02-17: Fixed &quot;unable to verify the download url&quot; for Torrent9 provider 
+- * 01ad8b664 - 2019-02-15: Pre-Release v9.4.59.dev3 
+- * 3af8cda0f - 2019-02-15: Removed redundant automatic show refreshes as these happen during automatic show updates 
+- * 0a29873ba - 2019-02-15: Pre-Release v9.4.59.dev1 
+- * 141d1ce7a - 2019-02-15: Only update indexer details for shows when performing show updates on shows marked as updated on indexer, full updates performed every 7 days. 
+- * d41e5256e - 2019-02-11: Fixed issue with &quot;unable to verify the download url&quot; 
+- * 9a1046230 - 2019-01-22: Release v9.4.58 
+- * 92b54236a - 2019-01-22: Dockerfile default TZ set to Canada/Pacific 
+- * c128f166e - 2019-01-22: Pre-Release v9.4.58.dev1 
+- * 89131788d - 2019-01-21: Release v9.4.57 
+- * f065a3e32 - 2019-01-21: Updated Dockerfile. 
+- * ae5c47884 - 2019-01-21: Fixed auth issue causing redirect to home page every 5 minutes. 
+- * b2b9f0d37 - 2019-01-20: Release v9.4.56 
+- * a2596ce07 - 2019-01-20: Fixed typo in show schedule page, double web roots. 
+- * 468c19ec1 - 2019-01-19: Decreased sleep timer from 5s to 2s for RARBG. Updated keycloak client requirement version. 
+- * 25bcd7fb8 - 2019-01-12: Pre-Release v9.4.56.dev5 
+- * c94aafea8 - 2019-01-12: Added static app_id to RARBG torrent provider 
+- * 14f8938b1 - 2019-01-12: Pre-Release v9.4.56.dev4 
+- * c0aa31a7c - 2019-01-12: Added branch version checking for source installs 
+- * 79db85e8a - 2019-01-12: Pre-Release v9.4.56.dev3 
+- * a26f1df52 - 2019-01-12: Building of DEV docker images now implemented 
+- * baf04a18b - 2019-01-12: Fixed issue with connecting to RARBG torrent provider 
+- * 831f077c8 - 2019-01-13: Update .gitlab-ci.yml 
+- * 7c6290cb5 - 2019-01-13: Update .gitlab-ci.yml 
+- * bf51f728f - 2019-01-13: Update .gitlab-ci.yml 
+- * 560357a4d - 2019-01-12: Update .gitlab-ci.yml 
+- * 2543e7ce2 - 2019-01-12: Update .gitlab-ci.yml 
+- * 6e96928bf - 2019-01-12: Refactored processed marker code 
+- * 60c219a51 - 2019-01-12: Update Dockerfile 
+- * 74f25ebf0 - 2019-01-12: Update Dockerfile 
+- * 5fcae915c - 2019-01-12: Update Dockerfile 
+- * c27cdf73c - 2019-01-12: Update Dockerfile 
+- * 68a917696 - 2019-01-12: Update .gitlab-ci.yml 
+- * 3f765548a - 2019-01-12: Update .gitlab-ci.yml 
+- * d326930d1 - 2019-01-12: Update .gitlab-ci.yml 
 
 

@@ -260,7 +260,7 @@ module.exports = function (grunt) {
         const tasks = [
             'changelog',
             'webpack:dev',
-            'sync_trans', // sync translations with crowdin
+            //'sync_trans',
             'exec:git_commit:Pre-Release v' + newVersion,
             'exec:git_last_tag', 'exec:git_list_changes', 'exec:git_tag',
             'exec:git_push:origin:develop:tags',
@@ -299,7 +299,7 @@ module.exports = function (grunt) {
         const tasks = [
             'changelog',
             'webpack:prod',
-            'sync_trans', // sync translations with crowdin
+            //'sync_trans',
             'exec:git_commit:Release v' + newVersion,
             'exec:git_flow_release_start:' + newVersion,
             'exec:git_flow_release_finish:' + newVersion + ':Release v' + newVersion,
