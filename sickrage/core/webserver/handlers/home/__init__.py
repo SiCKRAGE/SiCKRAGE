@@ -1471,12 +1471,11 @@ class SetStatusHandler(BaseHandler, ABC):
             else:
                 return self._genericMessage(_("Error"), err_msg)
 
-        segments = {}
+        wanted = []
         trakt_data = []
 
         if eps:
             for curEp in eps.split('|'):
-
                 if not curEp:
                     sickrage.app.log.debug("curEp was empty when trying to setStatus")
 
@@ -1485,82 +1484,65 @@ class SetStatusHandler(BaseHandler, ABC):
                 ep_info = curEp.split('x')
 
                 if not all(ep_info):
-                    sickrage.app.log.debug(
-                        "Something went wrong when trying to setStatus, epInfo[0]: %s, epInfo[1]: %s" % (
-                            ep_info[0], ep_info[1]))
+                    sickrage.app.log.debug("Something went wrong when trying to setStatus, epInfo[0]: %s, epInfo[1]: %s" % (ep_info[0], ep_info[1]))
                     continue
 
                 try:
-                    ep_obj = show_obj.get_episode(int(ep_info[0]), int(ep_info[1]))
+                    episode_object = show_obj.get_episode(int(ep_info[0]), int(ep_info[1]))
                 except EpisodeNotFoundException as e:
                     return self._genericMessage(_("Error"), _("Episode couldn't be retrieved"))
 
                 if int(status) in [WANTED, FAILED]:
                     # figure out what episodes are wanted so we can backlog them
-                    if ep_obj.season in segments:
-                        segments[ep_obj.season].append(ep_obj.indexer_id)
-                    else:
-                        segments[ep_obj.season] = [ep_obj.indexer_id]
+                    wanted += [(episode_object.season, episode_object.episode)]
 
                 # don't let them mess up UNAIRED episodes
-                if ep_obj.status == UNAIRED:
-                    sickrage.app.log.warning(
-                        "Refusing to change status of " + curEp + " because it is UNAIRED")
+                if episode_object.status == UNAIRED:
+                    sickrage.app.log.warning("Refusing to change status of " + curEp + " because it is UNAIRED")
                     continue
 
-                if int(status) in Quality.DOWNLOADED and ep_obj.status not in Quality.SNATCHED + \
-                        Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.DOWNLOADED + [
-                    IGNORED] and not os.path.isfile(ep_obj.location):
-                    sickrage.app.log.warning(
-                        "Refusing to change status of " + curEp + " to DOWNLOADED because it's not SNATCHED/DOWNLOADED")
+                if int(status) in Quality.DOWNLOADED and episode_object.status not in Quality.SNATCHED + \
+                        Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.DOWNLOADED + [IGNORED] and not os.path.isfile(episode_object.location):
+                    sickrage.app.log.warning("Refusing to change status of " + curEp + " to DOWNLOADED because it's not SNATCHED/DOWNLOADED")
                     continue
 
-                if int(status) == FAILED and ep_obj.status not in Quality.SNATCHED + Quality.SNATCHED_PROPER + \
+                if int(status) == FAILED and episode_object.status not in Quality.SNATCHED + Quality.SNATCHED_PROPER + \
                         Quality.SNATCHED_BEST + Quality.DOWNLOADED + Quality.ARCHIVED:
-                    sickrage.app.log.warning(
-                        "Refusing to change status of " + curEp + " to FAILED because it's not SNATCHED/DOWNLOADED")
+                    sickrage.app.log.warning("Refusing to change status of " + curEp + " to FAILED because it's not SNATCHED/DOWNLOADED")
                     continue
 
-                if ep_obj.status in Quality.DOWNLOADED + Quality.ARCHIVED and int(status) == WANTED:
+                if episode_object.status in Quality.DOWNLOADED + Quality.ARCHIVED and int(status) == WANTED:
                     sickrage.app.log.info("Removing release_name for episode as you want to set a downloaded "
                                           "episode back to wanted, so obviously you want it replaced")
-                    ep_obj.release_name = ""
+                    episode_object.release_name = ""
 
-                ep_obj.status = int(status)
+                episode_object.status = int(status)
 
-                trakt_data.append((ep_obj.season, ep_obj.episode))
+                trakt_data += [(episode_object.season, episode_object.episode)]
 
             data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate(trakt_data)
             if data and sickrage.app.config.use_trakt and sickrage.app.config.trakt_sync_watchlist:
                 if int(status) in [WANTED, FAILED]:
                     sickrage.app.log.debug(
-                        "Add episodes, showid: indexer_id " + str(show_obj.indexer_id) + ", Title " + str(
-                            show_obj.name) + " to Watchlist")
-                    sickrage.app.notifier_providers['trakt'].update_watchlist(show_obj.indexer_id, data_episode=data,
-                                                                              update="add")
+                        "Add episodes, showid: indexer_id " + str(show_obj.indexer_id) + ", Title " + str(show_obj.name) + " to Watchlist")
+                    sickrage.app.notifier_providers['trakt'].update_watchlist(show_obj.indexer_id, data_episode=data, update="add")
                 elif int(status) in [IGNORED, SKIPPED] + Quality.DOWNLOADED + Quality.ARCHIVED:
                     sickrage.app.log.debug(
-                        "Remove episodes, showid: indexer_id " + str(show_obj.indexer_id) + ", Title " + str(
-                            show_obj.name) + " from Watchlist")
-                    sickrage.app.notifier_providers['trakt'].update_watchlist(show_obj.indexer_id, data_episode=data,
-                                                                              update="remove")
+                        "Remove episodes, showid: indexer_id " + str(show_obj.indexer_id) + ", Title " + str(show_obj.name) + " from Watchlist")
+                    sickrage.app.notifier_providers['trakt'].update_watchlist(show_obj.indexer_id, data_episode=data, update="remove")
 
         if int(status) == WANTED and not show_obj.paused:
-            msg = _(
-                "Backlog was automatically started for the following seasons of ") + "<b>" + show_obj.name + "</b>:<br>"
+            msg = _("Backlog was automatically started for the following seasons of ") + "<b>" + show_obj.name + "</b>:<br>"
             msg += '<ul>'
 
-            for season, segment in segments.items():
-                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put,
-                                                  BacklogQueueItem(show_obj.indexer_id, segment))
-
+            for season, episode in wanted:
+                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(show_obj.indexer_id, season, episode))
                 msg += "<li>" + _("Season ") + str(season) + "</li>"
-                sickrage.app.log.info("Sending backlog for " + show_obj.name + " season " + str(
-                    season) + " because some eps were set to wanted")
+                sickrage.app.log.info("Sending backlog for " + show_obj.name + " season " + str(season) + " because some eps were set to wanted")
 
             msg += "</ul>"
 
-            if segments:
+            if wanted:
                 sickrage.app.alerts.message(_("Backlog started"), msg)
         elif int(status) == WANTED and show_obj.paused:
             sickrage.app.log.info("Some episodes were set to wanted, but {} is paused. Not adding to Backlog until "
@@ -1571,18 +1553,15 @@ class SetStatusHandler(BaseHandler, ABC):
                 "Retrying Search was automatically started for the following season of ") + "<b>" + show_obj.name + "</b>:<br>"
             msg += '<ul>'
 
-            for season, segment in segments.items():
-                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put,
-                                                  FailedQueueItem(show_obj.indexer_id, segment[0]))
+            for season, episode in wanted:
+                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, FailedQueueItem(show_obj.indexer_id, season, episode))
 
                 msg += "<li>" + _("Season ") + str(season) + "</li>"
-                sickrage.app.log.info(
-                    "Retrying Search for {} season {} because some eps were set to failed".format(show_obj.name,
-                                                                                                  season))
+                sickrage.app.log.info("Retrying Search for {} season {} because some eps were set to failed".format(show_obj.name, season))
 
             msg += "</ul>"
 
-            if segments:
+            if wanted:
                 sickrage.app.alerts.message(_("Retry Search started"), msg)
 
         if direct:

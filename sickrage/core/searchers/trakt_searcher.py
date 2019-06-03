@@ -48,11 +48,9 @@ def set_episode_to_wanted(show, s, e):
 
         epObj.status = WANTED
 
-        sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put,
-                                          BacklogQueueItem(show.indexer_id, [epObj.indexer_id]))
+        sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(show.indexer_id, epObj.season, epObj.episode))
 
-        sickrage.app.log.info(
-            "Starting backlog search for %s S%02dE%02d because some episodes were set to wanted" % (show.name, s, e))
+        sickrage.app.log.info("Starting backlog search for %s S%02dE%02d because some episodes were set to wanted" % (show.name, s, e))
     except EpisodeNotFoundException as e:
         pass
 

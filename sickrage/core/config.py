@@ -953,7 +953,7 @@ class Config(object):
         if lang:
             # Selected language
             gt = gettext.translation('messages', sickrage.LOCALE_DIR, languages=[lang], codeset='UTF-8')
-            gt.install(unicode=True, names=["ngettext"])
+            gt.install(names=["ngettext"])
         else:
             # System default language
             gettext.install('messages', sickrage.LOCALE_DIR, codeset='UTF-8', names=["ngettext"])

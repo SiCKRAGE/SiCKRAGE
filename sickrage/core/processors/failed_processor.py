@@ -85,8 +85,7 @@ class FailedProcessor(object):
             if cur_status not in {SNATCHED, SNATCHED_BEST, SNATCHED_PROPER}:
                 continue
 
-            sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put,
-                                              FailedQueueItem(parsed.show, episode_obj.indexer_id))
+            sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, FailedQueueItem(parsed.show, episode_obj.season, episode_obj.episode))
 
         return True
 

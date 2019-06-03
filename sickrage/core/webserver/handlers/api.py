@@ -766,7 +766,7 @@ class CMD_Episode(ApiCall):
     @MainDB.with_session
     async def run(self, session=None):
         """ Get detailed information about an episode """
-        show_obj = find_show(int(self.indexer_id))
+        show_obj = find_show(int(self.indexer_id), session=session)
         if not show_obj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -824,9 +824,10 @@ class CMD_EpisodeSearch(ApiCall):
         self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
         self.e, args = self.check_params("episode", None, True, "int", [], *args, **kwargs)
 
-    async def run(self):
+    @MainDB.with_session
+    async def run(self, session=None):
         """ Search for an episode """
-        showObj = find_show(int(self.indexer_id))
+        showObj = find_show(int(self.indexer_id), session=session)
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -837,7 +838,7 @@ class CMD_EpisodeSearch(ApiCall):
             return _responds(RESULT_FAILURE, msg="Episode not found")
 
         # make a queue item for it and put it on the queue
-        ep_queue_item = ManualSearchQueueItem(showObj, epObj)
+        ep_queue_item = ManualSearchQueueItem(showObj, epObj.season, epObj.episode)
         sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, ep_queue_item)
 
         # wait until the queue item tells us whether it worked or not
@@ -879,9 +880,10 @@ class CMD_EpisodeSetStatus(ApiCall):
         self.e, args = self.check_params("episode", None, False, "int", [], *args, **kwargs)
         self.force, args = self.check_params("force", False, False, "bool", [], *args, **kwargs)
 
-    async def run(self):
+    @MainDB.with_session
+    async def run(self, session=None):
         """ Set the status of an episode or a season (when no episode is provided) """
-        show_obj = find_show(int(self.indexer_id))
+        show_obj = find_show(int(self.indexer_id), session=session)
         if not show_obj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -910,28 +912,23 @@ class CMD_EpisodeSetStatus(ApiCall):
         ep_results = []
         failure = False
         start_backlog = False
-        segments = {}
+        wanted = {}
 
         for epObj in ep_list:
             if self.status == WANTED:
                 # figure out what episodes are wanted so we can backlog them
-                if epObj.season in segments:
-                    segments[epObj.season].append(epObj)
-                else:
-                    segments[epObj.season] = [epObj]
+                wanted += [(epObj.season, epObj.episode)]
 
             # don't let them mess up UNAIRED episodes
             if epObj.status == UNAIRED:
-                if self.e is not None:  # setting the status of a unaired is only considert a failure if we directly wanted this episode, but is ignored on a season request
-                    ep_results.append(
-                        _epResult(RESULT_FAILURE, epObj, "Refusing to change status because it is UNAIRED"))
+                if self.e is not None:
+                    ep_results.append(_epResult(RESULT_FAILURE, epObj, "Refusing to change status because it is UNAIRED"))
                     failure = True
                 continue
 
             # allow the user to force setting the status for an already downloaded episode
             if epObj.status in Quality.DOWNLOADED + Quality.ARCHIVED and not self.force:
-                ep_results.append(_epResult(RESULT_FAILURE, epObj,
-                                            "Refusing to change status because it is already marked as DOWNLOADED"))
+                ep_results.append(_epResult(RESULT_FAILURE, epObj, "Refusing to change status because it is already marked as DOWNLOADED"))
                 failure = True
                 continue
 
@@ -944,10 +941,9 @@ class CMD_EpisodeSetStatus(ApiCall):
 
         extra_msg = ""
         if start_backlog:
-            for season, segment in segments.items():
-                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(show_obj, segment))
-                sickrage.app.log.info("Starting backlog for " + show_obj.name + " season " + str(
-                    season) + " because some episodes were set to WANTED")
+            for season, episode in wanted:
+                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(show_obj, season, episode))
+                sickrage.app.log.info("Starting backlog for " + show_obj.name + " season " + str(season) + " because some episodes were set to WANTED")
 
             extra_msg = " Backlog started"
 
@@ -977,9 +973,10 @@ class CMD_SubtitleSearch(ApiCall):
         self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
         self.e, args = self.check_params("episode", None, True, "int", [], *args, **kwargs)
 
-    async def run(self):
+    @MainDB.with_session
+    async def run(self, session=None):
         """ Search for an episode subtitles """
-        showObj = find_show(int(self.indexer_id))
+        showObj = find_show(int(self.indexer_id), session=session)
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -1026,7 +1023,8 @@ class CMD_Exceptions(ApiCall):
         super(CMD_Exceptions, self).__init__(application, request, *args, **kwargs)
         self.indexer_id, args = self.check_params("indexer_id", None, False, "int", [], *args, **kwargs)
 
-    async def run(self):
+    @MainDB.with_session
+    async def run(self, session=None):
         """ Get the scene exceptions for all or a given show """
 
         if self.indexer_id is None:
@@ -1037,7 +1035,7 @@ class CMD_Exceptions(ApiCall):
                     scene_exceptions[indexer_id] = []
                 scene_exceptions[indexer_id].append(dbData.show_name)
         else:
-            showObj = find_show(int(self.indexer_id))
+            showObj = find_show(int(self.indexer_id), session=session)
             if not showObj:
                 return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -1784,9 +1782,10 @@ class CMD_Show(ApiCall):
         super(CMD_Show, self).__init__(application, request, *args, **kwargs)
         self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
 
-    async def run(self):
+    @MainDB.with_session
+    async def run(self, session=None):
         """ Get detailed information about a show """
-        showObj = find_show(int(self.indexer_id))
+        showObj = find_show(int(self.indexer_id), session=session)
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -1889,9 +1888,10 @@ class CMD_ShowAddExisting(ApiCall):
         self.subtitles, args = self.check_params("subtitles", int(sickrage.app.config.use_subtitles), False, "int",
                                                  [], *args, **kwargs)
 
-    async def run(self):
+    @MainDB.with_session
+    async def run(self, session=None):
         """ Add an existing show in SiCKRAGE """
-        showObj = find_show(int(self.indexer_id))
+        showObj = find_show(int(self.indexer_id), session=session)
         if showObj:
             return _responds(RESULT_FAILURE, msg="An existing indexer_id already exists in the database")
 
@@ -1994,9 +1994,10 @@ class CMD_ShowAddNew(ApiCall):
         self.add_show_year, args = self.check_params("add_show_year", bool(sickrage.app.config.add_show_year_default),
                                                      False, "bool", [], *args, **kwargs)
 
-    async def run(self):
+    @MainDB.with_session
+    async def run(self, session=None):
         """ Add a new show to SiCKRAGE """
-        show_obj = find_show(int(self.indexer_id))
+        show_obj = find_show(int(self.indexer_id), session=session)
         if show_obj:
             return _responds(RESULT_FAILURE, msg="An existing indexer_id already exists in database")
 
@@ -2121,9 +2122,10 @@ class CMD_ShowCache(ApiCall):
         super(CMD_ShowCache, self).__init__(application, request, *args, **kwargs)
         self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
 
-    async def run(self):
+    @MainDB.with_session
+    async def run(self, session=None):
         """ Check SiCKRAGE's cache to see if the images (poster, banner, fanart) for a show are valid """
-        showObj = find_show(int(self.indexer_id))
+        showObj = find_show(int(self.indexer_id), session=session)
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2163,9 +2165,10 @@ class CMD_ShowDelete(ApiCall):
         self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
         self.removefiles, args = self.check_params("removefiles", False, False, "bool", [], *args, **kwargs)
 
-    async def run(self):
+    @MainDB.with_session
+    async def run(self, session=None):
         """ Delete a show in SiCKRAGE """
-        showObj = find_show(int(self.indexer_id))
+        showObj = find_show(int(self.indexer_id), session=session)
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2193,9 +2196,10 @@ class CMD_ShowGetQuality(ApiCall):
         super(CMD_ShowGetQuality, self).__init__(application, request, *args, **kwargs)
         self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
 
-    async def run(self):
+    @MainDB.with_session
+    async def run(self, session=None):
         """ Get the quality setting of a show """
-        showObj = find_show(int(self.indexer_id))
+        showObj = find_show(int(self.indexer_id), session=session)
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2320,9 +2324,10 @@ class CMD_ShowPause(ApiCall):
         self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
         self.pause, args = self.check_params("pause", False, False, "bool", [], *args, **kwargs)
 
-    async def run(self):
+    @MainDB.with_session
+    async def run(self, session=None):
         """ Pause or unpause a show """
-        showObj = find_show(int(self.indexer_id))
+        showObj = find_show(int(self.indexer_id), session=session)
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2350,9 +2355,10 @@ class CMD_ShowRefresh(ApiCall):
         super(CMD_ShowRefresh, self).__init__(application, request, *args, **kwargs)
         self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
 
-    async def run(self):
+    @MainDB.with_session
+    async def run(self, session=None):
         """ Refresh a show in SiCKRAGE """
-        showObj = find_show(int(self.indexer_id))
+        showObj = find_show(int(self.indexer_id), session=session)
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2385,7 +2391,7 @@ class CMD_ShowSeasonList(ApiCall):
     @MainDB.with_session
     async def run(self, session=None):
         """ Get the list of seasons of a show """
-        show_obj = find_show(int(self.indexer_id))
+        show_obj = find_show(int(self.indexer_id), session=session)
         if not show_obj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2416,7 +2422,7 @@ class CMD_ShowSeasons(ApiCall):
     @MainDB.with_session
     async def run(self, session=None):
         """ Get the list of episodes for one or all seasons of a show """
-        show_obj = find_show(int(self.indexer_id))
+        show_obj = find_show(int(self.indexer_id), session=session)
         if not show_obj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2488,9 +2494,10 @@ class CMD_ShowSetQuality(ApiCall):
         self.initial, args = self.check_params("initial", None, False, "list", any_quality_list, *args, **kwargs)
         self.archive, args = self.check_params("archive", None, False, "list", best_quality_list, *args, **kwargs)
 
-    async def run(self):
+    @MainDB.with_session
+    async def run(self, session=None):
         """ Set the quality setting of a show. If no quality is provided, the default user setting is used. """
-        showObj = find_show(int(self.indexer_id))
+        showObj = find_show(int(self.indexer_id), session=session)
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2533,7 +2540,7 @@ class CMD_ShowStats(ApiCall):
     @MainDB.with_session
     async def run(self, session=None):
         """ Get episode statistics for a given show """
-        showObj = find_show(int(self.indexer_id))
+        showObj = find_show(int(self.indexer_id), session=session)
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2631,9 +2638,10 @@ class CMD_ShowUpdate(ApiCall):
         super(CMD_ShowUpdate, self).__init__(application, request, *args, **kwargs)
         self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
 
-    async def run(self):
+    @MainDB.with_session
+    async def run(self, session=None):
         """ Update a show in SiCKRAGE """
-        showObj = find_show(int(self.indexer_id))
+        showObj = find_show(int(self.indexer_id), session=session)
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 

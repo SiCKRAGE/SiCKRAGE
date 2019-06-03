@@ -927,7 +927,7 @@ class PostProcessor(object):
         # try to find the file info
         show_id, season, episodes, quality, version, release_group = self._find_info()
 
-        show_object = find_show(show_id)
+        show_object = find_show(show_id, session=session)
         if not show_object:
             self._log("This show isn't in your list, you need to add it to SiCKRAGE before post-processing an episode")
             raise EpisodePostProcessingFailedException()

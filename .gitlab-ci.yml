@@ -10,8 +10,7 @@ variables:
 services:
   - docker:dind
 
-build:
-  stage: build
+build_master:
   image: docker:latest
   script:
     - echo $CONTAINER_IMAGE
@@ -22,5 +21,19 @@ build:
     - docker push $CONTAINER_IMAGE:latest
   only:
     - master
+  except:
+    - tags
+
+build_develop:
+  image: docker:latest
+  script:
+    - echo $CONTAINER_IMAGE
+    - echo -n $CI_REGISTRY_PASSWORD | docker login -u "$CI_REGISTRY_USER" --password-stdin
+    - docker build --network host --build-arg SOURCE_COMMIT=$CI_COMMIT_REF -t $CONTAINER_IMAGE:$(cat sickrage/version.txt) .
+    - docker tag $CONTAINER_IMAGE:$(cat sickrage/version.txt) $CONTAINER_IMAGE:latest
+    - docker push $CONTAINER_IMAGE:$(cat sickrage/version.txt)
+    - docker push $CONTAINER_IMAGE:dev
+  only:
+    - develop
   except:
     - tags

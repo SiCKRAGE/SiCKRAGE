@@ -54,7 +54,7 @@ class HDBitsProvider(TorrentProvider):
 
         return True
 
-    def _get_season_search_strings(self, show_id, season, episode):
+    def _get_season_search_strings(self, show_id, season, episode, session=None):
         post_data = {
             'username': self.username,
             'passkey': self.passkey,
@@ -62,7 +62,7 @@ class HDBitsProvider(TorrentProvider):
             # TV Category
         }
 
-        show_object = find_show(show_id)
+        show_object = find_show(show_id, session=session)
         episode_object = show_object.get_episode(season, episode)
 
         if show_object.air_by_date or show_object.sports:
@@ -83,7 +83,7 @@ class HDBitsProvider(TorrentProvider):
 
         return [json.dumps(post_data)]
 
-    def _get_episode_search_strings(self, show_id, season, episode, add_string=''):
+    def _get_episode_search_strings(self, show_id, season, episode, add_string='', session=None):
         post_data = {
             'username': self.username,
             'passkey': self.passkey,
@@ -91,7 +91,7 @@ class HDBitsProvider(TorrentProvider):
             # TV Category
         }
 
-        show_object = find_show(show_id)
+        show_object = find_show(show_id, session=session)
         episode_object = show_object.get_episode(season, episode)
 
         if show_object.air_by_date:
