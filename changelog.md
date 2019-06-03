@@ -1,5 +1,6 @@
 # Changelog
 
+- * 45c6de2a2 - 2019-06-02: Pre-Release v9.4.85.dev1 
 - * 8baf52440 - 2019-06-02: Fixed issue &#x60;install() got an unexpected keyword argument &#x27;unicode&#x27;&#x60; Refactored gitlab ci/cd script to build docker images for dev branch. Added missing session to find_show in API calls. 
 - * 81d9d7ce1 - 2019-05-28: Refactoring provider searches to search for one season/episode at a time, this will allow for better multi-thread handling of search queue items. 
 - * 3d8c87768 - 2019-05-27: Fixed issue &#x60;name &#x27;table&#x27; is not defined&#x60; 

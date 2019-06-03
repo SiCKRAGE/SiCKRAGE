@@ -262,7 +262,7 @@ module.exports = function (grunt) {
             'webpack:dev',
             //'sync_trans',
             'exec:git_commit:Pre-Release v' + newVersion,
-            'exec:git_last_tag', 'exec:git_list_changes', 'exec:git_tag',
+            //'exec:git_last_tag', 'exec:git_list_changes', 'exec:git_tag',
             'exec:git_push:origin:develop:tags',
             'exec:pypi_create',
             'exec:pypi_upload',
