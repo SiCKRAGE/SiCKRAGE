@@ -375,6 +375,9 @@ class QueueItemAdd(ShowQueueItem):
             sickrage.app.log.debug(traceback.format_exc())
             raise self._finish_early()
 
+        # add show to name cache
+        sickrage.app.name_cache.build(show_obj)
+
         try:
             sickrage.app.log.debug(_("Attempting to retrieve show info from IMDb"))
             show_obj.load_imdb_info()
@@ -416,21 +419,16 @@ class QueueItemAdd(ShowQueueItem):
         # Load XEM data to DB for show
         xem_refresh(show_obj.indexer_id, show_obj.indexer, force=True, session=session)
 
-        # check if show has XEM mapping so we can determin if searches should go by scene numbering or indexer
+        # check if show has XEM mapping so we can determine if searches should go by scene numbering or indexer
         # numbering.
         if not self.scene and get_xem_numbering_for_show(show_obj.indexer_id, show_obj.indexer):
             show_obj.scene = 1
 
         show_obj.default_ep_status = self.default_status_after
 
-        sickrage.app.name_cache.build(show_obj)
-
         sickrage.app.quicksearch_cache.add_show(show_obj.indexer_id)
 
-        sickrage.app.log.info(
-            "Finished adding show {} in {}s from show dir: {}".format(self.show_name,
-                                                                      round(time.time() - start_time, 2),
-                                                                      self.showDir))
+        sickrage.app.log.info("Finished adding show {} in {}s from show dir: {}".format(self.show_name, round(time.time() - start_time, 2), self.showDir))
 
     def _finish_early(self):
         try:
