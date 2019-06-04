@@ -39,13 +39,14 @@ class ConfigAnimeHandler(BaseHandler, ABC):
             action='anime'
         )
 
+class ConfigSaveAnimeHandler(BaseHandler, ABC):
     @authenticated
     def post(self, *args, **kwargs):
-        use_anidb = self.get_body_argument('use_anidb')
-        anidb_username = self.get_body_argument('anidb_username')
-        anidb_password = self.get_body_argument('anidb_password')
-        anidb_use_mylist = self.get_body_argument('anidb_use_mylist')
-        split_home = self.get_body_argument('split_home')
+        use_anidb = self.get_body_argument('use_anidb', '')
+        anidb_username = self.get_body_argument('anidb_username', '')
+        anidb_password = self.get_body_argument('anidb_password', '')
+        anidb_use_mylist = self.get_body_argument('anidb_use_mylist', '')
+        split_home = self.get_body_argument('split_home', '')
         
         results = []
 

@@ -32,7 +32,7 @@ from sickrage.core.webserver.handlers.api import ApiHandler
 from sickrage.core.webserver.handlers.calendar import CalendarHandler
 from sickrage.core.webserver.handlers.changelog import ChangelogHandler
 from sickrage.core.webserver.handlers.config import ConfigHandler, ConfigResetHandler
-from sickrage.core.webserver.handlers.config.anime import ConfigAnimeHandler
+from sickrage.core.webserver.handlers.config.anime import ConfigAnimeHandler, ConfigSaveAnimeHandler
 from sickrage.core.webserver.handlers.config.backup_restore import ConfigBackupRestoreHandler, ConfigBackupHandler, \
     ConfigRestoreHandler, SaveBackupRestoreHandler
 from sickrage.core.webserver.handlers.config.general import GenerateApiKeyHandler, SaveRootDirsHandler, \
@@ -344,6 +344,7 @@ class WebServer(object):
             (r'%s/config(/?)' % sickrage.app.config.web_root, ConfigHandler),
             (r'%s/config/reset(/?)' % sickrage.app.config.web_root, ConfigResetHandler),
             (r'%s/config/anime(/?)' % sickrage.app.config.web_root, ConfigAnimeHandler),
+            (r'%s/config/anime/saveAnime(/?)' % sickrage.app.config.web_root, ConfigSaveAnimeHandler),
             (r'%s/config/backuprestore(/?)' % sickrage.app.config.web_root, ConfigBackupRestoreHandler),
             (r'%s/config/backuprestore/backup(/?)' % sickrage.app.config.web_root, ConfigBackupHandler),
             (r'%s/config/backuprestore/restore(/?)' % sickrage.app.config.web_root, ConfigRestoreHandler),
