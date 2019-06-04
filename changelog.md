@@ -1,5 +1,8 @@
 # Changelog
 
+- * 16d0db46e - 2019-06-04: Fixed issue with adding existing shows and being unable to parse a filename into a show object. 
+- * 68564d4d0 - 2019-06-04: Fixed issues with saving Anime settings. 
+- * 9e932820f - 2019-06-02: Pre-Release v9.4.85.dev3 
 - * 64fff8078 - 2019-06-02: Set CI/CD stage to build. Set PIP python requirement to v3+ 
 - * d9cccea9b - 2019-06-02: Pre-Release v9.4.85.dev2 
 - * 45c6de2a2 - 2019-06-02: Pre-Release v9.4.85.dev1 
