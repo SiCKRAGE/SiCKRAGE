@@ -1,5 +1,7 @@
 # Changelog
 
+- * c3f602432 - 2019-06-04: Fixed typo in CI/CD script. 
+- * acb838359 - 2019-06-04: Pre-Release v9.4.85.dev4 
 - * 16d0db46e - 2019-06-04: Fixed issue with adding existing shows and being unable to parse a filename into a show object. 
 - * 68564d4d0 - 2019-06-04: Fixed issues with saving Anime settings. 
 - * 9e932820f - 2019-06-02: Pre-Release v9.4.85.dev3 
