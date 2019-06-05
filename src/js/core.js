@@ -1936,12 +1936,12 @@ $(document).ready(function ($) {
                     });
 
                     $("#prevShow").on('click', function () {
-                        $('#pickShow option:selected').prev('option').prop('selected', 'selected');
+                        $('#pickShow option:selected').prev().prop('selected', 'selected');
                         $("#pickShow").change();
                     });
 
                     $("#nextShow").on('click', function () {
-                        $('#pickShow option:selected').next('option').prop('selected', 'selected');
+                        $('#pickShow option:selected').next().prop('selected', 'selected');
                         $("#pickShow").change();
                     });
 

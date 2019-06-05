@@ -45,7 +45,7 @@
                                     <optgroup label="${show_list_name}">
                                 % endif
                                 % for cur_show in show_list:
-                                    <option value="${cur_show.indexer_id}" ${('', 'selected')[cur_show == show]}>${cur_show.name}</option>
+                                    <option value="${cur_show.indexer_id}" ${('', 'selected')[cur_show.indexer_id == show.indexer_id]}>${cur_show.name}</option>
                                 % endfor
                                 % if len(sortedShowLists) > 1:
                                     </optgroup>

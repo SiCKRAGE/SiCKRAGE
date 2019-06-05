@@ -16,7 +16,7 @@ build_master:
   script:
     - echo $CONTAINER_IMAGE
     - echo -n $CI_REGISTRY_PASSWORD | docker login -u "$CI_REGISTRY_USER" --password-stdin
-    - docker build --network host --build-arg SOURCE_COMMIT=$CI_COMMIT_REF -t $CONTAINER_IMAGE:$(cat sickrage/version.txt) .
+    - docker build --network host --build-arg="SOURCE_COMMIT=$CI_COMMIT_REF" -t $CONTAINER_IMAGE:$(cat sickrage/version.txt) .
     - docker tag $CONTAINER_IMAGE:$(cat sickrage/version.txt) $CONTAINER_IMAGE:latest
     - docker push $CONTAINER_IMAGE:$(cat sickrage/version.txt)
     - docker push $CONTAINER_IMAGE:latest
@@ -31,7 +31,7 @@ build_develop:
   script:
     - echo $CONTAINER_IMAGE
     - echo -n $CI_REGISTRY_PASSWORD | docker login -u "$CI_REGISTRY_USER" --password-stdin
-    - docker build --network host --build-arg SOURCE_COMMIT=$CI_COMMIT_REF -t $CONTAINER_IMAGE:$(cat sickrage/version.txt) .
+    - docker build --network host --build-arg="SOURCE_COMMIT=$CI_COMMIT_REF" -t $CONTAINER_IMAGE:$(cat sickrage/version.txt) .
     - docker tag $CONTAINER_IMAGE:$(cat sickrage/version.txt) $CONTAINER_IMAGE:develop
     - docker push $CONTAINER_IMAGE:$(cat sickrage/version.txt)
     - docker push $CONTAINER_IMAGE:develop
