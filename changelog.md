@@ -1,5 +1,7 @@
 # Changelog
 
+- * 42607c3b1 - 2019-06-04: Fixed select issue for display show drop down. Fixed issue for source commit value on docker builds. 
+- * 9c4bfe19b - 2019-06-04: Pre-Release v9.4.85.dev5 
 - * c3f602432 - 2019-06-04: Fixed typo in CI/CD script. 
 - * acb838359 - 2019-06-04: Pre-Release v9.4.85.dev4 
 - * 16d0db46e - 2019-06-04: Fixed issue with adding existing shows and being unable to parse a filename into a show object. 
