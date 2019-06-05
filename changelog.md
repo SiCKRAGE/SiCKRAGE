@@ -1,5 +1,7 @@
 # Changelog
 
+- * 0f9059667 - 2019-06-05: Updated YGG torrent provider URL. Updated USENET Crawler URL. 
+- * 20831e8bc - 2019-06-04: Pre-Release v9.4.85.dev7 
 - * 0aae828af - 2019-06-04: Fixed source commit variable to point to correct enviro var. 
 - * 4c7abdcb3 - 2019-06-04: Pre-Release v9.4.85.dev6 
 - * 42607c3b1 - 2019-06-04: Fixed select issue for display show drop down. Fixed issue for source commit value on docker builds. 
