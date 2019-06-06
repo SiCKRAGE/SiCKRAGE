@@ -28,7 +28,8 @@ class ExtraTorrentProvider(TorrentProvider):
         super(ExtraTorrentProvider, self).__init__("ExtraTorrent", 'https://extratorrent.si', False)
 
         self.urls.update({
-            'search': '{base_url}/search/'.format(**self.urls)
+            'search': '{base_url}/search/'.format(**self.urls),
+            'rss': '{base_url}/category/8/TV+Torrents.html'.format(**self.urls)
         })
 
         self.minseed = None
@@ -55,10 +56,13 @@ class ExtraTorrentProvider(TorrentProvider):
                 if mode != 'RSS':
                     sickrage.app.log.debug("Search string: %s " % search_string)
                     search_params['search'] = search_string
+                    search_url = self.urls['search']
+                else:
+                    search_url = self.urls['rss']
 
                 try:
                     while search_params['page'] < 11:
-                        data = self.session.get(self.urls['search'], params=search_params).text
+                        data = self.session.get(search_url, params=search_params).text
                         results += self.parse(data, mode)
                         search_params['page'] += 1
                 except Exception:
