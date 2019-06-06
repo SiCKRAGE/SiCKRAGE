@@ -1,5 +1,7 @@
 # Changelog
 
+- * da84435a4 - 2019-06-06: Improved RSS searches for ExtraTorrent. 
+- * fb2f3b2f8 - 2019-06-06: Pre-Release v9.4.85.dev11 
 - * 37f7632d5 - 2019-06-06: Refactored episode properties to not include specials. 
 - * 4efd8a0b9 - 2019-06-05: Pre-Release v9.4.85.dev10 
 - * 2c370dde3 - 2019-06-05: Pre-Release v9.4.85.dev9 
