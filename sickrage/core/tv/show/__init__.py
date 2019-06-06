@@ -104,6 +104,8 @@ class TVShow(MainDBBase):
     def airs_next(self):
         _airs_next = datetime.date.min
         for episode_object in self.episodes:
+            if episode_object.season == 0:
+                continue
             if episode_object.status in [UNAIRED, WANTED] and episode_object.airdate >= datetime.date.today() and _airs_next == datetime.date.min:
                 _airs_next = episode_object.airdate
         return _airs_next
@@ -112,6 +114,8 @@ class TVShow(MainDBBase):
     def airs_prev(self):
         _airs_prev = datetime.date.min
         for episode_object in self.episodes:
+            if episode_object.season == 0:
+                continue
             if episode_object.status != UNAIRED and episode_object.airdate < datetime.date.today() > _airs_prev:
                 _airs_prev = episode_object.airdate
         return _airs_prev
@@ -120,6 +124,8 @@ class TVShow(MainDBBase):
     def episodes_snatched(self):
         _episodes_snatched = 0
         for episode_object in self.episodes:
+            if episode_object.season == 0:
+                continue
             if episode_object.status in Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER:
                 _episodes_snatched += 1
         return _episodes_snatched
@@ -128,6 +134,8 @@ class TVShow(MainDBBase):
     def episodes_downloaded(self):
         _episodes_downloaded = 0
         for episode_object in self.episodes:
+            if episode_object.season == 0:
+                continue
             if episode_object.status in Quality.DOWNLOADED + Quality.ARCHIVED:
                 _episodes_downloaded += 1
         return _episodes_downloaded
@@ -136,6 +144,8 @@ class TVShow(MainDBBase):
     def total_size(self):
         _total_size = 0
         for episode_object in self.episodes:
+            if episode_object.season == 0:
+                continue
             _total_size += episode_object.file_size
         return _total_size
 
