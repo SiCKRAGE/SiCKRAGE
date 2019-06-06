@@ -1,5 +1,7 @@
 # Changelog
 
+- * 37f7632d5 - 2019-06-06: Refactored episode properties to not include specials. 
+- * 4efd8a0b9 - 2019-06-05: Pre-Release v9.4.85.dev10 
 - * 2c370dde3 - 2019-06-05: Pre-Release v9.4.85.dev9 
 - * 6e274160f - 2019-06-05: Refactored remaining incorrect database calls for CacheDB. 
 - * ed7d5e146 - 2019-06-05: Pre-Release v9.4.85.dev8 
