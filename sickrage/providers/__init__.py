@@ -325,6 +325,9 @@ class GenericProvider(object):
                 continue
 
             provider_result_show_obj = find_show(provider_result.show_id, session=session)
+            if not provider_result_show_obj:
+                continue
+
             if not (provider_result_show_obj.air_by_date or provider_result_show_obj.sports):
                 if search_mode == 'sponly':
                     if len(parse_result.episode_numbers):
