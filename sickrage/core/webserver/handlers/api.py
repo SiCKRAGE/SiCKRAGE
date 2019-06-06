@@ -1029,7 +1029,7 @@ class CMD_Exceptions(ApiCall):
 
         if self.indexer_id is None:
             scene_exceptions = {}
-            for dbData in CacheDB.SceneException.query:
+            for dbData in sickrage.app.cache_db.session.query(CacheDB.SceneException):
                 indexer_id = dbData.indexer_id
                 if indexer_id not in scene_exceptions:
                     scene_exceptions[indexer_id] = []
@@ -1040,7 +1040,7 @@ class CMD_Exceptions(ApiCall):
                 return _responds(RESULT_FAILURE, msg="Show not found")
 
             scene_exceptions = []
-            for dbData in CacheDB.SceneException.query.filter_by(indexer_id=self.indexer_id):
+            for dbData in sickrage.app.cache_db.session.query(CacheDB.SceneException).filter_by(indexer_id=self.indexer_id):
                 scene_exceptions.append(dbData.show_name)
 
         return _responds(RESULT_SUCCESS, scene_exceptions)

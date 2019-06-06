@@ -10,7 +10,7 @@ class RSSCacheUpdater(object):
         self.amActive = False
 
     def run(self, force=False):
-        if self.amActive or (not sickrage.app.config.enable_rss_cache) and not force:
+        if self.amActive or not sickrage.app.config.enable_rss_cache and not force:
             return
 
         self.amActive = True

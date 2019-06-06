@@ -120,9 +120,10 @@ class TVCache(object):
                 "The data returned from the " + self.provider.name + " feed is incomplete, this result is unusable")
 
     @property
-    def last_update(self):
+    @CacheDB.with_session
+    def last_update(self, session=None):
         try:
-            dbData = CacheDB.LastUpdate.query.filter_by(provider=self.providerID).one()
+            dbData = session.query(CacheDB.LastUpdate).filter_by(provider=self.providerID).one()
             lastTime = int(dbData.time)
             if lastTime > int(time.mktime(datetime.datetime.today().timetuple())):
                 lastTime = 0

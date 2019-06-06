@@ -343,11 +343,6 @@ def _xem_exceptions_fetcher():
     return xem_exception_dict
 
 
-def getSceneSeasons(indexer_id):
-    """get a list of season numbers that have scene exceptions"""
-    return (x.season for x in CacheDB.SceneException.query.filter_by(indexer_id=indexer_id))
-
-
 def check_against_names(name_in_question, show, season=-1):
     show_names = []
     if season in [-1, 1]:
