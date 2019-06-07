@@ -1,5 +1,7 @@
 # Changelog
 
+- * 547814611 - 2019-06-06: Fixed episode total to not include specials. 
+- * c8e8d1279 - 2019-06-06: Pre-Release v9.4.85.dev12 
 - * da84435a4 - 2019-06-06: Improved RSS searches for ExtraTorrent. 
 - * fb2f3b2f8 - 2019-06-06: Pre-Release v9.4.85.dev11 
 - * 37f7632d5 - 2019-06-06: Refactored episode properties to not include specials. 
