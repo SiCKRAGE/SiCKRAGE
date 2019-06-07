@@ -150,7 +150,7 @@
                         cur_airs_next = curShow.airs_next
                         cur_snatched = curShow.episodes_snatched
                         cur_downloaded = curShow.episodes_downloaded
-                        cur_total = len(curShow.episodes)
+                        cur_total = len([x for x in curShow.episodes if x.season != 0])
 
                         if cur_total != 0:
                             download_stat = str(cur_downloaded)
@@ -319,7 +319,7 @@
                                         cur_airs_prev = curShow.airs_prev
                                         cur_snatched = curShow.episodes_snatched
                                         cur_downloaded = curShow.episodes_downloaded
-                                        cur_total = len(curShow.episodes)
+                                        cur_total = len([x for x in curShow.episodes if x.season != 0])
                                         show_size = curShow.total_size
 
                                         if cur_total != 0:
