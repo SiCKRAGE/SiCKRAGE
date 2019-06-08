@@ -1,5 +1,7 @@
 # Changelog
 
+- * 30c9bdacf - 2019-06-08: Refactored search code to account for season packs and multi-episode results when determining quality size constraints. 
+- * a22928603 - 2019-06-08: Pre-Release v9.4.85.dev14 
 - * 7f15e4654 - 2019-06-07: Refactored database migration code to handle unique constraint errors. 
 - * d8b37b353 - 2019-06-06: Pre-Release v9.4.85.dev13 
 - * 547814611 - 2019-06-06: Fixed episode total to not include specials. 
