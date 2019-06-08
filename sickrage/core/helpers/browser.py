@@ -102,6 +102,8 @@ def foldersAtPath(path, includeParent=False, includeFiles=False, fileTypes=None)
     :return: list of folders/files
     """
 
+    fileTypes = fileTypes or []
+
     # walk up the tree until we find a valid path
     while path and not os.path.isdir(path):
         if path == os.path.dirname(path):
@@ -128,8 +130,6 @@ def foldersAtPath(path, includeParent=False, includeFiles=False, fileTypes=None)
     # if we're at the root then the next step is the meta-node showing our drive letters
     if path == parent_path and os.name == 'nt':
         parent_path = ''
-
-    fileTypes = fileTypes or []
 
     try:
         file_list = getFileList(path, includeFiles, fileTypes)

@@ -37,8 +37,7 @@ class WebFileBrowserHandler(BaseHandler, ABC):
         include_files = self.get_query_argument('includeFiles', None)
         file_types = self.get_query_argument('fileTypes', '')
 
-        return self.write(json_encode(
-            foldersAtPath(path, True, bool(int(include_files) if include_files else False), file_types.split(','))))
+        return self.write(json_encode(foldersAtPath(path, True, bool(int(include_files) if include_files else False), file_types.split(','))))
 
 
 class WebFileBrowserCompleteHandler(BaseHandler, ABC):

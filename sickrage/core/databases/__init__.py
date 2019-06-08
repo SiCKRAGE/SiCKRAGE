@@ -22,6 +22,7 @@ import pickle
 import shutil
 import sqlite3
 from collections import OrderedDict
+from operator import itemgetter
 from sqlite3 import OperationalError
 from time import sleep
 
@@ -30,6 +31,8 @@ from migrate import DatabaseAlreadyControlledError, DatabaseNotControlledError
 from migrate.versioning import api
 from sqlalchemy import create_engine, event, inspect
 from sqlalchemy.engine import Engine
+from sqlalchemy.engine.reflection import Inspector
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import sessionmaker, mapper
 from sqlalchemy.pool import StaticPool, QueuePool
 
@@ -244,22 +247,28 @@ class SRDatabase(object):
 
                 migrate_tables[table] += [row]
 
-            with self.session() as session:
-                for table, rows in migrate_tables.items():
-                    if not len(rows):
-                        continue
+            for table, rows in migrate_tables.items():
+                if not len(rows):
+                    continue
 
-                    sickrage.app.log.info('Migrating {} database table {}'.format(self.name, table))
+                sickrage.app.log.info('Migrating {} database table {}'.format(self.name, table))
 
-                    try:
+                try:
+                    with self.session() as session:
                         session.query(self.tables[table]).delete()
-                    except Exception:
-                        pass
+                except Exception:
+                    pass
 
-                    try:
+                try:
+                    with self.session() as session:
                         session.bulk_insert_mappings(self.tables[table], rows)
-                    except Exception as e:
-                        pass
+                except Exception:
+                    for row in rows:
+                        try:
+                            with self.session() as session:
+                                session.add(self.tables[table](**row))
+                        except Exception:
+                            continue
 
             shutil.move(migrate_file, backup_file)
 
