@@ -1,5 +1,7 @@
 # Changelog
 
+- * 7f15e4654 - 2019-06-07: Refactored database migration code to handle unique constraint errors. 
+- * d8b37b353 - 2019-06-06: Pre-Release v9.4.85.dev13 
 - * 547814611 - 2019-06-06: Fixed episode total to not include specials. 
 - * c8e8d1279 - 2019-06-06: Pre-Release v9.4.85.dev12 
 - * da84435a4 - 2019-06-06: Improved RSS searches for ExtraTorrent. 
