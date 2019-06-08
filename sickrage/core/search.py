@@ -31,6 +31,7 @@ from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import show_names
 from sickrage.core.nzbSplitter import split_nzb_result
+from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.tv.show.history import FailedHistory, History
 from sickrage.notifiers import Notifiers
@@ -130,7 +131,8 @@ def snatch_episode(result, end_status=SNATCHED, session=None):
     return True
 
 
-def pick_best_result(results):
+@MainDB.with_session
+def pick_best_result(results, season_pack=False, session=None):
     """
     Find the best result out of a list of search results for a show
 
@@ -202,12 +204,15 @@ def pick_best_result(results):
             try:
                 if cur_result.size:
                     quality_size = sickrage.app.config.quality_sizes[cur_result.quality]
-                    file_size = float(cur_result.size / 1000000)
+
+                    if season_pack and not len(cur_result.episodes):
+                        episode_count = session.query(TVEpisode).filter_by(showid=show_obj.indexer_id, season=cur_result.season).count()
+                        file_size = float(cur_result.size / episode_count / 1000000)
+                    else:
+                        file_size = float(cur_result.size / len(cur_result.episodes) / 1000000)
+
                     if file_size > quality_size:
-                        raise Exception(
-                            "Ignoring " + cur_result.name + " with size: {} based on quality size filter: {}".format(
-                                file_size, quality_size)
-                        )
+                        raise Exception("Ignoring " + cur_result.name + " with size: {} based on quality size filter: {}".format(file_size, quality_size))
             except Exception as e:
                 sickrage.app.log.info(e)
                 continue
@@ -345,7 +350,7 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
         search_mode = providerObj.search_mode
 
         # Always search for episode when manually searching when in sponly
-        if search_mode == 'sponly' and manualSearch == True:
+        if search_mode == 'sponly' and manualSearch is True:
             search_mode = 'eponly'
 
         while True:
@@ -405,7 +410,7 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
         # pick the best season NZB
         best_season_result = None
         if SEASON_RESULT in found_results[providerObj.name]:
-            best_season_result = pick_best_result(found_results[providerObj.name][SEASON_RESULT])
+            best_season_result = pick_best_result(found_results[providerObj.name][SEASON_RESULT], season_pack=True)
 
         highest_quality_overall = 0
         for cur_episode in found_results[providerObj.name]:
