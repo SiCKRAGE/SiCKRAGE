@@ -123,6 +123,12 @@ class SRQueue(object):
         sickrage.app.log.info("Un-pausing {}".format(self.name))
         self.min_priority = SRQueuePriorities.EXTREME
 
+    def remove(self, item):
+        if item in self.queue._queue:
+            self.queue._queue.remove(item)
+        elif item in self.processing:
+            self.processing.remove(item)
+
     def stop_item(self, item):
         if not item.is_alive:
             return

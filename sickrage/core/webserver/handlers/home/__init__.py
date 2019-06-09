@@ -807,13 +807,13 @@ class DisplayShowHandler(BaseHandler, ABC):
         elif sickrage.app.show_queue.is_being_subtitled(show_obj.indexer_id):
             show_message = _('Currently downloading subtitles for this show')
 
-        elif sickrage.app.show_queue.is_in_refresh_queue(show_obj.indexer_id):
+        elif sickrage.app.show_queue.is_being_refreshed(show_obj.indexer_id):
             show_message = _('This show is queued to be refreshed.')
 
-        elif sickrage.app.show_queue.is_in_update_queue(show_obj.indexer_id):
+        elif sickrage.app.show_queue.is_being_updated(show_obj.indexer_id):
             show_message = _('This show is queued and awaiting an update.')
 
-        elif sickrage.app.show_queue.is_in_subtitle_queue(show_obj.indexer_id):
+        elif sickrage.app.show_queue.is_being_subtitled(show_obj.indexer_id):
             show_message = _('This show is queued and awaiting subtitles download.')
 
         if not sickrage.app.show_queue.is_being_added(show_obj.indexer_id):

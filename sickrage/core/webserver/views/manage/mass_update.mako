@@ -88,16 +88,16 @@
                                             <input type="checkbox" class="showCheck" id="${curShow.indexer_id}"
                                                    name="${curShow.indexer_id}" ${('disabled', '')[bool(not any([
                                             sickrage.app.show_queue.is_being_renamed(curShow.indexer_id),
-                                            sickrage.app.show_queue.is_in_rename_queue(curShow.indexer_id),
-                                            sickrage.app.show_queue.is_in_refresh_queue(curShow.indexer_id),
-                                            sickrage.app.show_queue.is_being_updated(curShow.indexer_id),
-                                            sickrage.app.show_queue.is_in_update_queue(curShow.indexer_id),
-                                            sickrage.app.show_queue.is_being_refreshed(curShow.indexer_id),
-                                            sickrage.app.show_queue.is_in_refresh_queue(curShow.indexer_id),
                                             sickrage.app.show_queue.is_being_renamed(curShow.indexer_id),
-                                            sickrage.app.show_queue.is_in_rename_queue(curShow.indexer_id),
+                                            sickrage.app.show_queue.is_being_refreshed(curShow.indexer_id),
+                                            sickrage.app.show_queue.is_being_updated(curShow.indexer_id),
+                                            sickrage.app.show_queue.is_being_updated(curShow.indexer_id),
+                                            sickrage.app.show_queue.is_being_refreshed(curShow.indexer_id),
+                                            sickrage.app.show_queue.is_being_refreshed(curShow.indexer_id),
+                                            sickrage.app.show_queue.is_being_renamed(curShow.indexer_id),
+                                            sickrage.app.show_queue.is_being_renamed(curShow.indexer_id),
                                             sickrage.app.show_queue.is_being_subtitled(curShow.indexer_id),
-                                            sickrage.app.show_queue.is_in_subtitle_queue(curShow.indexer_id)]))]}/>
+                                            sickrage.app.show_queue.is_being_subtitled(curShow.indexer_id)]))]}/>
                                         </td>
                                         <td class="tvShow">
                                             <a href="${srWebRoot}/home/displayShow?show=${curShow.indexer_id}">${curShow.name}</a>

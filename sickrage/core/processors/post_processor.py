@@ -1139,6 +1139,9 @@ class PostProcessor(object):
         # generate nfo/tbn
         ep_obj.create_meta_files()
 
+        # update video file metadata
+        ep_obj.update_video_metadata()
+
         session.commit()
 
         # log it to history

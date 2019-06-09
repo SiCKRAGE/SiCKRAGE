@@ -24,6 +24,7 @@ import traceback
 from collections import OrderedDict
 from xml.etree.ElementTree import ElementTree
 
+from mutagen.mp4 import MP4
 from sqlalchemy import ForeignKeyConstraint, Index, Column, Integer, Text, Boolean, Date, BigInteger
 from sqlalchemy.orm import relationship, object_session
 
@@ -430,10 +431,24 @@ class TVEpisode(MainDBBase):
         for cur_provider in sickrage.app.metadata_providers.values():
             try:
                 result = cur_provider.create_episode_metadata(self, force) or result
-            except Exception as e:
-                traceback.print_exc()
+            except Exception:
+                sickrage.app.log.debug(traceback.print_exc())
 
         return result
+
+    def update_video_metadata(self):
+        try:
+            video = MP4(self.location)
+            video['\xa9day'] = str(self.airdate.year)
+            video['\xa9nam'] = self.name
+            video['\xa9cmt'] = self.description
+            video['\xa9gen'] = ','.join(self.show.genre.split('|'))
+            video.save()
+        except Exception:
+            sickrage.app.log.debug(traceback.print_exc())
+            return False
+
+        return True
 
     def create_thumbnail(self, force=False):
         result = False

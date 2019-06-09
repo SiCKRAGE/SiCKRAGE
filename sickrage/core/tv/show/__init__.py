@@ -346,6 +346,7 @@ class TVShow(MainDBBase):
 
         if not show_only:
             self.write_episode_nfos(force)
+            self.update_episode_video_metadata()
 
     def write_episode_nfos(self, force=False):
         if not os.path.isdir(self.location):
@@ -361,6 +362,22 @@ class TVShow(MainDBBase):
             sickrage.app.log.debug(str(self.indexer_id) + ": Retrieving/creating episode S%02dE%02d" % (episode_obj.season or 0, episode_obj.episode or 0))
 
             episode_obj.create_meta_files(force)
+
+    def update_episode_video_metadata(self):
+        if not os.path.isdir(self.location):
+            sickrage.app.log.info(str(self.indexer_id) + ": Show dir doesn't exist, skipping video metadata updating")
+            return
+
+        sickrage.app.log.debug(str(self.indexer_id) + ": Updating video metadata for all episodes")
+
+        for episode_obj in self.episodes:
+            if episode_obj.location == '':
+                continue
+
+            sickrage.app.log.debug(
+                str(self.indexer_id) + ": Updating video metadata for episode S%02dE%02d" % (episode_obj.season, episode_obj.episode))
+
+            episode_obj.update_video_metadata()
 
     # find all media files in the show folder and create episodes for as many as possible
     def load_episodes_from_dir(self):

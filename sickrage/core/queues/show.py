@@ -44,26 +44,11 @@ class ShowQueue(SRQueue):
     def loading_show_list(self):
         return [{'name': x.show_name, 'indexer_id': x.indexer_id} for x in self.queue_items if x.is_loading]
 
-    def _is_in_queue(self, indexer_id, actions):
-        return indexer_id in [x.indexer_id for x in self.queue_items if x.action_id in actions]
+    def _is_in_queue(self, indexer_id):
+        return indexer_id in [x.indexer_id for x in self.queue_items]
 
     def _is_being(self, indexer_id, actions):
-        for x in self.queue_items:
-            if indexer_id == x.indexer_id and x.action_id in actions:
-                return True
-        return False
-
-    def is_in_update_queue(self, indexer_id):
-        return self._is_in_queue(indexer_id, [ShowQueueActions.UPDATE, ShowQueueActions.FORCEUPDATE])
-
-    def is_in_refresh_queue(self, indexer_id):
-        return self._is_in_queue(indexer_id, [ShowQueueActions.REFRESH])
-
-    def is_in_rename_queue(self, indexer_id):
-        return self._is_in_queue(indexer_id, [ShowQueueActions.RENAME])
-
-    def is_in_subtitle_queue(self, indexer_id):
-        return self._is_in_queue(indexer_id, [ShowQueueActions.SUBTITLE])
+        return indexer_id in [x.indexer_id for x in self.queue_items if x.action_id in actions]
 
     def is_being_removed(self, indexer_id):
         return self._is_being(indexer_id, [ShowQueueActions.REMOVE])
@@ -92,7 +77,7 @@ class ShowQueue(SRQueue):
         if self.is_being_updated(indexer_id):
             raise CantUpdateShowException("{} is already being updated, can't update again until it's done.".format(show_obj.name))
 
-        if self.is_in_update_queue(indexer_id):
+        if self.is_being_updated(indexer_id):
             raise CantUpdateShowException("{} is in the process of being updated, can't update again until it's done.".format(show_obj.name))
 
         if force:
@@ -103,7 +88,7 @@ class ShowQueue(SRQueue):
     def refresh_show(self, indexer_id, force=False):
         show_obj = find_show(indexer_id)
 
-        if (self.is_being_refreshed(indexer_id) or self.is_in_refresh_queue(indexer_id)) and not force:
+        if (self.is_being_refreshed(indexer_id) or self.is_being_refreshed(indexer_id)) and not force:
             raise CantRefreshShowException("This show is already being refreshed or queued to be refreshed, skipping this request.")
 
         if show_obj.paused and not force:
@@ -151,13 +136,11 @@ class ShowQueue(SRQueue):
             raise CantRemoveShowException('Failed removing show: Show does not exist')
         elif not hasattr(show_obj, 'indexer_id'):
             raise CantRemoveShowException('Failed removing show: Show does not have an indexer id')
-        elif self._is_in_queue(show_obj.indexer_id, (ShowQueueActions.REMOVE,)):
+        elif self._is_being(show_obj.indexer_id, (ShowQueueActions.REMOVE,)):
             raise CantRemoveShowException("{} is already queued to be removed".format(show_obj))
 
         # remove other queued actions for this show.
-        for x in self.queue_items:
-            if indexer_id == x.indexer_id:
-                self.queue.remove(x)
+        [self.remove(x) for x in self.queue_items if indexer_id == x.indexer_id]
 
         sickrage.app.io_loop.add_callback(self.put, QueueItemRemove(indexer_id=indexer_id, full=full))
 
