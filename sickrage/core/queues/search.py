@@ -311,7 +311,7 @@ class FailedQueueItem(SRQueueItem):
             search_result = search_providers(self.show_id, self.season, self.episode, manualSearch=True, downCurQuality=False)
             if search_result:
                 for result in search_result:
-                    for episode in search_result[0].episodes:
+                    for episode in result.episodes:
                         if (result.show_id, result.season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
                             raise StopIteration
 
