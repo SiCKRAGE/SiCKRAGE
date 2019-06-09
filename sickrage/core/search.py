@@ -114,6 +114,8 @@ def snatch_episode(result, end_status=SNATCHED, session=None):
         else:
             episode_obj.status = Quality.composite_status(end_status, result.quality)
 
+        session.commit()
+
         if episode_obj.status not in Quality.DOWNLOADED:
             try:
                 Notifiers.mass_notify_snatch(episode_obj._format_pattern('%SN - %Sx%0E - %EN - %QN') + " from " + result.provider.name)
@@ -426,7 +428,7 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
             season_qual = best_season_result.quality
             sickrage.app.log.debug("The quality of the season " + best_season_result.provider.type + " is " + Quality.qualityStrings[season_qual])
 
-            all_episodes = set([x.episode for x in show_object.episodes if x.season == season])
+            all_episodes = set([x.episode for x in session.query(TVEpisode).filter_by(showid=best_season_result.show_id, season=best_season_result.season)])
 
             sickrage.app.log.debug("Episodes list: {}".format(','.join(map(str, all_episodes))))
 

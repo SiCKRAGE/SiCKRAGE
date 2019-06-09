@@ -16,16 +16,19 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
-
-
+import ctypes
 import datetime
 import threading
-import time
+import traceback
 
 from tornado import gen
 from tornado.queues import Queue, PriorityQueue
 
 import sickrage
+
+
+class QueueItemStopException(Exception):
+    pass
 
 
 class SRQueuePriorities(object):
@@ -64,12 +67,16 @@ class SRQueue(object):
 
     def worker(self, item):
         threading.currentThread().setName(item.name)
+        item.thread_id = threading.currentThread().ident
+
         try:
             item.is_alive = True
             self.processing.append(item)
             item.run()
-        except Exception as e:
-            sickrage.app.log.debug(e)
+        except QueueItemStopException:
+            pass
+        except Exception:
+            sickrage.app.log.debug(traceback.format_exc())
         finally:
             self.processing.remove(item)
             self.queue.task_done()
@@ -116,6 +123,13 @@ class SRQueue(object):
         sickrage.app.log.info("Un-pausing {}".format(self.name))
         self.min_priority = SRQueuePriorities.EXTREME
 
+    def stop_item(self, item):
+        if not item.is_alive:
+            return
+
+        if ctypes.pythonapi.PyThreadState_SetAsyncExc(ctypes.c_long(item.thread_id), ctypes.py_object(QueueItemStopException)) > 1:
+            ctypes.pythonapi.PyThreadState_SetAsyncExc(item.thread_id, None)
+
 
 class SRQueueItem(object):
     def __init__(self, name, action_id=0):
@@ -127,6 +141,7 @@ class SRQueueItem(object):
         self.result_queue = None
         self.priority = SRQueuePriorities.NORMAL
         self.is_alive = False
+        self.thread_id = None
 
     def __eq__(self, other):
         return self.priority == other.priority

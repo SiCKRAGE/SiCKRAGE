@@ -63,6 +63,9 @@ class DailySearcher(object):
                 continue
 
             for season, episode in wanted:
+                if (curShow.indexer_id, season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
+                    sickrage.app.search_queue.SNATCH_HISTORY.remove((curShow.indexer_id, season, episode))
+
                 sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, DailySearchQueueItem(curShow.indexer_id, season, episode))
 
         self.amActive = False

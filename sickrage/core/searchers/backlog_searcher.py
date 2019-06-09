@@ -92,6 +92,9 @@ class BacklogSearcher(object):
                 continue
 
             for season, episode in wanted:
+                if (curShow.indexer_id, season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
+                    sickrage.app.search_queue.SNATCH_HISTORY.remove((curShow.indexer_id, season, episode))
+
                 sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(curShow.indexer_id, season, episode))
 
             if from_date == datetime.date.min and not show_id:

@@ -41,7 +41,7 @@ from sickrage.core.exceptions import AnidbAdbaConnectionException, CantRefreshSh
 from sickrage.core.helpers import clean_url, clean_host, clean_hosts, get_disk_space_usage, checkbox_to_value, try_int
 from sickrage.core.helpers.anidb import get_release_groups_for_anime, short_group_names
 from sickrage.core.helpers.srdatetime import SRDateTime
-from sickrage.core.queues.search import BacklogQueueItem, FailedQueueItem, ManualSearchQueueItem, MANUAL_SEARCH_HISTORY
+from sickrage.core.queues.search import BacklogQueueItem, FailedQueueItem, ManualSearchQueueItem
 from sickrage.core.scene_exceptions import get_scene_exceptions, update_scene_exceptions
 from sickrage.core.scene_numbering import get_scene_numbering_for_show, get_xem_numbering_for_show, \
     get_scene_absolute_numbering_for_show, get_xem_absolute_numbering_for_show, xem_refresh, set_scene_numbering, \
@@ -1536,6 +1536,9 @@ class SetStatusHandler(BaseHandler, ABC):
             msg += '<ul>'
 
             for season, episode in wanted:
+                if (show_obj.indexer_id, season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
+                    sickrage.app.search_queue.SNATCH_HISTORY.remove((show_obj.indexer_id, season, episode))
+
                 sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(show_obj.indexer_id, season, episode))
                 msg += "<li>" + _("Season ") + str(season) + "</li>"
                 sickrage.app.log.info("Sending backlog for " + show_obj.name + " season " + str(season) + " because some eps were set to wanted")
@@ -1554,6 +1557,9 @@ class SetStatusHandler(BaseHandler, ABC):
             msg += '<ul>'
 
             for season, episode in wanted:
+                if (show_obj.indexer_id, season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
+                    sickrage.app.search_queue.SNATCH_HISTORY.remove((show_obj.indexer_id, season, episode))
+
                 sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, FailedQueueItem(show_obj.indexer_id, season, episode))
 
                 msg += "<li>" + _("Season ") + str(season) + "</li>"
@@ -1691,7 +1697,7 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
 
         # Finished Searches
         search_status = 'Finished'
-        for search_thread in MANUAL_SEARCH_HISTORY:
+        for search_thread in sickrage.app.search_queue.MANUAL_SEARCH_HISTORY:
             if show is not None:
                 if not str(search_thread.show_id) == show:
                     continue
