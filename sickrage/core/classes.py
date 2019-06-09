@@ -92,15 +92,14 @@ class SearchResult(object):
             return "Invalid provider, unable to print self"
 
         myString = self.provider.name + " @ " + self.url + "\n"
-        myString += "Extra Info:\n"
-        for extra in self.extraInfo:
-            myString += "  " + extra + "\n"
 
-        myString += "Season: " + self.season + "\n"
+        myString += "Extra Info:\n"
+        myString += "  ".join(self.extraInfo) + "\n"
+
+        myString += "Season: " + str(self.season) + "\n"
 
         myString += "Episodes:\n"
-        for episode in self.episodes:
-            myString += "  " + str(episode) + "\n"
+        myString += "  ".join(self.episodes) + "\n"
 
         myString += "Quality: " + Quality.qualityStrings[self.quality] + "\n"
         myString += "Name: " + self.name + "\n"
