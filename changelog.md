@@ -1,5 +1,10 @@
 # Changelog
 
+- * 4b8e9f03c - 2019-06-09: Refactored main shows page to not include specials or unaired in totals. 
+- * c482cc50e - 2019-06-09: Fixed issue with CSS and progress bar coloring. 
+- * 9bc2b794e - 2019-06-09: Fixed &#x60;TypeError: can only concatenate str (not &quot;int&quot;) to str&#x60; error. 
+- * f8b0c8af8 - 2019-06-09: Fixed &#x60;&#x27;TorrentSearchResult&#x27; object has no attribute &#x27;show&#x27;&#x60; error. 
+- * 840374995 - 2019-06-09: Pre-Release v9.4.85.dev20 
 - * de8ca8c24 - 2019-06-09: Fixed &#x27;NoneType&#x27; object has no attribute &#x27;query&#x27; error when trying to get episodes via absolute numbers in name parser. 
 - * ae7eff421 - 2019-06-09: Pre-Release v9.4.85.dev19 
 - * fc59ac305 - 2019-06-08: Pre-Release v9.4.85.dev18 
