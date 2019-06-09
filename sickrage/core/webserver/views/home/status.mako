@@ -125,13 +125,13 @@
                             % for item in sickrage.app.show_queue.queue_items:
                                 <tr>
                                 % try:
-                                    <% showindexer_id = item.show.indexer_id %>
+                                    <% showindexer_id = item.indexer_id %>
                                     <td>${showindexer_id}</td>
                                 % except Exception:
                                     <td></td>
                                 % endtry
                                 % try:
-                                    <% showname = item.show.name %>
+                                    <% showname = item.show_name %>
                                     <td>${showname}</td>
                                 % except Exception:
                                     % if item.action_id == ShowQueueActions.ADD:

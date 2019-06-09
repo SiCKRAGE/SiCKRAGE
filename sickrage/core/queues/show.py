@@ -189,7 +189,8 @@ class ShowQueueItem(SRQueueItem):
 
     @property
     def show_name(self):
-        return str(self.indexer_id)
+        show_obj = find_show(self.indexer_id)
+        return show_obj.name if show_obj else str(self.indexer_id)
 
     @property
     def is_loading(self):

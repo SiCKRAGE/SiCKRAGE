@@ -1,5 +1,6 @@
 # Changelog
 
+- * fc59ac305 - 2019-06-08: Pre-Release v9.4.85.dev18 
 - * f4aed18ad - 2019-06-08: Add code to update episode video file metadata tags. 
 - * 0d74c9794 - 2019-06-08: Pre-Release v9.4.85.dev17 
 - * 5ed3462f8 - 2019-06-08: Pre-Release v9.4.85.dev16 
