@@ -121,11 +121,25 @@ class TVShow(MainDBBase):
         return _airs_prev
 
     @property
+    def episodes_unaired(self):
+        _episodes_unaired = 0
+        for episode_object in self.episodes:
+            if episode_object.status == UNAIRED:
+                _episodes_unaired += 1
+        return _episodes_unaired
+
+    @property
+    def episodes_specials(self):
+        _episodes_specials = 0
+        for episode_object in self.episodes:
+            if episode_object.season == 0:
+                _episodes_specials += 1
+        return _episodes_specials
+
+    @property
     def episodes_snatched(self):
         _episodes_snatched = 0
         for episode_object in self.episodes:
-            if episode_object.season == 0:
-                continue
             if episode_object.status in Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER:
                 _episodes_snatched += 1
         return _episodes_snatched
@@ -134,8 +148,6 @@ class TVShow(MainDBBase):
     def episodes_downloaded(self):
         _episodes_downloaded = 0
         for episode_object in self.episodes:
-            if episode_object.season == 0:
-                continue
             if episode_object.status in Quality.DOWNLOADED + Quality.ARCHIVED:
                 _episodes_downloaded += 1
         return _episodes_downloaded
@@ -144,8 +156,6 @@ class TVShow(MainDBBase):
     def total_size(self):
         _total_size = 0
         for episode_object in self.episodes:
-            if episode_object.season == 0:
-                continue
             _total_size += episode_object.file_size
         return _total_size
 
