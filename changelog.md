@@ -1,5 +1,7 @@
 # Changelog
 
+- * de8ca8c24 - 2019-06-09: Fixed &#x27;NoneType&#x27; object has no attribute &#x27;query&#x27; error when trying to get episodes via absolute numbers in name parser. 
+- * ae7eff421 - 2019-06-09: Pre-Release v9.4.85.dev19 
 - * fc59ac305 - 2019-06-08: Pre-Release v9.4.85.dev18 
 - * f4aed18ad - 2019-06-08: Add code to update episode video file metadata tags. 
 - * 0d74c9794 - 2019-06-08: Pre-Release v9.4.85.dev17 
