@@ -165,12 +165,7 @@
                             download_stat = '?'
                             download_stat_tip = _("no data")
 
-                        nom = cur_downloaded
-                        den = cur_total
-                        if den == 0:
-                            den = 1
-
-                        progressbar_percent = nom * 100 / den
+                        progressbar_percent = int(cur_downloaded * 100 / cur_total or 1)
 
                         data_date = '6000000000.0'
                         if cur_airs_next > datetime.date.min:
@@ -335,12 +330,7 @@
                                             download_stat = '?'
                                             download_stat_tip = _("no data")
 
-                                        nom = cur_downloaded
-                                        den = cur_total
-                                        if den == 0:
-                                            den = 1
-
-                                        progressbar_percent = nom * 100 / den
+                                        progressbar_percent = int(cur_downloaded * 100 / cur_total or 1)
 
                                         network_class_name = None
                                         if curShow.network:
