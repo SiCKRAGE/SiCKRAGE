@@ -23,6 +23,7 @@ import traceback
 import sickrage
 from rtorrentlib import RTorrent
 from sickrage.clients import GenericClient
+from sickrage.core.tv.show.helpers import find_show
 
 
 class rTorrentAPI(GenericClient):
@@ -53,7 +54,6 @@ class rTorrentAPI(GenericClient):
         return self.auth
 
     def _add_torrent_uri(self, result):
-
         if not self.auth:
             return False
 
@@ -69,7 +69,9 @@ class rTorrentAPI(GenericClient):
 
             # Set label
             label = sickrage.app.config.torrent_label
-            if result.show.is_anime:
+            show_object = find_show(result.show_id)
+
+            if show_object.is_anime:
                 label = sickrage.app.config.torrent_label_anime
             if label:
                 torrent.set_custom(1, label)
@@ -87,7 +89,6 @@ class rTorrentAPI(GenericClient):
             return False
 
     def _add_torrent_file(self, result):
-
         if not self.auth:
             return False
 
@@ -104,7 +105,9 @@ class rTorrentAPI(GenericClient):
 
             # Set label
             label = sickrage.app.config.torrent_label
-            if result.show.is_anime:
+            show_object = find_show(result.show_id)
+
+            if show_object.is_anime:
                 label = sickrage.app.config.torrent_label_anime
             if label:
                 torrent.set_custom(1, label)

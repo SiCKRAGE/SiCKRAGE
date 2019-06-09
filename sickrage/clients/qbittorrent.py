@@ -20,6 +20,7 @@
 
 import sickrage
 from sickrage.clients import GenericClient
+from sickrage.core.tv.show.helpers import find_show
 
 
 class qbittorrentAPI(GenericClient):
@@ -63,9 +64,10 @@ class qbittorrentAPI(GenericClient):
         return self.auth if not self.response.status_code == 404 else None
 
     def _set_torrent_label(self, result):
-
         label = sickrage.app.config.torrent_label
-        if result.show.is_anime:
+        show_object = find_show(result.show_id)
+
+        if show_object.is_anime:
             label = sickrage.app.config.torrent_label_anime
 
         if self.api > 6 and label:

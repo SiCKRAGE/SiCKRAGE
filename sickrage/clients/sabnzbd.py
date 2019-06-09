@@ -35,13 +35,13 @@ class SabNZBd(object):
         :param nzb: The NZBSearchResult object to send to SAB
         """
 
-        category = sickrage.app.config.sab_category
-        if nzb.show.is_anime:
-            category = sickrage.app.config.sab_category_anime
-
         show_object = find_show(nzb.show_id)
         if not show_object:
             return False
+
+        category = sickrage.app.config.sab_category
+        if show_object.is_anime:
+            category = sickrage.app.config.sab_category_anime
 
         # if it aired more than 7 days ago, override with the backlog category IDs
         for episode__number in nzb.episodes:

@@ -50,7 +50,12 @@ class NZBGet(object):
         nzbgetprio = 0
 
         category = sickrage.app.config.nzbget_category
-        if nzb.show.is_anime:
+
+        show_object = find_show(nzb.show_id)
+        if not show_object:
+            return False
+
+        if show_object.is_anime:
             category = sickrage.app.config.nzbget_category_anime
 
         url = "%(protocol)s://%(username)s:%(password)s@%(host)s/xmlrpc" % {
@@ -98,7 +103,7 @@ class NZBGet(object):
                 nzbgetprio = sickrage.app.config.nzbget_priority
             else:
                 category = sickrage.app.config.nzbget_category_backlog
-                if nzb.show.is_anime:
+                if show_object.is_anime:
                     category = sickrage.app.config.nzbget_category_anime_backlog
 
         if nzb.quality != Quality.UNKNOWN:
