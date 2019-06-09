@@ -252,7 +252,7 @@ class NameParser(object):
             if not self.naming_pattern:
                 # try and create a show object for this result
                 best_result.indexer_id = self.get_show(best_result.series_name)
-                show_obj = find_show(best_result.indexer_id)
+                show_obj = find_show(best_result.indexer_id, session=session)
 
             # if this is a naming pattern test or result doesn't have a show object then return best result
             if not show_obj or self.naming_pattern:
@@ -495,13 +495,11 @@ class NameParser(object):
         final_result.quality = self._combine_results(file_name_result, dir_name_result, 'quality')
 
         if self.validate_show and not self.naming_pattern and not final_result.indexer_id:
-            raise InvalidShowException("Unable to match {} to a show in your database. Parser result: {}".format(
-                name, final_result))
+            raise InvalidShowException("Unable to match {} to a show in your database. Parser result: {}".format(name, final_result))
 
         # if there's no useful info in it then raise an exception
         if final_result.season_number is None and not final_result.episode_numbers and final_result.air_date is None and not final_result.ab_episode_numbers and not final_result.series_name:
-            raise InvalidNameException(
-                "Unable to parse {} to a valid episode. Parser result: {}".format(name, final_result))
+            raise InvalidNameException("Unable to parse {} to a valid episode. Parser result: {}".format(name, final_result))
 
         if cache_result and final_result.indexer_id:
             name_parser_cache.add(name, final_result)
