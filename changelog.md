@@ -1,5 +1,7 @@
 # Changelog
 
+- * f4aed18ad - 2019-06-08: Add code to update episode video file metadata tags. 
+- * 0d74c9794 - 2019-06-08: Pre-Release v9.4.85.dev17 
 - * 5ed3462f8 - 2019-06-08: Pre-Release v9.4.85.dev16 
 - * 164b687cc - 2019-06-08: Fixed issues were season packs and multi-ep search results would cause multiple downloads of the same episode. 
 - * 1e38c3c0a - 2019-06-08: Pre-Release v9.4.85.dev15 
