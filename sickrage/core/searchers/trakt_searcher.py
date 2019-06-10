@@ -183,9 +183,7 @@ class TraktSearcher(object):
             try:
                 TraktAPI()["sync/collection"].add(data)
             except Exception as e:
-                sickrage.app.log.warning(
-                    "Could not connect to Trakt service. Aborting adding show %s to Trakt library. Error: %s" % (
-                        show_obj.name, repr(e)))
+                sickrage.app.log.warning("Could not connect to Trakt service. Aborting adding show %s to Trakt library. Error: %s" % (show_obj.name, repr(e)))
                 return
 
     @MainDB.with_session

@@ -384,7 +384,7 @@ class QueueItemAdd(ShowQueueItem):
         # if they set default ep status to WANTED then run the backlog to search for episodes
         if show_obj.default_ep_status == WANTED:
             sickrage.app.log.info(_("Launching backlog for this show since it has episodes that are WANTED"))
-            sickrage.app.backlog_searcher.search_backlog([show_obj])
+            sickrage.app.backlog_searcher.search_backlog(show_obj.indexer_id, session=session)
 
         show_obj.write_metadata(force=True)
         show_obj.populate_cache()
