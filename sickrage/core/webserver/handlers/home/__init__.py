@@ -1525,11 +1525,11 @@ class SetStatusHandler(BaseHandler, ABC):
                 if int(status) in [WANTED, FAILED]:
                     sickrage.app.log.debug(
                         "Add episodes, showid: indexer_id " + str(show_obj.indexer_id) + ", Title " + str(show_obj.name) + " to Watchlist")
-                    sickrage.app.notifier_providers['trakt'].update_watchlist(show_obj.indexer_id, data_episode=data, update="add")
+                    sickrage.app.notifier_providers['trakt'].update_watchlist(show_obj, data_episode=data, update="add")
                 elif int(status) in [IGNORED, SKIPPED] + Quality.DOWNLOADED + Quality.ARCHIVED:
                     sickrage.app.log.debug(
                         "Remove episodes, showid: indexer_id " + str(show_obj.indexer_id) + ", Title " + str(show_obj.name) + " from Watchlist")
-                    sickrage.app.notifier_providers['trakt'].update_watchlist(show_obj.indexer_id, data_episode=data, update="remove")
+                    sickrage.app.notifier_providers['trakt'].update_watchlist(show_obj, data_episode=data, update="remove")
 
         if int(status) == WANTED and not show_obj.paused:
             msg = _("Backlog was automatically started for the following seasons of ") + "<b>" + show_obj.name + "</b>:<br>"

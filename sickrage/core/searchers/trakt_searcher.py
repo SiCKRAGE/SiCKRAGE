@@ -127,11 +127,9 @@ class TraktSearcher(object):
                 sickrage.app.log.debug("No shows found in your library, aborting library update")
                 return
 
-            traktShow = [x for __, x in library.items() if
-                         int(indexer_id) == int(x.ids[IndexerApi(indexer).trakt_id])]
+            traktShow = [x for __, x in library.items() if int(indexer_id) == int(x.ids[IndexerApi(indexer).trakt_id])]
         except Exception as e:
-            sickrage.app.log.warning(
-                "Could not connect to Trakt service. Aborting library check. Error: %s" % repr(e))
+            sickrage.app.log.warning("Could not connect to Trakt service. Aborting library check. Error: %s" % repr(e))
 
         return traktShow
 
@@ -448,11 +446,8 @@ class TraktSearcher(object):
                 return
 
     def manage_new_show(self, show):
-        sickrage.app.log.debug(
-            "Checking if trakt watch list wants to search for episodes from new show " + show.name)
-        episodes = [i for i in self.todoWanted if i[0] == show.indexer_id]
-
-        for episode in episodes:
+        sickrage.app.log.debug("Checking if trakt watch list wants to search for episodes from new show " + show.name)
+        for episode in [i for i in self.todoWanted if i[0] == show.indexer_id]:
             self.todoWanted.remove(episode)
             set_episode_to_wanted(show, episode[1], episode[2])
 

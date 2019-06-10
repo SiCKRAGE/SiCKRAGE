@@ -128,7 +128,7 @@ def snatch_episode(result, end_status=SNATCHED, session=None):
 
     if sickrage.app.config.use_trakt and sickrage.app.config.trakt_sync_watchlist:
         if data:
-            sickrage.app.notifier_providers['trakt'].update_watchlist(result.show_id, data_episode=data, update="add")
+            sickrage.app.notifier_providers['trakt'].update_watchlist(show_object, data_episode=data, update="add")
 
     return True
 

@@ -85,7 +85,7 @@ class TraktNotifier(Notifiers):
             except Exception as e:
                 sickrage.app.log.warning("Could not connect to Trakt service: %s" % e)
 
-    def update_watchlist(self, show_id=None, s=None, e=None, data_show=None, data_episode=None, update="add"):
+    def update_watchlist(self, show_object=None, s=None, e=None, data_show=None, data_episode=None, update="add"):
 
         """
         Sends a request to trakt indicating that the given episode is part of our library.
@@ -98,22 +98,19 @@ class TraktNotifier(Notifiers):
         update: type o action add or remove
         """
 
-        show_obj = find_show(show_id)
-
-        sickrage.app.log.debug(
-            "Add episodes, showid: indexer_id {}, Title {} to Trak.tv Watchlist".format(show_id, show.name))
+        sickrage.app.log.debug("Add episodes, showid: indexer_id {}, Title {} to Trak.tv Watchlist".format(show_object.indexer_id, show_object.name))
 
         if sickrage.app.config.use_trakt:
             data = {}
             try:
                 # URL parameters
-                if show_obj is not None:
+                if show_object is not None:
                     data = {
                         'shows': [
                             {
-                                'title': show_obj.name,
-                                'year': show_obj.startyear,
-                                'ids': {IndexerApi(show_obj.indexer).trakt_id: show_obj.indexer_id},
+                                'title': show_object.name,
+                                'year': show_object.startyear,
+                                'ids': {IndexerApi(show_object.indexer).trakt_id: show_object.indexer_id},
                             }
                         ]
                     }

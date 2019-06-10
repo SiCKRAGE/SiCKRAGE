@@ -381,13 +381,11 @@ class QueueItemAdd(ShowQueueItem):
             sickrage.app.log.debug("Error searching dir for episodes: {}".format(e))
             sickrage.app.log.debug(traceback.format_exc())
 
-        # if they set default ep status to WANTED then run the backlog to search for episodes
-        if show_obj.default_ep_status == WANTED:
-            sickrage.app.log.info(_("Launching backlog for this show since it has episodes that are WANTED"))
-            sickrage.app.backlog_searcher.search_backlog(show_obj.indexer_id, session=session)
+        # save to database
+        session.commit()
 
-        show_obj.write_metadata(force=True)
-        show_obj.populate_cache()
+        sickrage.app.io_loop.add_callback(show_obj.write_metadata, force=True)
+        sickrage.app.io_loop.add_callback(show_obj.populate_cache)
 
         if sickrage.app.config.use_trakt:
             # if there are specific episodes that need to be added by trakt
@@ -399,7 +397,7 @@ class QueueItemAdd(ShowQueueItem):
 
             if sickrage.app.config.trakt_sync_watchlist:
                 sickrage.app.log.info("update watchlist")
-                sickrage.app.notifier_providers['trakt'].update_watchlist(show_obj=show_obj)
+                sickrage.app.notifier_providers['trakt'].update_watchlist(show_obj)
 
         # Load XEM data to DB for show
         xem_refresh(show_obj.indexer_id, show_obj.indexer, force=True, session=session)
@@ -408,6 +406,11 @@ class QueueItemAdd(ShowQueueItem):
         # numbering.
         if not self.scene and get_xem_numbering_for_show(show_obj.indexer_id, show_obj.indexer):
             show_obj.scene = 1
+
+        # if they set default ep status to WANTED then run the backlog to search for episodes
+        if show_obj.default_ep_status == WANTED:
+            sickrage.app.log.info(_("Launching backlog for this show since it has episodes that are WANTED"))
+            sickrage.app.io_loop.add_callback(sickrage.app.backlog_searcher.search_backlog, show_obj.indexer_id, session=session)
 
         show_obj.default_ep_status = self.default_status_after
 
