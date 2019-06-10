@@ -61,8 +61,8 @@ class GenericProvider(object):
         self.search_mode = 'eponly'
         self.search_fallback = False
         self.enabled = False
-        self.enable_daily = False
-        self.enable_backlog = False
+        self.enable_daily = True
+        self.enable_backlog = True
         self.cache = TVCache(self)
         self.proper_strings = ['PROPER|REPACK|REAL|RERIP']
         self.search_separator = ' '

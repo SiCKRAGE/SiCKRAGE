@@ -354,20 +354,19 @@ class TVEpisode(MainDBBase):
                 try:
                     showXML = ElementTree(file=nfoFile)
                 except (SyntaxError, ValueError) as e:
-                    sickrage.app.log.error(
-                        "Error loading the NFO, backing up the NFO and skipping for now: {}".format(e))
+                    sickrage.app.log.warning("Error loading the NFO, backing up the NFO and skipping for now: {}".format(e))
+
                     try:
                         os.rename(nfoFile, nfoFile + ".old")
                     except Exception as e:
-                        sickrage.app.log.warning(
-                            "Failed to rename your episode's NFO file - you need to delete it or fix it: {}".format(e))
+                        sickrage.app.log.warning("Failed to rename your episode's NFO file - you need to delete it or fix it: {}".format(e))
+
                     raise NoNFOException("Error in NFO format")
 
                 for epDetails in showXML.iter('episodedetails'):
                     if epDetails.findtext('season') is None or int(epDetails.findtext('season')) != self.season or epDetails.findtext(
                             'episode') is None or int(epDetails.findtext('episode')) != self.episode:
-                        sickrage.app.log.debug("%s: NFO has an <episodedetails> block for a different episode - "
-                                               "wanted S%02dE%02d but got "
+                        sickrage.app.log.debug("%s: NFO has an <episodedetails> block for a different episode - wanted S%02dE%02d but got "
                                                "S%02dE%02d" % (self.show.indexer_id,
                                                                self.season or 0,
                                                                self.episode or 0,
