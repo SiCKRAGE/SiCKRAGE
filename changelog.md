@@ -1,5 +1,7 @@
 # Changelog
 
+- * e850bb0f9 - 2019-06-09: Fixed issue with calling backlog on newly added show with wanted episodes. 
+- * 0fe4cdd04 - 2019-06-09: Pre-Release v9.4.85.dev25 
 - * 29b7ce4cd - 2019-06-09: Fixed issue with calling backlog on newly added show with wanted episodes. 
 - * 7a7446af4 - 2019-06-09: Pre-Release v9.4.85.dev24 
 - * 647bcbcfa - 2019-06-09: Refactored default for enabling daily and backlog provider searches to True. 
