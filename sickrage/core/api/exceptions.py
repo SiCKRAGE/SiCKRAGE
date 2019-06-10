@@ -1,14 +1,11 @@
-from sickrage.core.exceptions import SickRageException
-
-
-class error(SickRageException):
+class ApiError(Exception):
     """
     API Error
     """
     pass
 
 
-class unauthorized(SickRageException):
+class ApiUnauthorized(ApiError):
     """
     Need JWT Token
     """

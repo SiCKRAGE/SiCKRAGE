@@ -1,4 +1,3 @@
-import base64
 import json
 import os
 import time
@@ -8,14 +7,14 @@ from oauthlib.oauth2 import MissingTokenError, InvalidClientIdError, TokenExpire
 from requests_oauthlib import OAuth2Session
 
 import sickrage
-from sickrage.core.api.exceptions import unauthorized, error
+from sickrage.core.api.exceptions import ApiUnauthorized, ApiError
 
 
 class API(object):
     def __init__(self):
         self.api_url = 'https://www.sickrage.ca/api/v1/'
-        self.client_id = sickrage.app.oidc_client._client_id
-        self.client_secret = sickrage.app.oidc_client._client_secret
+        self.client_id = sickrage.app.oidc_client_id
+        self.client_secret = sickrage.app.oidc_client_secret
         self.token_url = sickrage.app.oidc_client.well_known['token_endpoint']
         self.token_file = os.path.abspath(os.path.join(sickrage.app.data_dir, 'token.json'))
         self.token_refreshed = False
@@ -58,10 +57,10 @@ class API(object):
                 if not self.token_refreshed:
                     raise TokenExpiredError
                 if 'error' in resp.json():
-                    raise error(resp.json()['error'])
+                    raise ApiError(resp.json()['error'])
             elif resp.status_code >= 400:
                 if 'error' in resp.json():
-                    raise error(resp.json()['error'])
+                    raise ApiError(resp.json()['error'])
 
             return resp.json()
         except TokenExpiredError:
@@ -84,9 +83,7 @@ class API(object):
 
     @staticmethod
     def throttle_hook(response, **kwargs):
-        ratelimited = "X-RateLimit-Remaining" in response.headers
-
-        if ratelimited:
+        if "X-RateLimit-Remaining" in response.headers:
             remaining = int(response.headers["X-RateLimit-Remaining"])
             if remaining == 1:
                 sickrage.app.log.debug("Throttling SiCKRAGE API Calls... Sleeping for 60 secs...\n")

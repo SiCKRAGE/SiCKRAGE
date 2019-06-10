@@ -366,12 +366,13 @@ class QueueItemAdd(ShowQueueItem):
             sickrage.app.log.debug(_("Attempting to retrieve show info from IMDb"))
             show_obj.load_imdb_info()
         except Exception as e:
-            sickrage.app.log.error(_("Error loading IMDb info: {}").format(e))
+            sickrage.app.log.debug(_("Error loading IMDb info: {}").format(e))
+            sickrage.app.log.debug(traceback.format_exc())
 
         try:
             show_obj.load_episodes_from_indexer()
         except Exception as e:
-            sickrage.app.log.error(_("Error with ") + IndexerApi(show_obj.indexer).name + _(", not creating episode list: {}").format(e))
+            sickrage.app.log.debug(_("Error with ") + IndexerApi(show_obj.indexer).name + _(", not creating episode list: {}").format(e))
             sickrage.app.log.debug(traceback.format_exc())
 
         try:
@@ -382,7 +383,7 @@ class QueueItemAdd(ShowQueueItem):
 
         # if they set default ep status to WANTED then run the backlog to search for episodes
         if show_obj.default_ep_status == WANTED:
-            sickrage.app.log.info(_("Launching backlog for this show since its episodes are WANTED"))
+            sickrage.app.log.info(_("Launching backlog for this show since it has episodes that are WANTED"))
             sickrage.app.backlog_searcher.search_backlog([show_obj])
 
         show_obj.write_metadata(force=True)

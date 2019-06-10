@@ -106,6 +106,9 @@ class Core(object):
         self.debug = None
         self.newest_version_string = None
 
+        self.oidc_client_id = 'sickrage-app'
+        self.oidc_client_secret = '5d4710b2-ca70-4d39-b5a3-0705e2c5e703'
+
         self.naming_ep_type = ("%(seasonnumber)dx%(episodenumber)02d",
                                "s%(seasonnumber)02de%(episodenumber)02d",
                                "S%(seasonnumber)02dE%(episodenumber)02d",
@@ -195,8 +198,7 @@ class Core(object):
 
         # setup oidc client
         realm = KeycloakRealm(server_url='https://auth.sickrage.ca', realm_name='sickrage')
-        self.oidc_client = realm.open_id_connect(client_id='sickrage-app',
-                                                 client_secret='5d4710b2-ca70-4d39-b5a3-0705e2c5e703')
+        self.oidc_client = realm.open_id_connect(client_id=self.oidc_client_id, client_secret=self.oidc_client_secret)
 
         # Check if we need to perform a restore first
         if os.path.exists(os.path.abspath(os.path.join(self.data_dir, 'restore'))):
