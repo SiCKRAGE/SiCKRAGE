@@ -1,5 +1,7 @@
 # Changelog
 
+- * 52691bd6a - 2019-06-14: Fixed issue with unprocessed videos being skipped due to being processed. Added exception handling for updating non-mp4 video tags. 
+- * 71c7f470e - 2019-06-09: Pre-Release v9.4.85.dev26 
 - * e850bb0f9 - 2019-06-09: Fixed issue with calling backlog on newly added show with wanted episodes. 
 - * 0fe4cdd04 - 2019-06-09: Pre-Release v9.4.85.dev25 
 - * 29b7ce4cd - 2019-06-09: Fixed issue with calling backlog on newly added show with wanted episodes. 
