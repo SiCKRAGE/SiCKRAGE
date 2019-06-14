@@ -22,7 +22,7 @@ import shutil
 import stat
 
 import rarfile
-from sqlalchemy import or_, literal
+from sqlalchemy import or_
 
 import sickrage
 from sickrage.core.common import Quality
@@ -461,7 +461,7 @@ class ProcessResult(object):
             return False
 
         # Avoid processing the same dir again if we use a process method <> move
-        if session.query(TVEpisode).filter(or_(literal(dirName).contains(TVEpisode.release_name), literal(videofile).contains(TVEpisode.release_name))):
+        if session.query(TVEpisode).filter(or_(TVEpisode.release_name.contains(dirName), TVEpisode.release_name.contains(videofile))).count() > 0:
             return True
 
         # Needed if we have downloaded the same episode @ different quality
@@ -506,8 +506,7 @@ class ProcessResult(object):
             cur_video_file_path = os.path.join(processPath, cur_video_file)
 
             if self.already_postprocessed(processPath, cur_video_file, force):
-                self.log("Skipping already processed file: {0}".format(cur_video_file),
-                         sickrage.app.log.DEBUG)
+                self.log("Skipping already processed file: {0}".format(cur_video_file), sickrage.app.log.DEBUG)
                 continue
 
             try:

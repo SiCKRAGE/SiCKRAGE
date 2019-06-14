@@ -24,7 +24,7 @@ import traceback
 from collections import OrderedDict
 from xml.etree.ElementTree import ElementTree
 
-from mutagen.mp4 import MP4
+from mutagen.mp4 import MP4, MP4StreamInfoError
 from sqlalchemy import ForeignKeyConstraint, Index, Column, Integer, Text, Boolean, Date, BigInteger
 from sqlalchemy.orm import relationship, object_session
 
@@ -443,6 +443,8 @@ class TVEpisode(MainDBBase):
             video['\xa9cmt'] = self.description
             video['\xa9gen'] = ','.join(self.show.genre.split('|'))
             video.save()
+        except MP4StreamInfoError:
+            pass
         except Exception:
             sickrage.app.log.debug(traceback.print_exc())
             return False

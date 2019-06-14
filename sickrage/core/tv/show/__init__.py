@@ -426,9 +426,9 @@ class TVShow(MainDBBase):
                 parse_result = None
 
             if ' ' not in ep_file_name and parse_result and parse_result.release_group:
-                sickrage.app.log.debug(
-                    "Name " + ep_file_name + " gave release group of " + parse_result.release_group + ", seems valid")
+                sickrage.app.log.debug("Name " + ep_file_name + " gave release group of " + parse_result.release_group + ", seems valid")
                 curEpisode.release_name = ep_file_name
+                object_session(self).commit()
 
             # store the reference in the show
             if self.subtitles and sickrage.app.config.use_subtitles:

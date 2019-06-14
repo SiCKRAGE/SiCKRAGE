@@ -406,6 +406,7 @@ class QueueItemAdd(ShowQueueItem):
         # numbering.
         if not self.scene and get_xem_numbering_for_show(show_obj.indexer_id, show_obj.indexer):
             show_obj.scene = 1
+            session.commit()
 
         # if they set default ep status to WANTED then run the backlog to search for episodes
         if show_obj.default_ep_status == WANTED:
@@ -413,6 +414,7 @@ class QueueItemAdd(ShowQueueItem):
             sickrage.app.io_loop.add_callback(sickrage.app.backlog_searcher.search_backlog, show_obj.indexer_id, session=session)
 
         show_obj.default_ep_status = self.default_status_after
+        session.commit()
 
         sickrage.app.quicksearch_cache.add_show(show_obj.indexer_id)
 
