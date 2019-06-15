@@ -16,8 +16,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
-
-
+import itertools
 import re
 import threading
 from datetime import date, timedelta
@@ -322,8 +321,6 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
 
     orig_thread_name = threading.currentThread().getName()
 
-    search_results = {}
-    found_results = {}
     final_results = []
 
     show_object = find_show(show_id, session=session)
@@ -346,7 +343,7 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
             sickrage.app.log.debug("" + str(show_object.name) + " is not an anime, skiping")
             continue
 
-        found_results[providerObj.name] = {}
+        found_results = {}
 
         search_count = 0
         search_mode = providerObj.search_mode
@@ -367,13 +364,13 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
                     sickrage.app.log.info("Performing season pack search for " + show_object.name)
 
                 # search provider for episodes
-                search_results = providerObj.find_search_results(show_id,
-                                                                 season,
-                                                                 episode,
-                                                                 search_mode,
-                                                                 manualSearch,
-                                                                 downCurQuality,
-                                                                 cacheOnly)
+                found_results = providerObj.find_search_results(show_id,
+                                                                season,
+                                                                episode,
+                                                                search_mode,
+                                                                manualSearch,
+                                                                downCurQuality,
+                                                                cacheOnly)
             except AuthException as e:
                 sickrage.app.log.warning("Authentication error: {}".format(e))
                 break
@@ -383,17 +380,12 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
             finally:
                 threading.currentThread().setName(orig_thread_name)
 
-            if len(search_results):
+            if len(found_results):
                 # make a list of all the results for this provider
-                for search_result in search_results:
-                    if search_result in found_results:
-                        found_results[providerObj.name][search_result] += search_results[search_result]
-                    else:
-                        found_results[providerObj.name][search_result] = search_results[search_result]
-
+                for search_result in found_results:
                     # Sort results by seeders if available
                     if providerObj.type == 'torrent' or getattr(providerObj, 'torznab', False):
-                        found_results[providerObj.name][search_result].sort(key=lambda k: int(k.seeders), reverse=True)
+                        found_results[search_result].sort(key=lambda k: int(k.seeders), reverse=True)
                 break
             elif not providerObj.search_fallback or search_count == 2:
                 break
@@ -406,17 +398,17 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
                 search_mode = 'sponly'
 
         # skip to next provider if we have no results to process
-        if not len(found_results[providerObj.name]):
+        if not len(found_results):
             continue
 
         # pick the best season NZB
         best_season_result = None
-        if SEASON_RESULT in found_results[providerObj.name]:
-            best_season_result = pick_best_result(found_results[providerObj.name][SEASON_RESULT], season_pack=True)
+        if SEASON_RESULT in found_results:
+            best_season_result = pick_best_result(found_results[SEASON_RESULT], season_pack=True)
 
         highest_quality_overall = 0
-        for cur_episode in found_results[providerObj.name]:
-            for cur_result in found_results[providerObj.name][cur_episode]:
+        for cur_episode in found_results:
+            for cur_result in found_results[cur_episode]:
                 if cur_result.quality != Quality.UNKNOWN and cur_result.quality > highest_quality_overall:
                     highest_quality_overall = cur_result.quality
 
@@ -465,10 +457,10 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
                         elif len(curResult.episodes) > 1:
                             ep_num = MULTI_EP_RESULT
 
-                        if ep_num in found_results[providerObj.name]:
-                            found_results[providerObj.name][ep_num].append(curResult)
+                        if ep_num in found_results:
+                            found_results[ep_num].append(curResult)
                         else:
-                            found_results[providerObj.name][ep_num] = [curResult]
+                            found_results[ep_num] = [curResult]
 
                 # If this is a torrent all we can do is leech the entire torrent, user will have to select which
                 # eps not do download in his torrent client
@@ -480,15 +472,15 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
 
                     best_season_result.episodes = all_episodes
 
-                    if MULTI_EP_RESULT in found_results[providerObj.name]:
-                        found_results[providerObj.name][MULTI_EP_RESULT].append(best_season_result)
+                    if MULTI_EP_RESULT in found_results:
+                        found_results[MULTI_EP_RESULT].append(best_season_result)
                     else:
-                        found_results[providerObj.name][MULTI_EP_RESULT] = [best_season_result]
+                        found_results[MULTI_EP_RESULT] = [best_season_result]
 
         # go through multi-ep results and see if we really want them or not, get rid of the rest
         multi_results = {}
-        if MULTI_EP_RESULT in found_results[providerObj.name]:
-            for _multiResult in found_results[providerObj.name][MULTI_EP_RESULT]:
+        if MULTI_EP_RESULT in found_results:
+            for _multiResult in found_results[MULTI_EP_RESULT]:
                 sickrage.app.log.debug(
                     "Seeing if we want to bother with multi-episode result " + _multiResult.name)
 
@@ -502,7 +494,7 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
                 not_needed_eps = []
                 for multi_result_episode in multi_result.episodes:
                     # if we have results for the episode
-                    if multi_result_episode in found_results[providerObj.name] and len(found_results[providerObj.name][multi_result_episode]) > 0:
+                    if multi_result_episode in found_results and len(found_results[multi_result_episode]) > 0:
                         not_needed_eps.append(multi_result_episode)
                     else:
                         needed_eps.append(multi_result_episode)
@@ -535,47 +527,43 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
                 for multi_result_episode in multi_result.episodes:
                     multi_results[multi_result_episode] = multi_result
 
-                    if multi_result_episode in found_results[providerObj.name]:
-                        sickrage.app.log.debug(
-                            "A needed multi-episode result overlaps with a single-episode result for ep #" + str(
-                                multi_result_episode) + ", removing the single-episode results from the list")
-                        del found_results[providerObj.name][multi_result_episode]
+                    if multi_result_episode in found_results:
+                        sickrage.app.log.debug("A needed multi-episode result overlaps with a single-episode result for ep #" + str(
+                            multi_result_episode) + ", removing the single-episode results from the list")
+                        del found_results[multi_result_episode]
 
-        # of all the single ep results narrow it down to the best one for each episode
+        # of all the single ep results narrow it down to the best one
         final_results += set(multi_results.values())
-        for curEp in found_results[providerObj.name]:
+        for curEp in found_results:
             if curEp in (MULTI_EP_RESULT, SEASON_RESULT):
                 continue
 
-            if not len(found_results[providerObj.name][curEp]) > 0:
+            if not len(found_results[curEp]) > 0:
                 continue
 
             # if all results were rejected move on to the next episode
-            best_result = pick_best_result(found_results[providerObj.name][curEp])
+            best_result = pick_best_result(found_results[curEp])
             if not best_result:
                 continue
 
-            # add result if its not a duplicate and
-            found = False
-            for i, result in enumerate(final_results.copy()):
-                for best_result_episode in best_result.episodes:
-                    if best_result_episode in result.episodes:
-                        if result.quality < best_result.quality:
-                            final_results.pop(i)
-                        else:
-                            found = True
+            # add result
+            final_results += [best_result]
 
-            if not found:
-                final_results += [best_result]
+        # narrow results by comparing quality
+        if len(final_results) > 1:
+            final_results = [a for a, b in itertools.product(final_results, repeat=len(final_results)) if a.quality >= b.quality and a != b]
+
+        # narrow results by comparing seeders
+        if len(final_results) > 1:
+            final_results = [a for a, b in itertools.product(final_results, repeat=len(final_results)) if a.seeders > b.seeders and a != b]
 
         # check that we got all the episodes we wanted first before doing a match and snatch
-        wanted_ep_count = 0
-        for result in final_results:
-            if episode in result.episodes and is_final_result(result):
-                wanted_ep_count += 1
+        for i, result in enumerate(final_results.copy()):
+            if not all([episode in result.episodes and is_final_result(result)]):
+                final_results.pop(i)
 
-        # make sure we search every provider for results unless we found everything we wanted
-        if wanted_ep_count >= 1:
+        # exit loop if we have a result
+        if len(final_results) == 1:
             break
 
     return final_results
