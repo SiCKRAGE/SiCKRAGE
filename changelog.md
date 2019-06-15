@@ -1,5 +1,7 @@
 # Changelog
 
+- * 80cc2c483 - 2019-06-15: Refactored provider search to return single result, avoids multiple snatches. 
+- * f3b429ade - 2019-06-15: Pre-Release v9.4.85.dev28 
 - * 6af5a7dee - 2019-06-15: Cleaned up search queue code. 
 - * 85455596c - 2019-06-14: Pre-Release v9.4.85.dev27 
 - * 52691bd6a - 2019-06-14: Fixed issue with unprocessed videos being skipped due to being processed. Added exception handling for updating non-mp4 video tags. 
