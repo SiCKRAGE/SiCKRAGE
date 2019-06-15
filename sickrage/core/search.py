@@ -321,8 +321,6 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
 
     orig_thread_name = threading.currentThread().getName()
 
-    final_results = []
-
     show_object = find_show(show_id, session=session)
 
     # build name cache for show
@@ -441,7 +439,7 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
 
                 best_season_result.episodes = all_episodes
 
-                return [best_season_result]
+                return best_season_result
             elif not any_wanted:
                 sickrage.app.log.debug("No eps from this season are wanted at this quality, ignoring the result of {}".format(best_season_result.name))
             else:
@@ -533,37 +531,35 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
                         del found_results[multi_result_episode]
 
         # of all the single ep results narrow it down to the best one
-        final_results += set(multi_results.values())
-        for curEp in found_results:
+        final_results = set(multi_results.values())
+        for curEp, curResults in found_results.items():
             if curEp in (MULTI_EP_RESULT, SEASON_RESULT):
                 continue
 
-            if not len(found_results[curEp]) > 0:
+            if not len(curResults) > 0:
                 continue
 
             # if all results were rejected move on to the next episode
-            best_result = pick_best_result(found_results[curEp])
+            best_result = pick_best_result(curResults)
             if not best_result:
                 continue
 
             # add result
-            final_results += [best_result]
+            final_results.add(best_result)
 
         # narrow results by comparing quality
         if len(final_results) > 1:
-            final_results = [a for a, b in itertools.product(final_results, repeat=len(final_results)) if a.quality >= b.quality and a != b]
+            final_results = set([a for a, b in itertools.product(final_results, repeat=len(final_results)) if a.quality >= b.quality])
 
         # narrow results by comparing seeders
         if len(final_results) > 1:
-            final_results = [a for a, b in itertools.product(final_results, repeat=len(final_results)) if a.seeders > b.seeders and a != b]
+            final_results = set([a for a, b in itertools.product(final_results, repeat=len(final_results)) if a.seeders > b.seeders])
 
         # check that we got all the episodes we wanted first before doing a match and snatch
-        for i, result in enumerate(final_results.copy()):
+        for result in final_results.copy():
             if not all([episode in result.episodes and is_final_result(result)]):
-                final_results.pop(i)
+                final_results.remove(result)
 
         # exit loop if we have a result
         if len(final_results) == 1:
-            break
-
-    return final_results
+            return next(iter(final_results))

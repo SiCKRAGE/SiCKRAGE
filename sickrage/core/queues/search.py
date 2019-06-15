@@ -168,16 +168,15 @@ class DailySearchQueueItem(SRQueueItem):
 
             search_result = search_providers(self.show_id, self.season, self.episode, cacheOnly=sickrage.app.config.enable_rss_cache)
             if search_result:
-                for result in search_result:
-                    for episode in result.episodes:
-                        if (result.show_id, result.season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
-                            raise StopIteration
+                for episode in search_result.episodes:
+                    if (search_result.show_id, search_result.season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
+                        raise StopIteration
 
-                        sickrage.app.search_queue.fifo(sickrage.app.search_queue.SNATCH_HISTORY, (result.show_id, result.season, episode),
-                                                       sickrage.app.search_queue.SNATCH_HISTORY_SIZE)
+                    sickrage.app.search_queue.fifo(sickrage.app.search_queue.SNATCH_HISTORY, (search_result.show_id, search_result.season, episode),
+                                                   sickrage.app.search_queue.SNATCH_HISTORY_SIZE)
 
-                    sickrage.app.log.info("Downloading " + result.name + " from " + result.provider.name)
-                    snatch_episode(result)
+                sickrage.app.log.info("Downloading " + search_result.name + " from " + search_result.provider.name)
+                snatch_episode(search_result)
             else:
                 sickrage.app.log.info("Unable to find search results for: [" + show_obj.name + "]")
         except StopIteration:
@@ -212,13 +211,12 @@ class ManualSearchQueueItem(SRQueueItem):
 
             search_result = search_providers(self.show_id, self.season, self.episode, manualSearch=True, downCurQuality=self.downCurQuality)
             if search_result:
-                # just use the first result for now
-                sickrage.app.log.info("Downloading " + search_result[0].name + " from " + search_result[0].provider.name)
-                for episode in search_result[0].episodes:
-                    sickrage.app.search_queue.fifo(sickrage.app.search_queue.SNATCH_HISTORY, (search_result[0].show_id, search_result[0].season, episode),
+                sickrage.app.log.info("Downloading " + search_result.name + " from " + search_result.provider.name)
+                for episode in search_result.episodes:
+                    sickrage.app.search_queue.fifo(sickrage.app.search_queue.SNATCH_HISTORY, (search_result.show_id, search_result.season, episode),
                                                    sickrage.app.search_queue.SNATCH_HISTORY_SIZE)
 
-                self.success = snatch_episode(search_result[0])
+                self.success = snatch_episode(search_result)
             else:
                 sickrage.app.alerts.message(
                     _('No downloads were found'),
@@ -255,16 +253,15 @@ class BacklogQueueItem(SRQueueItem):
 
             search_result = search_providers(self.show_id, self.season, self.episode, manualSearch=False)
             if search_result:
-                for result in search_result:
-                    for episode in result.episodes:
-                        if (result.show_id, result.season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
-                            raise StopIteration
+                for episode in search_result.episodes:
+                    if (search_result.show_id, search_result.season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
+                        raise StopIteration
 
-                        sickrage.app.search_queue.fifo(sickrage.app.search_queue.SNATCH_HISTORY, (result.show_id, result.season, episode),
-                                                       sickrage.app.search_queue.SNATCH_HISTORY_SIZE)
+                    sickrage.app.search_queue.fifo(sickrage.app.search_queue.SNATCH_HISTORY, (search_result.show_id, search_result.season, episode),
+                                                   sickrage.app.search_queue.SNATCH_HISTORY_SIZE)
 
-                    sickrage.app.log.info("Downloading " + result.name + " from " + result.provider.name)
-                    snatch_episode(result)
+                sickrage.app.log.info("Downloading " + search_result.name + " from " + search_result.provider.name)
+                snatch_episode(search_result)
             else:
                 sickrage.app.log.info("Unable to find search results for: [" + show_object.name + "]")
         except StopIteration:
@@ -310,16 +307,15 @@ class FailedQueueItem(SRQueueItem):
 
             search_result = search_providers(self.show_id, self.season, self.episode, manualSearch=True, downCurQuality=False)
             if search_result:
-                for result in search_result:
-                    for episode in result.episodes:
-                        if (result.show_id, result.season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
-                            raise StopIteration
+                for episode in search_result.episodes:
+                    if (search_result.show_id, search_result.season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
+                        raise StopIteration
 
-                        sickrage.app.search_queue.fifo(sickrage.app.search_queue.SNATCH_HISTORY, (result.show_id, result.season, episode),
-                                                       sickrage.app.search_queue.SNATCH_HISTORY_SIZE)
+                    sickrage.app.search_queue.fifo(sickrage.app.search_queue.SNATCH_HISTORY, (search_result.show_id, search_result.season, episode),
+                                                   sickrage.app.search_queue.SNATCH_HISTORY_SIZE)
 
-                    sickrage.app.log.info("Downloading " + result.name + " from " + result.provider.name)
-                    snatch_episode(result)
+                sickrage.app.log.info("Downloading " + search_result.name + " from " + search_result.provider.name)
+                snatch_episode(search_result)
         except StopIteration:
             pass
         except Exception:
