@@ -193,19 +193,16 @@
                                     <img alt="" class="card-img-top"
                                          src="${srWebRoot}${showImage(curShow.indexer_id, 'poster').url}"/>
                                 </a>
-                                <div class="card-header py-0 px-0">
-                                    <div class="bg-dark rounded">
-                                        <div class="progress progress-bar rounded d-print-none" role="progressbar"
-                                             style="width: ${progressbar_percent}%;height: 5px;"
+                                <div class="card-header bg-dark py-0 px-0">
+                                    <span style="display: none;">${download_stat}</span>
+                                    <div class="bg-dark progress shadow">
+                                        <div class="progress-bar d-print-none"
+                                             style="width: ${progressbar_percent}%"
+                                             data-show-id="${curShow.indexer_id}"
                                              data-progress-percentage="${progressbar_percent}"
-                                             data-show-id="${curShow.indexer_id}">
+                                             data-progress-text="${download_stat}"
+                                             data-progress-tip="${download_stat_tip}">
                                         </div>
-                                    </div>
-                                    <div>
-                                        <span class="d-block small show-dlstats badge"
-                                              title="${download_stat_tip}">
-                                            ${download_stat}
-                                        </span>
                                     </div>
                                 </div>
                                 <div class="card-body text-truncate py-1 px-1 small">
@@ -426,7 +423,8 @@
                                                      data-show-id="${curShow.indexer_id}"
                                                      data-progress-percentage="${progressbar_percent}"
                                                      data-progress-text="${download_stat}"
-                                                     data-progress-tip="${download_stat_tip}"></div>
+                                                     data-progress-tip="${download_stat_tip}">
+                                                </div>
                                             </div>
                                         </td>
 
