@@ -104,9 +104,7 @@ class TVShow(MainDBBase):
     def airs_next(self):
         _airs_next = datetime.date.min
         for episode_object in self.episodes:
-            if episode_object.season == 0:
-                continue
-            if episode_object.status in [UNAIRED, WANTED] and episode_object.airdate >= datetime.date.today() and _airs_next == datetime.date.min:
+            if episode_object.season != 0 and episode_object.status in [UNAIRED, WANTED] and episode_object.airdate >= datetime.date.today() and _airs_next == datetime.date.min:
                 _airs_next = episode_object.airdate
         return _airs_next
 
@@ -114,9 +112,7 @@ class TVShow(MainDBBase):
     def airs_prev(self):
         _airs_prev = datetime.date.min
         for episode_object in self.episodes:
-            if episode_object.season == 0:
-                continue
-            if episode_object.status != UNAIRED and episode_object.airdate < datetime.date.today() > _airs_prev:
+            if episode_object.season != 0 and episode_object.status != UNAIRED and episode_object.airdate < datetime.date.today() > _airs_prev:
                 _airs_prev = episode_object.airdate
         return _airs_prev
 
@@ -124,23 +120,15 @@ class TVShow(MainDBBase):
     def episodes_unaired(self):
         _episodes_unaired = 0
         for episode_object in self.episodes:
-            if episode_object.status == UNAIRED:
+            if episode_object.season != 0 and episode_object.status == UNAIRED:
                 _episodes_unaired += 1
         return _episodes_unaired
-
-    @property
-    def episodes_specials(self):
-        _episodes_specials = 0
-        for episode_object in self.episodes:
-            if episode_object.season == 0:
-                _episodes_specials += 1
-        return _episodes_specials
 
     @property
     def episodes_snatched(self):
         _episodes_snatched = 0
         for episode_object in self.episodes:
-            if episode_object.status in Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER:
+            if episode_object.season != 0 and episode_object.status in Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER:
                 _episodes_snatched += 1
         return _episodes_snatched
 
@@ -148,9 +136,41 @@ class TVShow(MainDBBase):
     def episodes_downloaded(self):
         _episodes_downloaded = 0
         for episode_object in self.episodes:
-            if episode_object.status in Quality.DOWNLOADED + Quality.ARCHIVED:
+            if episode_object.season != 0 and episode_object.status in Quality.DOWNLOADED + Quality.ARCHIVED:
                 _episodes_downloaded += 1
         return _episodes_downloaded
+
+    @property
+    def episodes_special(self):
+        _episodes_specials = 0
+        for episode_object in self.episodes:
+            if episode_object.season == 0:
+                _episodes_specials += 1
+        return _episodes_specials
+
+    @property
+    def episodes_special_unaired(self):
+        _episodes_specials_unaired = 0
+        for episode_object in self.episodes:
+            if episode_object.season == 0 and episode_object.status == UNAIRED:
+                _episodes_specials_unaired += 1
+        return _episodes_specials_unaired
+
+    @property
+    def episodes_special_downloaded(self):
+        _episodes_special_downloaded = 0
+        for episode_object in self.episodes:
+            if episode_object.season == 0 and episode_object.status in Quality.DOWNLOADED + Quality.ARCHIVED:
+                _episodes_special_downloaded += 1
+        return _episodes_special_downloaded
+
+    @property
+    def episodes_special_snatched(self):
+        _episodes_special_snatched = 0
+        for episode_object in self.episodes:
+            if episode_object.season == 0 and episode_object.status in Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER:
+                _episodes_special_snatched += 1
+        return _episodes_special_snatched
 
     @property
     def total_size(self):
