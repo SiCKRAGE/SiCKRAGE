@@ -1,5 +1,8 @@
 # Changelog
 
+- * 255da20e8 - 2019-06-15: Fixed issue with loading episode details from .nfo file for multi-episodes. 
+- * 9906b4952 - 2019-06-15: Fixed issue with main show page including downloaded specials in download total. 
+- * 242607a98 - 2019-06-15: Pre-Release v9.4.85.dev29 
 - * 80cc2c483 - 2019-06-15: Refactored provider search to return single result, avoids multiple snatches. 
 - * f3b429ade - 2019-06-15: Pre-Release v9.4.85.dev28 
 - * 6af5a7dee - 2019-06-15: Cleaned up search queue code. 
