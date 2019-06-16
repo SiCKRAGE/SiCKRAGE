@@ -364,14 +364,14 @@ class TVEpisode(MainDBBase):
                     raise NoNFOException("Error in NFO format")
 
                 for epDetails in showXML.iter('episodedetails'):
-                    if epDetails.findtext('season') is None or int(epDetails.findtext('season')) != self.season or epDetails.findtext(
-                            'episode') is None or int(epDetails.findtext('episode')) != self.episode:
+                    if (epDetails.findtext('season') is None or int(epDetails.findtext('season')) != self.season) or (epDetails.findtext(
+                            'episode') is None or int(epDetails.findtext('episode')) != self.episode):
                         sickrage.app.log.debug("%s: NFO has an <episodedetails> block for a different episode - wanted S%02dE%02d but got "
                                                "S%02dE%02d" % (self.show.indexer_id,
                                                                self.season or 0,
                                                                self.episode or 0,
-                                                               epDetails.findtext('season')
-                                                               or 0, epDetails.findtext('episode') or 0))
+                                                               int(epDetails.findtext('season')) or 0,
+                                                               int(epDetails.findtext('episode')) or 0))
                         continue
 
                     if epDetails.findtext('title') is None or epDetails.findtext('aired') is None:
