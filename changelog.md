@@ -1,5 +1,6 @@
 # Changelog
 
+- * 13c6d5e05 - 2019-06-18: Pre-Release v9.4.85.dev33 
 - * d37b9d803 - 2019-06-18: Pre-Release v9.4.85.dev32 
 - * 9cb4a4835 - 2019-06-18: Added database integrity exception handling to catch exceptions caused by existing provider results in database. 
 - * 2ab143623 - 2019-06-16: Fixed SICKRAGE-APP-PY3-BP - string indices must be integers 
