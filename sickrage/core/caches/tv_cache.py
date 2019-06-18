@@ -22,6 +22,7 @@ import time
 
 import feedparser
 from sqlalchemy import orm
+from sqlalchemy.exc import IntegrityError
 
 import sickrage
 from sickrage.core.api.cache import ProviderCacheAPI
@@ -231,7 +232,10 @@ class TVCache(object):
                     }
 
                     # add to internal database
-                    session.add(CacheDB.Provider(**dbData))
+                    try:
+                        session.add(CacheDB.Provider(**dbData))
+                    except IntegrityError:
+                        sickrage.app.log.debug("SEARCH RESULT:[{}] ALREADY IN CACHE!".format(name))
 
                     # add to external provider cache database
                     if sickrage.app.config.enable_api_providers_cache and not self.provider.private:
