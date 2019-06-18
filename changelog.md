@@ -1,5 +1,8 @@
 # Changelog
 
+- * 9cb4a4835 - 2019-06-18: Added database integrity exception handling to catch exceptions caused by existing provider results in database. 
+- * 2ab143623 - 2019-06-16: Fixed SICKRAGE-APP-PY3-BP - string indices must be integers 
+- * d50d1406c - 2019-06-16: Pre-Release v9.4.85.dev31 
 - * f75ab4795 - 2019-06-16: Refactored progress-bar for poster view. 
 - * a75533a33 - 2019-06-15: Pre-Release v9.4.85.dev30 
 - * 255da20e8 - 2019-06-15: Fixed issue with loading episode details from .nfo file for multi-episodes. 
