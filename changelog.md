@@ -1,5 +1,7 @@
 # Changelog
 
+- * 6ffebcc06 - 2019-06-22: Refactored rTorrent client to use python 3 xmlrpc. Fixed SICKRAGE-APP-PY3-C5, &#x60;&#x27;NoneType&#x27; object has no attribute &#x27;query&#x27;&#x60; 
+- * 17f4e245c - 2019-06-18: Pre-Release v9.4.85.dev34 
 - * 13c6d5e05 - 2019-06-18: Pre-Release v9.4.85.dev33 
 - * d37b9d803 - 2019-06-18: Pre-Release v9.4.85.dev32 
 - * 9cb4a4835 - 2019-06-18: Added database integrity exception handling to catch exceptions caused by existing provider results in database. 
