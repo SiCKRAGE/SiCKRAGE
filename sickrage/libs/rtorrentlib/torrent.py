@@ -19,7 +19,6 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import rtorrentlib.file
-# from rtorrent.rpc import Method
 import rtorrentlib.peer
 import rtorrentlib.rpc
 import rtorrentlib.tracker

@@ -20,11 +20,10 @@
 
 import inspect
 import re
-import xmlrpclib
+import xmlrpc.client
 
 import rtorrentlib
-from rtorrentlib.common import bool_to_int, convert_version_tuple_to_str, \
-    safe_repr
+from rtorrentlib.common import bool_to_int, convert_version_tuple_to_str, safe_repr
 from rtorrentlib.err import MethodError
 
 
@@ -160,7 +159,7 @@ class Multicall:
         @return: the results (post-processed), in the order they were added
         @rtype: tuple
         """
-        m = xmlrpclib.MultiCall(self.rt_obj._get_conn())
+        m = xmlrpc.client.MultiCall(self.rt_obj._get_conn())
         for call in self.calls:
             method, args = call
             rpc_call = getattr(method, "rpc_call")

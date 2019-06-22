@@ -21,13 +21,13 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import string
-import xmlrpclib
+import xmlrpc.client
 from base64 import encodestring
 
 
-class BasicAuthTransport(xmlrpclib.Transport):
+class BasicAuthTransport(xmlrpc.client.Transport):
     def __init__(self, username=None, password=None):
-        xmlrpclib.Transport.__init__(self)
+        xmlrpc.client.Transport.__init__(self)
 
         self.username = username
         self.password = password
@@ -57,7 +57,7 @@ class BasicAuthTransport(xmlrpclib.Transport):
             if response.status == 200:
                 self.verbose = verbose
                 return self.parse_response(response)
-        except xmlrpclib.Fault:
+        except xmlrpc.client.Fault:
             raise
         except Exception:
             self.close()
@@ -66,7 +66,7 @@ class BasicAuthTransport(xmlrpclib.Transport):
         #discard any response data and raise exception
         if response.getheader("content-length", 0):
             response.read()
-        raise xmlrpclib.ProtocolError(
+        raise xmlrpc.client.ProtocolError(
             host + handler,
             response.status, response.reason,
             response.msg,

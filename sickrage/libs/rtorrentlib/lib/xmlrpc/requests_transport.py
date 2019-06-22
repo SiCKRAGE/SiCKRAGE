@@ -20,10 +20,7 @@ Support:
 -Proxies
 """
 
-try:
-    import xmlrpc.client as xmlrpc_client
-except ImportError:
-    import xmlrpclib as xmlrpc_client
+import xmlrpc.client
 
 import traceback
 
@@ -31,10 +28,9 @@ import requests
 from requests.auth import HTTPBasicAuth
 from requests.auth import HTTPDigestAuth
 from requests.exceptions import RequestException
-from requests.packages.urllib3 import disable_warnings  # @UnresolvedImport
+from urllib3 import disable_warnings
 
-
-class RequestsTransport(xmlrpc_client.Transport):
+class RequestsTransport(xmlrpc.client.Transport):
 
     """Transport class for xmlrpc using requests"""
 
@@ -56,10 +52,10 @@ class RequestsTransport(xmlrpc_client.Transport):
             ValueError: Invalid info
         """
         # Python 2 can't use super on old style class.
-        if issubclass(xmlrpc_client.Transport, object):
+        if issubclass(xmlrpc.client.Transport, object):
             super(RequestsTransport, self).__init__()
         else:
-            xmlrpc_client.Transport.__init__(self)
+            xmlrpc.client.Transport.__init__(self)
 
         self.user_agent = "Python Requests/" + requests.__version__
 
@@ -144,7 +140,7 @@ class RequestsTransport(xmlrpc_client.Transport):
         try:
             response.raise_for_status()
         except RequestException as error:
-            raise xmlrpc_client.ProtocolError(url,
+            raise xmlrpc.client.ProtocolError(url,
                                               error,
                                               traceback.format_exc(),
                                               response.headers)

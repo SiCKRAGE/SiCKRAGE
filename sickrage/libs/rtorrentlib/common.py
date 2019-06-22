@@ -62,11 +62,11 @@ def find_torrent(info_hash, torrent_list):
 
 def is_valid_port(port):
     """Check if given port is valid"""
-    return(0 <= int(port) <= 65535)
+    return 0 <= int(port) <= 65535
 
 
 def convert_version_tuple_to_str(t):
-    return(".".join([str(n) for n in t]))
+    return ".".join([str(n) for n in t])
 
 
 def safe_repr(fmt, *args, **kwargs):

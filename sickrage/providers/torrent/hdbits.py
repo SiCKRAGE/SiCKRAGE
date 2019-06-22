@@ -18,6 +18,7 @@ import json
 from urllib.parse import urlencode
 
 import sickrage
+from sickrage.core import MainDB
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import try_int
@@ -54,6 +55,7 @@ class HDBitsProvider(TorrentProvider):
 
         return True
 
+    @MainDB.with_session
     def _get_season_search_strings(self, show_id, season, episode, session=None):
         post_data = {
             'username': self.username,
@@ -83,6 +85,7 @@ class HDBitsProvider(TorrentProvider):
 
         return [json.dumps(post_data)]
 
+    @MainDB.with_session
     def _get_episode_search_strings(self, show_id, season, episode, add_string='', session=None):
         post_data = {
             'username': self.username,

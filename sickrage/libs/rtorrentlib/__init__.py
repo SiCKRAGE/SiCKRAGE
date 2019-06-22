@@ -21,19 +21,18 @@ import os.path
 import time
 import urllib
 
-import xmlrpclib
+import xmlrpc.client
+import xmlrpc.server
 
 import rtorrentlib.rpc  # @UnresolvedImport
-from rtorrentlib.common import (  # @UnresolvedImport
-    is_valid_port,  # @UnresolvedImport
-    convert_version_tuple_to_str)  # @UnresolvedImport
-from rtorrentlib.group import Group  # @UnresolvedImport
-from rtorrentlib.lib.torrentparser import TorrentParser  # @UnresolvedImport
-from rtorrentlib.lib.xmlrpc.http import HTTPServerProxy  # @UnresolvedImport
-from rtorrentlib.lib.xmlrpc.requests_transport import RequestsTransport  # @UnresolvedImport @IgnorePep8
-from rtorrentlib.lib.xmlrpc.scgi import SCGIServerProxy  # @UnresolvedImport
-from rtorrentlib.rpc import Method  # @UnresolvedImport
-from rtorrentlib.torrent import Torrent  # @UnresolvedImport
+from rtorrentlib.common import is_valid_port, convert_version_tuple_to_str
+from rtorrentlib.group import Group
+from rtorrentlib.lib.torrentparser import TorrentParser
+from rtorrentlib.lib.xmlrpc.http import HTTPServerProxy
+from rtorrentlib.lib.xmlrpc.requests_transport import RequestsTransport
+from rtorrentlib.lib.xmlrpc.scgi import SCGIServerProxy
+from rtorrentlib.rpc import Method
+from rtorrentlib.torrent import Torrent
 
 __version__ = "0.2.9"
 __author__ = "Chris Lucas"
@@ -314,7 +313,7 @@ class RTorrent:
         """
         p = self._get_conn()
         tp = TorrentParser(new_torrent)
-        new_torrent = xmlrpclib.Binary(tp._raw_torrent)
+        new_torrent = xmlrpc.client.Binary(tp._raw_torrent)
         info_hash = tp.info_hash
 
         func_name = self._get_load_function("raw", start, verbose)
@@ -377,7 +376,7 @@ class RTorrent:
             new_torrent = open(new_torrent, "rb").read()
 
         if file_type in ["raw", "file"]:
-            finput = xmlrpclib.Binary(new_torrent)
+            finput = xmlrpc.client.Binary(new_torrent)
         elif file_type == "url":
             finput = new_torrent
 

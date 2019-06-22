@@ -20,6 +20,7 @@ import re
 from requests.utils import dict_from_cookiejar
 
 import sickrage
+from sickrage.core import MainDB
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import sanitize_scene_name, show_names, bs4_parser, try_int, convert_size
@@ -51,6 +52,7 @@ class TVChaosUKProvider(TorrentProvider):
 
         raise AuthException('Your authentication credentials for ' + self.name + ' are missing, check your config.')
 
+    @MainDB.with_session
     def _get_season_search_strings(self, show_id, season, episode, session=None):
 
         search_string = {'Season': []}
@@ -72,6 +74,7 @@ class TVChaosUKProvider(TorrentProvider):
 
         return [search_string]
 
+    @MainDB.with_session
     def _get_episode_search_strings(self, show_id, season, episode, add_string='', session=None):
 
         search_string = {'Episode': []}

@@ -25,6 +25,7 @@ import re
 from unidecode import unidecode
 
 import sickrage
+from sickrage.core import MainDB
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser, convert_size
 from sickrage.core.helpers.show_names import all_possible_show_names
@@ -48,6 +49,7 @@ class NewpctProvider(TorrentProvider):
 
         self.cache = NewpctCache(self, min_time=20)
 
+    @MainDB.with_session
     def _get_season_search_strings(self, show_id, season, episode, session=None):
         """
         Get season search strings.
@@ -74,6 +76,7 @@ class NewpctProvider(TorrentProvider):
 
         return [search_strings]
 
+    @MainDB.with_session
     def _get_episode_search_strings(self, show_id, season, episode, add_string='', session=None):
         """
         Get episode search strings.
