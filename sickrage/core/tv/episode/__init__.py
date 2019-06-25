@@ -166,7 +166,7 @@ class TVEpisode(MainDBBase):
             try:
                 success[method] = func()
             except NoNFOException:
-                sickrage.app.log.error("%s: There was an error loading the NFO for episode S%02dE%02d" % (
+                sickrage.app.log.warning("%s: There was an issue loading the NFO for episode S%02dE%02d" % (
                     self.show.indexer_id, season or 0, episode or 0))
             except EpisodeDeletedException:
                 pass

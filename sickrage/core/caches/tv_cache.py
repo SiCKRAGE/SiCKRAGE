@@ -19,10 +19,10 @@
 
 import datetime
 import time
+from sqlite3 import IntegrityError
 
 import feedparser
 from sqlalchemy import orm
-from sqlalchemy.exc import IntegrityError
 
 import sickrage
 from sickrage.core.api.cache import ProviderCacheAPI

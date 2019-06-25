@@ -362,7 +362,7 @@ class GenericProvider(object):
                     provider_result.episodes = [dbData.episode]
 
             # make sure we want the episode
-            for episode_number in provider_result.episodes:
+            for episode_number in provider_result.episodes.copy():
                 if not provider_result_show_obj.want_episode(provider_result.season, episode_number, provider_result.quality, manualSearch, downCurQuality):
                     sickrage.app.log.info("RESULT:[{}] QUALITY:[{}] IGNORED!".format(provider_result.name, Quality.qualityStrings[provider_result.quality]))
                     provider_result.episodes.remove(episode_number)
