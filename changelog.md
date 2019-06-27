@@ -1,5 +1,8 @@
 # Changelog
 
+- * 33a8b4856 - 2019-06-27: Refactored TheTVDB API authentication code to resolve auth issues. 
+- * 3832745f4 - 2019-06-25: Refactored misc errors to warnings. Fixed IntegrityError exception catching for adding provider result to DB. 
+- * b7bc6f3ee - 2019-06-22: Pre-Release v9.4.85.dev35 
 - * 6ffebcc06 - 2019-06-22: Refactored rTorrent client to use python 3 xmlrpc. Fixed SICKRAGE-APP-PY3-C5, &#x60;&#x27;NoneType&#x27; object has no attribute &#x27;query&#x27;&#x60; 
 - * 17f4e245c - 2019-06-18: Pre-Release v9.4.85.dev34 
 - * 13c6d5e05 - 2019-06-18: Pre-Release v9.4.85.dev33 
