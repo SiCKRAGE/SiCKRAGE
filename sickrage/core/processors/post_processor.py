@@ -32,7 +32,7 @@ from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import EpisodePostProcessingFailedException, NoFreeSpaceException
 from sickrage.core.helpers import show_names, replace_extension, make_dir, chmod_as_parent, move_file, copy_file, hardlink_file, move_and_symlink_file, \
     remove_non_release_groups, remove_extension, is_file_locked, verify_freespace, delete_empty_folders, make_dirs, symlink, is_rar_file, glob_escape, \
-    touch_file
+    modify_file_timestamp, touch_file
 from sickrage.core.helpers.anidb import get_anime_episode
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
 from sickrage.core.tv.episode import TVEpisode

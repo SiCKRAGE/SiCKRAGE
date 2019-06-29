@@ -1034,9 +1034,9 @@ def restore_app_data(srcDir, dstDir):
         return False
 
 
-def touch_file(fname, atime=None):
+def modify_file_timestamp(fname, atime=None):
     """
-    Touch a file (change modification date)
+    Change a file timestamp (change modification date)
 
     :param fname: Filename to touch
     :param atime: Specific access time (defaults to None)
@@ -1048,6 +1048,11 @@ def touch_file(fname, atime=None):
         return True
 
     return False
+
+
+def touch_file(fname):
+    with open(fname, 'a'):
+        os.utime(fname, None)
 
 
 def get_size(start_path='.'):

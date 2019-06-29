@@ -33,7 +33,7 @@ from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, SKIPP
     NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
 from sickrage.core.databases.main import MainDBBase
 from sickrage.core.exceptions import NoNFOException, EpisodeNotFoundException, EpisodeDeletedException
-from sickrage.core.helpers import is_media_file, try_int, replace_extension, touch_file, sanitize_scene_name, remove_non_release_groups, remove_extension, \
+from sickrage.core.helpers import is_media_file, try_int, replace_extension, modify_file_timestamp, sanitize_scene_name, remove_non_release_groups, remove_extension, \
     sanitize_file_name, safe_getattr, make_dirs, move_file, delete_empty_folders
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_seasonnotfound, indexer_error, indexer_episodenotfound
@@ -652,7 +652,7 @@ class TVEpisode(MainDBBase):
                     str(self.show.indexer_id) + ": About to modify date of '" + self.location +
                     "' to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
                 try:
-                    if touch_file(self.location, time.mktime(airdatetime)):
+                    if modify_file_timestamp(self.location, time.mktime(airdatetime)):
                         sickrage.app.log.info(
                             str(self.show.indexer_id) + ": Changed modify date of " + os.path.basename(self.location)
                             + " to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
