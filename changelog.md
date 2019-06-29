@@ -1,5 +1,8 @@
 # Changelog
 
+- * c7e61d642 - 2019-06-29: Fixed issue with creating processed marker files. Refactored function name for modifying file timestamps. 
+- * cef304452 - 2019-06-29: Fixed issue with adding duplicate provider results to cache. 
+- * 3bb44d022 - 2019-06-27: Pre-Release v9.4.85.dev36 
 - * 33a8b4856 - 2019-06-27: Refactored TheTVDB API authentication code to resolve auth issues. 
 - * 3832745f4 - 2019-06-25: Refactored misc errors to warnings. Fixed IntegrityError exception catching for adding provider result to DB. 
 - * b7bc6f3ee - 2019-06-22: Pre-Release v9.4.85.dev35 
