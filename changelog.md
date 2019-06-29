@@ -1,5 +1,7 @@
 # Changelog
 
+- * 4deb2671f - 2019-06-29: Update readme.md 
+- * 1ca6bcdec - 2019-06-29: Release v9.4.85 
 - * 859f7d3e2 - 2019-06-29: Pre-Release v9.4.85.dev37 
 - * c7e61d642 - 2019-06-29: Fixed issue with creating processed marker files. Refactored function name for modifying file timestamps. 
 - * cef304452 - 2019-06-29: Fixed issue with adding duplicate provider results to cache. 
