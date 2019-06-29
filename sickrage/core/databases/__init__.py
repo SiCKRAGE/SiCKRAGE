@@ -22,7 +22,6 @@ import pickle
 import shutil
 import sqlite3
 from collections import OrderedDict
-from operator import itemgetter
 from sqlite3 import OperationalError
 from time import sleep
 
@@ -31,10 +30,8 @@ from migrate import DatabaseAlreadyControlledError, DatabaseNotControlledError
 from migrate.versioning import api
 from sqlalchemy import create_engine, event, inspect
 from sqlalchemy.engine import Engine
-from sqlalchemy.engine.reflection import Inspector
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import sessionmaker, mapper
-from sqlalchemy.pool import StaticPool, QueuePool
+from sqlalchemy.pool import QueuePool
 
 import sickrage
 from sickrage.core.helpers import backup_versioned_file

@@ -19,10 +19,10 @@
 
 import datetime
 import time
-from sqlite3 import IntegrityError
 
 import feedparser
 from sqlalchemy import orm
+from sqlalchemy.exc import IntegrityError
 
 import sickrage
 from sickrage.core.api.cache import ProviderCacheAPI
@@ -234,8 +234,11 @@ class TVCache(object):
                     # add to internal database
                     try:
                         session.add(CacheDB.Provider(**dbData))
-                    except IntegrityError:
+                        session.commit()
+                        sickrage.app.log.debug("SEARCH RESULT:[{}] ADDED TO CACHE!".format(name))
+                    except IntegrityError as e:
                         sickrage.app.log.debug("SEARCH RESULT:[{}] ALREADY IN CACHE!".format(name))
+                        session.rollback()
 
                     # add to external provider cache database
                     if sickrage.app.config.enable_api_providers_cache and not self.provider.private:
@@ -243,8 +246,6 @@ class TVCache(object):
                             sickrage.app.io_loop.run_in_executor(None, ProviderCacheAPI().add, data=dbData)
                         except Exception:
                             pass
-
-                    sickrage.app.log.debug("SEARCH RESULT:[{}] ADDED TO CACHE!".format(name))
         except (InvalidShowException, InvalidNameException):
             pass
 
