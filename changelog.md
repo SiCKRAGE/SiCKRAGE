@@ -1,5 +1,7 @@
 # Changelog
 
+- * 28a37348b - 2019-06-30: Fixes SICKRAGE-APP-PY3-C0 
+- * 2a6d3de11 - 2019-06-30: Pre-Release v9.4.87.dev6 
 - * c42ee9644 - 2019-06-30: Added exception handling for search status &#x60;get_episodes&#x60; function 
 - * 0a574b363 - 2019-06-30: Pre-Release v9.4.87.dev5 
 - * 77ac1dcf1 - 2019-06-30: Refactored API call &#x60;shows&#x60; to resolve coroutine issue 
