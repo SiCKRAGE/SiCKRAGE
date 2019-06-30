@@ -1721,7 +1721,11 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
         show_object = find_show(show_id, session=self.db_session)
 
         for item in items:
-            episode_object = show_object.get_episode(item.season, item.episode)
+            try:
+                episode_object = show_object.get_episode(item.season, item.episode)
+            except EpisodeNotFoundException:
+                continue
+
             results.append({'show': show_id,
                             'season': episode_object.season,
                             'episode': episode_object.episode,

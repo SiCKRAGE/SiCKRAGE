@@ -26,7 +26,6 @@ sentry_release:
     - export SENTRY_PROJECT=$SENTRY_PROJECT
     - sentry-cli releases new --project $SENTRY_PROJECT $(cat sickrage/version.txt)
     - sentry-cli releases set-commits --auto $(cat sickrage/version.txt)
-    - sentry-cli releases finalize $(cat sickrage/version.txt)
     - sentry-cli releases deploys $(cat sickrage/version.txt) new -e $CI_COMMIT_REF_NAME
   only:
     - develop
