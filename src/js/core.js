@@ -1315,6 +1315,8 @@ $(document).ready(function ($) {
             },
 
             schedule: function () {
+                SICKRAGE.ajax_search.init();
+
                 $.backstretch(SICKRAGE.srWebRoot + '/images/backdrops/schedule.jpg');
                 $('.backstretch').css("opacity", SICKRAGE.getMeta('sickrage.FANART_BACKGROUND_OPACITY')).fadeIn("500");
 
