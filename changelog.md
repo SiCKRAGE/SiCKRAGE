@@ -1,5 +1,7 @@
 # Changelog
 
+- * 3d96faf07 - 2019-06-30: Testing Sentry release tracking. 
+- * d8ef19390 - 2019-06-30: Pre-Release v9.4.87.dev2 
 - * b4eb0e71a - 2019-06-30: Resolved yaml issue for CI/CD 
 - * fda4adf7b - 2019-06-30: Pre-Release v9.4.87.dev1 
 - * 3f04b4d2c - 2019-06-30: Fixed &#x60;can&#x27;t compare datetime.datetime to datetime.date&#x60; for CompingEpisodes during API call. 
