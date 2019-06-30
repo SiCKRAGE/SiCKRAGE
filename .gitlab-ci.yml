@@ -1,6 +1,10 @@
 before_script:
   - apk add --no-cache py-pip
 
+stages:
+  - sentry_release
+  - build
+
 variables:
   CONTAINER_IMAGE: sickrage/sickrage
 
@@ -9,6 +13,22 @@ variables:
 
 services:
   - docker:dind
+
+sentry_release:
+  stage: release
+  image:
+    name: getsentry/sentry-cli
+    entrypoint: [""]
+  script:
+    - export SENTRY_URL=$SENTRY_URL
+    - export SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
+    - export SENTRY_ORG=$SENTRY_ORG
+    - export SENTRY_PROJECT=$SENTRY_PROJECT
+    - sentry-cli releases new --finalize --project $SENTRY_PROJECT $(cat sickrage/version.txt)
+    - sentry-cli releases set-commits --auto $(cat sickrage/version.txt)
+  only:
+    - develop
+    - master
 
 build_master:
   stage: build
