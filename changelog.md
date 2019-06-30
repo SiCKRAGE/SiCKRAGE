@@ -1,5 +1,7 @@
 # Changelog
 
+- * c42ee9644 - 2019-06-30: Added exception handling for search status &#x60;get_episodes&#x60; function 
+- * 0a574b363 - 2019-06-30: Pre-Release v9.4.87.dev5 
 - * 77ac1dcf1 - 2019-06-30: Refactored API call &#x60;shows&#x60; to resolve coroutine issue 
 - * 8f457a116 - 2019-06-30: Refactored API call &#x60;show.stats&#x60; 
 - * 352931e93 - 2019-06-30: Pre-Release v9.4.87.dev4 
