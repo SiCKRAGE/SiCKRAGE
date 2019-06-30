@@ -1,5 +1,8 @@
 # Changelog
 
+- * b8d32c76f - 2019-06-30: Refactored cache database last_search table provider column to be the new primary key, dropped column ID. 
+- * 5b281252f - 2019-06-30: Added Sentry deploys command to CI/CD. 
+- * 25f4b661f - 2019-06-30: Pre-Release v9.4.87.dev3 
 - * 3d96faf07 - 2019-06-30: Testing Sentry release tracking. 
 - * d8ef19390 - 2019-06-30: Pre-Release v9.4.87.dev2 
 - * b4eb0e71a - 2019-06-30: Resolved yaml issue for CI/CD 
