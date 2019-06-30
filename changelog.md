@@ -1,5 +1,7 @@
 # Changelog
 
+- * b4eb0e71a - 2019-06-30: Resolved yaml issue for CI/CD 
+- * fda4adf7b - 2019-06-30: Pre-Release v9.4.87.dev1 
 - * 3f04b4d2c - 2019-06-30: Fixed &#x60;can&#x27;t compare datetime.datetime to datetime.date&#x60; for CompingEpisodes during API call. 
 - * 5c877f45f - 2019-06-29: Release v9.4.86 
 - * 81c32f3b4 - 2019-06-29: Update readme.md 
