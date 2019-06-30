@@ -2699,7 +2699,9 @@ class CMD_Shows(ApiCall):
             else:
                 showDict['next_ep_airdate'] = ''
 
-            showDict["cache"] = CMD_ShowCache(self.application, self.request, **{"indexer_id": curShow.indexer_id}).run()["data"]
+            result = await CMD_ShowCache(self.application, self.request, **{"indexer_id": curShow.indexer_id}).run()
+            showDict["cache"] = result["data"]
+
             if not showDict["network"]:
                 showDict["network"] = ""
             if self.sort == "name":

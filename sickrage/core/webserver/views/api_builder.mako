@@ -50,7 +50,7 @@
                                 <div class="card-header">
                                     <h4 class="card-title">
                                         <a data-toggle="collapse" data-parent="#commands_list"
-                                           href="#command-${command_id}">${command}</a>
+                                           href="#command-${command_id}" style="color: #000;">${command}</a>
                                     </h4>
                                 </div>
                                 <div class="collapse" id="command-${command_id}">
