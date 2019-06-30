@@ -1,5 +1,8 @@
 # Changelog
 
+- * 77ac1dcf1 - 2019-06-30: Refactored API call &#x60;shows&#x60; to resolve coroutine issue 
+- * 8f457a116 - 2019-06-30: Refactored API call &#x60;show.stats&#x60; 
+- * 352931e93 - 2019-06-30: Pre-Release v9.4.87.dev4 
 - * b8d32c76f - 2019-06-30: Refactored cache database last_search table provider column to be the new primary key, dropped column ID. 
 - * 5b281252f - 2019-06-30: Added Sentry deploys command to CI/CD. 
 - * 25f4b661f - 2019-06-30: Pre-Release v9.4.87.dev3 
