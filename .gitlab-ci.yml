@@ -24,13 +24,14 @@ sentry_release:
     - export SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
     - export SENTRY_ORG=$SENTRY_ORG
     - export SENTRY_PROJECT=$SENTRY_PROJECT
-    - sentry-cli releases new --finalize --project $SENTRY_PROJECT $(cat sickrage/version.txt)
+    - sentry-cli releases new --project $SENTRY_PROJECT $(cat sickrage/version.txt)
     - sentry-cli releases set-commits --auto $(cat sickrage/version.txt)
+    - sentry-cli releases finalize $(cat sickrage/version.txt)
   only:
     - develop
     - master
 
-docker_master:
+deploy_docker_master:
   stage: deploy
   image: docker:latest
   script:
@@ -46,7 +47,7 @@ docker_master:
   except:
     - tags
 
-docker_develop:
+deploy_docker_develop:
   stage: deploy
   image: docker:latest
   script:
