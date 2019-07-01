@@ -399,6 +399,10 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
         if not len(found_results):
             continue
 
+        # remove duplicates
+        for cur_episode in found_results:
+            found_results[cur_episode] = [next(obj) for i, obj in itertools.groupby(sorted(found_results[cur_episode], key=lambda x: x.url), lambda x: x.url)]
+
         # pick the best season NZB
         best_season_result = None
         if SEASON_RESULT in found_results:
@@ -551,9 +555,10 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
         if len(final_results) > 1:
             final_results = set([a for a, b in itertools.product(final_results, repeat=len(final_results)) if a.quality >= b.quality])
 
-        # narrow results by comparing seeders
+        # narrow results by comparing seeders for torrent results
         if len(final_results) > 1:
-            final_results = set([a for a, b in itertools.product(final_results, repeat=len(final_results)) if a.seeders > b.seeders])
+            final_results = set(
+                [a for a, b in itertools.product(final_results, repeat=len(final_results)) if a.provider.type == NZBProvider.type or a.seeders > b.seeders])
 
         # check that we got all the episodes we wanted first before doing a match and snatch
         for result in final_results.copy():
