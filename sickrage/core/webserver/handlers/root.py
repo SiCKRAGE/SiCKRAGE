@@ -114,7 +114,7 @@ class SetHomeLayoutHandler(BaseHandler, ABC):
 class SetPosterSortByHandler(BaseHandler, ABC):
     @authenticated
     def post(self, *args, **kwargs):
-        sort = self.get_body_argument('sort')
+        sort = self.get_query_argument('sort')
 
         if sort not in ('name', 'date', 'network', 'progress'):
             sort = 'name'
@@ -126,7 +126,7 @@ class SetPosterSortByHandler(BaseHandler, ABC):
 class SetPosterSortDirHandler(BaseHandler, ABC):
     @authenticated
     def post(self, *args, **kwargs):
-        direction = self.get_body_argument('direction')
+        direction = self.get_query_argument('direction')
 
         sickrage.app.config.poster_sortdir = int(direction)
         sickrage.app.config.save()
