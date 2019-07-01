@@ -268,7 +268,9 @@ class QueueItemAdd(ShowQueueItem):
 
             # this usually only happens if they have an NFO in their show dir which gave us a Indexer ID that has no
             # proper english version of the show
-            if not getattr(s, 'seriesname'):
+            try:
+                s.seriesname
+            except AttributeError:
                 sickrage.app.log.warning("Show in {} has no name on {}, probably the wrong language used to search with".format(self.showDir, index_name))
                 sickrage.app.alerts.error(_("Unable to add show"),
                                           _("Show in {} has no name on {}, probably the wrong language. Delete .nfo "

@@ -477,15 +477,6 @@ def _is_int(data):
         return True
 
 
-def _rename_element(dict_obj, oldKey, newKey):
-    try:
-        dict_obj[newKey] = dict_obj[oldKey]
-        del dict_obj[oldKey]
-    except (ValueError, TypeError, NameError):
-        pass
-    return dict_obj
-
-
 def _responds(result_type, data=None, msg=""):
     """
     result is a string of given "type" (success/failure/timeout/error)
@@ -500,29 +491,6 @@ def _responds(result_type, data=None, msg=""):
 
 def _get_status_strings(s):
     return statusStrings[s]
-
-
-def _ordinal_to_datetime_form(ordinal):
-    # workaround for episodes with no airdate
-    if int(ordinal) != 1:
-        date = datetime.datetime.now().date().fromordinal(ordinal)
-    else:
-        return ""
-    return date.strftime(dateTimeFormat)
-
-
-def _ordinal_to_date_form(ordinal):
-    if int(ordinal) != 1:
-        date = datetime.datetime.now().date().fromordinal(ordinal)
-    else:
-        return ""
-
-    return date.strftime(dateFormat)
-
-
-def _history_date_to_datetime_form(timeString):
-    date = datetime.datetime.fromordinal(timeString)
-    return date.strftime(dateTimeFormat)
 
 
 def _map_quality(showObj):
