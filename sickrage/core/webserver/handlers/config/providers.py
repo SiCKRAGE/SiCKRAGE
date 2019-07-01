@@ -45,7 +45,7 @@ class ConfigProvidersHandler(BaseHandler):
 class CanAddNewznabProviderHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        name = self.get_query_argument('name')
+        name = self.get_argument('name')
 
         provider_obj = NewznabProvider(name, '')
         if provider_obj.id not in sickrage.app.search_providers.newznab():
@@ -56,10 +56,10 @@ class CanAddNewznabProviderHandler(BaseHandler, ABC):
 class CanAddTorrentRssProviderHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        name = self.get_query_argument('name')
-        url = self.get_query_argument('url')
-        cookies = self.get_query_argument('cookies')
-        title_tag = self.get_query_argument('titleTAG')
+        name = self.get_argument('name')
+        url = self.get_argument('url')
+        cookies = self.get_argument('cookies')
+        title_tag = self.get_argument('titleTAG')
 
         providerObj = TorrentRssProvider(name, url, cookies, title_tag)
         if providerObj.id not in sickrage.app.search_providers.torrentrss():
@@ -78,9 +78,9 @@ class GetNewznabCategoriesHandler(BaseHandler, ABC):
         Using the default url/api?cat
         http://yournewznaburl.com/api?t=caps&apikey=yourapikey
         """
-        name = self.get_query_argument('name')
-        url = self.get_query_argument('url')
-        key = self.get_query_argument('key')
+        name = self.get_argument('name')
+        url = self.get_argument('url')
+        key = self.get_argument('key')
 
         temp_provider = NewznabProvider(name, url, key)
         success, tv_categories, error = temp_provider.get_newznab_categories()
@@ -95,7 +95,7 @@ class SaveProvidersHandler(BaseHandler, ABC):
 
         # custom providers
         custom_providers = ''
-        for curProviderStr in self.get_body_argument('provider_strings', '').split('!!!'):
+        for curProviderStr in self.get_argument('provider_strings', '').split('!!!'):
             if not len(curProviderStr):
                 continue
 
@@ -121,13 +121,13 @@ class SaveProvidersHandler(BaseHandler, ABC):
 
         # remove providers
         for p in list(set(sickrage.app.search_providers.provider_order).difference(
-                [x.split(':')[0] for x in self.get_body_argument('provider_order', '').split('!!!')])):
+                [x.split(':')[0] for x in self.get_argument('provider_order', '').split('!!!')])):
             provider_obj = sickrage.app.search_providers.all()[p]
             del sickrage.app.search_providers[provider_obj.type][p]
 
         # enable/disable/sort providers
         sickrage.app.search_providers.provider_order = []
-        for curProviderStr in self.get_body_argument('provider_order', '').split('!!!'):
+        for curProviderStr in self.get_argument('provider_order', '').split('!!!'):
             cur_provider, cur_enabled = curProviderStr.split(':')
             sickrage.app.search_providers.provider_order += [cur_provider]
             if cur_provider in sickrage.app.search_providers.all():
@@ -138,32 +138,32 @@ class SaveProvidersHandler(BaseHandler, ABC):
         for providerID, provider_obj in sickrage.app.search_providers.all().items():
             try:
                 provider_settings = {
-                    'minseed': try_int(self.get_body_argument(providerID + '_minseed', 0)),
-                    'minleech': try_int(self.get_body_argument(providerID + '_minleech', 0)),
-                    'ratio': str(self.get_body_argument(providerID + '_ratio', '')).strip(),
-                    'digest': str(self.get_body_argument(providerID + '_digest', '')).strip(),
-                    'hash': str(self.get_body_argument(providerID + '_hash', '')).strip(),
-                    'key': str(self.get_body_argument(providerID + '_key', '')).strip(),
-                    'api_key': str(self.get_body_argument(providerID + '_api_key', '')).strip(),
-                    'username': str(self.get_body_argument(providerID + '_username', '')).strip(),
-                    'password': str(self.get_body_argument(providerID + '_password', '')).strip(),
-                    'passkey': str(self.get_body_argument(providerID + '_passkey', '')).strip(),
-                    'pin': str(self.get_body_argument(providerID + '_pin', '')).strip(),
-                    'confirmed': checkbox_to_value(self.get_body_argument(providerID + '_confirmed', 0)),
-                    'ranked': checkbox_to_value(self.get_body_argument(providerID + '_ranked', 0)),
-                    'engrelease': checkbox_to_value(self.get_body_argument(providerID + '_engrelease', 0)),
-                    'onlyspasearch': checkbox_to_value(self.get_body_argument(providerID + '_onlyspasearch', 0)),
-                    'sorting': str(self.get_body_argument(providerID + '_sorting', 'seeders')).strip(),
-                    'freeleech': checkbox_to_value(self.get_body_argument(providerID + '_freeleech', 0)),
-                    'reject_m2ts': checkbox_to_value(self.get_body_argument(providerID + '_reject_m2ts', 0)),
-                    'search_mode': str(self.get_body_argument(providerID + '_search_mode', 'eponly')).strip(),
-                    'search_fallback': checkbox_to_value(self.get_body_argument(providerID + '_search_fallback', 0)),
-                    'enable_daily': checkbox_to_value(self.get_body_argument(providerID + '_enable_daily', 1)),
-                    'enable_backlog': checkbox_to_value(self.get_body_argument(providerID + '_enable_backlog', 1)),
-                    'cat': try_int(self.get_body_argument(providerID + '_cat', 0)),
-                    'subtitle': checkbox_to_value(self.get_body_argument(providerID + '_subtitle', 0)),
-                    'cookies': str(self.get_body_argument(providerID + '_cookies', '')).strip(),
-                    'custom_url': str(self.get_body_argument(providerID + '_custom_url', '')).strip()
+                    'minseed': try_int(self.get_argument(providerID + '_minseed', 0)),
+                    'minleech': try_int(self.get_argument(providerID + '_minleech', 0)),
+                    'ratio': str(self.get_argument(providerID + '_ratio', '')).strip(),
+                    'digest': str(self.get_argument(providerID + '_digest', '')).strip(),
+                    'hash': str(self.get_argument(providerID + '_hash', '')).strip(),
+                    'key': str(self.get_argument(providerID + '_key', '')).strip(),
+                    'api_key': str(self.get_argument(providerID + '_api_key', '')).strip(),
+                    'username': str(self.get_argument(providerID + '_username', '')).strip(),
+                    'password': str(self.get_argument(providerID + '_password', '')).strip(),
+                    'passkey': str(self.get_argument(providerID + '_passkey', '')).strip(),
+                    'pin': str(self.get_argument(providerID + '_pin', '')).strip(),
+                    'confirmed': checkbox_to_value(self.get_argument(providerID + '_confirmed', 0)),
+                    'ranked': checkbox_to_value(self.get_argument(providerID + '_ranked', 0)),
+                    'engrelease': checkbox_to_value(self.get_argument(providerID + '_engrelease', 0)),
+                    'onlyspasearch': checkbox_to_value(self.get_argument(providerID + '_onlyspasearch', 0)),
+                    'sorting': str(self.get_argument(providerID + '_sorting', 'seeders')).strip(),
+                    'freeleech': checkbox_to_value(self.get_argument(providerID + '_freeleech', 0)),
+                    'reject_m2ts': checkbox_to_value(self.get_argument(providerID + '_reject_m2ts', 0)),
+                    'search_mode': str(self.get_argument(providerID + '_search_mode', 'eponly')).strip(),
+                    'search_fallback': checkbox_to_value(self.get_argument(providerID + '_search_fallback', 0)),
+                    'enable_daily': checkbox_to_value(self.get_argument(providerID + '_enable_daily', 1)),
+                    'enable_backlog': checkbox_to_value(self.get_argument(providerID + '_enable_backlog', 1)),
+                    'cat': try_int(self.get_argument(providerID + '_cat', 0)),
+                    'subtitle': checkbox_to_value(self.get_argument(providerID + '_subtitle', 0)),
+                    'cookies': str(self.get_argument(providerID + '_cookies', '')).strip(),
+                    'custom_url': str(self.get_argument(providerID + '_custom_url', '')).strip()
                 }
 
                 # update provider object

@@ -73,9 +73,9 @@ class HomeAddShowsHandler(BaseHandler, ABC):
 class SearchIndexersForShowNameHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
-        search_term = self.get_query_argument('search_term')
-        indexer = self.get_query_argument('indexer')
-        lang = self.get_query_argument('lang', None)
+        search_term = self.get_argument('search_term')
+        indexer = self.get_argument('indexer')
+        lang = self.get_argument('lang', None)
 
         if not lang or lang == 'null':
             lang = sickrage.app.config.indexer_default_language
@@ -112,7 +112,7 @@ class SearchIndexersForShowNameHandler(BaseHandler, ABC):
 class MassAddTableHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        root_dir = self.get_query_arguments('rootDir')
+        root_dir = self.get_arguments('rootDir')
 
         root_dirs = [unquote_plus(x) for x in root_dir]
 
@@ -200,9 +200,9 @@ class NewShowHandler(BaseHandler, ABC):
         posts them to addNewShow
         """
 
-        show_to_add = self.get_query_argument('show_to_add', None)
-        other_shows = self.get_query_argument('other_shows', '')
-        search_string = self.get_query_argument('search_string', None)
+        show_to_add = self.get_argument('show_to_add', None)
+        other_shows = self.get_argument('other_shows', '')
+        search_string = self.get_argument('search_string', None)
 
         indexer, show_dir, indexer_id, show_name = split_extra_show(show_to_add)
 
@@ -256,8 +256,8 @@ class TraktShowsHandler(BaseHandler, ABC):
         posts them to addNewShow
         """
 
-        show_list = self.get_query_argument('list', 'trending')
-        limit = self.get_query_argument('limit', None) or 10
+        show_list = self.get_argument('list', 'trending')
+        limit = self.get_argument('limit', None) or 10
 
         trakt_shows = []
 
@@ -304,7 +304,7 @@ class PopularShowsHandler(BaseHandler, ABC):
 class AddShowToBlacklistHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        indexer_id = self.get_query_argument('indexer_id')
+        indexer_id = self.get_argument('indexer_id')
 
         data = {'shows': [{'ids': {'tvdb': indexer_id}}]}
         TraktAPI()["users/me/lists/{list}".format(list=sickrage.app.config.trakt_blacklist_name)].add(data)
@@ -330,8 +330,8 @@ class ExistingShowsHandler(BaseHandler, ABC):
 class AddShowByIDHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
-        indexer_id = self.get_query_argument('indexer_id')
-        show_name = self.get_query_argument('showName')
+        indexer_id = self.get_argument('indexer_id')
+        show_name = self.get_argument('showName')
 
         if re.search(r'tt\d+', indexer_id):
             l_indexer_api_parms = IndexerApi(1).api_params.copy()
@@ -372,28 +372,28 @@ class AddNewShowHandler(BaseHandler, ABC):
         provided then it forwards back to newShow, if not it goes to /home.
         """
 
-        whichSeries = self.get_body_argument('whichSeries', '')
-        rootDir = self.get_body_argument('rootDir', None)
-        fullShowPath = self.get_body_argument('fullShowPath', None)
-        providedName = self.get_body_argument('providedName', None)
-        indexerLang = self.get_body_argument('indexerLang', None)
-        defaultStatus = self.get_body_argument('defaultStatus', None)
-        quality_preset = self.get_body_argument('quality_preset', None)
-        anyQualities = self.get_body_argument('anyQualities', '')
-        bestQualities = self.get_body_argument('bestQualities', '')
-        flatten_folders = self.get_body_argument('flatten_folders', None)
-        subtitles = self.get_body_argument('subtitles', None)
-        sub_use_sr_metadata = self.get_body_argument('sub_use_sr_metadata', None)
-        other_shows = self.get_body_arguments('other_shows')
-        skipShow = self.get_body_argument('skipShow', None)
-        providedIndexer = self.get_body_argument('providedIndexer', None)
-        anime = self.get_body_argument('anime', None)
-        scene = self.get_body_argument('scene', None)
-        blacklist = self.get_body_argument('blacklist', None)
-        whitelist = self.get_body_argument('whitelist', None)
-        defaultStatusAfter = self.get_body_argument('defaultStatusAfter', None)
-        skip_downloaded = self.get_body_argument('skip_downloaded', None)
-        add_show_year = self.get_body_argument('add_show_year', None)
+        whichSeries = self.get_argument('whichSeries', '')
+        rootDir = self.get_argument('rootDir', None)
+        fullShowPath = self.get_argument('fullShowPath', None)
+        providedName = self.get_argument('providedName', None)
+        indexerLang = self.get_argument('indexerLang', None)
+        defaultStatus = self.get_argument('defaultStatus', None)
+        quality_preset = self.get_argument('quality_preset', None)
+        anyQualities = self.get_argument('anyQualities', '')
+        bestQualities = self.get_argument('bestQualities', '')
+        flatten_folders = self.get_argument('flatten_folders', None)
+        subtitles = self.get_argument('subtitles', None)
+        sub_use_sr_metadata = self.get_argument('sub_use_sr_metadata', None)
+        other_shows = self.get_arguments('other_shows')
+        skipShow = self.get_argument('skipShow', None)
+        providedIndexer = self.get_argument('providedIndexer', None)
+        anime = self.get_argument('anime', None)
+        scene = self.get_argument('scene', None)
+        blacklist = self.get_argument('blacklist', None)
+        whitelist = self.get_argument('whitelist', None)
+        defaultStatusAfter = self.get_argument('defaultStatusAfter', None)
+        skip_downloaded = self.get_argument('skip_downloaded', None)
+        add_show_year = self.get_argument('add_show_year', None)
 
         indexerLang = indexerLang or sickrage.app.config.indexer_default_language
 
@@ -521,8 +521,8 @@ class AddExistingShowsHandler(BaseHandler, ABC):
         Receives a dir list and add them. Adds the ones with given TVDB IDs first, then forwards
         along to the newShow page.
         """
-        shows_to_add = self.get_body_arguments('shows_to_add')
-        prompt_for_settings = self.get_body_argument('promptForSettings')
+        shows_to_add = self.get_arguments('shows_to_add')
+        prompt_for_settings = self.get_argument('promptForSettings')
 
         # grab a list of other shows to add, if provided
         shows_to_add = [unquote_plus(x) for x in shows_to_add]

@@ -100,7 +100,7 @@ class APIBulderHandler(BaseHandler, ABC):
 class SetHomeLayoutHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        layout = self.get_query_argument('layout', 'poster')
+        layout = self.get_argument('layout', 'poster')
 
         if layout not in ('poster', 'small', 'banner', 'simple', 'coverflow'):
             layout = 'poster'
@@ -114,7 +114,7 @@ class SetHomeLayoutHandler(BaseHandler, ABC):
 class SetPosterSortByHandler(BaseHandler, ABC):
     @authenticated
     def post(self, *args, **kwargs):
-        sort = self.get_query_argument('sort')
+        sort = self.get_argument('sort')
 
         if sort not in ('name', 'date', 'network', 'progress'):
             sort = 'name'
@@ -126,7 +126,7 @@ class SetPosterSortByHandler(BaseHandler, ABC):
 class SetPosterSortDirHandler(BaseHandler, ABC):
     @authenticated
     def post(self, *args, **kwargs):
-        direction = self.get_query_argument('direction')
+        direction = self.get_argument('direction')
 
         sickrage.app.config.poster_sortdir = int(direction)
         sickrage.app.config.save()
@@ -135,7 +135,7 @@ class SetPosterSortDirHandler(BaseHandler, ABC):
 class SetHistoryLayoutHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        layout = self.get_query_argument('layout', 'detailed')
+        layout = self.get_argument('layout', 'detailed')
 
         if layout not in ('compact', 'detailed'):
             layout = 'detailed'
@@ -148,7 +148,7 @@ class SetHistoryLayoutHandler(BaseHandler, ABC):
 class ToggleDisplayShowSpecialsHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        show = self.get_query_argument('show')
+        show = self.get_argument('show')
 
         sickrage.app.config.display_show_specials = not sickrage.app.config.display_show_specials
         return self.redirect(url_concat(self.get_url("/home/displayShow"), {'show': show}))
@@ -157,7 +157,7 @@ class ToggleDisplayShowSpecialsHandler(BaseHandler, ABC):
 class SetScheduleLayoutHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        layout = self.get_query_argument('layout', 'banner')
+        layout = self.get_argument('layout', 'banner')
 
         if layout not in ('poster', 'banner', 'list', 'calendar'):
             layout = 'banner'
@@ -180,7 +180,7 @@ class ToggleScheduleDisplayPausedHandler(BaseHandler, ABC):
 class SetScheduleSortHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        sort = self.get_query_argument('sort', 'date')
+        sort = self.get_argument('sort', 'date')
 
         if sort not in ('date', 'network', 'show'):
             sort = 'date'
@@ -196,7 +196,7 @@ class SetScheduleSortHandler(BaseHandler, ABC):
 class ScheduleHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
-        layout = self.get_query_argument('layout', sickrage.app.config.coming_eps_layout)
+        layout = self.get_argument('layout', sickrage.app.config.coming_eps_layout)
 
         next_week = datetime.datetime.combine(datetime.date.today() + datetime.timedelta(days=7),
                                               datetime.datetime.now().time().replace(tzinfo=sickrage.app.tz))
@@ -238,7 +238,7 @@ class UnlinkHandler(BaseHandler, ABC):
 class QuicksearchDotJsonHandler(BaseHandler, ABC):
     @authenticated
     def post(self, *args, **kwargs):
-        term = self.get_body_argument('term')
+        term = self.get_argument('term')
 
         shows = sickrage.app.quicksearch_cache.get_shows(term)
         episodes = sickrage.app.quicksearch_cache.get_episodes(term)

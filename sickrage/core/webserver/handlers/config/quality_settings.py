@@ -44,16 +44,16 @@ class SaveQualitiesHandler(BaseHandler, ABC):
     @authenticated
     def post(self, *args, **kwargs):
         quality_sizes = {
-            Quality.UNKNOWN: int(self.get_body_argument(str(Quality.UNKNOWN))),
-            Quality.SDTV: int(self.get_body_argument(str(Quality.SDTV))),
-            Quality.SDDVD: int(self.get_body_argument(str(Quality.SDDVD))),
-            Quality.HDTV: int(self.get_body_argument(str(Quality.HDTV))),
-            Quality.RAWHDTV: int(self.get_body_argument(str(Quality.RAWHDTV))),
-            Quality.FULLHDTV: int(self.get_body_argument(str(Quality.FULLHDTV))),
-            Quality.HDWEBDL: int(self.get_body_argument(str(Quality.HDWEBDL))),
-            Quality.FULLHDWEBDL: int(self.get_body_argument(str(Quality.FULLHDWEBDL))),
-            Quality.HDBLURAY: int(self.get_body_argument(str(Quality.HDBLURAY))),
-            Quality.FULLHDBLURAY: int(self.get_body_argument(str(Quality.FULLHDBLURAY))),
+            Quality.UNKNOWN: int(self.get_argument(str(Quality.UNKNOWN))),
+            Quality.SDTV: int(self.get_argument(str(Quality.SDTV))),
+            Quality.SDDVD: int(self.get_argument(str(Quality.SDDVD))),
+            Quality.HDTV: int(self.get_argument(str(Quality.HDTV))),
+            Quality.RAWHDTV: int(self.get_argument(str(Quality.RAWHDTV))),
+            Quality.FULLHDTV: int(self.get_argument(str(Quality.FULLHDTV))),
+            Quality.HDWEBDL: int(self.get_argument(str(Quality.HDWEBDL))),
+            Quality.FULLHDWEBDL: int(self.get_argument(str(Quality.FULLHDWEBDL))),
+            Quality.HDBLURAY: int(self.get_argument(str(Quality.HDBLURAY))),
+            Quality.FULLHDBLURAY: int(self.get_argument(str(Quality.FULLHDBLURAY))),
         }
 
         sickrage.app.config.quality_sizes.update(quality_sizes)

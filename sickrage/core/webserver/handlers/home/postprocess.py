@@ -42,16 +42,16 @@ class HomeProcessEpisodeHandler(BaseHandler, ABC):
     @authenticated
     async def post(self, *args, **kwargs):
         pp_options = {
-            'proc_dir': self.get_body_argument('proc_dir'),
-            'nzbname': self.get_body_argument('nzbname', ''),
-            'process_method': self.get_body_argument('process_method'),
-            'proc_type': self.get_body_argument('proc_type'),
-            'force': arg_to_bool(self.get_body_argument('force', 'false')),
-            'is_priority': arg_to_bool(self.get_body_argument('is_priority', 'false')),
-            'delete_on': arg_to_bool(self.get_body_argument('delete_on', 'false')),
-            'force_next': arg_to_bool(self.get_body_argument('force_next', 'false')),
-            'failed': arg_to_bool(self.get_body_argument('failed', 'false')),
-            'quiet': arg_to_bool(self.get_body_argument('quiet', 'false')),
+            'proc_dir': self.get_argument('proc_dir'),
+            'nzbname': self.get_argument('nzbname', ''),
+            'process_method': self.get_argument('process_method'),
+            'proc_type': self.get_argument('proc_type'),
+            'force': arg_to_bool(self.get_argument('force', 'false')),
+            'is_priority': arg_to_bool(self.get_argument('is_priority', 'false')),
+            'delete_on': arg_to_bool(self.get_argument('delete_on', 'false')),
+            'force_next': arg_to_bool(self.get_argument('force_next', 'false')),
+            'failed': arg_to_bool(self.get_argument('failed', 'false')),
+            'quiet': arg_to_bool(self.get_argument('quiet', 'false')),
         }
 
         proc_dir = pp_options.pop("proc_dir")

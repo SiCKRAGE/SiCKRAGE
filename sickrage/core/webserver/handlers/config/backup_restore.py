@@ -45,7 +45,7 @@ class ConfigBackupRestoreHandler(BaseHandler, ABC):
 class ConfigBackupHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        backup_dir = self.get_query_argument('backupDir')
+        backup_dir = self.get_argument('backupDir')
 
         final_result = ''
 
@@ -65,10 +65,10 @@ class ConfigBackupHandler(BaseHandler, ABC):
 class ConfigRestoreHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        backup_file = self.get_query_argument('backupFile')
-        restore_database = self.get_query_argument('restore_database')
-        restore_config = self.get_query_argument('restore_config')
-        restore_cache = self.get_query_argument('restore_cache')
+        backup_file = self.get_argument('backupFile')
+        restore_database = self.get_argument('restore_database')
+        restore_config = self.get_argument('restore_config')
+        restore_cache = self.get_argument('restore_cache')
 
         final_result = ''
 

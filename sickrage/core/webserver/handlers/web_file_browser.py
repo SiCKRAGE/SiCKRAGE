@@ -33,9 +33,9 @@ class WebFileBrowserHandler(BaseHandler, ABC):
 
     @authenticated
     def get(self, *args, **kwargs):
-        path = self.get_query_argument('path', '')
-        include_files = self.get_query_argument('includeFiles', None)
-        file_types = self.get_query_argument('fileTypes', '')
+        path = self.get_argument('path', '')
+        include_files = self.get_argument('includeFiles', None)
+        file_types = self.get_argument('fileTypes', '')
 
         return self.write(json_encode(foldersAtPath(path, True, bool(int(include_files) if include_files else False), file_types.split(','))))
 
@@ -46,9 +46,9 @@ class WebFileBrowserCompleteHandler(BaseHandler, ABC):
 
     @authenticated
     def get(self, *args, **kwargs):
-        term = self.get_query_argument('term')
-        include_files = self.get_query_argument('includeFiles', None)
-        file_types = self.get_query_argument('fileTypes', '')
+        term = self.get_argument('term')
+        include_files = self.get_argument('includeFiles', None)
+        file_types = self.get_argument('fileTypes', '')
 
         return self.write(json_encode([entry['path'] for entry in foldersAtPath(
             os.path.dirname(term),

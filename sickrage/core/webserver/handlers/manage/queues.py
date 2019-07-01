@@ -82,7 +82,7 @@ class ForceFindPropersHandler(BaseHandler, ABC):
 class PauseDailySearcherHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        paused = self.get_query_argument('paused')
+        paused = self.get_argument('paused')
 
         if paused == "1":
             sickrage.app.search_queue.pause_daily_searcher()
@@ -95,7 +95,7 @@ class PauseDailySearcherHandler(BaseHandler, ABC):
 class PauseBacklogSearcherHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        paused = self.get_query_argument('paused')
+        paused = self.get_argument('paused')
 
         if paused == "1":
             sickrage.app.search_queue.pause_backlog_searcher()
@@ -108,7 +108,7 @@ class PauseBacklogSearcherHandler(BaseHandler, ABC):
 class PausePostProcessorHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        paused = self.get_query_argument('paused')
+        paused = self.get_argument('paused')
 
         if paused == "1":
             sickrage.app.postprocessor_queue.pause()
