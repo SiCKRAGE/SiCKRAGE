@@ -181,14 +181,13 @@ class TestSABnzbdHandler(BaseHandler, ABC):
         password = self.get_query_argument('password')
         apikey = self.get_query_argument('apikey')
 
-        connection, acces_msg = SabNZBd.getSabAccesMethod(host)
+        connection, acces_msg = SabNZBd.get_sab_access_method(host)
 
         if connection:
             authed, auth_msg = SabNZBd.test_authentication(host, username, password, apikey)
             if authed:
                 return self.write(_('Success. Connected and authenticated'))
-            return self.write(_('Authentication failed. SABnzbd expects ') + acces_msg + _(
-                ' as authentication method, ') + auth_msg)
+            return self.write(_('Authentication failed. SABnzbd expects {access!r} as authentication method, {auth}'.format(access=acces_msg, auth=auth_msg)))
         return self.write(_('Unable to connect to host'))
 
 
