@@ -1,5 +1,22 @@
 # Changelog
 
+- * aa389b100 - 2019-07-01: Pre-Release v9.4.88.dev6 
+- * 5e05f9ce7 - 2019-07-01: Refactored show search list to not select shows already in library. 
+- * 5bffa94a2 - 2019-07-01: Refactored how we gather query and body arguments to use one method. 
+- * c894e7459 - 2019-07-01: Resolved issues with unicode decoding output from version update commands. 
+- * 60ad77ff8 - 2019-07-01: Pre-Release v9.4.88.dev5 
+- * a4f2d4e56 - 2019-07-01: Refactored async http client calls in web handlers. 
+- * 8b2b29035 - 2019-07-01: Pre-Release v9.4.88.dev4 
+- * c71c5cefc - 2019-07-01: Resolved issues with sorting main show poster view. 
+- * d708cb2d2 - 2019-07-01: Refactored database calls for GetManualSearchStatusHandler class. 
+- * 051445b33 - 2019-07-01: Resolves &#x27;NoneType&#x27; object has no attribute &#x27;get_episode&#x27; for manual episode searches. 
+- * e2a515c20 - 2019-07-01: Refactored base64 encoding to Python 3 style, resolves issues with both Plex and Kodi notifiers. 
+- * d977639ed - 2019-07-01: Fixed typo in ProperSearch class. 
+- * 2c9539800 - 2019-07-01: Pre-Release v9.4.88.dev3 
+- * 65b1dcf75 - 2019-07-01: Refactored SABnzbd class code to resolve json decode issues. 
+- * 4ba9839f7 - 2019-06-30: Pre-Release v9.4.88.dev2 
+- * 1c7e00bf0 - 2019-06-30: Refactored EditShow view call to update show object before trying to set anime black/white lists. 
+- * 0f183b770 - 2019-06-30: Release v9.4.87 
 - * 157f3a6dd - 2019-06-30: Fixes SICKRAGE-APP-PY3-DT 
 - * 3c4a9b927 - 2019-06-30: Pre-Release v9.4.87.dev9 
 - * 2fa16c619 - 2019-06-30: Fixes SICKRAGE-APP-PY3-DS 

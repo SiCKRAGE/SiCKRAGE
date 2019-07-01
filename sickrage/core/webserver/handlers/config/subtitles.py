@@ -45,7 +45,7 @@ class ConfigSubtitlesHandler(BaseHandler, ABC):
 class ConfigSubtitleGetCodeHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        q = self.get_query_argument('q')
+        q = self.get_argument('q')
 
         codes = [{"id": code, "name": subtitles.name_from_code(code)} for code in
                  subtitles.subtitle_code_filter()]
@@ -69,24 +69,24 @@ class ConfigSubtitlesWantedLanguagesHandler(BaseHandler, ABC):
 class SaveSubtitlesHandler(BaseHandler, ABC):
     @authenticated
     def post(self, *args, **kwargs):
-        use_subtitles = self.get_body_argument('use_subtitles', None)
-        subtitles_dir = self.get_body_argument('subtitles_dir', None)
-        service_order = self.get_body_argument('service_order', None)
-        subtitles_history = self.get_body_argument('subtitles_history', None)
-        subtitles_finder_frequency = self.get_body_argument('subtitles_finder_frequency', None)
-        subtitles_multi = self.get_body_argument('subtitles_multi', None)
-        embedded_subtitles_all = self.get_body_argument('embedded_subtitles_all', None)
-        subtitles_extra_scripts = self.get_body_argument('subtitles_extra_scripts', '')
-        subtitles_hearing_impaired = self.get_body_argument('subtitles_hearing_impaired', None)
-        itasa_user = self.get_body_argument('itasa_user', None)
-        itasa_pass = self.get_body_argument('itasa_pass', None)
-        addic7ed_user = self.get_body_argument('addic7ed_user', None)
-        addic7ed_pass = self.get_body_argument('addic7ed_pass', None)
-        legendastv_user = self.get_body_argument('legendastv_user', None)
-        legendastv_pass = self.get_body_argument('legendastv_pass', None)
-        opensubtitles_user = self.get_body_argument('opensubtitles_user', None)
-        opensubtitles_pass = self.get_body_argument('opensubtitles_pass', None)
-        subtitles_languages = self.get_body_arguments('subtitles_languages[]', ['eng'])
+        use_subtitles = self.get_argument('use_subtitles', None)
+        subtitles_dir = self.get_argument('subtitles_dir', None)
+        service_order = self.get_argument('service_order', None)
+        subtitles_history = self.get_argument('subtitles_history', None)
+        subtitles_finder_frequency = self.get_argument('subtitles_finder_frequency', None)
+        subtitles_multi = self.get_argument('subtitles_multi', None)
+        embedded_subtitles_all = self.get_argument('embedded_subtitles_all', None)
+        subtitles_extra_scripts = self.get_argument('subtitles_extra_scripts', '')
+        subtitles_hearing_impaired = self.get_argument('subtitles_hearing_impaired', None)
+        itasa_user = self.get_argument('itasa_user', None)
+        itasa_pass = self.get_argument('itasa_pass', None)
+        addic7ed_user = self.get_argument('addic7ed_user', None)
+        addic7ed_pass = self.get_argument('addic7ed_pass', None)
+        legendastv_user = self.get_argument('legendastv_user', None)
+        legendastv_pass = self.get_argument('legendastv_pass', None)
+        opensubtitles_user = self.get_argument('opensubtitles_user', None)
+        opensubtitles_pass = self.get_argument('opensubtitles_pass', None)
+        subtitles_languages = self.get_arguments('subtitles_languages[]', ['eng'])
 
         results = []
 

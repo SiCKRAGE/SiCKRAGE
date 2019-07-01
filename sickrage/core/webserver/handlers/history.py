@@ -28,7 +28,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 class HistoryHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        limit = self.get_query_argument('limit', None)
+        limit = self.get_argument('limit', None)
 
         if limit is None:
             if sickrage.app.config.history_limit:

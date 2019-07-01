@@ -149,7 +149,7 @@ class ApiHandler(RequestHandler):
         self.set_header("Content-Type", "application/json;charset=UTF-8")
         try:
             out = json_encode(_dict)
-            callback = self.get_query_argument('callback', None) or self.get_query_argument('jsonp', None)
+            callback = self.get_argument('callback', None) or self.get_argument('jsonp', None)
             if callback is not None:
                 out = callback + '(' + out + ');'  # wrap with JSONP call if requested
         except Exception as e:  # if we fail to generate the output fake an error

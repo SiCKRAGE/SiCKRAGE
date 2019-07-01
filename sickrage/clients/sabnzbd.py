@@ -20,6 +20,7 @@
 
 
 import datetime
+import json
 from urllib.parse import urljoin
 
 import sickrage
@@ -87,11 +88,11 @@ class SabNZBd(object):
 
         sickrage.app.log.debug('Result text from SAB: {}'.format(jdata))
 
-        result, error_ = SabNZBd._checkSabResponse(jdata)
+        result, error_ = SabNZBd._check_sab_response(jdata)
         return result
 
     @staticmethod
-    def _checkSabResponse(jdata):
+    def _check_sab_response(jdata):
         """
         Check response from SAB
         :param jdata: Response from requests api call
@@ -100,25 +101,32 @@ class SabNZBd(object):
         error = jdata.get('error')
 
         if error:
-            sickrage.app.log.error(error)
-            return False, error
-        else:
-            return True, jdata
+            sickrage.app.log.warning("SABnzbd Error: {}".format(error))
+
+        return not error, error or json.dumps(jdata)
 
     @staticmethod
-    def getSabAccesMethod(host=None):
+    def get_sab_access_method(host=None):
         """
         Find out how we should connect to SAB
         :param host: hostname where SAB lives
         :return: (boolean, string) with True if method was successful
         """
-        params = {'mode': 'auth', 'output': 'json'}
+        params = {
+            'mode': 'auth',
+            'output': 'json',
+            'ma_username': sickrage.app.config.sab_username,
+            'ma_password': sickrage.app.config.sab_username,
+            'apikey': sickrage.app.config.sab_apikey
+        }
+
         url = urljoin(host, 'api')
+
         data = WebSession().get(url, params=params, verify=False).json()
         if not data:
             return False, data
 
-        return SabNZBd._checkSabResponse(data)
+        return SabNZBd._check_sab_response(data)
 
     @staticmethod
     def test_authentication(host=None, username=None, password=None, apikey=None):
@@ -147,7 +155,7 @@ class SabNZBd(object):
             return False, data
 
         # check the result and determine if it's good or not
-        result, sabText = SabNZBd._checkSabResponse(data)
+        result, sabText = SabNZBd._check_sab_response(data)
         if not result:
             return False, sabText
 

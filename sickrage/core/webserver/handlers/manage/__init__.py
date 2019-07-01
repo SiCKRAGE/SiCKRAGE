@@ -45,8 +45,8 @@ class ManageHandler(BaseHandler, ABC):
 class ShowEpisodeStatusesHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        indexer_id = self.get_query_argument('indexer_id')
-        which_status = self.get_query_argument('whichStatus')
+        indexer_id = self.get_argument('indexer_id')
+        which_status = self.get_argument('whichStatus')
 
         status_list = [int(which_status)]
         if status_list[0] == SNATCHED:
@@ -68,7 +68,7 @@ class ShowEpisodeStatusesHandler(BaseHandler, ABC):
 class EpisodeStatusesHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        which_status = self.get_query_argument('whichStatus', None)
+        which_status = self.get_argument('whichStatus', None)
 
         ep_counts = {}
         show_names = {}
@@ -111,8 +111,8 @@ class EpisodeStatusesHandler(BaseHandler, ABC):
 class ChangeEpisodeStatusesHandler(BaseHandler, ABC):
     @authenticated
     async def post(self, *args, **kwargs):
-        old_status = self.get_body_argument('oldStatus')
-        new_status = self.get_body_argument('newStatus')
+        old_status = self.get_argument('oldStatus')
+        new_status = self.get_argument('newStatus')
 
         status_list = [int(old_status)]
         if status_list[0] == SNATCHED:
@@ -120,7 +120,7 @@ class ChangeEpisodeStatusesHandler(BaseHandler, ABC):
 
         # make a list of all shows and their associated args
         to_change = {}
-        for x in self.get_body_arguments('toChange'):
+        for x in self.get_arguments('toChange'):
             indexer_id, what = x.split('-')
 
             if indexer_id not in to_change:
@@ -136,12 +136,11 @@ class ChangeEpisodeStatusesHandler(BaseHandler, ABC):
                                                                                                          TVEpisode.season != 0)]
                 to_change[cur_indexer_id] = all_eps
 
-            await self.http_client.fetch(
+            await self.http_client(
                 url_concat(
                     self.get_url("/home/setStatus"),
                     dict(show=cur_indexer_id, eps='|'.join(to_change[cur_indexer_id]), status=new_status, direct=True)
-                ),
-                headers=self.http_client.defaults['headers']
+                )
             )
 
         return self.redirect('/manage/episodeStatuses/')
@@ -150,8 +149,8 @@ class ChangeEpisodeStatusesHandler(BaseHandler, ABC):
 class ShowSubtitleMissedHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        indexer_id = self.get_query_argument('indexer_id')
-        which_subs = self.get_query_argument('whichSubs')
+        indexer_id = self.get_argument('indexer_id')
+        which_subs = self.get_argument('whichSubs')
 
         result = {}
         for dbData in self.db_session.query(TVEpisode).filter_by(showid=int(indexer_id)).filter(TVEpisode.status.endswith(4),
@@ -181,7 +180,7 @@ class ShowSubtitleMissedHandler(BaseHandler, ABC):
 class SubtitleMissedHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        which_subs = self.get_query_argument('whichSubs', None)
+        which_subs = self.get_argument('whichSubs', None)
 
         ep_counts = {}
         show_names = {}
@@ -238,7 +237,7 @@ class DownloadSubtitleMissedHandler(BaseHandler, ABC):
     def post(self, *args, **kwargs):
         # make a list of all shows and their associated args
         to_download = {}
-        for arg in self.get_body_arguments('toDownload'):
+        for arg in self.get_arguments('toDownload'):
             indexer_id, what = arg.split('-')
 
             if indexer_id not in to_download:
@@ -265,7 +264,7 @@ class DownloadSubtitleMissedHandler(BaseHandler, ABC):
 class BacklogShowHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        indexer_id = self.get_query_argument('indexer_id')
+        indexer_id = self.get_argument('indexer_id')
 
         sickrage.app.backlog_searcher.search_backlog(int(indexer_id))
 
@@ -325,7 +324,7 @@ class BacklogOverviewHandler(BaseHandler, ABC):
 class MassEditHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        to_edit = self.get_query_argument('toEdit')
+        to_edit = self.get_argument('toEdit')
 
         show_ids = list(map(int, to_edit.split("|")))
         show_list = []
@@ -472,28 +471,28 @@ class MassEditHandler(BaseHandler, ABC):
 
     @authenticated
     async def post(self, *args, **kwargs):
-        skip_downloaded = self.get_body_argument('skip_downloaded', None)
-        paused = self.get_body_argument('paused', None)
-        default_ep_status = self.get_body_argument('default_ep_status', None)
-        anime = self.get_body_argument('anime', None)
-        sports = self.get_body_argument('sports', None)
-        scene = self.get_body_argument('scene', None)
-        flatten_folders = self.get_body_argument('flatten_folders', None)
-        quality_preset = self.get_body_argument('quality_preset', None)
-        subtitles = self.get_body_argument('subtitles', None)
-        air_by_date = self.get_body_argument('air_by_date', None)
-        any_qualities = self.get_body_argument('anyQualities', '')
-        best_qualities = self.get_body_argument('bestQualities', '')
-        to_edit = self.get_body_argument('toEdit', None)
+        skip_downloaded = self.get_argument('skip_downloaded', None)
+        paused = self.get_argument('paused', None)
+        default_ep_status = self.get_argument('default_ep_status', None)
+        anime = self.get_argument('anime', None)
+        sports = self.get_argument('sports', None)
+        scene = self.get_argument('scene', None)
+        flatten_folders = self.get_argument('flatten_folders', None)
+        quality_preset = self.get_argument('quality_preset', None)
+        subtitles = self.get_argument('subtitles', None)
+        air_by_date = self.get_argument('air_by_date', None)
+        any_qualities = self.get_argument('anyQualities', '')
+        best_qualities = self.get_argument('bestQualities', '')
+        to_edit = self.get_argument('toEdit', None)
 
         i = 0
         dir_map = {}
         while True:
-            cur_arg = self.get_body_argument('orig_root_dir_{}'.format(i), None)
+            cur_arg = self.get_argument('orig_root_dir_{}'.format(i), None)
             if not cur_arg:
                 break
 
-            end_dir = self.get_body_argument('new_root_dir_{}'.format(i))
+            end_dir = self.get_argument('new_root_dir_{}'.format(i))
             dir_map[cur_arg] = end_dir
 
             i += 1
@@ -596,9 +595,8 @@ class MassEditHandler(BaseHandler, ABC):
                 directCall='true'
             )
 
-            response = await self.http_client.fetch(
+            response = await self.http_client(
                 self.get_url("/home/editShow"), method='POST',
-                headers=self.http_client.defaults['headers'],
                 body=urlencode(post_data)
             )
 
@@ -646,13 +644,13 @@ class MassUpdateHandler(BaseHandler, ABC):
 
     @authenticated
     def post(self, *args, **kwargs):
-        to_update = self.get_body_argument('toUpdate', '')
-        to_refresh = self.get_body_argument('toRefresh', '')
-        to_rename = self.get_body_argument('toRename', '')
-        to_delete = self.get_body_argument('toDelete', '')
-        to_remove = self.get_body_argument('toRemove', '')
-        to_metadata = self.get_body_argument('toMetadata', '')
-        to_subtitle = self.get_body_argument('toSubtitle', '')
+        to_update = self.get_argument('toUpdate', '')
+        to_refresh = self.get_argument('toRefresh', '')
+        to_rename = self.get_argument('toRename', '')
+        to_delete = self.get_argument('toDelete', '')
+        to_remove = self.get_argument('toRemove', '')
+        to_metadata = self.get_argument('toMetadata', '')
+        to_subtitle = self.get_argument('toSubtitle', '')
 
         to_update = to_update.split('|') if len(to_update) else []
         to_refresh = to_refresh.split('|') if len(to_refresh) else []
@@ -743,8 +741,8 @@ class MassUpdateHandler(BaseHandler, ABC):
 class FailedDownloadsHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        limit = self.get_query_argument('limit', None) or 100
-        to_remove = self.get_query_argument('toRemove', None)
+        limit = self.get_argument('limit', None) or 100
+        to_remove = self.get_argument('toRemove', None)
 
         if int(limit) == 0:
             dbData = self.db_session.query(MainDB.FailedSnatch).all()

@@ -47,47 +47,47 @@ class ConfigPostProcessingHandler(BaseHandler, ABC):
 class SavePostProcessingHandler(BaseHandler, ABC):
     @authenticated
     async def post(self, *args, **kwargs):
-        naming_pattern = self.get_body_argument('naming_pattern', None)
-        naming_multi_ep = self.get_body_argument('naming_multi_ep', None)
-        kodi_data = self.get_body_argument('kodi_data', None)
-        kodi_12plus_data = self.get_body_argument('kodi_12plus_data', None)
-        mediabrowser_data = self.get_body_argument('mediabrowser_data', None)
-        sony_ps3_data = self.get_body_argument('sony_ps3_data', None)
-        wdtv_data = self.get_body_argument('wdtv_data', None)
-        tivo_data = self.get_body_argument('tivo_data', None)
-        mede8er_data = self.get_body_argument('mede8er_data', None)
-        keep_processed_dir = self.get_body_argument('keep_processed_dir', None)
-        process_method = self.get_body_argument('process_method', None)
-        del_rar_contents = self.get_body_argument('del_rar_contents', None)
-        process_automatically = self.get_body_argument('process_automatically', None)
-        no_delete = self.get_body_argument('no_delete', None)
-        rename_episodes = self.get_body_argument('rename_episodes', None)
-        airdate_episodes = self.get_body_argument('airdate_episodes', None)
-        file_timestamp_timezone = self.get_body_argument('file_timestamp_timezone', None)
-        unpack = self.get_body_argument('unpack', None)
-        move_associated_files = self.get_body_argument('move_associated_files', None)
-        sync_files = self.get_body_argument('sync_files', None)
-        postpone_if_sync_files = self.get_body_argument('postpone_if_sync_files', None)
-        nfo_rename = self.get_body_argument('nfo_rename', None)
-        tv_download_dir = self.get_body_argument('tv_download_dir', None)
-        naming_custom_abd = self.get_body_argument('naming_custom_abd', None)
-        naming_anime = self.get_body_argument('naming_anime', None)
-        create_missing_show_dirs = self.get_body_argument('create_missing_show_dirs', None)
-        add_shows_wo_dir = self.get_body_argument('add_shows_wo_dir', None)
-        naming_abd_pattern = self.get_body_argument('naming_abd_pattern', None)
-        naming_strip_year = self.get_body_argument('naming_strip_year', None)
-        delete_failed = self.get_body_argument('delete_failed', None)
-        extra_scripts = self.get_body_argument('extra_scripts', None)
-        naming_custom_sports = self.get_body_argument('naming_custom_sports', None)
-        naming_sports_pattern = self.get_body_argument('naming_sports_pattern', None)
-        naming_custom_anime = self.get_body_argument('naming_custom_anime', None)
-        naming_anime_pattern = self.get_body_argument('naming_anime_pattern', None)
-        naming_anime_multi_ep = self.get_body_argument('naming_anime_multi_ep', None)
-        autopostprocessor_frequency = self.get_body_argument('autopostprocessor_frequency', None)
-        delete_non_associated_files = self.get_body_argument('delete_non_associated_files', None)
-        allowed_extensions = self.get_body_argument('allowed_extensions', None)
-        processor_follow_symlinks = self.get_body_argument('processor_follow_symlinks', None)
-        unpack_dir = self.get_body_argument('unpack_dir', None)
+        naming_pattern = self.get_argument('naming_pattern', None)
+        naming_multi_ep = self.get_argument('naming_multi_ep', None)
+        kodi_data = self.get_argument('kodi_data', None)
+        kodi_12plus_data = self.get_argument('kodi_12plus_data', None)
+        mediabrowser_data = self.get_argument('mediabrowser_data', None)
+        sony_ps3_data = self.get_argument('sony_ps3_data', None)
+        wdtv_data = self.get_argument('wdtv_data', None)
+        tivo_data = self.get_argument('tivo_data', None)
+        mede8er_data = self.get_argument('mede8er_data', None)
+        keep_processed_dir = self.get_argument('keep_processed_dir', None)
+        process_method = self.get_argument('process_method', None)
+        del_rar_contents = self.get_argument('del_rar_contents', None)
+        process_automatically = self.get_argument('process_automatically', None)
+        no_delete = self.get_argument('no_delete', None)
+        rename_episodes = self.get_argument('rename_episodes', None)
+        airdate_episodes = self.get_argument('airdate_episodes', None)
+        file_timestamp_timezone = self.get_argument('file_timestamp_timezone', None)
+        unpack = self.get_argument('unpack', None)
+        move_associated_files = self.get_argument('move_associated_files', None)
+        sync_files = self.get_argument('sync_files', None)
+        postpone_if_sync_files = self.get_argument('postpone_if_sync_files', None)
+        nfo_rename = self.get_argument('nfo_rename', None)
+        tv_download_dir = self.get_argument('tv_download_dir', None)
+        naming_custom_abd = self.get_argument('naming_custom_abd', None)
+        naming_anime = self.get_argument('naming_anime', None)
+        create_missing_show_dirs = self.get_argument('create_missing_show_dirs', None)
+        add_shows_wo_dir = self.get_argument('add_shows_wo_dir', None)
+        naming_abd_pattern = self.get_argument('naming_abd_pattern', None)
+        naming_strip_year = self.get_argument('naming_strip_year', None)
+        delete_failed = self.get_argument('delete_failed', None)
+        extra_scripts = self.get_argument('extra_scripts', None)
+        naming_custom_sports = self.get_argument('naming_custom_sports', None)
+        naming_sports_pattern = self.get_argument('naming_sports_pattern', None)
+        naming_custom_anime = self.get_argument('naming_custom_anime', None)
+        naming_anime_pattern = self.get_argument('naming_anime_pattern', None)
+        naming_anime_multi_ep = self.get_argument('naming_anime_multi_ep', None)
+        autopostprocessor_frequency = self.get_argument('autopostprocessor_frequency', None)
+        delete_non_associated_files = self.get_argument('delete_non_associated_files', None)
+        allowed_extensions = self.get_argument('allowed_extensions', None)
+        processor_follow_symlinks = self.get_argument('processor_follow_symlinks', None)
+        unpack_dir = self.get_argument('unpack_dir', None)
 
         results = []
 
@@ -98,9 +98,8 @@ class SavePostProcessingHandler(BaseHandler, ABC):
         sickrage.app.config.process_automatically = checkbox_to_value(process_automatically)
 
         if unpack:
-            response = await self.http_client.fetch(
-                self.get_url("/config/postProcessing/isRarSupported"),
-                headers=self.http_client.defaults['headers'],
+            response = await self.http_client(
+                self.get_url("/config/postProcessing/isRarSupported")
             )
             if response.body != "not supported":
                 sickrage.app.config.unpack = checkbox_to_value(unpack)
@@ -135,13 +134,13 @@ class SavePostProcessingHandler(BaseHandler, ABC):
         sickrage.app.config.delete_non_associated_files = checkbox_to_value(delete_non_associated_files)
         sickrage.app.config.processor_follow_symlinks = checkbox_to_value(processor_follow_symlinks)
 
-        response = await self.http_client.fetch(
+        response = await self.http_client(
             url_concat(
                 self.get_url("/config/postProcessing/isNamingValid"),
                 dict(pattern=naming_pattern, multi=naming_multi_ep)
-            ),
-            headers=self.http_client.defaults['headers']
+            )
         )
+
         if response.body != "invalid":
             sickrage.app.config.naming_pattern = naming_pattern
             sickrage.app.config.naming_multi_ep = int(naming_multi_ep)
@@ -149,13 +148,13 @@ class SavePostProcessingHandler(BaseHandler, ABC):
         else:
             results.append(_("You tried saving an invalid naming config, not saving your naming settings"))
 
-        response = await self.http_client.fetch(
+        response = await self.http_client(
             url_concat(
                 self.get_url("/config/postProcessing/isNamingValid"),
                 dict(pattern=naming_anime_pattern, multi=naming_anime_multi_ep, anime_type=naming_anime)
-            ),
-            headers=self.http_client.defaults['headers']
+            )
         )
+
         if response.body != "invalid":
             sickrage.app.config.naming_anime_pattern = naming_anime_pattern
             sickrage.app.config.naming_anime_multi_ep = int(naming_anime_multi_ep)
@@ -163,12 +162,11 @@ class SavePostProcessingHandler(BaseHandler, ABC):
         else:
             results.append(_("You tried saving an invalid anime naming config, not saving your naming settings"))
 
-        response = await self.http_client.fetch(
+        response = await self.http_client(
             url_concat(
                 self.get_url("/config/postProcessing/isNamingValid"),
                 dict(pattern=naming_abd_pattern, abd=True)
-            ),
-            headers=self.http_client.defaults['headers']
+            )
         )
 
         if response.body != "invalid":
@@ -177,12 +175,11 @@ class SavePostProcessingHandler(BaseHandler, ABC):
             results.append(_("You tried saving an invalid air-by-date naming config, not saving your air-by-date "
                              "settings"))
 
-        response = await self.http_client.fetch(
+        response = await self.http_client(
             url_concat(
                 self.get_url("/config/postProcessing/isNamingValid"),
                 dict(pattern=naming_sports_pattern, multi=naming_multi_ep, sports=True)
-            ),
-            headers=self.http_client.defaults['headers']
+            )
         )
 
         if response.body != "invalid":
@@ -212,11 +209,11 @@ class SavePostProcessingHandler(BaseHandler, ABC):
 class TestNamingHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        pattern = self.get_query_argument('pattern', None)
-        multi = self.get_query_argument('multi', None)
-        abd = self.get_query_argument('abd', None)
-        sports = self.get_query_argument('sports', None)
-        anime_type = self.get_query_argument('anime_type', None)
+        pattern = self.get_argument('pattern', None)
+        multi = self.get_argument('multi', None)
+        abd = self.get_argument('abd', None)
+        sports = self.get_argument('sports', None)
+        anime_type = self.get_argument('anime_type', None)
 
         if multi is not None:
             multi = int(multi)
@@ -234,11 +231,11 @@ class TestNamingHandler(BaseHandler, ABC):
 class IsNamingValidHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        pattern = self.get_query_argument('pattern', None)
-        multi = self.get_query_argument('multi', None)
-        abd = self.get_query_argument('abd', None)
-        sports = self.get_query_argument('sports', None)
-        anime_type = self.get_query_argument('anime_type', None)
+        pattern = self.get_argument('pattern', None)
+        multi = self.get_argument('multi', None)
+        abd = self.get_argument('abd', None)
+        sports = self.get_argument('sports', None)
+        anime_type = self.get_argument('anime_type', None)
 
         if pattern is None:
             return self.write('invalid')
