@@ -1,5 +1,7 @@
 # Changelog
 
+- * a4f2d4e56 - 2019-07-01: Refactored async http client calls in web handlers. 
+- * 8b2b29035 - 2019-07-01: Pre-Release v9.4.88.dev4 
 - * c71c5cefc - 2019-07-01: Resolved issues with sorting main show poster view. 
 - * d708cb2d2 - 2019-07-01: Refactored database calls for GetManualSearchStatusHandler class. 
 - * 051445b33 - 2019-07-01: Resolves &#x27;NoneType&#x27; object has no attribute &#x27;get_episode&#x27; for manual episode searches. 
