@@ -1,5 +1,11 @@
 # Changelog
 
+- * c71c5cefc - 2019-07-01: Resolved issues with sorting main show poster view. 
+- * d708cb2d2 - 2019-07-01: Refactored database calls for GetManualSearchStatusHandler class. 
+- * 051445b33 - 2019-07-01: Resolves &#x27;NoneType&#x27; object has no attribute &#x27;get_episode&#x27; for manual episode searches. 
+- * e2a515c20 - 2019-07-01: Refactored base64 encoding to Python 3 style, resolves issues with both Plex and Kodi notifiers. 
+- * d977639ed - 2019-07-01: Fixed typo in ProperSearch class. 
+- * 2c9539800 - 2019-07-01: Pre-Release v9.4.88.dev3 
 - * 65b1dcf75 - 2019-07-01: Refactored SABnzbd class code to resolve json decode issues. 
 - * 4ba9839f7 - 2019-06-30: Pre-Release v9.4.88.dev2 
 - * 1c7e00bf0 - 2019-06-30: Refactored EditShow view call to update show object before trying to set anime black/white lists. 
