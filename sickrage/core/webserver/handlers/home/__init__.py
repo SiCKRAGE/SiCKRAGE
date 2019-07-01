@@ -77,14 +77,6 @@ def _get_episode(show, season=None, episode=None, absolute=None, session=None):
     return ep_obj
 
 
-def have_torrent():
-    if sickrage.app.config.use_torrents and sickrage.app.config.torrent_method != 'blackhole' and \
-            (sickrage.app.config.enable_https and sickrage.app.config.torrent_host[:5] == 'https' or not
-            sickrage.app.config.enable_https and sickrage.app.config.torrent_host[:5] == 'http:'):
-        return True
-    return False
-
-
 class HomeHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
@@ -1711,14 +1703,15 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
 
         return self.write(json_encode({'episodes': episodes}))
 
-    @MainDB.with_session
-    def get_episodes(self, show_id, items, search_status, session=None):
+    def get_episodes(self, show_id, items, search_status):
         results = []
 
         if not show_id:
             return results
 
-        show_object = find_show(show_id, session=session)
+        show_object = find_show(show_id, session=self.db_session)
+        if not show_object:
+            return results
 
         for item in items:
             try:
