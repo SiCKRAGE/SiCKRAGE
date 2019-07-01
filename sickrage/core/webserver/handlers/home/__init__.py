@@ -747,11 +747,10 @@ class BranchCheckoutHandler(BaseHandler, ABC):
             sickrage.app.alerts.message(_('Checking out branch: '), branch)
             if sickrage.app.version_updater.updater.checkout_branch(branch):
                 sickrage.app.alerts.message(_('Branch checkout successful, restarting: '), branch)
-                response = await self.http_client.fetch(
+                response = await self.http_client(
                     url_concat(
                         self.get_url("/home/restart"), {'pid': sickrage.app.pid}
-                    ),
-                    headers=self.http_client.defaults['headers']
+                    )
                 )
                 return self.write(response.body)
         else:

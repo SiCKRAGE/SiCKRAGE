@@ -136,12 +136,11 @@ class ChangeEpisodeStatusesHandler(BaseHandler, ABC):
                                                                                                          TVEpisode.season != 0)]
                 to_change[cur_indexer_id] = all_eps
 
-            await self.http_client.fetch(
+            await self.http_client(
                 url_concat(
                     self.get_url("/home/setStatus"),
                     dict(show=cur_indexer_id, eps='|'.join(to_change[cur_indexer_id]), status=new_status, direct=True)
-                ),
-                headers=self.http_client.defaults['headers']
+                )
             )
 
         return self.redirect('/manage/episodeStatuses/')
@@ -596,9 +595,8 @@ class MassEditHandler(BaseHandler, ABC):
                 directCall='true'
             )
 
-            response = await self.http_client.fetch(
+            response = await self.http_client(
                 self.get_url("/home/editShow"), method='POST',
-                headers=self.http_client.defaults['headers'],
                 body=urlencode(post_data)
             )
 

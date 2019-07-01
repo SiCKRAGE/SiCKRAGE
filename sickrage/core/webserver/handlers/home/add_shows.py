@@ -352,14 +352,13 @@ class AddShowByIDHandler(BaseHandler, ABC):
 
         show_dir = os.path.join(location, sanitize_file_name(show_name))
 
-        response = await self.http_client.fetch(
+        response = await self.http_client(
             url_concat(
                 self.get_url("/home/addShows/newShow"),
                 {'show_to_add': '1|{show_dir}|{indexer_id}|{show_name}'.format(**{'show_dir': show_dir,
                                                                                   'indexer_id': indexer_id,
                                                                                   'show_name': show_name})}
-            ),
-            headers=self.http_client.defaults['headers']
+            )
         )
 
         return self.write(response.body)
@@ -408,12 +407,11 @@ class AddNewShowHandler(BaseHandler, ABC):
             rest_of_show_dirs = ','.join(other_shows[1:])
 
             # go to add the next show
-            response = await self.http_client.fetch(
+            response = await self.http_client(
                 url_concat(
                     self.get_url("/home/addShows/newShow"),
                     {'show_to_add': next_show_dir, 'other_shows': rest_of_show_dirs}
-                ),
-                headers=self.http_client.defaults['headers']
+                )
             )
 
             return response.body
@@ -548,12 +546,11 @@ class AddExistingShowsHandler(BaseHandler, ABC):
 
         # if they want me to prompt for settings then I will just carry on to the newShow page
         if prompt_for_settings and shows_to_add:
-            response = await self.http_client.fetch(
+            response = await self.http_client(
                 url_concat(
                     self.get_url("/home/addShows/newShow"),
                     {'show_to_add': shows_to_add[0], 'other_shows': ','.join(shows_to_add[1:])}
-                ),
-                headers=self.http_client.defaults['headers']
+                )
             )
 
             return self.write(response.body)
@@ -588,11 +585,10 @@ class AddExistingShowsHandler(BaseHandler, ABC):
             return self.redirect('/home/')
 
         # for the remaining shows we need to prompt for each one, so forward this on to the newShow page
-        response = await self.http_client.fetch(
+        response = await self.http_client(
             url_concat(
                 self.get_url("/home/addShows/newShow"),
                 {'show_to_add': dirs_only[0], 'other_shows': ','.join(dirs_only[1:])}
-            ),
-            headers=self.http_client.defaults['headers']
+            )
         )
         return self.write(response.body)

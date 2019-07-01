@@ -98,9 +98,8 @@ class SavePostProcessingHandler(BaseHandler, ABC):
         sickrage.app.config.process_automatically = checkbox_to_value(process_automatically)
 
         if unpack:
-            response = await self.http_client.fetch(
-                self.get_url("/config/postProcessing/isRarSupported"),
-                headers=self.http_client.defaults['headers'],
+            response = await self.http_client(
+                self.get_url("/config/postProcessing/isRarSupported")
             )
             if response.body != "not supported":
                 sickrage.app.config.unpack = checkbox_to_value(unpack)
@@ -135,13 +134,13 @@ class SavePostProcessingHandler(BaseHandler, ABC):
         sickrage.app.config.delete_non_associated_files = checkbox_to_value(delete_non_associated_files)
         sickrage.app.config.processor_follow_symlinks = checkbox_to_value(processor_follow_symlinks)
 
-        response = await self.http_client.fetch(
+        response = await self.http_client(
             url_concat(
                 self.get_url("/config/postProcessing/isNamingValid"),
                 dict(pattern=naming_pattern, multi=naming_multi_ep)
-            ),
-            headers=self.http_client.defaults['headers']
+            )
         )
+
         if response.body != "invalid":
             sickrage.app.config.naming_pattern = naming_pattern
             sickrage.app.config.naming_multi_ep = int(naming_multi_ep)
@@ -149,13 +148,13 @@ class SavePostProcessingHandler(BaseHandler, ABC):
         else:
             results.append(_("You tried saving an invalid naming config, not saving your naming settings"))
 
-        response = await self.http_client.fetch(
+        response = await self.http_client(
             url_concat(
                 self.get_url("/config/postProcessing/isNamingValid"),
                 dict(pattern=naming_anime_pattern, multi=naming_anime_multi_ep, anime_type=naming_anime)
-            ),
-            headers=self.http_client.defaults['headers']
+            )
         )
+
         if response.body != "invalid":
             sickrage.app.config.naming_anime_pattern = naming_anime_pattern
             sickrage.app.config.naming_anime_multi_ep = int(naming_anime_multi_ep)
@@ -163,12 +162,11 @@ class SavePostProcessingHandler(BaseHandler, ABC):
         else:
             results.append(_("You tried saving an invalid anime naming config, not saving your naming settings"))
 
-        response = await self.http_client.fetch(
+        response = await self.http_client(
             url_concat(
                 self.get_url("/config/postProcessing/isNamingValid"),
                 dict(pattern=naming_abd_pattern, abd=True)
-            ),
-            headers=self.http_client.defaults['headers']
+            )
         )
 
         if response.body != "invalid":
@@ -177,12 +175,11 @@ class SavePostProcessingHandler(BaseHandler, ABC):
             results.append(_("You tried saving an invalid air-by-date naming config, not saving your air-by-date "
                              "settings"))
 
-        response = await self.http_client.fetch(
+        response = await self.http_client(
             url_concat(
                 self.get_url("/config/postProcessing/isNamingValid"),
                 dict(pattern=naming_sports_pattern, multi=naming_multi_ep, sports=True)
-            ),
-            headers=self.http_client.defaults['headers']
+            )
         )
 
         if response.body != "invalid":
