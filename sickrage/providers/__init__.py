@@ -317,8 +317,8 @@ class GenericProvider(object):
             provider_result.version = parse_result.version
             provider_result.size = self._get_size(item)
             provider_result.seeders, provider_result.leechers = self._get_result_stats(item)
-            provider_result.season = parse_result.season_number
-            provider_result.episodes = parse_result.episode_numbers
+            provider_result.season = int(parse_result.season_number)
+            provider_result.episodes = list(map(int, parse_result.episode_numbers))
 
             sickrage.app.log.debug("Adding item from search to cache: {}".format(provider_result.name))
             self.cache.add_cache_entry(provider_result.name, provider_result.url, provider_result.seeders, provider_result.leechers, provider_result.size)
@@ -386,9 +386,9 @@ class GenericProvider(object):
                 sickrage.app.log.debug("Separating full season result to check for later")
 
             if episode_number not in provider_results:
-                provider_results[episode_number] = [provider_result]
+                provider_results[int(episode_number)] = [provider_result]
             else:
-                provider_results[episode_number] += [provider_result]
+                provider_results[int(episode_number)] += [provider_result]
 
         return provider_results
 

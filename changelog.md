@@ -1,5 +1,7 @@
 # Changelog
 
+- * c3957e4dc - 2019-07-01: Resolved issues with NZB searches and not snatching found results. Resolved issues with snatching NZB search results using SABnzbd. 
+- * a15394bf1 - 2019-07-01: Release v9.4.88 
 - * aa389b100 - 2019-07-01: Pre-Release v9.4.88.dev6 
 - * 5e05f9ce7 - 2019-07-01: Refactored show search list to not select shows already in library. 
 - * 5bffa94a2 - 2019-07-01: Refactored how we gather query and body arguments to use one method. 

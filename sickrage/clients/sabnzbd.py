@@ -18,7 +18,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import datetime
 import json
 from urllib.parse import urljoin
@@ -26,17 +25,19 @@ from urllib.parse import urljoin
 import sickrage
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.websession import WebSession
+from sickrage.core.databases.main import MainDB
 
 
 class SabNZBd(object):
     @staticmethod
-    def sendNZB(nzb):
+    @MainDB.with_session
+    def sendNZB(nzb, session=None):
         """
         Sends an NZB to SABnzbd via the API.
         :param nzb: The NZBSearchResult object to send to SAB
         """
 
-        show_object = find_show(nzb.show_id)
+        show_object = find_show(nzb.show_id, session=session)
         if not show_object:
             return False
 

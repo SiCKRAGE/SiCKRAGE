@@ -299,7 +299,7 @@ class TVCache(object):
                     continue
 
                 result.season = curSeason
-                result.episodes = [curEp for curEp in filter(None, curResult["episodes"].split("|"))]
+                result.episodes = [int(curEp) for curEp in filter(None, curResult["episodes"].split("|"))]
 
                 result.quality = int(curResult["quality"])
                 result.release_group = curResult["release_group"]
@@ -329,9 +329,9 @@ class TVCache(object):
 
                 # add it to the list
                 if episode not in cache_results:
-                    cache_results[episode] = [result]
+                    cache_results[int(episode)] = [result]
                 else:
-                    cache_results[episode] += [result]
+                    cache_results[int(episode)] += [result]
 
         # datetime stamp this search so cache gets cleared
         self.last_search = datetime.datetime.today()
