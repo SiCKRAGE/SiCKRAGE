@@ -1076,11 +1076,11 @@ class CMD_History(ApiCall):
 
             row["status"] = status
             row["quality"] = get_quality_string(quality)
-            row["date"] = _history_date_to_datetime_form(str(row["date"]))
+            row["date"] = row["date"].strftime(dateTimeFormat)
 
             del row["action"]
 
-            _rename_element(row, "show_id", "indexer_id")
+            row["indexer_id"] = row.pop("show_id")
             row["resource_path"] = os.path.dirname(row["resource"])
             row["resource"] = os.path.basename(row["resource"])
 
