@@ -2749,7 +2749,7 @@ $(document).ready(function ($) {
                                 resultStr += '<b>' + gt('No results found, try a different search or language.') + '</b>';
                             } else {
                                 $.each(data.results, function (index, obj) {
-                                    if (firstResult) {
+                                    if (firstResult && obj[6] !== 'disabled') {
                                         checked = ' checked';
                                         firstResult = false;
                                     } else {
@@ -2775,7 +2775,7 @@ $(document).ready(function ($) {
                                         resultStr += ' [' + obj[0] + ']';
                                     }
 
-                                    if (obj[6] == 'disabled') {
+                                    if (obj[6] === 'disabled') {
                                         resultStr += '<div class="d-inline text-danger font-weight-bold">' + gt(' already exists in show library') + '</div>';
                                     }
 

@@ -372,7 +372,7 @@ class AddNewShowHandler(BaseHandler, ABC):
         provided then it forwards back to newShow, if not it goes to /home.
         """
 
-        whichSeries = self.get_argument('whichSeries', '')
+        whichSeries = self.get_argument('whichSeries')
         rootDir = self.get_argument('rootDir', None)
         fullShowPath = self.get_argument('fullShowPath', None)
         providedName = self.get_argument('providedName', None)
@@ -424,10 +424,8 @@ class AddNewShowHandler(BaseHandler, ABC):
         series_pieces = whichSeries.split('|')
         if (whichSeries and rootDir or whichSeries and fullShowPath) and len(series_pieces) > 1:
             if len(series_pieces) < 6:
-                sickrage.app.log.error(
-                    'Unable to add show due to show selection. Not anough arguments: %s' % (repr(series_pieces)))
-                sickrage.app.alerts.error(
-                    _('Unknown error. Unable to add show due to problem with show selection.'))
+                sickrage.app.log.error('Unable to add show due to show selection. Not anough arguments: %s' % (repr(series_pieces)))
+                sickrage.app.alerts.error(_('Unknown error. Unable to add show due to problem with show selection.'))
                 return self.redirect('/home/addShows/existingShows/')
 
             indexer = int(series_pieces[1])
