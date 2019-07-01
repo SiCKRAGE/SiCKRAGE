@@ -2,7 +2,7 @@
 <%!
     import os
     import datetime
-    import urllib
+    import urllib.parse
     import ntpath
 
     import sickrage
@@ -672,7 +672,7 @@
                         for rootDir in sickrage.app.config.root_dirs.split('|'):
                                                 if rootDir.startswith('/'):
                                                     filename = filename.replace(rootDir, "")
-                        filename = sickrage.app.config.download_url + urllib.quote(filename.encode('utf8'))
+                        filename = sickrage.app.config.download_url + urllib.parse.quote(filename.encode('utf8'))
                     %>
                         <div style="text-align: center;">
                             <a href="${filename}">${_('Download')}</a>
