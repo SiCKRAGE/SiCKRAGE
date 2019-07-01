@@ -1,5 +1,7 @@
 # Changelog
 
+- * 1c7e00bf0 - 2019-06-30: Refactored EditShow view call to update show object before trying to set anime black/white lists. 
+- * 0f183b770 - 2019-06-30: Release v9.4.87 
 - * 157f3a6dd - 2019-06-30: Fixes SICKRAGE-APP-PY3-DT 
 - * 3c4a9b927 - 2019-06-30: Pre-Release v9.4.87.dev9 
 - * 2fa16c619 - 2019-06-30: Fixes SICKRAGE-APP-PY3-DS 
