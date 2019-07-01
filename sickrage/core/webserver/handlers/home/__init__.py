@@ -1097,6 +1097,16 @@ class EditShowHandler(BaseHandler, ABC):
         best_qualities = best_qualities.split(',') if len(best_qualities) else []
         exceptions_list = exceptions_list.split(',') if len(exceptions_list) else []
 
+        show_obj.paused = paused
+        show_obj.scene = scene
+        show_obj.anime = anime
+        show_obj.sports = sports
+        show_obj.subtitles = subtitles
+        show_obj.sub_use_sr_metadata = sub_use_sr_metadata
+        show_obj.air_by_date = air_by_date
+        show_obj.default_ep_status = int(default_ep_status)
+        show_obj.skip_downloaded = skip_downloaded
+
         # If directCall from mass_edit_update no scene exceptions handling or blackandwhite list handling
         if direct_call:
             do_update_exceptions = False
@@ -1126,7 +1136,6 @@ class EditShowHandler(BaseHandler, ABC):
             new_quality = Quality.combine_qualities(list(map(int, any_qualities)), list(map(int, best_qualities)))
 
         show_obj.quality = new_quality
-        show_obj.skip_downloaded = skip_downloaded
 
         # reversed for now
         if bool(show_obj.flatten_folders) != bool(flatten_folders):
@@ -1135,15 +1144,6 @@ class EditShowHandler(BaseHandler, ABC):
                 sickrage.app.show_queue.refresh_show(show_obj.indexer_id, True)
             except CantRefreshShowException as e:
                 errors.append(_("Unable to refresh this show: {}").format(e))
-
-        show_obj.paused = paused
-        show_obj.scene = scene
-        show_obj.anime = anime
-        show_obj.sports = sports
-        show_obj.subtitles = subtitles
-        show_obj.sub_use_sr_metadata = sub_use_sr_metadata
-        show_obj.air_by_date = air_by_date
-        show_obj.default_ep_status = int(default_ep_status)
 
         if not direct_call:
             show_obj.lang = indexer_lang
