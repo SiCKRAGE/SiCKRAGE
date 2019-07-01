@@ -477,15 +477,6 @@ def _is_int(data):
         return True
 
 
-def _rename_element(dict_obj, oldKey, newKey):
-    try:
-        dict_obj[newKey] = dict_obj[oldKey]
-        del dict_obj[oldKey]
-    except (ValueError, TypeError, NameError):
-        pass
-    return dict_obj
-
-
 def _responds(result_type, data=None, msg=""):
     """
     result is a string of given "type" (success/failure/timeout/error)
@@ -500,29 +491,6 @@ def _responds(result_type, data=None, msg=""):
 
 def _get_status_strings(s):
     return statusStrings[s]
-
-
-def _ordinal_to_datetime_form(ordinal):
-    # workaround for episodes with no airdate
-    if int(ordinal) != 1:
-        date = datetime.datetime.now().date().fromordinal(ordinal)
-    else:
-        return ""
-    return date.strftime(dateTimeFormat)
-
-
-def _ordinal_to_date_form(ordinal):
-    if int(ordinal) != 1:
-        date = datetime.datetime.now().date().fromordinal(ordinal)
-    else:
-        return ""
-
-    return date.strftime(dateFormat)
-
-
-def _history_date_to_datetime_form(timeString):
-    date = datetime.datetime.fromordinal(timeString)
-    return date.strftime(dateTimeFormat)
 
 
 def _map_quality(showObj):
@@ -1076,11 +1044,11 @@ class CMD_History(ApiCall):
 
             row["status"] = status
             row["quality"] = get_quality_string(quality)
-            row["date"] = _history_date_to_datetime_form(str(row["date"]))
+            row["date"] = row["date"].strftime(dateTimeFormat)
 
             del row["action"]
 
-            _rename_element(row, "show_id", "indexer_id")
+            row["indexer_id"] = row.pop("show_id")
             row["resource_path"] = os.path.dirname(row["resource"])
             row["resource"] = os.path.basename(row["resource"])
 
@@ -2694,14 +2662,14 @@ class CMD_Shows(ApiCall):
 
             if try_int(curShow.airs_next, 1) > 693595:  # 1900
                 dtEpisodeAirs = srdatetime.SRDateTime(
-                    sickrage.app.tz_updater.parse_date_time(curShow.airs_next, curShow.airs, showDict['network']),
-                    convert=True).dt
+                    sickrage.app.tz_updater.parse_date_time(curShow.airs_next, curShow.airs, showDict['network']), convert=True).dt
                 showDict['next_ep_airdate'] = srdatetime.SRDateTime(dtEpisodeAirs).srfdate(d_preset=dateFormat)
             else:
                 showDict['next_ep_airdate'] = ''
 
-            showDict["cache"] = \
-                CMD_ShowCache(self.application, self.request, **{"indexer_id": curShow.indexer_id}).run()["data"]
+            result = await CMD_ShowCache(self.application, self.request, **{"indexer_id": curShow.indexer_id}).run()
+            showDict["cache"] = result["data"]
+
             if not showDict["network"]:
                 showDict["network"] = ""
             if self.sort == "name":
@@ -2719,14 +2687,35 @@ class CMD_ShowsStats(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowsStats, self).__init__(application, request, *args, **kwargs)
 
-    async def run(self):
+    @MainDB.with_session
+    async def run(self, session=None):
         """ Get the global shows and episodes statistics """
-        stats = app_statistics()
+        overall_stats = {
+            'episodes': {
+                'downloaded': 0,
+                'snatched': 0,
+                'total': 0,
+            },
+            'shows': {
+                'active': len([show for show in get_show_list() if show.paused == 0 and show.status.lower() == 'continuing']),
+                'total': get_show_list().count(),
+            },
+            'total_size': 0
+        }
+
+        for show in get_show_list(session=session):
+            if sickrage.app.show_queue.is_being_added(show.indexer_id) or sickrage.app.show_queue.is_being_removed(show.indexer_id):
+                continue
+
+            overall_stats['episodes']['snatched'] += show.episodes_snatched or 0
+            overall_stats['episodes']['downloaded'] += show.episodes_downloaded or 0
+            overall_stats['episodes']['total'] += len(show.episodes) or 0
+            overall_stats['total_size'] += show.total_size or 0
 
         return _responds(RESULT_SUCCESS, {
-            'ep_downloaded': stats[1]['episodes']['downloaded'],
-            'ep_snatched': stats[1]['episodes']['snatched'],
-            'ep_total': stats[1]['episodes']['total'],
-            'shows_active': stats[1]['shows']['active'],
-            'shows_total': stats[1]['shows']['total'],
+            'ep_downloaded': overall_stats['episodes']['downloaded'],
+            'ep_snatched': overall_stats['episodes']['snatched'],
+            'ep_total': overall_stats['episodes']['total'],
+            'shows_active': overall_stats['shows']['active'],
+            'shows_total': overall_stats['shows']['total'],
         })

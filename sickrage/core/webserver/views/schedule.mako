@@ -191,13 +191,12 @@
                                                 </a>
                                             </td>
 
-                                            <td class="table-fit">
+                                            <td class="table-fit col-search">
                                                 <a href="${srWebRoot}/home/searchEpisode?show=${cur_result['showid']}&season=${cur_result['season']}&episode=${cur_result['episode']}"
-                                                   title="${_('Manual Search')}"
-                                                   id="forceUpdate-${cur_result['showid']}x${cur_result['season']}x${cur_result['episode']}"
-                                                   class="forceUpdate epSearch">
-                                                    <i class="fas fa-search"
-                                                       id="forceUpdateImage-${cur_result['showid']}"></i>
+                                                   class="epSearch" title="${_('Manual Search')}"
+                                                   id="${cur_result['showid']}x${cur_result['season']}x${cur_result['episode']}"
+                                                   name="${cur_result['showid']}x${cur_result['season']}x${cur_result['episode']}">
+                                                    <i class="fas fa-search"></i>
                                                 </a>
                                             </td>
                                         </tr>
@@ -344,11 +343,10 @@
                                                             <i class="sickrage-core sickrage-core-${IndexerApi(cur_indexer).name.lower()}"></i>
                                                         </a>
                                                         <a href="${srWebRoot}/home/searchEpisode?show=${cur_result['showid']}&season=${cur_result['season']}&episode=${cur_result['episode']}"
-                                                           title="Manual Search"
-                                                           id="forceUpdate-${cur_result['showid']}"
-                                                           class="epSearch forceUpdate">
-                                                            <i class="fas fa-search"
-                                                               id="forceUpdateImage-${cur_result['showid']}"></i>
+                                                           class="epSearch" title="${_('Manual Search')}"
+                                                           id="${cur_result['showid']}x${cur_result['season']}x${cur_result['episode']}"
+                                                           name="${cur_result['showid']}x${cur_result['season']}x${cur_result['episode']}">
+                                                            <i class="fas fa-search"></i>
                                                         </a>
                                                     </span>
                                         </div>

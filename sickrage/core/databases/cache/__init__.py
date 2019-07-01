@@ -19,7 +19,7 @@ import functools
 
 from sqlalchemy import Column, Integer, Text, String
 from sqlalchemy.ext.declarative import as_declarative
-from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.orm import sessionmaker
 
 from sickrage.core.databases import SRDatabase, ContextSession
 
@@ -35,7 +35,7 @@ class CacheDBBase(object):
 
 
 class CacheDB(SRDatabase):
-    db_version = 1
+    db_version = 2
 
     session = sessionmaker(class_=ContextSession)
 
@@ -78,8 +78,7 @@ class CacheDB(SRDatabase):
     class LastSearch(CacheDBBase):
         __tablename__ = 'last_search'
 
-        id = Column(Integer, primary_key=True)
-        provider = Column(Text)
+        provider = Column(String(32), primary_key=True)
         time = Column(Integer)
 
     class SceneException(CacheDBBase):

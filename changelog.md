@@ -1,5 +1,29 @@
 # Changelog
 
+- * 157f3a6dd - 2019-06-30: Fixes SICKRAGE-APP-PY3-DT 
+- * 3c4a9b927 - 2019-06-30: Pre-Release v9.4.87.dev9 
+- * 2fa16c619 - 2019-06-30: Fixes SICKRAGE-APP-PY3-DS 
+- * ab09366df - 2019-06-30: Fixes SICKRAGE-APP-PY3-DB 
+- * a4fc5c959 - 2019-06-30: Pre-Release v9.4.87.dev8 
+- * d24f2e5e2 - 2019-06-30: Fixes SICKRAGE-APP-PY3-D5 
+- * db4a94b20 - 2019-06-30: Pre-Release v9.4.87.dev7 
+- * 28a37348b - 2019-06-30: Fixes SICKRAGE-APP-PY3-C0 
+- * 2a6d3de11 - 2019-06-30: Pre-Release v9.4.87.dev6 
+- * c42ee9644 - 2019-06-30: Added exception handling for search status &#x60;get_episodes&#x60; function 
+- * 0a574b363 - 2019-06-30: Pre-Release v9.4.87.dev5 
+- * 77ac1dcf1 - 2019-06-30: Refactored API call &#x60;shows&#x60; to resolve coroutine issue 
+- * 8f457a116 - 2019-06-30: Refactored API call &#x60;show.stats&#x60; 
+- * 352931e93 - 2019-06-30: Pre-Release v9.4.87.dev4 
+- * b8d32c76f - 2019-06-30: Refactored cache database last_search table provider column to be the new primary key, dropped column ID. 
+- * 5b281252f - 2019-06-30: Added Sentry deploys command to CI/CD. 
+- * 25f4b661f - 2019-06-30: Pre-Release v9.4.87.dev3 
+- * 3d96faf07 - 2019-06-30: Testing Sentry release tracking. 
+- * d8ef19390 - 2019-06-30: Pre-Release v9.4.87.dev2 
+- * b4eb0e71a - 2019-06-30: Resolved yaml issue for CI/CD 
+- * fda4adf7b - 2019-06-30: Pre-Release v9.4.87.dev1 
+- * 3f04b4d2c - 2019-06-30: Fixed &#x60;can&#x27;t compare datetime.datetime to datetime.date&#x60; for CompingEpisodes during API call. 
+- * 5c877f45f - 2019-06-29: Release v9.4.86 
+- * 81c32f3b4 - 2019-06-29: Update readme.md 
 - * 4deb2671f - 2019-06-29: Update readme.md 
 - * 1ca6bcdec - 2019-06-29: Release v9.4.85 
 - * 859f7d3e2 - 2019-06-29: Pre-Release v9.4.85.dev37 

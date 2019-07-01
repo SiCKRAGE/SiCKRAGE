@@ -114,8 +114,7 @@ class ComingEpisodes:
 
         for index, item in enumerate(results):
             results[index]['localtime'] = SRDateTime(
-                sickrage.app.tz_updater.parse_date_time(item['airdate'], item['airs'], item['network']),
-                convert=True).dt
+                sickrage.app.tz_updater.parse_date_time(item['airdate'], item['airs'], item['network']), convert=True).dt
 
         results.sort(key=ComingEpisodes.sorts[sort])
 
@@ -129,7 +128,7 @@ class ComingEpisodes:
                 continue
 
             result['airs'] = str(result['airs']).replace('am', ' AM').replace('pm', ' PM').replace('  ', ' ')
-            result['airdate'] = result['localtime']
+            result['airdate'] = result['localtime'].date()
 
             if result['airdate'] < today:
                 category = 'missed'
