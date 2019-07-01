@@ -119,7 +119,9 @@ class SabNZBd(object):
             'ma_password': sickrage.app.config.sab_username,
             'apikey': sickrage.app.config.sab_apikey
         }
+
         url = urljoin(host, 'api')
+
         data = WebSession().get(url, params=params, verify=False).json()
         if not data:
             return False, data
