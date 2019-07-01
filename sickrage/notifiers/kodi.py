@@ -222,16 +222,15 @@ class KODINotifier(Notifiers):
 
         # if we have a password, use authentication
         if password:
-            base64string = base64.encodestring('%s:%s' % (username, password))[:-1]
+            base64string = base64.b64encode(b'%s:%s' % (username.encode(), password.encode()))[:-1]
             authheader = "Basic %s" % base64string
             headers["Authorization"] = authheader
             sickrage.app.log.debug("Contacting KODI (with auth header) via url: " + url)
         else:
             sickrage.app.log.debug("Contacting KODI via url: " + url)
 
-        resp = WebSession().get(url, headers=headers)
-
         try:
+            resp = WebSession().get(url, headers=headers)
             resp.raise_for_status()
         except Exception as e:
             sickrage.app.log.debug("Couldn't contact KODI HTTP at %r : %r" % (url, e))
@@ -364,24 +363,22 @@ class KODINotifier(Notifiers):
 
         # if we have a password, use authentication
         if password:
-            base64string = base64.encodestring('%s:%s' % (username, password))[:-1]
+            base64string = base64.b64encode(b'%s:%s' % (username.encode(), password.encode()))[:-1]
             authheader = "Basic %s" % base64string
             headers["Authorization"] = authheader
             sickrage.app.log.debug("Contacting KODI (with auth header) via url: " + url)
         else:
             sickrage.app.log.debug("Contacting KODI via url: " + url)
 
-        resp = WebSession().get(url, data=command, headers=headers)
-
         try:
+            resp = WebSession().get(url, data=command, headers=headers)
             resp.raise_for_status()
             result = resp.json()
             sickrage.app.log.debug("KODI JSON response: " + str(result))
             return result
         except Exception as e:
             if sickrage.app.config.kodi_always_on:
-                sickrage.app.log.warning(
-                    "Warning: Couldn't contact KODI JSON API at " + url + " {}".format(e))
+                sickrage.app.log.warning("Warning: Couldn't contact KODI JSON API at " + url + " {}".format(e))
 
         return False
 

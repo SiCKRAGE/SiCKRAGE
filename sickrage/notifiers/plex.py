@@ -65,16 +65,16 @@ class PLEXNotifier(Notifiers):
 
         # if we have a password, use authentication
         if password:
-            base64string = base64.encodestring('%s:%s' % (username, password))[:-1]
+            base64string = base64.b64encode(b'%s:%s' % (username.encode(), password.encode()))[:-1]
             authheader = 'Basic %s' % base64string
             headers['Authorization'] = authheader
             sickrage.app.log.debug('PLEX: Contacting (with auth header) via url: ' + url)
         else:
             sickrage.app.log.debug('PLEX: Contacting via url: ' + url)
 
-        resp = WebSession().get(url, headers=headers)
 
         try:
+            resp = WebSession().get(url, headers=headers)
             resp.raise_for_status()
             result = resp.text
 
@@ -191,16 +191,16 @@ class PLEXNotifier(Notifiers):
                 sickrage.app.log.debug('PLEX: fetching plex.tv credentials for user: ' + username)
 
                 headers = {
-                    'Authorization': 'Basic %s' % base64.encodestring('%s:%s' % (username, password))[:-1],
+                    'Authorization': 'Basic %s' % base64.b64encode(b'%s:%s' % (username.encode(), password.encode()))[:-1],
                     'X-Plex-Device-Name': 'SiCKRAGE',
                     'X-Plex-Product': 'SiCKRAGE Notifier',
                     'X-Plex-Client-Identifier': sickrage.app.user_agent,
                     'X-Plex-Version': '1.0'
                 }
 
-                resp = WebSession().get('https://plex.tv/users/sign_in.xml', headers=headers)
 
                 try:
+                    resp = WebSession().get('https://plex.tv/users/sign_in.xml', headers=headers)
                     resp.raise_for_status()
                     auth_tree = ElementTree.fromstring(resp.text)
                     token = auth_tree.findall('.//authentication-token')[0].text
