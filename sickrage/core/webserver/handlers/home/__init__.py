@@ -1711,13 +1711,14 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
 
         return self.write(json_encode({'episodes': episodes}))
 
-    def get_episodes(self, show_id, items, search_status):
+    @MainDB.with_session
+    def get_episodes(self, show_id, items, search_status, session=None):
         results = []
 
         if not show_id:
             return results
 
-        show_object = find_show(show_id, session=self.db_session)
+        show_object = find_show(show_id, session=session)
 
         for item in items:
             try:
