@@ -1,5 +1,7 @@
 # Changelog
 
+- * 157f3a6dd - 2019-06-30: Fixes SICKRAGE-APP-PY3-DT 
+- * 3c4a9b927 - 2019-06-30: Pre-Release v9.4.87.dev9 
 - * 2fa16c619 - 2019-06-30: Fixes SICKRAGE-APP-PY3-DS 
 - * ab09366df - 2019-06-30: Fixes SICKRAGE-APP-PY3-DB 
 - * a4fc5c959 - 2019-06-30: Pre-Release v9.4.87.dev8 
