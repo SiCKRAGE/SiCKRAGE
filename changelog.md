@@ -1,5 +1,6 @@
 # Changelog
 
+- * aa389b100 - 2019-07-01: Pre-Release v9.4.88.dev6 
 - * 5e05f9ce7 - 2019-07-01: Refactored show search list to not select shows already in library. 
 - * 5bffa94a2 - 2019-07-01: Refactored how we gather query and body arguments to use one method. 
 - * c894e7459 - 2019-07-01: Resolved issues with unicode decoding output from version update commands. 
