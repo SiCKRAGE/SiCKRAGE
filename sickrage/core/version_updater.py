@@ -312,7 +312,7 @@ class UpdateManager(object):
             exit_status = p.returncode
 
             if output:
-                output = output.decode().strip()
+                output = output.decode("utf-8", "ignore").strip()
 
         except OSError:
             sickrage.app.log.info("Command " + ' '.join(cmd) + " didn't work")
@@ -324,9 +324,9 @@ class UpdateManager(object):
             exit_status = 0
         elif exit_status == 1:
             if output:
+                output = output.decode("utf-8", "ignore").strip()
                 if 'stash' in output:
-                    sickrage.app.log.warning(
-                        "Please enable 'git reset' in settings or stash your changes in local files")
+                    sickrage.app.log.warning("Please enable 'git reset' in settings or stash your changes in local files")
                 else:
                     sickrage.app.log.debug(' '.join(cmd) + " returned : " + str(output))
             else:
@@ -362,7 +362,7 @@ class UpdateManager(object):
             exit_status = p.returncode
 
             if output:
-                output = output.strip()
+                output = output.decode("utf-8", "ignore").strip()
         except OSError:
             sickrage.app.log.info("Command " + ' '.join(cmd) + " didn't work")
             exit_status = 1
@@ -410,7 +410,8 @@ class UpdateManager(object):
         sickrage.app.log.warning('Unable to update requirements')
 
         if output:
-            sickrage.app.log.debug("PIP CMD OUTPUT: {}".format(output.strip()))
+            output = output.decode("utf-8", "ignore").strip()
+            sickrage.app.log.debug("PIP CMD OUTPUT: {}".format(output))
 
         requirements_file.close()
         os.unlink(requirements_file.name)
