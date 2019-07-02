@@ -1,5 +1,7 @@
 # Changelog
 
+- * fcadeabb4 - 2019-07-01: Fixes SICKRAGE-APP-PY3-EX 
+- * 290801801 - 2019-07-01: Release v9.4.89 
 - * c3957e4dc - 2019-07-01: Resolved issues with NZB searches and not snatching found results. Resolved issues with snatching NZB search results using SABnzbd. 
 - * a15394bf1 - 2019-07-01: Release v9.4.88 
 - * aa389b100 - 2019-07-01: Pre-Release v9.4.88.dev6 
