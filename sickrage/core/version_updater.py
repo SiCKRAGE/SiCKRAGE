@@ -368,11 +368,11 @@ class UpdateManager(object):
             exit_status = 1
 
         if exit_status == 0:
-            if not silent:
-                sickrage.app.log.debug(' '.join(cmd) + " : returned successful")
+            # if not silent:
+            #     sickrage.app.log.debug(' '.join(cmd) + " : returned successful")
             exit_status = 0
         else:
-            sickrage.app.log.debug(' '.join(cmd) + " returned : " + str(output) + ", treat as error for now")
+            # sickrage.app.log.debug(' '.join(cmd) + " returned : " + str(output) + ", treat as error for now")
             exit_status = 1
 
         return output, err, exit_status
@@ -386,7 +386,7 @@ class UpdateManager(object):
         requirements_file = NamedTemporaryFile(delete=False)
 
         try:
-            requirements_file.write(WebSession().get(requirements_url).text)
+            requirements_file.write(WebSession().get(requirements_url).text.encode())
         except Exception:
             requirements_file.close()
             os.unlink(requirements_file.name)
