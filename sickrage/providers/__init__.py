@@ -317,8 +317,6 @@ class GenericProvider(object):
             provider_result.version = parse_result.version
             provider_result.size = self._get_size(item)
             provider_result.seeders, provider_result.leechers = self._get_result_stats(item)
-            provider_result.season = int(parse_result.season_number)
-            provider_result.episodes = list(map(int, parse_result.episode_numbers))
 
             sickrage.app.log.debug("Adding item from search to cache: {}".format(provider_result.name))
             self.cache.add_cache_entry(provider_result.name, provider_result.url, provider_result.seeders, provider_result.leechers, provider_result.size)
@@ -346,6 +344,9 @@ class GenericProvider(object):
                         sickrage.app.log.debug("The result {} doesn't seem to be a valid episode "
                                                "that we are trying to snatch, ignoring".format(provider_result.name))
                         continue
+
+                provider_result.season = int(parse_result.season_number)
+                provider_result.episodes = list(map(int, parse_result.episode_numbers))
             else:
                 if not parse_result.is_air_by_date:
                     sickrage.app.log.debug("This is supposed to be a date search but the result {} didn't parse as "
