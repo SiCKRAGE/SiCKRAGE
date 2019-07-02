@@ -1,5 +1,8 @@
 # Changelog
 
+- * 9a0834547 - 2019-07-01: Refactored Deluge Daemon client to PIP install and removed old lib requirement. 
+- * 7b8220e7f - 2019-07-01: Added code to clear processing log for queued items. 
+- * 342533898 - 2019-07-01: Release v9.4.91 
 - * df757f507 - 2019-07-01: Resolved issues with installing requirements.txt during updates causing updates to fail. 
 - * 2f63091d3 - 2019-07-01: Release v9.4.90 
 - * fcadeabb4 - 2019-07-01: Fixes SICKRAGE-APP-PY3-EX 
