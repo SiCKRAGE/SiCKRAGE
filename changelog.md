@@ -1,5 +1,7 @@
 # Changelog
 
+- * df757f507 - 2019-07-01: Resolved issues with installing requirements.txt during updates causing updates to fail. 
+- * 2f63091d3 - 2019-07-01: Release v9.4.90 
 - * fcadeabb4 - 2019-07-01: Fixes SICKRAGE-APP-PY3-EX 
 - * 290801801 - 2019-07-01: Release v9.4.89 
 - * c3957e4dc - 2019-07-01: Resolved issues with NZB searches and not snatching found results. Resolved issues with snatching NZB search results using SABnzbd. 
