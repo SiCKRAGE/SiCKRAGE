@@ -16,14 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
-
-
+from deluge_client import DelugeRPCClient
 from base64 import b64encode
 
 import sickrage
 from sickrage.clients import GenericClient
-from synchronousdeluge.client import DelugeClient
-
 from sickrage.core.tv.show.helpers import find_show
 
 
@@ -148,19 +145,24 @@ class DelugeRPC(object):
         self.password = password
 
     def connect(self):
-        self.client = DelugeClient()
-        self.client.connect(self.host, int(self.port), self.username, self.password)
+        self.client = DelugeRPCClient(self.host, int(self.port), self.username, self.password)
+        self.client.connect()
+        return self.client.connected
+
+    def disconnect(self):
+        self.client.disconnect()
 
     def test(self):
         try:
-            self.connect()
+            return self.connect()
         except Exception:
             return False
-        return True
 
     def add_torrent_magnet(self, torrent, options, torrent_hash):
         try:
-            self.connect()
+            if not self.connect():
+                return False
+
             torrent_id = self.client.core.add_torrent_magnet(torrent, options).get()
             if not torrent_id:
                 torrent_id = self._check_torrent(torrent_hash)
@@ -174,7 +176,9 @@ class DelugeRPC(object):
 
     def add_torrent_file(self, filename, torrent, options, torrent_hash):
         try:
-            self.connect()
+            if not self.connect():
+                return False
+
             torrent_id = self.client.core.add_torrent_file(filename, b64encode(torrent), options).get()
             if not torrent_id:
                 torrent_id = self._check_torrent(torrent_hash)
@@ -188,18 +192,23 @@ class DelugeRPC(object):
 
     def set_torrent_label(self, torrent_id, label):
         try:
-            self.connect()
+            if not self.connect():
+                return False
+
             self.client.label.set_torrent(torrent_id, label).get()
         except Exception:
             return False
         finally:
             if self.client:
                 self.disconnect()
+
         return True
 
     def set_torrent_path(self, torrent_id, path):
         try:
-            self.connect()
+            if not self.connect():
+                return False
+
             self.client.core.set_torrent_move_completed_path(torrent_id, path).get()
             self.client.core.set_torrent_move_completed(torrent_id, 1).get()
         except Exception:
@@ -207,11 +216,14 @@ class DelugeRPC(object):
         finally:
             if self.client:
                 self.disconnect()
+
         return True
 
     def set_torrent_priority(self, torrent_ids, priority):
         try:
-            self.connect()
+            if not self.connect():
+                return False
+
             if priority:
                 self.client.core.queue_top([torrent_ids]).get()
         except Exception as err:
@@ -223,7 +235,9 @@ class DelugeRPC(object):
 
     def set_torrent_ratio(self, torrent_ids, ratio):
         try:
-            self.connect()
+            if not self.connect():
+                return False
+
             self.client.core.set_torrent_stop_at_ratio(torrent_ids, True).get()
             self.client.core.set_torrent_stop_ratio(torrent_ids, ratio).get()
         except Exception as err:
@@ -231,27 +245,29 @@ class DelugeRPC(object):
         finally:
             if self.client:
                 self.disconnect()
+
         return True
 
     def pause_torrent(self, torrent_ids):
         try:
-            self.connect()
+            if not self.connect():
+                return False
+
             self.client.core.pause_torrent(torrent_ids).get()
         except Exception:
             return False
         finally:
             if self.client:
                 self.disconnect()
-        return True
 
-    def disconnect(self):
-        self.client.disconnect()
+        return True
 
     def _check_torrent(self, torrent_hash):
         torrent_id = self.client.core.get_torrent_status(torrent_hash, {}).get()
         if torrent_id['hash']:
             sickrage.app.log.debug('DelugeD: Torrent already exists in Deluge')
             return torrent_hash
+
         return False
 
 
