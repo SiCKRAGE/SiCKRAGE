@@ -1,5 +1,7 @@
 # Changelog
 
+- * 8fb2de789 - 2019-07-03: Resolves issue with saving subtitle settings. 
+- * a2bfb7721 - 2019-07-03: Release v9.4.93 
 - * 32ed35832 - 2019-07-03: Fixed key not found issue with migration table column mapper. 
 - * 831787e65 - 2019-07-03: Resolves &#x60;a bytes-like object is required, not &#x27;str&#x27;&#x60; 
 - * d6a1ed2ef - 2019-07-02: Pre-Release v9.4.93.dev1 
