@@ -358,20 +358,17 @@ class UpdateManager(object):
                                  shell=(sys.platform == 'win32'), cwd=sickrage.MAIN_DIR)
             output, err = p.communicate()
             exit_status = p.returncode
-
-            if output:
-                output = output.decode("utf-8", "ignore").strip()
         except OSError:
             sickrage.app.log.info("Command " + ' '.join(cmd) + " didn't work")
             exit_status = 1
 
         if exit_status == 0:
-            # if not silent:
-            #     sickrage.app.log.debug(' '.join(cmd) + " : returned successful")
             exit_status = 0
         else:
-            # sickrage.app.log.debug(' '.join(cmd) + " returned : " + str(output) + ", treat as error for now")
             exit_status = 1
+
+        if output:
+            output = output.decode("utf-8", "ignore").strip()
 
         return output, err, exit_status
 

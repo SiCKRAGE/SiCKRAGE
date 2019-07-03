@@ -192,7 +192,8 @@ class SRDatabase(object):
                 'tv_episodes': {
                     'indexerid': 'indexer_id'
                 },
-            }
+            },
+            'cache': {}
         }
 
         backup_file = os.path.join(sickrage.app.data_dir, '{}_{}.codernitydb.bak'.format(self.name,
