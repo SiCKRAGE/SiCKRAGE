@@ -44,6 +44,7 @@ knowit == 0.2.4
 sqlalchemy == 1.3.2
 sqlalchemy-migrate == 0.12.0
 mutagen == 1.42.0
+deluge-client == 1.7.1
 PyMySQL
 certifi
 pyasn1

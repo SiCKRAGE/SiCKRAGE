@@ -81,6 +81,9 @@ class ProcessResult(object):
         sickrage.app.log.log(level or sickrage.app.log.INFO, message)
         self._output.append(message)
 
+    def clear_log(self):
+        self._output = []
+
     def delete_folder(self, folder, check_empty=True):
         """
         Removes a folder from the filesystem
@@ -170,6 +173,8 @@ class ProcessResult(object):
         :param delete_on: delete files and folders after they are processed (always happens with move and auto combination)
         :param failed: Boolean for whether or not the download failed
         """
+
+        self.clear_log()
 
         directories_from_rars = set()
 

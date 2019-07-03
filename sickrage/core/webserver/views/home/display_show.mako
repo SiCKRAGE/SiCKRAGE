@@ -176,7 +176,7 @@
                                                     <li class="fas fa-tag fa-1x badge badge-primary p-2"> ${genre}</li>
                                                 </a>
                                             % endfor
-                                        % elif show.imdb_info.genre:
+                                        % elif hasattr(show.imdb_info, 'genre'):
                                             % for genre in show.imdb_info.genre.split(','):
                                                 <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', genre.lower())}"
                                                    target="_blank"

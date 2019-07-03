@@ -54,6 +54,9 @@ class PostProcessorQueue(SRQueue):
         sickrage.app.log.log(level or sickrage.app.log.INFO, message)
         self._output.append(message)
 
+    def clear_log(self):
+        self._output = []
+
     def find_in_queue(self, dirName, proc_type):
         """
         Finds any item in the queue with the given dirName and proc_type pair
@@ -107,6 +110,8 @@ class PostProcessorQueue(SRQueue):
         :return: string indicating success or failure
         """
 
+        self.clear_log()
+
         if not dirName:
             self.log("{} post-processing attempted but directory is not set: {}".format(proc_type.title(), dirName),
                      sickrage.app.log.WARNING)
@@ -127,15 +132,14 @@ class PostProcessorQueue(SRQueue):
             return self.output
         else:
             sickrage.app.io_loop.add_callback(super(PostProcessorQueue, self).put,
-                                              PostProcessorItem(dirName, nzbName, process_method, force, is_priority,
-                                                                delete_on, failed, proc_type))
+                                              PostProcessorItem(dirName, nzbName, process_method, force, is_priority, delete_on, failed, proc_type))
 
             if force_next:
                 result = await self._result_queue.get()
                 return result
 
             self.log("{} post-processing job for {} has been added to the queue".format(proc_type.title(), dirName))
-            return self.output + "<br\><span class='hidden'>Processing succeeded</span>"
+            return self.output + "<p><span class='hidden'>Processing succeeded</span></p>"
 
 
 class PostProcessorItem(SRQueueItem):

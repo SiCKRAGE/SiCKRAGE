@@ -313,7 +313,6 @@ class UpdateManager(object):
 
             if output:
                 output = output.decode("utf-8", "ignore").strip()
-
         except OSError:
             sickrage.app.log.info("Command " + ' '.join(cmd) + " didn't work")
             exit_status = 1
@@ -324,7 +323,6 @@ class UpdateManager(object):
             exit_status = 0
         elif exit_status == 1:
             if output:
-                output = output.decode("utf-8", "ignore").strip()
                 if 'stash' in output:
                     sickrage.app.log.warning("Please enable 'git reset' in settings or stash your changes in local files")
                 else:
