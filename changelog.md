@@ -1,5 +1,7 @@
 # Changelog
 
+- * 6471a4742 - 2019-07-02: Fixes SICKRAGE-APP-PY3-C6 
+- * 79bd8f1e9 - 2019-07-02: Release v9.4.92 
 - * 22240c96a - 2019-07-02: Resolves version updated issue &#x60;&#x27;str&#x27; object has no attribute &#x27;decode&#x27;&#x60; 
 - * 526b345cb - 2019-07-01: Refactored display show mako code to check if imdb_info object has attribute genre. 
 - * 60c2498fb - 2019-07-01: Pre-Release v9.4.92.dev1 
