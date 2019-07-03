@@ -86,7 +86,7 @@ class SaveSubtitlesHandler(BaseHandler, ABC):
         legendastv_pass = self.get_argument('legendastv_pass', None)
         opensubtitles_user = self.get_argument('opensubtitles_user', None)
         opensubtitles_pass = self.get_argument('opensubtitles_pass', None)
-        subtitles_languages = self.get_arguments('subtitles_languages[]', ['eng'])
+        subtitles_languages = self.get_arguments('subtitles_languages[]')
 
         results = []
 
@@ -97,11 +97,10 @@ class SaveSubtitlesHandler(BaseHandler, ABC):
         sickrage.app.config.embedded_subtitles_all = checkbox_to_value(embedded_subtitles_all)
         sickrage.app.config.subtitles_hearing_impaired = checkbox_to_value(subtitles_hearing_impaired)
         sickrage.app.config.subtitles_multi = checkbox_to_value(subtitles_multi)
-        sickrage.app.config.subtitles_extra_scripts = [x.strip() for x in subtitles_extra_scripts.split('|') if
-                                                       x.strip()]
+        sickrage.app.config.subtitles_extra_scripts = [x.strip() for x in subtitles_extra_scripts.split('|') if x.strip()]
 
         # Subtitle languages
-        sickrage.app.config.subtitles_languages = subtitles_languages
+        sickrage.app.config.subtitles_languages = subtitles_languages or ['eng']
 
         # Subtitles services
         services_str_list = service_order.split()
