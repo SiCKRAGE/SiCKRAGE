@@ -1,5 +1,8 @@
 # Changelog
 
+- * 32ed35832 - 2019-07-03: Fixed key not found issue with migration table column mapper. 
+- * 831787e65 - 2019-07-03: Resolves &#x60;a bytes-like object is required, not &#x27;str&#x27;&#x60; 
+- * d6a1ed2ef - 2019-07-02: Pre-Release v9.4.93.dev1 
 - * 6471a4742 - 2019-07-02: Fixes SICKRAGE-APP-PY3-C6 
 - * 79bd8f1e9 - 2019-07-02: Release v9.4.92 
 - * 22240c96a - 2019-07-02: Resolves version updated issue &#x60;&#x27;str&#x27; object has no attribute &#x27;decode&#x27;&#x60; 
