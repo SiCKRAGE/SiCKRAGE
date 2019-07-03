@@ -1,5 +1,8 @@
 # Changelog
 
+- * 22240c96a - 2019-07-02: Resolves version updated issue &#x60;&#x27;str&#x27; object has no attribute &#x27;decode&#x27;&#x60; 
+- * 526b345cb - 2019-07-01: Refactored display show mako code to check if imdb_info object has attribute genre. 
+- * 60c2498fb - 2019-07-01: Pre-Release v9.4.92.dev1 
 - * 9a0834547 - 2019-07-01: Refactored Deluge Daemon client to PIP install and removed old lib requirement. 
 - * 7b8220e7f - 2019-07-01: Added code to clear processing log for queued items. 
 - * 342533898 - 2019-07-01: Release v9.4.91 
