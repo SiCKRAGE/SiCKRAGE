@@ -2392,7 +2392,7 @@ class CMD_ShowSeasons(ApiCall):
         if self.season is None:
             seasons = {}
 
-            for row in session(TVEpisode).filter_by(showid=self.indexer_id):
+            for row in session.query(TVEpisode).filter_by(showid=self.indexer_id):
                 status, quality = Quality.split_composite_status(int(row.status))
                 row.status = _get_status_strings(status)
                 row.quality = get_quality_string(quality)
