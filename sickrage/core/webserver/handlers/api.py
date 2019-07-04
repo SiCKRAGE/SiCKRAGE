@@ -180,7 +180,7 @@ class ApiHandler(RequestHandler):
 
         outDict = {}
         if not len(cmds):
-            outDict = CMD_SiCKRAGE(self.application, self.request, *args, **kwargs).run()
+            outDict = await CMD_SiCKRAGE(self.application, self.request, *args, **kwargs).run()
         else:
             cmds = cmds.split('|')
 
@@ -1758,12 +1758,8 @@ class CMD_Show(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         showDict = {
-            "season_list": CMD_ShowSeasonList(self.application, self.request, **{
-                "indexer_id": self.indexer_id
-            }).run()["data"],
-            "cache": CMD_ShowCache(self.application, self.request, **{
-                "indexer_id": self.indexer_id
-            }).run()["data"]
+            "season_list": (await CMD_ShowSeasonList(self.application, self.request, **{"indexer_id": self.indexer_id}).run())["data"],
+            "cache": (await CMD_ShowCache(self.application, self.request, **{"indexer_id": self.indexer_id}).run())["data"]
         }
 
         genreList = []
@@ -1867,8 +1863,7 @@ class CMD_ShowAddExisting(ApiCall):
             return _responds(RESULT_FAILURE, msg='Not a valid location')
 
         indexerName = None
-        indexerResult = CMD_SiCKRAGESearchIndexers(self.application, self.request,
-                                                   **{indexer_ids[self.indexer]: self.indexer_id}).run()
+        indexerResult = await CMD_SiCKRAGESearchIndexers(self.application, self.request, **{indexer_ids[self.indexer]: self.indexer_id}).run()
 
         if indexerResult['result'] == result_type_map[RESULT_SUCCESS]:
             if not indexerResult['data']['results']:
@@ -2031,8 +2026,8 @@ class CMD_ShowAddNew(ApiCall):
             default_ep_status_after = self.future_status
 
         indexer_name = None
-        indexer_result = CMD_SiCKRAGESearchIndexers(self.application, self.request,
-                                                    **{indexer_ids[self.indexer]: self.indexer_id}).run()
+
+        indexer_result = await CMD_SiCKRAGESearchIndexers(self.application, self.request, **{indexer_ids[self.indexer]: self.indexer_id}).run()
 
         if indexer_result['result'] == result_type_map[RESULT_SUCCESS]:
             if not indexer_result['data']['results']:
@@ -2363,8 +2358,8 @@ class CMD_ShowSeasonList(ApiCall):
         if not show_obj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
-        season_list = set(x.season for x in session.query(TVEpisode).filter_by(showid=self.indexer_id).order_by(
-            TVEpisode.season if not self.sort == 'desc' else TVEpisode.season.desc()))
+        season_list = list(set(x.season for x in session.query(TVEpisode).filter_by(showid=self.indexer_id).order_by(
+            TVEpisode.season if not self.sort == 'desc' else TVEpisode.season.desc())))
 
         return _responds(RESULT_SUCCESS, season_list)
 
@@ -2667,8 +2662,7 @@ class CMD_Shows(ApiCall):
             else:
                 showDict['next_ep_airdate'] = ''
 
-            result = await CMD_ShowCache(self.application, self.request, **{"indexer_id": curShow.indexer_id}).run()
-            showDict["cache"] = result["data"]
+            showDict["cache"] = (await CMD_ShowCache(self.application, self.request, **{"indexer_id": curShow.indexer_id}).run())["data"]
 
             if not showDict["network"]:
                 showDict["network"] = ""
