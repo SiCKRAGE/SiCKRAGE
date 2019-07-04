@@ -5,7 +5,6 @@
     from time import time
 
     import sickrage
-    from sickrage.core.api import API
     from sickrage.core.helpers import pretty_file_size, memory_usage
 %>
 
