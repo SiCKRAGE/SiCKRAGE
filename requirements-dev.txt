@@ -3,4 +3,5 @@ crowdin-cli-py
 babel
 wheel
 tox
+wheel
 vcr_unittest

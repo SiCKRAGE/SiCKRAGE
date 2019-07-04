@@ -99,7 +99,7 @@ class SearchResult(object):
         myString += "Season: " + str(self.season) + "\n"
 
         myString += "Episodes:\n"
-        myString += "  ".join(self.episodes) + "\n"
+        myString += "  ".join(map(str, self.episodes)) + "\n"
 
         myString += "Quality: " + Quality.qualityStrings[self.quality] + "\n"
         myString += "Name: " + self.name + "\n"

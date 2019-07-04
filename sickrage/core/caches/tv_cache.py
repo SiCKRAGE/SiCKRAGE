@@ -237,7 +237,6 @@ class TVCache(object):
                         sickrage.app.log.debug("SEARCH RESULT:[{}] ADDED TO CACHE!".format(name))
                     else:
                         sickrage.app.log.debug("SEARCH RESULT:[{}] ALREADY IN CACHE!".format(name))
-                        session.rollback()
 
                     # add to external provider cache database
                     if sickrage.app.config.enable_api_providers_cache and not self.provider.private:

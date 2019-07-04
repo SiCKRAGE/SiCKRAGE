@@ -358,8 +358,7 @@ class GenericClient(object):
                 sickrage.app.log.warning(self.name + ': Unable to set priority for Torrent')
         except Exception as e:
             sickrage.app.log.warning(self.name + ': Failed Sending Torrent')
-            sickrage.app.log.debug(
-                self.name + ': Exception raised when sending torrent: {}. Error: {}'.format(result, e))
+            sickrage.app.log.debug(self.name + ': Exception raised when sending torrent: {}. Error: {}'.format(result, e))
             return r_code
 
         return r_code
