@@ -1,5 +1,7 @@
 # Changelog
 
+- * d9d808799 - 2019-07-03: Resolves async issues with application API. 
+- * 0d476b6ca - 2019-07-03: Release v9.4.94 
 - * 8fb2de789 - 2019-07-03: Resolves issue with saving subtitle settings. 
 - * a2bfb7721 - 2019-07-03: Release v9.4.93 
 - * 32ed35832 - 2019-07-03: Fixed key not found issue with migration table column mapper. 
