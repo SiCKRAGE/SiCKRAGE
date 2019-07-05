@@ -284,18 +284,19 @@ class PopularShowsHandler(BaseHandler, ABC):
         """
         Fetches data from IMDB to show a list of popular shows.
         """
-        e = None
+        imdb_exception = None
 
         try:
             popular_shows = await self.run_task(imdbPopular().fetch_popular_shows)
         except Exception as e:
             popular_shows = None
+            imdb_exception = e
 
         return self.render("/home/imdb_shows.mako",
                            title="IMDB Popular Shows",
                            header="IMDB Popular Shows",
                            popular_shows=popular_shows,
-                           imdb_exception=e,
+                           imdb_exception=imdb_exception,
                            topmenu="home",
                            controller='home',
                            action="popular_shows")
