@@ -1,5 +1,7 @@
 # Changelog
 
+- * 466bb2838 - 2019-07-06: Resolved issues with subtitle downloading. 
+- * 569cda341 - 2019-07-06: Pre-Release v9.4.97.dev1 
 - * b04bc52a8 - 2019-07-06: Added ability to set application URL web root from general interface settings Added requirements-dev.txt as extra requirements in setup.py 
 - * 97f0ddc7d - 2019-07-05: Release v9.4.96 
 - * 6c06ea1f7 - 2019-07-05: Pre-Release v9.4.96.dev2 
