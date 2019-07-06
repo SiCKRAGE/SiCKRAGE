@@ -1,5 +1,7 @@
 # Changelog
 
+- * b04bc52a8 - 2019-07-06: Added ability to set application URL web root from general interface settings Added requirements-dev.txt as extra requirements in setup.py 
+- * 97f0ddc7d - 2019-07-05: Release v9.4.96 
 - * 6c06ea1f7 - 2019-07-05: Pre-Release v9.4.96.dev2 
 - * 967f0c07c - 2019-07-05: Removed links to update Kodi and Emby libraries from main template, resolves issue with missing show arguments. 
 - * d0aae5b39 - 2019-07-05: Resolves unbound exception for variable &#x60;imdb_exception&#x60; 
