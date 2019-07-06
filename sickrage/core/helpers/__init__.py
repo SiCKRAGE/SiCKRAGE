@@ -405,8 +405,8 @@ def copy_file(src_file, dest_file):
 
     try:
         shutil.copyfile(src_file, dest_file)
-    except OSError as e:
-        if e.errno == errno.ENOSPC:
+    except (OSError, PermissionError) as e:
+        if e.errno in [errno.ENOSPC, errno.EACCES]:
             sickrage.app.log.warning(e)
         else:
             sickrage.app.log.error(e)
