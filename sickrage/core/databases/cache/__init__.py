@@ -69,6 +69,19 @@ class CacheDB(SRDatabase):
             _Session = functools.partial(CacheDB.session, *args, **kwargs)
             return decorator
 
+    def cleanup(self):
+        def remove_duplicates_from_last_search_table():
+            found = []
+
+            with self.session() as session:
+                for x in session.query(CacheDB.LastSearch).all():
+                    if x.provider in found:
+                        x.delete()
+                    else:
+                        found.append(x.provider)
+
+        remove_duplicates_from_last_search_table()
+
     class LastUpdate(CacheDBBase):
         __tablename__ = 'last_update'
 

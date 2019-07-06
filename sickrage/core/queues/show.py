@@ -552,10 +552,10 @@ class QueueItemUpdate(ShowQueueItem):
         try:
             indexer_ep_list = show_obj.load_episodes_from_indexer()
         except indexer_exception as e:
-            sickrage.app.log.error("Unable to get info from " + IndexerApi(show_obj.indexer).name + ", the show info will not be refreshed: {}".format(e))
+            sickrage.app.log.warning("Unable to get info from " + IndexerApi(show_obj.indexer).name + ", the show info will not be refreshed: {}".format(e))
 
         if not indexer_ep_list:
-            sickrage.app.log.error("No data returned from " + IndexerApi(show_obj.indexer).name + ", unable to update this show")
+            sickrage.app.log.warning("No data returned from " + IndexerApi(show_obj.indexer).name + ", unable to update this show")
         else:
             # for each ep we found on indexer delete it from the DB list
             for curSeason in indexer_ep_list:

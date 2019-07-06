@@ -185,7 +185,7 @@ class TVCache(object):
     @CacheDB.with_session
     def add_cache_entry(self, name, url, seeders, leechers, size, session=None):
         # check for existing entry in cache
-        if session.query(CacheDB.Provider).filter_by(provider=self.providerID, url=url).one_or_none():
+        if session.query(CacheDB.Provider).filter_by(url=url).count():
             return
 
         # ignore invalid and private IP address urls
@@ -232,11 +232,8 @@ class TVCache(object):
                     }
 
                     # add to internal database
-                    if not session.query(CacheDB.Provider).filter_by(url=dbData['url']).count():
-                        session.add(CacheDB.Provider(**dbData))
-                        sickrage.app.log.debug("SEARCH RESULT:[{}] ADDED TO CACHE!".format(name))
-                    else:
-                        sickrage.app.log.debug("SEARCH RESULT:[{}] ALREADY IN CACHE!".format(name))
+                    session.add(CacheDB.Provider(**dbData))
+                    sickrage.app.log.debug("SEARCH RESULT:[{}] ADDED TO CACHE!".format(name))
 
                     # add to external provider cache database
                     if sickrage.app.config.enable_api_providers_cache and not self.provider.private:

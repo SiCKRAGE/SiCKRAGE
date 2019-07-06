@@ -69,7 +69,7 @@ class BlackAndWhiteList(object):
         """
 
         session.query(MainDB.Blacklist).filter_by(show_id=self.show_id).delete()
-        self._add_keywords(MainDB.Blacklist, values)
+        self._add_keywords(MainDB.Blacklist, values, session=session)
         self.blacklist = values
         sickrage.app.log.debug('Blacklist set to: %s' % self.blacklist)
 
@@ -83,7 +83,7 @@ class BlackAndWhiteList(object):
         """
 
         session.query(MainDB.Whitelist).filter_by(show_id=self.show_id).delete()
-        self._add_keywords(MainDB.Whitelist, values)
+        self._add_keywords(MainDB.Whitelist, values, session=session)
         self.whitelist = values
         sickrage.app.log.debug('Whitelist set to: %s' % self.whitelist)
 

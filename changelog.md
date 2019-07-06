@@ -1,5 +1,14 @@
 # Changelog
 
+- * cd7cecc7a - 2019-07-06: Added exception handling for multiple results being returned for scene numbering off TVEpisodes table. 
+- * fafc8050b - 2019-07-06: Added cleanup functions to help with duplicates in database tables. 
+- * 5dff80fb0 - 2019-07-06: Passes database session object onto add keyword function to avoid database locks. 
+- * c8ac2d441 - 2019-07-06: Misc typo fixes. 
+- * 5ceded0af - 2019-07-06: Looks for provider search result by URL and if exists it does not add to cache. 
+- * c446e185b - 2019-07-06: Converted misc errors to warnings 
+- * 1de0584ab - 2019-07-06: Resolved issue for combining quality when qualities list is empty by providing a default. 
+- * 60f4df007 - 2019-07-06: Added exception catching for PermissionError that generates a warning. 
+- * 6ddee98ef - 2019-07-06: Release v9.4.98 
 - * d426b5d73 - 2019-07-06: Resolves timeout issues for internal http requests. 
 - * 0603b4cc9 - 2019-07-06: Release v9.4.97 
 - * 466bb2838 - 2019-07-06: Resolved issues with subtitle downloading. 

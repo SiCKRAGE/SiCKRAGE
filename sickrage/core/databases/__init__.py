@@ -183,6 +183,9 @@ class SRDatabase(object):
             api.downgrade(self.engine, self.db_repository, self.db_version)
             sickrage.app.log.info('Downgraded {} database to version {}'.format(self.name, self.version))
 
+    def cleanup(self):
+        pass
+
     def migrate(self):
         migration_table_column_mapper = {
             'main': {

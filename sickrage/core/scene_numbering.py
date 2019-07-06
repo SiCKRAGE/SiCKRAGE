@@ -310,7 +310,7 @@ def get_indexer_numbering_for_xem(indexer_id, indexer, sceneSeason, sceneEpisode
     try:
         dbData = session.query(TVEpisode).filter_by(showid=indexer_id, indexer=indexer, scene_season=sceneSeason, scene_episode=sceneEpisode).one()
         return try_int(dbData.season), try_int(dbData.episode)
-    except orm.exc.NoResultFound:
+    except (orm.exc.NoResultFound, orm.exc.MultipleResultsFound):
         return sceneSeason, sceneEpisode
 
 

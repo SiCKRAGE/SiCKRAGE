@@ -199,10 +199,12 @@ class Quality(object):
     def combine_qualities(anyQualities, bestQualities):
         anyQuality = 0
         bestQuality = 0
+
         if anyQualities:
-            anyQuality = reduce(operator.or_, anyQualities)
+            anyQuality = reduce(operator.or_, anyQualities, anyQuality)
         if bestQualities:
-            bestQuality = reduce(operator.or_, bestQualities)
+            bestQuality = reduce(operator.or_, bestQualities, bestQuality)
+
         return anyQuality | (bestQuality << 16)
 
     @staticmethod
