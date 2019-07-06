@@ -28,11 +28,13 @@ from sickrage.core.common import Quality
 from sickrage.core.helpers import try_int
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.websession import WebSession
+from sickrage.core.databases.main import MainDB
 
 
 class NZBGet(object):
+    @MainDB.with_session
     @staticmethod
-    def sendNZB(nzb, proper=False):
+    def sendNZB(nzb, proper=False, session=None):
         """
         Sends NZB to NZBGet client
 
@@ -41,7 +43,7 @@ class NZBGet(object):
         """
 
         if sickrage.app.config.nzbget_host is None:
-            sickrage.app.log.warning("No NZBget host found in configuration. Please configure it.")
+            sickrage.app.log.warning("No NZBGet host found in configuration. Please configure it.")
             return False
 
         dupe_key = ""
@@ -65,25 +67,24 @@ class NZBGet(object):
             "password": sickrage.app.config.nzbget_password
         }
 
-        nzbGetRPC = ServerProxy(url)
+        nzbget_rpc_client = ServerProxy(url)
 
         try:
-            if nzbGetRPC.writelog("INFO", "SiCKRAGE connected to drop of %s any moment now." % (nzb.name + ".nzb")):
-                sickrage.app.log.debug("Successful connected to NZBget")
+            if nzbget_rpc_client.writelog("INFO", "SiCKRAGE connected to drop of %s any moment now." % (nzb.name + ".nzb")):
+                sickrage.app.log.debug("Successful connected to NZBGet")
             else:
-                sickrage.app.log.warning("Successful connected to NZBget, but unable to send a message")
+                sickrage.app.log.warning("Successful connected to NZBGet, but unable to send a message")
         except client.socket.error:
-            sickrage.app.log.warning("Please check your NZBget host and port (if it is running). NZBget is not "
-                                     "responding to this combination")
+            sickrage.app.log.warning("Please check your NZBGet host and port (if it is running). NZBGet is not responding to this combination")
             return False
         except ProtocolError as e:
             if e.errmsg == "Unauthorized":
-                sickrage.app.log.warning("NZBget username or password is incorrect.")
+                sickrage.app.log.warning("NZBGet username or password is incorrect.")
             else:
-                sickrage.app.log.error("Protocol Error: " + e.errmsg)
+                sickrage.app.log.warning("NZBGet Protocol Error: " + e.errmsg)
             return False
 
-        show_object = find_show(nzb.show_id)
+        show_object = find_show(nzb.show_id, session=session)
         if not show_object:
             return False
 
@@ -116,54 +117,54 @@ class NZBGet(object):
             data = nzb.extraInfo[0]
             nzbcontent64 = standard_b64encode(data)
 
-        sickrage.app.log.info("Sending NZB to NZBget")
+        sickrage.app.log.info("Sending NZB to NZBGet")
         sickrage.app.log.debug("URL: " + url)
 
         try:
             # Find out if nzbget supports priority (Version 9.0+), old versions beginning with a 0.x will use the old
             # command
-            nzbget_version_str = nzbGetRPC.version()
+            nzbget_version_str = nzbget_rpc_client.version()
             nzbget_version = try_int(nzbget_version_str[:nzbget_version_str.find(".")])
             if nzbget_version == 0:
                 if nzbcontent64 is not None:
-                    nzbget_result = nzbGetRPC.append(nzb.name + ".nzb", category, addToTop, nzbcontent64)
+                    nzbget_result = nzbget_rpc_client.append(nzb.name + ".nzb", category, addToTop, nzbcontent64)
                 else:
                     if nzb.resultType == "nzb":
                         try:
                             nzbcontent64 = standard_b64encode(WebSession().get(nzb.url).text)
                         except Exception:
                             return False
-                    nzbget_result = nzbGetRPC.append(nzb.name + ".nzb", category, addToTop, nzbcontent64)
+                    nzbget_result = nzbget_rpc_client.append(nzb.name + ".nzb", category, addToTop, nzbcontent64)
             elif nzbget_version == 12:
                 if nzbcontent64 is not None:
-                    nzbget_result = nzbGetRPC.append(nzb.name + ".nzb", category, nzbgetprio, False,
-                                                     nzbcontent64, False, dupe_key, dupe_score, "score")
+                    nzbget_result = nzbget_rpc_client.append(nzb.name + ".nzb", category, nzbgetprio, False,
+                                                             nzbcontent64, False, dupe_key, dupe_score, "score")
                 else:
-                    nzbget_result = nzbGetRPC.appendurl(nzb.name + ".nzb", category, nzbgetprio, False,
-                                                        nzb.url, False, dupe_key, dupe_score, "score")
+                    nzbget_result = nzbget_rpc_client.appendurl(nzb.name + ".nzb", category, nzbgetprio, False,
+                                                                nzb.url, False, dupe_key, dupe_score, "score")
             # v13+ has a new combined append method that accepts both (url and content)
             # also the return value has changed from boolean to integer
             # (Positive number representing NZBID of the queue item. 0 and negative numbers represent error codes.)
             elif nzbget_version >= 13:
-                nzbget_result = True if nzbGetRPC.append(nzb.name + ".nzb",
-                                                         nzbcontent64 if nzbcontent64 is not None else nzb.url,
-                                                         category, nzbgetprio, False, False, dupe_key, dupe_score,
-                                                         "score") > 0 else False
+                nzbget_result = True if nzbget_rpc_client.append(nzb.name + ".nzb",
+                                                                 nzbcontent64 if nzbcontent64 is not None else nzb.url,
+                                                                 category, nzbgetprio, False, False, dupe_key, dupe_score,
+                                                                 "score") > 0 else False
             else:
                 if nzbcontent64 is not None:
-                    nzbget_result = nzbGetRPC.append(nzb.name + ".nzb", category, nzbgetprio, False,
-                                                     nzbcontent64)
+                    nzbget_result = nzbget_rpc_client.append(nzb.name + ".nzb", category, nzbgetprio, False,
+                                                             nzbcontent64)
                 else:
-                    nzbget_result = nzbGetRPC.appendurl(nzb.name + ".nzb", category, nzbgetprio, False,
-                                                        nzb.url)
+                    nzbget_result = nzbget_rpc_client.appendurl(nzb.name + ".nzb", category, nzbgetprio, False,
+                                                                nzb.url)
 
             if nzbget_result:
-                sickrage.app.log.debug("NZB sent to NZBget successfully")
+                sickrage.app.log.debug("NZB sent to NZBGet successfully")
                 return True
             else:
-                sickrage.app.log.warning("NZBget could not add %s to the queue" % (nzb.name + ".nzb"))
+                sickrage.app.log.warning("NZBGet could not add %s to the queue" % (nzb.name + ".nzb"))
                 return False
         except Exception:
             sickrage.app.log.warning(
-                "Connect Error to NZBget: could not add %s to the queue" % (nzb.name + ".nzb"))
+                "Connect Error to NZBGet: could not add %s to the queue" % (nzb.name + ".nzb"))
             return False
