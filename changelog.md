@@ -1,5 +1,13 @@
 # Changelog
 
+- * 6c06ea1f7 - 2019-07-05: Pre-Release v9.4.96.dev2 
+- * 967f0c07c - 2019-07-05: Removed links to update Kodi and Emby libraries from main template, resolves issue with missing show arguments. 
+- * d0aae5b39 - 2019-07-05: Resolves unbound exception for variable &#x60;imdb_exception&#x60; 
+- * fbbeec4ae - 2019-07-04: Pre-Release v9.4.96.dev1 
+- * 140e12938 - 2019-07-04: Performs select count on provider cache results to determine if its ok to insert provider result. 
+- * 25572062b - 2019-07-03: Removed un-needed sickrage.core.api.API import 
+- * ac8f56567 - 2019-07-03: Resolves issue with application API and &#x27;ContextSession&#x27; object being called by mistake. 
+- * f7eea9011 - 2019-07-03: Release v9.4.95 
 - * d9d808799 - 2019-07-03: Resolves async issues with application API. 
 - * 0d476b6ca - 2019-07-03: Release v9.4.94 
 - * 8fb2de789 - 2019-07-03: Resolves issue with saving subtitle settings. 

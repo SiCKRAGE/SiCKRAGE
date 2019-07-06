@@ -232,13 +232,11 @@ class TVCache(object):
                     }
 
                     # add to internal database
-                    try:
+                    if not session.query(CacheDB.Provider).filter_by(url=dbData['url']).count():
                         session.add(CacheDB.Provider(**dbData))
-                        session.commit()
                         sickrage.app.log.debug("SEARCH RESULT:[{}] ADDED TO CACHE!".format(name))
-                    except IntegrityError as e:
+                    else:
                         sickrage.app.log.debug("SEARCH RESULT:[{}] ALREADY IN CACHE!".format(name))
-                        session.rollback()
 
                     # add to external provider cache database
                     if sickrage.app.config.enable_api_providers_cache and not self.provider.private:

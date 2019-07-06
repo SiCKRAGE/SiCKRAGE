@@ -543,13 +543,11 @@ class KODINotifier(Notifiers):
             for host in [x.strip() for x in sickrage.app.config.kodi_host.split(",")]:
                 if self._send_update_library(host, showName):
                     if sickrage.app.config.kodi_update_onlyfirst:
-                        sickrage.app.log.debug(
-                            "Successfully updated '" + host + "', stopped sending update library commands.")
+                        sickrage.app.log.debug("Successfully updated '" + host + "', stopped sending update library commands.")
                         return True
                 else:
                     if sickrage.app.config.kodi_always_on:
-                        sickrage.app.log.warning(
-                            "Failed to detect KODI version for '" + host + "', check configuration and try again.")
+                        sickrage.app.log.warning("Failed to detect KODI version for '" + host + "', check configuration and try again.")
                     result += 1
 
             # needed for the 'update kodi' submenu command

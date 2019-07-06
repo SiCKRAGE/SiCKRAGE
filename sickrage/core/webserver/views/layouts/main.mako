@@ -5,7 +5,6 @@
     from time import time
 
     import sickrage
-    from sickrage.core.api import API
     from sickrage.core.helpers import pretty_file_size, memory_usage
 %>
 
@@ -184,16 +183,16 @@
                                         <i class="fas fa-fw fa-sync"></i>&nbsp;${_('Update PLEX')}
                                     </a>
                                 % endif
-                                % if sickrage.app.config.use_kodi and sickrage.app.config.kodi_host != "":
-                                    <a class="dropdown-item" href="${srWebRoot}/home/updateKODI/">
-                                        <i class="fas fa-fw fa-sync"></i>&nbsp;${_('Update KODI')}
-                                    </a>
-                                % endif
-                                % if sickrage.app.config.use_emby and sickrage.app.config.emby_host != "" and sickrage.app.config.emby_apikey != "":
-                                    <a class="dropdown-item" href="${srWebRoot}/home/updateEMBY/">
-                                        <i class="fas fa-fw fa-sync"></i>&nbsp;${_('Update Emby')}
-                                    </a>
-                                % endif
+##                                 % if sickrage.app.config.use_kodi and sickrage.app.config.kodi_host != "":
+##                                     <a class="dropdown-item" href="${srWebRoot}/home/updateKODI/">
+##                                         <i class="fas fa-fw fa-sync"></i>&nbsp;${_('Update KODI')}
+##                                     </a>
+##                                 % endif
+##                                 % if sickrage.app.config.use_emby and sickrage.app.config.emby_host != "" and sickrage.app.config.emby_apikey != "":
+##                                     <a class="dropdown-item" href="${srWebRoot}/home/updateEMBY/">
+##                                         <i class="fas fa-fw fa-sync"></i>&nbsp;${_('Update Emby')}
+##                                     </a>
+##                                 % endif
                                 % if torrent_webui_url:
                                     <a class="dropdown-item" href="${torrent_webui_url}" target="_blank">
                                         <i class="fas fa-fw fa-video"></i>&nbsp;${_('Manage Torrents')}
