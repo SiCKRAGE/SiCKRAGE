@@ -16,16 +16,17 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
+
 from abc import ABC
 
 from tornado.escape import json_encode
 from tornado.web import authenticated
 
 import sickrage
-from sickrage import subtitles
 from sickrage.core.helpers import checkbox_to_value
 from sickrage.core.webserver import ConfigHandler
 from sickrage.core.webserver.handlers.base import BaseHandler
+from sickrage.subtitles import Subtitles
 
 
 class ConfigSubtitlesHandler(BaseHandler, ABC):
@@ -47,9 +48,7 @@ class ConfigSubtitleGetCodeHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         q = self.get_argument('q')
 
-        codes = [{"id": code, "name": subtitles.name_from_code(code)} for code in
-                 subtitles.subtitle_code_filter()]
-
+        codes = [{"id": code, "name": Subtitles().name_from_code(code)} for code in Subtitles().subtitle_code_filter()]
         codes = list(filter(lambda code: q.lower() in code['name'].lower(), codes))
 
         return self.write(json_encode(codes))
@@ -58,10 +57,8 @@ class ConfigSubtitleGetCodeHandler(BaseHandler, ABC):
 class ConfigSubtitlesWantedLanguagesHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        codes = [{"id": code, "name": subtitles.name_from_code(code)} for code in
-                 subtitles.subtitle_code_filter()]
-
-        codes = list(filter(lambda code: code['id'] in subtitles.wanted_languages(), codes))
+        codes = [{"id": code, "name": Subtitles().name_from_code(code)} for code in Subtitles().subtitle_code_filter()]
+        codes = list(filter(lambda code: code['id'] in Subtitles().wanted_languages(), codes))
 
         return self.write(json_encode(codes))
 

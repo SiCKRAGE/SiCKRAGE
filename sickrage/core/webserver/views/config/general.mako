@@ -721,18 +721,6 @@ c<%inherit file="../layouts/config.mako"/>
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
-                <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5">
-                        <label class="component-title">${_('Enable UPnP')}</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                        <label for="enable_upnp">
-                            <input type="checkbox" class="enabler toggle color-primary is-material" name="enable_upnp"
-                                   id="enable_upnp" ${('', 'checked')[bool(sickrage.app.config.enable_upnp)]}/>
-                            ${_('automatically sets up port-forwarding from external IP to SiCKRAGE')}
-                        </label>
-                    </div>
-                </div>
 
                 <div id="content_enable_upnp">
                     <div class="form-row form-group">
@@ -799,14 +787,33 @@ c<%inherit file="../layouts/config.mako"/>
 
                 <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5">
-                        <label class="component-title">${_('HTTP logs')}</label>
+                        <label class="component-title">${_('HTTP web root')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                        <label for="web_log">
-                            <input type="checkbox" class="toggle color-primary is-material" name="web_log"
-                                   id="web_log" ${('', 'checked')[bool(sickrage.app.config.web_log)]}/>
-                            ${_('enable logs from the internal Tornado web server')}
-                        </label>
+                        <div class="form-row">
+                            <div class="col-md-12">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="fas fa-globe"></span>
+                                        </span>
+                                    </div>
+                                    <input name="web_root" id="web_root"
+                                           value="${sickrage.app.config.web_root}"
+                                           placeholder="${'/'}"
+                                           title="web root used in URL to browse and access WebUI"
+                                           class="form-control"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-12">
+                                <label class="text-info" for="web_root">
+                                    ${_('used in URL to access SiCKRAGE WebUI, DO NOT include a trailing slash at end.')}<br>
+                                    <b>${_('this option require a manual restart to take effect.')}</b>
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -844,6 +851,32 @@ c<%inherit file="../layouts/config.mako"/>
                                 </label>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <div class="form-row form-group">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
+                        <label class="component-title">${_('HTTP logs')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                        <label for="web_log">
+                            <input type="checkbox" class="toggle color-primary is-material" name="web_log"
+                                   id="web_log" ${('', 'checked')[bool(sickrage.app.config.web_log)]}/>
+                            ${_('enable logs from the internal Tornado web server')}
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-row form-group">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
+                        <label class="component-title">${_('Enable UPnP')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                        <label for="enable_upnp">
+                            <input type="checkbox" class="enabler toggle color-primary is-material" name="enable_upnp"
+                                   id="enable_upnp" ${('', 'checked')[bool(sickrage.app.config.enable_upnp)]}/>
+                            ${_('automatically sets up port-forwarding from external IP to SiCKRAGE')}
+                        </label>
                     </div>
                 </div>
 

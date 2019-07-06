@@ -51,7 +51,7 @@ from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
 from sickrage.indexers import IndexerApi
-from sickrage.subtitles import name_from_code
+from sickrage.subtitles import Subtitles
 
 
 @MainDB.with_session
@@ -1749,11 +1749,11 @@ class SearchEpisodeSubtitlesHandler(BaseHandler, ABC):
         if isinstance(ep_obj, TVEpisode):
             try:
                 subs = ep_obj.download_subtitles()
-            except Exception:
+            except Exception as e:
                 return self.write(json_encode({'result': 'failure'}))
 
             if subs:
-                languages = [name_from_code(sub) for sub in subs]
+                languages = [Subtitles().name_from_code(sub) for sub in subs]
                 status = _('New subtitles downloaded: %s') % ', '.join([lang for lang in languages])
             else:
                 status = _('No subtitles downloaded')

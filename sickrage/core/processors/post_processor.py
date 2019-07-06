@@ -32,14 +32,14 @@ from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import EpisodePostProcessingFailedException, NoFreeSpaceException
 from sickrage.core.helpers import show_names, replace_extension, make_dir, chmod_as_parent, move_file, copy_file, hardlink_file, move_and_symlink_file, \
     remove_non_release_groups, remove_extension, is_file_locked, verify_freespace, delete_empty_folders, make_dirs, symlink, is_rar_file, glob_escape, \
-    modify_file_timestamp, touch_file
+    touch_file
 from sickrage.core.helpers.anidb import get_anime_episode
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show
-from sickrage.core.tv.show.history import FailedHistory, History  # memory intensive
+from sickrage.core.tv.show.history import FailedHistory, History
 from sickrage.notifiers import Notifiers
-from sickrage.subtitles import subtitle_extensions, wanted_languages
+from sickrage.subtitles import Subtitles
 
 
 class PostProcessor(object):
@@ -205,7 +205,7 @@ class PostProcessor(object):
                 file_name, separator, file_extension = found_file.rpartition('.')
 
                 # Handles subtitles with language code
-                if file_extension in subtitle_extensions and file_name.rpartition('.')[0].lower() == base_name.lower():
+                if file_extension in Subtitles().subtitle_extensions and file_name.rpartition('.')[0].lower() == base_name.lower():
                     filelist.append(found_file)
                 # Handles all files with same basename, including subtitles without language code
                 elif file_name.lower() == base_name.lower():
@@ -222,7 +222,7 @@ class PostProcessor(object):
                 continue
 
             # Exclude non-subtitle files with the 'subtitles_only' option
-            if subtitles_only and not associated_file_path.endswith(tuple(subtitle_extensions)):
+            if subtitles_only and not associated_file_path.endswith(tuple(Subtitles().subtitle_extensions)):
                 continue
 
             # Exclude .rar files from associated list
@@ -347,9 +347,9 @@ class PostProcessor(object):
             cur_extension = cur_file_path[old_base_name_length + 1:]
 
             # check if file have subtitles language
-            if os.path.splitext(cur_extension)[1][1:] in subtitle_extensions:
+            if os.path.splitext(cur_extension)[1][1:] in Subtitles().subtitle_extensions:
                 cur_lang = os.path.splitext(cur_extension)[0]
-                if cur_lang in wanted_languages():
+                if cur_lang in Subtitles().wanted_languages():
                     cur_extension = cur_lang + os.path.splitext(cur_extension)[1]
 
             # replace .nfo with .nfo-orig to avoid conflicts
@@ -363,7 +363,7 @@ class PostProcessor(object):
             else:
                 new_file_name = replace_extension(cur_file_name, cur_extension)
 
-            if sickrage.app.config.subtitles_dir and cur_extension in subtitle_extensions:
+            if sickrage.app.config.subtitles_dir and cur_extension in Subtitles().subtitle_extensions:
                 subs_new_path = os.path.join(new_path, sickrage.app.config.subtitles_dir)
                 dir_exists = make_dir(subs_new_path)
                 if not dir_exists:

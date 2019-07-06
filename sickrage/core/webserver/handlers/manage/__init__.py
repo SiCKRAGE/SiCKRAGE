@@ -33,7 +33,7 @@ from sickrage.core.helpers import try_int
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
-from sickrage.subtitles import wanted_languages
+from sickrage.subtitles import Subtitles
 
 
 class ManageHandler(BaseHandler, ABC):
@@ -156,7 +156,7 @@ class ShowSubtitleMissedHandler(BaseHandler, ABC):
         for dbData in self.db_session.query(TVEpisode).filter_by(showid=int(indexer_id)).filter(TVEpisode.status.endswith(4),
                                                                                                 TVEpisode.season != 0):
             if which_subs == 'all':
-                if not frozenset(wanted_languages()).difference(dbData.subtitles.split(',')):
+                if not frozenset(Subtitles().wanted_languages()).difference(dbData.subtitles.split(',')):
                     continue
             elif which_subs in dbData.subtitles:
                 continue
@@ -202,7 +202,7 @@ class SubtitleMissedHandler(BaseHandler, ABC):
 
             for cur_status_result in sorted(status_results, key=lambda k: k['show_name']):
                 if which_subs == 'all':
-                    if not frozenset(sickrage.subtitles.wanted_languages()).difference(
+                    if not frozenset(Subtitles().wanted_languages()).difference(
                             cur_status_result["subtitles"].split(',')):
                         continue
                 elif which_subs in cur_status_result["subtitles"]:

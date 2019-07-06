@@ -38,7 +38,7 @@ from sickrage.core.helpers import is_media_file, try_int, replace_extension, mod
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_seasonnotfound, indexer_error, indexer_episodenotfound
 from sickrage.notifiers import Notifiers
-from sickrage.subtitles import subtitle_extensions, download_subtitles, refresh_subtitles, subtitle_code_filter, name_from_code
+from sickrage.subtitles import Subtitles
 
 
 class TVEpisode(MainDBBase):
@@ -93,26 +93,28 @@ class TVEpisode(MainDBBase):
 
     def refresh_subtitles(self):
         """Look for subtitles files and refresh the subtitles property"""
-        subtitles, save_subtitles = refresh_subtitles(self.showid, self.season, self.episode)
+        subtitles, save_subtitles = Subtitles().refresh_subtitles(self.showid, self.season, self.episode)
         if save_subtitles:
             self.subtitles = subtitles
 
     def download_subtitles(self):
+        if self.location == '':
+            return
+
         if not os.path.isfile(self.location):
             sickrage.app.log.debug("%s: Episode file doesn't exist, can't download subtitles for S%02dE%02d" %
                                    (self.show.indexer_id, self.season or 0, self.episode or 0))
             return
 
-        sickrage.app.log.debug(
-            "%s: Downloading subtitles for S%02dE%02d" % (self.show.indexer_id, self.season or 0, self.episode or 0))
+        sickrage.app.log.debug("%s: Downloading subtitles for S%02dE%02d" % (self.show.indexer_id, self.season or 0, self.episode or 0))
 
-        self.subtitles, newSubtitles = download_subtitles(self.season, self.episode)
+        self.subtitles, newSubtitles = Subtitles().download_subtitles(self.showid, self.season, self.episode)
 
         self.subtitles_searchcount += 1 if self.subtitles_searchcount else 1
         self.subtitles_lastsearch = datetime.datetime.now().toordinal()
 
         if newSubtitles:
-            subtitle_list = ", ".join([name_from_code(newSub) for newSub in newSubtitles])
+            subtitle_list = ", ".join([Subtitles().name_from_code(newSub) for newSub in newSubtitles])
             sickrage.app.log.debug("%s: Downloaded %s subtitles for S%02dE%02d" %
                                    (self.show.indexer_id, subtitle_list, self.season or 0, self.episode or 0))
 
@@ -1066,12 +1068,12 @@ class TVEpisode(MainDBBase):
             cur_file_ext = cur_path[old_path_length:]
             cur_file_name = cur_path[:old_path_length]
 
-        if cur_file_ext[1:] in subtitle_extensions:
+        if cur_file_ext[1:] in Subtitles().subtitle_extensions:
             # Extract subtitle language from filename
             sublang = os.path.splitext(cur_file_name)[1][1:]
 
             # Check if the language extracted from filename is a valid language
-            if sublang in subtitle_code_filter():
+            if sublang in Subtitles().subtitle_code_filter():
                 cur_file_ext = '.' + sublang + cur_file_ext
 
         # put the extension on the incoming file

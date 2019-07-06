@@ -398,28 +398,9 @@ class AddNewShowHandler(BaseHandler, ABC):
 
         indexerLang = indexerLang or sickrage.app.config.indexer_default_language
 
-        async def finish_add_show():
-            # if there are no extra shows then go home
-            if not other_shows:
-                return self.redirect('/home/')
-
-            # peel off the next one
-            next_show_dir = other_shows[0]
-            rest_of_show_dirs = ','.join(other_shows[1:])
-
-            # go to add the next show
-            response = await self.http_client(
-                url_concat(
-                    self.get_url("/home/addShows/newShow"),
-                    {'show_to_add': next_show_dir, 'other_shows': rest_of_show_dirs}
-                )
-            )
-
-            return response.body
-
         # if we're skipping then behave accordingly
         if skipShow:
-            return self.write(await finish_add_show())
+            return self.write(await self.finish_add_show(other_shows))
 
         # figure out what show we're adding and where
         series_pieces = whichSeries.split('|')
@@ -510,8 +491,26 @@ class AddNewShowHandler(BaseHandler, ABC):
 
         sickrage.app.alerts.message(_('Adding Show'), _('Adding the specified show into ') + show_dir)
 
-        return self.write(await finish_add_show())
+        return self.write(await self.finish_add_show(other_shows))
 
+    async def finish_add_show(self, other_shows):
+        # if there are no extra shows then go home
+        if not other_shows:
+            return self.redirect('/home/')
+
+        # peel off the next one
+        next_show_dir = other_shows[0]
+        rest_of_show_dirs = ','.join(other_shows[1:])
+
+        # go to add the next show
+        response = await self.http_client(
+            url_concat(
+                self.get_url("/home/addShows/newShow"),
+                {'show_to_add': next_show_dir, 'other_shows': rest_of_show_dirs}
+            )
+        )
+
+        return response.body
 
 class AddExistingShowsHandler(BaseHandler, ABC):
     @authenticated

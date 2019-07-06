@@ -6,7 +6,7 @@
     import ntpath
 
     import sickrage
-    import sickrage.subtitles
+    from sickrage.subtitles import Subtitles
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, FAILED, DOWNLOADED
     from sickrage.core.common import Quality, qualityPresets, statusStrings, Overview
     from sickrage.core.helpers import anon_url, srdatetime, pretty_file_size, get_size
@@ -317,7 +317,7 @@
 
                         <div class="col-auto">
                             <table>
-                                <% info_flag = sickrage.subtitles.code_from_code(show.lang) if show.lang else '' %>
+                                <% info_flag = Subtitles().code_from_code(show.lang) if show.lang else '' %>
                                 <tr>
                                     <td class="show-legend">${_('Info Language:')}</td>
                                     <td>
@@ -682,13 +682,13 @@
 
                 <td class="table-fit col-subtitles">
                     % for flag in (episode_object.subtitles or '').split(','):
-                        % if sickrage.subtitles.name_from_code(flag).lower() != 'undetermined':
+                        % if Subtitles().name_from_code(flag).lower() != 'undetermined':
                             % if flag.strip() != 'und':
                                 <i class="sickrage-flags sickrage-flags-${flag}"
-                                   title="${sickrage.subtitles.name_from_code(flag)}"></i>
+                                   title="${Subtitles().name_from_code(flag)}"></i>
                             % else:
                                 <i class="sickrage-flags sickrage-flags-${flag}"
-                                   title="${sickrage.subtitles.name_from_code(flag)}"></i>
+                                   title="${Subtitles().name_from_code(flag)}"></i>
                             % endif
                         % else:
                             <i class="sickrage-flags sickrage-flags-unknown" title="${_('Unknown')}"></i>
@@ -722,7 +722,7 @@
                                 </a>
                             % endif
                         % endif
-                        % if sickrage.app.config.use_subtitles and show.subtitles and episode_object.location and frozenset(sickrage.subtitles.wanted_languages()).difference(episode_object.subtitles.split(',')):
+                        % if sickrage.app.config.use_subtitles and show.subtitles and episode_object.location and frozenset(Subtitles().wanted_languages()).difference(episode_object.subtitles.split(',')):
                             <a class="epSubtitlesSearch"
                                href="${srWebRoot}/home/searchEpisodeSubtitles?show=${show.indexer_id}&amp;season=${episode_object.season}&amp;episode=${episode_object.episode}">
                                 <i class="fas fa-comment" title="${_('Subtitles Search')}"></i>
