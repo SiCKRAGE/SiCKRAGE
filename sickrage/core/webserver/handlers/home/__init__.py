@@ -41,6 +41,7 @@ from sickrage.core.exceptions import AnidbAdbaConnectionException, CantRefreshSh
 from sickrage.core.helpers import clean_url, clean_host, clean_hosts, get_disk_space_usage, checkbox_to_value, try_int
 from sickrage.core.helpers.anidb import get_release_groups_for_anime, short_group_names
 from sickrage.core.helpers.srdatetime import SRDateTime
+from sickrage.core.helpers.tornado_http import TornadoHTTP
 from sickrage.core.queues.search import BacklogQueueItem, FailedQueueItem, ManualSearchQueueItem
 from sickrage.core.scene_exceptions import get_scene_exceptions, update_scene_exceptions
 from sickrage.core.scene_numbering import get_scene_numbering_for_show, get_xem_numbering_for_show, \
@@ -747,7 +748,7 @@ class BranchCheckoutHandler(BaseHandler, ABC):
             sickrage.app.alerts.message(_('Checking out branch: '), branch)
             if sickrage.app.version_updater.updater.checkout_branch(branch):
                 sickrage.app.alerts.message(_('Branch checkout successful, restarting: '), branch)
-                response = await self.http_client(
+                response = await TornadoHTTP().get(
                     url_concat(
                         self.get_url("/home/restart"), {'pid': sickrage.app.pid}
                     )

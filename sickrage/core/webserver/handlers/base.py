@@ -29,7 +29,7 @@ from mako.exceptions import RichTraceback
 from mako.lookup import TemplateLookup
 from requests import HTTPError
 from tornado import locale
-from tornado.httpclient import AsyncHTTPClient
+from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 from tornado.web import RequestHandler
 
 import sickrage
@@ -56,16 +56,6 @@ class BaseHandler(RequestHandler, ABC):
             encoding_errors='replace',
             future_imports=['unicode_literals']
         )
-
-    async def http_client(self, url, **kwargs):
-        client = AsyncHTTPClient()
-
-        headers = {"Cookie": 'sr_httpclient_token={}'.format(self.application.settings['httpclient_secret'])}
-        response = await client.fetch(url, headers=headers, **kwargs)
-
-        client.close()
-
-        return response
 
     def get_user_locale(self):
         return locale.get(sickrage.app.config.gui_lang)

@@ -30,6 +30,7 @@ from sickrage.core.common import SNATCHED, Quality, Overview
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import CantUpdateShowException, CantRefreshShowException
 from sickrage.core.helpers import try_int
+from sickrage.core.helpers.tornado_http import TornadoHTTP
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
@@ -136,7 +137,7 @@ class ChangeEpisodeStatusesHandler(BaseHandler, ABC):
                                                                                                          TVEpisode.season != 0)]
                 to_change[cur_indexer_id] = all_eps
 
-            await self.http_client(
+            await TornadoHTTP().get(
                 url_concat(
                     self.get_url("/home/setStatus"),
                     dict(show=cur_indexer_id, eps='|'.join(to_change[cur_indexer_id]), status=new_status, direct=True)
@@ -595,8 +596,8 @@ class MassEditHandler(BaseHandler, ABC):
                 directCall='true'
             )
 
-            response = await self.http_client(
-                self.get_url("/home/editShow"), method='POST',
+            response = await TornadoHTTP().post(
+                self.get_url("/home/editShow"),
                 body=urlencode(post_data)
             )
 

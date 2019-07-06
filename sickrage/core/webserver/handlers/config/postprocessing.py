@@ -25,6 +25,7 @@ from tornado.web import authenticated
 
 import sickrage
 from sickrage.core.helpers import checkbox_to_value
+from sickrage.core.helpers.tornado_http import TornadoHTTP
 from sickrage.core.nameparser import validator
 from sickrage.core.webserver import ConfigHandler
 from sickrage.core.webserver.handlers.base import BaseHandler
@@ -98,7 +99,7 @@ class SavePostProcessingHandler(BaseHandler, ABC):
         sickrage.app.config.process_automatically = checkbox_to_value(process_automatically)
 
         if unpack:
-            response = await self.http_client(
+            response = await TornadoHTTP().get(
                 self.get_url("/config/postProcessing/isRarSupported")
             )
             if response.body != "not supported":
@@ -134,7 +135,7 @@ class SavePostProcessingHandler(BaseHandler, ABC):
         sickrage.app.config.delete_non_associated_files = checkbox_to_value(delete_non_associated_files)
         sickrage.app.config.processor_follow_symlinks = checkbox_to_value(processor_follow_symlinks)
 
-        response = await self.http_client(
+        response = await TornadoHTTP().get(
             url_concat(
                 self.get_url("/config/postProcessing/isNamingValid"),
                 dict(pattern=naming_pattern, multi=naming_multi_ep)
@@ -148,7 +149,7 @@ class SavePostProcessingHandler(BaseHandler, ABC):
         else:
             results.append(_("You tried saving an invalid naming config, not saving your naming settings"))
 
-        response = await self.http_client(
+        response = await TornadoHTTP().get(
             url_concat(
                 self.get_url("/config/postProcessing/isNamingValid"),
                 dict(pattern=naming_anime_pattern, multi=naming_anime_multi_ep, anime_type=naming_anime)
@@ -162,7 +163,7 @@ class SavePostProcessingHandler(BaseHandler, ABC):
         else:
             results.append(_("You tried saving an invalid anime naming config, not saving your naming settings"))
 
-        response = await self.http_client(
+        response = await TornadoHTTP().get(
             url_concat(
                 self.get_url("/config/postProcessing/isNamingValid"),
                 dict(pattern=naming_abd_pattern, abd=True)
@@ -175,7 +176,7 @@ class SavePostProcessingHandler(BaseHandler, ABC):
             results.append(_("You tried saving an invalid air-by-date naming config, not saving your air-by-date "
                              "settings"))
 
-        response = await self.http_client(
+        response = await TornadoHTTP().get(
             url_concat(
                 self.get_url("/config/postProcessing/isNamingValid"),
                 dict(pattern=naming_sports_pattern, multi=naming_multi_ep, sports=True)
