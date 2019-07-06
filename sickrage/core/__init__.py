@@ -255,8 +255,7 @@ class Core(object):
         try:
             total_space, available_space = get_free_space(self.data_dir)
             if available_space < 100:
-                self.log.error('Shutting down as SiCKRAGE needs some space to work. You\'ll get corrupted data '
-                               'otherwise. Only %sMB left', available_space)
+                self.log.warning('Shutting down as SiCKRAGE needs some space to work. You\'ll get corrupted data otherwise. Only %sMB left', available_space)
                 return
         except Exception:
             self.log.error('Failed getting disk space: %s', traceback.format_exc())
