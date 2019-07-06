@@ -4,4 +4,4 @@ babel
 wheel
 tox
 wheel
-vcr_unittest
+vcrpy-unittest

@@ -10,8 +10,13 @@ def version():
         return f.read()
 
 
-def requires():
+def requirements():
     with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements.txt'))) as f:
+        return f.read().splitlines()
+
+
+def requirements_dev():
+    with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements-dev.txt'))) as f:
         return f.read().splitlines()
 
 
@@ -58,7 +63,10 @@ setup(
     url='https://git.sickrage.ca',
     keywords=['sickrage', 'sickragetv', 'tv', 'torrent', 'nzb', 'video', 'echel0n'],
     packages=['sickrage'],
-    install_requires=requires(),
+    install_requires=requirements(),
+    extras_require={
+        'dev': requirements_dev()
+    },
     include_package_data=True,
     python_requires='>=3',
     platforms='any',

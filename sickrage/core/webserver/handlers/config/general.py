@@ -93,8 +93,8 @@ class SaveAddShowDefaultsHandler(BaseHandler, ABC):
 class SaveGeneralHandler(BaseHandler, ABC):
     @authenticated
     def post(self, *args, **kwargs):
-        log_nr = self.get_argument('log_nr', 5)
-        log_size = self.get_argument('log_size', 1048576)
+        log_nr = self.get_argument('log_nr', '5')
+        log_size = self.get_argument('log_size', '1048576')
         web_port = self.get_argument('web_port', None)
         web_ipv6 = self.get_argument('web_ipv6', None)
         trash_remove_show = self.get_argument('trash_remove_show', None)
@@ -104,7 +104,7 @@ class SaveGeneralHandler(BaseHandler, ABC):
         indexerDefaultLang = self.get_argument('indexerDefaultLang', 'en')
         ep_default_deleted_status = self.get_argument('ep_default_deleted_status', None)
         launch_browser = self.get_argument('launch_browser', None)
-        showupdate_hour = self.get_argument('showupdate_hour', 3)
+        showupdate_hour = self.get_argument('showupdate_hour', '3')
         api_key = self.get_argument('api_key', None)
         indexer_default = self.get_argument('indexer_default', None)
         timezone_display = self.get_argument('timezone_display', None)
@@ -149,6 +149,7 @@ class SaveGeneralHandler(BaseHandler, ABC):
         enable_upnp = self.get_argument('enable_upnp', None)
         strip_special_file_bits = self.get_argument('strip_special_file_bits', None)
         max_queue_workers = self.get_argument('max_queue_workers', None)
+        web_root = self.get_argument('web_root', '')
 
         results = []
 
@@ -211,6 +212,8 @@ class SaveGeneralHandler(BaseHandler, ABC):
         sickrage.app.config.allowed_video_file_exts = [x.lower() for x in allowed_video_file_exts.split(',')]
 
         sickrage.app.config.strip_special_file_bits = checkbox_to_value(strip_special_file_bits)
+
+        sickrage.app.config.web_root = web_root
 
         # sickrage.app.config.change_web_external_port(web_external_port)
 
