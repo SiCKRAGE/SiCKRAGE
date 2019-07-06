@@ -268,6 +268,9 @@ class Core(object):
             # sync database repo
             db.sync_db_repo()
 
+            # cleanup
+            db.cleanup()
+
         # load name cache
         self.name_cache.load()
 
