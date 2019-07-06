@@ -32,7 +32,7 @@ from tornado.escape import json_encode, recursive_unicode
 from tornado.web import RequestHandler
 
 import sickrage
-import sickrage.subtitles
+from sickrage.subtitles import Subtitles
 from sickrage.core.caches import image_cache
 from sickrage.core.common import ARCHIVED, DOWNLOADED, IGNORED, \
     Overview, Quality, SKIPPED, SNATCHED, SNATCHED_PROPER, UNAIRED, UNKNOWN, \
@@ -965,7 +965,7 @@ class CMD_SubtitleSearch(ApiCall):
         # return the correct json value
         newSubtitles = frozenset(epObj.subtitles).difference(previous_subtitles)
         if newSubtitles:
-            newLangs = [sickrage.subtitles.name_from_code(newSub) for newSub in newSubtitles]
+            newLangs = [Subtitles().name_from_code(newSub) for newSub in newSubtitles]
             status = 'New subtitles downloaded: %s' % ', '.join([newLang for newLang in newLangs])
             response = _responds(RESULT_SUCCESS, msg='New subtitles found')
         else:

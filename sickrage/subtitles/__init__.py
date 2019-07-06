@@ -32,294 +32,282 @@ from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.tv.show.history import History
 from sickrage.subtitles.providers.utils import hash_itasa
 
-for provider in ['itasa = sickrage.subtitles.providers.itasa:ItaSAProvider',
-                 'legendastv = subliminal.providers.legendastv:LegendasTVProvider',
-                 'wizdom = sickrage.subtitles.providers.wizdom:WizdomProvider',
-                 'subscene = sickrage.subtitles.providers.subscene:SubsceneProvider',
-                 'napiprojekt = subliminal.providers.napiprojekt:NapiProjektProvider']:
-    if provider not in subliminal.provider_manager.registered_extensions + subliminal.provider_manager.internal_extensions:
-        subliminal.provider_manager.register(str(provider))
 
-subliminal.region.configure('dogpile.cache.memory')
+class Subtitles(object):
+    def __init__(self):
+        for provider in ['itasa = sickrage.subtitles.providers.itasa:ItaSAProvider',
+                         'legendastv = subliminal.providers.legendastv:LegendasTVProvider',
+                         'wizdom = sickrage.subtitles.providers.wizdom:WizdomProvider',
+                         'subscene = sickrage.subtitles.providers.subscene:SubsceneProvider',
+                         'napiprojekt = subliminal.providers.napiprojekt:NapiProjektProvider']:
+            if provider not in subliminal.provider_manager.registered_extensions + subliminal.provider_manager.internal_extensions:
+                subliminal.provider_manager.register(str(provider))
 
-PROVIDER_URLS = {
-    'addic7ed': 'http://www.addic7ed.com',
-    'itasa': 'http://www.italiansubs.net/',
-    'legendastv': 'http://www.legendas.tv',
-    'napiprojekt': 'http://www.napiprojekt.pl',
-    'opensubtitles': 'http://www.opensubtitles.org',
-    'podnapisi': 'http://www.podnapisi.net',
-    'subscenter': 'http://www.subscenter.org',
-    'thesubdb': 'http://www.thesubdb.com',
-    'tvsubtitles': 'http://www.tvsubtitles.net',
-    'wizdom': 'http://wizdom.xyz',
-    'subscene': 'https://subscene.com'
-}
+        subliminal.region.configure('dogpile.cache.memory', replace_existing_backend=True)
 
-subtitle_extensions = ['srt', 'sub', 'ass', 'idx', 'ssa']
-episode_refiners = ('metadata', 'release', 'tvepisode', 'tvdb', 'omdb')
-
-
-def sortedServiceList():
-    newList = []
-    lmgtfy = 'http://lmgtfy.com/?q=%s'
-
-    curIndex = 0
-    for curService in sickrage.app.config.subtitles_services_list:
-        if curService in subliminal.provider_manager.names():
-            newList.append({'name': curService,
-                            'url': PROVIDER_URLS[curService] if curService in PROVIDER_URLS else lmgtfy % curService,
-                            'image': curService + '.png',
-                            'enabled': sickrage.app.config.subtitles_services_enabled[curIndex] == 1
-                            })
-        curIndex += 1
-
-    for curService in subliminal.provider_manager.names():
-        if curService not in [x['name'] for x in newList]:
-            newList.append({'name': curService,
-                            'url': PROVIDER_URLS[curService] if curService in PROVIDER_URLS else lmgtfy % curService,
-                            'image': curService + '.png',
-                            'enabled': False,
-                            })
-
-    return newList
-
-
-def getEnabledServiceList():
-    return [x['name'] for x in sortedServiceList() if x['enabled']]
-
-
-@MainDB.with_session
-def download_subtitles(show_id, season, episode, session=None):
-    show_object = find_show(show_id, session=session)
-    episode_object = show_object.get_episode(season, episode)
-
-    existing_subtitles = episode_object.subtitles
-    if not isinstance(existing_subtitles, list):
-        existing_subtitles = []
-
-    # First of all, check if we need subtitles
-    languages = get_needed_languages(existing_subtitles)
-    if not languages:
-        sickrage.app.log.debug('%s: No missing subtitles for S%02dE%02d' % (show_id, season, episode))
-        return existing_subtitles, None
-
-    subtitles_path = get_subtitles_path(episode_object.location)
-    video_path = episode_object.location
-    providers = getEnabledServiceList()
-
-    video = get_video(video_path, subtitles_path=subtitles_path, episode_object=episode_object)
-    if not video:
-        sickrage.app.log.debug('%s: Exception caught in subliminal.scan_video for S%02dE%02d' % (show_id, season, episode))
-        return existing_subtitles, None
-
-    provider_configs = {
-        'addic7ed': {
-            'username': sickrage.app.config.addic7ed_user,
-            'password': sickrage.app.config.addic7ed_pass
-        },
-        'itasa': {
-            'username': sickrage.app.config.itasa_user,
-            'password': sickrage.app.config.itasa_pass
-        },
-        'legendastv': {
-            'username': sickrage.app.config.legendastv_user,
-            'password': sickrage.app.config.legendastv_pass
-        },
-        'opensubtitles': {
-            'username': sickrage.app.config.opensubtitles_user,
-            'password': sickrage.app.config.opensubtitles_pass
+        self.PROVIDER_URLS = {
+            'addic7ed': 'http://www.addic7ed.com',
+            'itasa': 'http://www.italiansubs.net/',
+            'legendastv': 'http://www.legendas.tv',
+            'napiprojekt': 'http://www.napiprojekt.pl',
+            'opensubtitles': 'http://www.opensubtitles.org',
+            'podnapisi': 'http://www.podnapisi.net',
+            'subscenter': 'http://www.subscenter.org',
+            'thesubdb': 'http://www.thesubdb.com',
+            'tvsubtitles': 'http://www.tvsubtitles.net',
+            'wizdom': 'http://wizdom.xyz',
+            'subscene': 'https://subscene.com'
         }
-    }
 
-    pool = subliminal.ProviderPool(providers=providers, provider_configs=provider_configs)
+        self.subtitle_extensions = ['srt', 'sub', 'ass', 'idx', 'ssa']
+        self.episode_refiners = ('metadata', 'release', 'tvepisode', 'tvdb', 'omdb')
 
-    try:
-        subtitles_list = pool.list_subtitles(video, languages)
-        if not subtitles_list:
-            sickrage.app.log.debug('%s: No subtitles found for S%02dE%02d on any provider' % (show_id, season, episode))
+    def sortedServiceList(self):
+        newList = []
+        lmgtfy = 'http://lmgtfy.com/?q=%s'
+
+        curIndex = 0
+        for curService in sickrage.app.config.subtitles_services_list:
+            if curService in subliminal.provider_manager.names():
+                newList.append({'name': curService,
+                                'url': self.PROVIDER_URLS[curService] if curService in self.PROVIDER_URLS else lmgtfy % curService,
+                                'image': curService + '.png',
+                                'enabled': sickrage.app.config.subtitles_services_enabled[curIndex] == 1
+                                })
+            curIndex += 1
+
+        for curService in subliminal.provider_manager.names():
+            if curService not in [x['name'] for x in newList]:
+                newList.append({'name': curService,
+                                'url': self.PROVIDER_URLS[curService] if curService in self.PROVIDER_URLS else lmgtfy % curService,
+                                'image': curService + '.png',
+                                'enabled': False,
+                                })
+
+        return newList
+
+    def getEnabledServiceList(self):
+        return [x['name'] for x in self.sortedServiceList() if x['enabled']]
+
+    @MainDB.with_session
+    def download_subtitles(self, show_id, season, episode, session=None):
+        show_object = find_show(show_id, session=session)
+        episode_object = show_object.get_episode(season, episode)
+
+        existing_subtitles = episode_object.subtitles
+        if not isinstance(existing_subtitles, list):
+            existing_subtitles = []
+
+        # First of all, check if we need subtitles
+        languages = self.get_needed_languages(existing_subtitles)
+        if not languages:
+            sickrage.app.log.debug('%s: No missing subtitles for S%02dE%02d' % (show_id, season, episode))
             return existing_subtitles, None
 
-        found_subtitles = pool.download_best_subtitles(subtitles_list, video, languages=languages,
-                                                       hearing_impaired=sickrage.app.config.subtitles_hearing_impaired,
-                                                       only_one=not sickrage.app.config.subtitles_multi)
+        subtitles_path = self.get_subtitles_path(episode_object.location)
+        video_path = episode_object.location
+        providers = self.getEnabledServiceList()
 
-        save_subtitles(video, found_subtitles, directory=subtitles_path, single=not sickrage.app.config.subtitles_multi)
+        video = self.get_video(video_path, subtitles_path=subtitles_path, episode_object=episode_object)
+        if not video:
+            sickrage.app.log.debug('%s: Exception caught in subliminal.scan_video for S%02dE%02d' % (show_id, season, episode))
+            return existing_subtitles, None
 
-        if not sickrage.app.config.embedded_subtitles_all and sickrage.app.config.subtitles_extra_scripts and video_path.endswith(('.mkv', '.mp4')):
-            run_subs_extra_scripts(episode_object, found_subtitles, video, single=not sickrage.app.config.subtitles_multi)
+        provider_configs = {
+            'addic7ed': {
+                'username': sickrage.app.config.addic7ed_user,
+                'password': sickrage.app.config.addic7ed_pass
+            },
+            'itasa': {
+                'username': sickrage.app.config.itasa_user,
+                'password': sickrage.app.config.itasa_pass
+            },
+            'legendastv': {
+                'username': sickrage.app.config.legendastv_user,
+                'password': sickrage.app.config.legendastv_pass
+            },
+            'opensubtitles': {
+                'username': sickrage.app.config.opensubtitles_user,
+                'password': sickrage.app.config.opensubtitles_pass
+            }
+        }
 
-        new_subtitles = sorted({subtitle.language.opensubtitles for subtitle in found_subtitles})
-        current_subtitles = sorted({subtitle for subtitle in new_subtitles + existing_subtitles if subtitle})
-        if not sickrage.app.config.subtitles_multi and len(found_subtitles) == 1:
-            new_code = found_subtitles[0].language.opensubtitles
-            if new_code not in existing_subtitles:
-                current_subtitles.remove(new_code)
-            current_subtitles.append('und')
+        pool = subliminal.ProviderPool(providers=providers, provider_configs=provider_configs)
 
-    except Exception as e:
-        sickrage.app.log.error("Error occurred when downloading subtitles for {}: {}".format(video_path, e))
-        return existing_subtitles, None
+        try:
+            subtitles_list = pool.list_subtitles(video, languages)
+            if not subtitles_list:
+                sickrage.app.log.debug('%s: No subtitles found for S%02dE%02d on any provider' % (show_id, season, episode))
+                return existing_subtitles, None
 
-    if sickrage.app.config.subtitles_history:
-        for subtitle in found_subtitles:
-            sickrage.app.log.debug('history.logSubtitle %s, %s' % (subtitle.provider_name, subtitle.language.opensubtitles))
-            History.log_subtitle(show_id, season, episode, episode_object.status, subtitle)
+            found_subtitles = pool.download_best_subtitles(subtitles_list, video, languages=languages,
+                                                           hearing_impaired=sickrage.app.config.subtitles_hearing_impaired,
+                                                           only_one=not sickrage.app.config.subtitles_multi)
 
-    return current_subtitles, new_subtitles
+            save_subtitles(video, found_subtitles, directory=subtitles_path, single=not sickrage.app.config.subtitles_multi)
 
+            if not sickrage.app.config.embedded_subtitles_all and sickrage.app.config.subtitles_extra_scripts and video_path.endswith(('.mkv', '.mp4')):
+                self.run_subs_extra_scripts(episode_object, found_subtitles, video, single=not sickrage.app.config.subtitles_multi)
 
-def wanted_languages():
-    return frozenset(sickrage.app.config.subtitles_languages).intersection(subtitle_code_filter())
+            new_subtitles = sorted({subtitle.language.opensubtitles for subtitle in found_subtitles})
+            current_subtitles = sorted({subtitle for subtitle in new_subtitles + existing_subtitles if subtitle})
+            if not sickrage.app.config.subtitles_multi and len(found_subtitles) == 1:
+                new_code = found_subtitles[0].language.opensubtitles
+                if new_code not in existing_subtitles:
+                    current_subtitles.remove(new_code)
+                current_subtitles.append('und')
 
+        except Exception as e:
+            sickrage.app.log.error("Error occurred when downloading subtitles for {}: {}".format(video_path, e))
+            return existing_subtitles, None
 
-def get_needed_languages(subtitles):
-    if not sickrage.app.config.subtitles_multi:
-        return set() if 'und' in subtitles else {from_code(language) for language in wanted_languages()}
-    return {from_code(language) for language in wanted_languages().difference(subtitles)}
+        if sickrage.app.config.subtitles_history:
+            for subtitle in found_subtitles:
+                sickrage.app.log.debug('history.logSubtitle %s, %s' % (subtitle.provider_name, subtitle.language.opensubtitles))
+                History.log_subtitle(show_id, season, episode, episode_object.status, subtitle)
 
+        return current_subtitles, new_subtitles
 
-@MainDB.with_session
-def refresh_subtitles(show_id, season, episode, session=None):
-    show_object = find_show(show_id, session=session)
-    episode_object = show_object.get_episode(season, episode)
+    def wanted_languages(self):
+        return frozenset(sickrage.app.config.subtitles_languages).intersection(self.subtitle_code_filter())
 
-    video = get_video(episode_object.location, episode_object=episode_object)
-    if not video:
-        sickrage.app.log.debug("Exception caught in subliminal.scan_video, subtitles couldn't be refreshed")
-        return episode_object.subtitles, None
-    current_subtitles = get_subtitles(video)
-    if episode_object.subtitles == current_subtitles:
-        sickrage.app.log.debug('No changed subtitles for {}'.format(episode_object.pretty_name()))
-        return episode_object.subtitles, None
-    else:
-        return current_subtitles, True
+    def get_needed_languages(self, subtitles):
+        if not sickrage.app.config.subtitles_multi:
+            return set() if 'und' in subtitles else {self.from_code(language) for language in self.wanted_languages()}
+        return {self.from_code(language) for language in self.wanted_languages().difference(subtitles)}
 
+    @MainDB.with_session
+    def refresh_subtitles(self, show_id, season, episode, session=None):
+        show_object = find_show(show_id, session=session)
+        episode_object = show_object.get_episode(season, episode)
 
-def get_video(video_path, subtitles_path=None, subtitles=True, embedded_subtitles=None, episode_object=None):
-    if not subtitles_path:
-        subtitles_path = get_subtitles_path(video_path)
-
-    try:
-        video = subliminal.scan_video(video_path)
-    except Exception as error:
-        sickrage.app.log.debug('Exception: {}'.format(error))
-    else:
-        if video.size > 10485760:
-            video.hashes['itasa'] = hash_itasa(video_path)
-
-        # external subtitles
-        if subtitles:
-            video.subtitle_languages |= \
-                set(subliminal.core.search_external_subtitles(video_path, directory=subtitles_path).values())
-
-        if embedded_subtitles is None:
-            embedded_subtitles = bool(
-                not sickrage.app.config.embedded_subtitles_all and video_path.endswith('.mkv'))
-
-        subliminal.refine(video, episode_refiners=episode_refiners, embedded_subtitles=embedded_subtitles, release_name=episode_object.name,
-                          tv_episode=episode_object)
-
-        from sickrage.core.scene_exceptions import get_scene_exceptions
-        video.alternative_series = list(get_scene_exceptions(episode_object.show.indexer_id))
-
-        # remove format metadata
-        video.format = ""
-
-        return video
-
-
-def get_subtitles_path(video_path):
-    if os.path.isabs(sickrage.app.config.subtitles_dir):
-        new_subtitles_path = sickrage.app.config.subtitles_dir
-    elif sickrage.app.config.subtitles_dir:
-        new_subtitles_path = os.path.join(os.path.dirname(video_path), sickrage.app.config.subtitles_dir)
-        dir_exists = make_dir(new_subtitles_path)
-        if not dir_exists:
-            sickrage.app.log.warning('Unable to create subtitles folder {}'.format(new_subtitles_path))
+        video = self.get_video(episode_object.location, episode_object=episode_object)
+        if not video:
+            sickrage.app.log.debug("Exception caught in subliminal.scan_video, subtitles couldn't be refreshed")
+            return episode_object.subtitles, None
+        current_subtitles = self.get_subtitles(video)
+        if episode_object.subtitles == current_subtitles:
+            sickrage.app.log.debug('No changed subtitles for {}'.format(episode_object.pretty_name()))
+            return episode_object.subtitles, None
         else:
-            chmod_as_parent(new_subtitles_path)
-    else:
-        new_subtitles_path = os.path.dirname(video_path)
+            return current_subtitles, True
 
-    return new_subtitles_path
+    def get_video(self, video_path, subtitles_path=None, subtitles=True, embedded_subtitles=None, episode_object=None):
+        if not subtitles_path:
+            subtitles_path = self.get_subtitles_path(video_path)
 
+        try:
+            video = subliminal.scan_video(video_path)
+        except Exception as error:
+            sickrage.app.log.debug('Exception: {}'.format(error))
+        else:
+            if video.size > 10485760:
+                video.hashes['itasa'] = hash_itasa(video_path)
 
-def get_subtitles(video):
-    """Return a sorted list of detected subtitles for the given video file."""
-    result_list = []
+            # external subtitles
+            if subtitles:
+                video.subtitle_languages |= \
+                    set(subliminal.core.search_external_subtitles(video_path, directory=subtitles_path).values())
 
-    if not video.subtitle_languages:
-        return result_list
+            if embedded_subtitles is None:
+                embedded_subtitles = bool(
+                    not sickrage.app.config.embedded_subtitles_all and video_path.endswith('.mkv'))
 
-    for language in video.subtitle_languages:
-        if hasattr(language, 'opensubtitles') and language.opensubtitles:
-            result_list.append(language.opensubtitles)
+            subliminal.refine(video, episode_refiners=self.episode_refiners, embedded_subtitles=embedded_subtitles, release_name=episode_object.name,
+                              tv_episode=episode_object)
 
-    return sorted(result_list)
+            from sickrage.core.scene_exceptions import get_scene_exceptions
+            video.alternative_series = list(get_scene_exceptions(episode_object.show.indexer_id))
 
+            # remove format metadata
+            video.format = ""
 
-def scan_subtitle_languages(path):
-    language_extensions = tuple('.' + c for c in language_converters['opensubtitles'].codes)
-    dirpath, filename = os.path.split(path)
-    subtitles = set()
-    for p in os.listdir(dirpath):
-        if not isinstance(p, bytes) and p.startswith(os.path.splitext(filename)[0]) and p.endswith(
-                subliminal.SUBTITLE_EXTENSIONS):
-            if os.path.splitext(p)[0].endswith(language_extensions) and len(
-                    os.path.splitext(p)[0].rsplit('.', 1)[1]) is 2:
-                subtitles.add(Language.fromopensubtitles(os.path.splitext(p)[0][-2:]))
-            elif os.path.splitext(p)[0].endswith(language_extensions) and len(
-                    os.path.splitext(p)[0].rsplit('.', 1)[1]) is 3:
-                subtitles.add(Language.fromopensubtitles(os.path.splitext(p)[0][-3:]))
-            elif os.path.splitext(p)[0].endswith('pt-BR') and len(
-                    os.path.splitext(p)[0].rsplit('.', 1)[1]) is 5:
-                subtitles.add(Language.fromopensubtitles('pob'))
+            return video
+
+    def get_subtitles_path(self, video_path):
+        if os.path.isabs(sickrage.app.config.subtitles_dir):
+            new_subtitles_path = sickrage.app.config.subtitles_dir
+        elif sickrage.app.config.subtitles_dir:
+            new_subtitles_path = os.path.join(os.path.dirname(video_path), sickrage.app.config.subtitles_dir)
+            dir_exists = make_dir(new_subtitles_path)
+            if not dir_exists:
+                sickrage.app.log.warning('Unable to create subtitles folder {}'.format(new_subtitles_path))
             else:
-                subtitles.add(Language('und'))
+                chmod_as_parent(new_subtitles_path)
+        else:
+            new_subtitles_path = os.path.dirname(video_path)
 
-    return subtitles
+        return new_subtitles_path
 
+    def get_subtitles(self, video):
+        """Return a sorted list of detected subtitles for the given video file."""
+        result_list = []
 
-def subtitle_code_filter():
-    return {code for code in language_converters['opensubtitles'].codes if len(code) == 3}
+        if not video.subtitle_languages:
+            return result_list
 
+        for language in video.subtitle_languages:
+            if hasattr(language, 'opensubtitles') and language.opensubtitles:
+                result_list.append(language.opensubtitles)
 
-def from_code(language):
-    language = language.strip()
-    if language and language in language_converters['opensubtitles'].codes:
-        return Language.fromopensubtitles(language)
+        return sorted(result_list)
 
-    return Language('und')
+    def scan_subtitle_languages(self, path):
+        language_extensions = tuple('.' + c for c in language_converters['opensubtitles'].codes)
+        dirpath, filename = os.path.split(path)
+        subtitles = set()
+        for p in os.listdir(dirpath):
+            if not isinstance(p, bytes) and p.startswith(os.path.splitext(filename)[0]) and p.endswith(
+                    subliminal.SUBTITLE_EXTENSIONS):
+                if os.path.splitext(p)[0].endswith(language_extensions) and len(
+                        os.path.splitext(p)[0].rsplit('.', 1)[1]) is 2:
+                    subtitles.add(Language.fromopensubtitles(os.path.splitext(p)[0][-2:]))
+                elif os.path.splitext(p)[0].endswith(language_extensions) and len(
+                        os.path.splitext(p)[0].rsplit('.', 1)[1]) is 3:
+                    subtitles.add(Language.fromopensubtitles(os.path.splitext(p)[0][-3:]))
+                elif os.path.splitext(p)[0].endswith('pt-BR') and len(
+                        os.path.splitext(p)[0].rsplit('.', 1)[1]) is 5:
+                    subtitles.add(Language.fromopensubtitles('pob'))
+                else:
+                    subtitles.add(Language('und'))
 
+        return subtitles
 
-def name_from_code(code):
-    return from_code(code).name
+    def subtitle_code_filter(self):
+        return {code for code in language_converters['opensubtitles'].codes if len(code) == 3}
 
+    def from_code(self, language):
+        language = language.strip()
+        if language and language in language_converters['opensubtitles'].codes:
+            return Language.fromopensubtitles(language)
 
-def code_from_code(code):
-    return from_code(code).opensubtitles
+        return Language('und')
 
+    def name_from_code(self, code):
+        return self.from_code(code).name
 
-def run_subs_extra_scripts(episode_object, found_subtitles, video, single=False):
-    for curScriptName in sickrage.app.config.subtitles_extra_scripts:
-        script_cmd = [piece for piece in re.split("( |\\\".*?\\\"|'.*?')", curScriptName) if piece.strip()]
-        script_cmd[0] = os.path.abspath(script_cmd[0])
-        sickrage.app.log.debug("Absolute path to script: " + script_cmd[0])
+    def code_from_code(self, code):
+        return self.from_code(code).opensubtitles
 
-        for subtitle in found_subtitles:
-            subtitle_path = subliminal.subtitle.get_subtitle_path(video.name, None if single else subtitle.language)
+    def run_subs_extra_scripts(self, episode_object, found_subtitles, video, single=False):
+        for curScriptName in sickrage.app.config.subtitles_extra_scripts:
+            script_cmd = [piece for piece in re.split("( |\\\".*?\\\"|'.*?')", curScriptName) if piece.strip()]
+            script_cmd[0] = os.path.abspath(script_cmd[0])
+            sickrage.app.log.debug("Absolute path to script: " + script_cmd[0])
 
-            inner_cmd = script_cmd + [video.name, subtitle_path, subtitle.language.opensubtitles, episode_object.show.name,
-                                      str(episode_object.season), str(episode_object.episode), episode_object.name, str(episode_object.show.indexer_id)]
+            for subtitle in found_subtitles:
+                subtitle_path = subliminal.subtitle.get_subtitle_path(video.name, None if single else subtitle.language)
 
-            # use subprocess to run the command and capture output
-            sickrage.app.log.info("Executing command: %s" % inner_cmd)
-            try:
-                p = subprocess.Popen(inner_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                                     stderr=subprocess.STDOUT, cwd=sickrage.PROG_DIR)
-                out, __ = p.communicate()
-                sickrage.app.log.debug("Script result: %s" % out)
+                inner_cmd = script_cmd + [video.name, subtitle_path, subtitle.language.opensubtitles, episode_object.show.name,
+                                          str(episode_object.season), str(episode_object.episode), episode_object.name, str(episode_object.show.indexer_id)]
 
-            except Exception as e:
-                sickrage.app.log.info("Unable to run subs_extra_script: {}".format(e))
+                # use subprocess to run the command and capture output
+                sickrage.app.log.info("Executing command: %s" % inner_cmd)
+                try:
+                    p = subprocess.Popen(inner_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                                         stderr=subprocess.STDOUT, cwd=sickrage.PROG_DIR)
+                    out, __ = p.communicate()
+                    sickrage.app.log.debug("Script result: %s" % out)
+
+                except Exception as e:
+                    sickrage.app.log.info("Unable to run subs_extra_script: {}".format(e))

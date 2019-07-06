@@ -125,7 +125,7 @@ def retrieve_exceptions(get_xem=True, get_anidb=True, session=None):
     if get_anidb:
         _anidb_exceptions_fetcher()
 
-    for cur_indexer_id, cur_exception_dict in exception_dict.items():
+    for cur_indexer_id, cur_exception_dict in exception_dict.copy().items():
         if not len(cur_exception_dict):
             continue
 

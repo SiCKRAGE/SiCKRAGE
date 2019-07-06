@@ -24,7 +24,7 @@ import threading
 from sqlalchemy import or_, and_
 
 import sickrage
-import sickrage.subtitles
+from sickrage.subtitles import Subtitles
 from sickrage.core.databases.main import MainDB
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import get_show_list, find_show
@@ -50,7 +50,7 @@ class SubtitleSearcher(object):
         # set thread name
         threading.currentThread().setName(self.name)
 
-        if len(sickrage.subtitles.getEnabledServiceList()) < 1:
+        if len(Subtitles().getEnabledServiceList()) < 1:
             sickrage.app.log.warning('Not enough services selected. At least 1 service is required to search subtitles in the background')
             return
 
@@ -73,7 +73,7 @@ class SubtitleSearcher(object):
 
             for e in session.query(TVEpisode).filter_by(showid=s.indexer_id).filter(
                     TVEpisode.location != '', ~TVEpisode.subtitles.in_(
-                        sickrage.subtitles.wanted_languages()
+                        Subtitles().wanted_languages()
                     ), or_(TVEpisode.subtitles_searchcount <= 2,
                            and_(TVEpisode.subtitles_searchcount <= 7,
                                 datetime.date.today() - TVEpisode.airdate))):

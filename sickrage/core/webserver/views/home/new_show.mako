@@ -1,6 +1,7 @@
 <%inherit file="../layouts/main.mako"/>
 <%!
     import sickrage
+    from sickrage.subtitles import Subtitles
     from sickrage.core.helpers import anon_url
     from sickrage.indexers import IndexerApi
 %>
@@ -108,7 +109,7 @@
                                                         title="${_('Choose language')}">
                                                     % for language in IndexerApi().indexer().languages.keys():
                                                         <option value="${language}" ${('', 'selected')[sickrage.app.config.indexer_default_language == language]}>
-                                                            ${sickrage.subtitles.name_from_code(language)}
+                                                            ${Subtitles().name_from_code(language)}
                                                         </option>
                                                     % endfor
                                                 </select>

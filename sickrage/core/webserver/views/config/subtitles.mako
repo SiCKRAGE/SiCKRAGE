@@ -2,8 +2,8 @@
 <%def name='formaction()'><% return 'saveSubtitles' %></%def>
 <%!
     import sickrage
-    import sickrage.subtitles
     from sickrage.core.helpers import anon_url
+    from sickrage.subtitles import Subtitles
 %>
 <%block name="menus">
     <li class="nav-item px-1"><a class="nav-link" data-toggle="tab"
@@ -229,7 +229,7 @@
                 <div class="form-row">
                     <div class="col-md-12">
                         <div class="list-group w-50" id="service_order_list">
-                            % for curService in sickrage.subtitles.sortedServiceList():
+                            % for curService in Subtitles().sortedServiceList():
                                 <div class="list-group-item list-group-item-action list-group-item-dark rounded mb-1 p-2" id="${curService['name']}">
                                     <div class="align-middle">
                                         <label class="form-check-label">
@@ -252,7 +252,7 @@
                 </div>
 
                 <input type="hidden" name="service_order" id="service_order"
-                       value="<% ''.join(['%s:%d' % (x['name'], x['enabled']) for x in sickrage.subtitles.sortedServiceList()])%>"/>
+                       value="<% ''.join(['%s:%d' % (x['name'], x['enabled']) for x in Subtitles().sortedServiceList()])%>"/>
 
                 <div class="form-row">
                     <div class="col-md-12">
@@ -273,7 +273,7 @@
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
-                % for curService in sickrage.subtitles.sortedServiceList():
+                % for curService in Subtitles().sortedServiceList():
                     % if curService['name'] in providerLoginDict.keys():
                         <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5">

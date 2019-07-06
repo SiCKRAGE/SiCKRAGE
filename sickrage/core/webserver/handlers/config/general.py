@@ -54,6 +54,7 @@ class SaveRootDirsHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
         sickrage.app.config.root_dirs = self.get_argument('rootDirString', '')
+        sickrage.app.config.save()
 
 
 class SaveAddShowDefaultsHandler(BaseHandler, ABC):

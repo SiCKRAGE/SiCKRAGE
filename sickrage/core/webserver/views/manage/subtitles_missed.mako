@@ -3,7 +3,7 @@
     import datetime
 
     import sickrage
-    import sickrage.subtitles
+    from sickrage.subtitles import Subtitles
 %>
 <%block name="content">
     <div class="row">
@@ -14,7 +14,7 @@
                 </div>
                 <div class="card-body">
                     % if whichSubs:
-                        <% subsLanguage = sickrage.subtitles.name_from_code(whichSubs) if not whichSubs == 'all' else 'All' %>
+                        <% subsLanguage = Subtitles().name_from_code(whichSubs) if not whichSubs == 'all' else 'All' %>
                     % endif
                     % if not whichSubs or (whichSubs and not ep_counts):
                     % if whichSubs:
@@ -28,18 +28,18 @@
                                 % if sickrage.app.config.subtitles_multi:
                                     <select name="whichSubs" class="form-control form-control-inline input-sm">
                                         <option value="all">All</option>
-                                        % for sub_code in sickrage.subtitles.wanted_languages():
-                                            <option value="${sub_code}">${sickrage.subtitles.name_from_code(sub_code)}</option>
+                                        % for sub_code in Subtitles().wanted_languages():
+                                            <option value="${sub_code}">${Subtitles().name_from_code(sub_code)}</option>
                                         % endfor
                                     </select>
                                 % else:
                                     <select name="whichSubs" class="form-control form-control-inline input-sm">
-                                        % if not sickrage.subtitles.wanted_languages():
+                                        % if not Subtitles().wanted_languages():
                                             <option value="all">All</option>
                                         % else:
-                                            % for index, sub_code in enumerate(sickrage.subtitles.wanted_languages()):
+                                            % for index, sub_code in enumerate(Subtitles().wanted_languages()):
                                                 % if index == 0:
-                                                    <option value="und">${sickrage.subtitles.name_from_code(sub_code)}</option>
+                                                    <option value="und">${Subtitles().name_from_code(sub_code)}</option>
                                                 % endif
                                             % endfor
                                         % endif
@@ -59,9 +59,9 @@
                             % if sickrage.app.config.subtitles_multi:
                                 <h2>${_('Episodes without')} ${subsLanguage} ${_('subtitles.')}</h2>
                             % else:
-                                % for index, sub_code in enumerate(sickrage.subtitles.wanted_languages()):
+                                % for index, sub_code in enumerate(Subtitles().wanted_languages()):
                                     % if index == 0:
-                                        <h2>${_('Episodes without')} ${sickrage.subtitles.name_from_code(sub_code)} ${_('(undefined) subtitles.')}</h2>
+                                        <h2>${_('Episodes without')} ${Subtitles().name_from_code(sub_code)} ${_('(undefined) subtitles.')}</h2>
                                     % endif
                                 % endfor
                             % endif

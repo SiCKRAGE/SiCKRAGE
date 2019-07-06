@@ -127,7 +127,7 @@
                         % if sickrage.app.config.web_root:
                             <div class="form-row">
                                 <div class="col-lg-3 col-md-3 col-sm-3">
-                                    ${_('SR Web Root:')}
+                                    <i class="sickrage-core sickrage-core-version"></i> ${_('SR Web Root:')}
                                 </div>
                                 <div class="col-lg-9 col-md-9 col-sm-9">
                                     ${sickrage.app.config.web_root}

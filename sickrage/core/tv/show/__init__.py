@@ -778,12 +778,9 @@ class TVShow(MainDBBase):
 
         try:
             for episode in self.episodes:
-                if episode.location == '':
-                    continue
                 episode.download_subtitles()
         except Exception:
-            sickrage.app.log.error(
-                "%s: Error occurred when downloading subtitles for %s" % (self.indexer_id, self.name))
+            sickrage.app.log.error("%s: Error occurred when downloading subtitles for %s" % (self.indexer_id, self.name))
 
     def qualitiesToString(self, qualities=None):
         if qualities is None:
