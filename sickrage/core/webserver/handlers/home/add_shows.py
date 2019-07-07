@@ -427,7 +427,7 @@ class AddNewShowHandler(BaseHandler, ABC):
             show_dir = os.path.normpath(fullShowPath)
         else:
             show_dir = os.path.join(rootDir, sanitize_file_name(show_name))
-            if add_show_year and not re.match(r'.*\(\d+\)$', show_dir):
+            if add_show_year and not re.match(r'.*\(\d+\)$', show_dir) and re.search(r'\d{4}', series_pieces[5]):
                 show_dir = "{} ({})".format(show_dir, re.search(r'\d{4}', series_pieces[5]).group(0))
 
         # blanket policy - if the dir exists you should have used "add existing show" numbnuts

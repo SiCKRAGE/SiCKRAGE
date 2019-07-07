@@ -1,5 +1,10 @@
 # Changelog
 
+- * f5844fe02 - 2019-07-07: Updated SABnzbd search client web view to remind end-user to not place a trailing slash at the end of their hostname. 
+- * 331fb7b29 - 2019-07-07: Confirms that there is a year to be added from series pieces to show directory if requested. 
+- * 54f6b27ef - 2019-07-07: Resolved issue with BTN provider API error logging. 
+- * 1cb6b44fc - 2019-07-07: Fixes SICKRAGE-APP-PY3-K4 
+- * e59ea00f5 - 2019-07-07: Release v9.4.102 
 - * 1f37a22a3 - 2019-07-07: Fixes SICKRAGE-APP-PY3-HF 
 - * abb25aa84 - 2019-07-07: Fixes SICKRAGE-APP-PY3-JT 
 - * c768c9a48 - 2019-07-06: Release v9.4.101 
