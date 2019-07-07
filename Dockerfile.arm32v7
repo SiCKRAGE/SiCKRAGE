@@ -1,4 +1,4 @@
-FROM python:3.7-alpine3.9
+FROM arm32v7/python:3.7-alpine3.9
 MAINTAINER echel0n <echel0n@sickrage.ca>
 
 ARG SOURCE_COMMIT
