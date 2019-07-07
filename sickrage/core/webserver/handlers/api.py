@@ -59,7 +59,7 @@ from sickrage.indexers.exceptions import indexer_error, \
 from sickrage.indexers.helpers import map_indexers
 from sickrage.indexers.ui import AllShowsUI
 
-indexer_ids = ["indexer_id", "tvdbid"]
+indexer_ids = ["indexerid", "tvdbid"]
 
 RESULT_SUCCESS = 10  # only use inside the run methods
 RESULT_FAILURE = 20  # only use inside the run methods
@@ -245,7 +245,7 @@ class ApiHandler(RequestHandler):
 
             two calls of show.seasonlist
             one has the index "asd" the other one "2"
-            the "indexer_id" kwargs / params have the indexed cmd as a namspace
+            the "indexerid" kwargs / params have the indexed cmd as a namspace
             and the kwarg / param "sort" is a used as a global
         """
         curArgs = []
@@ -284,7 +284,7 @@ class ApiCall(ApiHandler):
         # override with real output function in subclass
         return {}
 
-    def return_help(self):
+    async def return_help(self):
         for paramDict, paramType in [(self._requiredParams, "requiredParameters"),
                                      (self._optionalParams, "optionalParameters")]:
 
@@ -311,14 +311,14 @@ class ApiCall(ApiHandler):
         if "desc" in self._help:
             msg = self._help["desc"]
 
-        return _responds(RESULT_SUCCESS, self._help, msg)
+        return await _responds(RESULT_SUCCESS, self._help, msg)
 
-    def return_missing(self):
+    async def return_missing(self):
         if len(self._missing) == 1:
             msg = "The required parameter: '" + self._missing[0] + "' was not set"
         else:
             msg = "The required parameters: '" + "','".join(self._missing) + "' where not set"
-        return _responds(RESULT_ERROR, msg=msg)
+        return await _responds(RESULT_ERROR, msg=msg)
 
     def check_params(self, key=None, default=None, required=None, arg_type=None, allowed_values=None, *args, **kwargs):
 
@@ -457,11 +457,11 @@ class TVDBShorthandWrapper(ApiCall):
         """ internal function wrapper """
         args = (self.sid,) + self.origArgs
         if self.e:
-            return CMD_Episode(self.application, self.request, *args, **self.kwargs).run()
+            return await CMD_Episode(self.application, self.request, *args, **self.kwargs).run()
         elif self.s:
-            return CMD_ShowSeasons(self.application, self.request, *args, **self.kwargs).run()
+            return await CMD_ShowSeasons(self.application, self.request, *args, **self.kwargs).run()
         else:
-            return CMD_Show(self.application, self.request, *args, **self.kwargs).run()
+            return await CMD_Show(self.application, self.request, *args, **self.kwargs).run()
 
 
 # ###############################
@@ -477,16 +477,14 @@ def _is_int(data):
         return True
 
 
-def _responds(result_type, data=None, msg=""):
+async def _responds(result_type, data=None, msg=""):
     """
     result is a string of given "type" (success/failure/timeout/error)
     message is a human readable string, can be empty
     data is either a dict or a array, can be a empty dict or empty array
     """
-    if data is None:
-        data = {}
 
-    return {"result": result_type_map[result_type], "message": msg, "data": data}
+    return {"result": result_type_map[result_type], "message": msg, "data": data or {}}
 
 
 def _get_status_strings(s):
@@ -704,7 +702,7 @@ class CMD_ComingEpisodes(ApiCall):
                     'weekday': coming_episode['weekday']
                 })
 
-        return _responds(RESULT_SUCCESS, data)
+        return await _responds(RESULT_SUCCESS, data)
 
 
 class CMD_Episode(ApiCall):
@@ -712,7 +710,7 @@ class CMD_Episode(ApiCall):
     _help = {
         "desc": "Get detailed information about an episode",
         "requiredParameters": {
-            "indexer_id": {"desc": "Unique ID of a show"},
+            "indexerid": {"desc": "Unique ID of a show"},
             "season": {"desc": "The season number"},
             "episode": {"desc": "The episode number"},
         },
@@ -726,7 +724,7 @@ class CMD_Episode(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_Episode, self).__init__(application, request, *args, **kwargs)
-        self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
         self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
         self.e, args = self.check_params("episode", None, True, "int", [], *args, **kwargs)
         self.fullPath, args = self.check_params("full_path", False, False, "bool", [], *args, **kwargs)
@@ -734,12 +732,12 @@ class CMD_Episode(ApiCall):
     @MainDB.with_session
     async def run(self, session=None):
         """ Get detailed information about an episode """
-        show_obj = find_show(int(self.indexer_id), session=session)
+        show_obj = find_show(int(self.indexerid), session=session)
         if not show_obj:
-            return _responds(RESULT_FAILURE, msg="Show not found")
+            return await _responds(RESULT_FAILURE, msg="Show not found")
 
         try:
-            episode = session.query(TVEpisode).filter_by(showid=self.indexer_id, season=self.s, episode=self.e).one()
+            episode = session.query(TVEpisode).filter_by(showid=self.indexerid, season=self.s, episode=self.e).one()
 
             show_path = show_obj.location
 
@@ -767,7 +765,7 @@ class CMD_Episode(ApiCall):
             episode.quality = get_quality_string(quality)
             episode.file_size_human = pretty_file_size(episode.file_size)
 
-            return _responds(RESULT_SUCCESS, episode)
+            return await _responds(RESULT_SUCCESS, episode)
         except orm.exc.NoResultFound:
             raise ApiError("Episode not found")
 
@@ -777,7 +775,7 @@ class CMD_EpisodeSearch(ApiCall):
     _help = {
         "desc": "Search for an episode. The response might take some time.",
         "requiredParameters": {
-            "indexer_id": {"desc": "Unique ID of a show"},
+            "indexerid": {"desc": "Unique ID of a show"},
             "season": {"desc": "The season number"},
             "episode": {"desc": "The episode number"},
         },
@@ -788,22 +786,22 @@ class CMD_EpisodeSearch(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_EpisodeSearch, self).__init__(application, request, *args, **kwargs)
-        self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
         self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
         self.e, args = self.check_params("episode", None, True, "int", [], *args, **kwargs)
 
     @MainDB.with_session
     async def run(self, session=None):
         """ Search for an episode """
-        showObj = find_show(int(self.indexer_id), session=session)
+        showObj = find_show(int(self.indexerid), session=session)
         if not showObj:
-            return _responds(RESULT_FAILURE, msg="Show not found")
+            return await _responds(RESULT_FAILURE, msg="Show not found")
 
         # retrieve the episode object and fail if we can't get one
         try:
             epObj = showObj.get_episode(int(self.s), int(self.e))
         except EpisodeNotFoundException:
-            return _responds(RESULT_FAILURE, msg="Episode not found")
+            return await _responds(RESULT_FAILURE, msg="Episode not found")
 
         # make a queue item for it and put it on the queue
         ep_queue_item = ManualSearchQueueItem(showObj, epObj.season, epObj.episode)
@@ -817,10 +815,10 @@ class CMD_EpisodeSearch(ApiCall):
         if ep_queue_item.success:
             status, quality = Quality.split_composite_status(epObj.status)
             # TODO: split quality and status?
-            return _responds(RESULT_SUCCESS, {"quality": get_quality_string(quality)},
-                             "Snatched (" + get_quality_string(quality) + ")")
+            return await _responds(RESULT_SUCCESS, {"quality": get_quality_string(quality)},
+                                   "Snatched (" + get_quality_string(quality) + ")")
 
-        return _responds(RESULT_FAILURE, msg='Unable to find episode')
+        return await _responds(RESULT_FAILURE, msg='Unable to find episode')
 
 
 class CMD_EpisodeSetStatus(ApiCall):
@@ -828,7 +826,7 @@ class CMD_EpisodeSetStatus(ApiCall):
     _help = {
         "desc": "Set the status of an episode or a season (when no episode is provided)",
         "requiredParameters": {
-            "indexer_id": {"desc": "Unique ID of a show"},
+            "indexerid": {"desc": "Unique ID of a show"},
             "season": {"desc": "The season number"},
             "status": {"desc": "The status of the episode or season"}
         },
@@ -841,7 +839,7 @@ class CMD_EpisodeSetStatus(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_EpisodeSetStatus, self).__init__(application, request, *args, **kwargs)
-        self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
         self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
         self.status, args = self.check_params("status", None, True, "string",
                                               ["wanted", "skipped", "ignored", "failed"], *args, **kwargs)
@@ -851,9 +849,9 @@ class CMD_EpisodeSetStatus(ApiCall):
     @MainDB.with_session
     async def run(self, session=None):
         """ Set the status of an episode or a season (when no episode is provided) """
-        show_obj = find_show(int(self.indexer_id), session=session)
+        show_obj = find_show(int(self.indexerid), session=session)
         if not show_obj:
-            return _responds(RESULT_FAILURE, msg="Show not found")
+            return await _responds(RESULT_FAILURE, msg="Show not found")
 
         # convert the string status to a int
         for status in statusStrings.status_strings:
@@ -868,7 +866,7 @@ class CMD_EpisodeSetStatus(ApiCall):
             try:
                 ep_list = [show_obj.get_episode(self.s, self.e)]
             except EpisodeNotFoundException as e:
-                return _responds(RESULT_FAILURE, msg="Episode not found")
+                return await _responds(RESULT_FAILURE, msg="Episode not found")
         else:
             # get all episode numbers frome self,season
             ep_list = show_obj.get_all_episodes(season=self.s)
@@ -916,9 +914,9 @@ class CMD_EpisodeSetStatus(ApiCall):
             extra_msg = " Backlog started"
 
         if failure:
-            return _responds(RESULT_FAILURE, ep_results, 'Failed to set all or some status. Check data.' + extra_msg)
+            return await _responds(RESULT_FAILURE, ep_results, 'Failed to set all or some status. Check data.' + extra_msg)
         else:
-            return _responds(RESULT_SUCCESS, msg='All status set successfully.' + extra_msg)
+            return await _responds(RESULT_SUCCESS, msg='All status set successfully.' + extra_msg)
 
 
 class CMD_SubtitleSearch(ApiCall):
@@ -926,7 +924,7 @@ class CMD_SubtitleSearch(ApiCall):
     _help = {
         "desc": "Search for an episode subtitles. The response might take some time.",
         "requiredParameters": {
-            "indexer_id": {"desc": "Unique ID of a show"},
+            "indexerid": {"desc": "Unique ID of a show"},
             "season": {"desc": "The season number"},
             "episode": {"desc": "The episode number"},
         },
@@ -937,22 +935,22 @@ class CMD_SubtitleSearch(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_SubtitleSearch, self).__init__(application, request, *args, **kwargs)
-        self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
         self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
         self.e, args = self.check_params("episode", None, True, "int", [], *args, **kwargs)
 
     @MainDB.with_session
     async def run(self, session=None):
         """ Search for an episode subtitles """
-        showObj = find_show(int(self.indexer_id), session=session)
+        showObj = find_show(int(self.indexerid), session=session)
         if not showObj:
-            return _responds(RESULT_FAILURE, msg="Show not found")
+            return await _responds(RESULT_FAILURE, msg="Show not found")
 
         # retrieve the episode object and fail if we can't get one
         try:
             epObj = showObj.get_episode(int(self.s), int(self.e))
         except EpisodeNotFoundException as e:
-            return _responds(RESULT_FAILURE, msg="Episode not found")
+            return await _responds(RESULT_FAILURE, msg="Episode not found")
 
         # try do download subtitles for that episode
         previous_subtitles = epObj.subtitles
@@ -960,7 +958,7 @@ class CMD_SubtitleSearch(ApiCall):
         try:
             epObj.download_subtitles()
         except Exception:
-            return _responds(RESULT_FAILURE, msg='Unable to find subtitles')
+            return await _responds(RESULT_FAILURE, msg='Unable to find subtitles')
 
         # return the correct json value
         newSubtitles = frozenset(epObj.subtitles).difference(previous_subtitles)
@@ -982,20 +980,20 @@ class CMD_Exceptions(ApiCall):
     _help = {
         "desc": "Get the scene exceptions for all or a given show",
         "optionalParameters": {
-            "indexer_id": {"desc": "Unique ID of a show"},
+            "indexerid": {"desc": "Unique ID of a show"},
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
         }
     }
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_Exceptions, self).__init__(application, request, *args, **kwargs)
-        self.indexer_id, args = self.check_params("indexer_id", None, False, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, False, "int", [], *args, **kwargs)
 
     @MainDB.with_session
     async def run(self, session=None):
         """ Get the scene exceptions for all or a given show """
 
-        if self.indexer_id is None:
+        if self.indexerid is None:
             scene_exceptions = {}
             for dbData in sickrage.app.cache_db.session.query(CacheDB.SceneException):
                 indexer_id = dbData.indexer_id
@@ -1003,15 +1001,15 @@ class CMD_Exceptions(ApiCall):
                     scene_exceptions[indexer_id] = []
                 scene_exceptions[indexer_id].append(dbData.show_name)
         else:
-            showObj = find_show(int(self.indexer_id), session=session)
+            showObj = find_show(int(self.indexerid), session=session)
             if not showObj:
-                return _responds(RESULT_FAILURE, msg="Show not found")
+                return await _responds(RESULT_FAILURE, msg="Show not found")
 
             scene_exceptions = []
-            for dbData in sickrage.app.cache_db.session.query(CacheDB.SceneException).filter_by(indexer_id=self.indexer_id):
+            for dbData in sickrage.app.cache_db.session.query(CacheDB.SceneException).filter_by(indexer_id=self.indexerid):
                 scene_exceptions.append(dbData.show_name)
 
-        return _responds(RESULT_SUCCESS, scene_exceptions)
+        return await _responds(RESULT_SUCCESS, scene_exceptions)
 
 
 class CMD_History(ApiCall):
@@ -1048,7 +1046,7 @@ class CMD_History(ApiCall):
 
             del row["action"]
 
-            row["indexer_id"] = row.pop("show_id")
+            row["indexerid"] = row.pop("show_id")
             row["resource_path"] = os.path.dirname(row["resource"])
             row["resource"] = os.path.basename(row["resource"])
 
@@ -1056,7 +1054,7 @@ class CMD_History(ApiCall):
             row['tvdbid'] = row['indexer_id']
             results.append(row)
 
-        return _responds(RESULT_SUCCESS, results)
+        return await _responds(RESULT_SUCCESS, results)
 
 
 class CMD_HistoryClear(ApiCall):
@@ -1070,7 +1068,7 @@ class CMD_HistoryClear(ApiCall):
         """ Clear the entire history """
         History().clear()
 
-        return _responds(RESULT_SUCCESS, msg="History cleared")
+        return await _responds(RESULT_SUCCESS, msg="History cleared")
 
 
 class CMD_HistoryTrim(ApiCall):
@@ -1084,7 +1082,7 @@ class CMD_HistoryTrim(ApiCall):
         """ Trim history entries older than 30 days """
         History().trim()
 
-        return _responds(RESULT_SUCCESS, msg='Removed history entries older than 30 days')
+        return await _responds(RESULT_SUCCESS, msg='Removed history entries older than 30 days')
 
 
 class CMD_Failed(ApiCall):
@@ -1110,7 +1108,7 @@ class CMD_Failed(ApiCall):
         else:
             dbData = session.query(MainDB.FailedSnatch).limit(ulimit)
 
-        return _responds(RESULT_SUCCESS, dbData)
+        return await _responds(RESULT_SUCCESS, dbData)
 
 
 class CMD_Backlog(ApiCall):
@@ -1139,13 +1137,13 @@ class CMD_Backlog(ApiCall):
 
             if showEps:
                 shows.append({
-                    "indexer_id": s.indexer_id,
+                    "indexerid": s.indexer_id,
                     "show_name": s.name,
                     "status": s.status,
                     "episodes": showEps
                 })
 
-        return _responds(RESULT_SUCCESS, shows)
+        return await _responds(RESULT_SUCCESS, shows)
 
 
 class CMD_Logs(ApiCall):
@@ -1194,7 +1192,7 @@ class CMD_Logs(ApiCall):
         except Exception as e:
             pass
 
-        return _responds(RESULT_SUCCESS, "\n".join(logRegex.findall("\n".join(data))))
+        return await _responds(RESULT_SUCCESS, "\n".join(logRegex.findall("\n".join(data))))
 
 
 class CMD_PostProcess(ApiCall):
@@ -1231,7 +1229,7 @@ class CMD_PostProcess(ApiCall):
     async def run(self):
         """ Manually post-process the files in the download folder """
         if not self.path and not sickrage.app.config.tv_download_dir:
-            return _responds(RESULT_FAILURE, msg="You need to provide a path or set TV Download Dir")
+            return await _responds(RESULT_FAILURE, msg="You need to provide a path or set TV Download Dir")
 
         if not self.path:
             self.path = sickrage.app.config.tv_download_dir
@@ -1246,7 +1244,7 @@ class CMD_PostProcess(ApiCall):
         if not self.return_data:
             data = ""
 
-        return _responds(RESULT_SUCCESS, data=data, msg="Started postprocess for {}".format(self.path))
+        return await _responds(RESULT_SUCCESS, data=data, msg="Started postprocess for {}".format(self.path))
 
 
 class CMD_SiCKRAGE(ApiCall):
@@ -1260,7 +1258,7 @@ class CMD_SiCKRAGE(ApiCall):
         """ Get miscellaneous information about SiCKRAGE """
         data = {"app_version": sickrage.version(), "api_version": self.version,
                 "api_commands": sorted(self.api_calls.keys())}
-        return _responds(RESULT_SUCCESS, data)
+        return await _responds(RESULT_SUCCESS, data)
 
 
 class CMD_SiCKRAGEAddRootDir(ApiCall):
@@ -1289,7 +1287,7 @@ class CMD_SiCKRAGEAddRootDir(ApiCall):
 
         # dissallow adding/setting an invalid dir
         if not os.path.isdir(self.location):
-            return _responds(RESULT_FAILURE, msg="Location is invalid")
+            return await _responds(RESULT_FAILURE, msg="Location is invalid")
 
         root_dirs = []
 
@@ -1319,7 +1317,7 @@ class CMD_SiCKRAGEAddRootDir(ApiCall):
         root_dirs_new = '|'.join(x for x in root_dirs_new)
 
         sickrage.app.config.root_dirs = root_dirs_new
-        return _responds(RESULT_SUCCESS, _get_root_dirs(), msg="Root directories updated")
+        return await _responds(RESULT_SUCCESS, _get_root_dirs(), msg="Root directories updated")
 
 
 class CMD_SiCKRAGECheckVersion(ApiCall):
@@ -1330,7 +1328,7 @@ class CMD_SiCKRAGECheckVersion(ApiCall):
         super(CMD_SiCKRAGECheckVersion, self).__init__(application, request, *args, **kwargs)
 
     async def run(self):
-        return _responds(RESULT_SUCCESS, {
+        return await _responds(RESULT_SUCCESS, {
             "current_version": {
                 "version": sickrage.app.version_updater.version,
             },
@@ -1357,7 +1355,7 @@ class CMD_SiCKRAGECheckScheduler(ApiCall):
         data = {"backlog_is_paused": int(backlog_paused),
                 "backlog_is_running": int(backlog_running)}
 
-        return _responds(RESULT_SUCCESS, data)
+        return await _responds(RESULT_SUCCESS, data)
 
 
 class CMD_SiCKRAGEDeleteRootDir(ApiCall):
@@ -1373,7 +1371,7 @@ class CMD_SiCKRAGEDeleteRootDir(ApiCall):
     async def run(self):
         """ Delete a root (parent) directory from SiCKRAGE """
         if sickrage.app.config.root_dirs == "":
-            return _responds(RESULT_FAILURE, _get_root_dirs(), msg="No root directories detected")
+            return await _responds(RESULT_FAILURE, _get_root_dirs(), msg="No root directories detected")
 
         newIndex = 0
         root_dirs_new = []
@@ -1401,7 +1399,7 @@ class CMD_SiCKRAGEDeleteRootDir(ApiCall):
 
         sickrage.app.config.root_dirs = root_dirs_new
         # what if the root dir was not found?
-        return _responds(RESULT_SUCCESS, _get_root_dirs(), msg="Root directory deleted")
+        return await _responds(RESULT_SUCCESS, _get_root_dirs(), msg="Root directory deleted")
 
 
 class CMD_SiCKRAGEGetDefaults(ApiCall):
@@ -1419,7 +1417,7 @@ class CMD_SiCKRAGEGetDefaults(ApiCall):
         data = {"status": statusStrings[sickrage.app.config.status_default].lower(),
                 "flatten_folders": int(sickrage.app.config.flatten_folders_default), "initial": anyQualities,
                 "archive": bestQualities, "future_show_paused": int(sickrage.app.config.coming_eps_display_paused)}
-        return _responds(RESULT_SUCCESS, data)
+        return await _responds(RESULT_SUCCESS, data)
 
 
 class CMD_SiCKRAGEGetMessages(ApiCall):
@@ -1435,7 +1433,7 @@ class CMD_SiCKRAGEGetMessages(ApiCall):
             messages.append({"title": cur_notification.data['title'],
                              "message": cur_notification.data['body'],
                              "type": cur_notification.data['type']})
-        return _responds(RESULT_SUCCESS, messages)
+        return await _responds(RESULT_SUCCESS, messages)
 
 
 class CMD_SiCKRAGEGetRootDirs(ApiCall):
@@ -1448,7 +1446,7 @@ class CMD_SiCKRAGEGetRootDirs(ApiCall):
     async def run(self):
         """ Get all root (parent) directories """
 
-        return _responds(RESULT_SUCCESS, _get_root_dirs())
+        return await _responds(RESULT_SUCCESS, _get_root_dirs())
 
 
 class CMD_SiCKRAGEPauseDaily(ApiCall):
@@ -1468,10 +1466,10 @@ class CMD_SiCKRAGEPauseDaily(ApiCall):
         """ Pause or unpause the daily search """
         if self.pause:
             sickrage.app.search_queue.pause_daily_searcher()
-            return _responds(RESULT_SUCCESS, msg="Daily searcher paused")
+            return await _responds(RESULT_SUCCESS, msg="Daily searcher paused")
         else:
             sickrage.app.search_queue.unpause_daily_searcher()
-            return _responds(RESULT_SUCCESS, msg="Daily searcher unpaused")
+            return await _responds(RESULT_SUCCESS, msg="Daily searcher unpaused")
 
 
 class CMD_SiCKRAGEPauseBacklog(ApiCall):
@@ -1491,10 +1489,10 @@ class CMD_SiCKRAGEPauseBacklog(ApiCall):
         """ Pause or unpause the backlog search """
         if self.pause:
             sickrage.app.search_queue.pause_backlog_searcher()
-            return _responds(RESULT_SUCCESS, msg="Backlog searcher paused")
+            return await _responds(RESULT_SUCCESS, msg="Backlog searcher paused")
         else:
             sickrage.app.search_queue.unpause_backlog_searcher()
-            return _responds(RESULT_SUCCESS, msg="Backlog searcher unpaused")
+            return await _responds(RESULT_SUCCESS, msg="Backlog searcher unpaused")
 
 
 class CMD_SiCKRAGEPing(ApiCall):
@@ -1507,9 +1505,9 @@ class CMD_SiCKRAGEPing(ApiCall):
     async def run(self):
         """ Ping SiCKRAGE to check if it is running """
         if sickrage.app.started:
-            return _responds(RESULT_SUCCESS, {"pid": sickrage.app.pid}, "Pong")
+            return await _responds(RESULT_SUCCESS, {"pid": sickrage.app.pid}, "Pong")
         else:
-            return _responds(RESULT_SUCCESS, msg="Pong")
+            return await _responds(RESULT_SUCCESS, msg="Pong")
 
 
 class CMD_SiCKRAGERestart(ApiCall):
@@ -1522,7 +1520,7 @@ class CMD_SiCKRAGERestart(ApiCall):
     async def run(self):
         """ Restart SiCKRAGE """
         sickrage.app.shutdown(restart=True)
-        return _responds(RESULT_SUCCESS, msg="SiCKRAGE is restarting...")
+        return await _responds(RESULT_SUCCESS, msg="SiCKRAGE is restarting...")
 
 
 class CMD_SiCKRAGESearchIndexers(ApiCall):
@@ -1531,7 +1529,7 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
         "desc": "Search for a show with a given name on all the indexers, in a specific language",
         "optionalParameters": {
             "name": {"desc": "The name of the show you want to search for"},
-            "indexer_id": {"desc": "Unique ID of a show"},
+            "indexerid": {"desc": "Unique ID of a show"},
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
             "lang": {"desc": "The 2-letter language code of the desired show"},
         }
@@ -1543,7 +1541,7 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
         self.name, args = self.check_params("name", None, False, "string", [], *args, **kwargs)
         self.lang, args = self.check_params("lang", sickrage.app.config.indexer_default_language, False, "string",
                                             self.valid_languages.keys(), *args, **kwargs)
-        self.indexer_id, args = self.check_params("indexer_id", None, False, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, False, "int", [], *args, **kwargs)
 
     async def run(self):
         """ Search for a show with a given name on all the indexers, in a specific language """
@@ -1551,7 +1549,7 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
         results = []
         lang_id = self.valid_languages[self.lang]
 
-        if self.name and not self.indexer_id:  # only name was given
+        if self.name and not self.indexerid:  # only name was given
             for _indexer in IndexerApi().indexers if self.indexer == 0 else [int(self.indexer)]:
                 lINDEXER_API_PARMS = IndexerApi(_indexer).api_params.copy()
 
@@ -1562,9 +1560,9 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
                 t = IndexerApi(_indexer).indexer(**lINDEXER_API_PARMS)
 
                 try:
-                    apiData = t[str(self.name).encode()]
+                    apiData = t[self.name]
                 except (indexer_shownotfound, indexer_showincomplete, indexer_error):
-                    sickrage.app.log.warning("Unable to find show with id " + str(self.indexer_id))
+                    sickrage.app.log.warning("Unable to find show with id " + str(self.indexerid))
                     continue
 
                 for curSeries in apiData:
@@ -1573,9 +1571,9 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
                                     "first_aired": curSeries['firstaired'],
                                     "indexer": int(_indexer)})
 
-            return _responds(RESULT_SUCCESS, {"results": results, "langid": lang_id})
+            return await _responds(RESULT_SUCCESS, {"results": results, "langid": lang_id})
 
-        elif self.indexer_id:
+        elif self.indexerid:
             for _indexer in IndexerApi().indexers if self.indexer == 0 else [int(self.indexer)]:
                 lINDEXER_API_PARMS = IndexerApi(_indexer).api_params.copy()
 
@@ -1584,16 +1582,16 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
                 t = IndexerApi(_indexer).indexer(**lINDEXER_API_PARMS)
 
                 try:
-                    myShow = t[int(self.indexer_id)]
+                    myShow = t[int(self.indexerid)]
                 except (indexer_shownotfound, indexer_showincomplete, indexer_error):
-                    sickrage.app.log.warning("Unable to find show with id " + str(self.indexer_id))
-                    return _responds(RESULT_SUCCESS, {"results": [], "langid": lang_id})
+                    sickrage.app.log.warning("Unable to find show with id " + str(self.indexerid))
+                    return await _responds(RESULT_SUCCESS, {"results": [], "langid": lang_id})
 
                 if not myShow.data['seriesname']:
                     sickrage.app.log.debug(
                         "Found show with indexer_id: " + str(
-                            self.indexer_id) + ", however it contained no show name")
-                    return _responds(RESULT_FAILURE, msg="Show contains no name, invalid result")
+                            self.indexerid) + ", however it contained no show name")
+                    return await _responds(RESULT_FAILURE, msg="Show contains no name, invalid result")
 
                 # found show
                 results = [{indexer_ids[_indexer]: int(myShow.data['id']),
@@ -1602,9 +1600,9 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
                             "indexer": int(_indexer)}]
                 break
 
-            return _responds(RESULT_SUCCESS, {"results": results, "langid": lang_id})
+            return await _responds(RESULT_SUCCESS, {"results": results, "langid": lang_id})
         else:
-            return _responds(RESULT_FAILURE, msg="Either a unique id or name is required!")
+            return await _responds(RESULT_FAILURE, msg="Either a unique id or name is required!")
 
 
 class CMD_SiCKRAGESearchTVDB(CMD_SiCKRAGESearchIndexers):
@@ -1620,7 +1618,7 @@ class CMD_SiCKRAGESearchTVDB(CMD_SiCKRAGESearchIndexers):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_SiCKRAGESearchTVDB, self).__init__(application, request, *args, **kwargs)
-        self.indexer_id, args = self.check_params("tvdbid", None, False, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params("tvdbid", None, False, "int", [], *args, **kwargs)
 
 
 class CMD_SiCKRAGESearchTVRAGE(CMD_SiCKRAGESearchIndexers):
@@ -1639,7 +1637,7 @@ class CMD_SiCKRAGESearchTVRAGE(CMD_SiCKRAGESearchIndexers):
         super(CMD_SiCKRAGESearchTVRAGE, self).__init__(application, request, *args, **kwargs)
 
     async def run(self):
-        return _responds(RESULT_FAILURE, msg="TVRage is disabled, invalid result")
+        return await _responds(RESULT_FAILURE, msg="TVRage is disabled, invalid result")
 
 
 class CMD_SiCKRAGESetDefaults(ApiCall):
@@ -1701,7 +1699,7 @@ class CMD_SiCKRAGESetDefaults(ApiCall):
         if self.future_show_paused is not None:
             sickrage.app.config.coming_eps_display_paused = int(self.future_show_paused)
 
-        return _responds(RESULT_SUCCESS, msg="Saved defaults")
+        return await _responds(RESULT_SUCCESS, msg="Saved defaults")
 
 
 class CMD_SiCKRAGEShutdown(ApiCall):
@@ -1715,8 +1713,8 @@ class CMD_SiCKRAGEShutdown(ApiCall):
         """ Shutdown SiCKRAGE """
         if sickrage.app.started:
             sickrage.app.shutdown()
-            return _responds(RESULT_SUCCESS, msg="SiCKRAGE is shutting down...")
-        return _responds(RESULT_FAILURE, msg='SiCKRAGE can not be shut down')
+            return await _responds(RESULT_SUCCESS, msg="SiCKRAGE is shutting down...")
+        return await _responds(RESULT_FAILURE, msg='SiCKRAGE can not be shut down')
 
 
 class CMD_SiCKRAGEUpdate(ApiCall):
@@ -1729,9 +1727,9 @@ class CMD_SiCKRAGEUpdate(ApiCall):
     async def run(self):
         if sickrage.app.version_updater.check_for_new_version():
             if sickrage.app.version_updater.update():
-                return _responds(RESULT_SUCCESS, msg="SiCKRAGE is updating ...")
-            return _responds(RESULT_FAILURE, msg="SiCKRAGE could not update ...")
-        return _responds(RESULT_FAILURE, msg="SiCKRAGE is already up to date")
+                return await _responds(RESULT_SUCCESS, msg="SiCKRAGE is updating ...")
+            return await _responds(RESULT_FAILURE, msg="SiCKRAGE could not update ...")
+        return await _responds(RESULT_FAILURE, msg="SiCKRAGE is already up to date")
 
 
 class CMD_Show(ApiCall):
@@ -1739,7 +1737,7 @@ class CMD_Show(ApiCall):
     _help = {
         "desc": "Get detailed information about a show",
         "requiredParameters": {
-            "indexer_id": {"desc": "Unique ID of a show"},
+            "indexerid": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
@@ -1748,18 +1746,18 @@ class CMD_Show(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_Show, self).__init__(application, request, *args, **kwargs)
-        self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
 
     @MainDB.with_session
     async def run(self, session=None):
         """ Get detailed information about a show """
-        showObj = find_show(int(self.indexer_id), session=session)
+        showObj = find_show(int(self.indexerid), session=session)
         if not showObj:
-            return _responds(RESULT_FAILURE, msg="Show not found")
+            return await _responds(RESULT_FAILURE, msg="Show not found")
 
         showDict = {
-            "season_list": (await CMD_ShowSeasonList(self.application, self.request, **{"indexer_id": self.indexer_id}).run())["data"],
-            "cache": (await CMD_ShowCache(self.application, self.request, **{"indexer_id": self.indexer_id}).run())["data"]
+            "season_list": (await CMD_ShowSeasonList(self.application, self.request, **{"indexerid": self.indexerid}).run())["data"],
+            "cache": (await CMD_ShowCache(self.application, self.request, **{"indexerid": self.indexerid}).run())["data"]
         }
 
         genreList = []
@@ -1800,7 +1798,7 @@ class CMD_Show(ApiCall):
         showDict["scene"] = (0, 1)[showObj.scene]
         showDict["skip_downloaded"] = (0, 1)[showObj.skip_downloaded]
 
-        showDict["indexer_id"] = showObj.indexer_id
+        showDict["indexerid"] = showObj.indexer_id
         showDict["tvdbid"] = map_indexers(showObj.indexer, showObj.indexer_id, showObj.name)[1]
         showDict["imdbid"] = showObj.imdb_id
 
@@ -1819,7 +1817,7 @@ class CMD_Show(ApiCall):
         else:
             showDict['next_ep_airdate'] = ''
 
-        return _responds(RESULT_SUCCESS, showDict)
+        return await _responds(RESULT_SUCCESS, showDict)
 
 
 class CMD_ShowAddExisting(ApiCall):
@@ -1827,7 +1825,7 @@ class CMD_ShowAddExisting(ApiCall):
     _help = {
         "desc": "Add an existing show in SiCKRAGE",
         "requiredParameters": {
-            "indexer_id": {"desc": "Unique ID of a show"},
+            "indexerid": {"desc": "Unique ID of a show"},
             "location": {"desc": "Full path to the existing shows's folder"},
         },
         "optionalParameters": {
@@ -1841,7 +1839,7 @@ class CMD_ShowAddExisting(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowAddExisting, self).__init__(application, request, *args, **kwargs)
-        self.indexer_id, args = self.check_params("indexer_id", None, True, "", [], *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "", [], *args, **kwargs)
         self.location, args = self.check_params("location", None, True, "string", [], *args, **kwargs)
         self.initial, args = self.check_params("initial", None, False, "list", any_quality_list, *args, **kwargs)
         self.archive, args = self.check_params("archive", None, False, "list", best_quality_list, *args, **kwargs)
@@ -1855,24 +1853,24 @@ class CMD_ShowAddExisting(ApiCall):
     @MainDB.with_session
     async def run(self, session=None):
         """ Add an existing show in SiCKRAGE """
-        showObj = find_show(int(self.indexer_id), session=session)
+        showObj = find_show(int(self.indexerid), session=session)
         if showObj:
-            return _responds(RESULT_FAILURE, msg="An existing indexer_id already exists in the database")
+            return await _responds(RESULT_FAILURE, msg="An existing indexer_id already exists in the database")
 
         if not os.path.isdir(self.location):
-            return _responds(RESULT_FAILURE, msg='Not a valid location')
+            return await _responds(RESULT_FAILURE, msg='Not a valid location')
 
         indexerName = None
-        indexerResult = await CMD_SiCKRAGESearchIndexers(self.application, self.request, **{indexer_ids[self.indexer]: self.indexer_id}).run()
+        indexerResult = await CMD_SiCKRAGESearchIndexers(self.application, self.request, **{indexer_ids[self.indexer]: self.indexerid}).run()
 
         if indexerResult['result'] == result_type_map[RESULT_SUCCESS]:
             if not indexerResult['data']['results']:
-                return _responds(RESULT_FAILURE, msg="Empty results returned, check indexer_id and try again")
+                return await _responds(RESULT_FAILURE, msg="Empty results returned, check indexer_id and try again")
             if len(indexerResult['data']['results']) == 1 and 'name' in indexerResult['data']['results'][0]:
                 indexerName = indexerResult['data']['results'][0]['name']
 
         if not indexerName:
-            return _responds(RESULT_FAILURE, msg="Unable to retrieve information from indexer")
+            return await _responds(RESULT_FAILURE, msg="Unable to retrieve information from indexer")
 
         # set indexer so we can pass it along when adding show to SR
         indexer = indexerResult['data']['results'][0]['indexer']
@@ -1893,12 +1891,12 @@ class CMD_ShowAddExisting(ApiCall):
             newQuality = Quality.combine_qualities(iqualityID, aqualityID)
 
         sickrage.app.show_queue.add_show(
-            int(indexer), int(self.indexer_id), self.location, default_status=sickrage.app.config.status_default,
+            int(indexer), int(self.indexerid), self.location, default_status=sickrage.app.config.status_default,
             quality=newQuality, flatten_folders=int(self.flatten_folders), subtitles=self.subtitles,
             default_status_after=sickrage.app.config.status_default_after, skip_downloaded=self.skip_downloaded
         )
 
-        return _responds(RESULT_SUCCESS, {"name": indexerName}, indexerName + " has been queued to be added")
+        return await _responds(RESULT_SUCCESS, {"name": indexerName}, indexerName + " has been queued to be added")
 
 
 class CMD_ShowAddNew(ApiCall):
@@ -1906,7 +1904,7 @@ class CMD_ShowAddNew(ApiCall):
     _help = {
         "desc": "Add a new show to SiCKRAGE",
         "requiredParameters": {
-            "indexer_id": {"desc": "Unique ID of a show"},
+            "indexerid": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
@@ -1932,7 +1930,7 @@ class CMD_ShowAddNew(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowAddNew, self).__init__(application, request, *args, **kwargs)
         self.valid_languages = IndexerApi().indexer().languages
-        self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
         self.location, args = self.check_params("location", None, False, "string", [], *args, **kwargs)
         self.initial, args = self.check_params("initial", None, False, "list", any_quality_list, *args, **kwargs)
         self.archive, args = self.check_params("archive", None, False, "list", best_quality_list, *args, **kwargs)
@@ -1960,9 +1958,9 @@ class CMD_ShowAddNew(ApiCall):
     @MainDB.with_session
     async def run(self, session=None):
         """ Add a new show to SiCKRAGE """
-        show_obj = find_show(int(self.indexer_id), session=session)
+        show_obj = find_show(int(self.indexerid), session=session)
         if show_obj:
-            return _responds(RESULT_FAILURE, msg="An existing indexer_id already exists in database")
+            return await _responds(RESULT_FAILURE, msg="An existing indexer_id already exists in database")
 
         if not self.location:
             if sickrage.app.config.root_dirs != "":
@@ -1971,10 +1969,10 @@ class CMD_ShowAddNew(ApiCall):
                 default_index = int(sickrage.app.config.root_dirs.split('|')[0])
                 self.location = root_dirs[default_index]
             else:
-                return _responds(RESULT_FAILURE, msg="Root directory is not set, please provide a location")
+                return await _responds(RESULT_FAILURE, msg="Root directory is not set, please provide a location")
 
         if not os.path.isdir(self.location):
-            return _responds(RESULT_FAILURE, msg="'" + self.location + "' is not a valid location")
+            return await _responds(RESULT_FAILURE, msg="'" + self.location + "' is not a valid location")
 
         # use default quality as a failsafe
         new_quality = int(sickrage.app.config.quality_default)
@@ -2005,7 +2003,7 @@ class CMD_ShowAddNew(ApiCall):
 
             # only allow the status options we want
             if int(self.status) not in (WANTED, SKIPPED, IGNORED):
-                return _responds(RESULT_FAILURE, msg="Status prohibited")
+                return await _responds(RESULT_FAILURE, msg="Status prohibited")
             new_status = self.status
 
         # use default status as a failsafe
@@ -2022,21 +2020,21 @@ class CMD_ShowAddNew(ApiCall):
 
             # only allow the status options we want
             if int(self.future_status) not in (WANTED, SKIPPED, IGNORED):
-                return _responds(RESULT_FAILURE, msg="Status prohibited")
+                return await _responds(RESULT_FAILURE, msg="Status prohibited")
             default_ep_status_after = self.future_status
 
         indexer_name = None
 
-        indexer_result = await CMD_SiCKRAGESearchIndexers(self.application, self.request, **{indexer_ids[self.indexer]: self.indexer_id}).run()
+        indexer_result = await CMD_SiCKRAGESearchIndexers(self.application, self.request, **{indexer_ids[self.indexer]: self.indexerid}).run()
 
         if indexer_result['result'] == result_type_map[RESULT_SUCCESS]:
             if not indexer_result['data']['results']:
-                return _responds(RESULT_FAILURE, msg="Empty results returned, check indexer_id and try again")
+                return await _responds(RESULT_FAILURE, msg="Empty results returned, check indexer_id and try again")
             if len(indexer_result['data']['results']) == 1 and 'name' in indexer_result['data']['results'][0]:
                 indexer_name = indexer_result['data']['results'][0]['name']
 
         if not indexer_name:
-            return _responds(RESULT_FAILURE, msg="Unable to retrieve information from indexer")
+            return await _responds(RESULT_FAILURE, msg="Unable to retrieve information from indexer")
 
         # set indexer for found show so we can pass it along
         indexer = indexer_result['data']['results'][0]['indexer']
@@ -2055,18 +2053,18 @@ class CMD_ShowAddNew(ApiCall):
             if not dir_exists:
                 sickrage.app.log.warning(
                     "Unable to create the folder " + show_path + ", can't add the show")
-                return _responds(RESULT_FAILURE, {"path": show_path},
-                                 "Unable to create the folder " + show_path + ", can't add the show")
+                return await _responds(RESULT_FAILURE, {"path": show_path},
+                                       "Unable to create the folder " + show_path + ", can't add the show")
             else:
                 chmod_as_parent(show_path)
 
         sickrage.app.show_queue.add_show(
-            int(indexer), int(self.indexer_id), show_path, default_status=new_status, quality=new_quality,
+            int(indexer), int(self.indexerid), show_path, default_status=new_status, quality=new_quality,
             flatten_folders=int(self.flatten_folders), lang=self.lang, subtitles=self.subtitles, anime=self.anime,
             scene=self.scene, default_status_after=default_ep_status_after, skip_downloaded=self.skip_downloaded
         )
 
-        return _responds(RESULT_SUCCESS, {"name": indexer_name}, indexer_name + " has been queued to be added")
+        return await _responds(RESULT_SUCCESS, {"name": indexer_name}, indexer_name + " has been queued to be added")
 
 
 class CMD_ShowCache(ApiCall):
@@ -2074,7 +2072,7 @@ class CMD_ShowCache(ApiCall):
     _help = {
         "desc": "Check SiCKRAGE's cache to see if the images (poster, banner, fanart) for a show are valid",
         "requiredParameters": {
-            "indexer_id": {"desc": "Unique ID of a show"},
+            "indexerid": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
@@ -2083,14 +2081,14 @@ class CMD_ShowCache(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowCache, self).__init__(application, request, *args, **kwargs)
-        self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
 
     @MainDB.with_session
     async def run(self, session=None):
         """ Check SiCKRAGE's cache to see if the images (poster, banner, fanart) for a show are valid """
-        showObj = find_show(int(self.indexer_id), session=session)
+        showObj = find_show(int(self.indexerid), session=session)
         if not showObj:
-            return _responds(RESULT_FAILURE, msg="Show not found")
+            return await _responds(RESULT_FAILURE, msg="Show not found")
 
         # TODO: catch if cache dir is missing/invalid.. so it doesn't break show/show.cache
         # return {"poster": 0, "banner": 0}
@@ -2105,7 +2103,7 @@ class CMD_ShowCache(ApiCall):
         if os.path.isfile(cache_obj.banner_path(showObj.indexer_id)):
             has_banner = 1
 
-        return _responds(RESULT_SUCCESS, {"poster": has_poster, "banner": has_banner})
+        return await _responds(RESULT_SUCCESS, {"poster": has_poster, "banner": has_banner})
 
 
 class CMD_ShowDelete(ApiCall):
@@ -2113,7 +2111,7 @@ class CMD_ShowDelete(ApiCall):
     _help = {
         "desc": "Delete a show in SiCKRAGE",
         "requiredParameters": {
-            "indexer_id": {"desc": "Unique ID of a show"},
+            "indexerid": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
@@ -2125,22 +2123,22 @@ class CMD_ShowDelete(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowDelete, self).__init__(application, request, *args, **kwargs)
-        self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
         self.removefiles, args = self.check_params("removefiles", False, False, "bool", [], *args, **kwargs)
 
     @MainDB.with_session
     async def run(self, session=None):
         """ Delete a show in SiCKRAGE """
-        showObj = find_show(int(self.indexer_id), session=session)
+        showObj = find_show(int(self.indexerid), session=session)
         if not showObj:
-            return _responds(RESULT_FAILURE, msg="Show not found")
+            return await _responds(RESULT_FAILURE, msg="Show not found")
 
         try:
             sickrage.app.show_queue.remove_show(showObj.indexer_id, bool(self.removefiles))
         except CantRemoveShowException as exception:
-            return _responds(RESULT_FAILURE, msg=str(exception))
+            return await _responds(RESULT_FAILURE, msg=str(exception))
 
-        return _responds(RESULT_SUCCESS, msg='%s has been queued to be deleted' % showObj.name)
+        return await _responds(RESULT_SUCCESS, msg='%s has been queued to be deleted' % showObj.name)
 
 
 class CMD_ShowGetQuality(ApiCall):
@@ -2148,7 +2146,7 @@ class CMD_ShowGetQuality(ApiCall):
     _help = {
         "desc": "Get the quality setting of a show",
         "requiredParameters": {
-            "indexer_id": {"desc": "Unique ID of a show"},
+            "indexerid": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
@@ -2157,18 +2155,18 @@ class CMD_ShowGetQuality(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowGetQuality, self).__init__(application, request, *args, **kwargs)
-        self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
 
     @MainDB.with_session
     async def run(self, session=None):
         """ Get the quality setting of a show """
-        showObj = find_show(int(self.indexer_id), session=session)
+        showObj = find_show(int(self.indexerid), session=session)
         if not showObj:
-            return _responds(RESULT_FAILURE, msg="Show not found")
+            return await _responds(RESULT_FAILURE, msg="Show not found")
 
         anyQualities, bestQualities = _map_quality(showObj.quality)
 
-        return _responds(RESULT_SUCCESS, {"initial": anyQualities, "archive": bestQualities})
+        return await _responds(RESULT_SUCCESS, {"initial": anyQualities, "archive": bestQualities})
 
 
 class CMD_ShowGetPoster(ApiCall):
@@ -2176,7 +2174,7 @@ class CMD_ShowGetPoster(ApiCall):
     _help = {
         "desc": "Get the poster of a show",
         "requiredParameters": {
-            "indexer_id": {"desc": "Unique ID of a show"},
+            "indexerid": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
@@ -2185,13 +2183,13 @@ class CMD_ShowGetPoster(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowGetPoster, self).__init__(application, request, *args, **kwargs)
-        self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
 
     async def run(self):
         """ Get the poster a show """
         return {
             'outputType': 'image',
-            'image': Poster(self.indexer_id),
+            'image': Poster(self.indexerid),
         }
 
 
@@ -2200,7 +2198,7 @@ class CMD_ShowGetBanner(ApiCall):
     _help = {
         "desc": "Get the banner of a show",
         "requiredParameters": {
-            "indexer_id": {"desc": "Unique ID of a show"},
+            "indexerid": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
@@ -2209,13 +2207,13 @@ class CMD_ShowGetBanner(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowGetBanner, self).__init__(application, request, *args, **kwargs)
-        self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
 
     async def run(self):
         """ Get the banner of a show """
         return {
             'outputType': 'image',
-            'image': Banner(self.indexer_id),
+            'image': Banner(self.indexerid),
         }
 
 
@@ -2224,7 +2222,7 @@ class CMD_ShowGetNetworkLogo(ApiCall):
     _help = {
         "desc": "Get the network logo of a show",
         "requiredParameters": {
-            "indexer_id": {"desc": "Unique ID of a show"},
+            "indexerid": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
@@ -2233,7 +2231,7 @@ class CMD_ShowGetNetworkLogo(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowGetNetworkLogo, self).__init__(application, request, *args, **kwargs)
-        self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
 
     async def run(self):
         """
@@ -2241,7 +2239,7 @@ class CMD_ShowGetNetworkLogo(ApiCall):
         """
         return {
             'outputType': 'image',
-            'image': Network(self.indexer_id),
+            'image': Network(self.indexerid),
         }
 
 
@@ -2250,7 +2248,7 @@ class CMD_ShowGetFanArt(ApiCall):
     _help = {
         "desc": "Get the fan art of a show",
         "requiredParameters": {
-            "indexer_id": {"desc": "Unique ID of a show"},
+            "indexerid": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
@@ -2259,13 +2257,13 @@ class CMD_ShowGetFanArt(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowGetFanArt, self).__init__(application, request, *args, **kwargs)
-        self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
 
     async def run(self):
         """ Get the fan art of a show """
         return {
             'outputType': 'image',
-            'image': FanArt(self.indexer_id),
+            'image': FanArt(self.indexerid),
         }
 
 
@@ -2274,7 +2272,7 @@ class CMD_ShowPause(ApiCall):
     _help = {
         "desc": "Pause or unpause a show",
         "requiredParameters": {
-            "indexer_id": {"desc": "Unique ID of a show"},
+            "indexerid": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
@@ -2284,22 +2282,22 @@ class CMD_ShowPause(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowPause, self).__init__(application, request, *args, **kwargs)
-        self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
         self.pause, args = self.check_params("pause", False, False, "bool", [], *args, **kwargs)
 
     @MainDB.with_session
     async def run(self, session=None):
         """ Pause or unpause a show """
-        showObj = find_show(int(self.indexer_id), session=session)
+        showObj = find_show(int(self.indexerid), session=session)
         if not showObj:
-            return _responds(RESULT_FAILURE, msg="Show not found")
+            return await _responds(RESULT_FAILURE, msg="Show not found")
 
         if self.pause is None:
             showObj.paused = not showObj.paused
         else:
             showObj.paused = self.pause
 
-        return _responds(RESULT_SUCCESS, msg='%s has been %s' % (showObj.name, ('resumed', 'paused')[showObj.paused]))
+        return await _responds(RESULT_SUCCESS, msg='%s has been %s' % (showObj.name, ('resumed', 'paused')[showObj.paused]))
 
 
 class CMD_ShowRefresh(ApiCall):
@@ -2307,7 +2305,7 @@ class CMD_ShowRefresh(ApiCall):
     _help = {
         "desc": "Refresh a show in SiCKRAGE",
         "requiredParameters": {
-            "indexer_id": {"desc": "Unique ID of a show"},
+            "indexerid": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
@@ -2316,21 +2314,21 @@ class CMD_ShowRefresh(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowRefresh, self).__init__(application, request, *args, **kwargs)
-        self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
 
     @MainDB.with_session
     async def run(self, session=None):
         """ Refresh a show in SiCKRAGE """
-        showObj = find_show(int(self.indexer_id), session=session)
+        showObj = find_show(int(self.indexerid), session=session)
         if not showObj:
-            return _responds(RESULT_FAILURE, msg="Show not found")
+            return await _responds(RESULT_FAILURE, msg="Show not found")
 
         try:
             sickrage.app.show_queue.refresh_show(showObj.indexer_id)
         except CantRefreshShowException as e:
-            return _responds(RESULT_FAILURE, msg=str(e))
+            return await _responds(RESULT_FAILURE, msg=str(e))
 
-        return _responds(RESULT_SUCCESS, msg='%s has queued to be refreshed' % showObj.name)
+        return await _responds(RESULT_SUCCESS, msg='%s has queued to be refreshed' % showObj.name)
 
 
 class CMD_ShowSeasonList(ApiCall):
@@ -2338,7 +2336,7 @@ class CMD_ShowSeasonList(ApiCall):
     _help = {
         "desc": "Get the list of seasons of a show",
         "requiredParameters": {
-            "indexer_id": {"desc": "Unique ID of a show"},
+            "indexerid": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
@@ -2348,20 +2346,20 @@ class CMD_ShowSeasonList(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowSeasonList, self).__init__(application, request, *args, **kwargs)
-        self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
         self.sort, args = self.check_params("sort", "desc", False, "string", ["asc", "desc"], *args, **kwargs)
 
     @MainDB.with_session
     async def run(self, session=None):
         """ Get the list of seasons of a show """
-        show_obj = find_show(int(self.indexer_id), session=session)
+        show_obj = find_show(int(self.indexerid), session=session)
         if not show_obj:
-            return _responds(RESULT_FAILURE, msg="Show not found")
+            return await _responds(RESULT_FAILURE, msg="Show not found")
 
-        season_list = list(set(x.season for x in session.query(TVEpisode).filter_by(showid=self.indexer_id).order_by(
+        season_list = list(set(x.season for x in session.query(TVEpisode).filter_by(showid=self.indexerid).order_by(
             TVEpisode.season if not self.sort == 'desc' else TVEpisode.season.desc())))
 
-        return _responds(RESULT_SUCCESS, season_list)
+        return await _responds(RESULT_SUCCESS, season_list)
 
 
 class CMD_ShowSeasons(ApiCall):
@@ -2369,7 +2367,7 @@ class CMD_ShowSeasons(ApiCall):
     _help = {
         "desc": "Get the list of episodes for one or all seasons of a show",
         "requiredParameters": {
-            "indexer_id": {"desc": "Unique ID of a show"},
+            "indexerid": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
@@ -2379,61 +2377,47 @@ class CMD_ShowSeasons(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowSeasons, self).__init__(application, request, *args, **kwargs)
-        self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
         self.season, args = self.check_params("season", None, False, "int", [], *args, **kwargs)
 
     @MainDB.with_session
     async def run(self, session=None):
         """ Get the list of episodes for one or all seasons of a show """
-        show_obj = find_show(int(self.indexer_id), session=session)
+
+        seasons = {}
+
+        show_obj = find_show(int(self.indexerid), session=session)
         if not show_obj:
-            return _responds(RESULT_FAILURE, msg="Show not found")
+            return await _responds(RESULT_FAILURE, msg="Show not found")
 
         if self.season is None:
-            seasons = {}
-
-            for row in session.query(TVEpisode).filter_by(showid=self.indexer_id):
-                status, quality = Quality.split_composite_status(int(row.status))
-                row.status = _get_status_strings(status)
-                row.quality = get_quality_string(quality)
-
-                if row.airdate > datetime.date.min:
-                    dtEpisodeAirs = srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(row.airdate, show_obj.airs, show_obj.network),
-                                                          convert=True).dt
-                    row.airdate = srdatetime.SRDateTime(dtEpisodeAirs).srfdate(d_preset=dateFormat)
-                else:
-                    row.airdate = 'Never'
-
-                curSeason = int(row.season)
-                curEpisode = int(row.episode)
-
-                if curSeason not in seasons:
-                    seasons[curSeason] = {}
-
-                seasons[curSeason][curEpisode] = row
+            db_data = session.query(TVEpisode).filter_by(showid=self.indexerid)
         else:
-            seasons = {}
+            db_data = session.query(TVEpisode).filter_by(showid=self.indexerid, season=self.season)
 
-            row = None
-            for row in session.query(TVEpisode).filter_by(showid=self.indexer_id, season=self.season):
-                curEpisode = int(row.episode)
-                status, quality = Quality.split_composite_status(int(row.status))
-                row.status = _get_status_strings(status)
-                row.quality = get_quality_string(quality)
-                if row.airdate > datetime.date.min:
-                    dtEpisodeAirs = srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(row.airdate, show_obj.airs, show_obj.network),
-                                                          convert=True).dt
-                    row.airdate = srdatetime.SRDateTime(dtEpisodeAirs).srfdate(d_preset=dateFormat)
-                else:
-                    row.airdate = 'Never'
-                if curEpisode not in seasons:
-                    seasons[curEpisode] = {}
-                seasons[curEpisode] = row
+        for row in db_data:
+            episode_dict = row.as_dict()
 
-            if row is None:
-                return _responds(RESULT_FAILURE, msg="Season not found")
+            status, quality = Quality.split_composite_status(int(episode_dict['status']))
+            episode_dict['status'] = _get_status_strings(status)
+            episode_dict['quality'] = get_quality_string(quality)
 
-        return _responds(RESULT_SUCCESS, seasons)
+            if episode_dict['airdate'] > datetime.date.min:
+                dtEpisodeAirs = srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(episode_dict['airdate'], show_obj.airs, show_obj.network),
+                                                      convert=True).dt
+                episode_dict['airdate'] = srdatetime.SRDateTime(dtEpisodeAirs).srfdate(d_preset=dateFormat)
+            else:
+                episode_dict['airdate'] = 'Never'
+
+            curSeason = int(episode_dict['season'])
+            curEpisode = int(episode_dict['episode'])
+
+            if curSeason not in seasons:
+                seasons[curSeason] = {}
+
+            seasons[curSeason][curEpisode] = episode_dict
+
+        return await _responds(RESULT_SUCCESS, seasons)
 
 
 class CMD_ShowSetQuality(ApiCall):
@@ -2441,7 +2425,7 @@ class CMD_ShowSetQuality(ApiCall):
     _help = {
         "desc": "Set the quality setting of a show. If no quality is provided, the default user setting is used.",
         "requiredParameters": {
-            "indexer_id": {"desc": "Unique ID of a show"},
+            "indexerid": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
@@ -2452,7 +2436,7 @@ class CMD_ShowSetQuality(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowSetQuality, self).__init__(application, request, *args, **kwargs)
-        self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
         # self.archive, args = self.check_params("archive", None, False, "list", _getQualityMap().values()[1:], *args, **kwargs)
         self.initial, args = self.check_params("initial", None, False, "list", any_quality_list, *args, **kwargs)
         self.archive, args = self.check_params("archive", None, False, "list", best_quality_list, *args, **kwargs)
@@ -2460,9 +2444,9 @@ class CMD_ShowSetQuality(ApiCall):
     @MainDB.with_session
     async def run(self, session=None):
         """ Set the quality setting of a show. If no quality is provided, the default user setting is used. """
-        showObj = find_show(int(self.indexer_id), session=session)
+        showObj = find_show(int(self.indexerid), session=session)
         if not showObj:
-            return _responds(RESULT_FAILURE, msg="Show not found")
+            return await _responds(RESULT_FAILURE, msg="Show not found")
 
         # use default quality as a failsafe
         newQuality = int(sickrage.app.config.quality_default)
@@ -2478,10 +2462,11 @@ class CMD_ShowSetQuality(ApiCall):
 
         if iqualityID or aqualityID:
             newQuality = Quality.combine_qualities(iqualityID, aqualityID)
+
         showObj.quality = newQuality
 
-        return _responds(RESULT_SUCCESS,
-                         msg=showObj.name + " quality has been changed to " + get_quality_string(showObj.quality))
+        return await _responds(RESULT_SUCCESS,
+                               msg=showObj.name + " quality has been changed to " + get_quality_string(showObj.quality))
 
 
 class CMD_ShowStats(ApiCall):
@@ -2489,7 +2474,7 @@ class CMD_ShowStats(ApiCall):
     _help = {
         "desc": "Get episode statistics for a given show",
         "requiredParameters": {
-            "indexer_id": {"desc": "Unique ID of a show"},
+            "indexerid": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
@@ -2498,14 +2483,14 @@ class CMD_ShowStats(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowStats, self).__init__(application, request, *args, **kwargs)
-        self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
 
     @MainDB.with_session
     async def run(self, session=None):
         """ Get episode statistics for a given show """
-        showObj = find_show(int(self.indexer_id), session=session)
+        showObj = find_show(int(self.indexerid), session=session)
         if not showObj:
-            return _responds(RESULT_FAILURE, msg="Show not found")
+            return await _responds(RESULT_FAILURE, msg="Show not found")
 
         # show stats
         episode_status_counts_total = {"total": 0}
@@ -2531,7 +2516,7 @@ class CMD_ShowStats(ApiCall):
             episode_qualities_counts_snatch[statusCode] = 0
 
         # the main loop that goes through all episodes
-        for row in session.query(TVEpisode).filter_by(showid=self.indexer_id).filter(TVEpisode.season != 0):
+        for row in session.query(TVEpisode).filter_by(showid=self.indexerid).filter(TVEpisode.season != 0):
             status, quality = Quality.split_composite_status(int(row.status))
             if quality in [Quality.NONE]:
                 continue
@@ -2582,7 +2567,7 @@ class CMD_ShowStats(ApiCall):
             statusString = statusString.lower().replace(" ", "_").replace("(", "").replace(")", "")
             episodes_stats[statusString] = episode_status_counts_total[statusCode]
 
-        return _responds(RESULT_SUCCESS, episodes_stats)
+        return await _responds(RESULT_SUCCESS, episodes_stats)
 
 
 class CMD_ShowUpdate(ApiCall):
@@ -2590,7 +2575,7 @@ class CMD_ShowUpdate(ApiCall):
     _help = {
         "desc": "Update a show in SiCKRAGE",
         "requiredParameters": {
-            "indexer_id": {"desc": "Unique ID of a show"},
+            "indexerid": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
@@ -2599,21 +2584,21 @@ class CMD_ShowUpdate(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowUpdate, self).__init__(application, request, *args, **kwargs)
-        self.indexer_id, args = self.check_params("indexer_id", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
 
     @MainDB.with_session
     async def run(self, session=None):
         """ Update a show in SiCKRAGE """
-        showObj = find_show(int(self.indexer_id), session=session)
+        showObj = find_show(int(self.indexerid), session=session)
         if not showObj:
-            return _responds(RESULT_FAILURE, msg="Show not found")
+            return await _responds(RESULT_FAILURE, msg="Show not found")
 
         try:
             sickrage.app.show_queue.update_show(showObj.indexer_id, force=True)
-            return _responds(RESULT_SUCCESS, msg=str(showObj.name) + " has queued to be updated")
+            return await _responds(RESULT_SUCCESS, msg=str(showObj.name) + " has queued to be updated")
         except CantUpdateShowException as e:
             sickrage.app.log.debug("API::Unable to update show: {}".format(e))
-            return _responds(RESULT_FAILURE, msg="Unable to update " + str(showObj.name))
+            return await _responds(RESULT_FAILURE, msg="Unable to update " + str(showObj.name))
 
 
 class CMD_Shows(ApiCall):
@@ -2647,7 +2632,7 @@ class CMD_Shows(ApiCall):
                 "air_by_date": (0, 1)[curShow.air_by_date],
                 "sports": (0, 1)[curShow.sports],
                 "anime": (0, 1)[curShow.anime],
-                "indexer_id": curShow.indexer_id,
+                "indexerid": curShow.indexer_id,
                 "tvdbid": indexerShow[1],
                 "network": curShow.network,
                 "show_name": curShow.name,
@@ -2662,7 +2647,7 @@ class CMD_Shows(ApiCall):
             else:
                 showDict['next_ep_airdate'] = ''
 
-            showDict["cache"] = (await CMD_ShowCache(self.application, self.request, **{"indexer_id": curShow.indexer_id}).run())["data"]
+            showDict["cache"] = (await CMD_ShowCache(self.application, self.request, **{"indexerid": curShow.indexer_id}).run())["data"]
 
             if not showDict["network"]:
                 showDict["network"] = ""
@@ -2671,7 +2656,7 @@ class CMD_Shows(ApiCall):
             else:
                 shows[curShow.indexer_id] = showDict
 
-        return _responds(RESULT_SUCCESS, shows)
+        return await _responds(RESULT_SUCCESS, shows)
 
 
 class CMD_ShowsStats(ApiCall):
@@ -2706,7 +2691,7 @@ class CMD_ShowsStats(ApiCall):
             overall_stats['episodes']['total'] += len(show.episodes) or 0
             overall_stats['total_size'] += show.total_size or 0
 
-        return _responds(RESULT_SUCCESS, {
+        return await _responds(RESULT_SUCCESS, {
             'ep_downloaded': overall_stats['episodes']['downloaded'],
             'ep_snatched': overall_stats['episodes']['snatched'],
             'ep_total': overall_stats['episodes']['total'],

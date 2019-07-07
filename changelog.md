@@ -1,5 +1,7 @@
 # Changelog
 
+- * 707644451 - 2019-07-06: Refactored application API routines to resolve issues with 3rd party API clients. 
+- * 2f4236c98 - 2019-07-06: Release v9.4.99 
 - * cd7cecc7a - 2019-07-06: Added exception handling for multiple results being returned for scene numbering off TVEpisodes table. 
 - * fafc8050b - 2019-07-06: Added cleanup functions to help with duplicates in database tables. 
 - * 5dff80fb0 - 2019-07-06: Passes database session object onto add keyword function to avoid database locks. 

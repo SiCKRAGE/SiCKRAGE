@@ -216,6 +216,11 @@ class UpdateManager(object):
     def _git_path(self):
         test_cmd = '--version'
 
+        alternative_git = {
+            'windows': 'git',
+            'darwin': '/usr/local/git/bin/git'
+        }
+
         main_git = sickrage.app.config.git_path or 'git'
 
         # sickrage.app.log.debug("Checking if we can use git commands: " + main_git + ' ' + test_cmd)
@@ -224,32 +229,19 @@ class UpdateManager(object):
             # sickrage.app.log.debug("Using: " + main_git)
             return main_git
 
-        # trying alternatives
-        alternative_git = []
+        if platform.system().lower() in alternative_git:
+            sickrage.app.log.debug("Trying known alternative GIT application locations")
 
-        # osx people who start sr from launchd have a broken path, so try a hail-mary attempt for them
-        if platform.system().lower() == 'darwin':
-            alternative_git.append('/usr/local/git/bin/git')
-
-        if platform.system().lower() == 'windows':
-            if main_git != main_git.lower():
-                alternative_git.append(main_git.lower())
-
-        if alternative_git:
-            sickrage.app.log.debug("Trying known alternative git locations")
-
-            for cur_git in alternative_git:
-                # sickrage.app.log.debug("Checking if we can use git commands: " + cur_git + ' ' + test_cmd)
-                __, __, exit_status = self._git_cmd(cur_git, test_cmd)
-                if exit_status == 0:
-                    # sickrage.app.log.debug("Using: " + cur_git)
-                    return cur_git
+            # sickrage.app.log.debug("Checking if we can use git commands: " + cur_git + ' ' + test_cmd)
+            __, __, exit_status = self._git_cmd(alternative_git[platform.system().lower()], test_cmd)
+            if exit_status == 0:
+                # sickrage.app.log.debug("Using: " + cur_git)
+                return alternative_git[platform.system().lower()]
 
         # Still haven't found a working git
         error_message = _('Unable to find your git executable - Set your git path from Settings->General->Advanced OR '
-                          'delete your {git_folder} folder and run from source to enable updates.'.format(**{
-            'git_folder': os.path.join(sickrage.MAIN_DIR, '.git')
-        }))
+                          'delete your {git_folder} folder and run from source to enable '
+                          'updates.'.format(**{'git_folder': os.path.join(sickrage.MAIN_DIR, '.git')}))
 
         sickrage.app.alerts.error(_('Updater'), error_message)
 
@@ -467,7 +459,8 @@ class GitUpdateManager(UpdateManager):
         output, __, exit_status = self._git_cmd(self._git_path, 'remote update')
         if not exit_status == 0:
             sickrage.app.log.warning("Unable to contact server, can't check for update")
-            sickrage.app.log.debug("GIT CMD OUTPUT: {}".format(output.strip()))
+            if output:
+                sickrage.app.log.debug("GIT CMD OUTPUT: {}".format(output.strip()))
             return
 
         # get latest commit_hash from remote
