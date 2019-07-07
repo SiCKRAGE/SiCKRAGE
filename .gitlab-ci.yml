@@ -17,8 +17,8 @@ deploy_docker_develop_arm32v7:
   stage: deploy
   image: docker:latest
   before_script:
+    - apt-get -y install qemu-user-static
     - docker run --rm --privileged multiarch/qemu-user-static:register --reset
-    - wget https://github.com/multiarch/qemu-user-static/releases/download/v4.0.0-5/qemu-arm-static.tar.gz
   script:
     - echo $CI_COMMIT_SHA
     - echo $CONTAINER_IMAGE
@@ -33,8 +33,8 @@ deploy_docker_develop_arm64v8:
   stage: deploy
   image: docker:latest
   before_script:
+    - apt-get -y install qemu-user-static
     - docker run --rm --privileged multiarch/qemu-user-static:register --reset
-    - wget https://github.com/multiarch/qemu-user-static/releases/download/v4.0.0-5/qemu-arm-static.tar.gz
   script:
     - echo $CI_COMMIT_SHA
     - echo $CONTAINER_IMAGE
