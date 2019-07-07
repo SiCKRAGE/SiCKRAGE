@@ -1,6 +1,3 @@
-FROM arm64v8/alpine
-COPY qemu-arm-static /usr/bin
-
 FROM arm64v8/python:3.7-alpine
 MAINTAINER echel0n <echel0n@sickrage.ca>
 
@@ -8,6 +5,8 @@ ARG SOURCE_COMMIT
 ENV SOURCE_COMMIT $SOURCE_COMMIT
 
 ENV TZ 'Canada/Pacific'
+
+COPY https://github.com/multiarch/qemu-user-static/releases/download/v4.0.0-5/qemu-aarch64-static /usr/bin
 
 # install app
 COPY . /opt/sickrage/
