@@ -2,6 +2,7 @@ before_script:
   - apk add --no-cache py-pip
 
 stages:
+  - release
   - deploy
 
 variables:
@@ -13,6 +14,92 @@ variables:
 services:
   - docker:dind
 
+sentry_release:
+  stage: release
+  image:
+    name: getsentry/sentry-cli
+    entrypoint: [""]
+  script:
+    - export SENTRY_URL=$SENTRY_URL
+    - export SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
+    - export SENTRY_ORG=$SENTRY_ORG
+    - export SENTRY_PROJECT=$SENTRY_PROJECT
+    - sentry-cli releases new --project $SENTRY_PROJECT $(cat sickrage/version.txt)
+    - sentry-cli releases set-commits --auto $(cat sickrage/version.txt)
+    - sentry-cli releases finalize $(cat sickrage/version.txt)
+    - sentry-cli releases deploys $(cat sickrage/version.txt) new -e $CI_COMMIT_REF_NAME
+  only:
+    - develop
+    - master
+
+deploy_docker_master:
+  stage: deploy
+  image: docker:latest
+  script:
+    - echo $CI_COMMIT_SHA
+    - echo $CONTAINER_IMAGE
+    - echo -n $CI_REGISTRY_PASSWORD | docker login -u "$CI_REGISTRY_USER" --password-stdin
+    - docker build --network host --build-arg="SOURCE_COMMIT=$CI_COMMIT_SHA" -t $CONTAINER_IMAGE:$(cat sickrage/version.txt) -f Dockerfile .
+    - docker tag $CONTAINER_IMAGE:$(cat sickrage/version.txt) $CONTAINER_IMAGE:latest
+    - docker push $CONTAINER_IMAGE:$(cat sickrage/version.txt)
+    - docker push $CONTAINER_IMAGE:latest
+  only:
+    - master
+  except:
+    - tags
+
+deploy_docker_master_arm32v7:
+  stage: deploy
+  image: docker:latest
+  before_script:
+    - docker run --rm --privileged multiarch/qemu-user-static:register --reset
+  script:
+    - echo $CI_COMMIT_SHA
+    - echo $CONTAINER_IMAGE
+    - echo -n $CI_REGISTRY_PASSWORD | docker login -u "$CI_REGISTRY_USER" --password-stdin
+    - docker build --network host --build-arg="SOURCE_COMMIT=$CI_COMMIT_SHA" -t $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm32v7  -f Dockerfile.arm32v7 .
+    - docker tag $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm32v7 $CONTAINER_IMAGE:latest.arm32v7
+    - docker push $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm32v7
+    - docker push $CONTAINER_IMAGE:latest.arm32v7
+  only:
+    - master
+  except:
+    - tags
+
+deploy_docker_master_arm64v8:
+  stage: deploy
+  image: docker:latest
+  before_script:
+    - docker run --rm --privileged multiarch/qemu-user-static:register --reset
+  script:
+    - echo $CI_COMMIT_SHA
+    - echo $CONTAINER_IMAGE
+    - echo -n $CI_REGISTRY_PASSWORD | docker login -u "$CI_REGISTRY_USER" --password-stdin
+    - docker build --network host --build-arg="SOURCE_COMMIT=$CI_COMMIT_SHA" -t $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm64v8  -f Dockerfile.arm64v8 .
+    - docker tag $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm64v8 $CONTAINER_IMAGE:latest.arm64v8
+    - docker push $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm64v8
+    - docker push $CONTAINER_IMAGE:latest.arm64v8
+  only:
+    - master
+  except:
+    - tags
+
+deploy_docker_develop:
+  stage: deploy
+  image: docker:latest
+  script:
+    - echo $CI_COMMIT_SHA
+    - echo $CONTAINER_IMAGE
+    - echo -n $CI_REGISTRY_PASSWORD | docker login -u "$CI_REGISTRY_USER" --password-stdin
+    - docker build --network host --build-arg="SOURCE_COMMIT=$CI_COMMIT_SHA" -t $CONTAINER_IMAGE:$(cat sickrage/version.txt) -f Dockerfile .
+    - docker tag $CONTAINER_IMAGE:$(cat sickrage/version.txt) $CONTAINER_IMAGE:develop
+    - docker push $CONTAINER_IMAGE:$(cat sickrage/version.txt)
+    - docker push $CONTAINER_IMAGE:develop
+  only:
+    - develop
+  except:
+    - tags
+
 deploy_docker_develop_arm32v7:
   stage: deploy
   image: docker:latest
@@ -23,8 +110,11 @@ deploy_docker_develop_arm32v7:
     - echo $CONTAINER_IMAGE
     - echo -n $CI_REGISTRY_PASSWORD | docker login -u "$CI_REGISTRY_USER" --password-stdin
     - docker build --network host --build-arg="SOURCE_COMMIT=$CI_COMMIT_SHA" -t $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm32v7 -f Dockerfile.arm32v7 .
+    - docker tag $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm32v7 $CONTAINER_IMAGE:develop.arm32v7
+    - docker push $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm32v7
+    - docker push $CONTAINER_IMAGE:develop.arm32v7
   only:
-    - testing
+    - develop
   except:
     - tags
 
@@ -38,7 +128,10 @@ deploy_docker_develop_arm64v8:
     - echo $CONTAINER_IMAGE
     - echo -n $CI_REGISTRY_PASSWORD | docker login -u "$CI_REGISTRY_USER" --password-stdin
     - docker build --network host --build-arg="SOURCE_COMMIT=$CI_COMMIT_SHA" -t $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm64v8 -f Dockerfile.arm64v8 .
+    - docker tag $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm64v8 $CONTAINER_IMAGE:develop.arm64v8
+    - docker push $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm64v8
+    - docker push $CONTAINER_IMAGE:develop.arm64v8
   only:
-    - testing
+    - develop
   except:
     - tags
