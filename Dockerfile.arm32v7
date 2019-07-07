@@ -1,3 +1,6 @@
+FROM arm32v7/alpine
+COPY qemu-arm-static /usr/bin
+
 FROM arm32v7/python:3.7-alpine
 MAINTAINER echel0n <echel0n@sickrage.ca>
 
