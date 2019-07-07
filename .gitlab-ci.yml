@@ -17,7 +17,6 @@ deploy_docker_develop_arm32v7:
   stage: deploy
   image: docker:latest
   before_script:
-    - apk add --update --no-cache qemu-user-static
     - docker run --rm --privileged multiarch/qemu-user-static:register --reset
   script:
     - echo $CI_COMMIT_SHA
@@ -33,7 +32,6 @@ deploy_docker_develop_arm64v8:
   stage: deploy
   image: docker:latest
   before_script:
-    - apk add --update --no-cache qemu-user-static
     - docker run --rm --privileged multiarch/qemu-user-static:register --reset
   script:
     - echo $CI_COMMIT_SHA

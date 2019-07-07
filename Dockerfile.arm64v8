@@ -6,6 +6,8 @@ ENV SOURCE_COMMIT $SOURCE_COMMIT
 
 ENV TZ 'Canada/Pacific'
 
+ADD qemu-arm-static /usr/bin
+
 # install app
 COPY . /opt/sickrage/
 
