@@ -83,7 +83,7 @@ class KODIMetadata(KODI_12PlusMetadata):
         self.eg_season_all_banner = "<i>not supported</i>"
 
     # Override with empty methods for unsupported features
-    def create_season_banners(self, ep_obj):
+    def create_season_banners(self, show_obj, force=False):
         pass
 
     def create_season_all_banner(self, show_obj, force=False):
