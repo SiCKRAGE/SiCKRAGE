@@ -7,6 +7,7 @@ ENV SOURCE_COMMIT $SOURCE_COMMIT
 ENV TZ 'Canada/Pacific'
 
 ADD https://github.com/multiarch/qemu-user-static/releases/download/v4.0.0-5/qemu-arm-static /usr/bin/qemu-arm-static
+RUN chmod +x /usr/bin/qemu-arm-static
 
 # install app
 COPY . /opt/sickrage/
