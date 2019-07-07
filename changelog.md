@@ -1,5 +1,6 @@
 # Changelog
 
+- * 3c710c6ee - 2019-07-07: Release v9.4.106 
 - * bd7f58a6c - 2019-07-07: Added qemu to help building of ARM Docker images 
 - * 8fc1af91b - 2019-07-07: Added qemu to help building of ARM Docker images 
 - * c6ea33ee1 - 2019-07-07: Added qemu to help building of ARM Docker images 
