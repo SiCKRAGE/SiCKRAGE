@@ -3,7 +3,6 @@ MAINTAINER echel0n <echel0n@sickrage.ca>
 
 ARG SOURCE_COMMIT
 ENV SOURCE_COMMIT $SOURCE_COMMIT
-RUN echo "SOURCE_COMMIT = $SOURCE_COMMIT"
 
 ENV TZ 'Canada/Pacific'
 
