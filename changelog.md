@@ -1,5 +1,28 @@
 # Changelog
 
+- * bd7f58a6c - 2019-07-07: Added qemu to help building of ARM Docker images 
+- * 8fc1af91b - 2019-07-07: Added qemu to help building of ARM Docker images 
+- * c6ea33ee1 - 2019-07-07: Added qemu to help building of ARM Docker images 
+- * 9dbd3dd34 - 2019-07-07: Added qemu to help building of ARM Docker images 
+- * 701bdaccc - 2019-07-07: Added qemu to help building of ARM Docker images 
+- * d463caa92 - 2019-07-07: Added qemu to help building of ARM Docker images 
+- * 30142eb40 - 2019-07-07: Added qemu to help building of ARM Docker images 
+- * 0be638a94 - 2019-07-07: Added qemu to help building of ARM Docker images 
+- * 587fd22b3 - 2019-07-07: Added qemu to help building of ARM Docker images 
+- * a090c8056 - 2019-07-07: Added qemu to help building of ARM Docker images 
+- * 45cc75a39 - 2019-07-07: Added qemu to help building of ARM Docker images 
+- * 2f7f05c18 - 2019-07-07: Added qemu to help building of ARM Docker images 
+- * 3149766f3 - 2019-07-07: Added qemu to help building of ARM Docker images 
+- * 2597869ff - 2019-07-07: Added qemu to help building of ARM Docker images 
+- * 341af4525 - 2019-07-07: Added qemu to help building of ARM Docker images 
+- * f2cbf307a - 2019-07-07: Added qemu to help building of ARM Docker images 
+- * 4e8720c0e - 2019-07-07: Added qemu to help building of ARM Docker images 
+- * 594adf5f3 - 2019-07-07: Added qemu to help building of ARM Docker images 
+- * 3c92a5bf3 - 2019-07-07: Added qemu to help building of ARM Docker images 
+- * b5eeedd57 - 2019-07-07: Added qemu to help building of ARM Docker images 
+- * cd71a7830 - 2019-07-07: Added qemu to help building of ARM Docker images 
+- * bcd83f0cf - 2019-07-07: Added qemu to help building of ARM Docker images 
+- * 1a2908e11 - 2019-07-07: Pre-Release v9.4.106.dev6 
 - * bd8dc6758 - 2019-07-07: Pre-Release v9.4.106.dev5 
 - * c8067c4f9 - 2019-07-07: Pre-Release v9.4.106.dev4 
 - * 86e80dd04 - 2019-07-07: Pre-Release v9.4.106.dev3 
