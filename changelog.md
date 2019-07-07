@@ -1,5 +1,8 @@
 # Changelog
 
+- * 1f37a22a3 - 2019-07-07: Fixes SICKRAGE-APP-PY3-HF 
+- * abb25aa84 - 2019-07-07: Fixes SICKRAGE-APP-PY3-JT 
+- * c768c9a48 - 2019-07-06: Release v9.4.101 
 - * f885aba87 - 2019-07-06: Fixes SICKRAGE-APP-PY3-HF 
 - * 2f5e07c8d - 2019-07-06: Release v9.4.100 
 - * 707644451 - 2019-07-06: Refactored application API routines to resolve issues with 3rd party API clients. 
