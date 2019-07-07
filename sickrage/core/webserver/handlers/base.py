@@ -53,8 +53,7 @@ class BaseHandler(RequestHandler, ABC):
             strict_undefined=True,
             input_encoding='utf-8',
             output_encoding='utf-8',
-            encoding_errors='replace',
-            future_imports=['unicode_literals']
+            encoding_errors='replace'
         )
 
     def get_user_locale(self):
