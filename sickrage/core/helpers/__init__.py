@@ -1470,7 +1470,6 @@ def clean_url(url):
     uses_netloc.append('scgi')
 
     if url and url.strip():
-
         url = url.strip()
 
         if '://' not in url:
@@ -1482,7 +1481,6 @@ def clean_url(url):
             path += '/'
 
         cleaned_url = urlunsplit((scheme, netloc, path, query, fragment))
-
     else:
         cleaned_url = ''
 

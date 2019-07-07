@@ -380,9 +380,14 @@
                                     </div>
                                     <input id="sab_host" name="sab_host"
                                            value="${sickrage.app.config.sab_host}"
-                                           placeholder="${_('ex. http://localhost:8080/')}"
+                                           placeholder="${_('ex. http://localhost:8080')}"
                                            class="form-control" autocapitalize="off"/>
                                 </div>
+                                <label for="sab_host">
+                                    <p>
+                                        ${_('do not include a trailing slash at the end of your host')}
+                                    </p>
+                                </label>
                             </div>
                         </div>
 
