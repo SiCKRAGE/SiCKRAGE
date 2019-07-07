@@ -234,8 +234,10 @@ class TVCache(object):
                     # add to internal database
                     try:
                         session.add(CacheDB.Provider(**dbData))
+                        session.commit()
                         sickrage.app.log.debug("SEARCH RESULT:[{}] ADDED TO CACHE!".format(name))
                     except IntegrityError:
+                        session.rollback()
                         pass
 
                     # add to external provider cache database
