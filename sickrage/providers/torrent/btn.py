@@ -203,13 +203,12 @@ class BTNProvider(TorrentProvider):
             parsed_json = api.getTorrents(self.api_key, params or {}, int(results_per_page), int(offset))
             time.sleep(5)
         except xmlrpc.client.ProtocolError as e:
-            if e.message[1] == 'Call Limit Exceeded':
+            if e.errmsg == 'Call Limit Exceeded':
                 sickrage.app.log.warning("You have exceeded the limit of 150 calls per hour.")
-            elif e.message[1] == 'Invalid API Key':
+            elif e.errmsg == 'Invalid API Key':
                 sickrage.app.log.warning("Incorrect authentication credentials.")
             else:
-                sickrage.app.log.error(
-                    "JSON-RPC protocol error while accessing provider. Error: {}".format(e))
+                sickrage.app.log.error("JSON-RPC protocol error while accessing provider. Error: {}".format(e))
         except (socket.error, socket.timeout, ValueError) as e:
             sickrage.app.log.warning("Error while accessing provider. Error: {}".format(e))
 
