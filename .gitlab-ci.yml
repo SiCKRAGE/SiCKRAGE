@@ -17,12 +17,12 @@ deploy_docker_develop_arm32v7:
   stage: deploy
   image: docker:latest
   before_script:
-    - docker run --rm --privileged multiarch/qemu-user-static:register --reset -p
+    - docker run --rm --privileged multiarch/qemu-user-static:register --reset -p yes
   script:
     - echo $CI_COMMIT_SHA
     - echo $CONTAINER_IMAGE
     - echo -n $CI_REGISTRY_PASSWORD | docker login -u "$CI_REGISTRY_USER" --password-stdin
-    - docker build --network host --build-arg="SOURCE_COMMIT=$CI_COMMIT_SHA" -t $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm32v7 -f Dockerfile.arm32v7 .
+    - docker build --network host -v=/usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static --build-arg="SOURCE_COMMIT=$CI_COMMIT_SHA" -t $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm32v7 -f Dockerfile.arm32v7 .
   only:
     - testing
   except:
@@ -32,12 +32,12 @@ deploy_docker_develop_arm64v8:
   stage: deploy
   image: docker:latest
   before_script:
-    - docker run --rm --privileged multiarch/qemu-user-static:register --reset -p
+    - docker run --rm --privileged multiarch/qemu-user-static:register --reset -p yes
   script:
     - echo $CI_COMMIT_SHA
     - echo $CONTAINER_IMAGE
     - echo -n $CI_REGISTRY_PASSWORD | docker login -u "$CI_REGISTRY_USER" --password-stdin
-    - docker build --network host --build-arg="SOURCE_COMMIT=$CI_COMMIT_SHA" -t $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm64v8 -f Dockerfile.arm64v8 .
+    - docker build --network host -v=/usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static --build-arg="SOURCE_COMMIT=$CI_COMMIT_SHA" -t $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm64v8 -f Dockerfile.arm64v8 .
   only:
     - testing
   except:
