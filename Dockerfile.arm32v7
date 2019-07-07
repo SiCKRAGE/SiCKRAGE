@@ -1,3 +1,6 @@
+FROM multiarch/qemu-user-static
+COPY qemu-arm-static /usr/bin/qemu-arm-static
+
 FROM arm32v7/python:3.7-alpine3.9
 MAINTAINER echel0n <echel0n@sickrage.ca>
 
@@ -5,8 +8,6 @@ ARG SOURCE_COMMIT
 ENV SOURCE_COMMIT $SOURCE_COMMIT
 
 ENV TZ 'Canada/Pacific'
-
-ADD qemu-arm-static /usr/bin
 
 # install app
 COPY . /opt/sickrage/
