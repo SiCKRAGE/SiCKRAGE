@@ -1,11 +1,19 @@
-FROM arm64v8/python:3.7-alpine3.9
+FROM alpine:3.9 as downloader
+
+RUN wget --quiet -O /qemu-aarch64-static \
+    https://github.com/multiarch/qemu-user-static/releases/download/v4.0.0-5/qemu-aarch64-static ;\
+    chmod +x /qemu-aarch64-static
+
+FROM arm64v8/python:3.7-alpine
 MAINTAINER echel0n <echel0n@sickrage.ca>
 
 ARG SOURCE_COMMIT
 ENV SOURCE_COMMIT $SOURCE_COMMIT
-RUN echo "SOURCE_COMMIT = $SOURCE_COMMIT"
 
 ENV TZ 'Canada/Pacific'
+
+# add qemu for cross build
+COPY --from=downloader /qemu-aarch64-static /usr/bin/qemu-aarch64-static
 
 # install app
 COPY . /opt/sickrage/
