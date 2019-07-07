@@ -1,5 +1,7 @@
 # Changelog
 
+- * f885aba87 - 2019-07-06: Fixes SICKRAGE-APP-PY3-HF 
+- * 2f5e07c8d - 2019-07-06: Release v9.4.100 
 - * 707644451 - 2019-07-06: Refactored application API routines to resolve issues with 3rd party API clients. 
 - * 2f4236c98 - 2019-07-06: Release v9.4.99 
 - * cd7cecc7a - 2019-07-06: Added exception handling for multiple results being returned for scene numbering off TVEpisodes table. 
