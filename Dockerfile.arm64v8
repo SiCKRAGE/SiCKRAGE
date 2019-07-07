@@ -1,5 +1,5 @@
-FROM multiarch/qemu-user-static
-COPY qemu-arm-static /usr/bin/qemu-arm-static
+FROM multiarch/qemu-user-static:x86_64-arm
+COPY --from=multiarch/qemu-user-static:x86_64-arm /usr/bin/qemu-* /usr/bin
 
 FROM arm64v8/python:3.7-alpine3.9
 MAINTAINER echel0n <echel0n@sickrage.ca>
