@@ -1,5 +1,7 @@
 # Changelog
 
+- * cb5b1592d - 2019-07-07: Updated gitlab-ci.yml file 
+- * 0a2f5542d - 2019-07-07: Release v9.4.104 
 - * c844c9976 - 2019-07-07: Added Docker builds for ARM32V7 and ARM64V8 
 - * 73ad9a498 - 2019-07-07: Release v9.4.103 
 - * f5844fe02 - 2019-07-07: Updated SABnzbd search client web view to remind end-user to not place a trailing slash at the end of their hostname. 
