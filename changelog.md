@@ -1,5 +1,7 @@
 # Changelog
 
+- * c844c9976 - 2019-07-07: Added Docker builds for ARM32V7 and ARM64V8 
+- * 73ad9a498 - 2019-07-07: Release v9.4.103 
 - * f5844fe02 - 2019-07-07: Updated SABnzbd search client web view to remind end-user to not place a trailing slash at the end of their hostname. 
 - * 331fb7b29 - 2019-07-07: Confirms that there is a year to be added from series pieces to show directory if requested. 
 - * 54f6b27ef - 2019-07-07: Resolved issue with BTN provider API error logging. 
