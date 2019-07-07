@@ -52,7 +52,7 @@ deploy_docker_master_arm32v7:
   stage: deploy
   image: docker:latest
   before_script:
-    - docker run --rm --privileged hypriot/qemu-register
+    - docker run --rm --privileged multiarch/qemu-user-static:register --reset
   script:
     - echo $CI_COMMIT_SHA
     - echo $CONTAINER_IMAGE
@@ -70,7 +70,7 @@ deploy_docker_master_arm64v8:
   stage: deploy
   image: docker:latest
   before_script:
-    - docker run --rm --privileged hypriot/qemu-register
+    - docker run --rm --privileged multiarch/qemu-user-static:register --reset
   script:
     - echo $CI_COMMIT_SHA
     - echo $CONTAINER_IMAGE
@@ -104,7 +104,7 @@ deploy_docker_develop_arm32v7:
   stage: deploy
   image: docker:latest
   before_script:
-    - docker run --rm --privileged hypriot/qemu-register
+    - docker run --rm --privileged multiarch/qemu-user-static:register --reset
   script:
     - echo $CI_COMMIT_SHA
     - echo $CONTAINER_IMAGE
@@ -122,7 +122,7 @@ deploy_docker_develop_arm64v8:
   stage: deploy
   image: docker:latest
   before_script:
-    - docker run --rm --privileged hypriot/qemu-register
+    - docker run --rm --privileged multiarch/qemu-user-static:register --reset
   script:
     - echo $CI_COMMIT_SHA
     - echo $CONTAINER_IMAGE
