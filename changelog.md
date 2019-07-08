@@ -1,5 +1,6 @@
 # Changelog
 
+- * ca70d11b6 - 2019-07-07: Release v9.4.108 
 - * ea56a8b17 - 2019-07-07: Updated Docker image tags to correctly represent multi-arch 
 - * 5b3fb85a0 - 2019-07-07: Release v9.4.107 
 - * 3c710c6ee - 2019-07-07: Release v9.4.106 
