@@ -40,7 +40,7 @@ class HomePostProcessHandler(BaseHandler, ABC):
 
 class HomeProcessEpisodeHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
+    async def post(self, *args, **kwargs):
         pp_options = {
             'proc_dir': self.get_argument('proc_dir'),
             'nzbname': self.get_argument('nzbname', ''),
