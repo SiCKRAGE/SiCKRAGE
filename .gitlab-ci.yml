@@ -57,10 +57,10 @@ deploy_docker_master_arm32v7:
     - echo $CI_COMMIT_SHA
     - echo $CONTAINER_IMAGE
     - echo -n $CI_REGISTRY_PASSWORD | docker login -u "$CI_REGISTRY_USER" --password-stdin
-    - docker build --network host --build-arg="SOURCE_COMMIT=$CI_COMMIT_SHA" -t $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm32v7  -f Dockerfile.arm32v7 .
-    - docker tag $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm32v7 $CONTAINER_IMAGE:latest.arm32v7
-    - docker push $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm32v7
-    - docker push $CONTAINER_IMAGE:latest.arm32v7
+    - docker build --network host --build-arg="SOURCE_COMMIT=$CI_COMMIT_SHA" -t $CONTAINER_IMAGE:arm32v7:$(cat sickrage/version.txt)  -f Dockerfile.arm32v7 .
+    - docker tag $CONTAINER_IMAGE:arm32v7:$(cat sickrage/version.txt) $CONTAINER_IMAGE:arm32v7:latest
+    - docker push $CONTAINER_IMAGE:arm32v7:$(cat sickrage/version.txt)
+    - docker push $CONTAINER_IMAGE:arm32v7:latest
   only:
     - master
   except:
@@ -75,10 +75,10 @@ deploy_docker_master_arm64v8:
     - echo $CI_COMMIT_SHA
     - echo $CONTAINER_IMAGE
     - echo -n $CI_REGISTRY_PASSWORD | docker login -u "$CI_REGISTRY_USER" --password-stdin
-    - docker build --network host --build-arg="SOURCE_COMMIT=$CI_COMMIT_SHA" -t $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm64v8  -f Dockerfile.arm64v8 .
-    - docker tag $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm64v8 $CONTAINER_IMAGE:latest.arm64v8
-    - docker push $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm64v8
-    - docker push $CONTAINER_IMAGE:latest.arm64v8
+    - docker build --network host --build-arg="SOURCE_COMMIT=$CI_COMMIT_SHA" -t $CONTAINER_IMAGE:arm64v8:$(cat sickrage/version.txt)  -f Dockerfile.arm64v8 .
+    - docker tag $CONTAINER_IMAGE:arm64v8:$(cat sickrage/version.txt) $CONTAINER_IMAGE:arm64v8:latest
+    - docker push $CONTAINER_IMAGE:arm64v8:$(cat sickrage/version.txt)
+    - docker push $CONTAINER_IMAGE:arm64v8:latest
   only:
     - master
   except:
@@ -109,10 +109,10 @@ deploy_docker_develop_arm32v7:
     - echo $CI_COMMIT_SHA
     - echo $CONTAINER_IMAGE
     - echo -n $CI_REGISTRY_PASSWORD | docker login -u "$CI_REGISTRY_USER" --password-stdin
-    - docker build --network host --build-arg="SOURCE_COMMIT=$CI_COMMIT_SHA" -t $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm32v7 -f Dockerfile.arm32v7 .
-    - docker tag $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm32v7 $CONTAINER_IMAGE:develop.arm32v7
-    - docker push $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm32v7
-    - docker push $CONTAINER_IMAGE:develop.arm32v7
+    - docker build --network host --build-arg="SOURCE_COMMIT=$CI_COMMIT_SHA" -t $CONTAINER_IMAGE:arm32v7:$(cat sickrage/version.txt) -f Dockerfile.arm32v7 .
+    - docker tag $CONTAINER_IMAGE:arm32v7:$(cat sickrage/version.txt) $CONTAINER_IMAGE:arm32v7:develop
+    - docker push $CONTAINER_IMAGE:arm32v7:$(cat sickrage/version.txt)
+    - docker push $CONTAINER_IMAGE:arm32v7:develop
   only:
     - develop
   except:
@@ -127,10 +127,10 @@ deploy_docker_develop_arm64v8:
     - echo $CI_COMMIT_SHA
     - echo $CONTAINER_IMAGE
     - echo -n $CI_REGISTRY_PASSWORD | docker login -u "$CI_REGISTRY_USER" --password-stdin
-    - docker build --network host --build-arg="SOURCE_COMMIT=$CI_COMMIT_SHA" -t $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm64v8 -f Dockerfile.arm64v8 .
-    - docker tag $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm64v8 $CONTAINER_IMAGE:develop.arm64v8
-    - docker push $CONTAINER_IMAGE:$(cat sickrage/version.txt).arm64v8
-    - docker push $CONTAINER_IMAGE:develop.arm64v8
+    - docker build --network host --build-arg="SOURCE_COMMIT=$CI_COMMIT_SHA" -t $CONTAINER_IMAGE:arm64v8:$(cat sickrage/version.txt) -f Dockerfile.arm64v8 .
+    - docker tag $CONTAINER_IMAGE:arm64v8:$(cat sickrage/version.txt) $CONTAINER_IMAGE:arm64v8:develop
+    - docker push $CONTAINER_IMAGE:arm64v8:$(cat sickrage/version.txt)
+    - docker push $CONTAINER_IMAGE:arm64v8:develop
   only:
     - develop
   except:
