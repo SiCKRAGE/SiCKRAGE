@@ -1,3 +1,4 @@
+FROM multiarch/qemu-user-static:x86_64-arm as qemu
 FROM alpine:3.9 as downloader
 
 RUN wget --quiet -O /qemu-arm-static \
@@ -13,7 +14,7 @@ ENV SOURCE_COMMIT $SOURCE_COMMIT
 ENV TZ 'Canada/Pacific'
 
 # add qemu for cross build
-COPY --from=downloader /qemu-arm-static /usr/bin/qemu-arm-static
+COPY --from=qemu /usr/bin/qemu-* /usr/bin
 
 # install app
 COPY . /opt/sickrage/
