@@ -12,8 +12,8 @@ ENV TZ 'Canada/Pacific'
 # add qemu for cross build
 COPY --from=downloader /qemu-aarch64-static /usr/bin/qemu-aarch64-static
 
-# install app
-COPY .. /opt/sickrage/
+WORKDIR /opt/sickrage
+COPY ./ .
 
 RUN apk add --update --no-cache libffi-dev openssl-dev libxml2-dev libxslt-dev linux-headers build-base git tzdata unrar
 RUN pip install -U pip setuptools
