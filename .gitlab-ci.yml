@@ -14,7 +14,7 @@ variables:
 services:
   - docker:dind
 
-sentry_release:
+sentry_release_master:
   stage: release
   image:
     name: getsentry/sentry-cli
@@ -29,10 +29,30 @@ sentry_release:
     - sentry-cli releases finalize $(cat sickrage/version.txt)
     - sentry-cli releases deploys $(cat sickrage/version.txt) new -e $CI_COMMIT_REF_NAME
   only:
-    - develop
-    - master
+    - /^[0-9.]+$/
   except:
-    - tags
+    - branches
+    - triggers
+
+sentry_release_develop:
+  stage: release
+  image:
+    name: getsentry/sentry-cli
+    entrypoint: [""]
+  script:
+    - export SENTRY_URL=$SENTRY_URL
+    - export SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
+    - export SENTRY_ORG=$SENTRY_ORG
+    - export SENTRY_PROJECT=$SENTRY_PROJECT
+    - sentry-cli releases new --project $SENTRY_PROJECT $(cat sickrage/version.txt)
+    - sentry-cli releases set-commits --auto $(cat sickrage/version.txt)
+    - sentry-cli releases finalize $(cat sickrage/version.txt)
+    - sentry-cli releases deploys $(cat sickrage/version.txt) new -e $CI_COMMIT_REF_NAME
+  only:
+    - /^[0-9.]+dev[0-9]$/
+  except:
+    - branches
+    - triggers
 
 deploy_docker_master:
   stage: deploy
@@ -50,7 +70,6 @@ deploy_docker_master:
     - /^[0-9.]+$/
   except:
     - branches
-    - merge_requests
     - triggers
 
 deploy_docker_master_arm32v7:
@@ -71,7 +90,6 @@ deploy_docker_master_arm32v7:
     - /^[0-9.]+$/
   except:
     - branches
-    - merge_requests
     - triggers
 
 deploy_docker_master_arm64v8:
@@ -92,7 +110,6 @@ deploy_docker_master_arm64v8:
     - /^[0-9.]+$/
   except:
     - branches
-    - merge_requests
     - triggers
 
 deploy_docker_develop:
@@ -111,7 +128,6 @@ deploy_docker_develop:
     - /^[0-9.]+dev[0-9]$/
   except:
     - branches
-    - merge_requests
     - triggers
 
 deploy_docker_develop_arm32v7:
@@ -132,7 +148,6 @@ deploy_docker_develop_arm32v7:
     - /^[0-9.]+dev[0-9]$/
   except:
     - branches
-    - merge_requests
     - triggers
 
 deploy_docker_develop_arm64v8:
@@ -153,5 +168,4 @@ deploy_docker_develop_arm64v8:
     - /^[0-9.]+dev[0-9]$/
   except:
     - branches
-    - merge_requests
     - triggers
