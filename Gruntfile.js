@@ -252,7 +252,6 @@ module.exports = function (grunt) {
 
         const newVersion = vArray.vMajor + '.' + vArray.vMinor + '.' + vArray.vPatch + '.dev' + vArray.vPre;
         grunt.config('new_version', newVersion);
-
         grunt.file.write(vFile, newVersion);
 
         grunt.log.writeln(('Packaging Pre-Release v' + newVersion).magenta);
@@ -262,7 +261,7 @@ module.exports = function (grunt) {
             'webpack:dev',
             //'sync_trans',
             'exec:git_commit:Pre-Release v' + newVersion,
-            //'exec:git_last_tag', 'exec:git_list_changes', 'exec:git_tag',
+            'exec:git_last_tag', 'exec:git_list_changes', 'exec:git_tag',
             'exec:git_push:origin:develop:tags',
             'exec:pypi_create',
             'exec:pypi_upload',
@@ -290,7 +289,6 @@ module.exports = function (grunt) {
         }
 
         const newVersion = vArray.vMajor + '.' + vArray.vMinor + '.' + vArray.vPatch;
-
         grunt.config('new_version', newVersion);
         grunt.file.write(vFile, newVersion);
 
