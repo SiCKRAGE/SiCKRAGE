@@ -1,5 +1,9 @@
 # Changelog
 
+- * 2df3ed969 - 2019-07-08: Release v9.4.112 
+- * 106bd300b - 2019-07-08: Testing automated docker builds. 
+- * aee26322d - 2019-07-08: Testing automated docker builds. 
+- * 07d2e3c35 - 2019-07-08: Release v9.4.111 
 - * 6b4378aea - 2019-07-08: Refactored GitLab CI/CD script and Dockerfiles to cut down build times. 
 - * b8618323f - 2019-07-08: Update Dockerfile.arm32v7 
 - * 43d40c38a - 2019-07-08: Release v9.4.110 
