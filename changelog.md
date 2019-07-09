@@ -1,5 +1,8 @@
 # Changelog
 
+- * 6b4378aea - 2019-07-08: Refactored GitLab CI/CD script and Dockerfiles to cut down build times. 
+- * b8618323f - 2019-07-08: Update Dockerfile.arm32v7 
+- * 43d40c38a - 2019-07-08: Release v9.4.110 
 - * 9d17dfa42 - 2019-07-08: Fixed issue with manually post-processing episodes, was a typo. 
 - * 9521413b7 - 2019-07-07: Release v9.4.109 
 - * ca70d11b6 - 2019-07-07: Release v9.4.108 
