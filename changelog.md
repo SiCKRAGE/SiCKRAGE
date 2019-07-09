@@ -1,5 +1,6 @@
 # Changelog
 
+- * 2df3ed969 - 2019-07-08: Release v9.4.112 
 - * 106bd300b - 2019-07-08: Testing automated docker builds. 
 - * aee26322d - 2019-07-08: Testing automated docker builds. 
 - * 07d2e3c35 - 2019-07-08: Release v9.4.111 
