@@ -83,7 +83,7 @@ deploy_docker_master_arm32v7:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
     - docker pull $CONTAINER_IMAGE:arm32v7-latest || true
     - docker build --network host --build-arg="SOURCE_COMMIT=$CI_COMMIT_SHA" --cache-from $CONTAINER_IMAGE:arm32v7-latest -t $CONTAINER_IMAGE:arm32v7-$(cat sickrage/version.txt)  -f Dockerfile.arm32v7 .
-    - docker tag $CONTAINER_IMAGE:arm32v7-$(cat sickrage/version.txt) $CONTAINER_IMAGE:arm32v7:latest
+    - docker tag $CONTAINER_IMAGE:arm32v7-$(cat sickrage/version.txt) $CONTAINER_IMAGE:arm32v7-latest
     - docker push $CONTAINER_IMAGE:arm32v7-$(cat sickrage/version.txt)
     - docker push $CONTAINER_IMAGE:arm32v7-latest
   only:
