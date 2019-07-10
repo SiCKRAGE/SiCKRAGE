@@ -1,5 +1,9 @@
 # Changelog
 
+- * edd628975 - 2019-07-09: Fixed issue with post-processing and logging downloads to history when unable to determine provider result came from. 
+- * 134fcfe23 - 2019-07-09: Fixed typo in container name 
+- * 8aa49580f - 2019-07-08: Turned on tagging for develop branch to assist gitlab ci/cd builds. 
+- * 42aec5573 - 2019-07-08: Release v9.4.116 
 - * 8f08c10c2 - 2019-07-08: Release v9.4.115 
 - * b0731df15 - 2019-07-08: Release v9.4.114 
 - * f369fde9f - 2019-07-08: Release v9.4.113 
