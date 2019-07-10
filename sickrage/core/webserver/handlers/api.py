@@ -878,7 +878,7 @@ class CMD_EpisodeSetStatus(ApiCall):
         ep_results = []
         failure = False
         start_backlog = False
-        wanted = {}
+        wanted = []
 
         for epObj in ep_list:
             if self.status == WANTED:
