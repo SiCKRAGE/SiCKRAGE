@@ -160,7 +160,7 @@ class History:
         :param version: Version of file (defaults to -1)
         """
 
-        provider = ''
+        provider = 'unknown'
 
         dbData = session.query(MainDB.History).filter(MainDB.History.resource.contains(os.path.basename(filename).rpartition(".")[0])).first()
         if dbData:
