@@ -123,7 +123,7 @@ class History:
             'resource': resource,
             'provider': provider,
             'version': version,
-            'release_group': release_group
+            'release_group': release_group or ''
         }))
 
     @staticmethod
@@ -160,7 +160,7 @@ class History:
         :param version: Version of file (defaults to -1)
         """
 
-        provider = 'unknown'
+        provider = ''
 
         dbData = session.query(MainDB.History).filter(MainDB.History.resource.contains(os.path.basename(filename).rpartition(".")[0])).first()
         if dbData:
