@@ -1,5 +1,12 @@
 # Changelog
 
+- * f472dcac4 - 2019-07-10: Resolved issues with BTN Torrent provider. 
+- * f6fce2766 - 2019-07-10: Places search result from indexer into list object if returned as dict. 
+- * 9c3a3c04f - 2019-07-10: Resolved sqlite3.IntegrityError: NOT NULL constraint failed: history.release_group 
+- * ef9a6cb96 - 2019-07-10: Resolved KeyError in sickrage.core.webserver.handlers.api in run error &#x27;indexer_id&#x27; 
+- * 7ad8c0b06 - 2019-07-10: Resolves error &#x60;can&#x27;t concat str to bytes&#x60; in &#x60;sickrage.providers in _get_episode_search_strings&#x60; Fixes SICKRAGE-APP-PY3-M4 
+- * 8a423fd15 - 2019-07-10: Resolved unsupported operand type(s) for +&#x3D;: &#x27;dict&#x27; and &#x27;list&#x27; 
+- * 1ee3cdb90 - 2019-07-09: Release v9.4.117 
 - * edd628975 - 2019-07-09: Fixed issue with post-processing and logging downloads to history when unable to determine provider result came from. 
 - * 134fcfe23 - 2019-07-09: Fixed typo in container name 
 - * 8aa49580f - 2019-07-08: Turned on tagging for develop branch to assist gitlab ci/cd builds. 
