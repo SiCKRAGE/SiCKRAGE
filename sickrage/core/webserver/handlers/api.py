@@ -1051,7 +1051,7 @@ class CMD_History(ApiCall):
             row["resource"] = os.path.basename(row["resource"])
 
             # Add tvdbid for backward compatibility
-            row['tvdbid'] = row['indexer_id']
+            row['tvdbid'] = row['indexerid']
             results.append(row)
 
         return await _responds(RESULT_SUCCESS, results)
