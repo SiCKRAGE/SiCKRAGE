@@ -15,12 +15,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
-
-
-
-import socket
-import time
-import xmlrpc.client
+import json
+import random
 
 import sickrage
 from sickrage.core import scene_exceptions, MainDB
@@ -195,21 +191,24 @@ class BTNProvider(TorrentProvider):
 
         return searches
 
-    def _api_call(self, params=None, results_per_page=300, offset=0):
-        parsed_json = {}
+    def _api_call(self, params=None, results_per_page=1000, offset=0):
+        response = {}
+
+        json_rpc = json.dumps({
+            "jsonrpc": "2.0",
+            "id": ''.join(random.sample('abcdefghijklmnopqrstuvwxyz0123456789', 8)),
+            "method": "getTorrents",
+            "params": [str(self.api_key), params or {}, str(results_per_page), str(offset)]
+        })
 
         try:
-            api = xmlrpc.client.Server(self.urls['api'] + '/')
-            parsed_json = api.getTorrents(self.api_key, params or {}, int(results_per_page), int(offset))
-            time.sleep(5)
-        except xmlrpc.client.ProtocolError as e:
-            if e.errmsg == 'Call Limit Exceeded':
-                sickrage.app.log.warning("You have exceeded the limit of 150 calls per hour.")
-            elif e.errmsg == 'Invalid API Key':
-                sickrage.app.log.warning("Incorrect authentication credentials.")
-            else:
-                sickrage.app.log.error("JSON-RPC protocol error while accessing provider. Error: {}".format(e))
-        except (socket.error, socket.timeout, ValueError) as e:
+            response = self.session.post(self.urls['api'], data=json_rpc, headers={'Content-Type': 'application/json-rpc'}).json()
+            if 'error' in response:
+                error = response["error"]
+                message = error["message"]
+                code = error["code"]
+                sickrage.app.log.warning("Error Code: {} :: Error Message: {}".format(code, message))
+        except Exception as e:
             sickrage.app.log.warning("Error while accessing provider. Error: {}".format(e))
 
-        return parsed_json
+        return response
