@@ -28,7 +28,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <select id="white" multiple="multiple" size="12" title="white">
+                            <select id="white" multiple="multiple" size="12" title="white" style="min-width:200px;height:99px;">
                                 % for keyword in whitelist:
                                     <option value="${keyword}">${keyword}</option>
                                 % endfor
@@ -49,7 +49,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <select id="pool" multiple="multiple" size="12" title="pool">
+                            <select id="pool" multiple="multiple" size="12" title="pool" style="min-width:200px;height:99px;">
                                 % for group in groups:
                                     % if group['name'] not in whitelist and group['name'] not in blacklist:
                                         <option value="${group['name']}">${group['name']} | ${group['rating']}
@@ -74,7 +74,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <select id="black" multiple="multiple" size="12" title="black">
+                            <select id="black" multiple="multiple" size="12" title="black" style="min-width:200px;height:99px;">
                                 % for keyword in blacklist:
                                     <option value="${keyword}">${keyword}</option>
                                 % endfor
