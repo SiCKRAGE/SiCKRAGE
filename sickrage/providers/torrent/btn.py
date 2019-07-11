@@ -199,7 +199,7 @@ class BTNProvider(TorrentProvider):
         parsed_json = {}
 
         try:
-            api = xmlrpc.client.Server(self.urls['api'])
+            api = xmlrpc.client.Server(self.urls['api'] + '/')
             parsed_json = api.getTorrents(self.api_key, params or {}, int(results_per_page), int(offset))
             time.sleep(5)
         except xmlrpc.client.ProtocolError as e:

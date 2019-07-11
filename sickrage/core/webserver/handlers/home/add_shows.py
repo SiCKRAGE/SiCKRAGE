@@ -97,6 +97,9 @@ class SearchIndexersForShowNameHandler(BaseHandler, ABC):
             try:
                 # search via series name
                 result = await self.run_task(lambda: t[search_term])
+                if isinstance(result, dict):
+                    result = [result]
+
                 results.setdefault(indexer, []).extend(result)
             except Exception:
                 continue
