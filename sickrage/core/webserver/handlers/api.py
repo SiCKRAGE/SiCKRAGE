@@ -878,7 +878,7 @@ class CMD_EpisodeSetStatus(ApiCall):
         ep_results = []
         failure = False
         start_backlog = False
-        wanted = {}
+        wanted = []
 
         for epObj in ep_list:
             if self.status == WANTED:
@@ -1051,7 +1051,7 @@ class CMD_History(ApiCall):
             row["resource"] = os.path.basename(row["resource"])
 
             # Add tvdbid for backward compatibility
-            row['tvdbid'] = row['indexer_id']
+            row['tvdbid'] = row['indexerid']
             results.append(row)
 
         return await _responds(RESULT_SUCCESS, results)

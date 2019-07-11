@@ -185,7 +185,7 @@ class GenericProvider(object):
         episode_object = show_object.get_episode(season, episode)
 
         for show_name in all_possible_show_names(show_id, episode_object.scene_season):
-            episode_string = show_name + self.search_separator
+            episode_string = "{}{}".format(show_name, self.search_separator)
             episode_string_fallback = None
 
             if show_object.air_by_date:
