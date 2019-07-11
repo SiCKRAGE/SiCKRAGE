@@ -1,5 +1,9 @@
 # Changelog
 
+- * edc07c8d7 - 2019-07-11: Resolved issue for saving custom qualities, black/white lists, and scene exceptions. 
+- * 2084c5190 - 2019-07-11: Fixed issue &#x60;self[klass().id] &#x3D; klass() TypeError: &#x27;NoneType&#x27; object is not callable&#x60; 
+- * 3b88e82e0 - 2019-07-11: Resolves &#x60;can&#x27;t concat str to bytes&#x60; in sickrage.providers in _get_season_search_strings 
+- * 63354dce5 - 2019-07-10: Release v9.4.118 
 - * f472dcac4 - 2019-07-10: Resolved issues with BTN Torrent provider. 
 - * f6fce2766 - 2019-07-10: Places search result from indexer into list object if returned as dict. 
 - * 9c3a3c04f - 2019-07-10: Resolved sqlite3.IntegrityError: NOT NULL constraint failed: history.release_group 

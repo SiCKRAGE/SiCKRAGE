@@ -106,8 +106,10 @@ class NotifierProviders(dict):
         for name in names:
             if not name:
                 continue
+
             klass = self._get_klass(name.group(1))
-            self[klass().id] = klass()
+            if klass:
+                self[klass().id] = klass()
 
     @staticmethod
     def _get_klass(name):

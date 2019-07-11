@@ -1024,9 +1024,9 @@ class EditShowHandler(BaseHandler, ABC):
     async def post(self, *args, **kwargs):
         show = self.get_argument('show')
         location = self.get_argument('location', None)
-        any_qualities = self.get_argument('anyQualities', '')
-        best_qualities = self.get_argument('bestQualities', '')
-        exceptions_list = self.get_argument('exceptions_list', '')
+        any_qualities = self.get_arguments('anyQualities')
+        best_qualities = self.get_arguments('bestQualities')
+        exceptions_list = self.get_arguments('exceptions_list')
         flatten_folders = self.get_argument('flatten_folders', None)
         paused = self.get_argument('paused', None)
         direct_call = bool(self.get_argument('directCall', None))
@@ -1083,10 +1083,6 @@ class EditShowHandler(BaseHandler, ABC):
             do_update_scene_numbering = False
         else:
             do_update_scene_numbering = True
-
-        any_qualities = any_qualities.split(',') if len(any_qualities) else []
-        best_qualities = best_qualities.split(',') if len(best_qualities) else []
-        exceptions_list = exceptions_list.split(',') if len(exceptions_list) else []
 
         show_obj.paused = paused
         show_obj.scene = scene

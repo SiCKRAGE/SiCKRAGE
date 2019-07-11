@@ -30,8 +30,8 @@ class ResponseResolver:
 
     @staticmethod
     def parse(data):
-        resline = data.split('\n', 1)[0]
-        lines = data.split('\n')[1:-1]
+        resline = data.split(b'\n', 1)[0]
+        lines = data.split(b'\n')[1:-1]
 
         rescode, resstr = resline.split(' ', 1)
         if rescode[0] == 'T':
@@ -42,7 +42,7 @@ class ResponseResolver:
 
         datalines = []
         for line in lines:
-            datalines.append(line.split('|'))
+            datalines.append(line.split(b'|'))
 
         return restag, rescode, resstr, datalines
 
