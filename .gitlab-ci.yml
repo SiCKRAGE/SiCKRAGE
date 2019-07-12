@@ -45,3 +45,16 @@ deploy_docker:
     - develop
   except:
     - tags
+
+deploy_synology:
+  stage: deploy
+  variables:
+    UPSTREAM_BRANCH: $CI_COMMIT_REF_NAME
+    UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
+  trigger:
+    project: sickrage/sickrage-synology
+    branch: master
+  only:
+    - master
+  except:
+    - tags

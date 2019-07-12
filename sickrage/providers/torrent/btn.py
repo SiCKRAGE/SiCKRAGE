@@ -17,6 +17,7 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 import json
 import random
+import uuid
 
 import sickrage
 from sickrage.core import scene_exceptions, MainDB
@@ -196,7 +197,7 @@ class BTNProvider(TorrentProvider):
 
         json_rpc = json.dumps({
             "jsonrpc": "2.0",
-            "id": ''.join(random.sample('abcdefghijklmnopqrstuvwxyz0123456789', 8)),
+            "id": uuid.uuid4().hex,
             "method": "getTorrents",
             "params": [str(self.api_key), params or {}, str(results_per_page), str(offset)]
         })

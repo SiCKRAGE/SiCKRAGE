@@ -21,6 +21,7 @@ import base64
 import json
 import socket
 import time
+import uuid
 from urllib import parse
 from urllib.parse import unquote_plus, urlencode, unquote
 from xml.etree import ElementTree
@@ -68,7 +69,7 @@ class KODINotifier(Notifiers):
         # override socket timeout to reduce delay for this call alone
         socket.setdefaulttimeout(10)
 
-        checkCommand = '{"jsonrpc":"2.0","method":"JSONRPC.Version","id":1}'
+        checkCommand = json.dumps({"jsonrpc": "2.0", "method": "JSONRPC.Version", "id": uuid.uuid4().hex})
         result = self._send_to_kodi_json(checkCommand, host, username, password)
 
         # revert back to default socket timeout
@@ -84,7 +85,7 @@ class KODINotifier(Notifiers):
             else:
                 return False
 
-        return result["result"]["version"]
+        return result["result"]["version"]["major"]
 
     def _notify_kodi(self, message, title="SiCKRAGE", host=None, username=None, password=None, force=False):
         """Internal wrapper for the notify_snatch and notify_download functions
@@ -133,15 +134,18 @@ class KODINotifier(Notifiers):
                         result += curHost + ':' + str(notifyResult)
                 else:
                     sickrage.app.log.debug("Detected KODI version >= 12, using KODI JSON API")
-                    command = '{"jsonrpc":"2.0","method":"GUI.ShowNotification","params":{"title":"%s",' \
-                              '"message":"%s", "image": "%s"},"id":1}' % (title.encode("utf-8"), message.encode("utf-8"), self.sr_logo_url)
+
+                    command = json.dumps({"jsonrpc": "2.0",
+                                          "method": "GUI.ShowNotification",
+                                          "params": {"title": title, "message": message, "image": self.sr_logo_url},
+                                          "id": uuid.uuid4().hex})
+
                     notifyResult = self._send_to_kodi_json(command, curHost, username, password)
                     if notifyResult and notifyResult.get('result'):
                         result += curHost + ':' + notifyResult["result"]
             else:
                 if sickrage.app.config.kodi_always_on or force:
-                    sickrage.app.log.warning(
-                        "Failed to detect KODI version for '" + curHost + "', check configuration and try again.")
+                    sickrage.app.log.warning("Failed to detect KODI version for '" + curHost + "', check configuration and try again.")
                 result += curHost + ':False'
 
         return result
@@ -222,8 +226,7 @@ class KODINotifier(Notifiers):
 
         # if we have a password, use authentication
         if password:
-            base64string = base64.b64encode(b'%s:%s' % (username.encode(), password.encode()))[:-1]
-            authheader = "Basic %s" % base64string
+            authheader = "Basic {}".format(base64.b64encode(bytes('{}:{}'.format(username, password).replace('\n', ''), 'utf-8')).decode('ascii'))
             headers["Authorization"] = authheader
             sickrage.app.log.debug("Contacting KODI (with auth header) via url: " + url)
         else:
@@ -357,21 +360,20 @@ class KODINotifier(Notifiers):
 
         sickrage.app.log.debug("KODI JSON command: " + command)
 
-        url = 'http://%s/jsonrpc' % (host)
+        url = 'http://%s/jsonrpc' % host
 
         headers = {"Content-type": "application/json"}
 
         # if we have a password, use authentication
         if password:
-            base64string = base64.b64encode(b'%s:%s' % (username.encode(), password.encode()))[:-1]
-            authheader = "Basic %s" % base64string
+            authheader = "Basic {}".format(base64.b64encode(bytes('{}:{}'.format(username, password).replace('\n', ''), 'utf-8')).decode('ascii'))
             headers["Authorization"] = authheader
             sickrage.app.log.debug("Contacting KODI (with auth header) via url: " + url)
         else:
             sickrage.app.log.debug("Contacting KODI via url: " + url)
 
         try:
-            resp = WebSession().get(url, data=command, headers=headers)
+            resp = WebSession().post(url, data=command, headers=headers)
             resp.raise_for_status()
             result = resp.json()
             sickrage.app.log.debug("KODI JSON response: " + str(result))
@@ -412,16 +414,18 @@ class KODINotifier(Notifiers):
             sickrage.app.log.debug("Updating library in KODI via JSON method for show " + showName)
 
             # let's try letting kodi filter the shows
-            showsCommand = '{"jsonrpc":"2.0","method":"VideoLibrary.GetTVShows","params":{"filter":{"field":"title","operator":"is","value":"%s"},"properties":["title"]},"id":"SiCKRAGE"}'
+            showsCommand = json.dumps({"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows",
+                                       "params": {"filter": {"field": "title", "operator": "is", "value": showName}, "properties": ["title"]},
+                                       "id": uuid.uuid4().hex})
 
             # get tvshowid by showName
-            showsResponse = self._send_to_kodi_json(showsCommand % showName, host)
+            showsResponse = self._send_to_kodi_json(showsCommand, host)
 
             if showsResponse and "result" in showsResponse and "tvshows" in showsResponse["result"]:
                 shows = showsResponse["result"]["tvshows"]
             else:
                 # fall back to retrieving the entire show list
-                showsCommand = '{"jsonrpc":"2.0","method":"VideoLibrary.GetTVShows","id":1}'
+                showsCommand = json.dumps({"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "id": uuid.uuid4().hex})
                 showsResponse = self._send_to_kodi_json(showsCommand, host)
 
                 if showsResponse and "result" in showsResponse and "tvshows" in showsResponse["result"]:
@@ -449,8 +453,11 @@ class KODINotifier(Notifiers):
 
             # lookup tv-show path if we don't already know it
             if not len(path):
-                pathCommand = '{"jsonrpc":"2.0","method":"VideoLibrary.GetTVShowDetails","params":{"tvshowid":%d, "properties": ["file"]},"id":1}' % (
-                    tvshowid)
+                pathCommand = json.dumps({"jsonrpc": "2.0",
+                                          "method": "VideoLibrary.GetTVShowDetails",
+                                          "params": {"tvshowid": tvshowid, "properties": ["file"]},
+                                          "id": uuid.uuid4().hex})
+
                 pathResponse = self._send_to_kodi_json(pathCommand, host)
 
                 path = pathResponse["result"]["tvshowdetails"]["file"]
@@ -459,30 +466,26 @@ class KODINotifier(Notifiers):
                 "Received Show: " + showName + " with ID: " + str(tvshowid) + " Path: " + path)
 
             if not len(path):
-                sickrage.app.log.warning(
-                    "No valid path found for " + showName + " with ID: " + str(tvshowid) + " on " + host)
+                sickrage.app.log.warning("No valid path found for " + showName + " with ID: " + str(tvshowid) + " on " + host)
                 return False
 
             sickrage.app.log.debug("KODI Updating " + showName + " on " + host + " at " + path)
-            updateCommand = '{"jsonrpc":"2.0","method":"VideoLibrary.Scan","params":{"directory":%s},"id":1}' % (
-                json.dumps(path))
+            updateCommand = json.dumps({"jsonrpc": "2.0", "method": "VideoLibrary.Scan", "params": {"directory": path}, "id": uuid.uuid4().hex})
             request = self._send_to_kodi_json(updateCommand, host)
             if request is False:
-                sickrage.app.log.warning(
-                    "Update of show directory failed on " + showName + " on " + host + " at " + path)
+                sickrage.app.log.warning("Update of show directory failed on " + showName + " on " + host + " at " + path)
                 return False
 
             # catch if there was an error in the returned request
             for r in request:
                 if 'error' in r:
-                    sickrage.app.log.warning(
-                        "Error while attempting to update show directory for " + showName + " on " + host + " at " + path)
+                    sickrage.app.log.warning("Error while attempting to update show directory for " + showName + " on " + host + " at " + path)
                     return False
 
         # do a full update if requested
         else:
             sickrage.app.log.debug("Doing Full Library KODI update on host: " + host)
-            updateCommand = '{"jsonrpc":"2.0","method":"VideoLibrary.Scan","id":1}'
+            updateCommand = json.dumps({"jsonrpc": "2.0", "method": "VideoLibrary.Scan", "id": uuid.uuid4().hex})
             request = self._send_to_kodi_json(updateCommand, host)
 
             if not request:
@@ -514,8 +517,7 @@ class KODINotifier(Notifiers):
             self._notify_kodi(update_text + new_version, title)
 
     def test_notify(self, host, username, password):
-        return self._notify_kodi("Testing KODI notifications from SiCKRAGE", "Test Notification", host, username,
-                                 password, force=True)
+        return self._notify_kodi("Testing KODI notifications from SiCKRAGE", "Test Notification", host, username, password, force=True)
 
     def update_library(self, showName=None):
         """Public wrapper for the update library functions to branch the logic for JSON-RPC or legacy HTTP API
