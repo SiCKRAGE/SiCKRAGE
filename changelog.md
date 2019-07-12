@@ -1,5 +1,7 @@
 # Changelog
 
+- * 01678da7b - 2019-07-11: Migrated Docker builds to their own repository. 
+- * 30e8a1b7d - 2019-07-11: Release v9.4.119 
 - * edc07c8d7 - 2019-07-11: Resolved issue for saving custom qualities, black/white lists, and scene exceptions. 
 - * 2084c5190 - 2019-07-11: Fixed issue &#x60;self[klass().id] &#x3D; klass() TypeError: &#x27;NoneType&#x27; object is not callable&#x60; 
 - * 3b88e82e0 - 2019-07-11: Resolves &#x60;can&#x27;t concat str to bytes&#x60; in sickrage.providers in _get_season_search_strings 

@@ -32,12 +32,16 @@ sentry_release:
   except:
     - tags
 
-deploy_docker_images:
+deploy_docker:
   stage: deploy
   variables:
     UPSTREAM_BRANCH: $CI_COMMIT_REF_NAME
+    UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
   trigger:
     project: sickrage/sickrage-docker
     branch: master
   only:
+    - master
+    - develop
+  except:
     - tags
