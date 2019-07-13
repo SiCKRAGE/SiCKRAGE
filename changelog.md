@@ -1,5 +1,7 @@
 # Changelog
 
+- * 4df45f161 - 2019-07-13: Fixed issue with gitlab-ci and pipelines for master branch. 
+- * f7067e987 - 2019-07-13: Pre-Release v9.4.131.dev1 
 - * 368e70c18 - 2019-07-13: Release v9.4.130 
 - * 9628b3657 - 2019-07-13: Release v9.4.129 
 - * 705d0bda1 - 2019-07-13: Release v9.4.128 
