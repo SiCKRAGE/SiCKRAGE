@@ -239,7 +239,7 @@ module.exports = function (grunt) {
             'bump_version:' + newVersion,
             'exec:git_commit:Release v' + newVersion,
             'exec:git:checkout:master',
-            'exec:git:merge:develop',
+            'exec:git:merge:develop:-m:Release v' + newVersion,
             'exec:git_last_tag', 'exec:git_list_changes', 'exec:git_tag:' + newVersion,
             'exec:git_push:origin:develop:tags',
             'exec:git_push:origin:master:tags',
