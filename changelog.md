@@ -1,5 +1,6 @@
 # Changelog
 
+- * 3923c2d09 - 2019-07-12: Release v9.4.122 
 - * 9e9f867fe - 2019-07-12: Pre-Release v9.4.122 
 - * 7d9f05413 - 2019-07-12: Pre-Release v9.4.121 
 - * 7e3a1e884 - 2019-07-12: Pre-Release v9.4.120 
