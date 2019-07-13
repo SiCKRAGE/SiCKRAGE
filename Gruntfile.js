@@ -246,7 +246,6 @@ module.exports = function (grunt) {
             'exec:pypi_create',
             'exec:pypi_upload',
             'exec:pypi_cleanup',
-            'exec:git:checkout:develop'
         ];
 
         grunt.task.run(tasks);
