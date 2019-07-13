@@ -1,5 +1,8 @@
 # Changelog
 
+- * 45aab9af9 - 2019-07-13: Release v9.4.127 
+- * 32308beb6 - 2019-07-13: Release v9.4.126 
+- * a411278c6 - 2019-07-13: Release v9.4.125 
 - * 0ff1e9d82 - 2019-07-13: Refactored release flow. 
 - * b9ea97eb3 - 2019-07-13: Changed close to remove for database sessions being access from web handlers, helps resolve QueuePool overflow issues. 
 - * bc7c35998 - 2019-07-12: Updated gruntfile. 
