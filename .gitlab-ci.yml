@@ -25,7 +25,7 @@ sentry_release_master:
     - sentry-cli releases new --project $SENTRY_PROJECT $(cat sickrage/version.txt)
     - sentry-cli releases set-commits --auto $(cat sickrage/version.txt)
     - sentry-cli releases finalize $(cat sickrage/version.txt)
-    - sentry-cli releases deploys $(cat sickrage/version.txt) new -e $CI_COMMIT_REF_NAME
+    - sentry-cli releases deploys $(cat sickrage/version.txt) new -e master
   only:
     - /^[0-9.]+$/
   except:
@@ -45,7 +45,7 @@ sentry_release_develop:
     - sentry-cli releases new --project $SENTRY_PROJECT $(cat sickrage/version.txt)
     - sentry-cli releases set-commits --auto $(cat sickrage/version.txt)
     - sentry-cli releases finalize $(cat sickrage/version.txt)
-    - sentry-cli releases deploys $(cat sickrage/version.txt) new -e $CI_COMMIT_REF_NAME
+    - sentry-cli releases deploys $(cat sickrage/version.txt) new -e develop
   only:
     - /^[0-9.]+dev[0-9]$/
   except:

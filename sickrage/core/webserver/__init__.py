@@ -139,17 +139,11 @@ class WebServer(object):
         # tornado setup
         if sickrage.app.config.enable_https:
             # If either the HTTPS certificate or key do not exist, make some self-signed ones.
-            if not (
-                    sickrage.app.config.https_cert and os.path.exists(
-                sickrage.app.config.https_cert)) or not (
-                    sickrage.app.config.https_key and os.path.exists(sickrage.app.config.https_key)):
-                if not create_https_certificates(sickrage.app.config.https_cert,
-                                                 sickrage.app.config.https_key):
-                    sickrage.app.log.info("Unable to create CERT/KEY files, disabling HTTPS")
-                    sickrage.app.config.enable_https = False
+            if not create_https_certificates(sickrage.app.config.https_cert, sickrage.app.config.https_key):
+                sickrage.app.log.info("Unable to create CERT/KEY files, disabling HTTPS")
+                sickrage.app.config.enable_https = False
 
-            if not (os.path.exists(sickrage.app.config.https_cert) and os.path.exists(
-                    sickrage.app.config.https_key)):
+            if not (os.path.exists(sickrage.app.config.https_cert) and os.path.exists(sickrage.app.config.https_key)):
                 sickrage.app.log.warning("Disabled HTTPS because of missing CERT and KEY files")
                 sickrage.app.config.enable_https = False
 

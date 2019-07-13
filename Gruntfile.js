@@ -233,16 +233,20 @@ module.exports = function (grunt) {
         const newVersion = vArray.vMajor + '.' + vArray.vMinor + '.' + vArray.vPatch;
 
         const tasks = [
+            'exec:git:checkout:-b release-v' + newVersion + ':develop',
             'changelog',
             'webpack:prod',
             //'sync_trans',
             'bump_version:' + newVersion,
             'exec:git_commit:Release v' + newVersion,
             'exec:git:checkout:master',
-            'exec:git:merge:develop:-m:Release v' + newVersion,
+            'exec:git:merge:release-v' + newVersion,
             'exec:git_last_tag', 'exec:git_list_changes', 'exec:git_tag:' + newVersion,
-            'exec:git_push:origin:develop:tags',
             'exec:git_push:origin:master:tags',
+            'exec:git:checkout:develop',
+            'exec:git:merge:release-v' + newVersion,
+            'exec:git_push:origin:develop',
+            'exec:git:branch:-d release-v' + newVersion,
             'exec:pypi_create',
             'exec:pypi_upload',
             'exec:pypi_cleanup',

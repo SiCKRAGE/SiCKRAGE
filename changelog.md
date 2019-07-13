@@ -1,5 +1,14 @@
 # Changelog
 
+- * 999475fc0 - 2019-07-13: Updated git release flow. 
+- * f51300562 - 2019-07-13: Fixed issues with TornadoHTTP handler and self-signed SSL certificates. Fixed issue #382 
+- * 1fbb04ce4 - 2019-07-13: Fixes issues with generating self-signed SSL certificates on startup. 
+- * 4a0b9b439 - 2019-07-13: Added exception handling for unauthorized raises. 
+- * 7b0f1bfbb - 2019-07-13: Resolved issue with setting proxy address when global proxy configured. 
+- * d5cd13830 - 2019-07-13: Fixed Sentry release environments naming. 
+- * 1175f6346 - 2019-07-13: Fixes issues with mass editing shows and setting qualities. 
+- * faeabc947 - 2019-07-13: Pre-Release v9.4.132.dev1 
+- * 4072c47a2 - 2019-07-13: Release v9.4.131 
 - * 4df45f161 - 2019-07-13: Fixed issue with gitlab-ci and pipelines for master branch. 
 - * f7067e987 - 2019-07-13: Pre-Release v9.4.131.dev1 
 - * 368e70c18 - 2019-07-13: Release v9.4.130 

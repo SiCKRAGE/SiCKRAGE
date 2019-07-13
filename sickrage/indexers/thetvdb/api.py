@@ -553,16 +553,13 @@ class Tvdb:
 
         try:
             # get series info in english
-            series_info = self._request('get',
-                                        self.config['api']['series'].format(id=sid),
-                                        lang=self.config['api']['lang']
-                                        )['data']
+            series_info = self._request('get', self.config['api']['series'].format(id=sid), lang=self.config['api']['lang'])['data']
 
             # translate if required to provided language
             if not self.config['language'] == self.config['api']['lang']:
-                series_info.update((k, v) for k, v in self._request('get',
-                                                                    self.config['api']['series'].format(id=sid)
-                                                                    )['data'].items() if v)
+                series_info.update((k, v) for k, v in self._request('get', self.config['api']['series'].format(id=sid))['data'].items() if v)
+        except tvdb_unauthorized:
+            raise tvdb_unauthorized
         except Exception as e:
             sickrage.app.log.debug("[{}]: Series result returned zero, ERROR: {}".format(sid, e))
             raise tvdb_error("[{}]: Series result returned zero, ERROR: {}".format(sid, e))
@@ -687,6 +684,8 @@ class Tvdb:
                     images = self._request('get', self.config['api']['images'][key_type].format(id=sid), language)['data']
                 else:
                     images = self._request('get', self.config['api']['images'][key_type].format(id=sid, season=season), language)['data']
+            except tvdb_unauthorized:
+                raise tvdb_unauthorized
             except tvdb_error:
                 continue
 
@@ -719,6 +718,8 @@ class Tvdb:
                     curActor[k] = v
 
                 cur_actors.append(curActor)
+        except tvdb_unauthorized:
+            raise tvdb_unauthorized
         except Exception:
             sickrage.app.log.debug('Actors result returned zero')
 

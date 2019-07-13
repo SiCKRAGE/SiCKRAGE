@@ -482,8 +482,8 @@ class MassEditHandler(BaseHandler, ABC):
         quality_preset = self.get_argument('quality_preset', None)
         subtitles = self.get_argument('subtitles', None)
         air_by_date = self.get_argument('air_by_date', None)
-        any_qualities = self.get_argument('anyQualities', '')
-        best_qualities = self.get_argument('bestQualities', '')
+        any_qualities = self.get_arguments('anyQualities')
+        best_qualities = self.get_arguments('bestQualities')
         to_edit = self.get_argument('toEdit', None)
 
         i = 0
@@ -574,31 +574,29 @@ class MassEditHandler(BaseHandler, ABC):
             if quality_preset == 'keep':
                 any_qualities, best_qualities = Quality.split_quality(show_obj.quality)
             elif try_int(quality_preset, None):
-                best_qualities = ''
+                best_qualities = []
 
-            post_data = dict(
-                show=curShow,
-                location=new_show_dir,
-                anyQualities=','.join(map(str, any_qualities)) if isinstance(any_qualities,
-                                                                             list) else any_qualities,
-                bestQualities=','.join(map(str, best_qualities)) if isinstance(best_qualities,
-                                                                               list) else best_qualities,
-                exceptions_list='',
-                defaultEpStatus=new_default_ep_status,
-                skip_downloaded=new_skip_downloaded,
-                flatten_folders=new_flatten_folders,
-                paused=new_paused,
-                sports=new_sports,
-                subtitles=new_subtitles,
-                anime=new_anime,
-                scene=new_scene,
-                air_by_date=new_air_by_date,
-                directCall='true'
-            )
+            post_data = {
+                'show': curShow,
+                'location': new_show_dir,
+                'anyQualities': any_qualities,
+                'bestQualities': best_qualities,
+                'exceptions_list': [],
+                'defaultEpStatus': new_default_ep_status,
+                'skip_downloaded': new_skip_downloaded,
+                'flatten_folders': new_flatten_folders,
+                'paused': new_paused,
+                'sports': new_sports,
+                'subtitles': new_subtitles,
+                'anime': new_anime,
+                'scene': new_scene,
+                'air_by_date': new_air_by_date,
+                'directCall': 'true'
+            }
 
             response = await TornadoHTTP().post(
                 self.get_url("/home/editShow"),
-                body=urlencode(post_data)
+                body=urlencode(post_data, True)
             )
 
             if response.body:

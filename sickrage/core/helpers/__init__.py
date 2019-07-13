@@ -746,26 +746,9 @@ def create_https_certificates(ssl_cert, ssl_key):
         return False
 
     # Check happens if the certificate and key pair already exists for a domain
-    if not os.path.exists(ssl_key) and os.path.exists(ssl_cert):
+    if not os.path.exists(ssl_key) and not os.path.exists(ssl_cert):
         # Serial Generation - Serial number must be unique for each certificate,
         serial = int(time.time())
-
-        # Create the CA Certificate
-        cakey = OpenSSL.crypto.PKey().generate_key(OpenSSL.crypto.TYPE_RSA, 2048)
-        careq = OpenSSL.crypto.X509()
-        careq.get_subject().CN = "Certificate Authority"
-        careq.set_pubkey(cakey)
-        careq.sign(cakey, b"sha1")
-
-        # Sign the CA Certificate
-        cacert = OpenSSL.crypto.X509()
-        cacert.set_serial_number(serial)
-        cacert.gmtime_adj_notBefore(0)
-        cacert.gmtime_adj_notAfter(365 * 24 * 60 * 60)
-        cacert.set_issuer(careq.get_subject())
-        cacert.set_subject(careq.get_subject())
-        cacert.set_pubkey(careq.get_pubkey())
-        cacert.sign(cakey, b"sha1")
 
         # Generate self-signed certificate
         key = OpenSSL.crypto.PKey()
@@ -775,9 +758,9 @@ def create_https_certificates(ssl_cert, ssl_key):
         cert.gmtime_adj_notBefore(0)
         cert.gmtime_adj_notAfter(365 * 24 * 60 * 60)
         cert.set_serial_number(serial)
-        cert.set_issuer(cacert.get_subject())
+        cert.set_issuer(cert.get_subject())
         cert.set_pubkey(key)
-        cert.sign(cakey, b"sha1")
+        cert.sign(key, "sha1")
 
         # Save the key and certificate to disk
         try:
