@@ -1,5 +1,9 @@
 # Changelog
 
+- * 1ed900dac - 2019-07-12: Cleaned up Kodi notifier code. 
+- * f64190094 - 2019-07-12: Cleaned up BTN provider code. 
+- * 66fc22825 - 2019-07-12: Resolved issues with Kodi notifications. Added GitLab CI/CD build stage for Synology. 
+- * 17ee7fbb1 - 2019-07-11: Pre-Release v9.4.120.dev1 
 - * 01678da7b - 2019-07-11: Migrated Docker builds to their own repository. 
 - * 30e8a1b7d - 2019-07-11: Release v9.4.119 
 - * edc07c8d7 - 2019-07-11: Resolved issue for saving custom qualities, black/white lists, and scene exceptions. 
