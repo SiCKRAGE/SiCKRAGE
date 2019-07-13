@@ -887,8 +887,7 @@ class MetadataProviders(dict):
             return list(dict(
                 inspect.getmembers(
                     importlib.import_module('.{}'.format(name), 'sickrage.metadata'),
-                    predicate=lambda o: inspect.isclass(o) and issubclass(o,
-                                                                          GenericMetadata) and o is not GenericMetadata)
+                    predicate=lambda o: inspect.isclass(o) and issubclass(o, GenericMetadata) and o is not GenericMetadata)
             ).values())[0]
         except IndexError:
             pass
