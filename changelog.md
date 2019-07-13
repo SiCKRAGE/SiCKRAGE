@@ -1,5 +1,6 @@
 # Changelog
 
+- * fc3b30179 - 2019-07-13: Release v9.4.132 
 - * 999475fc0 - 2019-07-13: Updated git release flow. 
 - * f51300562 - 2019-07-13: Fixed issues with TornadoHTTP handler and self-signed SSL certificates. Fixed issue #382 
 - * 1fbb04ce4 - 2019-07-13: Fixes issues with generating self-signed SSL certificates on startup. 
