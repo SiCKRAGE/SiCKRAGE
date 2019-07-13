@@ -1,5 +1,6 @@
 # Changelog
 
+- * 7e3a1e884 - 2019-07-12: Pre-Release v9.4.120 
 - * 3e2a87007 - 2019-07-12: Updated gruntfile. 
 - * a586ca043 - 2019-07-12: Release v9.4.120 
 - * 1ed900dac - 2019-07-12: Cleaned up Kodi notifier code. 

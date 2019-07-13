@@ -270,10 +270,10 @@ module.exports = function (grunt) {
         grunt.task.run(['exec:git:checkout:develop']);
 
         const tasks = [
+            'pre-release',
             'changelog',
             'webpack:prod',
             //'sync_trans',
-            'pre-release',
             'bump_version',
             'exec:git_flow_release_start:' + grunt.file.read('sickrage/version.txt'),
             'exec:git_commit:Release v' + grunt.file.read('sickrage/version.txt'),
