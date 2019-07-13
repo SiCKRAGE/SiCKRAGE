@@ -27,7 +27,7 @@ sentry_release_master:
     - sentry-cli releases finalize $(cat sickrage/version.txt)
     - sentry-cli releases deploys $(cat sickrage/version.txt) new -e $CI_COMMIT_REF_NAME
   only:
-    - /^[0-9.]$/
+    - /^[0-9.]+$/
   except:
     - branches
     - triggers
@@ -61,7 +61,7 @@ deploy_docker_master:
     project: sickrage/sickrage-docker
     branch: master
   only:
-    - /^[0-9.]$/
+    - /^[0-9.]+$/
   except:
     - branches
     - triggers
@@ -89,7 +89,7 @@ deploy_synology:
     project: sickrage/sickrage-synology
     branch: master
   only:
-    - /^[0-9.]$/
+    - /^[0-9.]+$/
   except:
     - branches
     - triggers
