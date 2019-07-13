@@ -31,6 +31,7 @@ from sqlalchemy.orm import relationship, object_session
 from unidecode import unidecode
 
 import sickrage
+from sickrage.core.api import ApiError
 from sickrage.core.api.imdb import IMDbAPI
 from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.caches.image_cache import ImageCache
@@ -467,8 +468,13 @@ class TVShow(MainDBBase):
         }
 
         if not self.imdb_id:
-            resp = IMDbAPI().search_by_imdb_title(self.name)
-            for x in resp['Search'] if 'Search' in resp else []:
+            try:
+                resp = IMDbAPI().search_by_imdb_title(self.name)
+            except ApiError as e:
+                sickrage.app.log.error('{}!r'.format(e))
+                resp = {}
+
+            for x in resp.get('Search', []):
                 try:
                     if int(x.get('Year'), 0) == self.startyear and x.get('Title') in self.name:
                         self.imdb_id = x.get('imdbID')
@@ -480,7 +486,12 @@ class TVShow(MainDBBase):
         if self.imdb_id:
             sickrage.app.log.debug(str(self.indexer_id) + ": Obtaining IMDb info")
 
-            imdb_info = IMDbAPI().search_by_imdb_id(self.imdb_id)
+            try:
+                imdb_info = IMDbAPI().search_by_imdb_id(self.imdb_id)
+            except ApiError as e:
+                imdb_info = None
+                sickrage.app.log.error('{}!r'.format(e))
+
             if not imdb_info:
                 sickrage.app.log.debug(str(self.indexer_id) + ': Unable to obtain IMDb info')
                 return

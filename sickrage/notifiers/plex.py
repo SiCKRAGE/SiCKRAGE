@@ -65,8 +65,8 @@ class PLEXNotifier(Notifiers):
 
         # if we have a password, use authentication
         if password:
-            base64string = base64.b64encode(b'%s:%s' % (username.encode(), password.encode()))[:-1]
-            authheader = 'Basic %s' % base64string
+            base64string = base64.b64encode(bytes('{}:{}'.format(username, password).replace('\n', ''), 'utf-8'))
+            authheader = "Basic {}".format(base64string.decode('ascii'))
             headers['Authorization'] = authheader
             sickrage.app.log.debug('PLEX: Contacting (with auth header) via url: ' + url)
         else:
@@ -191,7 +191,7 @@ class PLEXNotifier(Notifiers):
                 sickrage.app.log.debug('PLEX: fetching plex.tv credentials for user: ' + username)
 
                 headers = {
-                    'Authorization': 'Basic %s' % base64.b64encode(b'%s:%s' % (username.encode(), password.encode()))[:-1],
+                    'Authorization': 'Basic %s' % base64.b64encode(bytes('{}:{}'.format(username, password).replace('\n', ''), 'utf-8')).decode('ascii'),
                     'X-Plex-Device-Name': 'SiCKRAGE',
                     'X-Plex-Product': 'SiCKRAGE Notifier',
                     'X-Plex-Client-Identifier': sickrage.app.user_agent,

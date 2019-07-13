@@ -15,8 +15,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
-import json
-import random
+import uuid
 
 import sickrage
 from sickrage.core import scene_exceptions, MainDB
@@ -167,7 +166,7 @@ class BTNProvider(TorrentProvider):
         else:
             search_name = '{type} {number}'.format(
                 type='Season' if mode == 'Season' else '',
-                number=episode_object.scene_season if season else episode_num(episode_object.scene_season, episode_object.scene_episode),
+                number=episode_object.scene_season if mode == 'Season' and season else episode_num(episode_object.scene_season, episode_object.scene_episode),
             ).strip()
 
         params = {
@@ -178,12 +177,13 @@ class BTNProvider(TorrentProvider):
         # Search
         if show_object.indexer == 1:
             params['tvdb'] = show_object.indexer_id
+            params['series'] = show_object.name
             searches.append(params)
-        else:
-            for name in list(set(scene_exceptions.get_scene_exceptions(show_object.indexer_id) + [show_object.name])):
-                # Search by name if we don't have tvdb id
-                params['series'] = sanitize_scene_name(name)
-                searches.append(params)
+
+        for name in list(set(scene_exceptions.get_scene_exceptions(show_object.indexer_id))):
+            series_params = params.copy()
+            series_params['series'] = sanitize_scene_name(name)
+            searches.append(series_params)
 
         # extend air by date searches to include season numbering
         if air_by_date and not season_numbering:
@@ -191,23 +191,32 @@ class BTNProvider(TorrentProvider):
 
         return searches
 
-    def _api_call(self, params=None, results_per_page=1000, offset=0):
+    def _api_call(self, params=None, results_per_page=300, offset=0):
         response = {}
 
-        json_rpc = json.dumps({
+        json_rpc = {
             "jsonrpc": "2.0",
-            "id": ''.join(random.sample('abcdefghijklmnopqrstuvwxyz0123456789', 8)),
             "method": "getTorrents",
-            "params": [str(self.api_key), params or {}, str(results_per_page), str(offset)]
-        })
+            "params": [self.api_key, params or {}, results_per_page, offset],
+            "id": uuid.uuid4().hex,
+        }
 
         try:
-            response = self.session.post(self.urls['api'], data=json_rpc, headers={'Content-Type': 'application/json-rpc'}).json()
+            response = self.session.post(self.urls['api'], json=json_rpc, headers={'Content-Type': 'application/json-rpc'}).json()
             if 'error' in response:
                 error = response["error"]
                 message = error["message"]
                 code = error["code"]
-                sickrage.app.log.warning("Error Code: {} :: Error Message: {}".format(code, message))
+                if code == -32001:
+                    sickrage.app.log.warning('Incorrect authentication credentials.')
+                elif code == -32002:
+                    sickrage.app.log.warning('You have exceeded the limit of 150 calls per hour.')
+                elif code in (500, 502, 521, 524):
+                    sickrage.app.log.warning('Provider is currently unavailable. Error: {} {}'.format(code, message))
+                else:
+                    sickrage.app.log.error('JSON-RPC protocol error while accessing provider. Error: {error!r}'.format(error=error))
+            elif 'result' in response:
+                response = response['result']
         except Exception as e:
             sickrage.app.log.warning("Error while accessing provider. Error: {}".format(e))
 
