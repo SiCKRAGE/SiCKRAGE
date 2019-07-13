@@ -26,7 +26,7 @@ class TornadoHTTP(object):
         headers = {"Cookie": 'sr_httpclient_token={}'.format(sickrage.app.wserver.app.settings['httpclient_secret'])}
 
         http_client = AsyncHTTPClient()
-        http_request = HTTPRequest(url, headers=headers, request_timeout=timeout, **kwargs)
+        http_request = HTTPRequest(url, headers=headers, request_timeout=timeout, validate_cert=False, **kwargs)
 
         response = await http_client.fetch(http_request)
 
@@ -36,7 +36,7 @@ class TornadoHTTP(object):
         headers = {"Cookie": 'sr_httpclient_token={}'.format(sickrage.app.wserver.app.settings['httpclient_secret'])}
 
         http_client = AsyncHTTPClient()
-        http_request = HTTPRequest(url, method="POST", headers=headers, request_timeout=timeout, **kwargs)
+        http_request = HTTPRequest(url, method="POST", headers=headers, request_timeout=timeout, validate_cert=False, **kwargs)
 
         response = await http_client.fetch(http_request)
 
