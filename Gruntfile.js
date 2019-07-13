@@ -241,8 +241,6 @@ module.exports = function (grunt) {
             'exec:git:checkout:master',
             'exec:git:merge:develop',
             'exec:git_last_tag', 'exec:git_list_changes', 'exec:git_tag:' + newVersion,
-            'exec:git:checkout:develop',
-            'exec:git:merge:--no-ff:master',
             'exec:git_push:origin:develop:tags',
             'exec:git_push:origin:master:tags',
             'exec:pypi_create',
