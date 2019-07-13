@@ -17,7 +17,7 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 import os
 import ssl
-from urllib.parse import splittype
+from urllib.parse import urlparse
 
 import certifi
 import cfscrape
@@ -35,9 +35,8 @@ from sickrage.core import helpers
 def _add_proxies():
     if sickrage.app.config.proxy_setting:
         sickrage.app.log.debug("Using global proxy: " + sickrage.app.config.proxy_setting)
-        scheme, address = splittype(sickrage.app.config.proxy_setting)
-        address = ('http://{}'.format(sickrage.app.config.proxy_setting),
-                   sickrage.app.config.proxy_setting)[scheme]
+        proxy = urlparse(sickrage.app.config.proxy_setting)
+        address = sickrage.app.config.proxy_setting if proxy.scheme else 'http://{}'.format(sickrage.app.config.proxy_setting)
         return {"http": address, "https": address}
 
 
