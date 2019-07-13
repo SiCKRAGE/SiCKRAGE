@@ -211,8 +211,13 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask('bump_version', function (isDev) {
-        let newVersion = '';
+    grunt.registerTask('bump_version_file', function (new_version) {
+        const vFile = 'sickrage/version.txt';
+        grunt.file.write(vFile, new_version)
+    });
+
+    grunt.registerTask('pre-release', function () {
+        grunt.task.run(['exec:git:checkout:develop']);
 
         const vFile = 'sickrage/version.txt';
         const version = grunt.file.read(vFile);
@@ -235,29 +240,15 @@ module.exports = function (grunt) {
             vArray.vPre = parseFloat(vArray.vPre) + 1;
         }
 
-        if (isDev) {
-            newVersion = vArray.vMajor + '.' + vArray.vMinor + '.' + vArray.vPatch + '.dev' + vArray.vPre;
-            grunt.log.writeln(('Packaging Pre-Release v' + newVersion).magenta);
-        } else {
-            newVersion = vArray.vMajor + '.' + vArray.vMinor + '.' + vArray.vPatch;
-            grunt.log.writeln(('Packaging Release v' + newVersion).magenta);
-        }
-
-        grunt.config.set('new_version', newVersion);
-        grunt.file.write(vFile, newVersion);
-    });
-
-    grunt.registerTask('pre-release', function () {
-        grunt.task.run(['exec:git:checkout:develop']);
+        const newVersion = vArray.vMajor + '.' + vArray.vMinor + '.' + vArray.vPatch + '.dev' + vArray.vPre;
 
         const tasks = [
             'changelog',
             'webpack:dev',
             //'sync_trans',
-            'bump_version:true',
-            'exec:git_commit:Pre-Release v' + grunt.file.read('sickrage/version.txt'),
-            'exec:git_last_tag', 'exec:git_list_changes', 'exec:git_tag',
-            'exec:git_push:origin:develop:tags',
+            'bump_version_file:' + newVersion,
+            'exec:git_commit:Pre-Release v' + newVersion,
+            'exec:git_push:origin:develop',
             'exec:pypi_create',
             'exec:pypi_upload',
             'exec:pypi_cleanup'
@@ -268,17 +259,40 @@ module.exports = function (grunt) {
 
     grunt.registerTask('release', function () {
         grunt.task.run(['exec:git:checkout:develop']);
+        grunt.task.run(['pre-release']);
+
+        const vFile = 'sickrage/version.txt';
+        const version = grunt.file.read(vFile);
+        const versionParts = version.split('.');
+        const vArray = {
+            vMajor: versionParts[0],
+            vMinor: versionParts[1],
+            vPatch: versionParts[2],
+            vPre: versionParts[3] || 0
+        };
+
+        if (vArray.vPre === 0) {
+            vArray.vPatch = parseFloat(vArray.vPatch) + 1;
+        }
+
+        if (vArray.vPre !== 0) {
+            vArray.vPre = vArray.vPre.split('dev')[1];
+            vArray.vPre = parseFloat(vArray.vPre) + 1;
+        } else {
+            vArray.vPre = parseFloat(vArray.vPre) + 1;
+        }
+
+        const newVersion = vArray.vMajor + '.' + vArray.vMinor + '.' + vArray.vPatch;
 
         const tasks = [
-            'pre-release',
+            'exec:git_flow_release_start:' + newVersion,
             'changelog',
             'webpack:prod',
             //'sync_trans',
-            'bump_version',
-            'exec:git_commit:Release v' + grunt.file.read('sickrage/version.txt'),
-            'exec:git_flow_release_start:' + grunt.file.read('sickrage/version.txt'),
-            'exec:git_flow_release_finish:' + grunt.file.read('sickrage/version.txt') + ':Release v' + grunt.file.read('sickrage/version.txt'),
-            'exec:git_push:origin:develop:tags',
+            'bump_version_file:' + newVersion,
+            'exec:git_commit:Release v' + newVersion,
+            'exec:git_flow_release_finish:' + newVersion + ':Release v' + newVersion,
+            'exec:git_push:origin:develop',
             'exec:git_push:origin:master:tags',
             'exec:pypi_create',
             'exec:pypi_upload',

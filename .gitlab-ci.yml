@@ -45,6 +45,7 @@ deploy_docker:
     - develop
   except:
     - tags
+    - merge_requests
 
 deploy_synology:
   stage: deploy
@@ -58,3 +59,4 @@ deploy_synology:
     - master
   except:
     - tags
+    - merge_requests
