@@ -77,15 +77,6 @@ module.exports = function (grunt) {
                     grunt.log.write(stderr);
                 }
             },
-            'git_merge': {
-                cmd: function (branch) {
-                    return 'git merge --no-ff ' + branch;
-                },
-                stderr: false,
-                callback: function (err, stdout, stderr) {
-                    grunt.log.write(stderr);
-                }
-            },
             'git_last_tag': {
                 cmd: 'git for-each-ref refs/tags --sort=-taggerdate --count=1 --format=%(refname:short)',
                 stdout: false,
@@ -205,7 +196,8 @@ module.exports = function (grunt) {
             //'sync_trans',
             'bump_version:' + newVersion,
             'exec:git_commit:Pre-Release v' + newVersion,
-            'exec:git_push:origin:develop',
+            'exec:git_last_tag', 'exec:git_list_changes', 'exec:git_tag:' + newVersion,
+            'exec:git_push:origin:develop:tags',
             'exec:pypi_create',
             'exec:pypi_upload',
             'exec:pypi_cleanup'
@@ -216,7 +208,6 @@ module.exports = function (grunt) {
 
     grunt.registerTask('release', function () {
         grunt.task.run(['exec:git:checkout:develop']);
-        grunt.task.run(['pre-release']);
 
         const vFile = 'sickrage/version.txt';
         const version = grunt.file.read(vFile);
@@ -249,12 +240,13 @@ module.exports = function (grunt) {
             'exec:git_commit:Release v' + newVersion,
             'exec:git_last_tag', 'exec:git_list_changes', 'exec:git_tag:' + newVersion,
             'exec:git:checkout:master',
-            'exec:git_merge:develop',
-            'exec:git_push:origin:develop',
+            'exec:git:merge:--no-ff:develop',
+            'exec:git_push:origin:develop:tags',
             'exec:git_push:origin:master:tags',
             'exec:pypi_create',
             'exec:pypi_upload',
-            'exec:pypi_cleanup'
+            'exec:pypi_cleanup',
+            'exec:git:checkout:develop'
         ];
 
         grunt.task.run(tasks);

@@ -12,7 +12,7 @@ variables:
 services:
   - docker:dind
 
-sentry_release:
+sentry_release_master:
   stage: release
   image:
     name: getsentry/sentry-cli
@@ -27,12 +27,32 @@ sentry_release:
     - sentry-cli releases finalize $(cat sickrage/version.txt)
     - sentry-cli releases deploys $(cat sickrage/version.txt) new -e $CI_COMMIT_REF_NAME
   only:
-    - mnaster
-    - develop
+    - /^[0-9.]$/
   except:
-    - tags
+    - branches
+    - triggers
 
-deploy_docker:
+sentry_release_develop:
+  stage: release
+  image:
+    name: getsentry/sentry-cli
+    entrypoint: [""]
+  script:
+    - export SENTRY_URL=$SENTRY_URL
+    - export SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
+    - export SENTRY_ORG=$SENTRY_ORG
+    - export SENTRY_PROJECT=$SENTRY_PROJECT
+    - sentry-cli releases new --project $SENTRY_PROJECT $(cat sickrage/version.txt)
+    - sentry-cli releases set-commits --auto $(cat sickrage/version.txt)
+    - sentry-cli releases finalize $(cat sickrage/version.txt)
+    - sentry-cli releases deploys $(cat sickrage/version.txt) new -e $CI_COMMIT_REF_NAME
+  only:
+    - /^[0-9.]+dev[0-9]$/
+  except:
+    - branches
+    - triggers
+
+deploy_docker_master:
   stage: deploy
   variables:
     UPSTREAM_BRANCH: $CI_COMMIT_REF_NAME
@@ -41,11 +61,24 @@ deploy_docker:
     project: sickrage/sickrage-docker
     branch: master
   only:
-    - master
-    - develop
+    - /^[0-9.]$/
   except:
-    - tags
-    - merge_requests
+    - branches
+    - triggers
+
+deploy_docker_develop:
+  stage: deploy
+  variables:
+    UPSTREAM_BRANCH: $CI_COMMIT_REF_NAME
+    UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
+  trigger:
+    project: sickrage/sickrage-docker
+    branch: master
+  only:
+    - /^[0-9.]+dev[0-9]$/
+  except:
+    - branches
+    - triggers
 
 deploy_synology:
   stage: deploy
@@ -56,7 +89,7 @@ deploy_synology:
     project: sickrage/sickrage-synology
     branch: master
   only:
-    - master
+    - /^[0-9.]$/
   except:
-    - tags
-    - merge_requests
+    - branches
+    - triggers
