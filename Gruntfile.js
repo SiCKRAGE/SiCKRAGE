@@ -48,17 +48,6 @@ module.exports = function (grunt) {
             'pypi_upload': {cmd: 'twine upload dist/*'},
             'pypi_cleanup': {cmd: 'python setup.py clean'},
 
-            // Docker Commands
-            'build_docker_image': {
-                cmd: 'docker build --build-arg SOURCE_COMMIT=' + shell.exec("git rev-parse HEAD", {'silent': true}) + ' -t sickrage/sickrage:py3-alpha .'
-            },
-            'push_docker_image': {
-                cmd: [
-                    'docker login -u ' + process.env.DOCKER_REGISTRY_USERNAME + ' -p ' + process.env.DOCKER_REGISTRY_PASSWORD,
-                    'docker push sickrage/sickrage:py3-alpha',
-                ].join('&&')
-            },
-
             // Git Commands
             'git': {
                 cmd: function (cmd, branch) {
@@ -117,51 +106,10 @@ module.exports = function (grunt) {
                 }
             },
             'git_tag': {
-                cmd: function (sign) {
-                    sign = sign !== "true" ? '' : '-s ';
-                    return 'git tag ' + sign + grunt.config('new_version') + ' -m "' + grunt.config('commits') + '"';
+                cmd: function (version) {
+                    return 'git tag ' + version + ' -m "' + grunt.config('commits') + '"';
                 },
                 stdout: false
-            },
-            'git_flow_bugfix_start': {
-                cmd: function (version) {
-                    return 'git flow bugfix start ' + version;
-                },
-                stderr: false,
-                maxBuffer: 500 * 1024,
-                callback: function (err, stdout, stderr) {
-                    grunt.log.write(stderr);
-                }
-            },
-            'git_flow_bugfix_finish': {
-                cmd: function (version, message) {
-                    return 'git flow bugfix finish ' + version;
-                },
-                stderr: false,
-                maxBuffer: 500 * 1024,
-                callback: function (err, stdout, stderr) {
-                    grunt.log.write(stderr);
-                }
-            },
-            'git_flow_release_start': {
-                cmd: function (version) {
-                    return 'git flow release start ' + version;
-                },
-                stderr: false,
-                maxBuffer: 500 * 1024,
-                callback: function (err, stdout, stderr) {
-                    grunt.log.write(stderr);
-                }
-            },
-            'git_flow_release_finish': {
-                cmd: function (version, message) {
-                    return 'git flow release finish ' + version + ' -m "' + message + '"';
-                },
-                stderr: false,
-                maxBuffer: 500 * 1024,
-                callback: function (err, stdout, stderr) {
-                    grunt.log.write(stderr);
-                }
             }
         }
     });
@@ -211,7 +159,7 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask('bump_version_file', function (new_version) {
+    grunt.registerTask('bump_version', function (new_version) {
         const vFile = 'sickrage/version.txt';
         grunt.file.write(vFile, new_version)
     });
@@ -246,9 +194,10 @@ module.exports = function (grunt) {
             'changelog',
             'webpack:dev',
             //'sync_trans',
-            'bump_version_file:' + newVersion,
+            'bump_version:' + newVersion,
             'exec:git_commit:Pre-Release v' + newVersion,
-            'exec:git_push:origin:develop',
+            'exec:git_last_tag', 'exec:git_list_changes', 'exec:git_tag:' + newVersion,
+            'exec:git_push:origin:develop:tags',
             'exec:pypi_create',
             'exec:pypi_upload',
             'exec:pypi_cleanup'
@@ -259,7 +208,6 @@ module.exports = function (grunt) {
 
     grunt.registerTask('release', function () {
         grunt.task.run(['exec:git:checkout:develop']);
-        grunt.task.run(['pre-release']);
 
         const vFile = 'sickrage/version.txt';
         const version = grunt.file.read(vFile);
@@ -285,18 +233,20 @@ module.exports = function (grunt) {
         const newVersion = vArray.vMajor + '.' + vArray.vMinor + '.' + vArray.vPatch;
 
         const tasks = [
-            'exec:git_flow_release_start:' + newVersion,
             'changelog',
             'webpack:prod',
             //'sync_trans',
-            'bump_version_file:' + newVersion,
+            'bump_version:' + newVersion,
             'exec:git_commit:Release v' + newVersion,
-            'exec:git_flow_release_finish:' + newVersion + ':Release v' + newVersion,
-            'exec:git_push:origin:develop',
+            'exec:git_last_tag', 'exec:git_list_changes', 'exec:git_tag:' + newVersion,
+            'exec:git:checkout:master',
+            'exec:git:merge:--no-ff:develop',
+            'exec:git_push:origin:develop:tags',
             'exec:git_push:origin:master:tags',
             'exec:pypi_create',
             'exec:pypi_upload',
-            'exec:pypi_cleanup'
+            'exec:pypi_cleanup',
+            'exec:git:checkout:develop'
         ];
 
         grunt.task.run(tasks);
