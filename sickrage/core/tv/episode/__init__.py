@@ -575,24 +575,21 @@ class TVEpisode(MainDBBase):
         if absolute_current_path_no_ext.startswith(self.show.location):
             current_path = absolute_current_path_no_ext[len(self.show.location):]
 
-        sickrage.app.log.debug(
-            "Renaming/moving episode from the base path " + self.location + " to " + absolute_proper_path)
+        sickrage.app.log.debug("Renaming/moving episode from the base path " + self.location + " to " + absolute_proper_path)
 
         # if it's already named correctly then don't do anything
         if proper_path == current_path:
-            sickrage.app.log.debug(
-                str(self.indexer_id) + ": File " + self.location + " is already named correctly, skipping")
+            sickrage.app.log.debug(str(self.indexer_id) + ": File " + self.location + " is already named correctly, skipping")
             return
 
         from sickrage.core.processors.post_processor import PostProcessor
 
-        related_files = PostProcessor(self.location).list_associated_files(self.location, subfolders=True)
+        related_files = PostProcessor(self.location).list_associated_files(self.location, subfolders=True, rename=True)
 
         # This is wrong. Cause of pp not moving subs.
         if self.show.subtitles and sickrage.app.config.subtitles_dir:
             subs_path = os.path.join(sickrage.app.config.subtitles_dir, os.path.basename(self.location))
-            related_subs = PostProcessor(self.location).list_associated_files(subs_path, subtitles_only=True,
-                                                                              subfolders=True, rename=True)
+            related_subs = PostProcessor(self.location).list_associated_files(subs_path, subtitles_only=True, subfolders=True, rename=True)
 
         sickrage.app.log.debug("Files associated to " + self.location + ": " + str(related_files))
 
