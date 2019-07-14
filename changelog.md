@@ -1,5 +1,6 @@
 # Changelog
 
+- * 985b907b4 - 2019-07-14: Pre-Release v9.4.134.dev2 
 - * 2e0b68b34 - 2019-07-14: Resolved issue with renaming episodes not including metadata files. 
 - * 528de1053 - 2019-07-14: Refactored how TheTVDB API determines images are available for shows and episodes. 
 - * 307573f09 - 2019-07-14: Added response code 403 to trigger re-auth for API tokens. 
