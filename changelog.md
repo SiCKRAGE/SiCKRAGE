@@ -1,5 +1,6 @@
 # Changelog
 
+- * 9aa399647 - 2019-07-13: Release v9.4.133 
 - * 818f9c550 - 2019-07-13: Raised SQLite pool size to 200 
 - * 3e7748e54 - 2019-07-13: Refactoring database tests. 
 - * 63d34e6d1 - 2019-07-13: Pre-Release v9.4.133.dev1 
