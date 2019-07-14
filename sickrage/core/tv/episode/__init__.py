@@ -26,15 +26,16 @@ from xml.etree.ElementTree import ElementTree
 
 from mutagen.mp4 import MP4, MP4StreamInfoError
 from sqlalchemy import ForeignKeyConstraint, Index, Column, Integer, Text, Boolean, Date, BigInteger
-from sqlalchemy.orm import relationship, object_session
+from sqlalchemy.orm import relationship, object_session, validates
 
 import sickrage
 from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, SKIPPED, NAMING_EXTEND, NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, \
     NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
 from sickrage.core.databases.main import MainDBBase
 from sickrage.core.exceptions import NoNFOException, EpisodeNotFoundException, EpisodeDeletedException
-from sickrage.core.helpers import is_media_file, try_int, replace_extension, modify_file_timestamp, sanitize_scene_name, remove_non_release_groups, remove_extension, \
-    sanitize_file_name, safe_getattr, make_dirs, move_file, delete_empty_folders
+from sickrage.core.helpers import is_media_file, try_int, replace_extension, modify_file_timestamp, sanitize_scene_name, remove_non_release_groups, \
+    remove_extension, \
+    sanitize_file_name, safe_getattr, make_dirs, move_file, delete_empty_folders, file_size
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_seasonnotfound, indexer_error, indexer_episodenotfound
 from sickrage.notifiers import Notifiers
@@ -82,6 +83,12 @@ class TVEpisode(MainDBBase):
     def __init__(self, **kwargs):
         super(TVEpisode, self).__init__(**kwargs)
         self.checkForMetaFiles()
+
+    @validates('location')
+    def validate_location(self, key, location):
+        if os.path.exists(location):
+            self.file_size = file_size(location)
+        return location
 
     @property
     def related_episodes(self):
