@@ -21,6 +21,7 @@
 ######################
 *.db*
 *.ini
+privatekey.pem
 autoProcessTV.cfg
 /.imdbpie_cache/
 /server.crt
