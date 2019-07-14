@@ -1,5 +1,6 @@
 # Changelog
 
+- * 5d6bcf5c9 - 2019-07-14: Pre-Release v9.4.134.dev4 
 - * e9c169ffe - 2019-07-14: Pre-Release v9.4.134.dev3 
 - * 985b907b4 - 2019-07-14: Pre-Release v9.4.134.dev2 
 - * 2e0b68b34 - 2019-07-14: Resolved issue with renaming episodes not including metadata files. 
