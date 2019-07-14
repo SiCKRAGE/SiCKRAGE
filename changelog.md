@@ -1,5 +1,7 @@
 # Changelog
 
+- * b278d463b - 2019-07-14: Resolved AttributeError_home_trakt_shows_mako in render_content 
+- * 57198a80d - 2019-07-14: Pre-Release v9.4.134.dev5 
 - * 5d6bcf5c9 - 2019-07-14: Pre-Release v9.4.134.dev4 
 - * e9c169ffe - 2019-07-14: Pre-Release v9.4.134.dev3 
 - * 985b907b4 - 2019-07-14: Pre-Release v9.4.134.dev2 
