@@ -1,5 +1,11 @@
 # Changelog
 
+- * 2e0b68b34 - 2019-07-14: Resolved issue with renaming episodes not including metadata files. 
+- * 528de1053 - 2019-07-14: Refactored how TheTVDB API determines images are available for shows and episodes. 
+- * 307573f09 - 2019-07-14: Added response code 403 to trigger re-auth for API tokens. 
+- * 0d4b8f4ed - 2019-07-14: Added TVEpisode location validator to set file size in database when altering the objects location. 
+- * 6a136b12c - 2019-07-14: Added file size helper method. 
+- * 6b7e8bba7 - 2019-07-13: Pre-Release v9.4.134.dev1 
 - * 9aa399647 - 2019-07-13: Release v9.4.133 
 - * 818f9c550 - 2019-07-13: Raised SQLite pool size to 200 
 - * 3e7748e54 - 2019-07-13: Refactoring database tests. 
