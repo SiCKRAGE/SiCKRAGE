@@ -55,7 +55,7 @@ sentry_release_develop:
 deploy_docker_master:
   stage: deploy
   variables:
-    UPSTREAM_BRANCH: $CI_COMMIT_REF_NAME
+    UPSTREAM_BRANCH: master
     UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
   trigger:
     project: sickrage/sickrage-docker
@@ -69,7 +69,7 @@ deploy_docker_master:
 deploy_docker_develop:
   stage: deploy
   variables:
-    UPSTREAM_BRANCH: $CI_COMMIT_REF_NAME
+    UPSTREAM_BRANCH: develop
     UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
   trigger:
     project: sickrage/sickrage-docker
@@ -83,7 +83,7 @@ deploy_docker_develop:
 deploy_synology:
   stage: deploy
   variables:
-    UPSTREAM_BRANCH: $CI_COMMIT_REF_NAME
+    UPSTREAM_BRANCH: master
     UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
   trigger:
     project: sickrage/sickrage-synology
