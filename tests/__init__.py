@@ -26,6 +26,9 @@ import sys
 import threading
 import unittest
 
+from sickrage.core.helpers import encryption
+from sickrage.core.databases.main import MainDB
+
 PROG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, 'sickrage'))
 if not (PROG_DIR in sys.path):
     sys.path, remainder = sys.path[:1], sys.path[1:]
@@ -42,8 +45,6 @@ LOCALE_DIR = os.path.join(PROG_DIR, 'locale')
 gettext.install('messages', LOCALE_DIR, codeset='UTF-8', names=["ngettext"])
 
 import sickrage
-from sickrage.core.databases.cache import CacheDB
-from sickrage.core.databases.main import MainDB
 from sickrage.core.tv import episode
 from sickrage.core import Core, Config, NameCache, Logger
 from sickrage.providers import SearchProviders
@@ -76,9 +77,18 @@ class SiCKRAGETestCase(unittest.TestCase):
         sickrage.app.log = Logger()
         sickrage.app.config = Config()
 
+        sickrage.app.web_host = '0.0.0.0'
         sickrage.app.data_dir = self.TESTDIR
         sickrage.app.config_file = self.TEST_CONFIG
 
+        sickrage.app.main_db = MainDB(db_type='sqlite',
+                                      db_prefix='sickrage',
+                                      db_host='localhost',
+                                      db_port='3306',
+                                      db_username='sickrage',
+                                      db_password='sickrage')
+
+        encryption.initialize()
         sickrage.app.config.load()
 
         sickrage.app.config.naming_pattern = 'Season.%0S/%S.N.S%0SE%0E.%E.N'
@@ -88,7 +98,7 @@ class SiCKRAGETestCase(unittest.TestCase):
 
     def setUp(self, **kwargs):
         if self.TESTALL and self.__module__ in self.TESTSKIPPED:
-            raise unittest.SkipTest()
+            raise unittest.SkipTest('Skipping Test')
 
         if not os.path.exists(self.FILEDIR):
             os.makedirs(self.FILEDIR)
@@ -125,12 +135,8 @@ class SiCKRAGETestDBCase(SiCKRAGETestCase):
 
     def tearDown(self):
         super(SiCKRAGETestDBCase, self).tearDown()
-        for db in [sickrage.app.main_db, sickrage.app.cache_db]:
-            db.close()
-        if os.path.exists(self.TESTDB_DIR):
-            shutil.rmtree(self.TESTDB_DIR)
-        if os.path.exists(self.TESTDBBACKUP_DIR):
-            shutil.rmtree(self.TESTDBBACKUP_DIR)
+        if os.path.isfile(sickrage.app.main_db.db_path):
+            os.unlink(sickrage.app.main_db.db_path)
 
 
 def load_tests(loader, tests):
