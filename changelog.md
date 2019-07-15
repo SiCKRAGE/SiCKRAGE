@@ -1,5 +1,6 @@
 # Changelog
 
+- * 6c1a44f0e - 2019-07-14: Release v9.4.138 
 - * 4e9dd794a - 2019-07-14: Fixed json issues with Transmission torrent client. 
 - * 574535288 - 2019-07-14: Pre-Release v9.4.138.dev1 
 - * f3e68034c - 2019-07-14: Release v9.4.137 
