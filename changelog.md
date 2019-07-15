@@ -1,5 +1,6 @@
 # Changelog
 
+- * 83aec6047 - 2019-07-14: Pre-Release v9.4.134.dev7 
 - * b835241d9 - 2019-07-14: Hard-coded UPSTREAM_BRANCH in CI/CD script to avoid passing tag names. 
 - * 0583b040c - 2019-07-14: Pre-Release v9.4.134.dev6 
 - * b278d463b - 2019-07-14: Resolved AttributeError_home_trakt_shows_mako in render_content 
