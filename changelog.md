@@ -1,5 +1,6 @@
 # Changelog
 
+- * f3e68034c - 2019-07-14: Release v9.4.137 
 - * 5fe263f3f - 2019-07-14: Fixed schedule category sorting. 
 - * e12dfb570 - 2019-07-14: Pre-Release v9.4.137.dev1 
 - * e6daa572f - 2019-07-14: Release v9.4.136 
