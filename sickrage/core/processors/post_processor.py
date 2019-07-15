@@ -207,6 +207,7 @@ class PostProcessor(object):
                 # Handles subtitles with language code
                 if file_extension in Subtitles().subtitle_extensions and file_name.rpartition('.')[0].lower() == base_name.lower():
                     filelist.append(found_file)
+
                 # Handles all files with same basename, including subtitles without language code
                 elif file_name.lower() == base_name.lower():
                     filelist.append(found_file)
@@ -232,30 +233,24 @@ class PostProcessor(object):
             # Define associated files (all, allowed and non allowed)
             if os.path.isfile(associated_file_path):
                 # check if allowed or not during post processing
-                if sickrage.app.config.move_associated_files and associated_file_path.endswith(
-                        tuple(sickrage.app.config.allowed_extensions.split(","))):
+                if sickrage.app.config.move_associated_files and associated_file_path.endswith(tuple(sickrage.app.config.allowed_extensions.split(","))):
                     file_path_list_to_allow.append(associated_file_path)
                 elif sickrage.app.config.delete_non_associated_files:
                     file_path_list_to_delete.append(associated_file_path)
 
         if file_path_list_to_allow or file_path_list_to_delete:
-            self._log("Found the following associated files for {}: {}".format(file_path,
-                                                                               file_path_list_to_allow + file_path_list_to_delete),
-                      sickrage.app.log.DEBUG)
+            self._log("Found the following "
+                      "associated files for {}: {}".format(file_path, file_path_list_to_allow + file_path_list_to_delete), sickrage.app.log.DEBUG)
 
             if file_path_list_to_delete:
-                self._log(
-                    "Deleting non allowed associated files for {}: {}".format(file_path, file_path_list_to_delete),
-                    sickrage.app.log.DEBUG)
+                self._log("Deleting non allowed associated files for {}: {}".format(file_path, file_path_list_to_delete), sickrage.app.log.DEBUG)
 
                 # Delete all extensions the user doesn't allow
                 self._delete(file_path_list_to_delete)
             if file_path_list_to_allow:
-                self._log("Allowing associated files for {0}: {1}".format(file_path, file_path_list_to_allow),
-                          sickrage.app.log.DEBUG)
+                self._log("Allowing associated files for {0}: {1}".format(file_path, file_path_list_to_allow), sickrage.app.log.DEBUG)
         else:
-            self._log("No associated files for {0} were found during this pass".format(file_path),
-                      sickrage.app.log.DEBUG)
+            self._log("No associated files for {0} were found during this pass".format(file_path), sickrage.app.log.DEBUG)
 
         return file_path_list_to_allow
 

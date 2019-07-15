@@ -26,15 +26,16 @@ from xml.etree.ElementTree import ElementTree
 
 from mutagen.mp4 import MP4, MP4StreamInfoError
 from sqlalchemy import ForeignKeyConstraint, Index, Column, Integer, Text, Boolean, Date, BigInteger
-from sqlalchemy.orm import relationship, object_session
+from sqlalchemy.orm import relationship, object_session, validates
 
 import sickrage
 from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, SKIPPED, NAMING_EXTEND, NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, \
     NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
 from sickrage.core.databases.main import MainDBBase
 from sickrage.core.exceptions import NoNFOException, EpisodeNotFoundException, EpisodeDeletedException
-from sickrage.core.helpers import is_media_file, try_int, replace_extension, modify_file_timestamp, sanitize_scene_name, remove_non_release_groups, remove_extension, \
-    sanitize_file_name, safe_getattr, make_dirs, move_file, delete_empty_folders
+from sickrage.core.helpers import is_media_file, try_int, replace_extension, modify_file_timestamp, sanitize_scene_name, remove_non_release_groups, \
+    remove_extension, \
+    sanitize_file_name, safe_getattr, make_dirs, move_file, delete_empty_folders, file_size
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_seasonnotfound, indexer_error, indexer_episodenotfound
 from sickrage.notifiers import Notifiers
@@ -82,6 +83,12 @@ class TVEpisode(MainDBBase):
     def __init__(self, **kwargs):
         super(TVEpisode, self).__init__(**kwargs)
         self.checkForMetaFiles()
+
+    @validates('location')
+    def validate_location(self, key, location):
+        if os.path.exists(location):
+            self.file_size = file_size(location)
+        return location
 
     @property
     def related_episodes(self):
@@ -568,24 +575,21 @@ class TVEpisode(MainDBBase):
         if absolute_current_path_no_ext.startswith(self.show.location):
             current_path = absolute_current_path_no_ext[len(self.show.location):]
 
-        sickrage.app.log.debug(
-            "Renaming/moving episode from the base path " + self.location + " to " + absolute_proper_path)
+        sickrage.app.log.debug("Renaming/moving episode from the base path " + self.location + " to " + absolute_proper_path)
 
         # if it's already named correctly then don't do anything
         if proper_path == current_path:
-            sickrage.app.log.debug(
-                str(self.indexer_id) + ": File " + self.location + " is already named correctly, skipping")
+            sickrage.app.log.debug(str(self.indexer_id) + ": File " + self.location + " is already named correctly, skipping")
             return
 
         from sickrage.core.processors.post_processor import PostProcessor
 
-        related_files = PostProcessor(self.location).list_associated_files(self.location, subfolders=True)
+        related_files = PostProcessor(self.location).list_associated_files(self.location, subfolders=True, rename=True)
 
         # This is wrong. Cause of pp not moving subs.
         if self.show.subtitles and sickrage.app.config.subtitles_dir:
             subs_path = os.path.join(sickrage.app.config.subtitles_dir, os.path.basename(self.location))
-            related_subs = PostProcessor(self.location).list_associated_files(subs_path, subtitles_only=True,
-                                                                              subfolders=True, rename=True)
+            related_subs = PostProcessor(self.location).list_associated_files(subs_path, subtitles_only=True, subfolders=True, rename=True)
 
         sickrage.app.log.debug("Files associated to " + self.location + ": " + str(related_files))
 

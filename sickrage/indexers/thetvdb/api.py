@@ -655,15 +655,26 @@ class Tvdb:
         return self.shows[int(sid)]
 
     @login_required
-    def image_key_types(self, sid, language='en'):
+    def image_key_types(self, sid, season=None, language='en'):
         key_types = {}
 
         for data in self._request('get', self.config['api']['images']['params'].format(id=sid), language)['data']:
             key_type = data['keytype']
             resolution = data['resolution']
+            subkey = data['subkey']
+
+            has_image = False
+            if season and "season" in key_type:
+                if season in subkey:
+                    has_image = True
+            elif key_type in ['fanart', 'series', 'poster']:
+                if 'graphical' in subkey or len(resolution):
+                    has_image = True
 
             if language not in key_types:
-                key_types.update({key_type: bool(len(resolution))})
+                key_types.update({
+                    key_type: has_image
+                })
 
         return key_types
 
@@ -673,10 +684,7 @@ class Tvdb:
 
         images = []
         for language in [self.config['api']['lang'], self.config['language']]:
-            if len(images):
-                continue
-
-            if not self.image_key_types(sid, language).get(key_type):
+            if not self.image_key_types(sid, season, language).get(key_type):
                 continue
 
             try:
@@ -694,10 +702,12 @@ class Tvdb:
             return []
 
         for i, image in enumerate(images):
-            if season and int(image['subkey']) != season: continue
+            if season and int(image['subkey']) != season:
+                continue
             image["score"] = image["ratingsinfo"]["average"] * image["ratingsinfo"]["count"]
             for k, v in image.items():
-                if not all([k, v]): continue
+                if not all([k, v]):
+                    continue
                 v = (v, self.config['api']['images']['prefix'].format(value=v))[k in ['filename', 'thumbnail']]
                 images[i][k] = v
 

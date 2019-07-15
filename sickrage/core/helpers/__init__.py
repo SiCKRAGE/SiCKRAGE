@@ -831,6 +831,10 @@ def is_hidden_folder(folder):
     return False
 
 
+def file_size(fname):
+    return os.stat(fname).st_size
+
+
 def real_path(path):
     """
     Returns: the canonicalized absolute pathname. The resulting path will have no symbolic link, '/./' or '/../' components.

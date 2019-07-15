@@ -53,7 +53,7 @@ class API(object):
             resp = self.session.request(method, urljoin(self.api_url, url), timeout=30,
                                         hooks={'response': self.throttle_hook}, **kwargs)
 
-            if resp.status_code == 401:
+            if resp.status_code in [401, 403]:
                 if not self.token_refreshed:
                     raise TokenExpiredError
                 if 'error' in resp.json():
