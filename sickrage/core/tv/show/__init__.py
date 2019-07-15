@@ -471,7 +471,7 @@ class TVShow(MainDBBase):
             try:
                 resp = IMDbAPI().search_by_imdb_title(self.name)
             except ApiError as e:
-                sickrage.app.log.error('{}!r'.format(e))
+                sickrage.app.log.error('{!r}'.format(e))
                 resp = {}
 
             for x in resp.get('Search', []):
@@ -490,7 +490,7 @@ class TVShow(MainDBBase):
                 imdb_info = IMDbAPI().search_by_imdb_id(self.imdb_id)
             except ApiError as e:
                 imdb_info = None
-                sickrage.app.log.error('{}!r'.format(e))
+                sickrage.app.log.error('{!r}'.format(e))
 
             if not imdb_info:
                 sickrage.app.log.debug(str(self.indexer_id) + ': Unable to obtain IMDb info')
