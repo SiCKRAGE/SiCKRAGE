@@ -88,8 +88,8 @@
                         <table class="table" id="showListTable">
                             <thead class="thead-dark">
                             <tr>
-                                <th>Airdate
-                                    (${('local', 'network')[sickrage.app.config.timezone_display == 'network']})
+                                <th>
+                                    Airdate (${('local', 'network')[sickrage.app.config.timezone_display == 'network']})
                                 </th>
                                 <th>Ends</th>
                                 <th>Next Ep</th>
@@ -227,9 +227,9 @@
                         cur_ep_airdate = cur_result['localtime'].date()
 
                         if run_time:
-                                        cur_ep_enddate = cur_result['localtime'] + datetime.timedelta(minutes = run_time)
+                            cur_ep_enddate = cur_result['localtime'] + datetime.timedelta(minutes = run_time)
                         else:
-                                        cur_ep_enddate = cur_result['localtime']
+                            cur_ep_enddate = cur_result['localtime']
                     %>
 
                     % if sickrage.app.config.coming_eps_sort == 'network':
@@ -254,7 +254,6 @@
                                 <% show_div = 'ep_listing listing-default' %>
                             % endif
                         % endif
-
                     % elif sickrage.app.config.coming_eps_sort == 'date':
                         % if cur_segment != cur_ep_airdate:
                             % if cur_ep_enddate < today and cur_ep_airdate != today.date() and not missed_header:
@@ -324,45 +323,45 @@
                                     </div>
                                     <div class="col text-dark font-weight-bold">
                                         <div class="clearfix">
-                                                    <span>
-                                                        <a href="${srWebRoot}/home/displayShow?show=${cur_result['showid']}">${cur_result['show_name']}
-                                                            ${('', '<span class="pause">[paused]</span>')[int(cur_result['paused'])]}
-                                                        </a>
-                                                        % if cur_result['imdb_id']:
-                                                            <a href="${anon_url('http://www.imdb.com/title/', cur_result['imdb_id'])}"
-                                                               rel="noreferrer"
-                                                               onclick="window.open(this.href, '_blank'); return false"
-                                                               title="http://www.imdb.com/title/${cur_result['imdb_id']}">
-                                                                <i class="sickrage-core sickrage-core-imdb"></i>
-                                                            </a>
-                                                        % endif
-                                                        <a href="${anon_url(IndexerApi(cur_indexer).config['show_url'], cur_result['showid'])}"
-                                                           rel="noreferrer"
-                                                           onclick="window.open(this.href, '_blank'); return false"
-                                                           title="${IndexerApi(cur_indexer).config['show_url']}">
-                                                            <i class="sickrage-core sickrage-core-${IndexerApi(cur_indexer).name.lower()}"></i>
-                                                        </a>
-                                                        <a href="${srWebRoot}/home/searchEpisode?show=${cur_result['showid']}&season=${cur_result['season']}&episode=${cur_result['episode']}"
-                                                           class="epSearch" title="${_('Manual Search')}"
-                                                           id="${cur_result['showid']}x${cur_result['season']}x${cur_result['episode']}"
-                                                           name="${cur_result['showid']}x${cur_result['season']}x${cur_result['episode']}">
-                                                            <i class="fas fa-search"></i>
-                                                        </a>
-                                                    </span>
+                                            <span>
+                                                <a href="${srWebRoot}/home/displayShow?show=${cur_result['showid']}">${cur_result['show_name']}
+                                                    ${('', '<span class="pause">[paused]</span>')[int(cur_result['paused'])]}
+                                                </a>
+                                                % if cur_result['imdb_id']:
+                                                    <a href="${anon_url('http://www.imdb.com/title/', cur_result['imdb_id'])}"
+                                                       rel="noreferrer"
+                                                       onclick="window.open(this.href, '_blank'); return false"
+                                                       title="http://www.imdb.com/title/${cur_result['imdb_id']}">
+                                                        <i class="sickrage-core sickrage-core-imdb"></i>
+                                                    </a>
+                                                % endif
+                                                <a href="${anon_url(IndexerApi(cur_indexer).config['show_url'], cur_result['showid'])}"
+                                                   rel="noreferrer"
+                                                   onclick="window.open(this.href, '_blank'); return false"
+                                                   title="${IndexerApi(cur_indexer).config['show_url']}">
+                                                    <i class="sickrage-core sickrage-core-${IndexerApi(cur_indexer).name.lower()}"></i>
+                                                </a>
+                                                <a href="${srWebRoot}/home/searchEpisode?show=${cur_result['showid']}&season=${cur_result['season']}&episode=${cur_result['episode']}"
+                                                   class="epSearch" title="${_('Manual Search')}"
+                                                   id="${cur_result['showid']}x${cur_result['season']}x${cur_result['episode']}"
+                                                   name="${cur_result['showid']}x${cur_result['season']}x${cur_result['episode']}">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </span>
                                         </div>
 
                                         <span class="title">
-                                                    Next Episode:
-                                                </span>
+                                            Next Episode:
+                                        </span>
 
                                         <span>${'S{:02d}E{:02d}'.format(int(cur_result['season']), int(cur_result['episode']))}
                                             - ${cur_result['name']}
-                                                </span>
+                                        </span>
 
                                         <div class="clearfix">
-                                                    <span class="title">
-                                                        Airs:
-                                                    </span>
+                                            <span class="title">
+                                                Airs:
+                                            </span>
                                             <span class="airdate">
                                                 ${srdatetime.SRDateTime(cur_result['localtime']).srfdatetime()}
                                             </span>
@@ -370,9 +369,9 @@
                                         </div>
 
                                         <div class="clearfix">
-                                                    <span class="title">
-                                                        Quality:
-                                                    </span>
+                                            <span class="title">
+                                                Quality:
+                                            </span>
                                             ${renderQualityPill(cur_result['quality'], showTitle=True)}
                                         </div>
                                         <div class="clearfix">

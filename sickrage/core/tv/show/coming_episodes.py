@@ -36,9 +36,9 @@ class ComingEpisodes:
     """
     categories = ['later', 'missed', 'soon', 'today']
     sorts = {
-        'date': cmp_to_key(lambda a, b: a['localtime'] < b['localtime']),
-        'network': cmp_to_key(lambda a, b: (a['network'], a['localtime']) < (b['network'], b['localtime'])),
-        'show': cmp_to_key(lambda a, b: (a['show_name'], a['localtime']) < (b['show_name'], b['localtime'])),
+        'date': lambda a: a['localtime'].date(),
+        'network': cmp_to_key(lambda a, b: (a['network'], a['localtime'].date()) < (b['network'], b['localtime'].date())),
+        'show': cmp_to_key(lambda a, b: (a['show_name'], a['localtime'].date()) < (b['show_name'], b['localtime'].date())),
     }
 
     def __init__(self):
