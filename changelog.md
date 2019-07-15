@@ -1,5 +1,7 @@
 # Changelog
 
+- * 5fe263f3f - 2019-07-14: Fixed schedule category sorting. 
+- * e12dfb570 - 2019-07-14: Pre-Release v9.4.137.dev1 
 - * e6daa572f - 2019-07-14: Release v9.4.136 
 - * dd3a9a608 - 2019-07-14: Fixed download issues for Deluge Web-UI Client. 
 - * 9a12a645c - 2019-07-14: Release v9.4.135 
