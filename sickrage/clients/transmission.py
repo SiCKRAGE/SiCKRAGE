@@ -44,7 +44,7 @@ class TransmissionAPI(GenericClient):
 
     def _get_auth(self):
         self.response = self.session.post(self.url,
-                                          data=json.dumps({'method': 'session-get', }),
+                                          json={'method': 'session-get', },
                                           timeout=120,
                                           auth=(self.username, self.password),
                                           verify=bool(sickrage.app.config.torrent_verify_cert))
@@ -56,7 +56,7 @@ class TransmissionAPI(GenericClient):
 
         # Validating Transmission authorization
         self._request(method='post',
-                      data=json.dumps({'arguments': {}, 'method': 'session-get'}),
+                      json={'arguments': {}, 'method': 'session-get'},
                       headers={'x-transmission-session-id': self.auth})
 
         return self.auth
@@ -74,12 +74,12 @@ class TransmissionAPI(GenericClient):
         if os.path.isabs(sickrage.app.config.torrent_path):
             arguments['download-dir'] = sickrage.app.config.torrent_path
 
-        post_data = json.dumps({
+        post_data = {
             'arguments': arguments,
             'method': 'torrent-add'
-        })
+        }
 
-        if self._request(method='post', data=post_data):
+        if self._request(method='post', json=post_data):
             return self.response.json()['result'] == "success"
 
     def _add_torrent_file(self, result):
@@ -91,12 +91,12 @@ class TransmissionAPI(GenericClient):
         if os.path.isabs(sickrage.app.config.torrent_path):
             arguments['download-dir'] = sickrage.app.config.torrent_path
 
-        post_data = json.dumps({
+        post_data = {
             'arguments': arguments,
             'method': 'torrent-add'
-        })
+        }
 
-        if self._request(method='post', data=post_data):
+        if self._request(method='post', json=post_data):
             return self.response.json()['result'] == "success"
 
     def _set_torrent_ratio(self, result):
@@ -119,12 +119,12 @@ class TransmissionAPI(GenericClient):
             'seedRatioMode': mode
         }
 
-        post_data = json.dumps({
+        post_data = {
             'arguments': arguments,
             'method': 'torrent-set'
-        })
+        }
 
-        if self._request(method='post', data=post_data):
+        if self._request(method='post', json=post_data):
             return self.response.json()['result'] == "success"
 
     def _set_torrent_seed_time(self, result):
@@ -136,12 +136,12 @@ class TransmissionAPI(GenericClient):
                 'seedIdleMode': 1
             }
 
-            post_data = json.dumps({
+            post_data = {
                 'arguments': arguments,
                 'method': 'torrent-set'
-            })
+            }
 
-            if self._request(method='post', data=post_data):
+            if self._request(method='post', json=post_data):
                 return self.response.json()['result'] == "success"
         else:
             return True
@@ -161,12 +161,12 @@ class TransmissionAPI(GenericClient):
         else:
             arguments['priority-normal'] = []
 
-        post_data = json.dumps({
+        post_data = {
             'arguments': arguments,
             'method': 'torrent-set'
-        })
+        }
 
-        if self._request(method='post', data=post_data):
+        if self._request(method='post', json=post_data):
             return self.response.json()['result'] == "success"
 
     def remove_torrent(self, info_hash):
@@ -175,12 +175,12 @@ class TransmissionAPI(GenericClient):
             'delete-local-data': 1,
         }
 
-        post_data = json.dumps({
+        post_data = {
             'arguments': arguments,
             'method': 'torrent-remove',
-        })
+        }
 
-        if self._request(method='post', data=post_data):
+        if self._request(method='post', json=post_data):
             return self.response.json()['result'] == "success"
 
 
