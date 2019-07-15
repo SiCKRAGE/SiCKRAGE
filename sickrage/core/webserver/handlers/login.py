@@ -48,10 +48,7 @@ class LoginHandler(BaseHandler, ABC):
                     if API().token:
                         allowed_usernames = API().allowed_usernames()['data']
                         if not userinfo['preferred_username'] in allowed_usernames:
-                            sickrage.app.log.debug(
-                                "USERNAME:{} IP:{} - ACCESS DENIED".format(userinfo['preferred_username'],
-                                                                           self.request.remote_ip)
-                            )
+                            sickrage.app.log.debug("USERNAME:{} IP:{} - ACCESS DENIED".format(userinfo['preferred_username'], self.request.remote_ip))
                             return self.redirect('/logout')
                     else:
                         return self.redirect('/logout')

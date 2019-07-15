@@ -1,5 +1,7 @@
 # Changelog
 
+- * dd3a9a608 - 2019-07-14: Fixed download issues for Deluge Web-UI Client. 
+- * 9a12a645c - 2019-07-14: Release v9.4.135 
 - * de4f179d9 - 2019-07-14: Release v9.4.134 
 - * 83aec6047 - 2019-07-14: Pre-Release v9.4.134.dev7 
 - * b835241d9 - 2019-07-14: Hard-coded UPSTREAM_BRANCH in CI/CD script to avoid passing tag names. 

@@ -358,7 +358,7 @@ class KODINotifier(Notifiers):
             sickrage.app.log.warning('No KODI host passed, aborting update')
             return False
 
-        sickrage.app.log.debug("KODI JSON command: {}!r".format(command))
+        sickrage.app.log.debug("KODI JSON command: {!r}".format(command))
 
         url = 'http://%s/jsonrpc' % host
 

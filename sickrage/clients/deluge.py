@@ -34,36 +34,33 @@ class DelugeAPI(GenericClient):
         self.session.headers.update({'Content-type': "application/json"})
 
     def _get_auth(self):
-        post_data = json.dumps({"method": "auth.login",
-                                "params": [self.password],
-                                "id": 1})
+        post_data = {"method": "auth.login",
+                     "params": [self.password],
+                     "id": 1}
 
         try:
-            self.response = self.session.post(self.url, data=post_data,
-                                              verify=bool(sickrage.app.config.torrent_verify_cert))
+            self.response = self.session.post(self.url, json=post_data, verify=bool(sickrage.app.config.torrent_verify_cert))
         except Exception:
             return None
 
         self.auth = self.response.json()["result"]
 
-        post_data = json.dumps({"method": "web.connected",
-                                "params": [],
-                                "id": 10})
+        post_data = {"method": "web.connected",
+                     "params": [],
+                     "id": 10}
 
         try:
-            self.response = self.session.post(self.url, data=post_data,
-                                              verify=bool(sickrage.app.config.torrent_verify_cert))
+            self.response = self.session.post(self.url, json=post_data, verify=bool(sickrage.app.config.torrent_verify_cert))
         except Exception:
             return None
 
         connected = self.response.json()['result']
         if not connected:
-            post_data = json.dumps({"method": "web.get_hosts",
-                                    "params": [],
-                                    "id": 11})
+            post_data = {"method": "web.get_hosts",
+                         "params": [],
+                         "id": 11}
             try:
-                self.response = self.session.post(self.url, data=post_data,
-                                                  verify=bool(sickrage.app.config.torrent_verify_cert))
+                self.response = self.session.post(self.url, json=post_data, verify=bool(sickrage.app.config.torrent_verify_cert))
             except Exception:
                 return None
 
@@ -72,23 +69,21 @@ class DelugeAPI(GenericClient):
                 sickrage.app.log.warning(self.name + ': WebUI does not contain daemons')
                 return None
 
-            post_data = json.dumps({"method": "web.connect",
-                                    "params": [hosts[0][0]],
-                                    "id": 11})
+            post_data = {"method": "web.connect",
+                         "params": [hosts[0][0]],
+                         "id": 11}
 
             try:
-                self.response = self.session.post(self.url, data=post_data,
-                                                  verify=bool(sickrage.app.config.torrent_verify_cert))
+                self.response = self.session.post(self.url, json=post_data, verify=bool(sickrage.app.config.torrent_verify_cert))
             except Exception:
                 return None
 
-            post_data = json.dumps({"method": "web.connected",
-                                    "params": [],
-                                    "id": 10})
+            post_data = {"method": "web.connected",
+                         "params": [],
+                         "id": 10}
 
             try:
-                self.response = self.session.post(self.url, data=post_data,
-                                                  verify=bool(sickrage.app.config.torrent_verify_cert))
+                self.response = self.session.post(self.url, json=post_data, verify=bool(sickrage.app.config.torrent_verify_cert))
             except Exception:
                 return None
 
@@ -100,22 +95,22 @@ class DelugeAPI(GenericClient):
         return self.auth
 
     def _add_torrent_uri(self, result):
-        post_data = json.dumps({"method": "core.add_torrent_magnet",
-                                "params": [result.url, {}],
-                                "id": 2})
+        post_data = {"method": "core.add_torrent_magnet",
+                     "params": [result.url, {}],
+                     "id": 2}
 
-        self._request(method='post', data=post_data)
+        self._request(method='post', json=post_data)
 
         result.hash = self.response.json()['result']
 
         return self.response.json()['result']
 
     def _add_torrent_file(self, result):
-        post_data = json.dumps({"method": "core.add_torrent_file",
-                                "params": [result.name + '.torrent', b64encode(result.content), {}],
-                                "id": 2})
+        post_data = {"method": "core.add_torrent_file",
+                     "params": [result.name + '.torrent', b64encode(result.content), {}],
+                     "id": 2}
 
-        self._request(method='post', data=post_data)
+        self._request(method='post', json=post_data)
 
         result.hash = self.response.json()['result']
 
@@ -133,30 +128,29 @@ class DelugeAPI(GenericClient):
 
         if label:
             # check if label already exists and create it if not
-            post_data = json.dumps({"method": 'label.get_labels',
-                                    "params": [],
-                                    "id": 3})
+            post_data = {"method": 'label.get_labels',
+                         "params": [],
+                         "id": 3}
 
-            self._request(method='post', data=post_data)
+            self._request(method='post', json=post_data)
             labels = self.response.json()['result']
 
             if labels is not None:
                 if label not in labels:
-                    sickrage.app.log.debug(
-                        self.name + ': ' + label + " label does not exist in Deluge we must add it")
-                    post_data = json.dumps({"method": 'label.add',
-                                            "params": [label],
-                                            "id": 4})
+                    sickrage.app.log.debug(self.name + ': ' + label + " label does not exist in Deluge we must add it")
+                    post_data = {"method": 'label.add',
+                                 "params": [label],
+                                 "id": 4}
 
-                    self._request(method='post', data=post_data)
+                    self._request(method='post', json=post_data)
                     sickrage.app.log.debug(self.name + ': ' + label + " label added to Deluge")
 
                 # add label to torrent
-                post_data = json.dumps({"method": 'label.set_torrent',
-                                        "params": [result.hash, label],
-                                        "id": 5})
+                post_data = {"method": 'label.set_torrent',
+                             "params": [result.hash, label],
+                             "id": 5}
 
-                self._request(method='post', data=post_data)
+                self._request(method='post', json=post_data)
                 sickrage.app.log.debug(self.name + ': ' + label + " label added to torrent")
             else:
                 sickrage.app.log.debug(self.name + ': ' + "label plugin not detected")
@@ -170,17 +164,17 @@ class DelugeAPI(GenericClient):
             ratio = result.ratio
 
         if ratio:
-            post_data = json.dumps({"method": "core.set_torrent_stop_at_ratio",
-                                    "params": [result.hash, True],
-                                    "id": 5})
+            post_data = {"method": "core.set_torrent_stop_at_ratio",
+                         "params": [result.hash, True],
+                         "id": 5}
 
-            self._request(method='post', data=post_data)
+            self._request(method='post', json=post_data)
 
-            post_data = json.dumps({"method": "core.set_torrent_stop_ratio",
-                                    "params": [result.hash, float(ratio)],
-                                    "id": 6})
+            post_data = {"method": "core.set_torrent_stop_ratio",
+                         "params": [result.hash, float(ratio)],
+                         "id": 6}
 
-            self._request(method='post', data=post_data)
+            self._request(method='post', json=post_data)
 
             return not self.response.json()['error']
 
@@ -188,17 +182,17 @@ class DelugeAPI(GenericClient):
 
     def _set_torrent_path(self, result):
         if sickrage.app.config.torrent_path:
-            post_data = json.dumps({"method": "core.set_torrent_move_completed",
-                                    "params": [result.hash, True],
-                                    "id": 7})
+            post_data = {"method": "core.set_torrent_move_completed",
+                         "params": [result.hash, True],
+                         "id": 7}
 
-            self._request(method='post', data=post_data)
+            self._request(method='post', json=post_data)
 
-            post_data = json.dumps({"method": "core.set_torrent_move_completed_path",
-                                    "params": [result.hash, sickrage.app.config.torrent_path],
-                                    "id": 8})
+            post_data = {"method": "core.set_torrent_move_completed_path",
+                         "params": [result.hash, sickrage.app.config.torrent_path],
+                         "id": 8}
 
-            self._request(method='post', data=post_data)
+            self._request(method='post', json=post_data)
 
             return not self.response.json()['error']
 
@@ -206,11 +200,11 @@ class DelugeAPI(GenericClient):
 
     def _set_torrent_pause(self, result):
         if sickrage.app.config.torrent_paused:
-            post_data = json.dumps({"method": "core.pause_torrent",
-                                    "params": [[result.hash]],
-                                    "id": 9})
+            post_data = {"method": "core.pause_torrent",
+                         "params": [[result.hash]],
+                         "id": 9}
 
-            self._request(method='post', data=post_data)
+            self._request(method='post', json=post_data)
 
             return not self.response.json()['error']
 
