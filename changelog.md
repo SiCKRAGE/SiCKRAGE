@@ -1,5 +1,6 @@
 # Changelog
 
+- * e6daa572f - 2019-07-14: Release v9.4.136 
 - * dd3a9a608 - 2019-07-14: Fixed download issues for Deluge Web-UI Client. 
 - * 9a12a645c - 2019-07-14: Release v9.4.135 
 - * de4f179d9 - 2019-07-14: Release v9.4.134 
