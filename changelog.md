@@ -1,5 +1,7 @@
 # Changelog
 
+- * 2af540a40 - 2019-07-17: Added bytes check to web session web hooks 
+- * d4bb52b2a - 2019-07-16: Release v9.4.141 
 - * bf8ba3540 - 2019-07-16: Release v9.4.140 
 - * a1464ddcb - 2019-07-16: Added exception handling for json decode errors when decoding API token. 
 - * 0f153a433 - 2019-07-16: Release v9.4.139 
