@@ -65,7 +65,7 @@ class MessagesDotPoHandler(BaseHandler, ABC):
 
 class APIBulderHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
         def titler(x):
             return (remove_article(x), x)[not x or sickrage.app.config.sort_article]
 
@@ -84,6 +84,10 @@ class APIBulderHandler(BaseHandler, ABC):
         else:
             apikey = _('API Key not generated')
 
+        api_commands = {}
+        for command, api_call in ApiHandler(self.application, self.request).api_calls.items():
+            api_commands[command] = await api_call(self.application, self.request, **{'help': 1}).run()
+
         return self.render(
             'api_builder.mako',
             title=_('API Builder'),
@@ -91,7 +95,7 @@ class APIBulderHandler(BaseHandler, ABC):
             shows=sorted(get_show_list(), key=cmp_to_key(lambda x, y: titler(x.name) < titler(y.name))),
             episodes=episodes,
             apikey=apikey,
-            commands=ApiHandler(self.application, self.request).api_calls,
+            api_commands=api_commands,
             controller='root',
             action='api_builder'
         )

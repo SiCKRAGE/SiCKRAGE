@@ -83,7 +83,7 @@ class HDBitsProvider(TorrentProvider):
                 'season': episode_object.scene_season,
             }
 
-        return [json.dumps(post_data)]
+        return [post_data]
 
     @MainDB.with_session
     def _get_episode_search_strings(self, show_id, season, episode, add_string='', session=None):
@@ -119,7 +119,7 @@ class HDBitsProvider(TorrentProvider):
                 'episode': episode_object.scene_episode
             }
 
-        return [json.dumps(post_data)]
+        return [post_data]
 
     def _get_title_and_url(self, item):
         title = item['name']
@@ -138,7 +138,7 @@ class HDBitsProvider(TorrentProvider):
         self._check_auth()
 
         try:
-            parsed_json = self.session.post(self.urls['search'], data=search_strings).json()
+            parsed_json = self.session.post(self.urls['search'], json=search_strings).json()
         except Exception:
             return []
 
@@ -166,7 +166,7 @@ class HDBitsCache(TVCache):
         }
 
         try:
-            resp = self.provider.session.post(self.provider.urls['rss'], data=json.dumps(post_data)).json()
+            resp = self.provider.session.post(self.provider.urls['rss'], json=post_data).json()
 
             if self.provider._check_auth_from_data(resp):
                 results = resp['data']

@@ -6,7 +6,7 @@
 %>
 
 <%block name="metas">
-    <meta data-var="commands" data-content="${commands}">
+    <meta data-var="commands" data-content="${api_commands}">
     <meta data-var="episodes" data-content="${episodes}">
 </%block>
 
@@ -41,10 +41,9 @@
 
 
                     <div id="commands_list">
-                        % for command in sorted(commands):
+                        % for command, help in api_commands.items():
                         <%
                             command_id = command.replace('.', '-')
-                            help = commands[command](application, request, **{'help':1}).run()
                         %>
                             <div class="card mt-1 mb-3">
                                 <div class="card-header">

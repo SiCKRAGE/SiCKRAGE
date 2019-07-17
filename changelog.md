@@ -1,5 +1,10 @@
 # Changelog
 
+- * e74980679 - 2019-07-15: Pre-Release v9.4.139.dev2 
+- * 76af07127 - 2019-07-15: Resolved async/await issues with API builder. 
+- * 578ab748c - 2019-07-14: Refactored using data to using json in requests. 
+- * 7139f4482 - 2019-07-14: Pre-Release v9.4.139.dev1 
+- * 6c1a44f0e - 2019-07-14: Release v9.4.138 
 - * 4e9dd794a - 2019-07-14: Fixed json issues with Transmission torrent client. 
 - * 574535288 - 2019-07-14: Pre-Release v9.4.138.dev1 
 - * f3e68034c - 2019-07-14: Release v9.4.137 
