@@ -1,5 +1,6 @@
 # Changelog
 
+- * bf8ba3540 - 2019-07-16: Release v9.4.140 
 - * a1464ddcb - 2019-07-16: Added exception handling for json decode errors when decoding API token. 
 - * 0f153a433 - 2019-07-16: Release v9.4.139 
 - * e74980679 - 2019-07-15: Pre-Release v9.4.139.dev2 
