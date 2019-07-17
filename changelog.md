@@ -1,5 +1,7 @@
 # Changelog
 
+- * a1464ddcb - 2019-07-16: Added exception handling for json decode errors when decoding API token. 
+- * 0f153a433 - 2019-07-16: Release v9.4.139 
 - * e74980679 - 2019-07-15: Pre-Release v9.4.139.dev2 
 - * 76af07127 - 2019-07-15: Resolved async/await issues with API builder. 
 - * 578ab748c - 2019-07-14: Refactored using data to using json in requests. 
