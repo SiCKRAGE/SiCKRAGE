@@ -151,7 +151,7 @@ class WebHooks(object):
         sickrage.app.log.debug('User-Agent: {}'.format(request.headers['User-Agent']))
 
         if request.method.upper() == 'POST':
-            sickrage.app.log.debug('With post data: {!r}'.format(request.body.decode()))
+            sickrage.app.log.debug('With post data: {!r}'.format(request.body.decode() if isinstance(request.body, bytes) else request.body))
 
 
 class WebHelpers(object):

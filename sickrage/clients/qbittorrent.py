@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
-
-
 import sickrage
 from sickrage.clients import GenericClient
 from sickrage.core.tv.show.helpers import find_show
