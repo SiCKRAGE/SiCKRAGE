@@ -54,8 +54,7 @@ class LoginHandler(BaseHandler, ABC):
                         return self.redirect('/logout')
 
                 if not API().token:
-                    exchange = {'scope': 'offline_access', 'subject_token': token['access_token']}
-                    API().token = sickrage.app.oidc_client.token_exchange(**exchange)
+                    API().exchange_token(token)
             except Exception as e:
                 return self.redirect('/logout')
 

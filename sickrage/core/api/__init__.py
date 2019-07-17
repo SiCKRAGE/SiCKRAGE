@@ -4,6 +4,7 @@ import time
 from urllib.parse import urljoin
 
 from oauthlib.oauth2 import MissingTokenError, InvalidClientIdError, TokenExpiredError, InvalidGrantError
+from raven.utils.json import JSONDecodeError
 from requests_oauthlib import OAuth2Session
 
 import sickrage
@@ -27,7 +28,10 @@ class API(object):
     def token(self):
         if os.path.exists(self.token_file):
             with open(self.token_file, 'r') as fd:
-                return json.load(fd)
+                try:
+                    return json.load(fd)
+                except JSONDecodeError:
+                    pass
         return {}
 
     @token.setter
@@ -68,6 +72,10 @@ class API(object):
             return self._request(method, url, **kwargs)
         except (InvalidClientIdError, MissingTokenError) as e:
             sickrage.app.log.warning("SiCKRAGE token issue, please try logging out and back in again to the web-ui")
+
+    def exchange_token(self, token, scope='offline_access'):
+        exchange = {'scope': scope, 'subject_token': token['access_token']}
+        self.token = sickrage.app.oidc_client.token_exchange(**exchange)
 
     def refresh_token(self):
         self.token_refreshed = True
