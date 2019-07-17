@@ -1,5 +1,6 @@
 # Changelog
 
+- * 692f9b1cf - 2019-07-17: Release v9.4.142 
 - * 2af540a40 - 2019-07-17: Added bytes check to web session web hooks 
 - * d4bb52b2a - 2019-07-16: Release v9.4.141 
 - * bf8ba3540 - 2019-07-16: Release v9.4.140 
