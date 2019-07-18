@@ -1,5 +1,7 @@
 # Changelog
 
+- * df60f73c6 - 2019-07-17: Added code to ensure storing of episode object subtitles column is converted from list to string format. 
+- * c7b8a466f - 2019-07-17: Pre-Release v9.4.144.dev1 
 - * 115588118 - 2019-07-17: Release v9.4.143 
 - * bb11dd5b7 - 2019-07-17: Pre-Release v9.4.143.dev1 
 - * 692f9b1cf - 2019-07-17: Release v9.4.142 
