@@ -102,7 +102,7 @@ class TVEpisode(MainDBBase):
         """Look for subtitles files and refresh the subtitles property"""
         subtitles, save_subtitles = Subtitles().refresh_subtitles(self.showid, self.season, self.episode)
         if save_subtitles:
-            self.subtitles = subtitles
+            self.subtitles = ','.join(subtitles)
 
     def download_subtitles(self):
         if self.location == '':
@@ -115,8 +115,9 @@ class TVEpisode(MainDBBase):
 
         sickrage.app.log.debug("%s: Downloading subtitles for S%02dE%02d" % (self.show.indexer_id, self.season or 0, self.episode or 0))
 
-        self.subtitles, newSubtitles = Subtitles().download_subtitles(self.showid, self.season, self.episode)
+        subtitles, newSubtitles = Subtitles().download_subtitles(self.showid, self.season, self.episode)
 
+        self.subtitles = ','.join(subtitles)
         self.subtitles_searchcount += 1 if self.subtitles_searchcount else 1
         self.subtitles_lastsearch = datetime.datetime.now().toordinal()
 
