@@ -75,7 +75,7 @@ class KODINotifier(Notifiers):
         # revert back to default socket timeout
         socket.setdefaulttimeout(sickrage.app.config.socket_timeout)
 
-        if not result or result is False:
+        if not result or result is False or 'error' in result:
             # fallback to legacy HTTPAPI method
             testCommand = {'command': 'Help'}
             request = self._send_to_kodi(testCommand, host, username, password)

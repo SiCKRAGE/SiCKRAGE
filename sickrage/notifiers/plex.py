@@ -154,8 +154,7 @@ class PLEXNotifier(Notifiers):
                                 password, force=True)
 
     def test_notify_pms(self, host, username, password, plex_server_token):
-        return self.update_library(host=host, username=username, password=password, plex_server_token=plex_server_token,
-                                   force=False)
+        return self.update_library(host=host, username=username, password=password, plex_server_token=plex_server_token, force=False)
 
     def update_library(self, ep_obj=None, host=None, username=None, password=None, plex_server_token=None, force=True):
         """Handles updating the Plex Media Server host via HTTP API
