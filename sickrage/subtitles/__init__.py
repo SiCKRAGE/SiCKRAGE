@@ -186,7 +186,7 @@ class Subtitles(object):
             sickrage.app.log.debug("Exception caught in subliminal.scan_video, subtitles couldn't be refreshed")
             return episode_object.subtitles, None
         current_subtitles = self.get_subtitles(video)
-        if episode_object.subtitles == current_subtitles:
+        if episode_object.subtitles == ','.join(current_subtitles):
             sickrage.app.log.debug('No changed subtitles for {}'.format(episode_object.pretty_name()))
             return episode_object.subtitles, None
         else:
