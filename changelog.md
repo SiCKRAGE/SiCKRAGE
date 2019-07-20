@@ -1,5 +1,6 @@
 # Changelog
 
+- * a702972a0 - 2019-07-20: Release v9.4.147 
 - * 15bb43c83 - 2019-07-20: Added Sentry tag for locale to help debug Unicode issues. 
 - * ae4c4b1a0 - 2019-07-20: Decodes output when checking for installed PIP version to convert from binary to string. 
 - * c2e5d6704 - 2019-07-20: Pre-Release v9.4.147.dev1 
