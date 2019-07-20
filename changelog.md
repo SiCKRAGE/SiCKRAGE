@@ -1,5 +1,9 @@
 # Changelog
 
+- * 11a714abd - 2019-07-20: Added code to pass database session and find show objects. 
+- * ca7e94e3e - 2019-07-20: No longer need to use url_concat for requests. 
+- * 9c6fc0989 - 2019-07-20: Pre-Release v9.4.146.dev1 
+- * 971d03215 - 2019-07-20: Release v9.4.145 
 - * 2b93b2856 - 2019-07-19: Pre-Release v9.4.145.dev2 
 - * 4c98a4454 - 2019-07-19: Returns back to home if whichSeries body param is missing when adding a new show. 
 - * 592a4b672 - 2019-07-19: Fixed HTTP 500 Internal errors caused by improperly passing of params to New Shows handler when adding existing shows. 

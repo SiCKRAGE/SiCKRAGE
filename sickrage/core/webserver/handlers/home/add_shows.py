@@ -505,9 +505,7 @@ class AddNewShowHandler(BaseHandler, ABC):
 
         # go to add the next show
         response = await TornadoHTTP().get(
-            url_concat(
-                self.get_url("/home/addShows/newShow?" + urlencode({'show_to_add': next_show_dir, 'other_shows': rest_of_show_dirs}, True))
-            )
+            self.get_url("/home/addShows/newShow?" + urlencode({'show_to_add': next_show_dir, 'other_shows': rest_of_show_dirs}, True))
         )
 
         return response.body
@@ -546,9 +544,7 @@ class AddExistingShowsHandler(BaseHandler, ABC):
         # if they want me to prompt for settings then I will just carry on to the newShow page
         if prompt_for_settings and shows_to_add:
             response = await TornadoHTTP().get(
-                url_concat(
-                    self.get_url("/home/addShows/newShow?" + urlencode({'show_to_add': shows_to_add[0], 'other_shows': shows_to_add[1:]}, True))
-                )
+                self.get_url("/home/addShows/newShow?" + urlencode({'show_to_add': shows_to_add[0], 'other_shows': shows_to_add[1:]}, True))
             )
 
             return self.write(response.body)
