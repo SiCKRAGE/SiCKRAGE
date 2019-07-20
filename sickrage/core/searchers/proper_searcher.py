@@ -126,7 +126,7 @@ class ProperSearcher(object):
 
                 threading.currentThread().setName(orig_thread_name)
 
-            self._set_last_proper_search(show.indexer_id, datetime.datetime.today().toordinal())
+            self._set_last_proper_search(show.indexer_id, datetime.datetime.today().toordinal(), session=session)
 
         # take the list of unique propers and get it sorted by
         sorted_propers = sorted(propers.values(), key=operator.attrgetter('date'), reverse=True)
@@ -281,7 +281,8 @@ class ProperSearcher(object):
     def _generic_name(self, name):
         return name.replace(".", " ").replace("-", " ").replace("_", " ").lower()
 
-    def _set_last_proper_search(self, show, when):
+    @MainDB.with_session
+    def _set_last_proper_search(self, show_id, when, session=None):
         """
         Record last propersearch in DB
 
@@ -291,12 +292,13 @@ class ProperSearcher(object):
         sickrage.app.log.debug("Setting the last proper search in database to " + str(when))
 
         try:
+            show = find_show(show_id, session=session)
             show.last_proper_search = when
         except orm.exc.NoResultFound:
             pass
 
-    @staticmethod
-    def _get_last_proper_search(show):
+    @MainDB.with_session
+    def _get_last_proper_search(self, show_id, session=None):
         """
         Find last propersearch from DB
         """
@@ -304,6 +306,7 @@ class ProperSearcher(object):
         sickrage.app.log.debug("Retrieving the last check time from the DB")
 
         try:
+            show = find_show(show_id, session=session)
             return int(show.last_proper_search)
         except orm.exc.NoResultFound:
             return 1
