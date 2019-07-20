@@ -22,6 +22,7 @@ import os
 import pkgutil
 import platform
 import re
+import sys
 from logging import FileHandler, CRITICAL, DEBUG, ERROR, INFO, WARNING
 from logging.handlers import RotatingFileHandler
 
@@ -96,7 +97,11 @@ class Logger(logging.getLoggerClass()):
                                      '@sentry.sickrage.ca/5?verify_ssl=0', release=sickrage.version(),
                                      repos={'sickrage': {'name': 'sickrage/sickrage'}})
 
-        sentry_tags = {'platform': platform.platform()}
+        sentry_tags = {
+            'platform': platform.platform(),
+            'locale': sys.getdefaultencoding()
+        }
+
         if sickrage.app.config and sickrage.app.config.sub_id:
             sentry_tags.update({'sub_id': sickrage.app.config.sub_id})
         if sickrage.app.config and sickrage.app.config.app_id:

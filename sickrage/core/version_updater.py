@@ -713,7 +713,7 @@ class PipUpdateManager(UpdateManager):
     def _find_installed_version(self):
         out, __, exit_status = self._pip_cmd(self._pip3_path, 'show sickrage')
         if exit_status == 0:
-            return out.split(b'\n')[1].split()[1]
+            return out.decode("utf-8", "ignore").split('\n')[1].split()[1]
         return ""
 
     def need_update(self):
