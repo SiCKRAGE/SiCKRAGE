@@ -98,7 +98,7 @@ def deluge():
 
 
 def blackhole():
-    if None != os.getenv('TR_TORRENT_DIR'):
+    if os.getenv('TR_TORRENT_DIR') is not None:
         scriptlogger.debug('Processing script triggered by Transmission')
         print("Processing script triggered by Transmission")
         scriptlogger.debug('TR_TORRENT_DIR: ' + os.getenv('TR_TORRENT_DIR'))

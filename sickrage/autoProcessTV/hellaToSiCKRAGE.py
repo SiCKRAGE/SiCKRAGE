@@ -18,10 +18,9 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import sys
 
-from sickrage.autoProcessTV import autoProcessTV
+from . import autoProcessTV
 
 if len(sys.argv) < 4:
     print("No folder supplied - is this being called from HellaVCR?")

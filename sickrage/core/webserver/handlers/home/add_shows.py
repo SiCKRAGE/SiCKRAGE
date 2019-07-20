@@ -20,7 +20,7 @@
 import os
 import re
 from abc import ABC
-from urllib.parse import unquote_plus
+from urllib.parse import unquote_plus, urlencode
 
 from sqlalchemy import orm
 from tornado.escape import json_encode
@@ -205,7 +205,7 @@ class NewShowHandler(BaseHandler, ABC):
         """
 
         show_to_add = self.get_argument('show_to_add', None)
-        other_shows = self.get_argument('other_shows', '')
+        other_shows = self.get_arguments('other_shows')
         search_string = self.get_argument('search_string', None)
 
         indexer, show_dir, indexer_id, show_name = split_extra_show(show_to_add)
@@ -221,9 +221,6 @@ class NewShowHandler(BaseHandler, ABC):
         elif not show_name and show_dir:
             default_show_name = re.sub(r' \(\d{4}\)', '',
                                        os.path.basename(os.path.normpath(show_dir)).replace('.', ' '))
-
-        # carry a list of other dirs if given
-        other_shows = other_shows.split(',') if len(other_shows) else []
 
         provided_indexer_id = int(indexer_id or 0)
         provided_indexer_name = show_name or ''
@@ -377,15 +374,15 @@ class AddNewShowHandler(BaseHandler, ABC):
         provided then it forwards back to newShow, if not it goes to /home.
         """
 
-        whichSeries = self.get_argument('whichSeries')
+        whichSeries = self.get_argument('whichSeries', None)
         rootDir = self.get_argument('rootDir', None)
         fullShowPath = self.get_argument('fullShowPath', None)
         providedName = self.get_argument('providedName', None)
         indexerLang = self.get_argument('indexerLang', None)
         defaultStatus = self.get_argument('defaultStatus', None)
         quality_preset = self.get_argument('quality_preset', None)
-        anyQualities = self.get_argument('anyQualities', '')
-        bestQualities = self.get_argument('bestQualities', '')
+        anyQualities = self.get_arguments('anyQualities')
+        bestQualities = self.get_arguments('bestQualities')
         flatten_folders = self.get_argument('flatten_folders', None)
         subtitles = self.get_argument('subtitles', None)
         sub_use_sr_metadata = self.get_argument('sub_use_sr_metadata', None)
@@ -401,6 +398,9 @@ class AddNewShowHandler(BaseHandler, ABC):
         add_show_year = self.get_argument('add_show_year', None)
 
         indexerLang = indexerLang or sickrage.app.config.indexer_default_language
+
+        if not whichSeries:
+            return self.redirect("/home/")
 
         # if we're skipping then behave accordingly
         if skipShow:
@@ -468,9 +468,6 @@ class AddNewShowHandler(BaseHandler, ABC):
         if blacklist:
             blacklist = short_group_names(blacklist)
 
-        anyQualities = anyQualities.split(',') if len(anyQualities) else []
-        bestQualities = bestQualities.split(',') if len(bestQualities) else []
-
         newQuality = try_int(quality_preset, None)
         if not newQuality:
             newQuality = Quality.combine_qualities(map(int, anyQualities), map(int, bestQualities))
@@ -504,17 +501,17 @@ class AddNewShowHandler(BaseHandler, ABC):
 
         # peel off the next one
         next_show_dir = other_shows[0]
-        rest_of_show_dirs = ','.join(other_shows[1:])
+        rest_of_show_dirs = other_shows[1:]
 
         # go to add the next show
         response = await TornadoHTTP().get(
             url_concat(
-                self.get_url("/home/addShows/newShow"),
-                {'show_to_add': next_show_dir, 'other_shows': rest_of_show_dirs}
+                self.get_url("/home/addShows/newShow?" + urlencode({'show_to_add': next_show_dir, 'other_shows': rest_of_show_dirs}, True))
             )
         )
 
         return response.body
+
 
 class AddExistingShowsHandler(BaseHandler, ABC):
     @authenticated
@@ -550,8 +547,7 @@ class AddExistingShowsHandler(BaseHandler, ABC):
         if prompt_for_settings and shows_to_add:
             response = await TornadoHTTP().get(
                 url_concat(
-                    self.get_url("/home/addShows/newShow"),
-                    {'show_to_add': shows_to_add[0], 'other_shows': ','.join(shows_to_add[1:])}
+                    self.get_url("/home/addShows/newShow?" + urlencode({'show_to_add': shows_to_add[0], 'other_shows': shows_to_add[1:]}, True))
                 )
             )
 
@@ -579,8 +575,7 @@ class AddExistingShowsHandler(BaseHandler, ABC):
 
         if num_added:
             sickrage.app.alerts.message(_("Shows Added"),
-                                        _("Automatically added ") + str(
-                                            num_added) + _(" from their existing metadata files"))
+                                        _("Automatically added ") + str(num_added) + _(" from their existing metadata files"))
 
         # if we're done then go home
         if not dirs_only:
@@ -588,9 +583,7 @@ class AddExistingShowsHandler(BaseHandler, ABC):
 
         # for the remaining shows we need to prompt for each one, so forward this on to the newShow page
         response = await TornadoHTTP().get(
-            url_concat(
-                self.get_url("/home/addShows/newShow"),
-                {'show_to_add': dirs_only[0], 'other_shows': ','.join(dirs_only[1:])}
-            )
+            self.get_url("/home/addShows/newShow?" + urlencode({'show_to_add': dirs_only[0], 'other_shows': dirs_only[1:]}, True))
         )
+
         return self.write(response.body)
