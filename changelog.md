@@ -1,5 +1,11 @@
 # Changelog
 
+- * 4c98a4454 - 2019-07-19: Returns back to home if whichSeries body param is missing when adding a new show. 
+- * 592a4b672 - 2019-07-19: Fixed HTTP 500 Internal errors caused by improperly passing of params to New Shows handler when adding existing shows. 
+- * 54eac4154 - 2019-07-18: Fixed issues with autoProcessTV imports. 
+- * a339f1f6b - 2019-07-18: Checks for episode number in provider result episodes list before attempting to remove it. 
+- * 52ba100b3 - 2019-07-18: Added handling of error detection when trying to get KODI version. 
+- * 30f6bd1be - 2019-07-17: Pre-Release v9.4.145.dev1 
 - * 88af88266 - 2019-07-17: Release v9.4.144 
 - * df60f73c6 - 2019-07-17: Added code to ensure storing of episode object subtitles column is converted from list to string format. 
 - * c7b8a466f - 2019-07-17: Pre-Release v9.4.144.dev1 
