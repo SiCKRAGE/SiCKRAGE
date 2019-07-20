@@ -374,7 +374,7 @@ class AddNewShowHandler(BaseHandler, ABC):
         provided then it forwards back to newShow, if not it goes to /home.
         """
 
-        whichSeries = self.get_argument('whichSeries')
+        whichSeries = self.get_argument('whichSeries', None)
         rootDir = self.get_argument('rootDir', None)
         fullShowPath = self.get_argument('fullShowPath', None)
         providedName = self.get_argument('providedName', None)
@@ -398,6 +398,9 @@ class AddNewShowHandler(BaseHandler, ABC):
         add_show_year = self.get_argument('add_show_year', None)
 
         indexerLang = indexerLang or sickrage.app.config.indexer_default_language
+
+        if not whichSeries:
+            return self.redirect("/home/")
 
         # if we're skipping then behave accordingly
         if skipShow:
