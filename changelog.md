@@ -1,5 +1,6 @@
 # Changelog
 
+- * 130a23bd9 - 2019-07-20: Release v9.4.146 
 - * 11a714abd - 2019-07-20: Added code to pass database session and find show objects. 
 - * ca7e94e3e - 2019-07-20: No longer need to use url_concat for requests. 
 - * 9c6fc0989 - 2019-07-20: Pre-Release v9.4.146.dev1 
