@@ -37,7 +37,7 @@ class API(object):
     @token.setter
     def token(self, value):
         with open(self.token_file, 'w') as fd:
-            json.dump(value, fd)
+            json.dump(value.decode() if isinstance(value, bytes) else value, fd)
 
     @property
     def userinfo(self):
@@ -66,7 +66,8 @@ class API(object):
                 if 'error' in resp.json():
                     raise ApiError(resp.json()['error'])
 
-            return resp.json()
+            if len(resp.content):
+                return resp.json()
         except TokenExpiredError:
             self.refresh_token()
             return self._request(method, url, **kwargs)

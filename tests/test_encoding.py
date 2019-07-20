@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# coding=utf-8
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -29,7 +28,7 @@ from sickrage.core.helpers import sanitize_file_name
 class EncodingTests(tests.SiCKRAGETestCase):
     def test_encoding(self):
         rootDir = 'C:\\Temp\\TV'
-        strings = ['Les Enfants De La T\xe9l\xe9', 'RT� One']
+        strings = ['Les Enfants De La T\xe9l\xe9', 'RT� One', "[France.5].Les.100.lieux.qu'il.faut.voir.-.Corrèze.(18.05.18)"]
 
         for s in strings:
             show_dir = os.path.join(rootDir, sanitize_file_name(s))

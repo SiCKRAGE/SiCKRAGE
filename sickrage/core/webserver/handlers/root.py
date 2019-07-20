@@ -231,6 +231,7 @@ class UnlinkHandler(BaseHandler, ABC):
 
         AccountAPI().unregister_app_id(sickrage.app.config.app_id)
 
+        sickrage.app.config.app_id = ""
         sickrage.app.config.sub_id = ""
         sickrage.app.config.save()
 
