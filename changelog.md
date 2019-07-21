@@ -1,5 +1,6 @@
 # Changelog
 
+- * 31f9db267 - 2019-07-21: Release v9.4.152 
 - * 16043b63f - 2019-07-21: Lowered requirement for Python to 3.5+ 
 - * 927bc42cb - 2019-07-21: Pre-Release v9.4.152.dev1 
 - * 54a1397b2 - 2019-07-21: Release v9.4.151 
