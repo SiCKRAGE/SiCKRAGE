@@ -43,7 +43,6 @@ class RobotsDotTxtHandler(BaseHandler, ABC):
     def initialize(self):
         self.set_header('Content-Type', 'text/plain')
 
-    @authenticated
     def get(self, *args, **kwargs):
         """ Keep web crawlers out """
         return self.write("User-agent: *\nDisallow: /")

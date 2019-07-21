@@ -271,6 +271,8 @@ class TVCache(object):
         with sickrage.app.main_db.session() as session:
             for curResult in dbData:
                 show_object = find_show(int(curResult["indexer_id"]), session=session)
+                if not show_object:
+                    continue
 
                 result = self.provider.getResult()
 

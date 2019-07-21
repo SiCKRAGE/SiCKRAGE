@@ -3,7 +3,7 @@
 Automatic Video Library Manager for TV Shows. It watches for new episodes of your favorite shows, and when they are posted it does its magic.
 
 #### Dependencies
-- To run SickRage from source you will need Python 3.6+
+- To run SiCKRAGE from source you will need Python 3.5+
 - To install requirements run 'pip install -r requirements.txt' from install folder
 
 #### Features

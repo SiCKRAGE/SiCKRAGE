@@ -80,16 +80,16 @@ deploy_docker_develop:
     - branches
     - triggers
 
-deploy_synology:
-  stage: deploy
-  variables:
-    UPSTREAM_BRANCH: master
-    UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
-  trigger:
-    project: sickrage/sickrage-synology
-    branch: master
-  only:
-    - /^[0-9.]+$/
-  except:
-    - branches
-    - triggers
+#deploy_synology:
+#  stage: deploy
+#  variables:
+#    UPSTREAM_BRANCH: master
+#    UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
+#  trigger:
+#    project: sickrage/sickrage-synology
+#    branch: master
+#  only:
+#    - /^[0-9.]+$/
+#  except:
+#    - branches
+#    - triggers

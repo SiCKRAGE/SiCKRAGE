@@ -1,5 +1,14 @@
 # Changelog
 
+- * ec617701d - 2019-07-21: Disabled deploying native Synology packages till Python 3.6.8 issues are resolved by Synocommunity. 
+- * 23a244210 - 2019-07-21: Resolved &#x60;TypeError_manage_failed_downloads_mako in render_content &#x27;FailedSnatch&#x27; object is not subscriptable&#x60; Fixes SICKRAGE-APP-PY3-129 
+- * 8c7316b21 - 2019-07-21: Added check for show object to see if NoneType when search TV show cache. 
+- * eb4cf0ae6 - 2019-07-21: Removed authentication requirement for robots.txt handler. 
+- * f18ee5466 - 2019-07-21: Season/Episode numbers are parsed during name parsing, removed redundant parsing in provider find routine, cleaned up code. 
+- * 5b993994a - 2019-07-21: Modified startup scripts to use python3 instead of python2.7 
+- * 08f3d6aad - 2019-07-21: Modified readme.md to reflect minimum requirement of Python 3.5+ 
+- * db145403c - 2019-07-21: Pre-Release v9.4.153.dev1 
+- * 31f9db267 - 2019-07-21: Release v9.4.152 
 - * 16043b63f - 2019-07-21: Lowered requirement for Python to 3.5+ 
 - * 927bc42cb - 2019-07-21: Pre-Release v9.4.152.dev1 
 - * 54a1397b2 - 2019-07-21: Release v9.4.151 

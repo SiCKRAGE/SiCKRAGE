@@ -40,7 +40,7 @@ status_cmd="sickrage_status"
 
 pidfile="/var/run/sickrage/sickrage.pid"
 
-command="/usr/local/bin/python2.7 ${sickrage_dir}/SiCKRAGE.py -q --datadir ${sickrage_datadir} --nolaunch"
+command="/usr/local/bin/python3 ${sickrage_dir}/SiCKRAGE.py -q --datadir ${sickrage_datadir} --nolaunch"
 
 start_cmd="/usr/sbin/daemon -p ${pidfile} -u ${sickrage_user} -r -f $command"
 start_precmd="sickrage_prestart"
