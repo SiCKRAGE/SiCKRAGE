@@ -39,13 +39,11 @@ from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.classes import NZBSearchResult, SearchResult, TorrentSearchResult
 from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT, cpu_presets
 from sickrage.core.databases.main import MainDB
-from sickrage.core.exceptions import EpisodeNotFoundException
 from sickrage.core.helpers import chmod_as_parent, sanitize_file_name, clean_url, bs4_parser, \
     validate_url, try_int, convert_size
 from sickrage.core.helpers.show_names import all_possible_show_names
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
 from sickrage.core.scene_exceptions import get_scene_exceptions
-from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.websession import WebSession
 
@@ -328,39 +326,28 @@ class GenericProvider(object):
             if not provider_result_show_obj:
                 continue
 
-            if not (provider_result_show_obj.air_by_date or provider_result_show_obj.sports):
-                if search_mode == 'sponly':
-                    if len(parse_result.episode_numbers):
-                        sickrage.app.log.debug("This is supposed to be a season pack search but the result {} is not "
-                                               "a valid season pack, skipping it".format(provider_result.name))
-                        continue
-                    elif parse_result.season_number != (episode_object.season, episode_object.scene_season)[show_object.is_scene]:
-                        sickrage.app.log.debug("This season result {} is for a season we are not searching for, skipping it".format(provider_result.name))
-                        continue
-                else:
-                    if not all([parse_result.season_number is not None, parse_result.episode_numbers,
-                                parse_result.season_number == (episode_object.season, episode_object.scene_season)[show_object.is_scene],
-                                (episode_object.episode, episode_object.scene_episode)[show_object.is_scene] in parse_result.episode_numbers]):
-                        sickrage.app.log.debug("The result {} doesn't seem to be a valid episode "
-                                               "that we are trying to snatch, ignoring".format(provider_result.name))
-                        continue
+            if not parse_result.is_air_by_date and (provider_result_show_obj.air_by_date or provider_result_show_obj.sports):
+                sickrage.app.log.debug("This is supposed to be a date search but the result {} didn't parse as one, skipping it".format(provider_result.name))
+                continue
 
-                provider_result.season = int(parse_result.season_number)
-                provider_result.episodes = list(map(int, parse_result.episode_numbers))
-            else:
-                if not parse_result.is_air_by_date:
-                    sickrage.app.log.debug("This is supposed to be a date search but the result {} didn't parse as "
-                                           "one, skipping it".format(provider_result.name))
+            if search_mode == 'sponly':
+                if len(parse_result.episode_numbers):
+                    sickrage.app.log.debug("This is supposed to be a season pack search but the result {} is not "
+                                           "a valid season pack, skipping it".format(provider_result.name))
                     continue
-                else:
-                    dbData = session.query(TVEpisode).filter_by(showid=provider_result_show_obj.indexer_id, airdate=parse_result.air_date).one_or_none()
-                    if not dbData:
-                        sickrage.app.log.warning("Tried to look up the date for the episode {} but the database "
-                                                 "didn't give proper results, skipping it".format(provider_result.name))
-                        continue
+                elif parse_result.season_number != (episode_object.season, episode_object.scene_season)[show_object.is_scene]:
+                    sickrage.app.log.debug("This season result {} is for a season we are not searching for, skipping it".format(provider_result.name))
+                    continue
+            else:
+                if not all([parse_result.season_number is not None, parse_result.episode_numbers,
+                            parse_result.season_number == (episode_object.season, episode_object.scene_season)[show_object.is_scene],
+                            (episode_object.episode, episode_object.scene_episode)[show_object.is_scene] in parse_result.episode_numbers]):
+                    sickrage.app.log.debug("The result {} doesn't seem to be a valid episode "
+                                           "that we are trying to snatch, ignoring".format(provider_result.name))
+                    continue
 
-                    provider_result.season = dbData.season
-                    provider_result.episodes = [dbData.episode]
+            provider_result.season = int(parse_result.season_number)
+            provider_result.episodes = list(map(int, parse_result.episode_numbers))
 
             # make sure we want the episode
             for episode_number in provider_result.episodes.copy():
