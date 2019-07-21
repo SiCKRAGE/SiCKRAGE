@@ -72,10 +72,10 @@ def snatch_episode(result, end_status=SNATCHED, session=None):
         if sickrage.app.config.nzb_method == "blackhole":
             dlResult = result.provider.download_result(result)
         elif sickrage.app.config.nzb_method == "sabnzbd":
-            dlResult = SabNZBd.sendNZB(result)
+            dlResult = SabNZBd.sendNZB(result, session=session)
         elif sickrage.app.config.nzb_method == "nzbget":
             is_proper = True if end_status == SNATCHED_PROPER else False
-            dlResult = NZBGet.sendNZB(result, is_proper)
+            dlResult = NZBGet.sendNZB(result, is_proper, session=session)
         else:
             sickrage.app.log.error("Unknown NZB action specified in config: " + sickrage.app.config.nzb_method)
     elif result.resultType in ("torrent", "torznab"):
