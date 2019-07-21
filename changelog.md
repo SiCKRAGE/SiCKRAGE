@@ -1,5 +1,7 @@
 # Changelog
 
+- * 16043b63f - 2019-07-21: Lowered requirement for Python to 3.5+ 
+- * 927bc42cb - 2019-07-21: Pre-Release v9.4.152.dev1 
 - * 54a1397b2 - 2019-07-21: Release v9.4.151 
 - * 4806e15eb - 2019-07-21: Previous archived episodes will now be set to downloaded with original quality if the episode file is placed back. 
 - * ee6597d45 - 2019-07-21: Refactored IsAlive web handler, resolves issues with restarts never redirecting back to home page or getting stuck. 
