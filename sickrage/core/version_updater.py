@@ -25,7 +25,7 @@ import subprocess
 import sys
 import tarfile
 import threading
-from tempfile import NamedTemporaryFile
+import tempfile
 from time import sleep
 
 import sickrage
@@ -370,10 +370,10 @@ class UpdateManager(object):
 
     def install_requirements(self, branch):
         requirements_url = "https://git.sickrage.ca/SiCKRAGE/sickrage/raw/{}/requirements.txt".format(branch)
-        requirements_file = NamedTemporaryFile(delete=False)
+        requirements_file = tempfile.NamedTemporaryFile(delete=False)
 
         try:
-            requirements_file.write(WebSession().get(requirements_url).text.encode())
+            requirements_file.write(WebSession().get(requirements_url).content)
         except Exception:
             requirements_file.close()
             os.unlink(requirements_file.name)
@@ -615,75 +615,46 @@ class SourceUpdateManager(UpdateManager):
         Downloads the latest source tarball from server and installs it over the existing version.
         """
 
-        tar_download_url = 'https://git.sickrage.ca/SiCKRAGE/sickrage/repository/archive.tar?ref=master'
+        tar_download_url = 'https://git.sickrage.ca/SiCKRAGE/sickrage/repository/archive.tar.gz?ref=master'
 
         try:
             if not self.install_requirements(self.current_branch):
                 return False
 
-            # prepare the update dir
-            sr_update_dir = os.path.join(sickrage.MAIN_DIR, 'sr-update')
+            with tempfile.TemporaryFile() as update_tarfile:
+                sickrage.app.log.info("Downloading update from " + repr(tar_download_url))
+                update_tarfile.write(WebSession().get(tar_download_url).content)
+                update_tarfile.seek(0)
 
-            if os.path.isdir(sr_update_dir):
-                sickrage.app.log.info("Clearing out update folder " + sr_update_dir + " before extracting")
-                shutil.rmtree(sr_update_dir)
+                with tempfile.TemporaryDirectory(prefix='sr_update_', dir=sickrage.app.data_dir) as unpack_dir:
+                    sickrage.app.log.info("Extracting SiCKRAGE update file")
+                    tar = tarfile.open(fileobj=update_tarfile, mode='r:gz')
+                    tar.extractall(unpack_dir)
+                    tar.close()
 
-            sickrage.app.log.info("Creating update folder " + sr_update_dir + " before extracting")
-            try:
-                os.makedirs(sr_update_dir)
-            except OSError as e:
-                sickrage.app.log.warning("Unable to create update folder " + sr_update_dir + ': ' + str(e))
-                return False
+                    # find update dir name
+                    update_dir_contents = [x for x in os.listdir(unpack_dir) if os.path.isdir(os.path.join(unpack_dir, x))]
+                    if len(update_dir_contents) != 1:
+                        sickrage.app.log.warning("Invalid update data, update failed: " + str(update_dir_contents))
+                        return False
 
-            # retrieve file
-            sickrage.app.log.info("Downloading update from " + repr(tar_download_url))
-            tar_download_path = os.path.join(sr_update_dir, 'sr-update.tar')
-            WebSession().download(tar_download_url, tar_download_path)
+                    # walk temp folder and move files to main folder
+                    content_dir = os.path.join(unpack_dir, update_dir_contents[0])
+                    sickrage.app.log.info("Moving files from " + content_dir + " to " + sickrage.MAIN_DIR)
+                    for dirname, __, filenames in os.walk(content_dir):
+                        dirname = dirname[len(content_dir) + 1:]
+                        for curfile in filenames:
+                            old_path = os.path.join(content_dir, dirname, curfile)
+                            new_path = os.path.join(sickrage.MAIN_DIR, dirname, curfile)
 
-            if not os.path.isfile(tar_download_path):
-                sickrage.app.log.warning(
-                    "Unable to retrieve new version from " + tar_download_url + ", can't update")
-                return False
+                            if os.path.isfile(new_path) and os.path.exists(new_path):
+                                os.remove(new_path)
 
-            if not tarfile.is_tarfile(tar_download_path):
-                sickrage.app.log.warning(
-                    "Retrieved version from " + tar_download_url + " is corrupt, can't update")
-                return False
-
-            # extract to sr-update dir
-            sickrage.app.log.info("Extracting file " + tar_download_path)
-            tar = tarfile.open(tar_download_path)
-            tar.extractall(sr_update_dir)
-            tar.close()
-
-            # delete .tar.gz
-            sickrage.app.log.info("Deleting file " + tar_download_path)
-            os.remove(tar_download_path)
-
-            # find update dir name
-            update_dir_contents = [x for x in os.listdir(sr_update_dir) if
-                                   os.path.isdir(os.path.join(sr_update_dir, x))]
-            if len(update_dir_contents) != 1:
-                sickrage.app.log.warning("Invalid update data, update failed: " + str(update_dir_contents))
-                return False
-
-            # walk temp folder and move files to main folder
-            content_dir = os.path.join(sr_update_dir, update_dir_contents[0])
-            sickrage.app.log.info("Moving files from " + content_dir + " to " + sickrage.MAIN_DIR)
-            for dirname, __, filenames in os.walk(content_dir):
-                dirname = dirname[len(content_dir) + 1:]
-                for curfile in filenames:
-                    old_path = os.path.join(content_dir, dirname, curfile)
-                    new_path = os.path.join(sickrage.MAIN_DIR, dirname, curfile)
-
-                    if os.path.isfile(new_path) and os.path.exists(new_path):
-                        os.remove(new_path)
-
-                    try:
-                        shutil.move(old_path, new_path)
-                    except IOError:
-                        os.makedirs(os.path.dirname(new_path))
-                        shutil.move(old_path, new_path)
+                            try:
+                                shutil.move(old_path, new_path)
+                            except IOError:
+                                os.makedirs(os.path.dirname(new_path))
+                                shutil.move(old_path, new_path)
         except Exception as e:
             sickrage.app.log.error("Error while trying to update: {}".format(e))
             return False

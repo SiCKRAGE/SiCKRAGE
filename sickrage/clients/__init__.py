@@ -294,14 +294,14 @@ class GenericClient(object):
             try:
                 torrent_bdecode = bdecode(result.content)
             except BencodeError:
-                sickrage.app.log.error('Unable to bdecode torrent')
+                sickrage.app.log.warning('Unable to bdecode torrent')
                 sickrage.app.log.debug('Torrent bencoded data: %r' % result.content)
                 raise
 
             try:
                 info = torrent_bdecode["info"]
             except Exception:
-                sickrage.app.log.error('Unable to find info field in torrent')
+                sickrage.app.log.warning('Unable to find info field in torrent')
                 raise
 
             result.hash = sha1(bencode(info)).hexdigest()

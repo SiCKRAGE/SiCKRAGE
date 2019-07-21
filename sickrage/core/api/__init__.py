@@ -65,9 +65,10 @@ class API(object):
             elif resp.status_code >= 400:
                 if 'error' in resp.json():
                     raise ApiError(resp.json()['error'])
+            elif resp.status_code == 204:
+                return
 
-            if len(resp.content):
-                return resp.json()
+            return resp.json()
         except TokenExpiredError:
             self.refresh_token()
             return self._request(method, url, **kwargs)
