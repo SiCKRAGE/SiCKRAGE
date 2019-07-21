@@ -1,5 +1,11 @@
 # Changelog
 
+- * 4806e15eb - 2019-07-21: Previous archived episodes will now be set to downloaded with original quality if the episode file is placed back. 
+- * ee6597d45 - 2019-07-21: Refactored IsAlive web handler, resolves issues with restarts never redirecting back to home page or getting stuck. 
+- * 6dcc183ea - 2019-07-21: Code cleanup for autoProcessTV files. 
+- * 57ea9ffbc - 2019-07-21: Fixed issue for NZBGet downloads returning error &#x60;decorator() takes 1 positional argument but 2 were given&#x60; 
+- * 2f4076d8f - 2019-07-21: When trying to determine season/episode numbers for air-by-date shows but multiple results found in database we now skip to finding result on Indexers. 
+- * 81939c28d - 2019-07-20: Pre-Release v9.4.151.dev1 
 - * 6a275ed12 - 2019-07-20: Release v9.4.150 
 - * a805f3247 - 2019-07-20: Refactored how source updates are handled. Added version update testing for source updates. 
 - * a3d975511 - 2019-07-20: Fixes SICKRAGE-APP-PY3-10X 
