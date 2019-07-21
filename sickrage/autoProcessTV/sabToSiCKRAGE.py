@@ -20,7 +20,7 @@
 
 import sys
 
-from . import autoProcessTV
+from sickrage.autoProcessTV import autoProcessTV
 
 if len(sys.argv) < 2:
     print("No folder supplied - is this being called from SABnzbd?")

@@ -44,12 +44,12 @@ def processEpisode(dir_to_process, org_nzb_name=None, status=None):
     config_filename = os.path.join(os.path.dirname(sys.argv[0]), "autoProcessTV.cfg")
 
     if not os.path.isfile(config_filename):
-        print ("ERROR: " + config_filename + " doesn\'t exist")
-        print ("copy /rename " + config_filename + ".sample and edit\n")
-        print ("Trying default url: " + default_url + "\n")
+        print("ERROR: " + config_filename + " doesn\'t exist")
+        print("copy /rename " + config_filename + ".sample and edit\n")
+        print("Trying default url: " + default_url + "\n")
     else:
         try:
-            print ("Loading config from " + config_filename + "\n")
+            print("Loading config from " + config_filename + "\n")
 
             with open(config_filename, "r") as fp:
                 config.readfp(fp)
@@ -74,7 +74,7 @@ def processEpisode(dir_to_process, org_nzb_name=None, status=None):
             except NoOptionError:
                 pass
         except EnvironmentError as e:
-            print ("Could not read configuration file: " + str(e))
+            print("Could not read configuration file: " + str(e))
             sys.exit(1)
 
     params = {
@@ -96,20 +96,20 @@ def processEpisode(dir_to_process, org_nzb_name=None, status=None):
 
     url = "{}{}:{}{}api/{}/".format(protocol, host, port, web_root, api_key)
 
-    print ("Opening URL: " + url)
+    print("Opening URL: " + url)
 
     try:
         r = requests.get(url, params=params, verify=False, allow_redirects=False, stream=True)
         for line in r.iter_lines():
             if not line:
                 continue
-            print (line.strip())
+            print(line.strip())
     except IOError as e:
-        print ("Unable to open URL: " + str(e))
+        print("Unable to open URL: " + str(e))
         sys.exit(1)
 
 
 if __name__ == "__main__":
-    print ("This module is supposed to be used as import in other scripts and not run standalone.")
-    print ("Use sabToSiCKRAGE instead.")
+    print("This module is supposed to be used as import in other scripts and not run standalone.")
+    print("Use sabToSiCKRAGE instead.")
     sys.exit(1)

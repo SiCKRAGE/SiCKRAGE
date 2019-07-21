@@ -272,7 +272,7 @@ class NameParser(object):
                     dbData = session.query(TVEpisode).filter_by(showid=show_obj.indexer_id, indexer=show_obj.indexer, airdate=best_result.air_date).one()
                     season_number = int(dbData.season)
                     episode_numbers = [int(dbData.episode)]
-                except orm.exc.NoResultFound:
+                except (orm.exc.NoResultFound, orm.exc.MultipleResultsFound):
                     season_number = None
                     episode_numbers = []
 
@@ -280,8 +280,7 @@ class NameParser(object):
                     try:
                         lINDEXER_API_PARMS = IndexerApi(show_obj.indexer).api_params.copy()
 
-                        lINDEXER_API_PARMS[
-                            'language'] = show_obj.lang or sickrage.app.config.indexer_default_language
+                        lINDEXER_API_PARMS['language'] = show_obj.lang or sickrage.app.config.indexer_default_language
 
                         t = IndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
 
@@ -295,8 +294,7 @@ class NameParser(object):
                                                      "skipping".format(air_date=best_result.air_date, show=show_obj.name))
                         episode_numbers = []
                     except indexer_error as e:
-                        sickrage.app.log.warning(
-                            "Unable to contact " + IndexerApi(show_obj.indexer).name + ": {}".format(e))
+                        sickrage.app.log.warning("Unable to contact " + IndexerApi(show_obj.indexer).name + ": {}".format(e))
                         episode_numbers = []
 
                 for epNo in episode_numbers:

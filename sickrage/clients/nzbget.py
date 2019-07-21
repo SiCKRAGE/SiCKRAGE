@@ -32,8 +32,8 @@ from sickrage.core.databases.main import MainDB
 
 
 class NZBGet(object):
-    @MainDB.with_session
     @staticmethod
+    @MainDB.with_session
     def sendNZB(nzb, proper=False, session=None):
         """
         Sends NZB to NZBGet client

@@ -454,8 +454,7 @@ class QueueItemRefresh(ShowQueueItem):
 
         show_obj.last_refresh = datetime.date.today().toordinal()
 
-        sickrage.app.log.info(
-            "Finished refresh in {}s for show: {}".format(round(time.time() - start_time, 2), show_obj.name))
+        sickrage.app.log.info("Finished refresh in {}s for show: {}".format(round(time.time() - start_time, 2), show_obj.name))
 
 
 class QueueItemRename(ShowQueueItem):

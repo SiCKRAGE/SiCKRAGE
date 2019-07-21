@@ -748,9 +748,7 @@ class TVShow(MainDBBase):
             episode = int(curEp.episode)
 
             # if the path doesn't exist or if it's not in our show dir
-            if not os.path.isfile(curLoc) or not os.path.normpath(curLoc).startswith(
-                    os.path.normpath(self.location)):
-
+            if not os.path.isfile(curLoc) or not os.path.normpath(curLoc).startswith(os.path.normpath(self.location)):
                 # check if downloaded files still exist, update our data if this has changed
                 if not sickrage.app.config.skip_removed_files:
                     # if it used to have a file associated with it and it doesn't anymore then set it to
@@ -763,8 +761,10 @@ class TVShow(MainDBBase):
                             new_status = sickrage.app.config.ep_default_deleted_status
 
                         sickrage.app.log.debug("%s: Location for S%02dE%02d doesn't exist, "
-                                               "removing it and changing our status to %s" % (
-                                                   self.indexer_id, season or 0, episode or 0, statusStrings[new_status]))
+                                               "removing it and changing our status to %s" % (self.indexer_id,
+                                                                                              season or 0,
+                                                                                              episode or 0,
+                                                                                              statusStrings[new_status]))
 
                         curEp.status = new_status
                         curEp.subtitles = ''
@@ -776,6 +776,10 @@ class TVShow(MainDBBase):
                     curEp.hastbn = False
                     curEp.release_name = ''
             else:
+                if curEp.status in Quality.ARCHIVED:
+                    __, oldQuality = Quality.split_composite_status(curEp.status)
+                    curEp.status = Quality.composite_status(DOWNLOADED, oldQuality)
+
                 # the file exists, set its modify file stamp
                 if sickrage.app.config.airdate_episodes:
                     curEp.airdateModifyStamp()

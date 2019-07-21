@@ -4,14 +4,6 @@
 
     import sickrage
     from sickrage.core.helpers import anon_url
-
-    sr_user = None
-    try:
-        import pwd
-        sr_user = pwd.getpwuid(os.getuid()).pw_name
-    except ImportError:
-        import getpass
-        sr_user = getpass.getuser()
 %>
 
 <%block name="content">
@@ -77,17 +69,15 @@
                             </div>
                             <br/>
                         % endif
-                        % if sr_user:
-                            <div class="form-row">
-                                <div class="col-lg-3 col-md-3 col-sm-3">
-                                    <i class="sickrage-core sickrage-core-user"></i> ${_('SR Username:')}
-                                </div>
-                                <div class="col-lg-9 col-md-9 col-sm-9">
-                                    ${current_user['preferred_username']}
-                                </div>
+                        <div class="form-row">
+                            <div class="col-lg-3 col-md-3 col-sm-3">
+                                <i class="sickrage-core sickrage-core-user"></i> ${_('SR Username:')}
                             </div>
-                            <br/>
-                        % endif
+                            <div class="col-lg-9 col-md-9 col-sm-9">
+                                ${current_user['preferred_username']}
+                            </div>
+                        </div>
+                        <br/>
                         <div class="form-row">
                             <div class="col-lg-3 col-md-3 col-sm-3">
                                 <i class="sickrage-core sickrage-core-cfg"></i> ${_('SR Config File:')}

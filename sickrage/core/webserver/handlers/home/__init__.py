@@ -154,16 +154,12 @@ class IsAliveHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         self.set_header('Content-Type', 'text/javascript')
 
-        srcallback = self.get_argument('srcallback', None)
+        srcallback = self.get_argument('srcallback')
 
         if not srcallback:
-            return self.write(
-                _("Error: Unsupported Request. Send jsonp request with 'srcallback' variable in the query string."))
+            return self.write(_("Error: Unsupported Request. Send jsonp request with 'srcallback' variable in the query string."))
 
-        if sickrage.app.started:
-            return self.write("%s({'msg':%s})" % (srcallback, str(sickrage.app.pid)))
-
-        return self.write("%s({'msg':%s})" % (srcallback, "nope"))
+        return self.write("{}({})".format(srcallback, {'msg': str(sickrage.app.pid) if sickrage.app.started else 'nope'}))
 
 
 class TestSABnzbdHandler(BaseHandler, ABC):
@@ -668,9 +664,6 @@ class RestartHandler(BaseHandler, ABC):
 
         # clear current user to disable header and footer
         self.current_user = None
-
-        if not force:
-            self._genericMessage(_("Restarting"), _("SiCKRAGE is restarting"))
 
         sickrage.app.io_loop.add_timeout(datetime.timedelta(seconds=5), sickrage.app.shutdown, restart=True)
 
