@@ -131,10 +131,10 @@ class Core(object):
         self.languages = [language for language in os.listdir(sickrage.LOCALE_DIR) if '_' in language]
         self.client_web_urls = {'torrent': '', 'newznab': ''}
 
-        self.adba_connection = None
-        self.notifier_providers = None
+        self.notifier_providers = {}
         self.metadata_providers = {}
-        self.search_providers = None
+        self.search_providers = {}
+        self.adba_connection = None
         self.log = None
         self.config = None
         self.alerts = None
