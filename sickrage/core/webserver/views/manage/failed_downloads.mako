@@ -41,19 +41,19 @@
                             </thead>
                             <tbody>
                                 % for hItem in failedResults:
-                                    <% curRemove  = "<input type=\"checkbox\" class=\"removeCheck\" id=\"remove-"+hItem["release"]+"\" />" %>
+                                    <% curRemove  = "<input type=\"checkbox\" class=\"removeCheck\" id=\"remove-"+hItem.release+"\" />" %>
                                     <tr>
-                                        <td class="text-nowrap">${hItem["release"]}</td>
+                                        <td class="text-nowrap">${hItem.release}</td>
                                         <td class="table-fit">
-                                            % if hItem["size"] != -1:
-                                                ${pretty_file_size(hItem["size"])}
+                                            % if hItem.size != -1:
+                                                ${pretty_file_size(hItem.size)}
                                             % else:
                                                 ?
                                             % endif
                                         </td>
                                         <td class="table-fit">
-                                            % if hItem["provider"].lower() in sickrage.app.search_providers.all():
-                                            <% provider = sickrage.app.search_providers.all()[hItem["provider"].lower()] %>
+                                            % if hItem.provider.lower() in sickrage.app.search_providers.all():
+                                            <% provider = sickrage.app.search_providers.all()[hItem.provider.lower()] %>
                                                 <i class="sickrage-providers sickrage-providers-${provider.id}"
                                                    title="${provider.name}"
                                                    style="vertical-align:middle;cursor: help;"></i>
