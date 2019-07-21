@@ -1,5 +1,8 @@
 # Changelog
 
+- * a805f3247 - 2019-07-20: Refactored how source updates are handled. Added version update testing for source updates. 
+- * a3d975511 - 2019-07-20: Fixes SICKRAGE-APP-PY3-10X 
+- * c419de010 - 2019-07-20: Pre-Release v9.4.150.dev1 
 - * fbcf2b481 - 2019-07-20: Release v9.4.149 
 - * 05c414015 - 2019-07-20: Fixed issues with unlinking account from application. Fixed issues with test init routines. 
 - * 1999b1567 - 2019-07-20: Pre-Release v9.4.149.dev1 
