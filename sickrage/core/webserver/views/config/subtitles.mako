@@ -191,11 +191,11 @@
                                     <ul>
                                         <li>
                                             ${_('For Windows:')}
-                                            <small class="text-muted">C:\Python27\pythonw.exe C:\Script\test.py</small>
+                                            <small class="text-muted">C:\Python37\pythonw.exe C:\Script\test.py</small>
                                         </li>
                                         <li>
                                             ${_('For Linux:')}
-                                            <small class="text-muted">python /Script/test.py</small>
+                                            <small class="text-muted">python3 /Script/test.py</small>
                                         </li>
                                     </ul>
                                 </ul>
