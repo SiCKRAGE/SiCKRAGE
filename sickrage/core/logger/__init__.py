@@ -1,21 +1,23 @@
-# Author: echel0n <echel0n@sickrage.ca>
-# URL: https://sickrage.ca
-#
-# This file is part of SiCKRAGE.
-#
-# SiCKRAGE is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# SiCKRAGE is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
-
+# ##############################################################################
+#  Author: echel0n <echel0n@sickrage.ca>
+#  URL: https://sickrage.ca/
+#  Git: https://git.sickrage.ca/SiCKRAGE/sickrage.git
+#  -
+#  This file is part of SiCKRAGE.
+#  -
+#  SiCKRAGE is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#  -
+#  SiCKRAGE is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#  -
+#  You should have received a copy of the GNU General Public License
+#  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
+# ##############################################################################
 
 import logging
 import os
@@ -39,8 +41,7 @@ class Logger(logging.getLoggerClass()):
     logging.captureWarnings(True)
     logging.getLogger().addHandler(logging.NullHandler())
 
-    def __init__(self, name="sickrage", consoleLogging=True, fileLogging=False, debugLogging=False, logFile=None,
-                 logSize=1048576, logNr=5):
+    def __init__(self, name="sickrage", consoleLogging=True, fileLogging=False, debugLogging=False, logFile=None, logSize=1048576, logNr=5):
         super(Logger, self).__init__(name)
         self.propagate = False
 
@@ -196,8 +197,7 @@ class Logger(logging.getLoggerClass()):
         :return:
         :rtype: list of str
         """
-        return [modname for importer, modname, ispkg in pkgutil.walk_packages(
-            path=package.__path__, prefix=package.__name__ + '.', onerror=lambda x: None)]
+        return [modname for importer, modname, ispkg in pkgutil.walk_packages(path=package.__path__, prefix=package.__name__ + '.', onerror=lambda x: None)]
 
     def get_loggers(self, package):
         """Return all loggers for package and sub-packages.
