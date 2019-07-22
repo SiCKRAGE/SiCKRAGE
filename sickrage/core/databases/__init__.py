@@ -167,6 +167,12 @@ class SRDatabase(object):
         except DatabaseNotControlledError:
             return 0
 
+    def integrity_check(self):
+        if self.db_type == 'sqlite':
+            if self.session().scalar("PRAGMA integrity_check") != "ok":
+                sickrage.app.log.fatal("{} database file {} is damaged, please restore a backup"
+                                       " or delete the database file and restart SiCKRAGE".format(self.name.capitalize(), self.db_path))
+
     def sync_db_repo(self):
         if self.version < self.db_version:
             if self.db_type == 'sqlite':
