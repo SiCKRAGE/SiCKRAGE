@@ -30,7 +30,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 from sickrage.providers import NewznabProvider, TorrentRssProvider
 
 
-class ConfigProvidersHandler(BaseHandler):
+class ConfigProvidersHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
         return self.render(
