@@ -2462,8 +2462,7 @@ class ConfigMigrator(Config):
 
             sickrage.app.log.info("Backing up config before upgrade")
             if not backup_versioned_file(sickrage.app.config_file, current_version):
-                sickrage.app.log.exit("Config backup failed, abort upgrading config")
-                sys.exit(1)
+                sickrage.app.log.fatal("Config backup failed, abort upgrading config")
             else:
                 sickrage.app.log.info("Proceeding with upgrade")
 

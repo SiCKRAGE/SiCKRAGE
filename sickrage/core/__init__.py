@@ -262,6 +262,9 @@ class Core(object):
 
         # perform database startup actions
         for db in [self.main_db, self.cache_db]:
+            # perform integrity check
+            db.integrity_check()
+
             # migrate database
             db.migrate()
 

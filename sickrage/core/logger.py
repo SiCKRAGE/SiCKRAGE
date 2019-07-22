@@ -233,5 +233,9 @@ class Logger(logging.getLoggerClass()):
     def warning(self, msg, *args, **kwargs):
         super(Logger, self).warning(msg, *args, **kwargs)
 
+    def fatal(self, msg, *args, **kwargs):
+        super(Logger, self).fatal(msg, *args, **kwargs)
+        sys.exit(1)
+
     def close(self, *args, **kwargs):
         logging.shutdown()

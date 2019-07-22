@@ -1,5 +1,9 @@
 # Changelog
 
+- * 4fd9b6613 - 2019-07-22: Enabled Synology package builds. 
+- * 2a8a136b0 - 2019-07-22: Added database integrity check, shuts down SR if corrupt database is detected. Added fatal loggger function to log critical error and exit application. 
+- * 3079a6fca - 2019-07-21: Pre-Release v9.4.154.dev1 
+- * ae1a14e49 - 2019-07-21: Release v9.4.153 
 - * ec617701d - 2019-07-21: Disabled deploying native Synology packages till Python 3.6.8 issues are resolved by Synocommunity. 
 - * 23a244210 - 2019-07-21: Resolved &#x60;TypeError_manage_failed_downloads_mako in render_content &#x27;FailedSnatch&#x27; object is not subscriptable&#x60; Fixes SICKRAGE-APP-PY3-129 
 - * 8c7316b21 - 2019-07-21: Added check for show object to see if NoneType when search TV show cache. 
