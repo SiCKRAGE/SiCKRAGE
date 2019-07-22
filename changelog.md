@@ -1,5 +1,9 @@
 # Changelog
 
+- * 22a6e77bb - 2019-07-22: Resolved issues with sending Telegram notifications. 
+- * 19624f654 - 2019-07-22: Updated copyright notices. 
+- * a70aaea6b - 2019-07-22: Pre-Release v9.4.155.dev1 
+- * 397ac97c0 - 2019-07-22: Release v9.4.154 
 - * 4fd9b6613 - 2019-07-22: Enabled Synology package builds. 
 - * 2a8a136b0 - 2019-07-22: Added database integrity check, shuts down SR if corrupt database is detected. Added fatal loggger function to log critical error and exit application. 
 - * 3079a6fca - 2019-07-21: Pre-Release v9.4.154.dev1 

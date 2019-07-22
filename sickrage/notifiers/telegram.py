@@ -15,12 +15,11 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
-
-
-
+from requests import HTTPError
 from six.moves import urllib
 
 import sickrage
+from sickrage.core.websession import WebSession
 from sickrage.notifiers import Notifiers
 
 
@@ -56,35 +55,20 @@ class TelegramNotifier(Notifiers):
         id = sickrage.app.config.telegram_id or id
         api_key = sickrage.app.config.telegram_apikey or api_key
 
-        sickrage.app.log.debug('Telegram in use with API KEY: {}'.format(api_key))
+        payload = {'chat_id': id, 'text': '{} : {}'.format(title, msg)}
 
-        message = '{} : {}'.format(title.encode(), msg.encode())
-        payload = urllib.parse.urlencode({'chat_id': id, 'text': message})
         telegram_api = 'https://api.telegram.org/bot{}/{}'
 
-        req = urllib.request.Request(telegram_api.format(api_key, 'sendMessage'), payload)
-
-        success = False
         try:
-            urllib.request.urlopen(req)
-            message = 'Telegram message sent successfully.'
-            success = True
-        except IOError as e:
-            message = 'Unknown IO error: {}'.format(e)
-            if hasattr(e, 'code'):
-                error_message = {
-                    400: 'Missing parameter(s). Double check your settings or if the channel/user exists.',
-                    401: 'Authentication failed.',
-                    420: 'Too many messages.',
-                    500: 'Server error. Please retry in a few moments.',
-                }
-                if e.code in error_message:
-                    message = error_message.get(e.code)
+            resp = WebSession().post(telegram_api.format(api_key, 'sendMessage'), json=payload).json()
+            success = resp['ok']
+            message = 'Telegram message sent successfully.' if success else '{} {}'.format(resp['error_code'], resp['description'])
         except Exception as e:
+            success = False
             message = 'Error while sending Telegram message: {} '.format(e)
-        finally:
-            sickrage.app.log.info(message)
-            return success, message
+
+        sickrage.app.log.info(message)
+        return success, message
 
     def notify_snatch(self, ep_name, title=None):
         """
