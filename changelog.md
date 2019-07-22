@@ -1,5 +1,6 @@
 # Changelog
 
+- * 56ddaf165 - 2019-07-22: Release v9.4.155 
 - * 22a6e77bb - 2019-07-22: Resolved issues with sending Telegram notifications. 
 - * 19624f654 - 2019-07-22: Updated copyright notices. 
 - * a70aaea6b - 2019-07-22: Pre-Release v9.4.155.dev1 
