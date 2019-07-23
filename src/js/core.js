@@ -2695,6 +2695,13 @@ $(document).ready(function ($) {
                             }
                         }
 
+                        if (curStepID == 'step-2') {
+                            if (!$('#rootDirs option').length && !$('#fullShowPath').length) {
+                                $('#step-2-messages').empty().html('<div style="color: red;"><b>' + gt('You must add a root TV show directory!') + '</b></div>');
+                                isValid = false;
+                            }
+                        }
+
                         if (isValid) nextStepWizard.removeClass('disabled').trigger('click');
                     });
 
@@ -2726,7 +2733,7 @@ $(document).ready(function ($) {
                     }
 
                     var searchingFor = '<b>' + $('#nameToSearch').val().trim() + '</b> on ' + $('#providedIndexer option:selected').text() + '<br/>';
-                    $('#messages').empty().html('<i id="searchingAnim" class="fas fa-spinner fa-spin fa-fw"></i> searching for ' + searchingFor);
+                    $('#step-1-messages').empty().html('<i id="searchingAnim" class="fas fa-spinner fa-spin fa-fw"></i> searching for ' + searchingFor);
 
                     $.ajax({
                         url: SICKRAGE.srWebRoot + '/home/addShows/searchIndexersForShowName',
@@ -2738,7 +2745,7 @@ $(document).ready(function ($) {
                         timeout: parseInt($('#indexer_timeout').val(), 10) * 1000,
                         dataType: 'json',
                         error: function () {
-                            $('#messages').empty().html(gt('search timed out, try increasing timeout for indexer'));
+                            $('#step-1-messages').empty().html(gt('search timed out, try increasing timeout for indexer'));
                         },
                         success: function (data) {
                             var firstResult = true;
@@ -2785,7 +2792,7 @@ $(document).ready(function ($) {
                             }
                             resultStr += '<br/>';
 
-                            $('#messages').html(resultStr);
+                            $('#step-1-messages').html(resultStr);
                         }
                     });
                 }

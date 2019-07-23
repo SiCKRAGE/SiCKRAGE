@@ -117,7 +117,7 @@
                                         </div>
                                     </div>
                                     <p>
-                                    <div id="messages"></div>
+                                    <div id="step-1-messages"></div>
                                 </div>
                             </div>
                             <div class="card-footer">
@@ -149,6 +149,9 @@
                                 ${_('Pre-chosen Destination Folder:')}
                                     <b>${provided_show_dir}</b><br/>
                                 % endif
+                                <p>
+                                <div id="step-2-messages"></div>
+                                </p>
                             </div>
                         </div>
                         <div class="card-footer">
