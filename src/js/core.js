@@ -771,11 +771,11 @@ $(document).ready(function ($) {
                 });
 
                 $('#manualSearchModalFailed .btn').click(function () {
-                    SICKRAGE.ajax_search.failedDownload = ($(this).text().toLowerCase() === 'yes');
+                    SICKRAGE.ajax_search.failedDownload = (this.classList.contains('btn-success'));
                 });
 
                 $('#manualSearchModalQuality .btn').click(function () {
-                    SICKRAGE.ajax_search.qualityDownload = ($(this).text().toLowerCase() === 'yes');
+                    SICKRAGE.ajax_search.qualityDownload = (this.classList.contains('btn-success'));
                     SICKRAGE.ajax_search.manualSearch(options);
                 });
             },
@@ -5461,15 +5461,15 @@ $(document).ready(function ($) {
                     headers: {3: {sorter: false}}
                 });
 
-                $('#limit').change(function () {
-                    window.location.href = SICKRAGE.srWebRoot + '/manage/failedDownloads/?limit=' + $(this).val();
+                $('#limit').change(function (event) {
+                    window.location.href = SICKRAGE.srWebRoot + '/manage/failedDownloads/?limit=' + $(event.currentTarget).val();
                 });
 
                 $('#submitMassRemove').on('click', function () {
-                    var removeArr = [];
+                    const removeArr = [];
 
                     $('.removeCheck').each(function () {
-                        if ($(this).prop('checked')) {
+                        if (this.checked === true) {
                             removeArr.push($(this).attr('id').split('-')[1]);
                         }
                     });
@@ -5478,7 +5478,9 @@ $(document).ready(function ($) {
                         return false;
                     }
 
-                    window.location.href = SICKRAGE.srWebRoot + '/manage/failedDownloads?toRemove=' + removeArr.join('|');
+                    $.post(SICKRAGE.srWebRoot + '/manage/failedDownloads', 'toRemove=' + removeArr.join('|'), function () {
+                        location.reload(true);
+                    });
                 });
 
                 $('.bulkCheck').on('click', function () {
@@ -5490,32 +5492,32 @@ $(document).ready(function ($) {
                     });
                 });
 
-                if ($('.removeCheck').length) {
-                    $('.removeCheck').each(function (name) {
-                        var lastCheck = null;
-                        $(name).on('click', function (event) {
-                            if (!lastCheck || !event.shiftKey) {
-                                lastCheck = this;
-                                return;
-                            }
-
-                            var check = this;
-                            var found = 0;
-
-                            $(name + ':visible').each(function () {
-                                if (found === 2) {
-                                    return false;
-                                }
-                                if (found === 1) {
-                                    this.checked = lastCheck.checked;
-                                }
-                                if (this === check || this === lastCheck) {
-                                    found++;
-                                }
-                            });
-                        });
-                    });
-                }
+                // if ($('.removeCheck').length) {
+                //     $('.removeCheck').each(function (name) {
+                //         let lastCheck = null;
+                //         $(name).on('click', function (event) {
+                //             if (!lastCheck || !event.shiftKey) {
+                //                 lastCheck = this;
+                //                 return;
+                //             }
+                //
+                //             const check = this;
+                //             let found = 0;
+                //
+                //             $(name + ':visible').each(function () {
+                //                 if (found === 2) {
+                //                     return false;
+                //                 }
+                //                 if (found === 1) {
+                //                     this.checked = lastCheck.checked;
+                //                 }
+                //                 if (this === check || this === lastCheck) {
+                //                     found++;
+                //                 }
+                //             });
+                //         });
+                //     });
+                // }
             },
 
             subtitles_missed: function () {
