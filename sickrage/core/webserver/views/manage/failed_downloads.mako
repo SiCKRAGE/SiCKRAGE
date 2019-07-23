@@ -41,7 +41,6 @@
                             </thead>
                             <tbody>
                                 % for hItem in failedResults:
-                                    <% curRemove  = "<input type=\"checkbox\" class=\"removeCheck\" id=\"remove-"+hItem.release+"\" />" %>
                                     <tr>
                                         <td class="text-nowrap">${hItem.release}</td>
                                         <td class="table-fit">
@@ -64,15 +63,14 @@
                                             % endif
                                         </td>
                                         <td class="table-fit">
-                                            ${curRemove}
+                                            <input type="checkbox" class="removeCheck" id="remove-${hItem.release}"/>
                                         </td>
                                     </tr>
                                 % endfor
                             </tbody>
                         </table>
                     </div>
-                    <input type="button" class="btn" value="${_('Clear')}"
-                           id="submitMassRemove">
+                    <input type="button" class="btn" value="${_('Clear')}" id="submitMassRemove">
                 </div>
             </div>
         </div>

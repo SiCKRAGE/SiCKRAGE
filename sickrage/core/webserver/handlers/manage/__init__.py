@@ -743,17 +743,11 @@ class FailedDownloadsHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
         limit = self.get_argument('limit', None) or 100
-        to_remove = self.get_argument('toRemove', None)
 
         if int(limit) == 0:
             dbData = self.db_session.query(MainDB.FailedSnatch).all()
         else:
-            dbData = self.db_session.query(MainDB.FailedSnatch).limit(int(limit))
-
-        to_remove = to_remove.split("|") if to_remove is not None else []
-        if to_remove:
-            self.db_session.query(MainDB.FailedSnatch).filter(MainDB.FailedSnatch.release.in_(to_remove)).delete()
-            return self.redirect('/manage/failedDownloads/')
+            dbData = self.db_session.query(MainDB.FailedSnatch).limit(int(limit)).all()
 
         return self.render(
             "/manage/failed_downloads.mako",
@@ -765,3 +759,11 @@ class FailedDownloadsHandler(BaseHandler, ABC):
             controller='manage',
             action='failed_downloads'
         )
+
+    @authenticated
+    def post(self, *args, **kwargs):
+        to_remove = self.get_argument('toRemove', None)
+        if to_remove:
+            to_remove = to_remove.split("|")
+            self.db_session.query(MainDB.FailedSnatch).filter(MainDB.FailedSnatch.release.in_(to_remove)).delete(synchronize_session=False)
+            return self.redirect('/manage/failedDownloads/')

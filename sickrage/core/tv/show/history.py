@@ -206,7 +206,7 @@ class History:
         status, quality = Quality.split_composite_status(episode_object.status)
         action = Quality.composite_status(FAILED, quality)
 
-        History._log_history_item(action, show_id, season, episode, quality, release, provider)
+        History._log_history_item(action, show_id, season, episode, quality, release, provider, session=session)
 
 
 class FailedHistory(object):
@@ -243,9 +243,8 @@ class FailedHistory(object):
                 sickrage.app.log.warning("However, they're all the same size. Continuing with found size.")
                 size = dbData[0].size
             else:
-                sickrage.app.log.warning("They also vary in size. Deleting the logged snatches and recording this "
-                                         "release with no size/provider")
-                [FailedHistory.delete_logged_snatch(result.release, result.size, result.provider) for result in dbData]
+                sickrage.app.log.warning("They also vary in size. Deleting the logged snatches and recording this release with no size/provider")
+                [FailedHistory.delete_logged_snatch(result.release, result.size, result.provider, session=session) for result in dbData]
 
             if len(set(x.provider for x in dbData)) == 1:
                 sickrage.app.log.info("They're also from the same provider. Using it as well.")
@@ -254,10 +253,10 @@ class FailedHistory(object):
             size = dbData[0].size
             provider = dbData[0].provider
 
-        if not FailedHistory.has_failed(release, size, provider):
+        if not FailedHistory.has_failed(release, size, provider, session=session):
             session.add(MainDB.FailedSnatch(**{'release': release, 'size': size, 'provider': provider}))
 
-        FailedHistory.delete_logged_snatch(release, size, provider)
+        FailedHistory.delete_logged_snatch(release, size, provider, session=session)
 
         return log_str
 
