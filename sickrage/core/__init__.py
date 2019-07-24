@@ -98,6 +98,7 @@ class Core(object):
         self.cache_dir = None
         self.quiet = None
         self.no_launch = None
+        self.disable_updates = None
         self.web_port = None
         self.developer = None
         self.db_type = None

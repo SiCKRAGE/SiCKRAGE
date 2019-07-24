@@ -684,7 +684,7 @@ class UpdateCheckHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         pid = self.get_argument('pid')
 
-        if str(pid) != str(sickrage.app.pid):
+        if str(pid) != str(sickrage.app.pid) or sickrage.app.disable_updates:
             return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
         sickrage.app.alerts.message(_("Updater"), _('Checking for updates'))
