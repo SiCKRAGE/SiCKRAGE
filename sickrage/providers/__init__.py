@@ -22,8 +22,10 @@
 
 import datetime
 import importlib
+import inspect
 import itertools
 import os
+import pkgutil
 import random
 import re
 from base64 import b16encode, b32decode, b64decode
@@ -511,41 +513,36 @@ class GenericProvider(object):
 
     @classmethod
     def getProvider(cls, name):
-        providerMatch = [x for x in cls.getProviders() if x.name == name]
+        providerMatch = [x for x in cls.get_providers() if x.name == name]
         if len(providerMatch) == 1:
             return providerMatch[0]
 
     @classmethod
     def getProviderByID(cls, id):
-        providerMatch = [x for x in cls.getProviders() if x.id == id]
+        providerMatch = [x for x in cls.get_providers() if x.id == id]
         if len(providerMatch) == 1:
             return providerMatch[0]
 
     @classmethod
-    def getProviders(cls):
+    def get_providers(cls):
         modules = [TorrentProvider.type, NZBProvider.type]
         for type in []:
-            modules += cls.loadProviders(type)
+            modules += cls.load_providers(type)
         return modules
 
     @classmethod
-    def loadProviders(cls, type):
+    def load_providers(cls, provider_type):
         providers = []
-        pregex = re.compile('^([^_]*?)\.py$', re.IGNORECASE)
-        path = os.path.join(os.path.dirname(__file__), type)
-        names = [pregex.match(m) for m in os.listdir(path)]
-        providers += [cls.loadProvider(name.group(1), type) for name in names if name]
-        return providers
 
-    @classmethod
-    def loadProvider(cls, name, type, *args, **kwargs):
-        import inspect
-        members = dict(
-            inspect.getmembers(
-                importlib.import_module('.{}.{}'.format(type, name), 'sickrage.providers'),
-                lambda x: hasattr(x, 'type') and x not in [NZBProvider, TorrentProvider])
-        )
-        return [v for v in members.values() if hasattr(v, 'type') and v.type == type][0](*args, **kwargs)
+        for (__, name, __) in pkgutil.iter_modules([os.path.join(os.path.dirname(__file__), provider_type)]):
+            imported_module = importlib.import_module('.{}.{}'.format(provider_type, name), package='sickrage.providers')
+            for __, klass in inspect.getmembers(imported_module, predicate=lambda o: all([inspect.isclass(o) and issubclass(o, GenericProvider),
+                                                                                          o is not NZBProvider, o is not TorrentProvider,
+                                                                                          getattr(o, 'type', None) == provider_type])):
+                providers += [klass()]
+                break
+
+        return providers
 
 
 class TorrentProvider(GenericProvider):
@@ -693,8 +690,8 @@ class TorrentProvider(GenericProvider):
         return result
 
     @classmethod
-    def getProviders(cls):
-        return super(TorrentProvider, cls).loadProviders(cls.type)
+    def get_providers(cls):
+        return super(TorrentProvider, cls).load_providers(cls.type)
 
 
 class NZBProvider(GenericProvider):
@@ -771,8 +768,8 @@ class NZBProvider(GenericProvider):
         return os.path.join(sickrage.app.config.nzb_dir, '{}.nzb'.format(sanitize_file_name(name)))
 
     @classmethod
-    def getProviders(cls):
-        return super(NZBProvider, cls).loadProviders(cls.type)
+    def get_providers(cls):
+        return super(NZBProvider, cls).load_providers(cls.type)
 
 
 class TorrentRssProvider(TorrentProvider):
@@ -887,7 +884,7 @@ class TorrentRssProvider(TorrentProvider):
         return True
 
     @classmethod
-    def getProviders(cls):
+    def get_providers(cls):
         providers = cls.getDefaultProviders()
 
         try:
@@ -1181,7 +1178,7 @@ class NewznabProvider(NZBProvider):
         return results
 
     @classmethod
-    def getProviders(cls):
+    def get_providers(cls):
         providers = cls.getDefaultProviders()
 
         try:
@@ -1250,10 +1247,10 @@ class SearchProviders(dict):
         self[TorrentRssProvider.type] = {}
 
     def load(self):
-        self[NZBProvider.type] = dict([(p.id, p) for p in NZBProvider.getProviders()])
-        self[TorrentProvider.type] = dict([(p.id, p) for p in TorrentProvider.getProviders()])
-        self[NewznabProvider.type] = dict([(p.id, p) for p in NewznabProvider.getProviders()])
-        self[TorrentRssProvider.type] = dict([(p.id, p) for p in TorrentRssProvider.getProviders()])
+        self[NZBProvider.type] = dict([(p.id, p) for p in NZBProvider.get_providers()])
+        self[TorrentProvider.type] = dict([(p.id, p) for p in TorrentProvider.get_providers()])
+        self[NewznabProvider.type] = dict([(p.id, p) for p in NewznabProvider.get_providers()])
+        self[TorrentRssProvider.type] = dict([(p.id, p) for p in TorrentRssProvider.get_providers()])
 
     def sort(self, key=None, randomize=False):
         sorted_providers = []

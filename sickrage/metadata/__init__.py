@@ -20,7 +20,9 @@
 import importlib
 import inspect
 import os
+import pkgutil
 import re
+import sys
 from xml.etree.ElementTree import ElementTree
 
 import fanart
@@ -104,19 +106,18 @@ class GenericMetadata(object):
     def id(self):
         return str(re.sub(r"[^\w\d_]", "_", str(re.sub(r"[+]", "plus", self.name))).lower())
 
-    def set_config(self, string):
-        config_list = [bool(int(x)) for x in string.split('|')]
-        self.show_metadata = config_list[0]
-        self.episode_metadata = config_list[1]
-        self.fanart = config_list[2]
-        self.poster = config_list[3]
-        self.banner = config_list[4]
-        self.episode_thumbnails = config_list[5]
-        self.season_posters = config_list[6]
-        self.season_banners = config_list[7]
-        self.season_all_poster = config_list[8]
-        self.season_all_banner = config_list[9]
-        self.enabled = config_list[10]
+    @property
+    def config(self):
+        return "|".join(map(str, map(int, [self.show_metadata, self.episode_metadata, self.fanart, self.poster, self.banner, self.episode_thumbnails,
+                                           self.season_posters, self.season_banners, self.season_all_poster, self.season_all_banner, self.enabled])))
+
+    @config.setter
+    def config(self, value):
+        if not value:
+            value = '0|0|0|0|0|0|0|0|0|0|0'
+
+        self.show_metadata, self.episode_metadata, self.fanart, self.poster, self.banner, self.episode_thumbnails, self.season_posters, \
+        self.season_banners, self.season_all_poster, self.season_all_banner, self.enabled = tuple(map(bool, value.split('|')))
 
     @staticmethod
     def _check_exists(location):
@@ -869,25 +870,9 @@ class GenericMetadata(object):
 class MetadataProviders(dict):
     def __init__(self):
         super(MetadataProviders, self).__init__()
-
-        pregex = re.compile('^(.*)\.py$', re.IGNORECASE)
-        names = [pregex.match(m) for m in os.listdir(os.path.dirname(__file__)) if "__" not in m]
-
-        for name in names:
-            if not name:
-                continue
-
-            klass = self._get_klass(name.group(1))
-            if klass:
+        for (__, name, __) in pkgutil.iter_modules([os.path.dirname(__file__)]):
+            imported_module = importlib.import_module('.' + name, package='sickrage.metadata')
+            for __, klass in inspect.getmembers(imported_module,
+                                                predicate=lambda o: inspect.isclass(o) and issubclass(o, GenericMetadata) and o is not GenericMetadata):
                 self[klass().id] = klass()
-
-    @staticmethod
-    def _get_klass(name):
-        try:
-            return list(dict(
-                inspect.getmembers(
-                    importlib.import_module('.{}'.format(name), 'sickrage.metadata'),
-                    predicate=lambda o: inspect.isclass(o) and issubclass(o, GenericMetadata) and o is not GenericMetadata)
-            ).values())[0]
-        except IndexError:
-            pass
+                break

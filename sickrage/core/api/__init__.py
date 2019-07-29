@@ -13,6 +13,7 @@ from sickrage.core.api.exceptions import ApiUnauthorized, ApiError
 
 class API(object):
     def __init__(self):
+        self.name = 'SR-API'
         self.api_url = 'https://www.sickrage.ca/api/v1/'
         self.client_id = sickrage.app.oidc_client_id
         self.client_secret = sickrage.app.oidc_client_secret
@@ -87,7 +88,7 @@ class API(object):
         try:
             self.token = self.session.refresh_token(self.token_url, **extras)
         except InvalidGrantError as e:
-            self.token = ''
+            self.token = {}
 
         return self.token
 

@@ -1879,9 +1879,7 @@ class Config(object):
         sickrage.app.search_providers.provider_order = self.check_setting_str('Providers', 'providers_order')
 
         for metadataProviderID, metadataProviderObj in sickrage.app.metadata_providers.items():
-            metadataProviderObj.set_config(
-                self.check_setting_str('MetadataProviders', metadataProviderID, '0|0|0|0|0|0|0|0|0|0|0')
-            )
+            metadataProviderObj.config = self.check_setting_str('MetadataProviders', metadataProviderID, '0|0|0|0|0|0|0|0|0|0|0')
 
         # mark config settings loaded
         self.loaded = True
