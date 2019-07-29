@@ -1,5 +1,10 @@
 # Changelog
 
+- * 90fe2d3d3 - 2019-07-28: Refactored dynamic loading of metadata providers. Refactored dynamic loading of notifier providers. Refactored dynamic loading of NZB providers. Refactored dynamic loading of Torrent providers. Refactored metadata provider config property and added default value. Refactored web handler arguments to return string instead of None for default value. 
+- * c5ca8dae3 - 2019-07-26: Added Sentry tag to gather Python version to help debug issues. 
+- * e1a4bc05e - 2019-07-24: Added &#x60;--disable_updates&#x60; startup option to allow disabling of application updates both auto and manual. 
+- * add2bae62 - 2019-07-22: Added check for existance of root directory before allowing adding of shows. 
+- * 324d44f3a - 2019-07-22: Pre-Release v9.4.157.dev1 
 - * 7d7e6e5b7 - 2019-07-22: Release v9.4.156 
 - * 7fce35662 - 2019-07-22: Resolved issues with marking failed snatches and retrying snatches. 
 - * 7cea63c5e - 2019-07-22: Pre-Release v9.4.156.dev1 
