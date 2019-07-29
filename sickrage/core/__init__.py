@@ -41,6 +41,7 @@ from keycloak.realm import KeycloakRealm
 from tornado.ioloop import IOLoop
 
 import sickrage
+from sickrage.core.api import API
 from sickrage.core.api.account import AccountAPI
 from sickrage.core.caches.name_cache import NameCache
 from sickrage.core.caches.quicksearch_cache import QuicksearchCache
@@ -329,6 +330,16 @@ class Core(object):
             self.config.proper_searcher_interval = 'daily'
         if self.config.showupdate_hour < 0 or self.config.showupdate_hour > 23:
             self.config.showupdate_hour = 0
+
+        # add API token refresh job
+        self.scheduler.add_job(
+            API().refresh_token,
+            IntervalTrigger(
+                hours=1,
+            ),
+            name='SR-API',
+            id='SR-API'
+        )
 
         # add version checker job
         self.scheduler.add_job(

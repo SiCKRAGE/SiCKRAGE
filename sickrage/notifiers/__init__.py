@@ -23,6 +23,7 @@
 import importlib
 import inspect
 import os
+import pkgutil
 import re
 
 import sickrage
@@ -102,25 +103,9 @@ class Notifiers(object):
 class NotifierProviders(dict):
     def __init__(self):
         super(NotifierProviders, self).__init__()
-
-        pregex = re.compile('^(.*)\.py$', re.IGNORECASE)
-        names = [pregex.match(m) for m in os.listdir(os.path.dirname(__file__)) if "__" not in m]
-
-        for name in names:
-            if not name:
-                continue
-
-            klass = self._get_klass(name.group(1))
-            if klass:
+        for (__, name, __) in pkgutil.iter_modules([os.path.dirname(__file__)]):
+            imported_module = importlib.import_module('.' + name, package='sickrage.notifiers')
+            for __, klass in inspect.getmembers(imported_module,
+                                                predicate=lambda o: inspect.isclass(o) and issubclass(o, Notifiers) and o is not Notifiers):
                 self[klass().id] = klass()
-
-    @staticmethod
-    def _get_klass(name):
-        try:
-            return list(dict(
-                inspect.getmembers(
-                    importlib.import_module('.{}'.format(name), 'sickrage.notifiers'),
-                    predicate=lambda o: inspect.isclass(o) and issubclass(o, Notifiers) and o is not Notifiers)
-            ).values())[0]
-        except IndexError:
-            pass
+                break

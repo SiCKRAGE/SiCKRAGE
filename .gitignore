@@ -60,6 +60,8 @@ sickrage.egg-info
 /build/
 pre-commit-hook.sh
 /venv-*/
+/.vagrant/
+Vagrantfile
 
 # OS Generated Files #
 ######################
