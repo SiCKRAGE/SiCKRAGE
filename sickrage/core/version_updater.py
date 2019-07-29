@@ -631,9 +631,13 @@ class SourceUpdateManager(UpdateManager):
 
                 with tempfile.TemporaryDirectory(prefix='sr_update_', dir=sickrage.app.data_dir) as unpack_dir:
                     sickrage.app.log.info("Extracting SiCKRAGE update file")
-                    tar = tarfile.open(fileobj=update_tarfile, mode='r:gz')
-                    tar.extractall(unpack_dir)
-                    tar.close()
+                    try:
+                        tar = tarfile.open(fileobj=update_tarfile, mode='r:gz')
+                        tar.extractall(unpack_dir)
+                        tar.close()
+                    except tarfile.ReadError:
+                        sickrage.app.log.warning("Invalid update data, update failed: not a gzip file")
+                        return False
 
                     # find update dir name
                     update_dir_contents = [x for x in os.listdir(unpack_dir) if os.path.isdir(os.path.join(unpack_dir, x))]
