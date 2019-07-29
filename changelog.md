@@ -1,5 +1,6 @@
 # Changelog
 
+- * dad896a55 - 2019-07-28: Release v9.4.157 
 - * 90fe2d3d3 - 2019-07-28: Refactored dynamic loading of metadata providers. Refactored dynamic loading of notifier providers. Refactored dynamic loading of NZB providers. Refactored dynamic loading of Torrent providers. Refactored metadata provider config property and added default value. Refactored web handler arguments to return string instead of None for default value. 
 - * c5ca8dae3 - 2019-07-26: Added Sentry tag to gather Python version to help debug issues. 
 - * e1a4bc05e - 2019-07-24: Added &#x60;--disable_updates&#x60; startup option to allow disabling of application updates both auto and manual. 
