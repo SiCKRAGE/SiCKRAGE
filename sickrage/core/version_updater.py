@@ -307,7 +307,7 @@ class UpdateManager(object):
             exit_status = p.returncode
 
             if output:
-                output = output.decode("utf-8", "ignore").strip()
+                output = output.decode("utf-8", "ignore").strip() if isinstance(output, bytes) else output.strip()
         except OSError:
             sickrage.app.log.info("Command " + ' '.join(cmd) + " didn't work")
             exit_status = 1
@@ -363,7 +363,7 @@ class UpdateManager(object):
             exit_status = 1
 
         if output:
-            output = output.decode("utf-8", "ignore").strip()
+            output = output.decode("utf-8", "ignore").strip() if isinstance(output, bytes) else output.strip()
 
         return output, err, exit_status
 
@@ -400,7 +400,7 @@ class UpdateManager(object):
         sickrage.app.log.warning('Unable to update requirements')
 
         if output:
-            output = output.decode("utf-8", "ignore").strip()
+            output = output.decode("utf-8", "ignore").strip() if isinstance(output, bytes) else output.strip()
             sickrage.app.log.debug("PIP CMD OUTPUT: {}".format(output))
 
         requirements_file.close()
