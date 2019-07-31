@@ -6,7 +6,7 @@ cfscrape == 1.9.7
 configobj == 5.0.6
 feedparser == 5.2.1
 guessit == 3.0.3
-hachoir3 == 3.0a2
+hachoir == 3.0a5
 Mako == 1.0.9
 markdown2 == 2.3.6
 oauth2 == 1.9.0.post1

@@ -307,7 +307,7 @@ class UpdateManager(object):
             exit_status = p.returncode
 
             if output:
-                output = output.decode("utf-8", "ignore").strip()
+                output = output.decode("utf-8", "ignore").strip() if isinstance(output, bytes) else output.strip()
         except OSError:
             sickrage.app.log.info("Command " + ' '.join(cmd) + " didn't work")
             exit_status = 1
@@ -363,7 +363,7 @@ class UpdateManager(object):
             exit_status = 1
 
         if output:
-            output = output.decode("utf-8", "ignore").strip()
+            output = output.decode("utf-8", "ignore").strip() if isinstance(output, bytes) else output.strip()
 
         return output, err, exit_status
 
@@ -400,7 +400,7 @@ class UpdateManager(object):
         sickrage.app.log.warning('Unable to update requirements')
 
         if output:
-            output = output.decode("utf-8", "ignore").strip()
+            output = output.decode("utf-8", "ignore").strip() if isinstance(output, bytes) else output.strip()
             sickrage.app.log.debug("PIP CMD OUTPUT: {}".format(output))
 
         requirements_file.close()
@@ -631,9 +631,13 @@ class SourceUpdateManager(UpdateManager):
 
                 with tempfile.TemporaryDirectory(prefix='sr_update_', dir=sickrage.app.data_dir) as unpack_dir:
                     sickrage.app.log.info("Extracting SiCKRAGE update file")
-                    tar = tarfile.open(fileobj=update_tarfile, mode='r:gz')
-                    tar.extractall(unpack_dir)
-                    tar.close()
+                    try:
+                        tar = tarfile.open(fileobj=update_tarfile, mode='r:gz')
+                        tar.extractall(unpack_dir)
+                        tar.close()
+                    except tarfile.ReadError:
+                        sickrage.app.log.warning("Invalid update data, update failed: not a gzip file")
+                        return False
 
                     # find update dir name
                     update_dir_contents = [x for x in os.listdir(unpack_dir) if os.path.isdir(os.path.join(unpack_dir, x))]

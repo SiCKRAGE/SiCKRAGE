@@ -5,6 +5,7 @@ from urllib.parse import urljoin
 
 from oauthlib.oauth2 import MissingTokenError, InvalidClientIdError, TokenExpiredError, InvalidGrantError
 from raven.utils.json import JSONDecodeError
+from requests import RequestException
 from requests_oauthlib import OAuth2Session
 
 import sickrage
@@ -54,27 +55,33 @@ class API(object):
         return self._request('POST', 'account/private-key', data=dict({'privatekey': privatekey}))
 
     def _request(self, method, url, **kwargs):
-        try:
-            resp = self.session.request(method, urljoin(self.api_url, url), timeout=30,
-                                        hooks={'response': self.throttle_hook}, **kwargs)
+        latest_exception = None
 
-            if resp.status_code in [401, 403]:
-                if not self.token_refreshed:
-                    raise TokenExpiredError
-                if 'error' in resp.json():
-                    raise ApiError(resp.json()['error'])
-            elif resp.status_code >= 400:
-                if 'error' in resp.json():
-                    raise ApiError(resp.json()['error'])
-            elif resp.status_code == 204:
-                return
+        for i in range(3):
+            try:
+                resp = self.session.request(method, urljoin(self.api_url, url), timeout=30, hooks={'response': self.throttle_hook}, **kwargs)
+                if resp.status_code in [401, 403]:
+                    if not self.token_refreshed:
+                        raise TokenExpiredError
+                    if 'error' in resp.json():
+                        raise ApiError(resp.json()['error'])
+                elif resp.status_code >= 400:
+                    if 'error' in resp.json():
+                        raise ApiError(resp.json()['error'])
+                elif resp.status_code == 204:
+                    return
 
-            return resp.json()
-        except TokenExpiredError:
-            self.refresh_token()
-            return self._request(method, url, **kwargs)
-        except (InvalidClientIdError, MissingTokenError) as e:
-            sickrage.app.log.warning("SiCKRAGE token issue, please try logging out and back in again to the web-ui")
+                return resp.json()
+            except TokenExpiredError:
+                self.refresh_token()
+            except (InvalidClientIdError, MissingTokenError) as e:
+                latest_exception = "SiCKRAGE token issue, please try logging out and back in again to the web-ui"
+            except RequestException as e:
+                latest_exception = e
+
+            time.sleep(1)
+
+        sickrage.app.log.warning('{!r}'.format(latest_exception))
 
     def exchange_token(self, token, scope='offline_access'):
         exchange = {'scope': scope, 'subject_token': token['access_token']}
@@ -87,7 +94,7 @@ class API(object):
 
         try:
             self.token = self.session.refresh_token(self.token_url, **extras)
-        except InvalidGrantError as e:
+        except InvalidGrantError:
             self.token = {}
 
         return self.token
