@@ -1,5 +1,11 @@
 # Changelog
 
+- * 67b328efe - 2019-07-31: Refactored requirements.txt to replace package hachoir3 with hachoir, hachoir3 was removed from PyPi. 
+- * a7367cfd6 - 2019-07-30: Refactored SiCKRAGE API web session requests to retry 3 times with 1s pause between retries. 
+- * c8b25004d - 2019-07-30: Added passing of database session for scene number function calls in display show web handler. 
+- * eb3a91213 - 2019-07-28: Added exception handling for tarfile extraction in version updater. 
+- * cfbeee1ab - 2019-07-28: Fixed attribute error &#x60;&#x27;str&#x27; object has no attribute &#x27;decode&#x27;&#x60; in version updater. Fixes SICKRAGE-APP-PY3-1B9 
+- * c7a14c81a - 2019-07-28: Pre-Release v9.4.158.dev1 
 - * dad896a55 - 2019-07-28: Release v9.4.157 
 - * 90fe2d3d3 - 2019-07-28: Refactored dynamic loading of metadata providers. Refactored dynamic loading of notifier providers. Refactored dynamic loading of NZB providers. Refactored dynamic loading of Torrent providers. Refactored metadata provider config property and added default value. Refactored web handler arguments to return string instead of None for default value. 
 - * c5ca8dae3 - 2019-07-26: Added Sentry tag to gather Python version to help debug issues. 
