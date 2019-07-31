@@ -1,5 +1,6 @@
 # Changelog
 
+- * 5db54c4bd - 2019-07-31: Release v9.4.158 
 - * 67b328efe - 2019-07-31: Refactored requirements.txt to replace package hachoir3 with hachoir, hachoir3 was removed from PyPi. 
 - * a7367cfd6 - 2019-07-30: Refactored SiCKRAGE API web session requests to retry 3 times with 1s pause between retries. 
 - * c8b25004d - 2019-07-30: Added passing of database session for scene number function calls in display show web handler. 
