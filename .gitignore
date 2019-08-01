@@ -34,6 +34,7 @@ autoProcessTV.cfg
 /tests/providers/
 /tests/show name/
 /tests/show name final/
+/tests/sr_update_*/
 
 #  Compiled Source   #
 ######################
