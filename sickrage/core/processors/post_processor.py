@@ -701,7 +701,7 @@ class PostProcessor(object):
 
             show_id = cur_show_id
 
-            if cur_season:
+            if cur_season is not None:
                 season = cur_season
 
             if len(cur_episodes):
@@ -717,7 +717,7 @@ class PostProcessor(object):
             if cur_release_group is not None:
                 release_group = cur_release_group
 
-            if all([show_id, season, len(episodes) > 0, quality, version]):
+            if all([show_id, season is not None, len(episodes) > 0, quality]):
                 break
 
         return show_id, season, episodes, quality, version, release_group
@@ -929,8 +929,8 @@ class PostProcessor(object):
         if not show_object:
             self._log("This show isn't in your list, you need to add it to SiCKRAGE before post-processing an episode")
             raise EpisodePostProcessingFailedException()
-        elif not len(episodes):
-            self._log("Not enough information to determine what episode this is. Quitting post-processing")
+        elif not all([season is not None, len(episodes)]):
+            self._log("Not enough information to determine what season/episode this is. Quitting post-processing")
             return False
 
         # retrieve/create the corresponding TVEpisode objects

@@ -1560,7 +1560,7 @@
                                 </div>
                             </div>
                             <input type="hidden" name="${cur_id}_data" id="${cur_id}_data"
-                                   value="${cur_generator.get_config()}"/>
+                                   value="${cur_generator.config}"/>
                         % endfor
                     </div>
                 </div>
