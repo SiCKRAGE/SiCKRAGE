@@ -2367,7 +2367,7 @@ class Config(object):
                                                                                    bool) else getattr(providerObj, x))
                                     for x in provider_keys if hasattr(providerObj, x)]) for providerID, providerObj in
                   sickrage.app.search_providers.all().items()}),
-            'MetadataProviders': {metadataProviderID: metadataProviderObj.get_config() for
+            'MetadataProviders': {metadataProviderID: metadataProviderObj.config for
                                   metadataProviderID, metadataProviderObj in sickrage.app.metadata_providers.items()}
         })
 

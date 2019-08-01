@@ -87,21 +87,6 @@ class GenericMetadata(object):
         self.season_all_poster = season_all_poster
         self.season_all_banner = season_all_banner
 
-    def get_config(self):
-        config_list = [self.show_metadata,
-                       self.episode_metadata,
-                       self.fanart,
-                       self.poster,
-                       self.banner,
-                       self.episode_thumbnails,
-                       self.season_posters,
-                       self.season_banners,
-                       self.season_all_poster,
-                       self.season_all_banner,
-                       self.enabled]
-
-        return '|'.join([str(int(x)) for x in config_list])
-
     @property
     def id(self):
         return str(re.sub(r"[^\w\d_]", "_", str(re.sub(r"[+]", "plus", self.name))).lower())
@@ -117,7 +102,7 @@ class GenericMetadata(object):
             value = '0|0|0|0|0|0|0|0|0|0|0'
 
         self.show_metadata, self.episode_metadata, self.fanart, self.poster, self.banner, self.episode_thumbnails, self.season_posters, \
-        self.season_banners, self.season_all_poster, self.season_all_banner, self.enabled = tuple(map(bool, value.split('|')))
+        self.season_banners, self.season_all_poster, self.season_all_banner, self.enabled = tuple(map(bool, map(int, value.split('|'))))
 
     @staticmethod
     def _check_exists(location):
