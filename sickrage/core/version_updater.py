@@ -618,7 +618,7 @@ class SourceUpdateManager(UpdateManager):
         Downloads the latest source tarball from server and installs it over the existing version.
         """
 
-        tar_download_url = 'https://git.sickrage.ca/SiCKRAGE/sickrage/repository/archive.tar.gz?ref=master'
+        tar_download_url = 'https://git.sickrage.ca/SiCKRAGE/sickrage/repository/archive.tar.gz?ref={}'.format(('master', 'develop')['dev' in self.version])
 
         try:
             if not self.install_requirements(self.current_branch):
