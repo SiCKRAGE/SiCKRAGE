@@ -1,5 +1,6 @@
 # Changelog
 
+- * 7b9f412c4 - 2019-07-31: Release v9.4.159 
 - * 763629b05 - 2019-07-31: Refactored cleanup of pyc, pyo, and __pycache__ files and folders. 
 - * b4f32269e - 2019-07-31: Updated gitignore file 
 - * e210a8fb3 - 2019-07-31: Refactored post-processing to properly handle specials. Fixed issues with post-processing when version is none type. 
