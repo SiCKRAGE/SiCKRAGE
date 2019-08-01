@@ -20,17 +20,14 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 
-import os
+import pathlib
 
 if __name__ == '__main__':
-    # removes stale .pyc files
-    for root, dirs, files in os.walk(os.path.dirname(__file__)):
-        pyc_files = list(filter(lambda filename: filename.endswith(".pyc"), files))
-        py_files = set(filter(lambda filename: filename.endswith(".py"), files))
-        excess_pyc_files = list(filter(lambda pyc_filename: pyc_filename[:-1] not in py_files, pyc_files))
-        for excess_pyc_file in excess_pyc_files:
-            full_path = os.path.join(root, excess_pyc_file)
-            os.remove(full_path)
+    # remove pyc and pyo files
+    [p.unlink() for p in pathlib.Path('.').rglob('*.py[co]')]
+
+    # remove __pycache__ folder
+    [p.rmdir() for p in pathlib.Path('.').rglob('__pycache__')]
 
     from sickrage import main
 
