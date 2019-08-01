@@ -1,5 +1,11 @@
 # Changelog
 
+- * 763629b05 - 2019-07-31: Refactored cleanup of pyc, pyo, and __pycache__ files and folders. 
+- * b4f32269e - 2019-07-31: Updated gitignore file 
+- * e210a8fb3 - 2019-07-31: Refactored post-processing to properly handle specials. Fixed issues with post-processing when version is none type. 
+- * 67acc5d9f - 2019-07-31: Refactored download link for source installs to accommodate develop releases. 
+- * 89e49316f - 2019-07-31: Fixed issues with saving metadata provider settings. 
+- * cec8a876a - 2019-07-31: Pre-Release v9.4.159.dev1 
 - * 5db54c4bd - 2019-07-31: Release v9.4.158 
 - * 67b328efe - 2019-07-31: Refactored requirements.txt to replace package hachoir3 with hachoir, hachoir3 was removed from PyPi. 
 - * a7367cfd6 - 2019-07-30: Refactored SiCKRAGE API web session requests to retry 3 times with 1s pause between retries. 
