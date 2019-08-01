@@ -19,15 +19,16 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-
+import os
 import pathlib
+import shutil
 
 if __name__ == '__main__':
     # remove pyc and pyo files
-    [p.unlink() for p in pathlib.Path('.').rglob('*.py[co]')]
+    [p.unlink() for p in pathlib.Path(os.path.dirname(__file__)).rglob('*.py[co]')]
 
     # remove __pycache__ folder
-    [p.rmdir() for p in pathlib.Path('.').rglob('__pycache__')]
+    [shutil.rmtree(p) for p in pathlib.Path(os.path.dirname(__file__)).rglob('__pycache__')]
 
     from sickrage import main
 
