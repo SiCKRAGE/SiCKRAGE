@@ -25,10 +25,10 @@ import shutil
 
 if __name__ == '__main__':
     # remove pyc and pyo files
-    [p.unlink() for p in pathlib.Path(os.path.dirname(__file__)).rglob('*.py[co]')]
+    [p.unlink() for p in pathlib.Path(os.path.dirname(__file__)).rglob('*.py[co]') if p.is_file()]
 
     # remove __pycache__ folder
-    [shutil.rmtree(p) for p in pathlib.Path(os.path.dirname(__file__)).rglob('__pycache__')]
+    [shutil.rmtree(p) for p in pathlib.Path(os.path.dirname(__file__)).rglob('__pycache__') if p.is_dir()]
 
     from sickrage import main
 
