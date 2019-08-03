@@ -28,7 +28,7 @@ if __name__ == '__main__':
     [p.unlink() for p in pathlib.Path(os.path.dirname(__file__)).rglob('*.py[co]')]
 
     # remove __pycache__ folder
-    [shutil.rmtree(p) for p in pathlib.Path(os.path.dirname(__file__)).rglob('__pycache__')]
+    [shutil.rmtree(str(p)) for p in pathlib.Path(os.path.dirname(__file__)).rglob('__pycache__')]
 
     from sickrage import main
 
