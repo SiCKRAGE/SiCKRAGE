@@ -101,7 +101,7 @@ class Logger(logging.getLoggerClass()):
         sentry_tags = {
             'platform': platform.platform(),
             'locale': sys.getdefaultencoding(),
-            'python': sys.version_info
+            'python': platform.python_version()
         }
 
         if sickrage.app.config and sickrage.app.config.sub_id:
