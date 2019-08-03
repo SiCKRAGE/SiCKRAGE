@@ -1,6 +1,9 @@
 # Changelog
 
+- * 66c72505a - 2019-08-03: Fixed startup issues with pathlib.Path, passes string representation of path to shutil.rmtree. 
+- * 72203528b - 2019-08-01: Pre-Release v9.4.162.dev1 
 - * c696d9414 - 2019-08-01: Release v9.4.161 
+- * f269aa7ee - 2019-08-01: Fixed issues with startup and shutil.rmtree 
 - * 22b5ff3c1 - 2019-08-01: Pre-Release v9.4.161.dev1 
 - * cbdb2f1a7 - 2019-08-01: Release v9.4.160 
 - * 2be1836ff - 2019-08-01: Fixed issues with cleanup of python compiled files on startup 
