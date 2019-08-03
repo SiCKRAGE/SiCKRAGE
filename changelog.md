@@ -1,5 +1,6 @@
 # Changelog
 
+- * 8810a8320 - 2019-08-03: Release v9.4.163 
 - * 66c72505a - 2019-08-03: Fixed startup issues with pathlib.Path, passes string representation of path to shutil.rmtree. 
 - * 72203528b - 2019-08-01: Pre-Release v9.4.162.dev1 
 - * c696d9414 - 2019-08-01: Release v9.4.161 
