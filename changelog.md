@@ -1,5 +1,6 @@
 # Changelog
 
+- * 484236b8d - 2019-08-04: Release v9.4.165 
 - * e5d59c9d1 - 2019-08-04: Renamed cache providers column &#x60;indexer_id&#x60; to &#x60;series_id&#x60; 
 - * 7678be446 - 2019-08-04: Refactored external API to version 2 which uses series_id instead of indexer_id, part of larger code refactor. 
 - * 365a16db2 - 2019-08-04: Resolved issue with int variable being used where str variable is expected when creating metadata for mede8er provider. 
