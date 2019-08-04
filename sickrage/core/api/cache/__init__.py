@@ -16,4 +16,4 @@ class TorrentCacheAPI(API):
         return self._request('GET', query)
 
     def add(self, url):
-        return self._request('POST', 'cache/torrent', data=dict({'url': url}))
+        return self._request('POST', 'cache/torrent', json={'url': url})

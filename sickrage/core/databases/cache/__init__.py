@@ -35,7 +35,7 @@ class CacheDBBase(object):
 
 
 class CacheDB(SRDatabase):
-    db_version = 2
+    db_version = 3
 
     session = sessionmaker(class_=ContextSession)
 
