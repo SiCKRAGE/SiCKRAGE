@@ -128,9 +128,8 @@ class Mede8erMetadata(MediaBrowserMetadata):
 
         # check for title and id
         if not (getattr(myShow, 'seriesname', None) and getattr(myShow, 'id', None)):
-            sickrage.app.log.info(
-                "Incomplete info for show with id " + str(show_obj.indexer_id) + " on " + IndexerApi(
-                    show_obj.indexer).name + ", skipping it")
+            sickrage.app.log.info("Incomplete info for "
+                                  "show with id " + str(show_obj.indexer_id) + " on " + IndexerApi(show_obj.indexer).name + ", skipping it")
             return False
 
         SeriesName = SubElement(tv_node, "title")
@@ -185,7 +184,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
 
         if getattr(myShow, 'id', None):
             indexer_id = SubElement(tv_node, "indexer_id")
-            indexer_id.text = myShow['id']
+            indexer_id.text = str(myShow['id'])
 
         if getattr(myShow, 'runtime', None):
             Runtime = SubElement(tv_node, "runtime")
