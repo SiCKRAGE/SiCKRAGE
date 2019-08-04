@@ -19,10 +19,11 @@
 
 
 import operator
-import os.path
 import re
 from collections import UserDict
 from functools import reduce
+
+import pathlib
 
 from sickrage.core.helpers.metadata import get_file_metadata, get_resolution
 
@@ -260,7 +261,7 @@ class Quality(object):
         if not name:
             return ret
 
-        name = os.path.basename(name)
+        name = pathlib.Path(name).name
 
         check_name = lambda l, func: func([re.search(x, name, re.I) for x in l])
 
@@ -375,7 +376,7 @@ class Quality(object):
         data = {}
         quality = Quality.UNKNOWN
 
-        if os.path.isfile(filename):
+        if pathlib.Path(filename).is_file():
             meta = get_file_metadata(filename)
 
             try:
@@ -388,7 +389,7 @@ class Quality(object):
             except:
                 return quality
 
-            base_filename = os.path.basename(filename)
+            base_filename = pathlib.Path(filename).name
             bluray = re.search(r"blue?-?ray|hddvd|b[rd](rip|mux)", base_filename, re.I) is not None
             webdl = re.search(r"\bweb\b|web.?dl|web(rip|mux|hd)", base_filename, re.I) is not None
 
