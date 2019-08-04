@@ -538,7 +538,7 @@ $(document).ready(function ($) {
                 $('.modal').on('shown.bs.modal', function () {
                     $('body').addClass('modal-open');
                     $('body').removeAttr('style');
-                })
+                });
 
                 SICKRAGE.browser.init();
                 SICKRAGE.quality_chooser.init();

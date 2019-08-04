@@ -1,5 +1,8 @@
 # Changelog
 
+- * e78b093ce - 2019-08-03: Added custom form validation for search clients and URLs 
+- * b9e1cec52 - 2019-08-03: Fixed issues were skipping shows during adding of existing shows would just return to home page, now correctly skips to next show to add. 
+- * 4d7edadd0 - 2019-08-03: Pre-Release v9.4.164.dev2 
 - * dae67f8d0 - 2019-08-03: Refactored os.path for pathlib.Path 
 - * 4b7cdaefa - 2019-08-03: Refactored python version log tagging to use platform instead of sys 
 - * 0b1d1c70d - 2019-08-03: Pre-Release v9.4.164.dev1 
