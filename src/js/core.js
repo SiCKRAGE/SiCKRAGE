@@ -550,6 +550,18 @@ $(document).ready(function ($) {
                 });
 
                 SICKRAGE.text_viewer();
+
+                // Custom form validation with Bootstrap 4
+                let forms = document.getElementsByClassName('needs-validation');
+                SICKRAGE.forms_validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
             }
         },
 
@@ -2879,6 +2891,10 @@ $(document).ready(function ($) {
 
                 $('#configForm').ajaxForm({
                     beforeSubmit: function () {
+                        if (SICKRAGE.forms_validation === false) {
+                            return false
+                        }
+
                         $('.config_submitter .config_submitter_refresh').each(function () {
                             $(this).attr("disabled", "disabled");
                             $(this).after('<span>' + SICKRAGE.loadingHTML + gt(' Saving...') + '</span>');
@@ -2917,7 +2933,7 @@ $(document).ready(function ($) {
                 });
 
                 // on load of the page: switch to the currently selected tab
-                $('#config-menus a[href="' + window.location.hash + '"]').tab('show')
+                $('#config-menus a[href="' + window.location.hash + '"]').tab('show');
 
                 $('a.resetConfig').confirm({
                     theme: 'dark',
