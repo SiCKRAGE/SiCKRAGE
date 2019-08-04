@@ -1,5 +1,9 @@
 # Changelog
 
+- * e5d59c9d1 - 2019-08-04: Renamed cache providers column &#x60;indexer_id&#x60; to &#x60;series_id&#x60; 
+- * 7678be446 - 2019-08-04: Refactored external API to version 2 which uses series_id instead of indexer_id, part of larger code refactor. 
+- * 365a16db2 - 2019-08-04: Resolved issue with int variable being used where str variable is expected when creating metadata for mede8er provider. 
+- * bfd27b17a - 2019-08-03: Pre-Release v9.4.165.dev1 
 - * dfd9ecf67 - 2019-08-03: Release v9.4.164 
 - * e78b093ce - 2019-08-03: Added custom form validation for search clients and URLs 
 - * b9e1cec52 - 2019-08-03: Fixed issues were skipping shows during adding of existing shows would just return to home page, now correctly skips to next show to add. 
