@@ -1,5 +1,8 @@
 # Changelog
 
+- * dae67f8d0 - 2019-08-03: Refactored os.path for pathlib.Path 
+- * 4b7cdaefa - 2019-08-03: Refactored python version log tagging to use platform instead of sys 
+- * 0b1d1c70d - 2019-08-03: Pre-Release v9.4.164.dev1 
 - * 8810a8320 - 2019-08-03: Release v9.4.163 
 - * 66c72505a - 2019-08-03: Fixed startup issues with pathlib.Path, passes string representation of path to shutil.rmtree. 
 - * 72203528b - 2019-08-01: Pre-Release v9.4.162.dev1 
