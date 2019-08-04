@@ -1,5 +1,6 @@
 # Changelog
 
+- * dfd9ecf67 - 2019-08-03: Release v9.4.164 
 - * e78b093ce - 2019-08-03: Added custom form validation for search clients and URLs 
 - * b9e1cec52 - 2019-08-03: Fixed issues were skipping shows during adding of existing shows would just return to home page, now correctly skips to next show to add. 
 - * 4d7edadd0 - 2019-08-03: Pre-Release v9.4.164.dev2 
