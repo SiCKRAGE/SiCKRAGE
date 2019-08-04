@@ -221,8 +221,7 @@ class NewShowHandler(BaseHandler, ABC):
         if not show_dir and search_string:
             default_show_name = search_string
         elif not show_name and show_dir:
-            default_show_name = re.sub(r' \(\d{4}\)', '',
-                                       os.path.basename(os.path.normpath(show_dir)).replace('.', ' '))
+            default_show_name = re.sub(r' \(\d{4}\)', '', os.path.basename(os.path.normpath(show_dir)).replace('.', ' '))
 
         provided_indexer_id = int(indexer_id or 0)
         provided_indexer_name = show_name or ''
@@ -401,12 +400,12 @@ class AddNewShowHandler(BaseHandler, ABC):
 
         indexerLang = indexerLang or sickrage.app.config.indexer_default_language
 
-        if not whichSeries:
-            return self.redirect("/home/")
-
         # if we're skipping then behave accordingly
         if skipShow:
             return self.write(await self.finish_add_show(other_shows))
+
+        if not whichSeries:
+            return self.redirect("/home/")
 
         # figure out what show we're adding and where
         series_pieces = whichSeries.split('|')
