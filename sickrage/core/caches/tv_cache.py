@@ -223,7 +223,7 @@ class TVCache(object):
                         'name': name,
                         'season': season,
                         'episodes': episodeText,
-                        'indexer_id': parse_result.indexer_id,
+                        'series_id': parse_result.indexer_id,
                         'url': url,
                         'time': int(time.mktime(datetime.datetime.today().timetuple())),
                         'quality': quality,
@@ -267,13 +267,13 @@ class TVCache(object):
         # get data from internal database
         with sickrage.app.cache_db.session() as session:
             dbData += [
-                x.as_dict() for x in session.query(CacheDB.Provider).filter_by(provider=self.providerID, indexer_id=show_id, season=season).filter(
+                x.as_dict() for x in session.query(CacheDB.Provider).filter_by(provider=self.providerID, series_id=show_id, season=season).filter(
                     CacheDB.Provider.episodes.contains("|{}|".format(episode)))
             ]
 
         with sickrage.app.main_db.session() as session:
             for curResult in dbData:
-                show_object = find_show(int(curResult["indexer_id"]), session=session)
+                show_object = find_show(int(curResult["series_id"]), session=session)
                 if not show_object:
                     continue
 
@@ -291,7 +291,7 @@ class TVCache(object):
                     continue
 
                 # get the show object, or if it's not one of our shows then ignore it
-                result.show_id = int(curResult["indexer_id"])
+                result.show_id = int(curResult["series_id"])
 
                 # skip if provider is anime only and show is not anime
                 if self.provider.anime_only and not show_object.is_anime:
