@@ -423,13 +423,12 @@ class GitUpdateManager(UpdateManager):
 
     @property
     def current_branch(self):
-        branch, __, exit_status = self._git_cmd(self._git_path, 'rev-parse --abbrev-ref HEAD')
-        return ("", branch)[exit_status == 0 and branch is not None]
+        branch_ref, __, exit_status = self._git_cmd(self._git_path, 'symbolic-ref -q HEAD')
+        return ("", branch_ref.strip().replace('refs/heads/', '', 1))[exit_status == 0 and branch_ref is not None]
 
     @property
     def remote_branches(self):
-        branches, __, exit_status = self._git_cmd(self._git_path,
-                                                  'ls-remote --heads {}'.format(sickrage.app.config.git_remote))
+        branches, __, exit_status = self._git_cmd(self._git_path, 'ls-remote --heads {}'.format(sickrage.app.config.git_remote))
         if exit_status == 0 and branches:
             return re.findall(r'refs/heads/(.*)', branches)
 
@@ -467,8 +466,7 @@ class GitUpdateManager(UpdateManager):
             return
 
         # get latest commit_hash from remote
-        output, __, exit_status = self._git_cmd(self._git_path,
-                                                'rev-parse --verify --quiet origin/{}'.format(self.current_branch))
+        output, __, exit_status = self._git_cmd(self._git_path, 'rev-parse --verify --quiet origin/{}'.format(self.current_branch))
         if exit_status == 0 and output:
             return output.strip()
 
