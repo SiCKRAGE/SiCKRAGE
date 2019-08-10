@@ -94,9 +94,8 @@ class Logger(logging.getLoggerClass()):
         self.handlers = []
 
         # sentry log handler
-        sentry_client = raven.Client('https://9061827ac34f42d8a6aa2c063fb63ad3:dbc8a94282b4444da60f2f7734b7ec49'
-                                     '@sentry.sickrage.ca/5?verify_ssl=0', release=sickrage.version(),
-                                     repos={'sickrage': {'name': 'sickrage/sickrage'}})
+        sentry_client = raven.Client('https://d4bf4ed225c946c8972c7238ad07d124@sentry.sickrage.ca/2?verify_ssl=0',
+                                     release=sickrage.version(), repos={'sickrage': {'name': 'sickrage/sickrage'}})
 
         sentry_tags = {
             'platform': platform.platform(),
