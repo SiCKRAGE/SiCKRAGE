@@ -1,5 +1,8 @@
 # Changelog
 
+- * 403515841 - 2019-08-10: Updated Sentry DSN 
+- * 9dc065e2f - 2019-08-05: Fixed issue with getting current branch from GIT. 
+- * f9f51d24a - 2019-08-04: Pre-Release v9.4.166.dev1 
 - * 484236b8d - 2019-08-04: Release v9.4.165 
 - * e5d59c9d1 - 2019-08-04: Renamed cache providers column &#x60;indexer_id&#x60; to &#x60;series_id&#x60; 
 - * 7678be446 - 2019-08-04: Refactored external API to version 2 which uses series_id instead of indexer_id, part of larger code refactor. 
