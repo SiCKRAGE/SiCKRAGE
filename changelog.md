@@ -1,5 +1,6 @@
 # Changelog
 
+- * efc563734 - 2019-08-11: Release v9.4.167 
 - * 25fc34f9f - 2019-08-11: Refactored code for searching providers, was causing issues with final results correctly, results where being removed when not matching exact quality. Rename resultType property to type for SearchResult class. 
 - * 9c20647f7 - 2019-08-10: Pre-Release v9.4.167.dev1 
 - * bb5635ec3 - 2019-08-10: Release v9.4.166 
