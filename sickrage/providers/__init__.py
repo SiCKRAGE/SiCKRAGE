@@ -716,7 +716,7 @@ class NZBProvider(GenericProvider):
         Returns a result of the correct type for this provider
         """
         result = NZBSearchResult(season, episodes)
-        result.resultType = ('nzb', 'torznab')[self.torznab]
+        result.type = ('nzb', 'torznab')[self.torznab]
         result.provider = self
         return result
 
@@ -740,7 +740,7 @@ class NZBProvider(GenericProvider):
         if (result.url.endswith('torrent') or result.url.startswith('magnet')) and self.type in ['nzb', 'newznab']:
             filename = "{}.torrent".format(filename.rsplit('.', 1)[0])
 
-        if result.resultType == "nzb":
+        if result.type == "nzb":
             sickrage.app.log.info("Saving NZB to " + filename)
 
             # write content to torrent file
@@ -748,7 +748,7 @@ class NZBProvider(GenericProvider):
                 f.write(result.content)
 
             return True
-        elif result.resultType == "nzbdata":
+        elif result.type == "nzbdata":
             filename = os.path.join(sickrage.app.config.nzb_dir, result.name + ".nzb")
 
             sickrage.app.log.info("Saving NZB to " + filename)

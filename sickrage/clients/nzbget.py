@@ -113,7 +113,7 @@ class NZBGet(object):
             dupe_score += 10
 
         nzbcontent64 = None
-        if nzb.resultType == "nzbdata":
+        if nzb.type == "nzbdata":
             data = nzb.extraInfo[0]
             nzbcontent64 = standard_b64encode(data)
 
@@ -129,7 +129,7 @@ class NZBGet(object):
                 if nzbcontent64 is not None:
                     nzbget_result = nzbget_rpc_client.append(nzb.name + ".nzb", category, addToTop, nzbcontent64)
                 else:
-                    if nzb.resultType == "nzb":
+                    if nzb.type == "nzb":
                         try:
                             nzbcontent64 = standard_b64encode(WebSession().get(nzb.url).text)
                         except Exception:

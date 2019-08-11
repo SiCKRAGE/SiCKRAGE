@@ -81,7 +81,7 @@ class SearchResult(object):
         self.ratio = None
 
         # result type
-        self.resultType = ''
+        self.type = ''
 
         # dict of files and their sizes
         self.files = {}
@@ -116,7 +116,7 @@ class NZBSearchResult(SearchResult):
 
     def __init__(self, season, episodes):
         super(NZBSearchResult, self).__init__(season, episodes)
-        self.resultType = "nzb"
+        self.type = "nzb"
 
 
 class NZBDataSearchResult(SearchResult):
@@ -126,7 +126,7 @@ class NZBDataSearchResult(SearchResult):
 
     def __init__(self, season, episodes):
         super(NZBDataSearchResult, self).__init__(season, episodes)
-        self.resultType = "nzbdata"
+        self.type = "nzbdata"
 
 
 class TorrentSearchResult(SearchResult):
@@ -136,7 +136,7 @@ class TorrentSearchResult(SearchResult):
 
     def __init__(self, season, episodes):
         super(TorrentSearchResult, self).__init__(season, episodes)
-        self.resultType = "torrent"
+        self.type = "torrent"
 
 
 class UIError(object):

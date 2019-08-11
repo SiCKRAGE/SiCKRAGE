@@ -68,7 +68,7 @@ def snatch_episode(result, end_status=SNATCHED, session=None):
     result.content = result.provider.get_content(result.url)
 
     dlResult = False
-    if result.resultType in ("nzb", "nzbdata"):
+    if result.type in ("nzb", "nzbdata"):
         if sickrage.app.config.nzb_method == "blackhole":
             dlResult = result.provider.download_result(result)
         elif sickrage.app.config.nzb_method == "sabnzbd":
@@ -78,7 +78,7 @@ def snatch_episode(result, end_status=SNATCHED, session=None):
             dlResult = NZBGet.sendNZB(result, is_proper, session=session)
         else:
             sickrage.app.log.error("Unknown NZB action specified in config: " + sickrage.app.config.nzb_method)
-    elif result.resultType in ("torrent", "torznab"):
+    elif result.type in ("torrent", "torznab"):
         # add public trackers to torrent result
         if not result.provider.private:
             result = result.provider.add_trackers(result)
@@ -92,7 +92,7 @@ def snatch_episode(result, end_status=SNATCHED, session=None):
             else:
                 sickrage.app.log.warning("Torrent file content is empty")
     else:
-        sickrage.app.log.error("Unknown result type, unable to download it (%r)" % result.resultType)
+        sickrage.app.log.error("Unknown result type, unable to download it (%r)" % result.type)
 
     # no download results found
     if not dlResult:
@@ -220,7 +220,7 @@ def pick_best_result(results, season_pack=False, session=None):
 
         # verify result content
         if not cur_result.provider.private:
-            if cur_result.resultType in ["nzb", "torrent"] and not cur_result.provider.get_content(cur_result.url):
+            if cur_result.type in ["nzb", "torrent"] and not cur_result.provider.get_content(cur_result.url):
                 if sickrage.app.config.download_unverified_magnet_link and cur_result.url.startswith('magnet'):
                     # Attempt downloading unverified torrent magnet link
                     pass
@@ -267,7 +267,7 @@ def is_final_result(result):
 
     any_qualities, best_qualities = Quality.split_quality(show_obj.quality)
 
-    # if there is a redownload that's higher than this then we definitely need to keep looking
+    # if there is a download that's higher than this then we definitely need to keep looking
     if best_qualities and result.quality < max(best_qualities):
         return False
 
@@ -325,6 +325,8 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
 
     # build name cache for show
     sickrage.app.name_cache.build(show_object)
+
+    final_results = []
 
     for providerID, providerObj in sickrage.app.search_providers.sort(randomize=sickrage.app.config.randomize_providers).items():
         # check if provider is enabled
@@ -535,7 +537,7 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
                         del found_results[multi_result_episode]
 
         # of all the single ep results narrow it down to the best one
-        final_results = set(multi_results.values())
+        final_results += list(set(multi_results.values()))
         for curEp, curResults in found_results.items():
             if curEp in (MULTI_EP_RESULT, SEASON_RESULT):
                 continue
@@ -549,22 +551,21 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
                 continue
 
             # add result
-            final_results.add(best_result)
+            final_results.append(best_result)
 
         # narrow results by comparing quality
         if len(final_results) > 1:
-            final_results = set([a for a, b in itertools.product(final_results, repeat=len(final_results)) if a.quality >= b.quality])
+            final_results = list(set([a for a, b in itertools.product(final_results, repeat=len(final_results)) if a.quality >= b.quality]))
 
         # narrow results by comparing seeders for torrent results
         if len(final_results) > 1:
-            final_results = set(
-                [a for a, b in itertools.product(final_results, repeat=len(final_results)) if a.provider.type == NZBProvider.type or a.seeders > b.seeders])
+            final_results = list(set(
+                [a for a, b in itertools.product(final_results, repeat=len(final_results)) if a.provider.type == NZBProvider.type or a.seeders > b.seeders]))
 
         # check that we got all the episodes we wanted first before doing a match and snatch
         for result in final_results.copy():
-            if not all([episode in result.episodes and is_final_result(result)]):
-                final_results.remove(result)
+            if all([episode in result.episodes and is_final_result(result)]):
+                return result
 
-        # exit loop if we have a result
-        if len(final_results) == 1:
-            return next(iter(final_results))
+    if len(final_results) == 1:
+        return next(iter(final_results))

@@ -325,7 +325,7 @@ class TVCache(object):
                 result.name = curResult["name"]
                 result.url = curResult["url"]
 
-                sickrage.app.log.info("Found result " + result.name + " at " + result.url)
+                sickrage.app.log.info("Found cached {} result {}".format(result.type, result.name))
 
                 result.seeders = curResult.get("seeders", -1)
                 result.leechers = curResult.get("leechers", -1)

@@ -72,11 +72,11 @@ class SabNZBd(object):
         try:
             jdata = None
 
-            if nzb.resultType == 'nzb':
+            if nzb.type == 'nzb':
                 params['mode'] = 'addurl'
                 params['name'] = nzb.url
                 jdata = WebSession().get(url, params=params, verify=False).json()
-            elif nzb.resultType == 'nzbdata':
+            elif nzb.type == 'nzbdata':
                 params['mode'] = 'addfile'
                 multiPartParams = {'nzbfile': (nzb.name + '.nzb', nzb.extraInfo[0])}
                 jdata = WebSession().get(url, params=params, file=multiPartParams, verify=False).json()
