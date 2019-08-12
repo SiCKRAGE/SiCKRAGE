@@ -60,7 +60,7 @@ class Boxcar2Notifier(Notifiers):
         })
 
         # send the request to boxcar2
-        resp = WebSession().get(API_URL, data=data, timeout=60)
+        resp = WebSession().get(API_URL, data=data, timeout=120)
 
         try:
             resp.raise_for_status()
