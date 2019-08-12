@@ -48,7 +48,7 @@ class VersionUpdater(object):
         return self.find_install_type()
 
     def run(self, force=False):
-        if self.amActive or sickrage.app.disable_updates:
+        if self.amActive or sickrage.app.disable_updates or sickrage.app.developer:
             return
 
         self.amActive = True
@@ -64,25 +64,21 @@ class VersionUpdater(object):
                         return
 
                     sickrage.app.log.info("New update found for SiCKRAGE, starting auto-updater ...")
-                    sickrage.app.alerts.message(_('Updater'),
-                                                _('New update found for SiCKRAGE, starting auto-updater'))
+                    sickrage.app.alerts.message(_('Updater'), _('New update found for SiCKRAGE, starting auto-updater'))
                     if self.update():
                         sickrage.app.log.info("Update was successful!")
-                        sickrage.app.alerts.message(_('Updater'),
-                                                    _('Update was successful'))
+                        sickrage.app.alerts.message(_('Updater'), _('Update was successful'))
                         sickrage.app.shutdown(restart=True)
                     else:
                         sickrage.app.log.info("Update failed!")
-                        sickrage.app.alerts.error(_('Updater'),
-                                                  _('Update failed!'))
+                        sickrage.app.alerts.error(_('Updater'), _('Update failed!'))
         finally:
             self.amActive = False
 
     def backup(self):
         # Do a system backup before update
         sickrage.app.log.info("Config backup in progress...")
-        sickrage.app.alerts.message(_('Updater'),
-                                    _('Config backup in progress...'))
+        sickrage.app.alerts.message(_('Updater'), _('Config backup in progress...'))
         try:
             backupDir = os.path.join(sickrage.app.data_dir, 'backup')
             if not os.path.isdir(backupDir):
@@ -90,34 +86,29 @@ class VersionUpdater(object):
 
             if backup_app_data(backupDir, keep_latest=True):
                 sickrage.app.log.info("Config backup successful, updating...")
-                sickrage.app.alerts.message(_('Updater'),
-                                            _('Config backup successful, updating...'))
+                sickrage.app.alerts.message(_('Updater'), _('Config backup successful, updating...'))
                 return True
             else:
                 sickrage.app.log.warning("Config backup failed, aborting update")
-                sickrage.app.alerts.error(_('Updater'),
-                                          _('Config backup failed, aborting update'))
+                sickrage.app.alerts.error(_('Updater'), _('Config backup failed, aborting update'))
                 return False
         except Exception as e:
             sickrage.app.log.warning('Update: Config backup failed. Error: {}'.format(e))
-            sickrage.app.alerts.error(_('Updater'),
-                                      _('Config backup failed, aborting update'))
+            sickrage.app.alerts.error(_('Updater'), _('Config backup failed, aborting update'))
             return False
 
     @staticmethod
     def safe_to_update():
         sickrage.app.auto_postprocessor.stop = True
         sickrage.app.log.debug("Waiting for jobs in post-processor queue to finish before updating")
-        sickrage.app.alerts.message(_('Updater'),
-                                    _("Waiting for jobs in post-processor queue to finish before updating"))
+        sickrage.app.alerts.message(_('Updater'), _("Waiting for jobs in post-processor queue to finish before updating"))
 
         while sickrage.app.auto_postprocessor.amActive:
             sleep(1)
 
         sickrage.app.show_queue.stop = True
         sickrage.app.log.debug("Waiting for jobs in show queue to finish before updating")
-        sickrage.app.alerts.message(_('Updater'),
-                                    _("Waiting for jobs in show queue to finish before updating"))
+        sickrage.app.alerts.message(_('Updater'), _("Waiting for jobs in show queue to finish before updating"))
 
         while sickrage.app.show_queue.is_busy:
             sleep(1)
@@ -156,7 +147,7 @@ class VersionUpdater(object):
         :param force: if true the version_notify setting will be ignored and a check will be forced
         """
 
-        if sickrage.app.developer:
+        if sickrage.app.disable_updates:
             return False
 
         if not self.updater or not sickrage.app.config.version_notify and not force:
@@ -198,9 +189,7 @@ class VersionUpdater(object):
                 return True
 
             if webui:
-                sickrage.app.alerts.error(_("Updater"),
-                                          _("Update wasn't successful, not restarting. Check your log for more "
-                                            "information."))
+                sickrage.app.alerts.error(_("Updater"), _("Update wasn't successful, not restarting. Check your log for more information."))
 
     @property
     def version(self):
@@ -394,8 +383,7 @@ class UpdateManager(object):
             os.unlink(requirements_file.name)
             return True
 
-        sickrage.app.alerts.error(_('Updater'),
-                                  _('Failed to update requirements'))
+        sickrage.app.alerts.error(_('Updater'), _('Failed to update requirements'))
 
         sickrage.app.log.warning('Unable to update requirements')
 
@@ -502,8 +490,7 @@ class GitUpdateManager(UpdateManager):
                                                                                    self.current_branch))
         if exit_status == 0:
             sickrage.app.log.info("Updating SiCKRAGE from GIT servers")
-            sickrage.app.alerts.message(_('Updater'),
-                                        _('Updating SiCKRAGE from GIT servers'))
+            sickrage.app.alerts.message(_('Updater'), _('Updating SiCKRAGE from GIT servers'))
             Notifiers.mass_notify_version_update(self.get_newest_version)
             return True
 
@@ -598,7 +585,9 @@ class SourceUpdateManager(UpdateManager):
         git_version_url = "https://git.sickrage.ca/SiCKRAGE/sickrage/raw/{}/sickrage/version.txt"
 
         try:
-            return WebSession().get(git_version_url.format(('master', 'develop')['dev' in self.version])).text
+            new_version = WebSession().get(git_version_url.format(('master', 'develop')['dev' in self.version])).text
+            if re.match('^[0-9]+.[0-9]+.[0-9]+(?:.dev[0-9])?$', new_version):
+                return new_version
         except Exception:
             return self._find_installed_version()
 
