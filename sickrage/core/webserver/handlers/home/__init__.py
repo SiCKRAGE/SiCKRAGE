@@ -1761,12 +1761,12 @@ class SetSceneNumberingHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
         indexer = self.get_argument('indexer')
-        for_season = self.get_argument('forSeason')
-        for_episode = self.get_argument('forEpisode')
-        for_absolute = self.get_argument('forAbsolute')
-        scene_season = self.get_argument('sceneSeason')
-        scene_episode = self.get_argument('sceneEpisode')
-        scene_absolute = self.get_argument('sceneAbsolute')
+        for_season = self.get_argument('forSeason', '')
+        for_episode = self.get_argument('forEpisode', '')
+        for_absolute = self.get_argument('forAbsolute', '')
+        scene_season = self.get_argument('sceneSeason', '')
+        scene_episode = self.get_argument('sceneEpisode', '')
+        scene_absolute = self.get_argument('sceneAbsolute', '')
 
         # sanitize:
         if for_season in ['null', '']:
