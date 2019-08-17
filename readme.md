@@ -31,7 +31,7 @@ Automatic Video Library Manager for TV Shows. It watches for new episodes of you
 - [Mobile](https://imgur.com/a/WPyG6)
 
 #### Links
-- [Support Forums](https://www.sickrage.ca/forums/)
+- [Support Forums](https://forums.sickrage.ca/)
 - [FAQ](https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/Frequently-Asked-Questions)
 - [Wiki](https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/home)
 - [Supported providers](https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/SickRage-Search-Providers)
