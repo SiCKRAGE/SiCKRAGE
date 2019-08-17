@@ -4476,13 +4476,15 @@ $(document).ready(function ($) {
                     SICKRAGE.config.notifications.load_show_notify_lists();
 
                     $('#email_show_save').click(function () {
-                        $.post(SICKRAGE.srWebRoot + "/home/saveShowNotifyList", {
-                            show: $('#email_show').val(),
-                            emails: $('#email_show_list').val()
-                        }, function () {
-                            // Reload the per show notify lists to reflect changes
-                            SICKRAGE.config.notifications.load_show_notify_lists();
-                        });
+                        $.get(SICKRAGE.srWebRoot + "/home/saveShowNotifyList",
+                            {
+                                'show': $('#email_show').val(),
+                                'emails': $('#email_show_list').val()
+                            })
+                            .done(function () {
+                                // Reload the per show notify lists to reflect changes
+                                SICKRAGE.config.notifications.load_show_notify_lists();
+                            });
                     });
 
                     // show instructions for plex when enabled
