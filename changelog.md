@@ -1,5 +1,11 @@
 # Changelog
 
+- * 22648d1ec - 2019-08-18: Performs a database rollback for episodes that fail to post-process. 
+- * 9484fc163 - 2019-08-16: Refactored saveShowNotifyList JS POST to GET 
+- * 5fd62e076 - 2019-08-12: Raised timeout from 60 to 120 for Boxcar2 notifier. 
+- * 41960cdae - 2019-08-12: Fixed &#x60;MissingArgumentError&#x60; errors for scene numbering web handler. 
+- * a596be2a1 - 2019-08-11: Added string matching for source version update checks. 
+- * 0116b2e29 - 2019-08-11: Pre-Release v9.4.168.dev1 
 - * efc563734 - 2019-08-11: Release v9.4.167 
 - * 25fc34f9f - 2019-08-11: Refactored code for searching providers, was causing issues with final results correctly, results where being removed when not matching exact quality. Rename resultType property to type for SearchResult class. 
 - * 9c20647f7 - 2019-08-10: Pre-Release v9.4.167.dev1 
