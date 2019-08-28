@@ -97,6 +97,12 @@ class Logger(logging.getLoggerClass()):
         sentry_client = raven.Client('https://d4bf4ed225c946c8972c7238ad07d124@sentry.sickrage.ca/2?verify_ssl=0',
                                      release=sickrage.version(), repos={'sickrage': {'name': 'sickrage/sickrage'}})
 
+        sentry_ignore_exceptions = [
+            'KeyboardInterrupt',
+            'PermissionError',
+            'FileNotFoundError',
+        ]
+
         sentry_tags = {
             'platform': platform.platform(),
             'locale': sys.getdefaultencoding(),
@@ -108,7 +114,7 @@ class Logger(logging.getLoggerClass()):
         if sickrage.app.config and sickrage.app.config.app_id:
             sentry_tags.update({'app_id': sickrage.app.config.app_id})
 
-        sentry_handler = SentryHandler(client=sentry_client, tags=sentry_tags)
+        sentry_handler = SentryHandler(client=sentry_client, ignore_exceptions=sentry_ignore_exceptions, tags=sentry_tags)
 
         sentry_handler.setLevel(self.logLevels['ERROR'])
         sentry_handler.set_name('sentry')

@@ -285,9 +285,8 @@ class TVEpisode(MainDBBase):
             rawAirdate = [int(x) for x in str(firstaired).split("-")]
             self.airdate = datetime.date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
         except (ValueError, IndexError, TypeError):
-            sickrage.app.log.warning(
-                "Malformed air date of {} retrieved from {} for ({} - S{:02d}E{:02d})".format(
-                    firstaired, indexer_name, self.show.name, season or 0, episode or 0))
+            sickrage.app.log.warning("Malformed air date of {} retrieved from {} for ({} - S{:02d}E{:02d})".format(
+                firstaired, indexer_name, self.show.name, season or 0, episode or 0))
 
             # if I'm incomplete on the indexer but I once was complete then just delete myself from the DB for now
             object_session(self).rollback()
