@@ -1,5 +1,9 @@
 # Changelog
 
+- * a4e25d1c6 - 2019-08-29: Refactored jQuery search client code, resolves issues with form validation. 
+- * 798def65a - 2019-08-29: Refactored URL for support forums in readme 
+- * ad5f6d811 - 2019-08-28: Added a list of exceptions to ignore for Sentry. 
+- * 10e170e9d - 2019-08-18: Pre-Release v9.4.168.dev2 
 - * 22648d1ec - 2019-08-18: Performs a database rollback for episodes that fail to post-process. 
 - * 9484fc163 - 2019-08-16: Refactored saveShowNotifyList JS POST to GET 
 - * 5fd62e076 - 2019-08-12: Raised timeout from 60 to 120 for Boxcar2 notifier. 
