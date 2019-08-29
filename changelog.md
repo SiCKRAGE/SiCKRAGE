@@ -1,5 +1,6 @@
 # Changelog
 
+- * 4638e2610 - 2019-08-29: Release v9.4.168 
 - * a4e25d1c6 - 2019-08-29: Refactored jQuery search client code, resolves issues with form validation. 
 - * 798def65a - 2019-08-29: Refactored URL for support forums in readme 
 - * ad5f6d811 - 2019-08-28: Added a list of exceptions to ignore for Sentry. 
