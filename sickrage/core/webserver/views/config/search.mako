@@ -816,7 +816,7 @@
                     </div>
 
                     <div id="options_torrent_clients">
-                        <div class="form-row form-group">
+                        <div class="form-row form-group" id="torrent_host_option">
                             <div class="col-lg-3 col-md-4 col-sm-5">
                                 <label class="component-title" id="host_title">${_('Torrent host:port')}</label>
                             </div>
@@ -827,13 +827,11 @@
                                     </div>
                                     <input name="torrent_host" id="torrent_host"
                                            value="${sickrage.app.config.torrent_host}"
-                                           placeholder="${_('ex. http://localhost:8000/')}"
                                            title="URL to your torrent client"
                                            class="form-control"
                                            autocapitalize="off"
                                            type="url"
-                                           pattern="https?://.+:[0-9]+/?"
-                                           required>
+                                           pattern="https?://.+:[0-9]+/?">
                                     <div class="invalid-tooltip">
                                         Please fill in a valid URL.
                                     </div>
