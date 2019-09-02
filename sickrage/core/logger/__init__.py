@@ -91,17 +91,21 @@ class Logger(logging.getLoggerClass()):
 
     def start(self):
         # remove all handlers
-        self.handlers = []
-
-        # sentry log handler
-        sentry_client = raven.Client('https://d4bf4ed225c946c8972c7238ad07d124@sentry.sickrage.ca/2?verify_ssl=0',
-                                     release=sickrage.version(), repos={'sickrage': {'name': 'sickrage/sickrage'}})
+        self.handlers.clear()
 
         sentry_ignore_exceptions = [
             'KeyboardInterrupt',
             'PermissionError',
             'FileNotFoundError',
         ]
+
+        # sentry log handler
+        sentry_client = raven.Client(
+            'https://d4bf4ed225c946c8972c7238ad07d124@sentry.sickrage.ca/2?verify_ssl=0',
+            release=sickrage.version(),
+            repos={'sickrage': {'name': 'sickrage/sickrage'}},
+            ignore_exceptions=sentry_ignore_exceptions
+        )
 
         sentry_tags = {
             'platform': platform.platform(),
