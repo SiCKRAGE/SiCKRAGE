@@ -69,17 +69,13 @@ class BaseHandler(RequestHandler, ABC):
                 url = url[len(sickrage.app.config.web_root) + 1:]
 
             if url[:3] != 'api':
-                self.render(
-                    '/errors/404.mako',
-                    title=_('HTTP Error 404'),
-                    header=_('HTTP Error 404'))
+                self.render('/errors/404.mako', title=_('HTTP Error 404'), header=_('HTTP Error 404'))
             else:
                 self.write('Wrong API key used')
         elif self.settings.get("debug") and "exc_info" in kwargs:
             exc_info = kwargs["exc_info"]
             trace_info = ''.join(["%s<br>" % line for line in traceback.format_exception(*exc_info)])
-            request_info = ''.join(["<strong>%s</strong>: %s<br>" % (k, self.request.__dict__[k]) for k in
-                                    self.request.__dict__.keys()])
+            request_info = ''.join(["<strong>%s</strong>: %s<br>" % (k, self.request.__dict__[k]) for k in self.request.__dict__.keys()])
             error = exc_info[1]
 
             sickrage.app.log.error(error)
