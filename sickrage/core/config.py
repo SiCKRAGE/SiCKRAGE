@@ -2435,7 +2435,7 @@ class ConfigMigrator(Config):
             11: 'Update all provider settings to new config format',
             12: 'Migrate external API token to its own file',
             14: 'Migrate app_sub to sub_id variable',
-            15: 'Added AppID to config',
+            15: 'Bump config version to 15',
         }
 
     def migrate_config(self, current_version=0, expected_version=0):
@@ -2572,7 +2572,7 @@ class ConfigMigrator(Config):
         return self.config_obj
 
     def _migrate_v15(self):
-        app_id = self.check_setting_str('General', 'app_id', '')
-        if not app_id and API().token:
-            self.config_obj['General']['app_id'] = AccountAPI().register_app_id()
+        # app_id = self.check_setting_str('General', 'app_id', '')
+        # if not app_id and API().token:
+        #     self.config_obj['General']['app_id'] = AccountAPI().register_app_id()
         return self.config_obj
