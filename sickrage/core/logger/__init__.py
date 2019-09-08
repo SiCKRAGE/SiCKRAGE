@@ -18,7 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-
+import locale
 import logging
 import os
 import pkgutil
@@ -109,7 +109,7 @@ class Logger(logging.getLoggerClass()):
 
         sentry_tags = {
             'platform': platform.platform(),
-            'locale': sys.getdefaultencoding(),
+            'locale': locale.getdefaultlocale(),
             'python': platform.python_version()
         }
 
