@@ -1,5 +1,12 @@
 # Changelog
 
+- * db675fdc4 - 2019-09-08: Updated docker-compose file 
+- * 94514efba - 2019-09-07: Resolved issue with version updater and branch_ref NoneType 
+- * 6f4fdcb74 - 2019-09-07: Misc changes 
+- * 30462b1f2 - 2019-09-07: Grammar correction. 
+- * 34d453600 - 2019-09-07: Added docker-compose file. Corrected logger to properly get locale and pass to Sentry. 
+- * 44977d45f - 2019-09-02: Refactored code for getting subtitles path, strips leading slashes from store custom subs path in settings to ensure proper path joining and confirms custom subs path does exist if absolute. 
+- * d52005c6d - 2019-08-29: Pre-Release v9.4.169.dev1 
 - * 4638e2610 - 2019-08-29: Release v9.4.168 
 - * a4e25d1c6 - 2019-08-29: Refactored jQuery search client code, resolves issues with form validation. 
 - * 798def65a - 2019-08-29: Refactored URL for support forums in readme 
