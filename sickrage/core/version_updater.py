@@ -412,7 +412,9 @@ class GitUpdateManager(UpdateManager):
     @property
     def current_branch(self):
         branch_ref, __, exit_status = self._git_cmd(self._git_path, 'symbolic-ref -q HEAD')
-        return ("", branch_ref.strip().replace('refs/heads/', '', 1))[exit_status == 0 and branch_ref is not None]
+        if exit_status == 0 and branch_ref is not None:
+            return branch_ref.strip().replace('refs/heads/', '', 1)
+        return ""
 
     @property
     def remote_branches(self):
