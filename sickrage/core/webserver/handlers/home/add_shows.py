@@ -369,6 +369,10 @@ class AddShowByIDHandler(BaseHandler, ABC):
 
 class AddNewShowHandler(BaseHandler, ABC):
     @authenticated
+    async def get(self, *args, **kwargs):
+        return self.redirect("/home/")
+
+    @authenticated
     async def post(self, *args, **kwargs):
         """
         Receive tvdb id, dir, and other options and create a show from them. If extra show dirs are
