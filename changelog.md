@@ -1,5 +1,6 @@
 # Changelog
 
+- * e5ff7bc44 - 2019-09-08: Release v9.4.170 
 - * 7df5d8f40 - 2019-09-08: Resolves issues for PosixPath being returned instead of string when trying to get subtitles path. 
 - * 381737053 - 2019-09-08: Removed un-required application ID registration code from config migration code. 
 - * e40869fc7 - 2019-09-08: Refactored config view for search clients to require NZB host/url to be set correctly before allowing saving of settings. 
