@@ -374,27 +374,17 @@ class Tvdb:
         self.jwt_token = self._request('get', self.config['api']['refresh'])['token']
 
     def _login(self):
-        self.jwt_token = self._request('post', self.config['api']['login'], json={'apikey': self.config['apikey']})[
-            'token']
+        self.jwt_token = self._request('post', self.config['api']['login'], json={'apikey': self.config['apikey']})['token']
 
     def authenticate(self):
-        auth_attempts = 0
-
-        while True:
-            if auth_attempts > 3:
-                break
-
+        for i in range(0, 3):
             try:
                 if not self.jwt_token or self.jwt_is_expired:
-                    self._login()
-                    break
+                    return self._login()
                 elif self.jwt_time_remaining < 7200:
-                    self._refresh()
-                    break
+                    return self._refresh()
             except Exception as e:
                 self.logout()
-
-            auth_attempts += 1
 
     def jwt_decode(self, data):
         # make sure data is binary
