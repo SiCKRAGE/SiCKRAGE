@@ -1,5 +1,9 @@
 # Changelog
 
+- * 7df5d8f40 - 2019-09-08: Resolves issues for PosixPath being returned instead of string when trying to get subtitles path. 
+- * 381737053 - 2019-09-08: Removed un-required application ID registration code from config migration code. 
+- * e40869fc7 - 2019-09-08: Refactored config view for search clients to require NZB host/url to be set correctly before allowing saving of settings. 
+- * 003aecaed - 2019-09-08: Release v9.4.169 
 - * 4416a53ed - 2019-09-08: Resolved issues with setting jwt_payload value for TheTVDB API. 
 - * 4c8378172 - 2019-09-08: Replaced &#x60;while&#x60; loop with range for TheTVDB API authentication 
 - * 07dcf228a - 2019-09-08: Added GET method to AddNewShow handler, redirects request to home instead of throwing HTTP 405 error. 
