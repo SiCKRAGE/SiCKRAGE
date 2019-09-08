@@ -1,5 +1,9 @@
 # Changelog
 
+- * 4416a53ed - 2019-09-08: Resolved issues with setting jwt_payload value for TheTVDB API. 
+- * 4c8378172 - 2019-09-08: Replaced &#x60;while&#x60; loop with range for TheTVDB API authentication 
+- * 07dcf228a - 2019-09-08: Added GET method to AddNewShow handler, redirects request to home instead of throwing HTTP 405 error. 
+- * 1b448d72f - 2019-09-08: Pre-Release v9.4.169.dev2 
 - * db675fdc4 - 2019-09-08: Updated docker-compose file 
 - * 94514efba - 2019-09-07: Resolved issue with version updater and branch_ref NoneType 
 - * 6f4fdcb74 - 2019-09-07: Misc changes 
