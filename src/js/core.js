@@ -3240,15 +3240,23 @@ $(document).ready(function ($) {
                     $('#testSABnzbd').hide();
                     $('#testSABnzbd_result').hide();
                     $('#nzbget_settings').hide();
+                    $('#nzbget_host').prop('required', false);
+                    $('#sab_host').prop('required', false);
 
-                    if ($('#nzb_method').val().toLowerCase() === 'blackhole') {
-                        $('#blackhole_settings').show();
-                    } else if ($('#nzb_method').val().toLowerCase() === 'nzbget') {
-                        $('#nzbget_settings').show();
+                    var selectedProvider = $('#nzb_method').val();
+
+                    if (selectedProvider.toLowerCase() !== 'blackhole') {
+                        if (selectedProvider.toLowerCase() === 'nzbget') {
+                            $('#nzbget_settings').show();
+                            $('#nzbget_host').prop('required', true);
+                        } else if (selectedProvider.toLowerCase() === 'sabnzbd') {
+                            $('#sabnzbd_settings').show();
+                            $('#testSABnzbd').show();
+                            $('#testSABnzbd_result').show();
+                            $('#sab_host').prop('required', true);
+                        }
                     } else {
-                        $('#sabnzbd_settings').show();
-                        $('#testSABnzbd').show();
-                        $('#testSABnzbd_result').show();
+                        $('#blackhole_settings').show();
                     }
                 },
 
@@ -3292,7 +3300,7 @@ $(document).ready(function ($) {
                             $('#torrent_seed_time_label').text(gt('Minimum seeding time is'));
                             $('#torrent_seed_time_option').show();
                             $('#torrent_host').attr('placeholder', gt('URL to your uTorrent client (e.g. http://localhost:8000)'));
-                            $('#torrent_host').prop('required',true);
+                            $('#torrent_host').prop('required', true);
                         } else if (selectedProvider.toLowerCase() === 'transmission') {
                             client = 'Transmission';
                             $('#torrent_seed_time_label').text(gt('Stop seeding when inactive for'));
@@ -3302,7 +3310,7 @@ $(document).ready(function ($) {
                             $('#torrent_label_anime_option').hide();
                             $('#torrent_rpcurl_option').show();
                             $('#torrent_host').attr('placeholder', gt('URL to your Transmission client (e.g. http://localhost:9091)'));
-                            $('#torrent_host').prop('required',true);
+                            $('#torrent_host').prop('required', true);
                         } else if (selectedProvider.toLowerCase() === 'deluge') {
                             client = 'Deluge';
                             $('#torrent_verify_cert_option').show();
@@ -3313,7 +3321,7 @@ $(document).ready(function ($) {
                             $('#torrent_username_option').hide();
                             $('#torrent_username').prop('value', '');
                             $('#torrent_host').attr('placeholder', gt('URL to your Deluge client (e.g. http://localhost:8112)'));
-                            $('#torrent_host').prop('required',true);
+                            $('#torrent_host').prop('required', true);
                         } else if (selectedProvider.toLowerCase() === 'deluged') {
                             client = 'Deluge';
                             $('#torrent_verify_cert_option').hide();
@@ -3323,7 +3331,7 @@ $(document).ready(function ($) {
                             $('#label_anime_warning_deluge').show();
                             $('#torrent_username_option').show();
                             $('#torrent_host').attr('placeholder', gt('IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)'));
-                            $('#torrent_host').prop('required',true);
+                            $('#torrent_host').prop('required', true);
                         } else if (selectedProvider.toLowerCase() === 'download_station') {
                             client = 'Synology DS';
                             $('#torrent_label_option').hide();
@@ -3331,7 +3339,7 @@ $(document).ready(function ($) {
                             $('#torrent_paused_option').hide();
                             $('#torrent_path_option').find('.fileBrowser').hide();
                             $('#torrent_host').attr('placeholder', gt('URL to your Synology DS client (e.g. http://localhost:5000)'));
-                            $('#torrent_host').prop('required',true);
+                            $('#torrent_host').prop('required', true);
                             $('#path_synology').show();
                         } else if (selectedProvider.toLowerCase() === 'rtorrent') {
                             client = 'rTorrent';
@@ -3341,14 +3349,14 @@ $(document).ready(function ($) {
                             $('#torrent_verify_deluge').hide();
                             $('#torrent_verify_rtorrent').show();
                             $('#torrent_auth_type_option').show();
-                            $('#torrent_host').prop('required',true);
+                            $('#torrent_host').prop('required', true);
                         } else if (selectedProvider.toLowerCase() === 'qbittorrent') {
                             client = 'qbittorrent';
                             $('#torrent_path_option').hide();
                             $('#label_warning_qbittorrent').show();
                             $('#label_anime_warning_qbittorrent').show();
                             $('#torrent_host').attr('placeholder', gt('URL to your qbittorrent client (e.g. http://localhost:8080)'));
-                            $('#torrent_host').prop('required',true);
+                            $('#torrent_host').prop('required', true);
                         } else if (selectedProvider.toLowerCase() === 'mlnet') {
                             client = 'mlnet';
                             $('#torrent_path_option').hide();
@@ -3359,7 +3367,7 @@ $(document).ready(function ($) {
                             $('#torrent_label_anime_option').hide();
                             $('#torrent_paused_option').hide();
                             $('#torrent_host').attr('placeholder', gt('URL to your MLDonkey (e.g. http://localhost:4080)'));
-                            $('#torrent_host').prop('required',true);
+                            $('#torrent_host').prop('required', true);
                         } else if (selectedProvider.toLowerCase() === 'putio') {
                             client = 'putio';
                             $('#torrent_path_option').hide();
@@ -3371,7 +3379,7 @@ $(document).ready(function ($) {
                             $('#torrent_paused_option').hide();
                             $('#torrent_host_option').hide();
                             $('#torrent_host').attr('placeholder', gt('URL to your putio client (e.g. http://localhost:8080)'));
-                            $('#torrent_host').prop('required',true);
+                            $('#torrent_host').prop('required', true);
                         }
 
                         $('#host_title').text(client + host);
@@ -3382,7 +3390,7 @@ $(document).ready(function ($) {
 
                         optionPanel = '#options_torrent_clients';
                     } else {
-                        $('#torrent_host').prop('required',false);
+                        $('#torrent_host').prop('required', false);
                     }
 
                     $(optionPanel).show();

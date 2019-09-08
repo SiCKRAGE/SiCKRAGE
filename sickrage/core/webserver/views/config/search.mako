@@ -388,7 +388,12 @@
                                     <input id="sab_host" name="sab_host"
                                            value="${sickrage.app.config.sab_host}"
                                            placeholder="${_('ex. http://localhost:8080')}"
-                                           class="form-control" autocapitalize="off"/>
+                                           class="form-control" autocapitalize="off"
+                                           type="url"
+                                           pattern="https?://.+:[0-9]+/?">
+                                    <div class="invalid-tooltip">
+                                        Please fill in a valid URL.
+                                    </div>
                                 </div>
                                 <label for="sab_host">
                                     <p>
@@ -572,7 +577,12 @@
                                            placeholder="${_('ex. localhost:6789')}"
                                            title="NZBget RPC host name and port number (not NZBgetweb!"
                                            class="form-control"
-                                           autocapitalize="off"/>
+                                           autocapitalize="off"
+                                           type="url"
+                                           pattern="https?://.+:[0-9]+/?">
+                                    <div class="invalid-tooltip">
+                                        Please fill in a valid URL.
+                                    </div>
                                 </div>
                             </div>
                         </div>
