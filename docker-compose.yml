@@ -6,12 +6,13 @@ services:
     build: .
     ports:
       - 8081:8081
-#    volumes:
-#      - /config:/root/.sickrage
-#      - /downloads:/downloads
-#      - /tv:/tv
-#    environment:
-#      - TZ=Canada/Pacific
+    volumes:
+      - /path/to/sickrage/data:/root/.sickrage
+      - /path/to/downloads:/downloads
+      - /path/to/tv:/tv
+      - /path/to/anime:/anime
+    environment:
+      - TZ=Canada/Pacific
 #      - LANG=en_US.UTF-8
 #      - LANGUAGE=en_US:en
 #      - LC_ALL=en_US.UTF-8
