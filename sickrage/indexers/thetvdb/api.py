@@ -350,10 +350,16 @@ class Tvdb:
     def jwt_token(self, value):
         if self.jwt_token != value:
             setattr(self, '_jwt_token', value)
+            self.jwt_payload = self.get_jwt_payload(self.jwt_token)
 
     @property
     def jwt_payload(self):
-        return getattr(self, '_jwt_payload', self.get_jwt_payload(self.token))
+        return getattr(self, '_jwt_payload', {})
+
+    @jwt_payload.setter
+    def jwt_payload(self, value):
+        if self.jwt_payload != value:
+            setattr(self, '_jwt_payload', value)
 
     @property
     def jwt_expiration(self):
