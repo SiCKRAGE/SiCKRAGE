@@ -21,9 +21,9 @@
 
 
 import os
+import pathlib
 import re
 import subprocess
-from pathlib import Path
 
 import subliminal
 from babelfish import language_converters, Language
@@ -228,17 +228,17 @@ class Subtitles(object):
             return video
 
     def get_subtitles_path(self, video_path):
-        if Path(sickrage.app.config.subtitles_dir).is_absolute() and Path(sickrage.app.config.subtitles_dir).exists():
+        if pathlib.Path(sickrage.app.config.subtitles_dir).is_absolute() and pathlib.Path(sickrage.app.config.subtitles_dir).exists():
             new_subtitles_path = sickrage.app.config.subtitles_dir
         elif sickrage.app.config.subtitles_dir:
-            new_subtitles_path = Path(os.path.dirname(video_path)).joinpath(sickrage.app.config.subtitles_dir.strip('/'))
+            new_subtitles_path = str(pathlib.Path(os.path.dirname(video_path)).joinpath(sickrage.app.config.subtitles_dir.strip('/')))
             dir_exists = make_dir(new_subtitles_path)
             if not dir_exists:
                 sickrage.app.log.warning('Unable to create subtitles folder {}'.format(new_subtitles_path))
             else:
                 chmod_as_parent(new_subtitles_path)
         else:
-            new_subtitles_path = Path(video_path).parent
+            new_subtitles_path = str(pathlib.Path(video_path).parent)
 
         return new_subtitles_path
 
