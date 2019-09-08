@@ -123,7 +123,7 @@
                                                         data-available="${','.join(languages)}"></select>
                                             </div>
                                             <label class="text-info" for="indexerLangSelect">
-                                                ${_('Language of show information is translated into')}
+                                                ${_('Language to translate show information into')}
                                             </label>
                                         </div>
                                     </div>
