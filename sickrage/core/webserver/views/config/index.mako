@@ -169,9 +169,9 @@
                                 <i class="sickrage-core sickrage-core-forums"></i> ${_('Forums')}
                             </div>
                             <div class="col-lg-9 col-md-9 col-sm-9">
-                                <a href="${anon_url('https://sickrage.ca/forums/')}"
+                                <a href="${anon_url('https://forums.sickrage.ca/')}"
                                    rel="noreferrer"
-                                   onclick="window.open(this.href, '_blank'); return false;">https://www.sickrage.ca/forums/</a>
+                                   onclick="window.open(this.href, '_blank'); return false;">https://forums.sickrage.ca/</a>
                             </div>
                         </div>
                         <br/>

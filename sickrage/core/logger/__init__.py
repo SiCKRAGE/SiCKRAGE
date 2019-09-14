@@ -97,6 +97,7 @@ class Logger(logging.getLoggerClass()):
             'KeyboardInterrupt',
             'PermissionError',
             'FileNotFoundError',
+            'EpisodeNotFoundException'
         ]
 
         # sentry log handler
