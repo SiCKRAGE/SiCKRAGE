@@ -1,6 +1,6 @@
 <%inherit file="../layouts/main.mako"/>
 <%!
-    import sys, os, tornado
+    import sys, os, tornado, locale
 
     import sickrage
     from sickrage.core.helpers import anon_url
@@ -125,6 +125,15 @@
                             </div>
                             <br/>
                         % endif
+                        <div class="form-row">
+                            <div class="col-lg-3 col-md-3 col-sm-3">
+                                <i class="sickrage-core sickrage-core-version"></i> ${_('Locale:')}
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-sm-9">
+                                ${locale.getdefaultlocale()}
+                            </div>
+                        </div>
+                        <br/>
                         <div class="form-row">
                             <div class="col-lg-3 col-md-3 col-sm-3">
                                 <i class="sickrage-core sickrage-core-tornado"></i> ${_('Tornado Version:')}
