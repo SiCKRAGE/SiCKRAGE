@@ -49,6 +49,9 @@ class RobotsDotTxtHandler(BaseHandler, ABC):
         """ Keep web crawlers out """
         return self.write("User-agent: *\nDisallow: /")
 
+    def post(self, *args, **kwargs):
+        return self.redirect("/home/")
+
 
 class MessagesDotPoHandler(BaseHandler, ABC):
     def initialize(self):
