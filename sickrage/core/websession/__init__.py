@@ -178,8 +178,8 @@ class WebHelpers(object):
             return (
                     resp.status_code == 503
                     and resp.headers.get('Server', '').startswith('cloudflare')
-                    and 'jschl_vc' in resp.content
-                    and 'jschl_answer' in resp.content
+                    and b'jschl_vc' in resp.content
+                    and b'jschl_answer' in resp.content
             )
 
         if is_cloudflare_challenge(resp):

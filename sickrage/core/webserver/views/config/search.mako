@@ -579,9 +579,9 @@
                                            class="form-control"
                                            autocapitalize="off"
                                            type="url"
-                                           pattern="https?://.+:[0-9]+/?">
+                                           pattern="[a-zA-Z]+:[0-9]+">
                                     <div class="invalid-tooltip">
-                                        Please fill in a valid URL.
+                                        Please fill in a valid host:port
                                     </div>
                                 </div>
                             </div>

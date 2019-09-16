@@ -80,8 +80,8 @@ class BacklogSearcher(object):
         if not show_id and self.forced:
             sickrage.app.log.info("Running limited backlog on missed episodes " + str(sickrage.app.config.backlog_days) + " day(s) old")
             from_date = datetime.date.today() - datetime.timedelta(days=sickrage.app.config.backlog_days)
-        elif len(show_list):
-            sickrage.app.log.info('Running full backlog search on missed episodes for selected shows')
+        else:
+            sickrage.app.log.info('Running full backlog search on missed episodes for all shows')
 
         # go through non air-by-date shows and see if they need any episodes
         for curShow in show_list:

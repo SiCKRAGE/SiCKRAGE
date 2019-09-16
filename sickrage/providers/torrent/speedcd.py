@@ -54,6 +54,8 @@ class SpeedCDProvider(TorrentProvider):
     #     return self.cookie_login('log in')
 
     def login(self):
+        # return self.cookie_login('loginform')
+
         if any(dict_from_cookiejar(self.session.cookies).values()):
             return True
 
@@ -66,7 +68,7 @@ class SpeedCDProvider(TorrentProvider):
             with bs4_parser(self.session.get(self.urls['login']).text) as html:
                 login_url = urljoin(self.urls['base_url'], html.find('form', id='loginform').get('action'))
                 response = self.session.post(login_url, data=login_params, timeout=30).text
-        except Exception:
+        except Exception as e:
             sickrage.app.log.warning("Unable to connect to provider")
             self.session.cookies.clear()
             return False

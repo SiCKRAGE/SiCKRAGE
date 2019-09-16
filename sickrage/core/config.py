@@ -1161,8 +1161,7 @@ class Config(object):
         if self.autopostprocessor_freq < self.min_autopostprocessor_freq:
             self.autopostprocessor_freq = self.min_autopostprocessor_freq
 
-        sickrage.app.scheduler.modify_job(sickrage.app.auto_postprocessor.name,
-                                          trigger=IntervalTrigger(minutes=self.autopostprocessor_freq))
+        sickrage.app.scheduler.reschedule_job(sickrage.app.auto_postprocessor.name, trigger='interval', minutes=self.autopostprocessor_freq)
 
     def change_daily_searcher_freq(self, freq):
         """
@@ -1174,8 +1173,7 @@ class Config(object):
         if self.daily_searcher_freq < self.min_daily_searcher_freq:
             self.daily_searcher_freq = self.min_daily_searcher_freq
 
-        sickrage.app.scheduler.modify_job(sickrage.app.daily_searcher.name,
-                                          trigger=IntervalTrigger(minutes=self.daily_searcher_freq))
+        sickrage.app.scheduler.reschedule_job(sickrage.app.daily_searcher.name, trigger='interval', minutes=self.daily_searcher_freq)
 
     def change_backlog_searcher_freq(self, freq):
         """
@@ -1187,8 +1185,7 @@ class Config(object):
         if self.backlog_searcher_freq < self.min_backlog_searcher_freq:
             self.backlog_searcher_freq = self.min_backlog_searcher_freq
 
-        sickrage.app.scheduler.modify_job(sickrage.app.backlog_searcher.name,
-                                          trigger=IntervalTrigger(minutes=self.backlog_searcher_freq))
+        sickrage.app.scheduler.reschedule_job(sickrage.app.backlog_searcher.name, trigger='interval', minutes=self.backlog_searcher_freq)
 
     def change_updater_freq(self, freq):
         """
@@ -1200,8 +1197,7 @@ class Config(object):
         if self.version_updater_freq < self.min_version_updater_freq:
             self.version_updater_freq = self.min_version_updater_freq
 
-        sickrage.app.scheduler.modify_job(sickrage.app.version_updater.name,
-                                          trigger=IntervalTrigger(hours=self.version_updater_freq))
+        sickrage.app.scheduler.reschedule_job(sickrage.app.version_updater.name, trigger='interval', hours=self.version_updater_freq)
 
     def change_showupdate_hour(self, freq):
         """Change frequency of show updater thread
@@ -1213,11 +1209,8 @@ class Config(object):
         if self.showupdate_hour < 0 or self.showupdate_hour > 23:
             self.showupdate_hour = 0
 
-        sickrage.app.scheduler.modify_job(sickrage.app.show_updater.name,
-                                          trigger=IntervalTrigger(hours=1,
-                                                                  start_date=datetime.datetime.now().replace(
-                                                                      hour=self.showupdate_hour))
-                                          )
+        sickrage.app.scheduler.reschedule_job(sickrage.app.show_updater.name, trigger='interval', hours=1,
+                                              start_date=datetime.datetime.now().replace(hour=self.showupdate_hour))
 
     def change_subtitle_searcher_freq(self, freq):
         """
@@ -1229,8 +1222,7 @@ class Config(object):
         if self.subtitle_searcher_freq < self.min_subtitle_searcher_freq:
             self.subtitle_searcher_freq = self.min_subtitle_searcher_freq
 
-        sickrage.app.scheduler.modify_job(sickrage.app.subtitle_searcher.name,
-                                          trigger=IntervalTrigger(hours=self.subtitle_searcher_freq))
+        sickrage.app.scheduler.reschedule_job(sickrage.app.subtitle_searcher.name, trigger='interval', hours=self.subtitle_searcher_freq)
 
     def change_failed_snatch_age(self, age):
         """

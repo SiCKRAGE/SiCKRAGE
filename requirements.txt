@@ -2,7 +2,7 @@ APScheduler == 3.5.3
 babelfish == 0.5.5
 bencode3 == 0.1.0
 CacheControl == 0.12.5
-cfscrape == 1.9.7
+cfscrape == 2.0.8
 configobj == 5.0.6
 feedparser == 5.2.1
 guessit == 3.0.3
