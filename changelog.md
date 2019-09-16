@@ -1,5 +1,8 @@
 # Changelog
 
+- * 170633151 - 2019-09-15: Bumped version for cfscrape to v2.0.8 Fixed issue with web sessions and CloudFlare handler Refactored NZBGet host:post required pattern, resolves issues with saving config settings Refactored frequency change functions to use &#x60;reschedule_job&#x60; apscheduler function, resolves issues with frequency not being updated correctly Fixed issue for full backlog searches not running if no show_id is passed 
+- * ae7acbe0d - 2019-09-14: Resolved issue with enable/disable of provider daily and backlog searches. Added post method to robot.txt web handler that redirects to home. 
+- * fa32f37af - 2019-09-14: Pre-Release v9.4.172.dev1 
 - * 288e41982 - 2019-09-14: Release v9.4.171 
 - * 962e0a0af - 2019-09-14: Added ability to check locale from info tab. 
 - * f00bbc60b - 2019-09-14: Added &#x60;EpisodeNotFoundException&#x60; to list of Sentry ignored errors. Corrected SiCKRAGE forums web link. 
