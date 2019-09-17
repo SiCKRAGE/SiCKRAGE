@@ -1,5 +1,7 @@
 # Changelog
 
+- * c41d62bf7 - 2019-09-16: Pass UTC timezone to TornadoScheduler 
+- * f354ce83e - 2019-09-16: Pre-Release v9.4.173.dev1 
 - * 483e4db33 - 2019-09-16: Release v9.4.172 
 - * 170633151 - 2019-09-15: Bumped version for cfscrape to v2.0.8 Fixed issue with web sessions and CloudFlare handler Refactored NZBGet host:post required pattern, resolves issues with saving config settings Refactored frequency change functions to use &#x60;reschedule_job&#x60; apscheduler function, resolves issues with frequency not being updated correctly Fixed issue for full backlog searches not running if no show_id is passed 
 - * ae7acbe0d - 2019-09-14: Resolved issue with enable/disable of provider daily and backlog searches. Added post method to robot.txt web handler that redirects to home. 
