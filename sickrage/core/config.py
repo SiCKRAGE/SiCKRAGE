@@ -33,15 +33,13 @@ from ast import literal_eval
 from itertools import cycle
 
 import rarfile
-from apscheduler.triggers.interval import IntervalTrigger
 from configobj import ConfigObj
 
 import sickrage
 from sickrage.core.api import API
-from sickrage.core.api.account import AccountAPI
 from sickrage.core.common import SD, WANTED, SKIPPED, Quality
 from sickrage.core.helpers import make_dir, generate_secret, auto_type, get_lan_ip, \
-    extract_zipfile, try_int, checkbox_to_value, generate_api_key, backup_versioned_file, encryption, md5_file_hash
+    extract_zipfile, try_int, checkbox_to_value, generate_api_key, backup_versioned_file, encryption
 from sickrage.core.websession import WebSession
 
 

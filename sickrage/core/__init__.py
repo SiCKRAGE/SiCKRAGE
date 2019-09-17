@@ -181,7 +181,7 @@ class Core(object):
         self.log = Logger()
         self.config = Config()
         self.alerts = Notifications()
-        self.scheduler = TornadoScheduler()
+        self.scheduler = TornadoScheduler({'apscheduler.timezone': 'UTC'})
         self.wserver = WebServer()
         self.name_cache = NameCache()
         self.show_queue = ShowQueue()
