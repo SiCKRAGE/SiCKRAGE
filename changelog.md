@@ -1,5 +1,7 @@
 # Changelog
 
+- * 7f6bdf7ab - 2019-09-18: Refactored speed.cd to use cookie login due to re-captcha on login forms. 
+- * b783172a6 - 2019-09-16: Pre-Release v9.4.174.dev1 
 - * 73d82236b - 2019-09-16: Release v9.4.173 
 - * c41d62bf7 - 2019-09-16: Pass UTC timezone to TornadoScheduler 
 - * f354ce83e - 2019-09-16: Pre-Release v9.4.173.dev1 
