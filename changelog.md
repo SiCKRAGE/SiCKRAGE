@@ -1,5 +1,6 @@
 # Changelog
 
+- * 4a98d7fe2 - 2019-09-18: Release v9.4.174 
 - * 7f6bdf7ab - 2019-09-18: Refactored speed.cd to use cookie login due to re-captcha on login forms. 
 - * b783172a6 - 2019-09-16: Pre-Release v9.4.174.dev1 
 - * 73d82236b - 2019-09-16: Release v9.4.173 
