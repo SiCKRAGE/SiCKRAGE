@@ -164,7 +164,7 @@ class SaveProvidersHandler(BaseHandler, ABC):
                     'enable_backlog': checkbox_to_value(self.get_argument(providerID + '_enable_backlog', 0)),
                     'cat': try_int(self.get_argument(providerID + '_cat', 0)),
                     'subtitle': checkbox_to_value(self.get_argument(providerID + '_subtitle', 0)),
-                    'cookies': str(self.get_argument(providerID + '_cookies', '')).strip(),
+                    'cookies': str(self.get_argument(providerID + '_cookies', '')).strip().rstrip(';'),
                     'custom_url': str(self.get_argument(providerID + '_custom_url', '')).strip()
                 }
 
