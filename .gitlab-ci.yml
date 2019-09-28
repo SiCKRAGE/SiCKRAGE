@@ -52,38 +52,6 @@ sentry_release_develop:
     - branches
     - triggers
 
-gitlab_release_master:
-  stage: release
-    script:
-        - |
-          curl --fail --silent --show-error \
-            --data "{\"tag_name\": \"${CI_COMMIT_TAG}\", \"name\": \"${CI_PROJECT_NAME} ${CI_COMMIT_TAG}\", \"description\": \"${CI_COMMIT_TAG_MESSAGE:-No release notes.}\"}" \
-            --header "Content-Type: application/json" \
-            --header "Private-Token: ${CI_PRIVATE_TOKEN}" \
-            --request POST \
-            "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/releases"
-  only:
-    - /^[0-9.]+$/
-  except:
-    - branches
-    - triggers
-    
-gitlab_release_develop:
-  stage: release
-    script:
-        - |
-          curl --fail --silent --show-error \
-            --data "{\"tag_name\": \"${CI_COMMIT_TAG}\", \"name\": \"${CI_PROJECT_NAME} ${CI_COMMIT_TAG}\", \"description\": \"${CI_COMMIT_TAG_MESSAGE:-No release notes.}\"}" \
-            --header "Content-Type: application/json" \
-            --header "Private-Token: ${CI_PRIVATE_TOKEN}" \
-            --request POST \
-            "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/releases"
-  only:
-    - /^[0-9.]+dev[0-9]$/
-  except:
-    - branches
-    - triggers
-    
 deploy_docker_master:
   stage: deploy
   variables:
@@ -119,6 +87,38 @@ deploy_synology:
     UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
   trigger:
     project: sickrage/sickrage-synology
+    branch: master
+  only:
+    - /^[0-9.]+$/
+  except:
+    - branches
+    - triggers
+
+deploy_readynas:
+  stage: deploy
+  variables:
+    UPSTREAM_COMMIT_TAG: $CI_COMMIT_TAG
+    UPSTREAM_PROJECT_NAME: $CI_PROJECT_NAME
+    UPSTREAM_COMMIT_TAG_MESSAGE: $CI_COMMIT_TAG_MESSAGE
+    UPSTREAM_PROJECT_ID: $CI_PROJECT_ID
+  trigger:
+    project: sickrage/sickrage-readynas
+    branch: master
+  only:
+    - /^[0-9.]+$/
+  except:
+    - branches
+    - triggers
+
+deploy_qnap:
+  stage: deploy
+  variables:
+    UPSTREAM_COMMIT_TAG: $CI_COMMIT_TAG
+    UPSTREAM_PROJECT_NAME: $CI_PROJECT_NAME
+    UPSTREAM_COMMIT_TAG_MESSAGE: $CI_COMMIT_TAG_MESSAGE
+    UPSTREAM_PROJECT_ID: $CI_PROJECT_ID
+  trigger:
+    project: sickrage/sickrage-qnap
     branch: master
   only:
     - /^[0-9.]+$/
