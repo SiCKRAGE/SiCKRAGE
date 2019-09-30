@@ -21,6 +21,7 @@
 
 
 import datetime
+import functools
 import time
 
 import feedparser
@@ -246,8 +247,8 @@ class TVCache(object):
                     # add to external provider cache database
                     if sickrage.app.config.enable_api_providers_cache and not self.provider.private:
                         try:
-                            sickrage.app.io_loop.run_in_executor(None, ProviderCacheAPI().add, data=dbData)
-                        except Exception:
+                            sickrage.app.io_loop.run_in_executor(None, functools.partial(ProviderCacheAPI().add, data=dbData))
+                        except Exception as e:
                             pass
         except (InvalidShowException, InvalidNameException):
             pass

@@ -21,6 +21,7 @@
 
 
 import datetime
+import functools
 import os
 import platform
 import re
@@ -500,8 +501,8 @@ class Core(object):
 
         # launch browser window
         if all([not sickrage.app.no_launch, sickrage.app.config.launch_browser]):
-            self.io_loop.run_in_executor(None, lambda: launch_browser(('http', 'https')[sickrage.app.config.enable_https], sickrage.app.config.web_host,
-                                                                      sickrage.app.config.web_port))
+            self.io_loop.run_in_executor(None, functools.partial(launch_browser, ('http', 'https')[sickrage.app.config.enable_https],
+                                                                 sickrage.app.config.web_host, sickrage.app.config.web_port))
 
         def started():
             self.log.info("SiCKRAGE :: STARTED")
