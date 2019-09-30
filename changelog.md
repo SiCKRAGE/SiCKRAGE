@@ -1,5 +1,10 @@
 # Changelog
 
+- * 87e1d87dd - 2019-09-29: Fixed issue with adding cache results to external API when passed to executor. 
+- * a55b7deab - 2019-09-28: Added readynas and qnap automated CI/CD deployments 
+- * c3aed9a01 - 2019-09-28: Update .gitlab-ci.yml 
+- * 9c19de02f - 2019-09-21: Added code to strip &#x60;;&#x60; from end of provider cookie string, resolved invalidation cookie issues. 
+- * d35176f2f - 2019-09-18: Pre-Release v9.4.175.dev1 
 - * 4a98d7fe2 - 2019-09-18: Release v9.4.174 
 - * 7f6bdf7ab - 2019-09-18: Refactored speed.cd to use cookie login due to re-captcha on login forms. 
 - * b783172a6 - 2019-09-16: Pre-Release v9.4.174.dev1 
