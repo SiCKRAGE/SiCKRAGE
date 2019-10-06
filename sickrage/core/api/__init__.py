@@ -24,7 +24,18 @@ class API(object):
 
     @property
     def session(self):
-        return OAuth2Session(token=self.token)
+        extra = {
+            'client_id': self.client_id,
+            'client_secret': self.client_secret
+        }
+
+        def token_updater(value):
+            self.token = value
+
+        return OAuth2Session(token=self.token,
+                             auto_refresh_kwargs=extra,
+                             auto_refresh_url=self.token_url,
+                             token_updater=token_updater)
 
     @property
     def token(self):
@@ -61,8 +72,8 @@ class API(object):
             try:
                 resp = self.session.request(method, urljoin(self.api_url, url), timeout=30, hooks={'response': self.throttle_hook}, **kwargs)
                 if resp.status_code in [401, 403]:
-                    if not self.token_refreshed:
-                        raise TokenExpiredError
+                    # if not self.token_refreshed:
+                    #     raise TokenExpiredError
                     if 'error' in resp.json():
                         raise ApiError(resp.json()['error'])
                 elif resp.status_code >= 400:
@@ -72,8 +83,8 @@ class API(object):
                     return
 
                 return resp.json()
-            except TokenExpiredError:
-                self.refresh_token()
+            # except TokenExpiredError:
+            #     self.refresh_token()
             except (InvalidClientIdError, MissingTokenError) as e:
                 latest_exception = "SiCKRAGE token issue, please try logging out and back in again to the web-ui"
             except RequestException as e:
