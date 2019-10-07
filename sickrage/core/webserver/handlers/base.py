@@ -103,7 +103,7 @@ class BaseHandler(RequestHandler, ABC):
     def get_current_user(self):
         try:
             if not API().token:
-                return self.redirect('/logout')
+                return
 
             if self.application.settings['httpclient_secret'] == self.get_cookie('sr_httpclient_token'):
                 return {'email': ''}

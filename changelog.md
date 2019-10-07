@@ -1,5 +1,6 @@
 # Changelog
 
+- * da38c261d - 2019-10-06: Pre-Release v9.4.178.dev7 
 - * 94946f8b0 - 2019-10-06: Added code to ensure token.json exists and if not then force logout. 
 - * 0707d807c - 2019-10-06: Pre-Release v9.4.178.dev6 
 - * 062ac6958 - 2019-10-06: Pre-Release v9.4.178.dev5 
