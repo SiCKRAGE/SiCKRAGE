@@ -1,5 +1,7 @@
 # Changelog
 
+- * 94946f8b0 - 2019-10-06: Added code to ensure token.json exists and if not then force logout. 
+- * 0707d807c - 2019-10-06: Pre-Release v9.4.178.dev6 
 - * 062ac6958 - 2019-10-06: Pre-Release v9.4.178.dev5 
 - * 8dd6f5034 - 2019-10-06: Pre-Release v9.4.178.dev4 
 - * f2a171d55 - 2019-10-06: Removed old manual token refresh code for API. 
