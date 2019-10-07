@@ -79,11 +79,7 @@ class API(object):
         for i in range(3):
             try:
                 resp = self.session.request(method, urljoin(self.api_url, url), timeout=30, hooks={'response': self.throttle_hook}, **kwargs)
-                if resp.status_code in [401, 403]:
-                    self.token = {}
-                    if 'error' in resp.json():
-                        raise ApiError(resp.json()['error'])
-                elif resp.status_code >= 400:
+                if resp.status_code >= 400:
                     if 'error' in resp.json():
                         raise ApiError(resp.json()['error'])
                 elif resp.status_code == 204:
@@ -102,18 +98,6 @@ class API(object):
     def exchange_token(self, token, scope='offline_access'):
         exchange = {'scope': scope, 'subject_token': token['access_token']}
         self.token = sickrage.app.oidc_client.token_exchange(**exchange)
-
-    def refresh_token(self):
-        self.token_refreshed = True
-
-        extras = {'client_id': self.client_id, 'client_secret': self.client_secret}
-
-        try:
-            self.token = self.session.refresh_token(self.token_url, **extras)
-        except InvalidGrantError:
-            self.token = {}
-
-        return self.token
 
     @staticmethod
     def throttle_hook(response, **kwargs):
