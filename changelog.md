@@ -1,5 +1,7 @@
 # Changelog
 
+- * 1a335808c - 2019-10-06: Added code to auto-refresh SiCKRAGE&#x27;s API tokens. 
+- * 33f9ddf35 - 2019-10-06: Pre-Release v9.4.178.dev2 
 - * ed9a94df5 - 2019-09-29: Pre-Release v9.4.178.dev1 
 - * 87a6ec61a - 2019-09-29: Release v9.4.177 
 - * 0f10d349c - 2019-09-29: Development version bump. 
