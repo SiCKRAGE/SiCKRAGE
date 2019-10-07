@@ -35,7 +35,7 @@ from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 from tornado.web import RequestHandler
 
 import sickrage
-from sickrage.core import helpers
+from sickrage.core import helpers, API
 from sickrage.core.databases.main import MainDB
 
 
@@ -102,6 +102,9 @@ class BaseHandler(RequestHandler, ABC):
 
     def get_current_user(self):
         try:
+            if not API().token:
+                return self.redirect('/logout')
+
             if self.application.settings['httpclient_secret'] == self.get_cookie('sr_httpclient_token'):
                 return {'email': ''}
 
