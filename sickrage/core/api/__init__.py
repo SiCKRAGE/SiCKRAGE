@@ -39,18 +39,26 @@ class API(object):
 
     @property
     def token(self):
+        token = {}
+
         if os.path.exists(self.token_file):
             with open(self.token_file, 'r') as fd:
                 try:
-                    return json.load(fd)
+                    token = json.load(fd)
+                    if not token.get('expires_at'):
+                        token['expires_at'] = time.time() - 10
                 except JSONDecodeError:
-                    pass
-        return {}
+                    token = {}
+
+        return token
 
     @token.setter
     def token(self, value):
+        token = value.decode() if isinstance(value, bytes) else value
+        if token.get('expires_in'):
+            token['expires_at'] = int(time.time() + token['expires_in'])
         with open(self.token_file, 'w') as fd:
-            json.dump(value.decode() if isinstance(value, bytes) else value, fd)
+            json.dump(token, fd)
 
     @property
     def userinfo(self):
@@ -72,8 +80,7 @@ class API(object):
             try:
                 resp = self.session.request(method, urljoin(self.api_url, url), timeout=30, hooks={'response': self.throttle_hook}, **kwargs)
                 if resp.status_code in [401, 403]:
-                    # if not self.token_refreshed:
-                    #     raise TokenExpiredError
+                    self.token = {}
                     if 'error' in resp.json():
                         raise ApiError(resp.json()['error'])
                 elif resp.status_code >= 400:
@@ -83,8 +90,6 @@ class API(object):
                     return
 
                 return resp.json()
-            # except TokenExpiredError:
-            #     self.refresh_token()
             except (InvalidClientIdError, MissingTokenError) as e:
                 latest_exception = "SiCKRAGE token issue, please try logging out and back in again to the web-ui"
             except RequestException as e:
