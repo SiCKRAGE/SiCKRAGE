@@ -45,7 +45,7 @@ class API(object):
             with open(self.token_file, 'r') as fd:
                 try:
                     token = json.load(fd)
-                    if not token.get('expires_at'):
+                    if len(token) and not token.get('expires_at'):
                         token['expires_at'] = time.time() - 10
                 except JSONDecodeError:
                     token = {}
