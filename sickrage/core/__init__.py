@@ -332,16 +332,6 @@ class Core(object):
         if self.config.showupdate_hour < 0 or self.config.showupdate_hour > 23:
             self.config.showupdate_hour = 0
 
-        # add API token refresh job
-        self.scheduler.add_job(
-            API().refresh_token,
-            IntervalTrigger(
-                hours=1,
-            ),
-            name='SR-API',
-            id='SR-API'
-        )
-
         # add version checker job
         self.scheduler.add_job(
             self.version_updater.run,
