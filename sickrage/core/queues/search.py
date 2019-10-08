@@ -134,7 +134,7 @@ class SearchQueue(SRQueue):
             return
 
         if not len(sickrage.app.search_providers.enabled()):
-            sickrage.app.log.warning("Search Failed, No NZB/Torrent providers enabled")
+            # sickrage.app.log.warning("Search Failed, No NZB/Torrent providers enabled")
             return
 
         if isinstance(item, DailySearchQueueItem):
