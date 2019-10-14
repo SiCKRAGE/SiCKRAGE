@@ -60,7 +60,11 @@ deploy_pypi:
     - python setup.py sdist bdist_wheel
     - twine upload dist/*
   only:
-    - tags
+    - /^[0-9.]+$/
+    - /^[0-9.]+dev[0-9]$/
+  except:
+    - branches
+    - triggers
 
 deploy_docker_master:
   stage: deploy
