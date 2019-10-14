@@ -1,5 +1,7 @@
 # Changelog
 
+- * 4cdf37473 - 2019-10-14: Added CI/CD deploy script for PyPi releases 
+- * 66f810e9a - 2019-10-14: Pre-Release v9.4.178.dev11 
 - * 4e0a44b46 - 2019-10-14: Pre-Release v9.4.178.dev10 
 - * d07f9f8f3 - 2019-10-14: Pre-Release v9.4.178.dev9 
 - * 401e6a9f9 - 2019-10-07: Added lazy loading to main shows page, reduces page load times. 
