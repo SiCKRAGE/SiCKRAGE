@@ -1,5 +1,6 @@
 # Changelog
 
+- * 4e0a44b46 - 2019-10-14: Pre-Release v9.4.178.dev10 
 - * d07f9f8f3 - 2019-10-14: Pre-Release v9.4.178.dev9 
 - * 401e6a9f9 - 2019-10-07: Added lazy loading to main shows page, reduces page load times. 
 - * 749ed1b54 - 2019-10-06: Pre-Release v9.4.178.dev8 
