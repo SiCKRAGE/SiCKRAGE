@@ -1,5 +1,7 @@
 # Changelog
 
+- * 401e6a9f9 - 2019-10-07: Added lazy loading to main shows page, reduces page load times. 
+- * 749ed1b54 - 2019-10-06: Pre-Release v9.4.178.dev8 
 - * da38c261d - 2019-10-06: Pre-Release v9.4.178.dev7 
 - * 94946f8b0 - 2019-10-06: Added code to ensure token.json exists and if not then force logout. 
 - * 0707d807c - 2019-10-06: Pre-Release v9.4.178.dev6 
