@@ -52,6 +52,16 @@ sentry_release_develop:
     - branches
     - triggers
 
+deploy_pypi:
+  stage: deploy
+  image: python:3.7-alpine3.9
+  script:
+    - pip install -U twine
+    - python setup.py sdist bdist_wheel
+    - twine upload dist/*
+  only:
+    - tags
+
 deploy_docker_master:
   stage: deploy
   variables:
