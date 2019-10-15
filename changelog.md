@@ -1,5 +1,6 @@
 # Changelog
 
+- * 2537f0b44 - 2019-10-14: Pre-Release v9.4.178.dev14 
 - * add4a56cf - 2019-10-14: Pre-Release v9.4.178.dev13 
 - * 60f542362 - 2019-10-14: Pre-Release v9.4.178.dev12 
 - * 4cdf37473 - 2019-10-14: Added CI/CD deploy script for PyPi releases 
