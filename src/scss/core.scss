@@ -337,12 +337,12 @@ input[type=checkbox].toggle {
 .btn {
   @extend .btn-primary;
   @extend .shadow-lg;
-  background-image: linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(255,255,255,0.2) 49%, rgba(0,0,0,0.15) 51%, rgba(0,0,0,0.05));
+  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.2) 49%, rgba(0, 0, 0, 0.15) 51%, rgba(0, 0, 0, 0.05));
   background-repeat: repeat-x;
 }
 
 .badge {
-  background-image: linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(255,255,255,0.2) 49%, rgba(0,0,0,0.15) 51%, rgba(0,0,0,0.05));
+  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.2) 49%, rgba(0, 0, 0, 0.15) 51%, rgba(0, 0, 0, 0.05));
   background-repeat: repeat-x;
 }
 
@@ -517,8 +517,9 @@ input[type=checkbox].toggle {
   -webkit-tap-highlight-color: transparent;
 }
 
-.show-container {
-  -webkit-transform:translate3d(0,0,0);
-  -moz-transform:translate3d(0,0,0);
-  transform:translate3d(0,0,0);
+#indicatorContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
