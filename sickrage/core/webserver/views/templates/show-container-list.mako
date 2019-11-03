@@ -23,27 +23,27 @@
         show_size = show.total_size
 
         if cur_total != 0:
-        download_stat = str(cur_downloaded)
-        download_stat_tip = _("Downloaded: ") + str(cur_downloaded)
-        if cur_snatched > 0:
-            download_stat = download_stat + "+" + str(cur_snatched)
-            download_stat_tip = download_stat_tip + "&#013;" + _("Snatched: ") + str(cur_snatched)
+            download_stat = str(cur_downloaded)
+            download_stat_tip = _("Downloaded: ") + str(cur_downloaded)
+            if cur_snatched > 0:
+                download_stat = download_stat + "+" + str(cur_snatched)
+                download_stat_tip = download_stat_tip + "&#013;" + _("Snatched: ") + str(cur_snatched)
 
-        download_stat = download_stat + " / " + str(cur_total)
-        download_stat_tip = download_stat_tip + "&#013;" + _("Total: ") + str(cur_total)
+            download_stat = download_stat + " / " + str(cur_total)
+            download_stat_tip = download_stat_tip + "&#013;" + _("Total: ") + str(cur_total)
         else:
-        download_stat = '?'
-        download_stat_tip = _("no data")
+            download_stat = '?'
+            download_stat_tip = _("no data")
 
         progressbar_percent = int(cur_downloaded * 100 / cur_total if cur_total > 0 else 1)
         progressbar_percent_class = "progress-{}".format('100' if progressbar_percent > 80 else '80' if progressbar_percent > 60 else '60' if progressbar_percent > 40 else '40' if progressbar_percent > 20 else '20')
 
         network_class_name = None
         if show.network:
-        network_class_name = re.sub(r'(?!\w|\s).', '', unidecode.unidecode(show.network))
-        network_class_name = re.sub(r'\s+', '-', network_class_name)
-        network_class_name = re.sub(r'^(\s*)([\W\w]*)(\b\s*$)', '\\2', network_class_name)
-        network_class_name = network_class_name.lower()
+            network_class_name = re.sub(r'(?!\w|\s).', '', unidecode.unidecode(show.network))
+            network_class_name = re.sub(r'\s+', '-', network_class_name)
+            network_class_name = re.sub(r'^(\s*)([\W\w]*)(\b\s*$)', '\\2', network_class_name)
+            network_class_name = network_class_name.lower()
     %>
     <tr class="show-list-item">
         % if cur_airs_next > datetime.date.min:
@@ -144,11 +144,11 @@
 
         <td class="table-fit align-middle">
             % if show.status and re.search(r'(?i)(?:new|returning)\s*series', show.status):
-            ${_('Continuing')}
+                ${_('Continuing')}
             % elif show.status and re.search('(?i)(?:nded)', show.status):
-            ${_('Ended')}
+                ${_('Ended')}
             % else:
-            ${show.status}
+                ${show.status}
             % endif
         </td>
     </tr>
