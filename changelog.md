@@ -1,5 +1,7 @@
 # Changelog
 
+- * 8a252b55a - 2019-11-03: Resolved issue with daylight savings and scheduler. 
+- * 82ee3f41c - 2019-11-02: Pre-Release v9.4.178.dev17 
 - * 5450dd7f3 - 2019-11-02: Fixed indenting in template for shows list 
 - * 4562049d8 - 2019-11-02: Refactored JS to display show grid after images loaded. 
 - * 222c3ed4a - 2019-11-02: Pre-Release v9.4.178.dev16 
