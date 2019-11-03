@@ -40,6 +40,7 @@ from dateutil import tz
 from fake_useragent import UserAgent
 from keycloak.realm import KeycloakRealm
 from tornado.ioloop import IOLoop
+from tzlocal import get_localzone
 
 import sickrage
 from sickrage.core.api import API
@@ -337,6 +338,7 @@ class Core(object):
             self.version_updater.run,
             IntervalTrigger(
                 hours=self.config.version_updater_freq,
+                timezone='utc'
             ),
             name=self.version_updater.name,
             id=self.version_updater.name
@@ -347,6 +349,7 @@ class Core(object):
             self.tz_updater.run,
             IntervalTrigger(
                 days=1,
+                timezone='utc'
             ),
             name=self.tz_updater.name,
             id=self.tz_updater.name
@@ -357,7 +360,8 @@ class Core(object):
             self.show_updater.run,
             IntervalTrigger(
                 days=1,
-                start_date=datetime.datetime.now().replace(hour=self.config.showupdate_hour)
+                start_date=datetime.datetime.now().replace(hour=self.config.showupdate_hour),
+                timezone='utc'
             ),
             name=self.show_updater.name,
             id=self.show_updater.name
@@ -368,6 +372,7 @@ class Core(object):
             self.rsscache_updater.run,
             IntervalTrigger(
                 minutes=15,
+                timezone='utc'
             ),
             name=self.rsscache_updater.name,
             id=self.rsscache_updater.name
@@ -378,7 +383,8 @@ class Core(object):
             self.daily_searcher.run,
             IntervalTrigger(
                 minutes=self.config.daily_searcher_freq,
-                start_date=datetime.datetime.now() + datetime.timedelta(minutes=4)
+                start_date=datetime.datetime.now() + datetime.timedelta(minutes=4),
+                timezone='utc'
             ),
             name=self.daily_searcher.name,
             id=self.daily_searcher.name
@@ -389,7 +395,8 @@ class Core(object):
             self.failed_snatch_searcher.run,
             IntervalTrigger(
                 hours=1,
-                start_date=datetime.datetime.now() + datetime.timedelta(minutes=4)
+                start_date=datetime.datetime.now() + datetime.timedelta(minutes=4),
+                timezone='utc'
             ),
             name=self.failed_snatch_searcher.name,
             id=self.failed_snatch_searcher.name
@@ -400,7 +407,8 @@ class Core(object):
             self.backlog_searcher.run,
             IntervalTrigger(
                 minutes=self.config.backlog_searcher_freq,
-                start_date=datetime.datetime.now() + datetime.timedelta(minutes=30)
+                start_date=datetime.datetime.now() + datetime.timedelta(minutes=30),
+                timezone='utc'
             ),
             name=self.backlog_searcher.name,
             id=self.backlog_searcher.name
@@ -410,7 +418,8 @@ class Core(object):
         self.scheduler.add_job(
             self.auto_postprocessor.run,
             IntervalTrigger(
-                minutes=self.config.autopostprocessor_freq
+                minutes=self.config.autopostprocessor_freq,
+                timezone='utc'
             ),
             name=self.auto_postprocessor.name,
             id=self.auto_postprocessor.name
@@ -426,7 +435,8 @@ class Core(object):
                     '90m': 90,
                     '4h': 4 * 60,
                     'daily': 24 * 60
-                }[self.config.proper_searcher_interval]
+                }[self.config.proper_searcher_interval],
+                timezone='utc'
             ),
             name=self.proper_searcher.name,
             id=self.proper_searcher.name
@@ -436,7 +446,8 @@ class Core(object):
         self.scheduler.add_job(
             self.trakt_searcher.run,
             IntervalTrigger(
-                hours=1
+                hours=1,
+                timezone='utc'
             ),
             name=self.trakt_searcher.name,
             id=self.trakt_searcher.name
@@ -446,7 +457,8 @@ class Core(object):
         self.scheduler.add_job(
             self.subtitle_searcher.run,
             IntervalTrigger(
-                hours=self.config.subtitle_searcher_freq
+                hours=self.config.subtitle_searcher_freq,
+                timezone='utc'
             ),
             name=self.subtitle_searcher.name,
             id=self.subtitle_searcher.name
@@ -456,7 +468,8 @@ class Core(object):
         self.scheduler.add_job(
             self.upnp_client.run,
             IntervalTrigger(
-                seconds=self.upnp_client._nat_portmap_lifetime
+                seconds=self.upnp_client._nat_portmap_lifetime,
+                timezone='utc'
             ),
             name=self.upnp_client.name,
             id=self.upnp_client.name
@@ -467,6 +480,7 @@ class Core(object):
             self.name_cache.build_all,
             IntervalTrigger(
                 days=1,
+                timezone='utc'
             ),
             name=self.name_cache.name,
             id=self.name_cache.name
