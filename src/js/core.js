@@ -83,132 +83,134 @@ $(document).ready(function ($) {
                         } else if (msg.data.action === 'load_show_grid') {
                             $('#indicatorContainer').remove();
 
-                            SICKRAGE.resizePosters(parseInt(localStorage.posterSize || 188));
-
                             $grid.removeClass('d-none');
 
-                            $grid
-                                .isotope({
-                                    itemSelector: '.show-container',
-                                    animationEngine: 'best-available',
-                                    sortBy: SICKRAGE.getMeta('sickrage.POSTER_SORTBY'),
-                                    sortAscending: SICKRAGE.getMeta('sickrage.POSTER_SORTDIR'),
-                                    layoutMode: 'masonry',
-                                    masonry: {
-                                        isFitWidth: true
-                                    },
-                                    getSortData: {
-                                        name: function (itemElem) {
-                                            var name = $(itemElem).attr('data-name') || '';
-                                            return (SICKRAGE.metaToBool('sickrage.SORT_ARTICLE') ? name : name.replace(/^((?:The|A|An)\s)/i, '')).toLowerCase();
+                            $grid.imagesLoaded(function () {
+                                SICKRAGE.resizePosters(parseInt(localStorage.posterSize || 188));
+
+                                $grid
+                                    .isotope({
+                                        itemSelector: '.show-container',
+                                        animationEngine: 'best-available',
+                                        sortBy: SICKRAGE.getMeta('sickrage.POSTER_SORTBY'),
+                                        sortAscending: SICKRAGE.getMeta('sickrage.POSTER_SORTDIR'),
+                                        layoutMode: 'masonry',
+                                        masonry: {
+                                            isFitWidth: true
                                         },
-                                        network: '[data-network]',
-                                        date: function (itemElem) {
-                                            var date = $(itemElem).attr('data-date');
-                                            return date.length && parseInt(date, 10) || Number.POSITIVE_INFINITY;
+                                        getSortData: {
+                                            name: function (itemElem) {
+                                                var name = $(itemElem).attr('data-name') || '';
+                                                return (SICKRAGE.metaToBool('sickrage.SORT_ARTICLE') ? name : name.replace(/^((?:The|A|An)\s)/i, '')).toLowerCase();
+                                            },
+                                            network: '[data-network]',
+                                            date: function (itemElem) {
+                                                var date = $(itemElem).attr('data-date');
+                                                return date.length && parseInt(date, 10) || Number.POSITIVE_INFINITY;
+                                            },
+                                            progress: function (itemElem) {
+                                                var progress = $(itemElem).attr('data-progress');
+                                                return progress.length && parseInt(progress, 10) || Number.NEGATIVE_INFINITY;
+                                            }
                                         },
-                                        progress: function (itemElem) {
-                                            var progress = $(itemElem).attr('data-progress');
-                                            return progress.length && parseInt(progress, 10) || Number.NEGATIVE_INFINITY;
-                                        }
-                                    },
-                                    visibleStyle: {transform: 'translateY(0)', opacity: 1},
-                                    hiddenStyle: {transform: 'translateY(100px)', opacity: 0},
+                                        visibleStyle: {transform: 'translateY(0)', opacity: 1},
+                                        hiddenStyle: {transform: 'translateY(100px)', opacity: 0},
+                                    });
+
+                                $("img#network").on('error', function () {
+                                    $(this).parent().text($(this).attr('alt'));
+                                    $(this).remove();
                                 });
 
-                            $("img#network").on('error', function () {
-                                $(this).parent().text($(this).attr('alt'));
-                                $(this).remove();
-                            });
-
-                            // When posters are small enough to not display the .show-details
-                            // table, display a larger poster when hovering.
-                            let posterHoverTimer = null;
-                            $('.show-container').on('mouseenter', function () {
-                                let poster = $(this);
-                                if (poster.find('.show-details').css('display') !== 'none') {
-                                    return;
-                                }
-                                posterHoverTimer = setTimeout(function () {
-                                    $('#posterPopup').remove();
-                                    var popup = poster.clone().attr({
-                                        id: 'posterPopup'
-                                    });
-                                    var origLeft = poster.offset().left;
-                                    var origTop = poster.offset().top;
-                                    popup.css({
-                                        position: 'absolute',
-                                        margin: 0,
-                                        top: origTop,
-                                        left: origLeft,
-                                        zIndex: 9999
-                                    });
-
-                                    popup.find('.show-details').show();
-                                    popup.on('mouseleave', function () {
-                                        $(this).remove();
-                                    });
-                                    popup.appendTo('body');
-
-                                    var height = 438, width = 250;
-                                    var newTop = (origTop + poster.height() / 2) - (height / 2);
-                                    var newLeft = (origLeft + poster.width() / 2) - (width / 2);
-
-                                    // Make sure the popup isn't outside the viewport
-                                    var margin = 5;
-                                    var scrollTop = $(window).scrollTop();
-                                    var scrollLeft = $(window).scrollLeft();
-                                    var scrollBottom = scrollTop + $(window).innerHeight();
-                                    var scrollRight = scrollLeft + $(window).innerWidth();
-                                    if (newTop < scrollTop + margin) {
-                                        newTop = scrollTop + margin;
+                                // When posters are small enough to not display the .show-details
+                                // table, display a larger poster when hovering.
+                                let posterHoverTimer = null;
+                                $('.show-container').on('mouseenter', function () {
+                                    let poster = $(this);
+                                    if (poster.find('.show-details').css('display') !== 'none') {
+                                        return;
                                     }
-                                    if (newLeft < scrollLeft + margin) {
-                                        newLeft = scrollLeft + margin;
-                                    }
-                                    if (newTop + height + margin > scrollBottom) {
-                                        newTop = scrollBottom - height - margin;
-                                    }
-                                    if (newLeft + width + margin > scrollRight) {
-                                        newLeft = scrollRight - width - margin;
-                                    }
+                                    posterHoverTimer = setTimeout(function () {
+                                        $('#posterPopup').remove();
+                                        var popup = poster.clone().attr({
+                                            id: 'posterPopup'
+                                        });
+                                        var origLeft = poster.offset().left;
+                                        var origTop = poster.offset().top;
+                                        popup.css({
+                                            position: 'absolute',
+                                            margin: 0,
+                                            top: origTop,
+                                            left: origLeft,
+                                            zIndex: 9999
+                                        });
 
-                                    popup.animate({
-                                        top: newTop,
-                                        left: newLeft,
-                                        width: 250,
-                                        height: 438
-                                    });
-                                }, 300);
-                            }).on('mouseleave', function () {
-                                if (posterHoverTimer !== null) {
-                                    clearTimeout(posterHoverTimer);
-                                }
-                            });
+                                        popup.find('.show-details').show();
+                                        popup.on('mouseleave', function () {
+                                            $(this).remove();
+                                        });
+                                        popup.appendTo('body');
 
-                            $('#posterSizeSlider').slider({
-                                min: 75,
-                                max: 250,
-                                value: localStorage.posterSize || 188,
-                                change: function (e, ui) {
-                                    if (window.localStorage) {
-                                        localStorage.setItem('posterSize', ui.value);
+                                        var height = 438, width = 250;
+                                        var newTop = (origTop + poster.height() / 2) - (height / 2);
+                                        var newLeft = (origLeft + poster.width() / 2) - (width / 2);
+
+                                        // Make sure the popup isn't outside the viewport
+                                        var margin = 5;
+                                        var scrollTop = $(window).scrollTop();
+                                        var scrollLeft = $(window).scrollLeft();
+                                        var scrollBottom = scrollTop + $(window).innerHeight();
+                                        var scrollRight = scrollLeft + $(window).innerWidth();
+                                        if (newTop < scrollTop + margin) {
+                                            newTop = scrollTop + margin;
+                                        }
+                                        if (newLeft < scrollLeft + margin) {
+                                            newLeft = scrollLeft + margin;
+                                        }
+                                        if (newTop + height + margin > scrollBottom) {
+                                            newTop = scrollBottom - height - margin;
+                                        }
+                                        if (newLeft + width + margin > scrollRight) {
+                                            newLeft = scrollRight - width - margin;
+                                        }
+
+                                        popup.animate({
+                                            top: newTop,
+                                            left: newLeft,
+                                            width: 250,
+                                            height: 438
+                                        });
+                                    }, 300);
+                                }).on('mouseleave', function () {
+                                    if (posterHoverTimer !== null) {
+                                        clearTimeout(posterHoverTimer);
                                     }
-                                    SICKRAGE.resizePosters(ui.value);
-                                    $('.show-grid').isotope('layout');
-                                }
-                            });
+                                });
 
-                            $('#postersort').on('change', function () {
-                                var sortValue = $(this).val();
-                                $('.show-grid').isotope({sortBy: sortValue});
-                                $.post($(this).find('option[value=' + $(this).val() + ']').attr('data-sort'));
-                            });
+                                $('#posterSizeSlider').slider({
+                                    min: 75,
+                                    max: 250,
+                                    value: localStorage.posterSize || 188,
+                                    change: function (e, ui) {
+                                        if (window.localStorage) {
+                                            localStorage.setItem('posterSize', ui.value);
+                                        }
+                                        SICKRAGE.resizePosters(ui.value);
+                                        $grid.isotope('layout');
+                                    }
+                                });
 
-                            $('#postersortdirection').on('change', function () {
-                                var sortDirection = $(this).val() === 'true';
-                                $('.show-grid').isotope({sortAscending: sortDirection});
-                                $.post($(this).find('option[value=' + $(this).val() + ']').attr('data-sort'));
+                                $('#postersort').on('change', function () {
+                                    var sortValue = $(this).val();
+                                    $grid.isotope({sortBy: sortValue});
+                                    $.post($(this).find('option[value=' + $(this).val() + ']').attr('data-sort'));
+                                });
+
+                                $('#postersortdirection').on('change', function () {
+                                    var sortDirection = $(this).val() === 'true';
+                                    $grid.isotope({sortAscending: sortDirection});
+                                    $.post($(this).find('option[value=' + $(this).val() + ']').attr('data-sort'));
+                                });
                             });
                         } else if (msg.data.action === 'load_show_list') {
                             $('#indicatorContainer').remove();
@@ -1938,7 +1940,9 @@ $(document).ready(function ($) {
             init: function () {
                 $.backstretch(SICKRAGE.srWebRoot + '/images/backdrops/home.jpg');
                 $('.backstretch').css("opacity", SICKRAGE.getMeta('sickrage.FANART_BACKGROUND_OPACITY')).fadeIn("500");
+            },
 
+            index: function () {
                 $('#indicatorContainer').radialIndicator({
                     radius: 60,
                     barColor: '#6c757d',
@@ -1949,10 +1953,8 @@ $(document).ready(function ($) {
                     displayNumber: false,
                     minValue: 0
                 });
-            },
 
-            index: function () {
-                // placeholder
+                $.get(SICKRAGE.srWebRoot + '/home/loadShows');
             },
 
             display_show: {
@@ -2432,6 +2434,8 @@ $(document).ready(function ($) {
 
             trakt_shows: {
                 init: function () {
+                    let $grid = $('.show-grid');
+
                     // initialise combos for dirty page refreshes
                     $('#showsort').val('original');
                     $('#showsortdirection').val('asc');
@@ -2445,14 +2449,14 @@ $(document).ready(function ($) {
                                 localStorage.setItem('traktPosterSize', ui.value);
                             }
                             SICKRAGE.resizePosters(ui.value);
-                            $('.show-grid').isotope('layout');
+                            $grid.isotope('layout');
                         }
                     });
 
-                    SICKRAGE.resizePosters(parseInt(localStorage.traktPosterSize || 188));
+                    $grid.imagesLoaded(function () {
+                        SICKRAGE.resizePosters(parseInt(localStorage.traktPosterSize || 188));
 
-                    $('.show-grid').imagesLoaded(function () {
-                        $('.show-grid').isotope({
+                        $grid.isotope({
                             itemSelector: '.show-container',
                             sortBy: 'original-order',
                             layoutMode: 'masonry',
@@ -2480,7 +2484,7 @@ $(document).ready(function ($) {
                                 /* randomise, else the rating_votes can already
                                  * have sorted leaving this with nothing to do.
                                  */
-                                $('.show-grid').isotope({sortBy: 'random'});
+                                $grid.isotope({sortBy: 'random'});
                                 sortCriteria = 'rating';
                                 break;
                             case 'rating_votes':
@@ -2493,11 +2497,11 @@ $(document).ready(function ($) {
                                 sortCriteria = 'name';
                                 break;
                         }
-                        $('.show-grid').isotope({sortBy: sortCriteria});
+                        $grid.isotope({sortBy: sortCriteria});
                     });
 
                     $('#showsortdirection').on('change', function () {
-                        $('.show-grid').isotope({sortAscending: ('asc' === $(this).value)});
+                        $grid.isotope({sortAscending: ('asc' === $(this).value)});
                     });
 
                     $('#traktlist').on('change', function (e) {
@@ -2511,6 +2515,8 @@ $(document).ready(function ($) {
             },
 
             popular_shows: function () {
+                let $grid = $('.show-grid');
+
                 $('#posterSizeSlider').slider({
                     min: 75,
                     max: 250,
@@ -2520,14 +2526,14 @@ $(document).ready(function ($) {
                             localStorage.setItem('imdbPosterSize', ui.value);
                         }
                         SICKRAGE.resizePosters(ui.value);
-                        $('.show-grid').isotope('layout');
+                        $grid.isotope('layout');
                     }
                 });
 
-                SICKRAGE.resizePosters(parseInt(localStorage.traktPosterSize || 188));
+                $grid.imagesLoaded(function () {
+                    SICKRAGE.resizePosters(parseInt(localStorage.imdbPosterSize || 188));
 
-                $('.show-grid').imagesLoaded(function () {
-                    $('.show-grid').isotope({
+                    $grid.isotope({
                         itemSelector: '.show-container',
                         sortBy: 'original-order',
                         layoutMode: 'masonry',
@@ -2555,7 +2561,7 @@ $(document).ready(function ($) {
                             /* randomise, else the rating_votes can already
                              * have sorted leaving this with nothing to do.
                              */
-                            $('.show-grid').isotope({sortBy: 'random'});
+                            $grid.isotope({sortBy: 'random'});
                             sortCriteria = 'rating';
                             break;
                         case 'rating_votes':
@@ -2568,11 +2574,11 @@ $(document).ready(function ($) {
                             sortCriteria = 'name';
                             break;
                     }
-                    $('.show-grid').isotope({sortBy: sortCriteria});
+                    $grid.isotope({sortBy: sortCriteria});
                 });
 
                 $('#showsortdirection').on('change', function () {
-                    $('.show-grid').isotope({sortAscending: ('asc' === $(this).value)});
+                    $grid.isotope({sortAscending: ('asc' === $(this).value)});
                 });
             },
 

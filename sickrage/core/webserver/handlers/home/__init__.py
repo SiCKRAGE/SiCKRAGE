@@ -85,8 +85,6 @@ class HomeHandler(BaseHandler, ABC):
         if not get_show_list().count():
             return self.redirect('/home/addShows/')
 
-        self.run_task(self.load_shows, ui_modules=self.ui)
-
         # showlists = OrderedDict({'Shows': []})
         # if sickrage.app.config.anime_split_home:
         #     for show in sorted(get_show_list(), key=cmp_to_key(lambda x, y: x.name < y.name)):
@@ -107,27 +105,6 @@ class HomeHandler(BaseHandler, ABC):
             controller='home',
             action='index'
         )
-
-    def load_shows(self, ui_modules):
-        show_count = get_show_list().count()
-        shows_loading = [int(x['indexer_id']) for x in sickrage.app.show_queue.loading_show_list]
-
-        for show in get_show_list(session=self.db_session):
-            if sickrage.app.config.home_layout == 'poster':
-                WebSocketMessage('show', {'action': ('show_grid_append', 'show_grid_prepend')[show.indexer_id in shows_loading],
-                                          'show_count': show_count,
-                                          'item': self.render_string("/templates/show-container-grid.mako", show=show, is_anime=show.is_anime,
-                                                                     is_loading=show.indexer_id in shows_loading, ui_modules=ui_modules)}).push()
-            else:
-                WebSocketMessage('show', {'action': ('show_list_append', 'show_list_prepend')[show.indexer_id in shows_loading],
-                                          'show_count': show_count,
-                                          'item': self.render_string("/templates/show-container-list.mako", show=show, is_anime=show.is_anime,
-                                                                     is_loading=show.indexer_id in shows_loading, ui_modules=ui_modules)}).push()
-
-        if sickrage.app.config.home_layout == 'poster':
-            WebSocketMessage('show', {'action': 'load_show_grid'}).push()
-        else:
-            WebSocketMessage('show', {'action': 'load_show_list'}).push()
 
     def statistics(self):
         show_stat = {}
@@ -171,6 +148,30 @@ class HomeHandler(BaseHandler, ABC):
             overall_stats['total_size'] += show_stat[show.indexer_id]['total_size']
 
         return show_stat, overall_stats
+
+
+class LoadShows(BaseHandler, ABC):
+    @authenticated
+    async def get(self, *args, **kwargs):
+        show_count = get_show_list().count()
+        shows_loading = [int(x['indexer_id']) for x in sickrage.app.show_queue.loading_show_list]
+
+        for show in get_show_list(session=self.db_session):
+            if sickrage.app.config.home_layout == 'poster':
+                WebSocketMessage('show', {'action': ('show_grid_append', 'show_grid_prepend')[show.indexer_id in shows_loading],
+                                          'show_count': show_count,
+                                          'item': self.render_string("/templates/show-container-grid.mako", show=show, is_anime=show.is_anime,
+                                                                     is_loading=show.indexer_id in shows_loading)}).push()
+            else:
+                WebSocketMessage('show', {'action': ('show_list_append', 'show_list_prepend')[show.indexer_id in shows_loading],
+                                          'show_count': show_count,
+                                          'item': self.render_string("/templates/show-container-list.mako", show=show, is_anime=show.is_anime,
+                                                                     is_loading=show.indexer_id in shows_loading)}).push()
+
+        if sickrage.app.config.home_layout == 'poster':
+            WebSocketMessage('show', {'action': 'load_show_grid'}).push()
+        else:
+            WebSocketMessage('show', {'action': 'load_show_list'}).push()
 
 
 class IsAliveHandler(BaseHandler, ABC):
