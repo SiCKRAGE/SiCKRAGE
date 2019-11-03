@@ -20,9 +20,8 @@
 # ##############################################################################
 import threading
 
-from tornado import gen
-
 import sickrage
+from sickrage.core.databases.main import MainDB
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.media.util import showImage
 from sickrage.core.tv.show.helpers import find_show, get_show_list
@@ -66,38 +65,37 @@ class QuicksearchCache(object):
 
     @CacheDB.with_session
     def add_show(self, indexer_id, session=None):
-        show = find_show(indexer_id)
-
         if indexer_id not in self.cache['shows']:
-            sickrage.app.log.debug("Adding show {} to QuickSearch cache".format(show.name))
+            with MainDB.session() as maindb_session:
+                show = find_show(indexer_id, session=maindb_session)
+                sickrage.app.log.debug("Adding show {} to QuickSearch cache".format(show.name))
 
-            qsData = {
-                'category': 'shows',
-                'showid': indexer_id,
-                'seasons': len(set([e.season for e in show.episodes if e.season != 0])),
-                'name': show.name,
-                'img': sickrage.app.config.web_root + showImage(indexer_id, 'poster_thumb').url
-            }
-
-            self.cache['shows'][indexer_id] = qsData
-            session.add(CacheDB.QuickSearchShow(**qsData))
-
-            sql_t = []
-            for e in show.episodes:
-                qsData = {
-                    'category': 'episodes',
-                    'showid': e.showid,
-                    'episodeid': e.indexer_id,
-                    'season': e.season,
-                    'episode': e.episode,
-                    'name': e.name,
-                    'showname': show.name,
-                    'img': sickrage.app.config.web_root + showImage(e.showid, 'poster_thumb').url
+                qs_data = {
+                    'category': 'shows',
+                    'showid': indexer_id,
+                    'seasons': len(set([e.season for e in show.episodes if e.season != 0])),
+                    'name': show.name,
+                    'img': sickrage.app.config.web_root + showImage(indexer_id, 'poster_thumb').url
                 }
 
-                sql_t.append(qsData)
+                self.cache['shows'][indexer_id] = qs_data
+                session.add(CacheDB.QuickSearchShow(**qs_data))
 
-                self.cache['episodes'][e.indexer_id] = qsData
+                sql_t = []
+                for e in show.episodes:
+                    qs_data = {
+                        'category': 'episodes',
+                        'showid': e.showid,
+                        'episodeid': e.indexer_id,
+                        'season': e.season,
+                        'episode': e.episode,
+                        'name': e.name,
+                        'showname': show.name,
+                        'img': sickrage.app.config.web_root + showImage(e.showid, 'poster_thumb').url
+                    }
+
+                    sql_t.append(qs_data)
+                    self.cache['episodes'][e.indexer_id] = qs_data
 
             session.bulk_insert_mappings(CacheDB.QuickSearchEpisode, sql_t)
 
