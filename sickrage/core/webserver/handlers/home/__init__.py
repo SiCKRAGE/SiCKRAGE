@@ -18,17 +18,11 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-import calendar
 import datetime
 import os
-import re
-import time
 from abc import ABC
-from collections import OrderedDict
-from functools import cmp_to_key
 from urllib.parse import unquote_plus, quote_plus
 
-import unidecode
 from sqlalchemy import orm
 from tornado import gen
 from tornado.escape import json_encode
@@ -44,11 +38,10 @@ from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AnidbAdbaConnectionException, CantRefreshShowException, NoNFOException, \
     CantUpdateShowException, CantRemoveShowException, EpisodeDeletedException, EpisodeNotFoundException, \
     MultipleEpisodesInDatabaseException
-from sickrage.core.helpers import clean_url, clean_host, clean_hosts, get_disk_space_usage, checkbox_to_value, try_int, srdatetime
+from sickrage.core.helpers import clean_url, clean_host, clean_hosts, get_disk_space_usage, checkbox_to_value, try_int
 from sickrage.core.helpers.anidb import get_release_groups_for_anime, short_group_names
 from sickrage.core.helpers.srdatetime import SRDateTime
 from sickrage.core.helpers.tornado_http import TornadoHTTP
-from sickrage.core.media.util import showImage
 from sickrage.core.queues.search import BacklogQueueItem, FailedQueueItem, ManualSearchQueueItem
 from sickrage.core.scene_exceptions import get_scene_exceptions, update_scene_exceptions
 from sickrage.core.scene_numbering import get_scene_numbering_for_show, get_xem_numbering_for_show, \
@@ -58,6 +51,7 @@ from sickrage.core.traktapi import TraktAPI
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
+from sickrage.core.websocket import WebSocketMessage
 from sickrage.indexers import IndexerApi
 from sickrage.subtitles import Subtitles
 
@@ -91,7 +85,9 @@ class HomeHandler(BaseHandler, ABC):
         if not get_show_list().count():
             return self.redirect('/home/addShows/')
 
-        showlists = OrderedDict({'Shows': []})
+        self.run_task(self.load_shows, ui_modules=self.ui)
+
+        # showlists = OrderedDict({'Shows': []})
         # if sickrage.app.config.anime_split_home:
         #     for show in sorted(get_show_list(), key=cmp_to_key(lambda x, y: x.name < y.name)):
         #         if show.is_anime:
@@ -108,10 +104,30 @@ class HomeHandler(BaseHandler, ABC):
             title="Home",
             header="Show List",
             topmenu="home",
-            showlists=showlists,
             controller='home',
             action='index'
         )
+
+    def load_shows(self, ui_modules):
+        show_count = get_show_list().count()
+        shows_loading = [int(x['indexer_id']) for x in sickrage.app.show_queue.loading_show_list]
+
+        for show in get_show_list(session=self.db_session):
+            if sickrage.app.config.home_layout == 'poster':
+                WebSocketMessage('show', {'action': ('show_grid_append', 'show_grid_prepend')[show.indexer_id in shows_loading],
+                                          'show_count': show_count,
+                                          'item': self.render_string("/templates/show-container-grid.mako", show=show, is_anime=show.is_anime,
+                                                                     is_loading=show.indexer_id in shows_loading, ui_modules=ui_modules)}).push()
+            else:
+                WebSocketMessage('show', {'action': ('show_list_append', 'show_list_prepend')[show.indexer_id in shows_loading],
+                                          'show_count': show_count,
+                                          'item': self.render_string("/templates/show-container-list.mako", show=show, is_anime=show.is_anime,
+                                                                     is_loading=show.indexer_id in shows_loading, ui_modules=ui_modules)}).push()
+
+        if sickrage.app.config.home_layout == 'poster':
+            WebSocketMessage('show', {'action': 'load_show_grid'}).push()
+        else:
+            WebSocketMessage('show', {'action': 'load_show_list'}).push()
 
     def statistics(self):
         show_stat = {}
@@ -155,27 +171,6 @@ class HomeHandler(BaseHandler, ABC):
             overall_stats['total_size'] += show_stat[show.indexer_id]['total_size']
 
         return show_stat, overall_stats
-
-
-class LoadShowsHandler(BaseHandler, ABC):
-    @authenticated
-    async def get(self, *args, **kwargs):
-        layout = self.get_argument('layout', 'poster')
-
-        to_return = ""
-
-        loading_show_list_ids = [int(x['indexer_id']) for x in sickrage.app.show_queue.loading_show_list]
-
-        for show in get_show_list():
-            if show.indexer_id in loading_show_list_ids:
-                continue
-
-            if layout == 'poster':
-                to_return += self.render_string("/templates/show-container-grid.mako", show=show)
-            else:
-                to_return += self.render_string("/templates/show-container-list.mako", show=show)
-
-        return self.write(to_return)
 
 
 class IsAliveHandler(BaseHandler, ABC):

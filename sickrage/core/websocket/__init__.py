@@ -1,6 +1,7 @@
 import json
+from time import sleep
 
-from tornado.websocket import WebSocketHandler, WebSocketClosedError
+from tornado.websocket import WebSocketHandler
 
 import sickrage
 
@@ -17,12 +18,6 @@ class WebSocketUIHandler(WebSocketHandler):
     def open(self, *args, **kwargs):
         """Client connected to the WebSocket."""
         clients.add(self)
-
-        for n in sickrage.app.alerts.get_notifications(self.request.remote_ip):
-            try:
-                self.write_message(WebSocketMessage('notification', n.data).json())
-            except WebSocketClosedError:
-                pass
 
     def on_message(self, message):
         """Received a message from the client."""
@@ -44,20 +39,20 @@ class WebSocketUIHandler(WebSocketHandler):
 class WebSocketMessage(object):
     """Represents a WebSocket message."""
 
-    def __init__(self, event, data):
+    def __init__(self, message_type, data):
         """
         Construct a new WebSocket message.
-        :param event: A string representing the type of message (e.g. notification)
+        :param message_type: A string representing the type of message (e.g. notification)
         :param data: A JSON-serializable object containing the message data.
         """
-        self.event = event
+        self.type = message_type
         self.data = data
 
     @property
     def content(self):
         """Get the message content."""
         return {
-            'event': self.event,
+            'type': self.type,
             'data': self.data
         }
 
@@ -67,8 +62,8 @@ class WebSocketMessage(object):
 
     def push(self):
         """Push the message to all connected WebSocket clients."""
-        if not clients:
-            return
+        while not clients:
+            sleep(0.1)
 
         for client in clients:
             sickrage.app.io_loop.add_callback(client.write_message, self.json())

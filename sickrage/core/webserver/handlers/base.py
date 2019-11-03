@@ -31,12 +31,10 @@ from mako.exceptions import RichTraceback
 from mako.lookup import TemplateLookup
 from requests import HTTPError
 from tornado import locale
-from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 from tornado.web import RequestHandler
 
 import sickrage
 from sickrage.core import helpers, API
-from sickrage.core.databases.main import MainDB
 
 
 class BaseHandler(RequestHandler, ABC):
@@ -144,6 +142,7 @@ class BaseHandler(RequestHandler, ABC):
             'request': self.request,
         }
 
+        self.ui = kwargs.pop('ui_modules', self.ui)
         template_kwargs.update(self.get_template_namespace())
         template_kwargs.update(kwargs)
 

@@ -11,9 +11,6 @@
     from sickrage.core.helpers import srdatetime, pretty_file_size
     from sickrage.core.media.util import showImage
 %>
-## <%block name="metas">
-##     <meta data-var="max_download_count" data-content="${overall_stats['episodes']['total'] * 100}">
-## </%block>
 
 <%block name="sub_navbar">
     <div class="row submenu">
@@ -96,115 +93,29 @@
 </%block>
 
 <%block name="content">
-    <% loading_show_list_ids = [] %>
-
-    % for curListType, curShowlist in showlists.items():
-        % if curListType == "Anime":
-            <div class="row">
-                <div class="col mx-auto">
-                    <div class="h4 card" style="text-align: center;">${_('Anime List')}</div>
-                </div>
+    <%include file="../includes/loading.mako"/>
+    % if sickrage.app.config.home_layout == 'poster':
+        <div id="container" class="show-grid clearfix mx-auto d-none"></div>
+    % else:
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <table class="table d-none" id="showListTableShows">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>${_('Next Ep')}</th>
+                        <th>${_('Prev Ep')}</th>
+                        <th>${_('Show')}</th>
+                        <th>${_('Network')}</th>
+                        <th>${_('Quality')}</th>
+                        <th>${_('Downloads')}</th>
+                        <th>${_('Size')}</th>
+                        <th>${_('Active')}</th>
+                        <th>${_('Status')}</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
-        % endif
-        % if sickrage.app.config.home_layout == 'poster':
-            <div id="${('container', 'container-anime')[curListType == 'Anime' and sickrage.app.config.home_layout == 'poster']}"
-                 class="show-grid clearfix mx-auto">
-                % for curLoadingShow in sickrage.app.show_queue.loading_show_list:
-                <% loading_show_list_ids.append(curLoadingShow['indexer_id']) %>
-                    <div class="show-container" data-name="0" data-date="010101" data-network="0"
-                         data-progress="101">
-                        <div class="card card-block text-white bg-dark m-1 shadow">
-                            <img alt="" title="${curLoadingShow['name']}" class="card-img-top"
-                                 src="${srWebRoot}/images/poster.png"/>
-                            <div class="card-body text-truncate py-1 px-1 small">
-                                <div class="show-title">
-                                    ${curLoadingShow['name']}
-                                </div>
-                            </div>
-                            <div class="card-footer show-details p-1">
-                                <div class="show-details">
-                                    <div class="show-add text-center">${_('... Loading ...')}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                % endfor
-            </div>
-            <div class="show-grid-loading-status text-center m-3">
-                <i class="fas fa-spinner fa-spin fa-fw fa-10x"></i>
-            </div>
-        % else:
-            <div class="row">
-                <div class="col-lg-10 mx-auto">
-                    <table class="table" id="showListTable${curListType}">
-                        <thead class="thead-dark">
-                        <tr>
-                            <th>${_('Next Ep')}</th>
-                            <th>${_('Prev Ep')}</th>
-                            <th>${_('Show')}</th>
-                            <th>${_('Network')}</th>
-                            <th>${_('Quality')}</th>
-                            <th>${_('Downloads')}</th>
-                            <th>${_('Size')}</th>
-                            <th>${_('Active')}</th>
-                            <th>${_('Status')}</th>
-                        </tr>
-                        </thead>
-
-                        % if sickrage.app.show_queue.loading_show_list:
-                            <tbody>
-                                % for curLoadingShow in sickrage.app.show_queue.loading_show_list:
-                                    <% loading_show_list_ids.append(curLoadingShow['indexer_id']) %>
-                                    <tr>
-                                        <td class="table-fit">(${_('loading')})</td>
-                                        <td></td>
-                                        <td>
-                                            <a data-fancybox
-                                               href="displayShow?show=${curLoadingShow['indexer_id']}">${curLoadingShow['name']}</a>
-                                        </td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                % endfor
-                            </tbody>
-                        % endif
-                        <tbody>
-                        <tr class="show-list-loading-status">
-                            <td>
-                                <i class="fas fa-spinner fa-spin fa-fw"></i>
-                            </td>
-                            <td>
-                                <i class="fas fa-spinner fa-spin fa-fw"></i>
-                            </td>
-                            <td>
-                                <i class="fas fa-spinner fa-spin fa-fw"></i>
-                            </td>
-                            <td>
-                                <i class="fas fa-spinner fa-spin fa-fw"></i>
-                            </td>
-                            <td>
-                                <i class="fas fa-spinner fa-spin fa-fw"></i>
-                            </td>
-                            <td>
-                                <i class="fas fa-spinner fa-spin fa-fw"></i>
-                            </td>
-                            <td>
-                                <i class="fas fa-spinner fa-spin fa-fw"></i>
-                            </td>
-                            <td>
-                                <i class="fas fa-spinner fa-spin fa-fw"></i>
-                            </td>
-                            <td>
-                                <i class="fas fa-spinner fa-spin fa-fw"></i>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        % endif
-    % endfor
+        </div>
+    % endif
 </%block>
