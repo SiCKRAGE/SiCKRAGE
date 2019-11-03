@@ -1,5 +1,8 @@
 # Changelog
 
+- * 5450dd7f3 - 2019-11-02: Fixed indenting in template for shows list 
+- * 4562049d8 - 2019-11-02: Refactored JS to display show grid after images loaded. 
+- * 222c3ed4a - 2019-11-02: Pre-Release v9.4.178.dev16 
 - * 828d5f75a - 2019-11-02: Refactored main shows page to load shows via web sockets. 
 - * 7bff6d73d - 2019-11-02: Refactored TVShow and TVEpisode database models to use select instead of joined for lazy loading relationships. 
 - * b9b280d70 - 2019-10-23: Refactored main shows page to load shows via web sockets. 
