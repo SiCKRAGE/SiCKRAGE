@@ -1,5 +1,6 @@
 # Changelog
 
+- * d685071b7 - 2019-11-03: Release v9.4.179 
 - * 16e209457 - 2019-11-03: Pre-Release v9.4.179.dev1 
 - * 7616019b7 - 2019-11-03: Release v9.4.178 
 - * 8a252b55a - 2019-11-03: Resolved issue with daylight savings and scheduler. 
