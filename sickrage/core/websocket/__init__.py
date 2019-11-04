@@ -1,6 +1,7 @@
 import json
 from time import sleep
 
+from tornado import gen
 from tornado.websocket import WebSocketHandler
 
 import sickrage
@@ -63,8 +64,7 @@ class WebSocketMessage(object):
     def push(self):
         """Push the message to all connected WebSocket clients."""
         while not clients:
-            sleep(0.1)
+            gen.sleep(0.1)
 
         for client in clients:
-            sleep(0.1)
             sickrage.app.io_loop.add_callback(client.write_message, self.json())
