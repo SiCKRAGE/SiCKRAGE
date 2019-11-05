@@ -1,5 +1,12 @@
 # Changelog
 
+- * d94d4b9bc - 2019-11-05: Revert &quot;Added lazy loading to main shows page, reduces page load times.&quot; 
+- * 932c107ab - 2019-11-05: Revert &quot;Refactored main shows page to load shows via web sockets.&quot; 
+- * 940d091a7 - 2019-11-05: Revert &quot;Refactored TVShow and TVEpisode database models to use select instead of joined for lazy loading relationships.&quot; 
+- * 2afbbf6fd - 2019-11-05: Revert &quot;Refactored main shows page to load shows via web sockets.&quot; 
+- * b3fcd78a5 - 2019-11-05: Revert &quot;Refactored JS to display show grid after images loaded.&quot; 
+- * 650daf44e - 2019-11-05: Revert &quot;Switched to using async sleep when waiting for web socket clients to connect.&quot; 
+- * d51782061 - 2019-11-04: Pre-Release v9.4.183.dev1 
 - * bb8c6e568 - 2019-11-04: Release v9.4.182 
 - * 69602bec7 - 2019-11-04: Pre-Release v9.4.182.dev2 
 - * 839e5ae15 - 2019-11-04: Switched to using async sleep when waiting for web socket clients to connect. 
