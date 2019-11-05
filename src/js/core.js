@@ -6,7 +6,6 @@ import 'tooltipster';
 import 'timeago';
 import 'jquery-form';
 import 'jquery-backstretch';
-import '@sudhanshu/radial-indicator';
 import 'jquery-ui/ui/disable-selection';
 import 'jquery-ui/ui/widgets/slider';
 import 'jquery-ui/ui/widgets/sortable';
@@ -22,11 +21,14 @@ import PNotify from 'pnotify/dist/es/PNotify';
 import jQueryBridget from 'jquery-bridget';
 import Isotope from 'isotope-layout';
 import imagesLoaded from 'imagesloaded';
+import InfiniteScroll from 'infinite-scroll';
 import Tokenfield from 'tokenfield';
 import _ from 'underscore';
 
+InfiniteScroll.imagesLoaded = imagesLoaded;
 imagesLoaded.makeJQueryPlugin($);
 jQueryBridget('isotope', Isotope, $);
+jQueryBridget('infiniteScroll', InfiniteScroll, $);
 
 let gt = function (msgid) {
     return gettext(msgid);
@@ -34,357 +36,24 @@ let gt = function (msgid) {
 
 $(document).ready(function ($) {
     let SICKRAGE = {
-        ws_client: function () {
+        ws_notifications: function () {
             const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const ws = new WebSocket(proto + '//' + window.location.hostname + ':' + window.location.port + SICKRAGE.srWebRoot + '/ws');
-
-            let curProgress = 0;
+            var ws = new WebSocket(proto + '//' + window.location.hostname + ':' + window.location.port + SICKRAGE.srWebRoot + '/ws/ui');
 
             ws.onmessage = function (evt) {
                 let msg = JSON.parse(evt.data);
 
-                switch (msg.type) {
-                    case 'notification':
-                        SICKRAGE.notify(msg.data.type, msg.data.title, msg.data.body);
-                        break;
-                    case 'redirect':
-                        window.location.href = msg.data.url;
-                        break;
-                    case 'show':
-                        let $grid = $('.show-grid');
-                        let $indicatorContainer = $('#indicatorContainer').data('radialIndicator');
-
-                        if (msg.data.action === 'show_grid_append') {
-                            curProgress++;
-                            $indicatorContainer.option('maxValue', parseInt(msg.data.show_count));
-                            $indicatorContainer.animate(curProgress);
-
-                            $grid.append($(msg.data.item));
-                        } else if (msg.data.action === 'show_grid_prepend') {
-                            curProgress++;
-                            $indicatorContainer.option('maxValue', parseInt(msg.data.show_count));
-                            $indicatorContainer.animate(curProgress);
-
-                            $grid.prepend($(msg.data.item));
-                        } else if (msg.data.action === 'show_list_append') {
-                            curProgress++;
-                            $indicatorContainer.option('maxValue', parseInt(msg.data.show_count));
-                            $indicatorContainer.animate(curProgress);
-
-                            $("table tbody").append($(msg.data.item));
-                            $("table").trigger("update", [true]);
-                        } else if (msg.data.action === 'show_list_prepend') {
-                            curProgress++;
-                            $indicatorContainer.option('maxValue', parseInt(msg.data.show_count));
-                            $indicatorContainer.animate(curProgress);
-
-                            $("table tbody").prepend($(msg.data.item));
-                            $("table").trigger("update", [true]);
-                        } else if (msg.data.action === 'load_show_grid') {
-                            $('#indicatorContainer').remove();
-
-                            SICKRAGE.resizePosters(parseInt(localStorage.posterSize || 188));
-
-                            $grid.removeClass('d-none');
-
-                            $grid
-                                .isotope({
-                                    itemSelector: '.show-container',
-                                    animationEngine: 'best-available',
-                                    sortBy: SICKRAGE.getMeta('sickrage.POSTER_SORTBY'),
-                                    sortAscending: SICKRAGE.getMeta('sickrage.POSTER_SORTDIR'),
-                                    layoutMode: 'masonry',
-                                    masonry: {
-                                        isFitWidth: true
-                                    },
-                                    getSortData: {
-                                        name: function (itemElem) {
-                                            var name = $(itemElem).attr('data-name') || '';
-                                            return (SICKRAGE.metaToBool('sickrage.SORT_ARTICLE') ? name : name.replace(/^((?:The|A|An)\s)/i, '')).toLowerCase();
-                                        },
-                                        network: '[data-network]',
-                                        date: function (itemElem) {
-                                            var date = $(itemElem).attr('data-date');
-                                            return date.length && parseInt(date, 10) || Number.POSITIVE_INFINITY;
-                                        },
-                                        progress: function (itemElem) {
-                                            var progress = $(itemElem).attr('data-progress');
-                                            return progress.length && parseInt(progress, 10) || Number.NEGATIVE_INFINITY;
-                                        }
-                                    },
-                                    visibleStyle: {transform: 'translateY(0)', opacity: 1},
-                                    hiddenStyle: {transform: 'translateY(100px)', opacity: 0},
-                                });
-
-                            $("img#network").on('error', function () {
-                                $(this).parent().text($(this).attr('alt'));
-                                $(this).remove();
-                            });
-
-                            // When posters are small enough to not display the .show-details
-                            // table, display a larger poster when hovering.
-                            let posterHoverTimer = null;
-                            $('.show-container').on('mouseenter', function () {
-                                let poster = $(this);
-                                if (poster.find('.show-details').css('display') !== 'none') {
-                                    return;
-                                }
-                                posterHoverTimer = setTimeout(function () {
-                                    $('#posterPopup').remove();
-                                    var popup = poster.clone().attr({
-                                        id: 'posterPopup'
-                                    });
-                                    var origLeft = poster.offset().left;
-                                    var origTop = poster.offset().top;
-                                    popup.css({
-                                        position: 'absolute',
-                                        margin: 0,
-                                        top: origTop,
-                                        left: origLeft,
-                                        zIndex: 9999
-                                    });
-
-                                    popup.find('.show-details').show();
-                                    popup.on('mouseleave', function () {
-                                        $(this).remove();
-                                    });
-                                    popup.appendTo('body');
-
-                                    var height = 438, width = 250;
-                                    var newTop = (origTop + poster.height() / 2) - (height / 2);
-                                    var newLeft = (origLeft + poster.width() / 2) - (width / 2);
-
-                                    // Make sure the popup isn't outside the viewport
-                                    var margin = 5;
-                                    var scrollTop = $(window).scrollTop();
-                                    var scrollLeft = $(window).scrollLeft();
-                                    var scrollBottom = scrollTop + $(window).innerHeight();
-                                    var scrollRight = scrollLeft + $(window).innerWidth();
-                                    if (newTop < scrollTop + margin) {
-                                        newTop = scrollTop + margin;
-                                    }
-                                    if (newLeft < scrollLeft + margin) {
-                                        newLeft = scrollLeft + margin;
-                                    }
-                                    if (newTop + height + margin > scrollBottom) {
-                                        newTop = scrollBottom - height - margin;
-                                    }
-                                    if (newLeft + width + margin > scrollRight) {
-                                        newLeft = scrollRight - width - margin;
-                                    }
-
-                                    popup.animate({
-                                        top: newTop,
-                                        left: newLeft,
-                                        width: 250,
-                                        height: 438
-                                    });
-                                }, 300);
-                            }).on('mouseleave', function () {
-                                if (posterHoverTimer !== null) {
-                                    clearTimeout(posterHoverTimer);
-                                }
-                            });
-
-                            $('#posterSizeSlider').slider({
-                                min: 75,
-                                max: 250,
-                                value: localStorage.posterSize || 188,
-                                change: function (e, ui) {
-                                    if (window.localStorage) {
-                                        localStorage.setItem('posterSize', ui.value);
-                                    }
-                                    SICKRAGE.resizePosters(ui.value);
-                                    $('.show-grid').isotope('layout');
-                                }
-                            });
-
-                            $('#postersort').on('change', function () {
-                                var sortValue = $(this).val();
-                                $('.show-grid').isotope({sortBy: sortValue});
-                                $.post($(this).find('option[value=' + $(this).val() + ']').attr('data-sort'));
-                            });
-
-                            $('#postersortdirection').on('change', function () {
-                                var sortDirection = $(this).val() === 'true';
-                                $('.show-grid').isotope({sortAscending: sortDirection});
-                                $.post($(this).find('option[value=' + $(this).val() + ']').attr('data-sort'));
-                            });
-                        } else if (msg.data.action === 'load_show_list') {
-                            $('#indicatorContainer').remove();
-
-                            $('table').tablesorter({
-                                theme: 'bootstrap',
-                                showProcessing: true,
-                                sortList: [[7, 1], [2, 0]],
-                                textExtraction: {
-                                    0: function (node) {
-                                        return $(node).find('time').attr('datetime');
-                                    },
-                                    1: function (node) {
-                                        return $(node).find('time').attr('datetime');
-                                    },
-                                    3: function (node) {
-                                        return $(node).find("span").text().toLowerCase();
-                                    },
-                                    4: function (node) {
-                                        return $(node).find("span").text().toLowerCase();
-                                    },
-                                    5: function (node) {
-                                        return $(node).find("span:first").text();
-                                    },
-                                    6: function (node) {
-                                        return $(node).data('show-size');
-                                    },
-                                    7: function (node) {
-                                        return $(node).find("span").text().toLowerCase();
-                                    }
-                                },
-                                widgets: ['saveSort', 'stickyHeaders', 'filter', 'columnSelector', 'scroller'],
-                                headers: (function () {
-                                    if (SICKRAGE.metaToBool('sickrage.FILTER_ROW')) {
-                                        return {
-                                            0: {sorter: 'realISODate'},
-                                            1: {sorter: 'realISODate'},
-                                            2: {sorter: 'loadingNames'},
-                                            4: {sorter: 'quality'},
-                                            5: {sorter: 'eps'},
-                                            6: {sorter: 'digit'},
-                                            7: {filter: 'parsed'}
-                                        };
-                                    } else {
-                                        return {
-                                            0: {sorter: 'realISODate'},
-                                            1: {sorter: 'realISODate'},
-                                            2: {sorter: 'loadingNames'},
-                                            4: {sorter: 'quality'},
-                                            5: {sorter: 'eps'},
-                                            6: {sorter: 'digit'}
-                                        };
-                                    }
-                                }()),
-                                widgetOptions: (function () {
-                                    if (SICKRAGE.metaToBool('sickrage.FILTER_ROW')) {
-                                        return {
-                                            filter_columnFilters: true,
-                                            filter_hideFilters: true,
-                                            // filter_saveFilters: true,
-                                            filter_functions: {
-                                                5: function (e, n, f) {
-                                                    var test = false;
-                                                    var pct = Math.floor((n % 1) * 1000);
-                                                    if (f === '') {
-                                                        test = true;
-                                                    } else {
-                                                        var result = f.match(/(<|<=|>=|>)\s(\d+)/i);
-                                                        if (result) {
-                                                            if (result[1] === "<") {
-                                                                if (pct < parseInt(result[2])) {
-                                                                    test = true;
-                                                                }
-                                                            } else if (result[1] === "<=") {
-                                                                if (pct <= parseInt(result[2])) {
-                                                                    test = true;
-                                                                }
-                                                            } else if (result[1] === ">=") {
-                                                                if (pct >= parseInt(result[2])) {
-                                                                    test = true;
-                                                                }
-                                                            } else if (result[1] === ">") {
-                                                                if (pct > parseInt(result[2])) {
-                                                                    test = true;
-                                                                }
-                                                            }
-                                                        }
-
-                                                        result = f.match(/(\d+)\s(-|to)\s(\d+)/i);
-                                                        if (result) {
-                                                            if ((result[2] === "-") || (result[2] === "to")) {
-                                                                if ((pct >= parseInt(result[1])) && (pct <= parseInt(result[3]))) {
-                                                                    test = true;
-                                                                }
-                                                            }
-                                                        }
-
-                                                        result = f.match(/(=)?\s?(\d+)\s?(=)?/i);
-                                                        if (result) {
-                                                            if ((result[1] === "=") || (result[3] === "=")) {
-                                                                if (parseInt(result[2]) === pct) {
-                                                                    test = true;
-                                                                }
-                                                            }
-                                                        }
-
-                                                        if (!isNaN(parseFloat(f)) && isFinite(f)) {
-                                                            if (parseInt(f) === pct) {
-                                                                test = true;
-                                                            }
-                                                        }
-                                                    }
-                                                    return test;
-                                                }
-                                            },
-                                            columnSelector_mediaquery: false
-                                        };
-                                    } else {
-                                        return {
-                                            filter_columnFilters: false
-                                        };
-                                    }
-                                }()),
-                                scroller_height: 300,
-                                scroller_upAfterSort: true,
-                                scroller_jumpToHeader: true,
-                                scroller_barWidth: null,
-                                sortStable: true,
-                                sortAppend: [[2, 0]]
-                            }).removeClass('d-none');
-
-                            $('#popover').popover({
-                                placement: 'bottom',
-                                html: true, // required if content has HTML
-                                content: '<div id="popover-target"></div>'
-                            }).on('shown.bs.popover', function () { // bootstrap popover event triggered when the popover opens
-                                // call this function to copy the column selection code into the popover
-                                $.tablesorter.columnSelector.attachTo($('#showListTableShows'), '#popover-target');
-                                if ($('#showListTableAnime').length && SICKRAGE.metaToBool('sickrage.ANIME_SPLIT_HOME')) {
-                                    $.tablesorter.columnSelector.attachTo($('#showListTableAnime'), '#popover-target');
-                                }
-                            });
-                        }
-                        break;
+                // Add handling for different kinds of events. For ex: {"event": "notification", "data": {"title": ..}}
+                if (msg.event === 'notification') {
+                    SICKRAGE.notify(msg.data.type, msg.data.title, msg.data.body);
+                } else if (msg.event === 'task') {
+                    switch (msg.data.cmd) {
+                        case 'restart':
+                            window.location.href = SICKRAGE.srWebRoot + '/home/restart/?pid=' + SICKRAGE.srPID;
+                            break;
+                    }
                 }
             };
-        },
-
-        resizePosters: function (newSize) {
-            var fontSize, spriteScale, borderRadius;
-            if (newSize < 125) { // small
-                borderRadius = 3;
-            } else if (newSize < 175) { // medium
-                fontSize = 9;
-                spriteScale = .6;
-                borderRadius = 4;
-            } else { // large
-                fontSize = 11;
-                spriteScale = 1;
-                borderRadius = 6;
-            }
-
-            $('#posterPopup').remove();
-
-            if (fontSize === undefined) {
-                $('.show-details').hide();
-            } else {
-                $('.show-details').show();
-                $('.show-dlstats, .show-quality').css('fontSize', fontSize);
-                $('.show-network-image').css('transform', `scale(${spriteScale})`);
-            }
-
-            $('.show-container').css({
-                width: newSize,
-                borderRadius: borderRadius
-            });
         },
 
         text_viewer: function () {
@@ -617,7 +286,7 @@ $(document).ready(function ($) {
                 SICKRAGE.loadingHTML = '<i class="fas fa-spinner fa-spin fa-fw"></i>';
                 SICKRAGE.anonURL = SICKRAGE.getMeta('anonURL');
 
-                SICKRAGE.ws_client();
+                SICKRAGE.ws_notifications();
 
                 // add locale translation
                 $.get(`${SICKRAGE.srWebRoot}/messages.po`, function (data) {
@@ -1938,21 +1607,326 @@ $(document).ready(function ($) {
             init: function () {
                 $.backstretch(SICKRAGE.srWebRoot + '/images/backdrops/home.jpg');
                 $('.backstretch').css("opacity", SICKRAGE.getMeta('sickrage.FANART_BACKGROUND_OPACITY')).fadeIn("500");
-
-                $('#indicatorContainer').radialIndicator({
-                    radius: 60,
-                    barColor: '#6c757d',
-                    barWidth: 10,
-                    initValue: 0,
-                    roundCorner: true,
-                    percentage: false,
-                    displayNumber: false,
-                    minValue: 0
-                });
             },
 
             index: function () {
-                // placeholder
+                function resizePosters(newSize) {
+                    var fontSize, spriteScale, borderRadius;
+                    if (newSize < 125) { // small
+                        borderRadius = 3;
+                    } else if (newSize < 175) { // medium
+                        fontSize = 9;
+                        spriteScale = .6;
+                        borderRadius = 4;
+                    } else { // large
+                        fontSize = 11;
+                        spriteScale = 1;
+                        borderRadius = 6;
+                    }
+
+                    $('#posterPopup').remove();
+
+                    if (fontSize === undefined) {
+                        $('.show-details').hide();
+                    } else {
+                        $('.show-details').show();
+                        $('.show-dlstats, .show-quality').css('fontSize', fontSize);
+                        $('.show-network-image').css('transform', `scale(${spriteScale})`);
+                    }
+
+                    $('.show-container').css({
+                        width: newSize,
+                        borderRadius: borderRadius
+                    });
+                }
+
+                if (SICKRAGE.isMeta('sickrage.HOME_LAYOUT', ['poster'])) {
+                    $.get(SICKRAGE.srWebRoot + '/home/loadShows', {
+                        'layout': 'poster'
+                    }, function (data) {
+                        let $grid = $('.show-grid');
+                        let $html = $(data);
+
+                        $html.imagesLoaded(function () {
+                            $grid.append($html);
+                            resizePosters(parseInt(localStorage.posterSize || 188));
+                            $grid
+                                .isotope({
+                                    itemSelector: '.show-container',
+                                    animationEngine: 'best-available',
+                                    sortBy: SICKRAGE.getMeta('sickrage.POSTER_SORTBY'),
+                                    sortAscending: SICKRAGE.getMeta('sickrage.POSTER_SORTDIR'),
+                                    layoutMode: 'masonry',
+                                    masonry: {
+                                        isFitWidth: true
+                                    },
+                                    getSortData: {
+                                        name: function (itemElem) {
+                                            var name = $(itemElem).attr('data-name') || '';
+                                            return (SICKRAGE.metaToBool('sickrage.SORT_ARTICLE') ? name : name.replace(/^((?:The|A|An)\s)/i, '')).toLowerCase();
+                                        },
+                                        network: '[data-network]',
+                                        date: function (itemElem) {
+                                            var date = $(itemElem).attr('data-date');
+                                            return date.length && parseInt(date, 10) || Number.POSITIVE_INFINITY;
+                                        },
+                                        progress: function (itemElem) {
+                                            var progress = $(itemElem).attr('data-progress');
+                                            return progress.length && parseInt(progress, 10) || Number.NEGATIVE_INFINITY;
+                                        }
+                                    },
+                                    visibleStyle: {transform: 'translateY(0)', opacity: 1},
+                                    hiddenStyle: {transform: 'translateY(100px)', opacity: 0},
+                                });
+                            $('.show-grid-loading-status').remove();
+                        });
+
+                        $("img#network").on('error', function () {
+                            $(this).parent().text($(this).attr('alt'));
+                            $(this).remove();
+                        });
+
+                        // When posters are small enough to not display the .show-details
+                        // table, display a larger poster when hovering.
+                        let posterHoverTimer = null;
+                        $('.show-container').on('mouseenter', function () {
+                            let poster = $(this);
+                            if (poster.find('.show-details').css('display') !== 'none') {
+                                return;
+                            }
+                            posterHoverTimer = setTimeout(function () {
+                                $('#posterPopup').remove();
+                                var popup = poster.clone().attr({
+                                    id: 'posterPopup'
+                                });
+                                var origLeft = poster.offset().left;
+                                var origTop = poster.offset().top;
+                                popup.css({
+                                    position: 'absolute',
+                                    margin: 0,
+                                    top: origTop,
+                                    left: origLeft,
+                                    zIndex: 9999
+                                });
+
+                                popup.find('.show-details').show();
+                                popup.on('mouseleave', function () {
+                                    $(this).remove();
+                                });
+                                popup.appendTo('body');
+
+                                var height = 438, width = 250;
+                                var newTop = (origTop + poster.height() / 2) - (height / 2);
+                                var newLeft = (origLeft + poster.width() / 2) - (width / 2);
+
+                                // Make sure the popup isn't outside the viewport
+                                var margin = 5;
+                                var scrollTop = $(window).scrollTop();
+                                var scrollLeft = $(window).scrollLeft();
+                                var scrollBottom = scrollTop + $(window).innerHeight();
+                                var scrollRight = scrollLeft + $(window).innerWidth();
+                                if (newTop < scrollTop + margin) {
+                                    newTop = scrollTop + margin;
+                                }
+                                if (newLeft < scrollLeft + margin) {
+                                    newLeft = scrollLeft + margin;
+                                }
+                                if (newTop + height + margin > scrollBottom) {
+                                    newTop = scrollBottom - height - margin;
+                                }
+                                if (newLeft + width + margin > scrollRight) {
+                                    newLeft = scrollRight - width - margin;
+                                }
+
+                                popup.animate({
+                                    top: newTop,
+                                    left: newLeft,
+                                    width: 250,
+                                    height: 438
+                                });
+                            }, 300);
+                        }).on('mouseleave', function () {
+                            if (posterHoverTimer !== null) {
+                                clearTimeout(posterHoverTimer);
+                            }
+                        });
+                    });
+
+                    $('#posterSizeSlider').slider({
+                        min: 75,
+                        max: 250,
+                        value: localStorage.posterSize || 188,
+                        change: function (e, ui) {
+                            if (window.localStorage) {
+                                localStorage.setItem('posterSize', ui.value);
+                            }
+                            resizePosters(ui.value);
+                            $('.show-grid').isotope('layout');
+                        }
+                    });
+
+                    $('#postersort').on('change', function () {
+                        var sortValue = $(this).val();
+                        $('.show-grid').isotope({sortBy: sortValue});
+                        $.post($(this).find('option[value=' + $(this).val() + ']').attr('data-sort'));
+                    });
+
+                    $('#postersortdirection').on('change', function () {
+                        var sortDirection = $(this).val() === 'true';
+                        $('.show-grid').isotope({sortAscending: sortDirection});
+                        $.post($(this).find('option[value=' + $(this).val() + ']').attr('data-sort'));
+                    });
+                } else {
+                    $('table').tablesorter({
+                        theme: 'bootstrap',
+                        showProcessing: true,
+                        sortList: [[7, 1], [2, 0]],
+                        textExtraction: {
+                            0: function (node) {
+                                return $(node).find('time').attr('datetime');
+                            },
+                            1: function (node) {
+                                return $(node).find('time').attr('datetime');
+                            },
+                            3: function (node) {
+                                return $(node).find("span").text().toLowerCase();
+                            },
+                            4: function (node) {
+                                return $(node).find("span").text().toLowerCase();
+                            },
+                            5: function (node) {
+                                return $(node).find("span:first").text();
+                            },
+                            6: function (node) {
+                                return $(node).data('show-size');
+                            },
+                            7: function (node) {
+                                return $(node).find("span").text().toLowerCase();
+                            }
+                        },
+                        widgets: ['saveSort', 'stickyHeaders', 'filter', 'columnSelector', 'scroller'],
+                        headers: (function () {
+                            if (SICKRAGE.metaToBool('sickrage.FILTER_ROW')) {
+                                return {
+                                    0: {sorter: 'realISODate'},
+                                    1: {sorter: 'realISODate'},
+                                    2: {sorter: 'loadingNames'},
+                                    4: {sorter: 'quality'},
+                                    5: {sorter: 'eps'},
+                                    6: {sorter: 'digit'},
+                                    7: {filter: 'parsed'}
+                                };
+                            } else {
+                                return {
+                                    0: {sorter: 'realISODate'},
+                                    1: {sorter: 'realISODate'},
+                                    2: {sorter: 'loadingNames'},
+                                    4: {sorter: 'quality'},
+                                    5: {sorter: 'eps'},
+                                    6: {sorter: 'digit'}
+                                };
+                            }
+                        }()),
+                        widgetOptions: (function () {
+                            if (SICKRAGE.metaToBool('sickrage.FILTER_ROW')) {
+                                return {
+                                    filter_columnFilters: true,
+                                    filter_hideFilters: true,
+                                    // filter_saveFilters: true,
+                                    filter_functions: {
+                                        5: function (e, n, f) {
+                                            var test = false;
+                                            var pct = Math.floor((n % 1) * 1000);
+                                            if (f === '') {
+                                                test = true;
+                                            } else {
+                                                var result = f.match(/(<|<=|>=|>)\s(\d+)/i);
+                                                if (result) {
+                                                    if (result[1] === "<") {
+                                                        if (pct < parseInt(result[2])) {
+                                                            test = true;
+                                                        }
+                                                    } else if (result[1] === "<=") {
+                                                        if (pct <= parseInt(result[2])) {
+                                                            test = true;
+                                                        }
+                                                    } else if (result[1] === ">=") {
+                                                        if (pct >= parseInt(result[2])) {
+                                                            test = true;
+                                                        }
+                                                    } else if (result[1] === ">") {
+                                                        if (pct > parseInt(result[2])) {
+                                                            test = true;
+                                                        }
+                                                    }
+                                                }
+
+                                                result = f.match(/(\d+)\s(-|to)\s(\d+)/i);
+                                                if (result) {
+                                                    if ((result[2] === "-") || (result[2] === "to")) {
+                                                        if ((pct >= parseInt(result[1])) && (pct <= parseInt(result[3]))) {
+                                                            test = true;
+                                                        }
+                                                    }
+                                                }
+
+                                                result = f.match(/(=)?\s?(\d+)\s?(=)?/i);
+                                                if (result) {
+                                                    if ((result[1] === "=") || (result[3] === "=")) {
+                                                        if (parseInt(result[2]) === pct) {
+                                                            test = true;
+                                                        }
+                                                    }
+                                                }
+
+                                                if (!isNaN(parseFloat(f)) && isFinite(f)) {
+                                                    if (parseInt(f) === pct) {
+                                                        test = true;
+                                                    }
+                                                }
+                                            }
+                                            return test;
+                                        }
+                                    },
+                                    columnSelector_mediaquery: false
+                                };
+                            } else {
+                                return {
+                                    filter_columnFilters: false
+                                };
+                            }
+                        }()),
+                        scroller_height: 300,
+                        scroller_upAfterSort: true,
+                        scroller_jumpToHeader: true,
+                        scroller_barWidth: null,
+                        sortStable: true,
+                        sortAppend: [[2, 0]]
+                    });
+
+                    $('#popover').popover({
+                        placement: 'bottom',
+                        html: true, // required if content has HTML
+                        content: '<div id="popover-target"></div>'
+                    }).on('shown.bs.popover', function () { // bootstrap popover event triggered when the popover opens
+                        // call this function to copy the column selection code into the popover
+                        $.tablesorter.columnSelector.attachTo($('#showListTableShows'), '#popover-target');
+                        if ($('#showListTableAnime').length && SICKRAGE.metaToBool('sickrage.ANIME_SPLIT_HOME')) {
+                            $.tablesorter.columnSelector.attachTo($('#showListTableAnime'), '#popover-target');
+                        }
+                    });
+
+                    $.get(SICKRAGE.srWebRoot + '/home/loadShows', {
+                        'layout': 'list'
+                    }, function (data) {
+                        let $html = $(data);
+                        $html.imagesLoaded(function () {
+                            $("table tbody").append($html);
+                            $("table").trigger("update", [true]);
+                            $('.show-list-loading-status').remove();
+                        });
+                    });
+                }
             },
 
             display_show: {
@@ -2436,6 +2410,32 @@ $(document).ready(function ($) {
                     $('#showsort').val('original');
                     $('#showsortdirection').val('asc');
 
+                    function resizePosters(newSize) {
+                        var fontSize, borderRadius;
+                        if (newSize < 125) { // small
+                            borderRadius = 3;
+                        } else if (newSize < 175) { // medium
+                            fontSize = 9;
+                            borderRadius = 4;
+                        } else { // large
+                            fontSize = 11;
+                            borderRadius = 6;
+                        }
+
+                        $('#posterPopup').remove();
+
+                        if (fontSize === undefined) {
+                            $('.show-details').hide();
+                        } else {
+                            $('.show-details').show();
+                        }
+
+                        $('.show-container').css({
+                            width: newSize,
+                            borderRadius: borderRadius
+                        });
+                    }
+
                     $('#posterSizeSlider').slider({
                         min: 75,
                         max: 250,
@@ -2444,12 +2444,12 @@ $(document).ready(function ($) {
                             if (window.localStorage) {
                                 localStorage.setItem('traktPosterSize', ui.value);
                             }
-                            SICKRAGE.resizePosters(ui.value);
+                            resizePosters(ui.value);
                             $('.show-grid').isotope('layout');
                         }
                     });
 
-                    SICKRAGE.resizePosters(parseInt(localStorage.traktPosterSize || 188));
+                    resizePosters(parseInt(localStorage.traktPosterSize || 188));
 
                     $('.show-grid').imagesLoaded(function () {
                         $('.show-grid').isotope({
@@ -2511,6 +2511,32 @@ $(document).ready(function ($) {
             },
 
             popular_shows: function () {
+                function resizePosters(newSize) {
+                    var fontSize, borderRadius;
+                    if (newSize < 125) { // small
+                        borderRadius = 3;
+                    } else if (newSize < 175) { // medium
+                        fontSize = 9;
+                        borderRadius = 4;
+                    } else { // large
+                        fontSize = 11;
+                        borderRadius = 6;
+                    }
+
+                    $('#posterPopup').remove();
+
+                    if (fontSize === undefined) {
+                        $('.show-details').hide();
+                    } else {
+                        $('.show-details').show();
+                    }
+
+                    $('.show-container').css({
+                        width: newSize,
+                        borderRadius: borderRadius
+                    });
+                }
+
                 $('#posterSizeSlider').slider({
                     min: 75,
                     max: 250,
@@ -2519,12 +2545,12 @@ $(document).ready(function ($) {
                         if (window.localStorage) {
                             localStorage.setItem('imdbPosterSize', ui.value);
                         }
-                        SICKRAGE.resizePosters(ui.value);
+                        resizePosters(ui.value);
                         $('.show-grid').isotope('layout');
                     }
                 });
 
-                SICKRAGE.resizePosters(parseInt(localStorage.traktPosterSize || 188));
+                resizePosters(parseInt(localStorage.traktPosterSize || 188));
 
                 $('.show-grid').imagesLoaded(function () {
                     $('.show-grid').isotope({

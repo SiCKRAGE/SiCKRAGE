@@ -184,7 +184,7 @@ class VersionUpdater(object):
                 sickrage.app.config.view_changelog = True
 
                 if webui:
-                    WebSocketMessage('redirect', {'url': '{}/home/restart/?pid={}'.format(sickrage.app.config.web_root,sickrage.app.pid)}).push()
+                    WebSocketMessage('task', {'cmd': 'restart'}).push()
 
                 return True
 
