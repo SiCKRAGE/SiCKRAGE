@@ -1,5 +1,6 @@
 # Changelog
 
+- * bb8c6e568 - 2019-11-04: Release v9.4.182 
 - * 69602bec7 - 2019-11-04: Pre-Release v9.4.182.dev2 
 - * 839e5ae15 - 2019-11-04: Switched to using async sleep when waiting for web socket clients to connect. 
 - * b7b2ac46b - 2019-11-03: Pre-Release v9.4.182.dev1 
