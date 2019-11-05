@@ -81,10 +81,11 @@ $(document).ready(function ($) {
                             $("table tbody").prepend($(msg.data.item));
                             $("table").trigger("update", [true]);
                         } else if (msg.data.action === 'load_show_grid') {
-                            $grid.imagesLoaded(function () {
-                                $('#indicatorContainer').remove();
-                                $grid.removeClass('d-none');
+                            $('#indicatorContainer').remove();
 
+                            $grid.removeClass('d-none');
+
+                            $grid.imagesLoaded(function () {
                                 SICKRAGE.resizePosters(parseInt(localStorage.posterSize || 188));
 
                                 $grid
