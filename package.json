@@ -67,7 +67,6 @@
     "underscore": "^1.9.1",
     "webpack": "^4.15.1",
     "webpack-cli": "^3.0.8",
-    "webpack-spritesmith": "^0.5.4",
-    "infinite-scroll": "^3.0.6"
+    "webpack-spritesmith": "^0.5.4"
   }
 }

@@ -516,9 +516,3 @@ input[type=checkbox].toggle {
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
-
-.show-container {
-  -webkit-transform:translate3d(0,0,0);
-  -moz-transform:translate3d(0,0,0);
-  transform:translate3d(0,0,0);
-}

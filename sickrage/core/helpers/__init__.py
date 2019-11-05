@@ -659,7 +659,8 @@ def chmod_as_parent(child_path):
 
     try:
         os.chmod(child_path, child_mode)
-        sickrage.app.log.debug("Setting permissions for %s to %o as parent directory has %o" % (child_path, child_mode, parent_mode))
+        sickrage.app.log.debug(
+            "Setting permissions for %s to %o as parent directory has %o" % (child_path, child_mode, parent_mode))
     except OSError:
         sickrage.app.log.debug("Failed to set permission for %s to %o" % (child_path, child_mode))
 

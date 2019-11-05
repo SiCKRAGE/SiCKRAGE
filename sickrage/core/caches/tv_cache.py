@@ -89,7 +89,8 @@ class TVCache(object):
                 sickrage.app.log.warning("Authentication error: {}".format(e))
                 return False
             except Exception as e:
-                sickrage.app.log.debug("Error while searching {}, skipping: {}".format(self.provider.name, repr(e)))
+                sickrage.app.log.debug(
+                    "Error while searching {}, skipping: {}".format(self.provider.name, repr(e)))
                 return False
 
         return True

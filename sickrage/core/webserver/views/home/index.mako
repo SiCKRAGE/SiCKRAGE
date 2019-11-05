@@ -96,6 +96,8 @@
 </%block>
 
 <%block name="content">
+    <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
+
     <% loading_show_list_ids = [] %>
 
     % for curListType, curShowlist in showlists.items():
@@ -109,100 +111,346 @@
         % if sickrage.app.config.home_layout == 'poster':
             <div id="${('container', 'container-anime')[curListType == 'Anime' and sickrage.app.config.home_layout == 'poster']}"
                  class="show-grid clearfix mx-auto">
-                % for curLoadingShow in sickrage.app.show_queue.loading_show_list:
-                <% loading_show_list_ids.append(curLoadingShow['indexer_id']) %>
-                    <div class="show-container" data-name="0" data-date="010101" data-network="0"
-                         data-progress="101">
-                        <div class="card card-block text-white bg-dark m-1 shadow">
-                            <img alt="" title="${curLoadingShow['name']}" class="card-img-top"
-                                 src="${srWebRoot}/images/poster.png"/>
-                            <div class="card-body text-truncate py-1 px-1 small">
-                                <div class="show-title">
-                                    ${curLoadingShow['name']}
+                <div class="posterview">
+                    % for curLoadingShow in sickrage.app.show_queue.loading_show_list:
+                    <% loading_show_list_ids.append(curLoadingShow['indexer_id']) %>
+                        <div class="show-container" data-name="0" data-date="010101" data-network="0"
+                             data-progress="101">
+                            <div class="card card-block text-white bg-dark m-1 shadow">
+                                <img alt="" title="${curLoadingShow['name']}" class="card-img-top"
+                                     src="${srWebRoot}/images/poster.png"/>
+                                <div class="card-body text-truncate py-1 px-1 small">
+                                    <div class="show-title">
+                                        ${curLoadingShow['name']}
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="card-footer show-details p-1">
-                                <div class="show-details">
-                                    <div class="show-add text-center">${_('... Loading ...')}</div>
+                                <div class="card-footer show-details p-1">
+                                    <div class="show-details">
+                                        <div class="show-add text-center">${_('... Loading ...')}</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                % endfor
-            </div>
-            <div class="show-grid-loading-status text-center m-3">
-                <i class="fas fa-spinner fa-spin fa-fw fa-10x"></i>
+                    % endfor
+
+                    % for curShow in sorted(curShowlist, key=cmp_to_key(lambda x, y: x.name < y.name)):
+                    <%
+                        if curShow.indexer_id in loading_show_list_ids:
+                            continue
+
+                        download_stat_tip = ''
+                        display_status = curShow.status
+
+                        if display_status:
+                            if re.search(r'(?i)(?:new|returning)\s*series', curShow.status):
+                                display_status = _('Continuing')
+                            elif re.search(r'(?i)(?:nded)', curShow.status):
+                                display_status = _('Ended')
+
+                        cur_airs_next = curShow.airs_next
+                        cur_snatched = curShow.episodes_snatched
+                        cur_downloaded = curShow.episodes_downloaded
+                        cur_total = len(curShow.episodes) - curShow.episodes_special - curShow.episodes_unaired
+
+                        if cur_total != 0:
+                            download_stat = str(cur_downloaded)
+                            download_stat_tip = _("Downloaded: ") + str(cur_downloaded)
+                            if cur_snatched > 0:
+                                download_stat = download_stat
+                                download_stat_tip = download_stat_tip + " " + _("Snatched: ") + str(cur_snatched)
+
+                            download_stat = download_stat + " / " + str(cur_total)
+                            download_stat_tip = download_stat_tip + " " + _("Total: ") + str(cur_total)
+                        else:
+                            download_stat = '?'
+                            download_stat_tip = _("no data")
+
+                        progressbar_percent = int(cur_downloaded * 100 / cur_total if cur_total > 0 else 1)
+
+                        data_date = '6000000000.0'
+                        if cur_airs_next > datetime.date.min:
+                            data_date = calendar.timegm(srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt.timetuple())
+                        elif display_status:
+                            if 'nded' not in display_status and 1 == int(curShow.paused):
+                                data_date = '5000000500.0'
+                            elif 'ontinu' in display_status:
+                                data_date = '5000000000.0'
+                            elif 'nded' in display_status:
+                                data_date = '5000000100.0'
+
+                        network_class_name = None
+                        if curShow.network:
+                            network_class_name = re.sub(r'(?!\w|\s).', '', unidecode.unidecode(curShow.network))
+                            network_class_name = re.sub(r'\s+', '-', network_class_name)
+                            network_class_name = re.sub(r'^(\s*)([\W\w]*)(\b\s*$)', '\\2', network_class_name)
+                            network_class_name = network_class_name.lower()
+                    %>
+                        <div class="show-container" id="show${curShow.indexer_id}" data-name="${curShow.name}"
+                             data-date="${data_date}" data-network="${curShow.network}"
+                             data-progress="${progressbar_percent}">
+                            <div class="card card-block text-white bg-dark m-1 shadow">
+                                <a href="${srWebRoot}/home/displayShow?show=${curShow.indexer_id}">
+                                    <img alt="" class="card-img-top"
+                                         src="${srWebRoot}${showImage(curShow.indexer_id, 'poster').url}"/>
+                                </a>
+                                <div class="card-header bg-dark py-0 px-0">
+                                    <span style="display: none;">${download_stat}</span>
+                                    <div class="bg-dark progress shadow">
+                                        <div class="progress-bar d-print-none"
+                                             style="width: ${progressbar_percent}%"
+                                             data-show-id="${curShow.indexer_id}"
+                                             data-progress-percentage="${progressbar_percent}"
+                                             data-progress-text="${download_stat}"
+                                             data-progress-tip="${download_stat_tip}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body text-truncate py-1 px-1 small">
+                                    <div class="show-title">
+                                        ${curShow.name}
+                                    </div>
+
+                                    <div class="show-date" style="color: grey">
+                                        % if cur_airs_next > datetime.date.min:
+                                            <% ldatetime = srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
+                                            <%
+                                                try:
+                                                  out = srdatetime.SRDateTime(ldatetime).srfdate()
+                                                except ValueError:
+                                                  out = _('Invalid date')
+                                            %>
+                                        % else:
+                                            <% display_status = curShow.status %>
+                                            <%
+                                                out = 'UNKNOWN'
+                                                if display_status:
+                                                  out = display_status
+                                                  if 'nded' not in display_status and 1 == int(curShow.paused):
+                                                      out = _('Paused')
+                                            %>
+                                        % endif
+                                      ${out}
+                                    </div>
+                                </div>
+                                <div class="card-footer show-details p-1">
+                                    <table class="show-details w-100" style="height:40px">
+                                        <tr>
+                                            <td class="text-left align-middle w-25">
+                                                % if curShow.network:
+                                                    <span>
+                                                        <i class="show-network-image sickrage-network sickrage-network-${network_class_name}"
+                                                           title="${curShow.network}"></i>
+                                                    </span>
+                                                % else:
+                                                    <span>
+                                                        <i class="show-network-image sickrage-network sickrage-network-unknown"
+                                                           title="${_('No Network')}"></i>
+                                                    </span>
+                                                % endif
+                                            </td>
+                                            <td class="text-right align-middle w-25">
+                                                ${renderQualityPill(curShow.quality, showTitle=True)}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    % endfor
+                </div>
             </div>
         % else:
             <div class="row">
                 <div class="col-lg-10 mx-auto">
-                    <table class="table" id="showListTable${curListType}">
-                        <thead class="thead-dark">
-                        <tr>
-                            <th>${_('Next Ep')}</th>
-                            <th>${_('Prev Ep')}</th>
-                            <th>${_('Show')}</th>
-                            <th>${_('Network')}</th>
-                            <th>${_('Quality')}</th>
-                            <th>${_('Downloads')}</th>
-                            <th>${_('Size')}</th>
-                            <th>${_('Active')}</th>
-                            <th>${_('Status')}</th>
-                        </tr>
-                        </thead>
+                    <div class="table-responsive">
+                        <table class="table" id="showListTable${curListType}">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th>${_('Next Ep')}</th>
+                                <th>${_('Prev Ep')}</th>
+                                <th>${_('Show')}</th>
+                                <th>${_('Network')}</th>
+                                <th>${_('Quality')}</th>
+                                <th>${_('Downloads')}</th>
+                                <th>${_('Size')}</th>
+                                <th>${_('Active')}</th>
+                                <th>${_('Status')}</th>
+                            </tr>
+                            </thead>
 
-                        % if sickrage.app.show_queue.loading_show_list:
-                            <tbody>
-                                % for curLoadingShow in sickrage.app.show_queue.loading_show_list:
-                                    <% loading_show_list_ids.append(curLoadingShow['indexer_id']) %>
+                            % if sickrage.app.show_queue.loading_show_list:
+                                <tbody>
+                                    % for curLoadingShow in sickrage.app.show_queue.loading_show_list:
+                                        <% loading_show_list_ids.append(curLoadingShow['indexer_id']) %>
+                                        <tr>
+                                            <td class="table-fit">(${_('loading')})</td>
+                                            <td></td>
+                                            <td>
+                                                <a data-fancybox
+                                                   href="displayShow?show=${curLoadingShow['indexer_id']}">${curLoadingShow['name']}</a>
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    % endfor
+                                </tbody>
+                            % endif
+
+                            <tbody class="">
+                                % for curShow in sorted(curShowlist, key=cmp_to_key(lambda x, y: x.name < y.name)):
+                                    <%
+                                        if curShow.indexer_id in loading_show_list_ids:
+                                            continue
+
+                                        download_stat_tip = ''
+
+                                        cur_airs_next = curShow.airs_next
+                                        cur_airs_prev = curShow.airs_prev
+                                        cur_snatched = curShow.episodes_snatched
+                                        cur_downloaded = curShow.episodes_downloaded
+                                        cur_total = len(curShow.episodes) - curShow.episodes_special - curShow.episodes_unaired
+                                        show_size = curShow.total_size
+
+                                        if cur_total != 0:
+                                            download_stat = str(cur_downloaded)
+                                            download_stat_tip = _("Downloaded: ") + str(cur_downloaded)
+                                            if cur_snatched > 0:
+                                                download_stat = download_stat + "+" + str(cur_snatched)
+                                                download_stat_tip = download_stat_tip + "&#013;" + _("Snatched: ") + str(cur_snatched)
+
+                                            download_stat = download_stat + " / " + str(cur_total)
+                                            download_stat_tip = download_stat_tip + "&#013;" + _("Total: ") + str(cur_total)
+                                        else:
+                                            download_stat = '?'
+                                            download_stat_tip = _("no data")
+
+                                        progressbar_percent = int(cur_downloaded * 100 / cur_total if cur_total > 0 else 1)
+
+                                        network_class_name = None
+                                        if curShow.network:
+                                            network_class_name = re.sub(r'(?!\w|\s).', '', unidecode.unidecode(curShow.network))
+                                            network_class_name = re.sub(r'\s+', '-', network_class_name)
+                                            network_class_name = re.sub(r'^(\s*)([\W\w]*)(\b\s*$)', '\\2', network_class_name)
+                                            network_class_name = network_class_name.lower()
+                                    %>
                                     <tr>
-                                        <td class="table-fit">(${_('loading')})</td>
-                                        <td></td>
-                                        <td>
-                                            <a data-fancybox
-                                               href="displayShow?show=${curLoadingShow['indexer_id']}">${curLoadingShow['name']}</a>
+                                        % if cur_airs_next > datetime.date.min:
+                                        <% airDate = srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
+                                        % try:
+                                            <td class="table-fit align-middle">
+                                                <time datetime="${airDate.isoformat()}"
+                                                      class="date">${srdatetime.SRDateTime(airDate).srfdate()}</time>
+                                            </td>
+                                        % except ValueError:
+                                            <td class="table-fit"></td>
+                                        % endtry
+                                        % else:
+                                            <td class="table-fit"></td>
+                                        % endif
+
+                                        % if cur_airs_prev > datetime.date.min:
+                                        <% airDate = srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_prev, curShow.airs, curShow.network), convert=True).dt %>
+                                        % try:
+                                            <td class="table-fit align-middle">
+                                                <time datetime="${airDate.isoformat()}" class="date">
+                                                    ${srdatetime.SRDateTime(airDate).srfdate()}
+                                                </time>
+                                            </td>
+                                        % except ValueError:
+                                            <td class="table-fit"></td>
+                                        % endtry
+                                        % else:
+                                            <td class="table-fit"></td>
+                                        % endif
+
+                                        % if sickrage.app.config.home_layout == 'small':
+                                            <td class="tvShow">
+                                                <a href="${srWebRoot}/home/displayShow?show=${curShow.indexer_id}"
+                                                   title="${curShow.name}">
+                                                    <img src="${srWebRoot}${showImage(curShow.indexer_id, 'poster_thumb').url}"
+                                                         class="img-smallposter rounded shadow"
+                                                         alt="${curShow.indexer_id}"/>
+                                                    ${curShow.name}
+                                                </a>
+                                            </td>
+                                        % elif sickrage.app.config.home_layout == 'banner':
+                                            <td class="table-fit tvShow">
+                                                <span class="d-none">${curShow.name}</span>
+                                                <a href="${srWebRoot}/home/displayShow?show=${curShow.indexer_id}">
+                                                    <img src="${srWebRoot}${showImage(curShow.indexer_id, 'banner').url}"
+                                                         class="img-banner rounded shadow" alt="${curShow.indexer_id}"
+                                                         title="${curShow.name}"/>
+                                                </a>
+                                            </td>
+                                        % elif sickrage.app.config.home_layout == 'simple':
+                                            <td class="tvShow">
+                                                <a href="${srWebRoot}/home/displayShow?show=${curShow.indexer_id}">
+                                                    ${curShow.name}
+                                                </a>
+                                            </td>
+                                        % endif
+
+                                        % if sickrage.app.config.home_layout != 'simple':
+                                            <td class="table-fit align-middle">
+                                                % if curShow.network:
+                                                    <span title="${curShow.network}">
+                                                        <i class="sickrage-network sickrage-network-${network_class_name}"></i>
+                                                    </span>
+                                                    <span class="d-none d-print-inline">${curShow.network}</span>
+                                                % else:
+                                                    <span title="${_('No Network')}">
+                                                        <i class="sickrage-network sickrage-network-unknown"></i>
+                                                    </span>
+                                                    <span class="d-none d-print-inline">No Network</span>
+                                                % endif
+                                            </td>
+                                        % else:
+                                            <td class="table-fit">
+                                                <span title="${curShow.network}">${curShow.network}</span>
+                                            </td>
+                                        % endif
+
+                                        <td class="table-fit align-middle">${renderQualityPill(curShow.quality, showTitle=True)}</td>
+
+                                        <td class="align-middle">
+                                            <span style="display: none;">${download_stat}</span>
+                                            <div class="bg-dark rounded shadow">
+                                                <div class="progress-bar rounded "
+                                                     style="width: ${progressbar_percent}%"
+                                                     data-show-id="${curShow.indexer_id}"
+                                                     data-progress-percentage="${progressbar_percent}"
+                                                     data-progress-text="${download_stat}"
+                                                     data-progress-tip="${download_stat_tip}">
+                                                </div>
+                                            </div>
                                         </td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+
+                                        <td class="table-fit align-middle" data-show-size="${show_size}">
+                                            ${pretty_file_size(show_size)}
+                                        </td>
+
+                                        <td class="table-fit align-middle">
+                                            <i class="fa ${("fa-times text-danger", "fa-check text-success")[not bool(curShow.paused)]}"></i>
+                                            <span class="d-none d-print-inline">${('No', 'Yes')[not bool(curShow.paused)]}</span>
+                                        </td>
+
+                                        <td class="table-fit align-middle">
+                                            % if curShow.status and re.search(r'(?i)(?:new|returning)\s*series', curShow.status):
+                                                ${_('Continuing')}
+                                            % elif curShow.status and re.search('(?i)(?:nded)', curShow.status):
+                                                ${_('Ended')}
+                                            % else:
+                                                ${curShow.status}
+                                            % endif
+                                        </td>
                                     </tr>
                                 % endfor
                             </tbody>
-                        % endif
-                        <tbody>
-                        <tr class="show-list-loading-status">
-                            <td>
-                                <i class="fas fa-spinner fa-spin fa-fw"></i>
-                            </td>
-                            <td>
-                                <i class="fas fa-spinner fa-spin fa-fw"></i>
-                            </td>
-                            <td>
-                                <i class="fas fa-spinner fa-spin fa-fw"></i>
-                            </td>
-                            <td>
-                                <i class="fas fa-spinner fa-spin fa-fw"></i>
-                            </td>
-                            <td>
-                                <i class="fas fa-spinner fa-spin fa-fw"></i>
-                            </td>
-                            <td>
-                                <i class="fas fa-spinner fa-spin fa-fw"></i>
-                            </td>
-                            <td>
-                                <i class="fas fa-spinner fa-spin fa-fw"></i>
-                            </td>
-                            <td>
-                                <i class="fas fa-spinner fa-spin fa-fw"></i>
-                            </td>
-                            <td>
-                                <i class="fas fa-spinner fa-spin fa-fw"></i>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                        </table>
+                    </div>
                 </div>
             </div>
         % endif
