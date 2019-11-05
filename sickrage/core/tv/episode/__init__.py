@@ -81,7 +81,7 @@ class TVEpisode(MainDBBase):
     version = Column(Integer, default=-1)
     release_group = Column(Text, default='')
 
-    show = relationship('TVShow', uselist=False, backref='tv_episodes')
+    show = relationship('TVShow', uselist=False, backref='tv_episodes', lazy='joined')
 
     def __init__(self, **kwargs):
         super(TVEpisode, self).__init__(**kwargs)
