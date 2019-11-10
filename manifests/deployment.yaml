@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: __CI_COMMIT_REF_SLUG__
+  namespace: __KUBE_NAMESPACE__
+  labels:
+    app: __CI_COMMIT_REF_SLUG__
+    ref: __CI_ENVIRONMENT_SLUG__
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: __CI_COMMIT_REF_SLUG__
+      ref: __CI_ENVIRONMENT_SLUG__
+  template:
+    metadata:
+      labels:
+        app: __CI_COMMIT_REF_SLUG__
+        ref: __CI_ENVIRONMENT_SLUG__
+    spec:
+      containers:
+      - name: app
+        image: __CI_REGISTRY_IMAGE__:__VERSION__
+        imagePullPolicy: Always
+        env:
+        - name: TZ
+          value: "Canada/Pacific"
+        ports:
+        - containerPort: 8081
+      imagePullSecrets:
+      - name: gitlab-registry

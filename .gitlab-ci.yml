@@ -1,17 +1,8 @@
-before_script:
-  - apk add --no-cache py-pip
-
 stages:
   - release
+  - build
+  - review
   - deploy
-
-variables:
-  DOCKER_DRIVER: overlay2
-  DOCKER_HOST: tcp://localhost:2375
-  DOCKER_TLS_CERTDIR: ""
-
-services:
-  - docker:dind
 
 sentry_release_master:
   stage: release
@@ -53,10 +44,79 @@ sentry_release_develop:
     - branches
     - triggers
 
+build:mr:
+  stage: build
+  image:
+    name: docker:latest
+    entrypoint: ["/bin/sh", "-c"]
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_HOST: tcp://localhost:2375
+    DOCKER_TLS_CERTDIR: ""
+  services:
+    - docker:dind
+  script:
+    - docker login -u "${CI_REGISTRY_USER}" -p "${CI_REGISTRY_PASSWORD}" "${CI_REGISTRY}"
+    - docker build --network host -t "${CI_REGISTRY_IMAGE}:latest" .
+    - docker tag "${CI_REGISTRY_IMAGE}:latest" "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}"
+    - test ! -z "${CI_COMMIT_TAG}" && docker push "${CI_REGISTRY_IMAGE}:latest"
+    - docker push "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}"
+  only:
+    - merge_requests
+
+deploy:mr:
+  stage: review
+  dependencies:
+    - build:mr
+  image:
+    name: lachlanevenson/k8s-kubectl:latest
+    entrypoint: ["/bin/sh", "-c"]
+  script:
+    - kubectl create secret --namespace=${KUBE_NAMESPACE} docker-registry gitlab-registry --docker-server=${CI_REGISTRY} --docker-username=${CI_REGISTRY_USER} --docker-password=${CI_JOB_TOKEN} --docker-email=$GITLAB_USER_EMAIL || true
+    - sed -i "s~__CI_REGISTRY_IMAGE__~${CI_REGISTRY_IMAGE}~" manifests/deployment.yaml
+    - sed -i "s/__VERSION__/${CI_COMMIT_REF_NAME}/" manifests/deployment.yaml manifests/ingress.yaml manifests/service.yaml
+    - sed -i "s/__CI_COMMIT_REF_SLUG__/${CI_COMMIT_REF_SLUG}/" manifests/deployment.yaml manifests/ingress.yaml manifests/service.yaml
+    - sed -i "s/__CI_ENVIRONMENT_SLUG__/${CI_ENVIRONMENT_SLUG}/" manifests/deployment.yaml manifests/ingress.yaml manifests/service.yaml
+    - sed -i "s/__KUBE_NAMESPACE__/${KUBE_NAMESPACE}/" manifests/deployment.yaml manifests/ingress.yaml manifests/service.yaml
+    - |
+      if kubectl apply -f manifests/deployment.yaml | grep -q unchanged; then
+          echo "=> Patching deployment to force image update."
+          kubectl patch -f manifests/deployment.yaml -p "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"ci-last-updated\":\"$(date +'%s')\"}}}}}"
+      else
+          echo "=> Deployment apply has changed the object, no need to force image update."
+      fi
+    - kubectl apply -f manifests/service.yaml || true
+    - kubectl apply -f manifests/ingress.yaml
+    - kubectl rollout status -f manifests/deployment.yaml
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    url: https://review.sickrage.ca/$CI_COMMIT_REF_SLUG
+    on_stop: stop:mr
+  only:
+    - merge_requests
+
+stop:mr:
+  stage: review
+  image:
+    name: lachlanevenson/k8s-kubectl:latest
+    entrypoint: ["/bin/sh", "-c"]
+  script:
+    - kubectl delete ing -l ref=${CI_ENVIRONMENT_SLUG}
+    - kubectl delete all -l ref=${CI_ENVIRONMENT_SLUG}
+  variables:
+    GIT_STRATEGY: none
+  when: manual
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    action: stop
+  only:
+    - merge_requests
+
 deploy_pypi:
   stage: deploy
   image: python:3.7-alpine3.9
   script:
+    - apk add --no-cache py-pip
     - pip install -U twine
     - python setup.py sdist bdist_wheel
     - twine upload dist/*
