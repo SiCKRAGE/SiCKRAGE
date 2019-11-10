@@ -205,6 +205,10 @@ class VersionUpdater(object):
 
 class UpdateManager(object):
     @property
+    def version_regex(self):
+        return re.compile('^(?P<major>[0-9]+).(?P<minor>[0-9]+).(?P<patch>[0-9]+)(?:.dev(?P<pre_release>[0-9]+))?$', re.IGNORECASE)
+
+    @property
     def _git_path(self):
         test_cmd = '--version'
 
@@ -577,19 +581,31 @@ class SourceUpdateManager(UpdateManager):
         return sickrage.version() or ""
 
     def need_update(self):
-        try:
-            return (False, True)[self.version != self.get_newest_version]
-        except Exception as e:
-            sickrage.app.log.warning("Unable to contact server, can't check for update: " + repr(e))
-            return False
+        current_version_match = self.version_regex.match(self.version)
+        new_version_match = self.version_regex.match(self.get_newest_version)
+
+        if current_version_match and new_version_match:
+            for version_label in ['major', 'minor', 'patch', 'pre_release']:
+                try:
+                    if version_label not in current_version_match.groupdict().keys() or version_label not in new_version_match.groupdict().keys():
+                        continue
+
+                    current_version_part = current_version_match.group(version_label)
+                    new_version_part = new_version_match.group(version_label)
+
+                    if current_version_part is None or new_version_part is None:
+                        continue
+
+                    if int(new_version_part) > int(current_version_part):
+                        return True
+                except (IndexError, TypeError):
+                    continue
 
     def _check_for_new_version(self):
         git_version_url = "https://git.sickrage.ca/SiCKRAGE/sickrage/raw/{}/sickrage/version.txt"
 
         try:
-            new_version = WebSession().get(git_version_url.format(('master', 'develop')['dev' in self.version])).text
-            if re.match('^[0-9]+.[0-9]+.[0-9]+(?:.dev[0-9])?$', new_version):
-                return new_version
+            return WebSession().get(git_version_url.format(('master', 'develop')['dev' in self.version])).text
         except Exception:
             return self._find_installed_version()
 
