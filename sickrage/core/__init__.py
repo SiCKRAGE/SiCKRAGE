@@ -40,7 +40,6 @@ from dateutil import tz
 from fake_useragent import UserAgent
 from keycloak.realm import KeycloakRealm
 from tornado.ioloop import IOLoop
-from tzlocal import get_localzone
 
 import sickrage
 from sickrage.core.api import API
@@ -103,6 +102,8 @@ class Core(object):
         self.no_launch = None
         self.disable_updates = None
         self.web_port = None
+        self.web_host = None
+        self.web_root = None
         self.developer = None
         self.db_type = None
         self.db_prefix = None
