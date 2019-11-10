@@ -72,7 +72,7 @@ deploy:mr:
     name: lachlanevenson/k8s-kubectl:latest
     entrypoint: ["/bin/sh", "-c"]
   script:
-    - kubectl create secret --namespace=${KUBE_NAMESPACE} docker-registry gitlab-registry --docker-server=${CI_REGISTRY} --docker-username=${CI_REGISTRY_USER} --docker-password=${CI_JOB_TOKEN} --docker-email=$GITLAB_USER_EMAIL || true
+    - kubectl create secret docker-registry gitlab-registry --namespace ${KUBE_NAMESPACE} --docker-server=${CI_REGISTRY} --docker-username=${CI_REGISTRY_USER} --docker-password=${CI_JOB_TOKEN} --docker-email=$GITLAB_USER_EMAIL --dry-run -o json | kubectl apply --namespace ${KUBE_NAMESPACE} -f -
     - sed -i "s~__CI_REGISTRY_IMAGE__~${CI_REGISTRY_IMAGE}~" manifests/deployment.yaml
     - sed -i "s/__VERSION__/${CI_COMMIT_REF_NAME}/" manifests/deployment.yaml manifests/ingress.yaml manifests/service.yaml
     - sed -i "s/__CI_COMMIT_REF_SLUG__/${CI_COMMIT_REF_SLUG}/" manifests/deployment.yaml manifests/ingress.yaml manifests/service.yaml
@@ -101,6 +101,7 @@ stop:mr:
     name: lachlanevenson/k8s-kubectl:latest
     entrypoint: ["/bin/sh", "-c"]
   script:
+    - kubectl delete secret -n ${KUBE_NAMESPACE} gitlab-registry
     - kubectl delete ing -l ref=${CI_ENVIRONMENT_SLUG}
     - kubectl delete all -l ref=${CI_ENVIRONMENT_SLUG}
   variables:

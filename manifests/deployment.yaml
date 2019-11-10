@@ -25,6 +25,8 @@ spec:
         env:
         - name: TZ
           value: "Canada/Pacific"
+        - name: WEB_ROOT
+          value: __CI_COMMIT_REF_SLUG__
         ports:
         - containerPort: 8081
       imagePullSecrets:
