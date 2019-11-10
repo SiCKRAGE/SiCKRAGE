@@ -1414,7 +1414,7 @@ class Config(object):
         self.web_host = sickrage.app.web_host or self.check_setting_str('General', 'web_host')
         self.web_external_port = self.check_setting_int('General', 'web_external_port')
         self.web_ipv6 = self.check_setting_bool('General', 'web_ipv6')
-        self.web_root = self.check_setting_str('General', 'web_root').lstrip('/').rstrip('/')
+        self.web_root = sickrage.app.web_root or self.check_setting_str('General', 'web_root').lstrip('/').rstrip('/')
         self.web_log = self.check_setting_bool('General', 'web_log')
         self.web_cookie_secret = self.check_setting_str('General', 'web_cookie_secret')
         self.web_use_gzip = self.check_setting_bool('General', 'web_use_gzip')
