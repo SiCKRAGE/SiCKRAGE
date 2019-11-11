@@ -3,5 +3,5 @@ crowdin-cli-py
 babel
 wheel
 tox
-wheel
 vcrpy-unittest
+Mako

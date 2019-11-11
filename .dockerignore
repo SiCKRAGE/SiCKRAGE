@@ -12,7 +12,6 @@ changelog.md
 readme.md
 README.txt
 crowdin.yaml
-Gruntfile.js
 MANIFEST.in
 package.json
 package-lock.json
