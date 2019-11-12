@@ -6,7 +6,7 @@ stages:
   - release_sentry
   - release_deploy
 
-mr:build:webpack:
+review:webpack:
   stage: review_webpack
   image:
     name: nikolaik/python-nodejs:python3.7-nodejs10-alpine
@@ -23,10 +23,10 @@ mr:build:webpack:
     paths:
       - sickrage/core/webserver/static/
 
-mr:build:docker:
+review:docker:
   stage: review_docker
   dependencies:
-    - mr:build:webpack
+    - review:webpack
   image:
     name: docker:latest
     entrypoint: ["/bin/sh", "-c"]
@@ -47,10 +47,10 @@ mr:build:docker:
   cache:
     key: ${CI_COMMIT_REF_SLUG}
 
-mr:review:start:
+review:deploy:
   stage: review_deploy
   dependencies:
-    - mr:build:docker
+    - review:docker
   image:
     name: lachlanevenson/k8s-kubectl:latest
     entrypoint: ["/bin/sh", "-c"]
@@ -74,22 +74,20 @@ mr:review:start:
   environment:
     name: review/$CI_COMMIT_REF_NAME
     url: https://review.sickrage.ca/$CI_COMMIT_REF_SLUG
-    on_stop: mr:review:stop
+    on_stop: review:stop
   only:
     - merge_requests
 
-mr:review:stop:
+review:stop:
   stage: review_deploy
   image:
     name: lachlanevenson/k8s-kubectl:latest
     entrypoint: ["/bin/sh", "-c"]
   script:
-    - wget -O /usr/bin/reg https://github.com/genuinetools/reg/releases/download/v0.13.0/reg-linux-amd64
-    - chmod +x /usr/bin/reg
-    - reg -r ${CI_REGISTRY} -u ${CI_REGISTRY_USER} -p ${CI_JOB_TOKEN} rm ${CI_REGISTRY_IMAGE}
-    - kubectl delete secret -n ${KUBE_NAMESPACE} gitlab-registry
-    - kubectl delete ing -l ref=${CI_ENVIRONMENT_SLUG}
-    - kubectl delete all -l ref=${CI_ENVIRONMENT_SLUG}
+#    - wget -O /usr/bin/reg https://github.com/genuinetools/reg/releases/download/v0.13.0/reg-linux-amd64
+#    - chmod +x /usr/bin/reg
+#    - reg -r ${CI_REGISTRY} -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} rm ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}
+    - kubectl delete ns ${KUBE_NAMESPACE}
   variables:
     GIT_STRATEGY: none
   when: manual
@@ -99,7 +97,7 @@ mr:review:stop:
   only:
     - merge_requests
 
-build:master:
+release:build:master:
   stage: release_build
   image:
     name: nikolaik/python-nodejs:python3.7-nodejs10-alpine
@@ -131,7 +129,7 @@ build:master:
     variables:
       - $CI_COMMIT_MESSAGE =~ /\[TASK\] Releasing/
 
-build:develop:
+release:build:develop:
   stage: release_build
   image:
     name: nikolaik/python-nodejs:python3.7-nodejs10-alpine
@@ -163,7 +161,7 @@ build:develop:
     variables:
       - $CI_COMMIT_MESSAGE =~ /\[TASK\] Pre-Releasing/
 
-sentry:master:
+release:sentry:master:
   stage: release_sentry
   image:
     name: getsentry/sentry-cli
@@ -183,7 +181,7 @@ sentry:master:
     - branches
     - triggers
 
-sentry:develop:
+release:sentry:develop:
   stage: release_sentry
   image:
     name: getsentry/sentry-cli
@@ -246,7 +244,7 @@ deploy:docker:develop:
     - branches
     - triggers
 
-deploy:synology:
+deploy:synology:master:
   stage: release_deploy
   variables:
     UPSTREAM_BRANCH: master
@@ -260,7 +258,7 @@ deploy:synology:
     - branches
     - triggers
 
-deploy:readynas:
+deploy:readynas:master:
   stage: release_deploy
   variables:
     UPSTREAM_COMMIT_TAG: $CI_COMMIT_TAG
@@ -276,7 +274,7 @@ deploy:readynas:
     - branches
     - triggers
 
-deploy:qnap:
+deploy:qnap:master:
   stage: release_deploy
   variables:
     UPSTREAM_COMMIT_TAG: $CI_COMMIT_TAG
