@@ -87,7 +87,8 @@ review:stop:
 #    - wget -O /usr/bin/reg https://github.com/genuinetools/reg/releases/download/v0.13.0/reg-linux-amd64
 #    - chmod +x /usr/bin/reg
 #    - reg -r ${CI_REGISTRY} -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} rm ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}
-    - kubectl delete ns ${KUBE_NAMESPACE}
+    - kubectl delete ing -l ref=${CI_ENVIRONMENT_SLUG}
+    - kubectl delete all -l ref=${CI_ENVIRONMENT_SLUG}
   variables:
     GIT_STRATEGY: none
   when: manual
@@ -109,10 +110,10 @@ release:build:master:
     - pip install bumpversion
     - pip install -r requirements-dev.txt
     - npm run build
-    - python setup.py extract_messages
-    - crowdin-cli-py upload sources
-    - crowdin-cli-py download
-    - python setup.py compile_catalog
+#    - python setup.py extract_messages
+#    - crowdin-cli-py upload sources
+#    - crowdin-cli-py download
+#    - python setup.py compile_catalog
     - bumpversion --allow-dirty patch sickrage/version.txt
     - git config --global user.email $(git --no-pager show -s --format='%ae' HEAD)
     - git config --global user.name $(git --no-pager show -s --format='%an' HEAD)
@@ -141,10 +142,10 @@ release:build:develop:
     - pip install bumpversion
     - pip install -r requirements-dev.txt
     - npm run build
-    - python setup.py extract_messages
-    - crowdin-cli-py upload sources
-    - crowdin-cli-py download
-    - python setup.py compile_catalog
+#    - python setup.py extract_messages
+#    - crowdin-cli-py upload sources
+#    - crowdin-cli-py download
+#    - python setup.py compile_catalog
     - bumpversion --allow-dirty preversion sickrage/version.txt
     - git config --global user.email $(git --no-pager show -s --format='%ae' HEAD)
     - git config --global user.name $(git --no-pager show -s --format='%an' HEAD)
