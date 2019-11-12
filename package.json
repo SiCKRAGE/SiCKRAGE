@@ -10,8 +10,7 @@
   },
   "homepage": "https://www.sickrage.ca",
   "scripts": {
-    "dev": "webpack --mode development",
-    "prod": "webpack --mode production"
+    "build": "webpack --config webpack.config.js -p"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.1.0",

@@ -1,51 +1,32 @@
 stages:
-  - release
-  - build
-  - review
-  - deploy
+  - review_webpack
+  - review_docker
+  - review_deploy
+  - release_build
+  - release_sentry
+  - release_deploy
 
-sentry_release_master:
-  stage: release
+mr:build:webpack:
+  stage: review_webpack
   image:
-    name: getsentry/sentry-cli
-    entrypoint: [""]
+    name: nikolaik/python-nodejs:python3.7-nodejs10-alpine
+  variables:
+    NODE_ENV: "development"
   script:
-    - export SENTRY_URL=$SENTRY_URL
-    - export SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
-    - export SENTRY_ORG=$SENTRY_ORG
-    - export SENTRY_PROJECT=$SENTRY_PROJECT
-    - sentry-cli releases new --project $SENTRY_PROJECT $(cat sickrage/version.txt)
-    - sentry-cli releases set-commits --auto $(cat sickrage/version.txt)
-    - sentry-cli releases finalize $(cat sickrage/version.txt)
-    - sentry-cli releases deploys $(cat sickrage/version.txt) new -e master
+    - apk add --no-cache git
+    - npm install -qs
+    - npm run build
   only:
-    - /^[0-9.]+$/
-  except:
-    - branches
-    - triggers
+    - merge_requests
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - sickrage/core/webserver/static/
 
-sentry_release_develop:
-  stage: release
-  image:
-    name: getsentry/sentry-cli
-    entrypoint: [""]
-  script:
-    - export SENTRY_URL=$SENTRY_URL
-    - export SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
-    - export SENTRY_ORG=$SENTRY_ORG
-    - export SENTRY_PROJECT=$SENTRY_PROJECT
-    - sentry-cli releases new --project $SENTRY_PROJECT $(cat sickrage/version.txt)
-    - sentry-cli releases set-commits --auto $(cat sickrage/version.txt)
-    - sentry-cli releases finalize $(cat sickrage/version.txt)
-    - sentry-cli releases deploys $(cat sickrage/version.txt) new -e develop
-  only:
-    - /^[0-9.]+dev[0-9]+$/
-  except:
-    - branches
-    - triggers
-
-build:mr:
-  stage: build
+mr:build:docker:
+  stage: review_docker
+  dependencies:
+    - mr:build:webpack
   image:
     name: docker:latest
     entrypoint: ["/bin/sh", "-c"]
@@ -56,18 +37,20 @@ build:mr:
   services:
     - docker:dind
   script:
-    - docker login -u "${CI_REGISTRY_USER}" -p "${CI_REGISTRY_PASSWORD}" "${CI_REGISTRY}"
+    - docker login -u "${CI_REGISTRY_USER}" -p "${CI_JOB_TOKEN}" "${CI_REGISTRY}"
     - docker build --network host -t "${CI_REGISTRY_IMAGE}:latest" .
     - docker tag "${CI_REGISTRY_IMAGE}:latest" "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}"
     - test ! -z "${CI_COMMIT_TAG}" && docker push "${CI_REGISTRY_IMAGE}:latest"
     - docker push "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}"
   only:
     - merge_requests
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
 
-deploy:mr:
-  stage: review
+mr:review:start:
+  stage: review_deploy
   dependencies:
-    - build:mr
+    - mr:build:docker
   image:
     name: lachlanevenson/k8s-kubectl:latest
     entrypoint: ["/bin/sh", "-c"]
@@ -91,16 +74,19 @@ deploy:mr:
   environment:
     name: review/$CI_COMMIT_REF_NAME
     url: https://review.sickrage.ca/$CI_COMMIT_REF_SLUG
-    on_stop: stop:mr
+    on_stop: mr:review:stop
   only:
     - merge_requests
 
-stop:mr:
-  stage: review
+mr:review:stop:
+  stage: review_deploy
   image:
     name: lachlanevenson/k8s-kubectl:latest
     entrypoint: ["/bin/sh", "-c"]
   script:
+    - wget -O /usr/bin/reg https://github.com/genuinetools/reg/releases/download/v0.13.0/reg-linux-amd64
+    - chmod +x /usr/bin/reg
+    - reg -r ${CI_REGISTRY} -u ${CI_REGISTRY_USER} -p ${CI_JOB_TOKEN} rm ${CI_REGISTRY_IMAGE}
     - kubectl delete secret -n ${KUBE_NAMESPACE} gitlab-registry
     - kubectl delete ing -l ref=${CI_ENVIRONMENT_SLUG}
     - kubectl delete all -l ref=${CI_ENVIRONMENT_SLUG}
@@ -113,8 +99,112 @@ stop:mr:
   only:
     - merge_requests
 
-deploy_pypi:
-  stage: deploy
+build:master:
+  stage: release_build
+  image:
+    name: nikolaik/python-nodejs:python3.7-nodejs10-alpine
+  variables:
+    NODE_ENV: "development"
+  script:
+    - apk add --no-cache git
+    - npm install -qs
+    - pip install bumpversion
+    - pip install -r requirements-dev.txt
+    - npm run build
+    - python setup.py extract_messages
+    - crowdin-cli-py upload sources
+    - crowdin-cli-py download
+    - python setup.py compile_catalog
+    - bumpversion --allow-dirty patch sickrage/version.txt
+    - git config --global user.email $(git --no-pager show -s --format='%ae' HEAD)
+    - git config --global user.name $(git --no-pager show -s --format='%an' HEAD)
+    - git add --all
+    - git tag -a $(cat sickrage/version.txt) -m "Release v$(cat sickrage/version.txt)"
+    - git commit -m "[TASK] Releasing v$(cat sickrage/version.txt)"
+    - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME --follow-tags
+  only:
+    - master
+  except:
+    refs:
+      - tags
+      - triggers
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /\[TASK\] Releasing/
+
+build:develop:
+  stage: release_build
+  image:
+    name: nikolaik/python-nodejs:python3.7-nodejs10-alpine
+  variables:
+    NODE_ENV: "development"
+  script:
+    - apk add --no-cache git
+    - npm install -qs
+    - pip install bumpversion
+    - pip install -r requirements-dev.txt
+    - npm run build
+    - python setup.py extract_messages
+    - crowdin-cli-py upload sources
+    - crowdin-cli-py download
+    - python setup.py compile_catalog
+    - bumpversion --allow-dirty preversion sickrage/version.txt
+    - git config --global user.email $(git --no-pager show -s --format='%ae' HEAD)
+    - git config --global user.name $(git --no-pager show -s --format='%an' HEAD)
+    - git add --all
+    - git tag -a $(cat sickrage/version.txt) -m "Pre-release v$(cat sickrage/version.txt)"
+    - git commit -m "[TASK] Pre-Releasing v$(cat sickrage/version.txt)"
+    - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME --follow-tags
+  only:
+    - develop
+  except:
+    refs:
+      - tags
+      - triggers
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /\[TASK\] Pre-Releasing/
+
+sentry:master:
+  stage: release_sentry
+  image:
+    name: getsentry/sentry-cli
+    entrypoint: [""]
+  script:
+    - export SENTRY_URL=$SENTRY_URL
+    - export SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
+    - export SENTRY_ORG=$SENTRY_ORG
+    - export SENTRY_PROJECT=$SENTRY_PROJECT
+    - sentry-cli releases new --project $SENTRY_PROJECT $(cat sickrage/version.txt)
+    - sentry-cli releases set-commits --auto $(cat sickrage/version.txt)
+    - sentry-cli releases finalize $(cat sickrage/version.txt)
+    - sentry-cli releases deploys $(cat sickrage/version.txt) new -e master
+  only:
+    - /^[0-9.]+$/
+  except:
+    - branches
+    - triggers
+
+sentry:develop:
+  stage: release_sentry
+  image:
+    name: getsentry/sentry-cli
+    entrypoint: [""]
+  script:
+    - export SENTRY_URL=$SENTRY_URL
+    - export SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
+    - export SENTRY_ORG=$SENTRY_ORG
+    - export SENTRY_PROJECT=$SENTRY_PROJECT
+    - sentry-cli releases new --project $SENTRY_PROJECT $(cat sickrage/version.txt)
+    - sentry-cli releases set-commits --auto $(cat sickrage/version.txt)
+    - sentry-cli releases finalize $(cat sickrage/version.txt)
+    - sentry-cli releases deploys $(cat sickrage/version.txt) new -e develop
+  only:
+    - /^[0-9.]+dev[0-9]+$/
+  except:
+    - branches
+    - triggers
+
+deploy:pypi:
+  stage: release_deploy
   image: python:3.7-alpine3.9
   script:
     - apk add --no-cache py-pip
@@ -128,8 +218,8 @@ deploy_pypi:
     - branches
     - triggers
 
-deploy_docker_master:
-  stage: deploy
+deploy:docker:master:
+  stage: release_deploy
   variables:
     UPSTREAM_BRANCH: master
     UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
@@ -142,8 +232,8 @@ deploy_docker_master:
     - branches
     - triggers
 
-deploy_docker_develop:
-  stage: deploy
+deploy:docker:develop:
+  stage: release_deploy
   variables:
     UPSTREAM_BRANCH: develop
     UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
@@ -156,8 +246,8 @@ deploy_docker_develop:
     - branches
     - triggers
 
-deploy_synology:
-  stage: deploy
+deploy:synology:
+  stage: release_deploy
   variables:
     UPSTREAM_BRANCH: master
     UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
@@ -170,8 +260,8 @@ deploy_synology:
     - branches
     - triggers
 
-deploy_readynas:
-  stage: deploy
+deploy:readynas:
+  stage: release_deploy
   variables:
     UPSTREAM_COMMIT_TAG: $CI_COMMIT_TAG
     UPSTREAM_PROJECT_NAME: $CI_PROJECT_NAME
@@ -186,8 +276,8 @@ deploy_readynas:
     - branches
     - triggers
 
-deploy_qnap:
-  stage: deploy
+deploy:qnap:
+  stage: release_deploy
   variables:
     UPSTREAM_COMMIT_TAG: $CI_COMMIT_TAG
     UPSTREAM_PROJECT_NAME: $CI_PROJECT_NAME
