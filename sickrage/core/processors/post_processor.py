@@ -617,6 +617,9 @@ class PostProcessor(object):
                 episode_object = session.query(TVEpisode).filter_by(showid=parse_result.indexer_id, airdate=parse_result.air_date).one()
                 season = episode_object.season
                 episodes += [episode_object.episode]
+            except orm.exc.MultipleResultsFound:
+                self._log("Found multiple episodes with date {} for show {}, please manually rename episode files to S##E## equivalents then manual "
+                          "run post-process".format(parse_result.is_air_by_date, parse_result.indexer_id), sickrage.app.log.DEBUG)
             except orm.exc.NoResultFound:
                 self._log("Unable to find episode with date {} for show {}, skipping".format(parse_result.is_air_by_date, parse_result.indexer_id),
                           sickrage.app.log.DEBUG)
