@@ -23,6 +23,12 @@ import Isotope from 'isotope-layout';
 import ImagesLoaded from 'imagesloaded';
 import Tokenfield from 'tokenfield';
 import _ from 'underscore';
+import * as Sentry from '@sentry/browser';
+
+Sentry.init({
+    dsn: 'https://d4bf4ed225c946c8972c7238ad07d124@sentry.sickrage.ca/2',
+    release: process.env.PACKAGE_VERSION
+});
 
 jQueryBridget('isotope', Isotope, $);
 jQueryBridget('imagesLoaded', ImagesLoaded, $);

@@ -109,12 +109,12 @@ release:build:master:
     - npm install -qs
     - pip install bumpversion
     - pip install -r requirements-dev.txt
+    - bumpversion --allow-dirty patch package.json sickrage/version.txt
     - npm run build
 #    - python setup.py extract_messages
 #    - crowdin-cli-py upload sources
 #    - crowdin-cli-py download
 #    - python setup.py compile_catalog
-    - bumpversion --allow-dirty patch sickrage/version.txt
     - git config --global user.email $(git --no-pager show -s --format='%ae' HEAD)
     - git config --global user.name $(git --no-pager show -s --format='%an' HEAD)
     - git add --all
@@ -141,12 +141,12 @@ release:build:develop:
     - npm install -qs
     - pip install bumpversion
     - pip install -r requirements-dev.txt
+    - bumpversion --allow-dirty preversion package.json sickrage/version.txt
     - npm run build
-#    - python setup.py extract_messages
-#    - crowdin-cli-py upload sources
-#    - crowdin-cli-py download
-#    - python setup.py compile_catalog
-    - bumpversion --allow-dirty preversion sickrage/version.txt
+    #    - python setup.py extract_messages
+    #    - crowdin-cli-py upload sources
+    #    - crowdin-cli-py download
+    #    - python setup.py compile_catalog
     - git config --global user.email $(git --no-pager show -s --format='%ae' HEAD)
     - git config --global user.name $(git --no-pager show -s --format='%an' HEAD)
     - git add --all
