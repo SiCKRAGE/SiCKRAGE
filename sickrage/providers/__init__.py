@@ -103,14 +103,6 @@ class GenericProvider(object):
     def login(self):
         return True
 
-    @classmethod
-    def get_subclasses(cls):
-        yield cls
-        if cls.__subclasses__():
-            for sub in cls.__subclasses__():
-                for s in sub.get_subclasses():
-                    yield s
-
     def getResult(self, season=None, episodes=None):
         """
         Returns a result of the correct type for this provider
