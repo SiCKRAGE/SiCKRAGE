@@ -62,8 +62,10 @@ module.exports = {
     entry: './src/app.js',
     output: {
         path: path.resolve(__dirname, 'sickrage/core/webserver/static/js'),
-        filename: 'core.min.js'
+        filename: 'core.min.js',
+        sourceMapFilename: "core.js.map"
     },
+    devtool: "source-map",
     module: {
         rules: [
             {
@@ -144,9 +146,9 @@ module.exports = {
         }),
         new SentryWebpackPlugin({
             release: version,
-            include: '.',
+            include: path.resolve(__dirname, 'sickrage/core/webserver/static/js'),
             ignoreFile: '.sentrycliignore',
-            ignore: ['node_modules', 'webpack.config.js', 'core.min.js', 'app.js'],
+            ignore: ['node_modules', 'webpack.config.js'],
             configFile: 'sentry.properties'
         }),
         new OptimizeCSSAssetsPlugin(),
