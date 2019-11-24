@@ -55,8 +55,12 @@ class API(object):
     @token.setter
     def token(self, value):
         token = value.decode() if isinstance(value, bytes) else value
+        if not isinstance(token, dict):
+            token = {}
+
         if token.get('expires_in'):
             token['expires_at'] = int(time.time() + token['expires_in'])
+
         with open(self.token_file, 'w') as fd:
             json.dump(token, fd)
 
