@@ -8,6 +8,7 @@ tests
 runscripts
 node_modules
 dist
+manifests
 changelog.md
 readme.md
 README.txt
