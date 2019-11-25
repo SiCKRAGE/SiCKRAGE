@@ -13,7 +13,7 @@ review:webpack:
   variables:
     NODE_ENV: "development"
   script:
-    - apk add --no-cache git py-cffi
+    - apk add --no-cache git py-cffi py-cryptography
     - npm install -qs
     - npm run build
   only:
@@ -105,7 +105,7 @@ release:build:master:
   variables:
     NODE_ENV: "development"
   script:
-    - apk add --no-cache git py-cffi
+    - apk add --no-cache git py-cffi py-cryptography
     - npm install -qs
     - pip install bumpversion
     - pip install -r requirements-dev.txt
@@ -137,7 +137,7 @@ release:build:develop:
   variables:
     NODE_ENV: "development"
   script:
-    - apk add --no-cache git py-cffi
+    - apk add --no-cache git py-cffi py-cryptography
     - npm install -qs
     - pip install bumpversion
     - pip install -r requirements-dev.txt
