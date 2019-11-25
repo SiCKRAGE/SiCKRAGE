@@ -137,7 +137,7 @@ release:build:develop:
   variables:
     NODE_ENV: "development"
   script:
-    - apk add --no-cache git py-cffi py-cryptography
+    - apk add --no-cache git gcc libffi-dev python3-dev musl-dev openssl-dev
     - npm install -qs
     - pip install bumpversion
     - pip install -r requirements-dev.txt
