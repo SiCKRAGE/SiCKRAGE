@@ -1,20 +1,169 @@
-before_script:
-  - apk add --no-cache py-pip
-
 stages:
-  - release
-  - deploy
+  - review_webpack
+  - review_docker
+  - review_deploy
+  - release_build
+  - release_sentry
+  - release_deploy
 
-variables:
-  DOCKER_DRIVER: overlay2
-  DOCKER_HOST: tcp://localhost:2375
-  DOCKER_TLS_CERTDIR: ""
+review:webpack:
+  stage: review_webpack
+  image:
+    name: nikolaik/python-nodejs:python3.7-nodejs10-alpine
+  variables:
+    NODE_ENV: "development"
+  script:
+    - apk add --no-cache git gcc libffi-dev python3-dev musl-dev openssl-dev
+    - npm install -qs
+    - npm run build
+  only:
+    - merge_requests
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - sickrage/core/webserver/static/
 
-services:
-  - docker:dind
+review:docker:
+  stage: review_docker
+  dependencies:
+    - review:webpack
+  image:
+    name: docker:latest
+    entrypoint: ["/bin/sh", "-c"]
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_HOST: tcp://localhost:2375
+    DOCKER_TLS_CERTDIR: ""
+  services:
+    - docker:dind
+  script:
+    - docker login -u "${CI_REGISTRY_USER}" -p "${CI_JOB_TOKEN}" "${CI_REGISTRY}"
+    - docker build --network host -t "${CI_REGISTRY_IMAGE}:latest" .
+    - docker tag "${CI_REGISTRY_IMAGE}:latest" "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}"
+    - test ! -z "${CI_COMMIT_TAG}" && docker push "${CI_REGISTRY_IMAGE}:latest"
+    - docker push "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}"
+  only:
+    - merge_requests
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
 
-sentry_release_master:
-  stage: release
+review:deploy:
+  stage: review_deploy
+  dependencies:
+    - review:docker
+  image:
+    name: lachlanevenson/k8s-kubectl:latest
+    entrypoint: ["/bin/sh", "-c"]
+  script:
+    - kubectl create secret docker-registry gitlab-registry --namespace ${KUBE_NAMESPACE} --docker-server=${CI_REGISTRY} --docker-username=${CI_REGISTRY_USER} --docker-password=${CI_JOB_TOKEN} --docker-email=$GITLAB_USER_EMAIL --dry-run -o json | kubectl apply --namespace ${KUBE_NAMESPACE} -f -
+    - sed -i "s~__CI_REGISTRY_IMAGE__~${CI_REGISTRY_IMAGE}~" manifests/deployment.yaml
+    - sed -i "s/__VERSION__/${CI_COMMIT_REF_NAME}/" manifests/deployment.yaml manifests/ingress.yaml manifests/service.yaml
+    - sed -i "s/__CI_COMMIT_REF_SLUG__/${CI_COMMIT_REF_SLUG}/" manifests/deployment.yaml manifests/ingress.yaml manifests/service.yaml
+    - sed -i "s/__CI_ENVIRONMENT_SLUG__/${CI_ENVIRONMENT_SLUG}/" manifests/deployment.yaml manifests/ingress.yaml manifests/service.yaml
+    - sed -i "s/__KUBE_NAMESPACE__/${KUBE_NAMESPACE}/" manifests/deployment.yaml manifests/ingress.yaml manifests/service.yaml
+    - |
+      if kubectl apply -f manifests/deployment.yaml | grep -q unchanged; then
+          echo "=> Patching deployment to force image update."
+          kubectl patch -f manifests/deployment.yaml -p "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"ci-last-updated\":\"$(date +'%s')\"}}}}}"
+      else
+          echo "=> Deployment apply has changed the object, no need to force image update."
+      fi
+    - kubectl apply -f manifests/service.yaml || true
+    - kubectl apply -f manifests/ingress.yaml
+    - kubectl rollout status -f manifests/deployment.yaml
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    url: https://review.sickrage.ca/$CI_COMMIT_REF_SLUG
+    on_stop: review:stop
+  only:
+    - merge_requests
+
+review:stop:
+  stage: review_deploy
+  image:
+    name: lachlanevenson/k8s-kubectl:latest
+    entrypoint: ["/bin/sh", "-c"]
+  script:
+#    - wget -O /usr/bin/reg https://github.com/genuinetools/reg/releases/download/v0.13.0/reg-linux-amd64
+#    - chmod +x /usr/bin/reg
+#    - reg -r ${CI_REGISTRY} -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} rm ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}
+    - kubectl delete ing -l ref=${CI_ENVIRONMENT_SLUG}
+    - kubectl delete all -l ref=${CI_ENVIRONMENT_SLUG}
+  variables:
+    GIT_STRATEGY: none
+  when: manual
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    action: stop
+  only:
+    - merge_requests
+
+release:build:master:
+  stage: release_build
+  image:
+    name: nikolaik/python-nodejs:python3.7-nodejs10-alpine
+  variables:
+    NODE_ENV: "development"
+  script:
+    - apk add --no-cache git gcc libffi-dev python3-dev musl-dev openssl-dev
+    - npm install -qs
+    - pip install bumpversion
+    - pip install -r requirements-dev.txt
+    - bumpversion --allow-dirty patch package.json sickrage/version.txt
+    - npm run build
+#    - python setup.py extract_messages
+#    - crowdin-cli-py upload sources
+#    - crowdin-cli-py download
+#    - python setup.py compile_catalog
+    - git config --global user.email $(git --no-pager show -s --format='%ae' HEAD)
+    - git config --global user.name $(git --no-pager show -s --format='%an' HEAD)
+    - git add --all
+    - git tag -a $(cat sickrage/version.txt) -m "Release v$(cat sickrage/version.txt)"
+    - git commit -m "[TASK] Releasing v$(cat sickrage/version.txt)"
+    - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME --follow-tags
+  only:
+    - master
+  except:
+    refs:
+      - tags
+      - triggers
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /\[TASK\] Releasing/
+
+release:build:develop:
+  stage: release_build
+  image:
+    name: nikolaik/python-nodejs:python3.7-nodejs10-alpine
+  variables:
+    NODE_ENV: "development"
+  script:
+    - apk add --no-cache git gcc libffi-dev python3-dev musl-dev openssl-dev
+    - npm install -qs
+    - pip install bumpversion
+    - pip install -r requirements-dev.txt
+    - bumpversion --allow-dirty preversion package.json sickrage/version.txt
+    - npm run build
+    #    - python setup.py extract_messages
+    #    - crowdin-cli-py upload sources
+    #    - crowdin-cli-py download
+    #    - python setup.py compile_catalog
+    - git config --global user.email $(git --no-pager show -s --format='%ae' HEAD)
+    - git config --global user.name $(git --no-pager show -s --format='%an' HEAD)
+    - git add --all
+    - git tag -a $(cat sickrage/version.txt) -m "Pre-release v$(cat sickrage/version.txt)"
+    - git commit -m "[TASK] Pre-Releasing v$(cat sickrage/version.txt)"
+    - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME --follow-tags
+  only:
+    - develop
+  except:
+    refs:
+      - tags
+      - triggers
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /\[TASK\] Pre-Releasing/
+
+release:sentry:master:
+  stage: release_sentry
   image:
     name: getsentry/sentry-cli
     entrypoint: [""]
@@ -33,8 +182,8 @@ sentry_release_master:
     - branches
     - triggers
 
-sentry_release_develop:
-  stage: release
+release:sentry:develop:
+  stage: release_sentry
   image:
     name: getsentry/sentry-cli
     entrypoint: [""]
@@ -53,10 +202,11 @@ sentry_release_develop:
     - branches
     - triggers
 
-deploy_pypi:
-  stage: deploy
+deploy:pypi:
+  stage: release_deploy
   image: python:3.7-alpine3.9
   script:
+    - apk add --no-cache py-pip gcc libffi-dev python3-dev musl-dev openssl-dev
     - pip install -U twine
     - python setup.py sdist bdist_wheel
     - twine upload dist/*
@@ -67,8 +217,8 @@ deploy_pypi:
     - branches
     - triggers
 
-deploy_docker_master:
-  stage: deploy
+deploy:docker:master:
+  stage: release_deploy
   variables:
     UPSTREAM_BRANCH: master
     UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
@@ -81,8 +231,8 @@ deploy_docker_master:
     - branches
     - triggers
 
-deploy_docker_develop:
-  stage: deploy
+deploy:docker:develop:
+  stage: release_deploy
   variables:
     UPSTREAM_BRANCH: develop
     UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
@@ -95,8 +245,8 @@ deploy_docker_develop:
     - branches
     - triggers
 
-deploy_synology:
-  stage: deploy
+deploy:synology:master:
+  stage: release_deploy
   variables:
     UPSTREAM_BRANCH: master
     UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
@@ -109,8 +259,8 @@ deploy_synology:
     - branches
     - triggers
 
-deploy_readynas:
-  stage: deploy
+deploy:readynas:master:
+  stage: release_deploy
   variables:
     UPSTREAM_COMMIT_TAG: $CI_COMMIT_TAG
     UPSTREAM_PROJECT_NAME: $CI_PROJECT_NAME
@@ -125,8 +275,8 @@ deploy_readynas:
     - branches
     - triggers
 
-deploy_qnap:
-  stage: deploy
+deploy:qnap:master:
+  stage: release_deploy
   variables:
     UPSTREAM_COMMIT_TAG: $CI_COMMIT_TAG
     UPSTREAM_PROJECT_NAME: $CI_PROJECT_NAME

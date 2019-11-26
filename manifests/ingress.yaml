@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: __CI_COMMIT_REF_SLUG__
+  namespace: __KUBE_NAMESPACE__
+  labels:
+    app: __CI_COMMIT_REF_SLUG__
+    ref: __CI_ENVIRONMENT_SLUG__
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  tls:
+  - hosts:
+    - review.sickrage.ca
+    secretName: sickrage-ca-tls
+  rules:
+  - host: review.sickrage.ca
+    http:
+      paths:
+      - path: /__CI_COMMIT_REF_SLUG__
+        backend:
+          serviceName: __CI_COMMIT_REF_SLUG__
+          servicePort: 80

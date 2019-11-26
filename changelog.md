@@ -1,5 +1,6 @@
 # Changelog
 
+- * 94f82ef67 - 2019-11-05: Release v9.4.183 
 - * d94d4b9bc - 2019-11-05: Revert &quot;Added lazy loading to main shows page, reduces page load times.&quot; 
 - * 932c107ab - 2019-11-05: Revert &quot;Refactored main shows page to load shows via web sockets.&quot; 
 - * 940d091a7 - 2019-11-05: Revert &quot;Refactored TVShow and TVEpisode database models to use select instead of joined for lazy loading relationships.&quot; 

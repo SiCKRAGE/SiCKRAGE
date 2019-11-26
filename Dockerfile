@@ -5,6 +5,7 @@ ARG SOURCE_COMMIT
 ENV SOURCE_COMMIT $SOURCE_COMMIT
 
 ENV TZ 'Canada/Pacific'
+ENV WEB_ROOT ''
 
 #RUN locale-gen en_US.UTF-8
 #ENV LANG en_US.UTF-8
@@ -20,4 +21,4 @@ RUN pip install -r /opt/sickrage/requirements.txt
 EXPOSE 8081
 VOLUME /config /downloads /tv /anime
 
-ENTRYPOINT python /opt/sickrage/SiCKRAGE.py --nolaunch --datadir /config
+ENTRYPOINT python /opt/sickrage/SiCKRAGE.py --nolaunch --web_root $WEB_ROOT --datadir /config

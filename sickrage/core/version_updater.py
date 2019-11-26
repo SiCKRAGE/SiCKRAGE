@@ -184,7 +184,7 @@ class VersionUpdater(object):
                 sickrage.app.config.view_changelog = True
 
                 if webui:
-                    WebSocketMessage('task', {'cmd': 'restart'}).push()
+                    WebSocketMessage('redirect', {'url': '{}/home/restart/?pid={}'.format(sickrage.app.config.web_root, sickrage.app.pid)}).push()
 
                 return True
 
@@ -204,6 +204,10 @@ class VersionUpdater(object):
 
 
 class UpdateManager(object):
+    @property
+    def version_regex(self):
+        return re.compile('^(?P<major>[0-9]+).(?P<minor>[0-9]+).(?P<patch>[0-9]+)(?:.dev(?P<pre_release>[0-9]+))?$', re.IGNORECASE)
+
     @property
     def _git_path(self):
         test_cmd = '--version'
@@ -400,6 +404,8 @@ class UpdateManager(object):
 class GitUpdateManager(UpdateManager):
     def __init__(self):
         self.type = "git"
+        self._num_commits_behind = 0
+        self._num_commits_ahead = 0
 
     @property
     def version(self):
@@ -455,6 +461,16 @@ class GitUpdateManager(UpdateManager):
                 sickrage.app.log.debug("GIT CMD OUTPUT: {}".format(output.strip()))
             return
 
+        # get number of commits behind and ahead (option --count not supported git < 1.7.2)
+        output, __, exit_status = self._git_cmd(self._git_path, 'rev-list --left-right origin/{}...HEAD'.format(self.current_branch))
+        if exit_status == 0 and output:
+            try:
+                self._num_commits_behind = int(output.count("<"))
+                self._num_commits_ahead = int(output.count(">"))
+            except Exception:
+                sickrage.app.log.debug("Unable to determine number of commits ahead or behind for git install, failed new version check.")
+                return
+
         # get latest commit_hash from remote
         output, __, exit_status = self._git_cmd(self._git_path, 'rev-parse --verify --quiet origin/{}'.format(self.current_branch))
         if exit_status == 0 and output:
@@ -462,14 +478,13 @@ class GitUpdateManager(UpdateManager):
 
     def set_newest_text(self):
         if self.version != self.get_newest_version:
-            newest_text = _(
-                'There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>').format(
+            newest_text = _('There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>').format(
                 self.get_newest_version, self.get_update_url())
             sickrage.app.newest_version_string = newest_text
 
     def need_update(self):
         try:
-            return (False, True)[self.version != self.get_newest_version]
+            return (False, True)[self.version != self.get_newest_version and self._num_commits_behind]
         except Exception as e:
             sickrage.app.log.warning("Unable to contact server, can't check for update: " + repr(e))
             return False
@@ -480,13 +495,11 @@ class GitUpdateManager(UpdateManager):
         on the call's success.
         """
 
+        if sickrage.app.config.git_reset:
+            self.reset()
+
         if not self.install_requirements(self.current_branch):
             return False
-
-        # remove untracked files and performs a hard reset on git branch to avoid update issues
-        if sickrage.app.config.git_reset:
-            # self.clean() # This is removing user data and backups
-            self.reset()
 
         __, __, exit_status = self._git_cmd(self._git_path, 'pull -f {} {}'.format(sickrage.app.config.git_remote,
                                                                                    self.current_branch))
@@ -577,19 +590,31 @@ class SourceUpdateManager(UpdateManager):
         return sickrage.version() or ""
 
     def need_update(self):
-        try:
-            return (False, True)[self.version != self.get_newest_version]
-        except Exception as e:
-            sickrage.app.log.warning("Unable to contact server, can't check for update: " + repr(e))
-            return False
+        current_version_match = self.version_regex.match(self.version)
+        new_version_match = self.version_regex.match(self.get_newest_version)
+
+        if current_version_match and new_version_match:
+            for version_label in ['major', 'minor', 'patch', 'pre_release']:
+                try:
+                    if version_label not in current_version_match.groupdict().keys() or version_label not in new_version_match.groupdict().keys():
+                        continue
+
+                    current_version_part = current_version_match.group(version_label)
+                    new_version_part = new_version_match.group(version_label)
+
+                    if current_version_part is None or new_version_part is None:
+                        continue
+
+                    if int(new_version_part) > int(current_version_part):
+                        return True
+                except (IndexError, TypeError):
+                    continue
 
     def _check_for_new_version(self):
         git_version_url = "https://git.sickrage.ca/SiCKRAGE/sickrage/raw/{}/sickrage/version.txt"
 
         try:
-            new_version = WebSession().get(git_version_url.format(('master', 'develop')['dev' in self.version])).text
-            if re.match('^[0-9]+.[0-9]+.[0-9]+(?:.dev[0-9])?$', new_version):
-                return new_version
+            return WebSession().get(git_version_url.format(('master', 'develop')['dev' in self.version])).text
         except Exception:
             return self._find_installed_version()
 
