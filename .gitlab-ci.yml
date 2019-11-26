@@ -109,7 +109,7 @@ release:build:master:
     - npm install -qs
     - pip install bumpversion
     - pip install -r requirements-dev.txt
-    - bumpversion --allow-dirty patch package.json sickrage/version.txt
+    - bumpversion --allow-dirty release package.json sickrage/version.txt
     - npm run build
 #    - python setup.py extract_messages
 #    - crowdin-cli-py upload sources
@@ -120,6 +120,11 @@ release:build:master:
     - git add --all
     - git tag -a $(cat sickrage/version.txt) -m "Release v$(cat sickrage/version.txt)"
     - git commit -m "[TASK] Releasing v$(cat sickrage/version.txt)"
+    - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME --follow-tags
+    - git checkout develop
+    - bumpversion --allow-dirty patch package.json sickrage/version.txt
+    - git add --all
+    - git commit -m "[TASK] Bump develop branch to v$(cat sickrage/version.txt)"
     - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME --follow-tags
   only:
     - master
@@ -141,7 +146,7 @@ release:build:develop:
     - npm install -qs
     - pip install bumpversion
     - pip install -r requirements-dev.txt
-    - bumpversion --allow-dirty preversion package.json sickrage/version.txt
+    - bumpversion --allow-dirty dev package.json sickrage/version.txt
     - npm run build
     #    - python setup.py extract_messages
     #    - crowdin-cli-py upload sources
@@ -161,6 +166,7 @@ release:build:develop:
       - triggers
     variables:
       - $CI_COMMIT_MESSAGE =~ /\[TASK\] Pre-Releasing/
+      - $CI_COMMIT_MESSAGE =~ /\[TASK\] Bump/
 
 release:sentry:master:
   stage: release_sentry
