@@ -551,7 +551,7 @@ class TVShow(MainDBBase):
         sickrage.app.log.debug(str(self.indexer_id) + ": Creating episode object from " + filename)
 
         try:
-            parse_result = NameParser(show_id=self.indexer_id).parse(filename, skip_scene_detection=True)
+            parse_result = NameParser(validate_show=False).parse(filename, skip_scene_detection=True)
         except InvalidNameException:
             sickrage.app.log.debug("Unable to parse the filename " + filename + " into a valid episode")
             return None

@@ -32,7 +32,7 @@ from sickrage.providers import TorrentProvider
 
 class GKTorrentProvider(TorrentProvider):
     def __init__(self):
-        super(GKTorrentProvider, self).__init__('GKTorrent', 'https://www.gktorrent.me', False)
+        super(GKTorrentProvider, self).__init__('GKTorrent', 'https://www.gktorrent.biz', False)
 
         self.urls.update({
             'search': '{base_url}/recherche/'.format(**self.urls),

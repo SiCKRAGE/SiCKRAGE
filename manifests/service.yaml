@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: __CI_COMMIT_REF_SLUG__
+  namespace: __KUBE_NAMESPACE__
+  labels:
+    app: __CI_COMMIT_REF_SLUG__
+    ref: __CI_ENVIRONMENT_SLUG__
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8081
+  selector:
+    app: __CI_COMMIT_REF_SLUG__

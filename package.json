@@ -1,5 +1,6 @@
 {
   "name": "sickrage",
+  "version": "9.4.184.dev9",
   "private": true,
   "repository": {
     "type": "git",
@@ -10,11 +11,12 @@
   },
   "homepage": "https://www.sickrage.ca",
   "scripts": {
-    "dev": "webpack --mode development",
-    "prod": "webpack --mode production"
+    "build": "webpack --config webpack.config.js -p"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.1.0",
+    "@sentry/browser": "^5.9.0",
+    "@sentry/webpack-plugin": "^1.9.3",
     "animate.css": "^3.6.1",
     "autoprefixer": "^8.6.5",
     "babel": "^6.23.0",

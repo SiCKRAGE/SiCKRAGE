@@ -23,6 +23,12 @@ import Isotope from 'isotope-layout';
 import ImagesLoaded from 'imagesloaded';
 import Tokenfield from 'tokenfield';
 import _ from 'underscore';
+import * as Sentry from '@sentry/browser';
+
+Sentry.init({
+    dsn: 'https://d4bf4ed225c946c8972c7238ad07d124@sentry.sickrage.ca/2',
+    release: process.env.PACKAGE_VERSION
+});
 
 jQueryBridget('isotope', Isotope, $);
 jQueryBridget('imagesLoaded', ImagesLoaded, $);
@@ -40,15 +46,13 @@ $(document).ready(function ($) {
             ws.onmessage = function (evt) {
                 var msg = JSON.parse(evt.data);
 
-                // Add handling for different kinds of events. For ex: {"event": "notification", "data": {"title": ..}}
-                if (msg.event === 'notification') {
-                    SICKRAGE.notify(msg.data.type, msg.data.title, msg.data.body);
-                } else if (msg.event === 'task') {
-                    switch (msg.data.cmd) {
-                        case 'restart':
-                            window.location.href = SICKRAGE.srWebRoot + '/home/restart/?pid=' + SICKRAGE.srPID;
-                            break;
-                    }
+                switch (msg.type) {
+                    case 'notification':
+                        SICKRAGE.notify(msg.data.type, msg.data.title, msg.data.body);
+                        break;
+                    case 'redirect':
+                        window.location.href = msg.data.url;
+                        break;
                 }
             };
         },

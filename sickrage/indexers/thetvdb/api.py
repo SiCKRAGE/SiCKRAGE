@@ -300,6 +300,7 @@ class Tvdb:
     def __init__(self):
         self.config = {
             'api': {
+                'version': '3.0.0',
                 'lang': 'en',
                 'base': "https://api.thetvdb.com",
                 'login': '/login',
@@ -433,6 +434,7 @@ class Tvdb:
         self.config['headers'].update({'Content-type': 'application/json'})
         self.config['headers']['Authorization'] = 'Bearer {}'.format(self.jwt_token)
         self.config['headers'].update({'Accept-Language': lang or self.config['language']})
+        self.config['headers'].update({'Accept': 'application/vnd.thetvdb.v{}'.format(self.config['api']['version'])})
 
         for i in range(0, retries):
             try:

@@ -239,7 +239,8 @@ class UnlinkHandler(BaseHandler, ABC):
         sickrage.app.config.sub_id = ""
         sickrage.app.config.save()
 
-        API().token = sickrage.app.oidc_client.logout(API().token['refresh_token'])
+        sickrage.app.oidc_client.logout(API().token['refresh_token'])
+        API().token = {}
 
         return self.redirect('/logout/')
 

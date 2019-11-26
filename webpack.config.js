@@ -1,9 +1,13 @@
 const path = require('path');
+const fs = require('fs');
+const packageJson = fs.readFileSync('./package.json');
+const version = JSON.parse(packageJson).version;
 const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const SpritesmithPlugin = require('webpack-spritesmith');
+const SentryWebpackPlugin = require('@sentry/webpack-plugin');
 
 const templateFunction = function (data) {
     var iconName = path.basename(data.sprites[0].image, path.extname(data.sprites[0].image))
@@ -58,8 +62,10 @@ module.exports = {
     entry: './src/app.js',
     output: {
         path: path.resolve(__dirname, 'sickrage/core/webserver/static/js'),
-        filename: 'core.min.js'
+        filename: 'core.min.js',
+        sourceMapFilename: "core.js.map"
     },
+    devtool: "source-map",
     module: {
         rules: [
             {
@@ -120,6 +126,11 @@ module.exports = {
         modules: ["node_modules", "spritesmith-generated"]
     },
     plugins: [
+        new webpack.DefinePlugin({
+            'process.env': {
+                PACKAGE_VERSION: '"' + version + '"'
+            }
+        }),
         new webpack.ProvidePlugin({
             $: 'jquery',
             jQuery: 'jquery',
@@ -132,6 +143,13 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: "../css/core.min.css",
             chunkFilename: "[id].css"
+        }),
+        new SentryWebpackPlugin({
+            release: version,
+            include: path.resolve(__dirname, 'sickrage/core/webserver/static/js'),
+            ignoreFile: '.sentrycliignore',
+            ignore: ['node_modules', 'webpack.config.js'],
+            configFile: 'sentry.properties'
         }),
         new OptimizeCSSAssetsPlugin(),
         makeSprite('core'),
