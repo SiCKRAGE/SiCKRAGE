@@ -1,11 +1,11 @@
 import json
 import os
 import time
+import requests.exceptions
 from urllib.parse import urljoin
 
 from oauthlib.oauth2 import MissingTokenError, InvalidClientIdError, TokenExpiredError, InvalidGrantError
 from raven.utils.json import JSONDecodeError
-from requests import RequestException
 from requests_oauthlib import OAuth2Session
 
 import sickrage
@@ -77,12 +77,12 @@ class API(object):
     def upload_privatekey(self, privatekey):
         return self._request('POST', 'account/private-key', data=dict({'privatekey': privatekey}))
 
-    def _request(self, method, url, **kwargs):
+    def _request(self, method, url, timeout=30, **kwargs):
         latest_exception = None
 
         for i in range(3):
             try:
-                resp = self.session.request(method, urljoin(self.api_url, url), timeout=30, hooks={'response': self.throttle_hook}, **kwargs)
+                resp = self.session.request(method, urljoin(self.api_url, url), timeout=timeout, hooks={'response': self.throttle_hook}, **kwargs)
                 if resp.status_code >= 400:
                     if 'error' in resp.json():
                         raise ApiError(resp.json()['error'])
@@ -92,12 +92,15 @@ class API(object):
                 return resp.json()
             except (InvalidClientIdError, MissingTokenError) as e:
                 latest_exception = "SiCKRAGE token issue, please try logging out and back in again to the web-ui"
-            except RequestException as e:
+            except requests.exceptions.ReadTimeout:
+                timeout += timeout
+            except requests.exceptions.RequestException as e:
                 latest_exception = e
 
             time.sleep(1)
 
-        sickrage.app.log.warning('{!r}'.format(latest_exception))
+        if latest_exception:
+            sickrage.app.log.warning('{!r}'.format(latest_exception))
 
     def exchange_token(self, token, scope='offline_access'):
         exchange = {'scope': scope, 'subject_token': token['access_token']}
