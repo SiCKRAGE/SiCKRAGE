@@ -1,5 +1,5 @@
 stages:
-  - review_webpack
+#  - review_webpack
   - review_docker
   - review_deploy
   - release_build
@@ -25,8 +25,8 @@ review:webpack:
 
 review:docker:
   stage: review_docker
-  dependencies:
-    - review:webpack
+#  dependencies:
+#    - review:webpack
   image:
     name: docker:latest
     entrypoint: ["/bin/sh", "-c"]
