@@ -132,7 +132,7 @@ Build and Deploy Release:
     - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:develop --follow-tags
   when: manual
   only:
-    - develop@sickrage/sickrage
+    - develop
   except:
     refs:
       - tags
@@ -165,7 +165,7 @@ Build and Deploy Pre-Release:
     - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME --follow-tags
   when: manual
   only:
-    - develop@sickrage/sickrage
+    - develop
   except:
     refs:
       - tags
