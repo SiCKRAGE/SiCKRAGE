@@ -841,7 +841,7 @@
                                            class="form-control"
                                            autocapitalize="off"
                                            type="url"
-                                           pattern="https?://.+:[0-9]+/?">
+                                           pattern="(scgi|https?)://.+:[0-9]+/?">
                                     <div class="invalid-tooltip">
                                         Please fill in a valid URL.
                                     </div>
