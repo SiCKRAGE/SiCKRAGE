@@ -172,6 +172,7 @@ class rTorrentAPI(GenericClient):
             else:
                 return False, 'Error: Unable to get ' + self.name + ' Authentication, check your config!'
         except Exception:
+            sickrage.app.log.debug(traceback.format_exc())
             return False, 'Error: Unable to connect to ' + self.name
 
 
