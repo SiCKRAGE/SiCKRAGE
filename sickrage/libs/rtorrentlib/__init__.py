@@ -19,7 +19,7 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import os.path
 import time
-import urllib
+from urllib.parse import urlparse
 
 import xmlrpc.client
 import xmlrpc.server
@@ -56,7 +56,7 @@ class RTorrent:
         self.username = username
         self.password = password
 
-        self.schema = urllib.splittype(uri)[0]
+        self.schema = urlparse(uri).scheme
 
         if sp:
             self.sp = sp
