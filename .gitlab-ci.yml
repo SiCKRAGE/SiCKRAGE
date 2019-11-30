@@ -98,7 +98,7 @@ review:stop:
   only:
     - merge_requests@sickrage/sickrage
 
-Build and Deploy Release:
+release:build:master:
   stage: release_build
   image:
     name: nikolaik/python-nodejs:python3.7-nodejs10-alpine
@@ -140,7 +140,7 @@ Build and Deploy Release:
     variables:
       - $CI_COMMIT_MESSAGE =~ /\[TASK\] Releasing/
 
-Build and Deploy Pre-Release:
+release:build:develop:
   stage: release_build
   image:
     name: nikolaik/python-nodejs:python3.7-nodejs10-alpine
@@ -163,7 +163,6 @@ Build and Deploy Pre-Release:
     - git tag -a $(cat sickrage/version.txt) -m "Pre-release v$(cat sickrage/version.txt)"
     - git commit -m "[TASK] Pre-Releasing v$(cat sickrage/version.txt)"
     - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME --follow-tags
-  when: manual
   only:
     - develop
   except:
