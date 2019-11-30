@@ -128,7 +128,6 @@ class rTorrentAPI(GenericClient):
             return False
 
     def _set_torrent_ratio(self, name):
-
         # if not name:
         # return False
         #
