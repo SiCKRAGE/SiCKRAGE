@@ -111,7 +111,13 @@ class Quality(object):
                     HDWEBDL: 1200,
                     FULLHDWEBDL: 1400,
                     HDBLURAY: 1200,
-                    FULLHDBLURAY: 1400}
+                    FULLHDBLURAY: 1400,
+                    UHD_4K_TV: 8000,
+                    UHD_8K_TV: 16000,
+                    UHD_4K_WEBDL: 8000,
+                    UHD_8K_WEBDL: 16000,
+                    UHD_4K_BLURAY: 8000,
+                    UHD_8K_BLURAY: 16000}
 
     qualityStrings = {NONE: "N/A",
                       UNKNOWN: "Unknown",
@@ -290,11 +296,11 @@ class Quality(object):
             return ret
 
         if (check_name([r"480p|\bweb\b|web.?dl|web(rip|mux|hd)|[sph]d.?tv|dsr|tv(rip|mux)|satrip", r"xvid|divx|[xh].?26[45]"], all)
-                and not check_name([r"(720|1080)[pi]"], all)
+                and not check_name([r"(720|1080|2160|4320)[pi]"], all)
                 and not check_name([r"hr.ws.pdtv.[xh].?26[45]"], any)):
             ret = Quality.SDTV
         elif (check_name([r"dvd(rip|mux)|b[rd](rip|mux)|blue?-?ray", r"xvid|divx|[xh].?26[45]"], all)
-              and not check_name([r"(720|1080)[pi]"], all)
+              and not check_name([r"(720|1080|2160|4320)[pi]"], all)
               and not check_name([r"hr.ws.pdtv.[xh].?26[45]"], any)):
             ret = Quality.SDDVD
         elif (check_name([r"720p", r"hd.?tv", r"[xh].?26[45]"], all)

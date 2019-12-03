@@ -2,6 +2,7 @@
 <%def name='formaction()'><% return 'saveQualities' %></%def>
 <%!
     import sickrage
+    from sickrage.core.common import Quality
 %>
 
 <%block name="menus">
@@ -21,7 +22,7 @@
                 </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
-                % for qtype, qsize in sickrage.app.config.quality_sizes.items():
+                % for qtype in Quality.qualitySizes.keys():
                     % if qtype:
                         <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5">
@@ -36,7 +37,11 @@
                                     </div>
                                     <input class="form-control"
                                            type="number"
-                                           value="${qsize}"
+                                           % if qtype in sickrage.app.config.quality_sizes:
+                                             value="${sickrage.app.config.quality_sizes[qtype]}"
+                                           % else:
+                                               value="${Quality.qualitySizes[qtype]}"
+                                           % endif
                                            name="${qtype}"
                                            id="${qtype}"
                                            min="1"

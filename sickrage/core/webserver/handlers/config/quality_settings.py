@@ -56,6 +56,12 @@ class SaveQualitiesHandler(BaseHandler, ABC):
             Quality.FULLHDWEBDL: int(self.get_argument(str(Quality.FULLHDWEBDL))),
             Quality.HDBLURAY: int(self.get_argument(str(Quality.HDBLURAY))),
             Quality.FULLHDBLURAY: int(self.get_argument(str(Quality.FULLHDBLURAY))),
+            Quality.UHD_4K_TV: int(self.get_argument(str(Quality.UHD_4K_TV))),
+            Quality.UHD_4K_WEBDL: int(self.get_argument(str(Quality.UHD_4K_WEBDL))),
+            Quality.UHD_4K_BLURAY: int(self.get_argument(str(Quality.UHD_4K_BLURAY))),
+            Quality.UHD_8K_TV: int(self.get_argument(str(Quality.UHD_8K_TV))),
+            Quality.UHD_8K_WEBDL: int(self.get_argument(str(Quality.UHD_8K_WEBDL))),
+            Quality.UHD_8K_BLURAY: int(self.get_argument(str(Quality.UHD_8K_BLURAY))),
         }
 
         sickrage.app.config.quality_sizes.update(quality_sizes)
