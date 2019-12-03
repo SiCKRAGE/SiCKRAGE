@@ -76,7 +76,7 @@ class Group:
 
         m = rtorrentlib.rpc.Multicall(self)
         self.multicall_add(
-            m, 'system.method.set',
+            m, 'method.set', '',
             self._get_prefix() + 'command',
             *methods
         )
