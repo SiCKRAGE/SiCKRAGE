@@ -542,6 +542,18 @@ class TorrentProvider(GenericProvider):
 
     def __init__(self, name, url, private):
         super(TorrentProvider, self).__init__(name, url, private)
+
+        # bt cache urls
+        self.bt_cache_urls = [
+            'http://reflektor.karmorra.info/torrent/{info_hash}.torrent',
+            'https://asnet.pw/download/{info_hash}/',
+            'http://p2pdl.com/download/{info_hash}',
+            'http://itorrents.org/torrent/{info_hash}.torrent',
+            'http://thetorrent.org/torrent/{info_hash}.torrent',
+            'https://cache.torrentgalaxy.org/get/{info_hash}',
+            'https://www.seedpeer.me/torrent/{info_hash}',
+        ]
+
         self.ratio = None
 
     @property
@@ -579,19 +591,26 @@ class TorrentProvider(GenericProvider):
                 pass
 
         if url.startswith('magnet'):
-            # try iTorrents
+            # get hash
             info_hash = str(re.findall(r'urn:btih:([\w]{32,40})', url)[0]).upper()
             if len(info_hash) == 32:
                 info_hash = b16encode(b32decode(info_hash)).upper()
 
             if info_hash:
                 try:
-                    # add to external api database
-                    TorrentCacheAPI().add(url)
+                    # get content from external API
                     result = verify_torrent(b64decode(TorrentCacheAPI().get(info_hash)['data']['content']).strip())
+                    if not result:
+                        # add to external API
+                        TorrentCacheAPI().add(url)
+
+                        for torrent_url in [x.format(info_hash=info_hash) for x in self.bt_cache_urls]:
+                            if result:
+                                continue
+
+                            result = verify_torrent(super(TorrentProvider, self).get_content(torrent_url))
                 except Exception:
-                    torrent_url = "https://itorrents.org/torrent/{info_hash}.torrent".format(info_hash=info_hash)
-                    result = verify_torrent(super(TorrentProvider, self).get_content(torrent_url))
+                    result = None
 
         if not result:
             result = verify_torrent(super(TorrentProvider, self).get_content(url))
