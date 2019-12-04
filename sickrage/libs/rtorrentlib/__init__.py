@@ -39,7 +39,7 @@ __author__ = "Chris Lucas"
 __contact__ = "chris@chrisjlucas.com"
 __license__ = "MIT"
 
-MIN_RTORRENT_VERSION = (0, 8, 1)
+MIN_RTORRENT_VERSION = (0, 9, 0)
 MIN_RTORRENT_VERSION_STR = convert_version_tuple_to_str(MIN_RTORRENT_VERSION)
 MAX_RETRIES = 5
 
@@ -176,7 +176,7 @@ class RTorrent:
                              if m.is_retriever() and m.is_available(self)]
 
         m = rtorrentlib.rpc.Multicall(self)
-        m.add("d.multicall", view, "d.get_hash=",
+        m.add("d.multicall2", '', view, "d.hash=",
               *[method.rpc_call + "=" for method in retriever_methods])
 
         results = m.call()[0]  # only sent one call, only need first result
@@ -213,22 +213,22 @@ class RTorrent:
         if file_type == "url":
             # url strings can be input directly
             if start and verbose:
-                func_name = "load_start_verbose"
+                func_name = "load.start_verbose"
             elif start:
-                func_name = "load_start"
+                func_name = "load.start"
             elif verbose:
-                func_name = "load_verbose"
+                func_name = "load.verbose"
             else:
-                func_name = "load"
+                func_name = "load.normal"
         elif file_type in ["file", "raw"]:
             if start and verbose:
-                func_name = "load_raw_start_verbose"
+                func_name = "load.raw_start_verbose"
             elif start:
-                func_name = "load_raw_start"
+                func_name = "load.raw_start"
             elif verbose:
-                func_name = "load_raw_verbose"
+                func_name = "load.raw_verbose"
             else:
-                func_name = "load_raw"
+                func_name = "load.raw"
 
         return(func_name)
 
@@ -319,7 +319,7 @@ class RTorrent:
         func_name = self._get_load_function("raw", start, verbose)
 
         # load torrent
-        getattr(p, func_name)(new_torrent)
+        getattr(p, func_name)('', new_torrent)
 
         if verify_load:
             new_torrent = None
@@ -503,75 +503,71 @@ def __check_supported_methods(rt):
 
 methods = [
     # RETRIEVERS
-    Method(RTorrent, 'get_xmlrpc_size_limit', 'get_xmlrpc_size_limit'),
-    Method(RTorrent, 'get_proxy_address', 'get_proxy_address'),
-    Method(RTorrent, 'get_split_suffix', 'get_split_suffix'),
-    Method(RTorrent, 'get_up_limit', 'get_upload_rate'),
-    Method(RTorrent, 'get_max_memory_usage', 'get_max_memory_usage'),
-    Method(RTorrent, 'get_max_open_files', 'get_max_open_files'),
-    Method(RTorrent, 'get_min_peers_seed', 'get_min_peers_seed'),
-    Method(RTorrent, 'get_use_udp_trackers', 'get_use_udp_trackers'),
-    Method(RTorrent, 'get_preload_min_size', 'get_preload_min_size'),
-    Method(RTorrent, 'get_max_uploads', 'get_max_uploads'),
-    Method(RTorrent, 'get_max_peers', 'get_max_peers'),
-    Method(RTorrent, 'get_timeout_sync', 'get_timeout_sync'),
-    Method(RTorrent, 'get_receive_buffer_size', 'get_receive_buffer_size'),
-    Method(RTorrent, 'get_split_file_size', 'get_split_file_size'),
-    Method(RTorrent, 'get_dht_throttle', 'get_dht_throttle'),
-    Method(RTorrent, 'get_max_peers_seed', 'get_max_peers_seed'),
-    Method(RTorrent, 'get_min_peers', 'get_min_peers'),
-    Method(RTorrent, 'get_tracker_numwant', 'get_tracker_numwant'),
-    Method(RTorrent, 'get_max_open_sockets', 'get_max_open_sockets'),
-    Method(RTorrent, 'get_session', 'get_session'),
-    Method(RTorrent, 'get_ip', 'get_ip'),
-    Method(RTorrent, 'get_scgi_dont_route', 'get_scgi_dont_route'),
-    Method(RTorrent, 'get_hash_read_ahead', 'get_hash_read_ahead'),
-    Method(RTorrent, 'get_http_cacert', 'get_http_cacert'),
-    Method(RTorrent, 'get_dht_port', 'get_dht_port'),
-    Method(RTorrent, 'get_handshake_log', 'get_handshake_log'),
-    Method(RTorrent, 'get_preload_type', 'get_preload_type'),
-    Method(RTorrent, 'get_max_open_http', 'get_max_open_http'),
-    Method(RTorrent, 'get_http_capath', 'get_http_capath'),
-    Method(RTorrent, 'get_max_downloads_global', 'get_max_downloads_global'),
-    Method(RTorrent, 'get_name', 'get_name'),
-    Method(RTorrent, 'get_session_on_completion', 'get_session_on_completion'),
-    Method(RTorrent, 'get_down_limit', 'get_download_rate'),
-    Method(RTorrent, 'get_down_total', 'get_down_total'),
-    Method(RTorrent, 'get_up_rate', 'get_up_rate'),
-    Method(RTorrent, 'get_hash_max_tries', 'get_hash_max_tries'),
-    Method(RTorrent, 'get_peer_exchange', 'get_peer_exchange'),
-    Method(RTorrent, 'get_down_rate', 'get_down_rate'),
-    Method(RTorrent, 'get_connection_seed', 'get_connection_seed'),
-    Method(RTorrent, 'get_http_proxy', 'get_http_proxy'),
-    Method(RTorrent, 'get_stats_preloaded', 'get_stats_preloaded'),
-    Method(RTorrent, 'get_timeout_safe_sync', 'get_timeout_safe_sync'),
-    Method(RTorrent, 'get_hash_interval', 'get_hash_interval'),
-    Method(RTorrent, 'get_port_random', 'get_port_random'),
-    Method(RTorrent, 'get_directory', 'get_directory'),
-    Method(RTorrent, 'get_port_open', 'get_port_open'),
-    Method(RTorrent, 'get_max_file_size', 'get_max_file_size'),
-    Method(RTorrent, 'get_stats_not_preloaded', 'get_stats_not_preloaded'),
-    Method(RTorrent, 'get_memory_usage', 'get_memory_usage'),
-    Method(RTorrent, 'get_connection_leech', 'get_connection_leech'),
-    Method(RTorrent, 'get_check_hash', 'get_check_hash',
+    Method(RTorrent, 'get_xmlrpc_size_limit', 'network.xmlrpc.size_limit'),
+    Method(RTorrent, 'get_proxy_address', 'network.proxy_address'),
+    Method(RTorrent, 'get_file_split_suffix', 'system.file.split_suffix'),
+    Method(RTorrent, 'get_global_up_limit', 'throttle.global_up.max_rate'),
+    Method(RTorrent, 'get_max_memory_usage', 'pieces.memory.max'),
+    Method(RTorrent, 'get_max_open_files', 'network.max_open_files'),
+    Method(RTorrent, 'get_min_peers_seed', 'throttle.min_peers.seed'),
+    Method(RTorrent, 'get_use_udp_trackers', 'trackers.use_udp'),
+    Method(RTorrent, 'get_preload_min_size', 'pieces.preload.min_size'),
+    Method(RTorrent, 'get_max_uploads', 'throttle.max_uploads'),
+    Method(RTorrent, 'get_max_peers', 'throttle.max_peers.normal'),
+    Method(RTorrent, 'get_timeout_sync', 'pieces.sync.timeout'),
+    Method(RTorrent, 'get_receive_buffer_size', 'network.receive_buffer.size'),
+    Method(RTorrent, 'get_split_file_size', 'system.file.split_size'),
+    Method(RTorrent, 'get_dht_throttle', 'dht.throttle.name'),
+    Method(RTorrent, 'get_max_peers_seed', 'throttle.max_peers.seed'),
+    Method(RTorrent, 'get_min_peers', 'throttle.min_peers.normal'),
+    Method(RTorrent, 'get_tracker_numwant', 'trackers.numwant'),
+    Method(RTorrent, 'get_max_open_sockets', 'network.max_open_sockets'),
+    Method(RTorrent, 'get_session_path', 'session.path'),
+    Method(RTorrent, 'get_local_address', 'network.local_address'),
+    Method(RTorrent, 'get_scgi_dont_route', 'network.scgi.dont_route'),
+    Method(RTorrent, 'get_http_cacert', 'network.http.cacert'),
+    Method(RTorrent, 'get_dht_port', 'dht.port'),
+    Method(RTorrent, 'get_preload_type', 'pieces.preload.type'),
+    Method(RTorrent, 'get_http_max_open', 'network.http.max_open'),
+    Method(RTorrent, 'get_http_capath', 'network.http.capath'),
+    Method(RTorrent, 'get_max_downloads_global', 'throttle.max_downloads.global'),
+    Method(RTorrent, 'get_session_name', 'session.name'),
+    Method(RTorrent, 'get_session_on_completion', 'session.on_completion'),
+    Method(RTorrent, 'get_down_limit', 'throttle.global_down.max_rate'),
+    Method(RTorrent, 'get_down_total', 'throttle.global_down.total'),
+    Method(RTorrent, 'get_up_rate', 'throttle.global_up.rate'),
+    Method(RTorrent, 'get_peer_exchange', 'protocol.pex'),
+    Method(RTorrent, 'get_down_rate', 'throttle.global_down.rate'),
+    Method(RTorrent, 'get_connection_seed', 'protocol.connection.seed'),
+    Method(RTorrent, 'get_http_proxy_address', 'network.http.proxy_address'),
+    Method(RTorrent, 'get_stats_preloaded', 'pieces.stats_preloaded'),
+    Method(RTorrent, 'get_timeout_safe_sync', 'pieces.sync.timeout_safe'),
+    Method(RTorrent, 'get_port_random', 'network.port_random'),
+    Method(RTorrent, 'get_directory', 'directory.default'),
+    Method(RTorrent, 'get_port_open', 'network.port_open'),
+    Method(RTorrent, 'get_max_file_size', 'system.file.max_size'),
+    Method(RTorrent, 'get_stats_not_preloaded', 'pieces.stats_not_preloaded'),
+    Method(RTorrent, 'get_memory_usage', 'pieces.memory.current'),
+    Method(RTorrent, 'get_connection_leech', 'protocol.connection.leech'),
+    Method(RTorrent, 'get_hash_on_completion', 'pieces.hash.on_completion',
            boolean=True,
            ),
-    Method(RTorrent, 'get_session_lock', 'get_session_lock'),
-    Method(RTorrent, 'get_preload_required_rate', 'get_preload_required_rate'),
-    Method(RTorrent, 'get_max_uploads_global', 'get_max_uploads_global'),
-    Method(RTorrent, 'get_send_buffer_size', 'get_send_buffer_size'),
-    Method(RTorrent, 'get_port_range', 'get_port_range'),
-    Method(RTorrent, 'get_max_downloads_div', 'get_max_downloads_div'),
-    Method(RTorrent, 'get_max_uploads_div', 'get_max_uploads_div'),
-    Method(RTorrent, 'get_safe_sync', 'get_safe_sync'),
-    Method(RTorrent, 'get_bind', 'get_bind'),
-    Method(RTorrent, 'get_up_total', 'get_up_total'),
+    Method(RTorrent, 'get_session_lock', 'session.use_lock'),
+    Method(RTorrent, 'get_preload_min_rate', 'pieces.preload.min_rate'),
+    Method(RTorrent, 'get_max_uploads_global', 'throttle.max_uploads.global'),
+    Method(RTorrent, 'get_send_buffer_size', 'network.send_buffer.size'),
+    Method(RTorrent, 'get_port_range', 'network.port_range'),
+    Method(RTorrent, 'get_max_downloads_div', 'throttle.max_downloads.div'),
+    Method(RTorrent, 'get_max_uploads_div', 'throttle.max_uploads.div'),
+    Method(RTorrent, 'get_always_safe_sync', 'pieces.sync.always_safe'),
+    Method(RTorrent, 'get_bind_address', 'network.bind_address'),
+    Method(RTorrent, 'get_up_total', 'throttle.global_up.total'),
     Method(RTorrent, 'get_client_version', 'system.client_version'),
     Method(RTorrent, 'get_library_version', 'system.library_version'),
     Method(RTorrent, 'get_api_version', 'system.api_version',
            min_version=(0, 9, 1)
            ),
-    Method(RTorrent, "get_system_time", "system.time",
+    Method(RTorrent, 'get_system_time', 'system.time',
            docstring="""Get the current time of the system rTorrent is running on
 
            @return: time (posix)
@@ -579,84 +575,79 @@ methods = [
            ),
 
     # MODIFIERS
-    Method(RTorrent, 'set_http_proxy', 'set_http_proxy'),
-    Method(RTorrent, 'set_max_memory_usage', 'set_max_memory_usage'),
-    Method(RTorrent, 'set_max_file_size', 'set_max_file_size'),
-    Method(RTorrent, 'set_bind', 'set_bind',
+    Method(RTorrent, 'set_http_proxy_address', 'network.http.proxy_address.set'),
+    Method(RTorrent, 'set_max_memory_usage', 'pieces.memory.max.set'),
+    Method(RTorrent, 'set_max_file_size', 'system.file.max_size.set'),
+    Method(RTorrent, 'set_bind_address', 'network.bind_address.set',
            docstring="""Set address bind
 
            @param arg: ip address
            @type arg: str
            """,
            ),
-    Method(RTorrent, 'set_up_limit', 'set_upload_rate',
+    Method(RTorrent, 'set_up_limit', 'throttle.global_up.max_rate.set',
            docstring="""Set global upload limit (in bytes)
 
            @param arg: speed limit
            @type arg: int
            """,
            ),
-    Method(RTorrent, 'set_port_random', 'set_port_random'),
-    Method(RTorrent, 'set_connection_leech', 'set_connection_leech'),
-    Method(RTorrent, 'set_tracker_numwant', 'set_tracker_numwant'),
-    Method(RTorrent, 'set_max_peers', 'set_max_peers'),
-    Method(RTorrent, 'set_min_peers', 'set_min_peers'),
-    Method(RTorrent, 'set_max_uploads_div', 'set_max_uploads_div'),
-    Method(RTorrent, 'set_max_open_files', 'set_max_open_files'),
-    Method(RTorrent, 'set_max_downloads_global', 'set_max_downloads_global'),
-    Method(RTorrent, 'set_session_lock', 'set_session_lock'),
-    Method(RTorrent, 'set_session', 'set_session'),
-    Method(RTorrent, 'set_split_suffix', 'set_split_suffix'),
-    Method(RTorrent, 'set_hash_interval', 'set_hash_interval'),
-    Method(RTorrent, 'set_handshake_log', 'set_handshake_log'),
-    Method(RTorrent, 'set_port_range', 'set_port_range'),
-    Method(RTorrent, 'set_min_peers_seed', 'set_min_peers_seed'),
-    Method(RTorrent, 'set_scgi_dont_route', 'set_scgi_dont_route'),
-    Method(RTorrent, 'set_preload_min_size', 'set_preload_min_size'),
-    Method(RTorrent, 'set_log.tracker', 'set_log.tracker'),
-    Method(RTorrent, 'set_max_uploads_global', 'set_max_uploads_global'),
-    Method(RTorrent, 'set_down_limit', 'set_download_rate',
+    Method(RTorrent, 'set_port_random', 'network.port_random.set'),
+    Method(RTorrent, 'set_connection_leech', 'protocol.connection.leech.set'),
+    Method(RTorrent, 'set_tracker_numwant', 'trackers.numwant.set'),
+    Method(RTorrent, 'set_max_peers', 'throttle.max_peers.normal.set'),
+    Method(RTorrent, 'set_min_peers', 'throttle.min_peers.normal.set'),
+    Method(RTorrent, 'set_max_uploads_div', 'throttle.max_uploads.div.set'),
+    Method(RTorrent, 'set_max_open_files', 'network.max_open_files.set'),
+    Method(RTorrent, 'set_max_downloads_global', 'throttle.max_downloads.global.set'),
+    Method(RTorrent, 'set_session_lock', 'session.use_lock.set'),
+    Method(RTorrent, 'set_session_path', 'session.path.set'),
+    Method(RTorrent, 'set_file_split_suffix', 'system.file.split_suffix.set'),
+    Method(RTorrent, 'set_port_range', 'network.port_range.set'),
+    Method(RTorrent, 'set_min_peers_seed', 'throttle.min_peers.seed.set'),
+    Method(RTorrent, 'set_scgi_dont_route', 'network.scgi.dont_route.set'),
+    Method(RTorrent, 'set_preload_min_size', 'pieces.preload.min_size.set'),
+    Method(RTorrent, 'set_max_uploads_global', 'throttle.max_uploads.global.set'),
+    Method(RTorrent, 'set_down_limit', 'throttle.global_down.max_rate.set',
            docstring="""Set global download limit (in bytes)
 
            @param arg: speed limit
            @type arg: int
            """,
            ),
-    Method(RTorrent, 'set_preload_required_rate', 'set_preload_required_rate'),
-    Method(RTorrent, 'set_hash_read_ahead', 'set_hash_read_ahead'),
-    Method(RTorrent, 'set_max_peers_seed', 'set_max_peers_seed'),
-    Method(RTorrent, 'set_max_uploads', 'set_max_uploads'),
-    Method(RTorrent, 'set_session_on_completion', 'set_session_on_completion'),
-    Method(RTorrent, 'set_max_open_http', 'set_max_open_http'),
-    Method(RTorrent, 'set_directory', 'set_directory'),
-    Method(RTorrent, 'set_http_cacert', 'set_http_cacert'),
-    Method(RTorrent, 'set_dht_throttle', 'set_dht_throttle'),
-    Method(RTorrent, 'set_hash_max_tries', 'set_hash_max_tries'),
-    Method(RTorrent, 'set_proxy_address', 'set_proxy_address'),
-    Method(RTorrent, 'set_split_file_size', 'set_split_file_size'),
-    Method(RTorrent, 'set_receive_buffer_size', 'set_receive_buffer_size'),
-    Method(RTorrent, 'set_use_udp_trackers', 'set_use_udp_trackers'),
-    Method(RTorrent, 'set_connection_seed', 'set_connection_seed'),
-    Method(RTorrent, 'set_xmlrpc_size_limit', 'set_xmlrpc_size_limit'),
-    Method(RTorrent, 'set_xmlrpc_dialect', 'set_xmlrpc_dialect'),
-    Method(RTorrent, 'set_safe_sync', 'set_safe_sync'),
-    Method(RTorrent, 'set_http_capath', 'set_http_capath'),
-    Method(RTorrent, 'set_send_buffer_size', 'set_send_buffer_size'),
-    Method(RTorrent, 'set_max_downloads_div', 'set_max_downloads_div'),
-    Method(RTorrent, 'set_name', 'set_name'),
-    Method(RTorrent, 'set_port_open', 'set_port_open'),
-    Method(RTorrent, 'set_timeout_sync', 'set_timeout_sync'),
-    Method(RTorrent, 'set_peer_exchange', 'set_peer_exchange'),
-    Method(RTorrent, 'set_ip', 'set_ip',
+    Method(RTorrent, 'set_preload_min_rate', 'pieces.preload.min_rate.set'),
+    Method(RTorrent, 'set_max_peers_seed', 'throttle.max_peers.seed.set'),
+    Method(RTorrent, 'set_max_uploads', 'throttle.max_uploads.set'),
+    Method(RTorrent, 'set_session_on_completion', 'session.on_completion.set'),
+    Method(RTorrent, 'set_max_open_http', 'network.http.max_open.set'),
+    Method(RTorrent, 'set_directory', 'directory.default.set'),
+    Method(RTorrent, 'set_http_cacert', 'network.http.cacert.set'),
+    Method(RTorrent, 'set_dht_throttle', 'dht.throttle.name.set'),
+    Method(RTorrent, 'set_proxy_address', 'network.proxy_address.set'),
+    Method(RTorrent, 'set_split_file_size', 'system.file.split_size.set'),
+    Method(RTorrent, 'set_receive_buffer_size', 'network.receive_buffer.size.set'),
+    Method(RTorrent, 'set_use_udp_trackers', 'trackers.use_udp.set'),
+    Method(RTorrent, 'set_connection_seed', 'protocol.connection.seed.set'),
+    Method(RTorrent, 'set_xmlrpc_size_limit', 'network.xmlrpc.size_limit.set'),
+    Method(RTorrent, 'set_xmlrpc_dialect', 'network.xmlrpc.dialect.set'),
+    Method(RTorrent, 'set_always_safe_sync', 'pieces.sync.always_safe.set'),
+    Method(RTorrent, 'set_http_capath', 'network.http.capath.set'),
+    Method(RTorrent, 'set_send_buffer_size', 'network.send_buffer.size.set'),
+    Method(RTorrent, 'set_max_downloads_div', 'throttle.max_downloads.div.set'),
+    Method(RTorrent, 'set_session_name', 'session.name.set'),
+    Method(RTorrent, 'set_port_open', 'network.port_open.set'),
+    Method(RTorrent, 'set_timeout_sync', 'pieces.sync.timeout.set'),
+    Method(RTorrent, 'set_peer_exchange', 'protocol.pex.set'),
+    Method(RTorrent, 'set_local_address', 'network.local_address.set',
            docstring="""Set IP
 
            @param arg: ip address
            @type arg: str
            """,
            ),
-    Method(RTorrent, 'set_timeout_safe_sync', 'set_timeout_safe_sync'),
-    Method(RTorrent, 'set_preload_type', 'set_preload_type'),
-    Method(RTorrent, 'set_check_hash', 'set_check_hash',
+    Method(RTorrent, 'set_timeout_safe_sync', 'pieces.sync.timeout_safe.set'),
+    Method(RTorrent, 'set_preload_type', 'pieces.preload.type.set'),
+    Method(RTorrent, 'set_hash_on_completion', 'pieces.hash.on_completion.set',
            docstring="""Enable/Disable hash checking on finished torrents
 
             @param arg: True to enable, False to disable

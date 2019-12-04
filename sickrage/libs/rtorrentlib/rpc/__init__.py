@@ -35,12 +35,11 @@ def get_varname(rpc_call):
     name will be 'down_rate'
     """
     # extract variable name from xmlrpc func name
-    r = re.search(
-        "([ptdf]\.|system\.|get\_|is\_|set\_)+([^=]*)", rpc_call, re.I)
+    r = re.match(r'(?:[ptdf]\.)?(.+?)(?:\.set)?$', rpc_call)
     if r:
-        return(r.groups()[-1])
-    else:
-        return(None)
+        return r.group(1)
+
+    return None
 
 
 def _handle_unavailable_rpc_method(method, rt_obj):
@@ -91,7 +90,8 @@ class Method:
 
     def _get_method_type(self):
         """Determine whether method is a modifier or a retriever"""
-        if self.method_name[:4] == "set_": return('m')  # modifier
+        if self.method_name[:4] == "set_":
+            return('m')  # modifier
         else:
             return('r')  # retriever
 
