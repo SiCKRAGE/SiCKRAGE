@@ -17,7 +17,7 @@ stages:
 #    - npm install -qs
 #    - npm run build
 #  only:
-#    - merge_requests@sickrage/sickrage
+#    - merge_requests@SiCKRAGE/sickrage
 #  cache:
 #    key: ${CI_COMMIT_REF_SLUG}
 #    paths:
@@ -43,7 +43,7 @@ stages:
 #    - test ! -z "${CI_COMMIT_TAG}" && docker push "${CI_REGISTRY_IMAGE}:latest"
 #    - docker push "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}"
 #  only:
-#    - merge_requests@sickrage/sickrage
+#    - merge_requests@SiCKRAGE/sickrage
 #  cache:
 #    key: ${CI_COMMIT_REF_SLUG}
 #
@@ -76,7 +76,7 @@ stages:
 #    url: https://review.sickrage.ca/$CI_COMMIT_REF_SLUG
 #    on_stop: review:stop
 #  only:
-#    - merge_requests@sickrage/sickrage
+#    - merge_requests@SiCKRAGE/sickrage
 #
 #review:stop:
 #  stage: review_deploy
@@ -96,7 +96,7 @@ stages:
 #    name: review/$CI_COMMIT_REF_NAME
 #    action: stop
 #  only:
-#    - merge_requests@sickrage/sickrage
+#    - merge_requests@SiCKRAGE/sickrage
 
 release:build:master:
   stage: release_build
@@ -132,10 +132,7 @@ release:build:master:
     - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:develop --follow-tags
   when: manual
   only:
-    refs:
-      - develop
-    variables:
-      - $CI_PROJECT_PATH == "SiCKRAGE/sickrage"
+    - develop@SiCKRAGE/sickrage
   except:
     refs:
       - tags
@@ -167,10 +164,7 @@ release:build:develop:
     - git tag -a $(cat sickrage/version.txt) -m "Pre-release v$(cat sickrage/version.txt)"
     - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME --follow-tags
   only:
-    refs:
-      - develop
-    variables:
-      - $CI_PROJECT_PATH == "SiCKRAGE/sickrage"
+    - develop@SiCKRAGE/sickrage
   except:
     refs:
       - tags
@@ -194,10 +188,7 @@ release:sentry:master:
     - sentry-cli releases finalize $(cat sickrage/version.txt)
     - sentry-cli releases deploys $(cat sickrage/version.txt) new -e master
   only:
-    refs:
-      - /^[0-9.]+$/
-    variables:
-      - $CI_PROJECT_PATH == "SiCKRAGE/sickrage"
+    - /^[0-9.]+$/@SiCKRAGE/sickrage
   except:
     - branches
     - triggers
@@ -217,10 +208,7 @@ release:sentry:develop:
     - sentry-cli releases finalize $(cat sickrage/version.txt)
     - sentry-cli releases deploys $(cat sickrage/version.txt) new -e develop
   only:
-    refs:
-      - /^[0-9.]+dev[0-9]+$/
-    variables:
-      - $CI_PROJECT_PATH == "SiCKRAGE/sickrage"
+    - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage
   except:
     - branches
     - triggers
@@ -234,11 +222,8 @@ deploy:pypi:
     - python setup.py sdist bdist_wheel
     - twine upload dist/*
   only:
-    refs:
-      - /^[0-9.]+$/
-      - /^[0-9.]+dev[0-9]+$/
-    variables:
-      - $CI_PROJECT_PATH == "SiCKRAGE/sickrage"
+    - /^[0-9.]+$/@SiCKRAGE/sickrage
+    - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage
   except:
     - branches
     - triggers
@@ -252,10 +237,7 @@ deploy:docker:master:
     project: sickrage/sickrage-docker
     branch: master
   only:
-    refs:
-      - /^[0-9.]+$/
-    variables:
-      - $CI_PROJECT_PATH == "SiCKRAGE/sickrage"
+    - /^[0-9.]+$/@SiCKRAGE/sickrage
   except:
     - branches
     - triggers
@@ -269,10 +251,7 @@ deploy:docker:develop:
     project: sickrage/sickrage-docker
     branch: master
   only:
-    refs:
-      - /^[0-9.]+dev[0-9]+$/
-    variables:
-      - $CI_PROJECT_PATH == "SiCKRAGE/sickrage"
+    - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage
   except:
     - branches
     - triggers
@@ -286,10 +265,7 @@ deploy:synology:master:
     project: sickrage/sickrage-synology
     branch: master
   only:
-    refs:
-      - /^[0-9.]+$/
-    variables:
-      - $CI_PROJECT_PATH == "SiCKRAGE/sickrage"
+    - /^[0-9.]+$/@SiCKRAGE/sickrage
   except:
     - branches
     - triggers
@@ -305,10 +281,7 @@ deploy:readynas:master:
     project: sickrage/sickrage-readynas
     branch: master
   only:
-    refs:
-      - /^[0-9.]+$/
-    variables:
-      - $CI_PROJECT_PATH == "SiCKRAGE/sickrage"
+    - /^[0-9.]+$/@SiCKRAGE/sickrage
   except:
     - branches
     - triggers
@@ -324,10 +297,7 @@ deploy:qnap:master:
     project: sickrage/sickrage-qnap
     branch: master
   only:
-    refs:
-      - /^[0-9.]+$/
-    variables:
-      - $CI_PROJECT_PATH == "SiCKRAGE/sickrage"
+    - /^[0-9.]+$/@SiCKRAGE/sickrage
   except:
     - branches
     - triggers
