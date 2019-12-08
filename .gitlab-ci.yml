@@ -230,8 +230,6 @@ deploy:pypi:
 
 deploy:docker:master:
   stage: release_deploy
-  dependencies:
-    - release
   variables:
     UPSTREAM_BRANCH: master
     UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
