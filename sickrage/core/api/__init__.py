@@ -1,21 +1,21 @@
 import json
 import os
 import time
-import requests.exceptions
 from urllib.parse import urljoin
 
-from oauthlib.oauth2 import MissingTokenError, InvalidClientIdError, TokenExpiredError, InvalidGrantError
+import requests.exceptions
+from oauthlib.oauth2 import MissingTokenError, InvalidClientIdError
 from raven.utils.json import JSONDecodeError
 from requests_oauthlib import OAuth2Session
 
 import sickrage
-from sickrage.core.api.exceptions import ApiUnauthorized, ApiError
+from sickrage.core.api.exceptions import ApiUnauthorized, ApiError, APIResourceDoesNotExist
 
 
 class API(object):
     def __init__(self):
         self.name = 'SR-API'
-        self.api_url = 'https://www.sickrage.ca/api/v2/'
+        self.api_url = 'https://www.sickrage.ca/api/v3/'
         self.client_id = sickrage.app.oidc_client_id
         self.client_secret = sickrage.app.oidc_client_secret
         self.token_url = sickrage.app.oidc_client.well_known['token_endpoint']
@@ -83,13 +83,17 @@ class API(object):
         for i in range(3):
             try:
                 resp = self.session.request(method, urljoin(self.api_url, url), timeout=timeout, hooks={'response': self.throttle_hook}, **kwargs)
-                if resp.status_code >= 400:
-                    if 'error' in resp.json():
-                        raise ApiError(resp.json()['error'])
+                if resp.status_code >= 400 and 'error' in resp.json():
+                    if resp.json()['error']['status'] == 400 and 'no result' in resp.json()['error']['message'].lower():
+                        raise APIResourceDoesNotExist(**resp.json()['error'])
+                    raise ApiError(**resp.json()['error'])
                 elif resp.status_code == 204:
                     return
 
-                return resp.json()
+                try:
+                    return resp.json()
+                except ValueError:
+                    return resp.content
             except (InvalidClientIdError, MissingTokenError) as e:
                 latest_exception = "SiCKRAGE token issue, please try logging out and back in again to the web-ui"
             except requests.exceptions.ReadTimeout:

@@ -39,6 +39,7 @@ from feedparser import FeedParserDict
 from requests.utils import add_dict_to_cookiejar, dict_from_cookiejar
 
 import sickrage
+from sickrage.core.api import ApiError, APIResourceDoesNotExist
 from sickrage.core.api.cache import TorrentCacheAPI
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.classes import NZBSearchResult, SearchResult, TorrentSearchResult
@@ -599,17 +600,18 @@ class TorrentProvider(GenericProvider):
             if info_hash:
                 try:
                     # get content from external API
-                    result = verify_torrent(b64decode(TorrentCacheAPI().get(info_hash)['data']['content']).strip())
-                    if not result:
-                        # add to external API
-                        TorrentCacheAPI().add(url)
+                    result = verify_torrent(TorrentCacheAPI().get(info_hash))
+                except APIResourceDoesNotExist as e:
+                    # add torrent to external API
+                    TorrentCacheAPI().add(url)
 
-                        for torrent_url in [x.format(info_hash=info_hash) for x in self.bt_cache_urls]:
-                            if result:
-                                continue
+                    # get content from other torrent hash search engines
+                    for torrent_url in [x.format(info_hash=info_hash) for x in self.bt_cache_urls]:
+                        if result:
+                            continue
 
-                            result = verify_torrent(super(TorrentProvider, self).get_content(torrent_url))
-                except Exception:
+                        result = verify_torrent(super(TorrentProvider, self).get_content(torrent_url))
+                except Exception as e:
                     result = None
 
         if not result:
