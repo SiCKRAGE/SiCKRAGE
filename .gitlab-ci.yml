@@ -132,7 +132,10 @@ release:build:master:
     - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:develop --follow-tags
   when: manual
   only:
-    - develop@sickrage/sickrage
+    refs:
+      - develop
+    variables:
+      - $CI_PROJECT_PATH == "sickrage/sickrage"
   except:
     refs:
       - tags
@@ -164,7 +167,10 @@ release:build:develop:
     - git tag -a $(cat sickrage/version.txt) -m "Pre-release v$(cat sickrage/version.txt)"
     - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME --follow-tags
   only:
-    - develop@sickrage/sickrage
+    refs:
+      - develop
+    variables:
+      - $CI_PROJECT_PATH == "sickrage/sickrage"
   except:
     refs:
       - tags
@@ -188,9 +194,12 @@ release:sentry:master:
     - sentry-cli releases finalize $(cat sickrage/version.txt)
     - sentry-cli releases deploys $(cat sickrage/version.txt) new -e master
   only:
-    - master@sickrage/sickrage
+    refs:
+      - /^[0-9.]+$/
+    variables:
+      - $CI_PROJECT_PATH == "sickrage/sickrage"
   except:
-    - tags
+    - branches
     - triggers
 
 release:sentry:develop:
@@ -208,9 +217,12 @@ release:sentry:develop:
     - sentry-cli releases finalize $(cat sickrage/version.txt)
     - sentry-cli releases deploys $(cat sickrage/version.txt) new -e develop
   only:
-    - develop@sickrage/sickrage
+    refs:
+      - /^[0-9.]+dev[0-9]+$/
+    variables:
+      - $CI_PROJECT_PATH == "sickrage/sickrage"
   except:
-    - tags
+    - branches
     - triggers
 
 deploy:pypi:
@@ -222,10 +234,13 @@ deploy:pypi:
     - python setup.py sdist bdist_wheel
     - twine upload dist/*
   only:
-    - master@sickrage/sickrage
-    - develop@sickrage/sickrage
+    refs:
+      - /^[0-9.]+$/
+      - /^[0-9.]+dev[0-9]+$/
+    variables:
+      - $CI_PROJECT_PATH == "sickrage/sickrage"
   except:
-    - tags
+    - branches
     - triggers
 
 deploy:docker:master:
@@ -237,9 +252,12 @@ deploy:docker:master:
     project: sickrage/sickrage-docker
     branch: master
   only:
-    - master@sickrage/sickrage
+    refs:
+      - /^[0-9.]+$/
+    variables:
+      - $CI_PROJECT_PATH == "sickrage/sickrage"
   except:
-    - tags
+    - branches
     - triggers
 
 deploy:docker:develop:
@@ -251,9 +269,12 @@ deploy:docker:develop:
     project: sickrage/sickrage-docker
     branch: master
   only:
-    - develop@sickrage/sickrage
+    refs:
+      - /^[0-9.]+dev[0-9]+$/
+    variables:
+      - $CI_PROJECT_PATH == "sickrage/sickrage"
   except:
-    - tags
+    - branches
     - triggers
 
 deploy:synology:master:
@@ -265,9 +286,12 @@ deploy:synology:master:
     project: sickrage/sickrage-synology
     branch: master
   only:
-    - master@sickrage/sickrage
+    refs:
+      - /^[0-9.]+$/
+    variables:
+      - $CI_PROJECT_PATH == "sickrage/sickrage"
   except:
-    - tags
+    - branches
     - triggers
 
 deploy:readynas:master:
@@ -281,9 +305,12 @@ deploy:readynas:master:
     project: sickrage/sickrage-readynas
     branch: master
   only:
-    - master@sickrage/sickrage
+    refs:
+      - /^[0-9.]+$/
+    variables:
+      - $CI_PROJECT_PATH == "sickrage/sickrage"
   except:
-    - tags
+    - branches
     - triggers
 
 deploy:qnap:master:
@@ -297,7 +324,10 @@ deploy:qnap:master:
     project: sickrage/sickrage-qnap
     branch: master
   only:
-    - master@sickrage/sickrage
+    refs:
+      - /^[0-9.]+$/
+    variables:
+      - $CI_PROJECT_PATH == "sickrage/sickrage"
   except:
-    - tags
+    - branches
     - triggers
