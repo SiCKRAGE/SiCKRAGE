@@ -135,7 +135,7 @@ release:build:master:
     refs:
       - develop
     variables:
-      - $CI_PROJECT_PATH == "sickrage/sickrage"
+      - $CI_PROJECT_PATH == "SiCKRAGE/sickrage"
   except:
     refs:
       - tags
@@ -170,7 +170,7 @@ release:build:develop:
     refs:
       - develop
     variables:
-      - $CI_PROJECT_PATH == "sickrage/sickrage"
+      - $CI_PROJECT_PATH == "SiCKRAGE/sickrage"
   except:
     refs:
       - tags
@@ -197,7 +197,7 @@ release:sentry:master:
     refs:
       - /^[0-9.]+$/
     variables:
-      - $CI_PROJECT_PATH == "sickrage/sickrage"
+      - $CI_PROJECT_PATH == "SiCKRAGE/sickrage"
   except:
     - branches
     - triggers
@@ -220,7 +220,7 @@ release:sentry:develop:
     refs:
       - /^[0-9.]+dev[0-9]+$/
     variables:
-      - $CI_PROJECT_PATH == "sickrage/sickrage"
+      - $CI_PROJECT_PATH == "SiCKRAGE/sickrage"
   except:
     - branches
     - triggers
@@ -238,7 +238,7 @@ deploy:pypi:
       - /^[0-9.]+$/
       - /^[0-9.]+dev[0-9]+$/
     variables:
-      - $CI_PROJECT_PATH == "sickrage/sickrage"
+      - $CI_PROJECT_PATH == "SiCKRAGE/sickrage"
   except:
     - branches
     - triggers
@@ -255,7 +255,7 @@ deploy:docker:master:
     refs:
       - /^[0-9.]+$/
     variables:
-      - $CI_PROJECT_PATH == "sickrage/sickrage"
+      - $CI_PROJECT_PATH == "SiCKRAGE/sickrage"
   except:
     - branches
     - triggers
@@ -272,7 +272,7 @@ deploy:docker:develop:
     refs:
       - /^[0-9.]+dev[0-9]+$/
     variables:
-      - $CI_PROJECT_PATH == "sickrage/sickrage"
+      - $CI_PROJECT_PATH == "SiCKRAGE/sickrage"
   except:
     - branches
     - triggers
@@ -289,7 +289,7 @@ deploy:synology:master:
     refs:
       - /^[0-9.]+$/
     variables:
-      - $CI_PROJECT_PATH == "sickrage/sickrage"
+      - $CI_PROJECT_PATH == "SiCKRAGE/sickrage"
   except:
     - branches
     - triggers
@@ -308,7 +308,7 @@ deploy:readynas:master:
     refs:
       - /^[0-9.]+$/
     variables:
-      - $CI_PROJECT_PATH == "sickrage/sickrage"
+      - $CI_PROJECT_PATH == "SiCKRAGE/sickrage"
   except:
     - branches
     - triggers
@@ -327,7 +327,7 @@ deploy:qnap:master:
     refs:
       - /^[0-9.]+$/
     variables:
-      - $CI_PROJECT_PATH == "sickrage/sickrage"
+      - $CI_PROJECT_PATH == "SiCKRAGE/sickrage"
   except:
     - branches
     - triggers
