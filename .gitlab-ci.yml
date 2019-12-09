@@ -132,10 +132,10 @@ release:build:master:
     - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:develop --follow-tags
   when: manual
   only:
-    - develop@SiCKRAGE/sickrage
+    - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage
   except:
     refs:
-      - tags
+      - branches
       - triggers
     variables:
       - $CI_COMMIT_MESSAGE =~ /\[TASK\] Releasing/

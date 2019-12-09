@@ -484,7 +484,7 @@ class GitUpdateManager(UpdateManager):
 
     def need_update(self):
         try:
-            return (False, True)[self.version != self.get_newest_version and self._num_commits_behind]
+            return (False, True)[self.version != self.get_newest_version and self._num_commits_behind > 0]
         except Exception as e:
             sickrage.app.log.warning("Unable to contact server, can't check for update: " + repr(e))
             return False
