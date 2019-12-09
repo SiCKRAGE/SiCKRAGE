@@ -767,7 +767,7 @@ class CMD_Episode(ApiCall):
             episode.quality = get_quality_string(quality)
             episode.file_size_human = pretty_file_size(episode.file_size)
 
-            return await _responds(RESULT_SUCCESS, episode)
+            return await _responds(RESULT_SUCCESS, episode.as_dict())
         except orm.exc.NoResultFound:
             raise ApiError("Episode not found")
 

@@ -87,7 +87,9 @@
                                             <div class="col-md-12">
                                                 <h4>${_('Playground')}</h4>
                                                 <span>
-                                                    ${_('URL:')} <kbd id="command-${command_id}-base-url">${request.protocol}://${request.host}${srWebRoot}/api/${apikey}/?cmd=${command}</kbd>
+                                                    ${_('URL:')} <kbd
+                                                        id="command-${command_id}-base-url">${request.protocol}
+                                                    ://${request.host}${srWebRoot}/api/${apikey}/?cmd=${command}</kbd>
                                                 </span>
                                             </div>
                                         </div>
@@ -136,7 +138,8 @@
                                                 </span>
                                             </div>
 
-                                            <pre><code class="text-white" id="command-${command_id}-response"></code></pre>
+                                            <pre><code class="text-white"
+                                                       id="command-${command_id}-response"></code></pre>
                                         </div>
                                     </div>
                                 </div>
@@ -200,7 +203,7 @@
                         % endfor
                     % endif
                 </select>
-            % elif parameter == 'indexer_id':
+            % elif parameter == 'indexerid':
                 <select class="form-control" name="${parameter}" data-action="update-seasons" data-command="${command}">
                     <option>${parameter}</option>
 
@@ -208,7 +211,6 @@
                         <option value="${show.indexer_id}">${show.name}</option>
                     % endfor
                 </select>
-
             % if 'season' in parameters:
                 <select class="form-control d-none" name="season" data-action="update-episodes"
                         data-command="${command}">
