@@ -25,14 +25,12 @@ import os
 from abc import ABC
 from functools import cmp_to_key
 
-from tornado.escape import json_encode
 from tornado.httputil import url_concat
 from tornado.web import authenticated
 
 import sickrage
 from sickrage.core import AccountAPI
 from sickrage.core.api import API
-from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import remove_article
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
@@ -159,7 +157,7 @@ class ToggleDisplayShowSpecialsHandler(BaseHandler, ABC):
         show = self.get_argument('show')
 
         sickrage.app.config.display_show_specials = not sickrage.app.config.display_show_specials
-        return self.redirect(url_concat(self.get_url("/home/displayShow"), {'show': show}))
+        return self.redirect(url_concat("/home/displayShow", {'show': show}))
 
 
 class SetScheduleLayoutHandler(BaseHandler, ABC):

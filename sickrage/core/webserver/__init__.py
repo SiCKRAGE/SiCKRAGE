@@ -42,7 +42,7 @@ from sickrage.core.webserver.handlers.config.general import GenerateApiKeyHandle
     SaveAddShowDefaultsHandler, SaveGeneralHandler, ConfigGeneralHandler
 from sickrage.core.webserver.handlers.config.notifications import ConfigNotificationsHandler, SaveNotificationsHandler
 from sickrage.core.webserver.handlers.config.postprocessing import ConfigPostProcessingHandler, \
-    SavePostProcessingHandler, TestNamingHandler, IsNamingValidHandler, IsRarSupportedHandler
+    SavePostProcessingHandler, TestNamingHandler, IsRarSupportedHandler, IsNamingPatternValidHandler
 from sickrage.core.webserver.handlers.config.providers import ConfigProvidersHandler, CanAddNewznabProviderHandler, \
     CanAddTorrentRssProviderHandler, GetNewznabCategoriesHandler, SaveProvidersHandler
 from sickrage.core.webserver.handlers.config.quality_settings import ConfigQualitySettingsHandler, SaveQualitiesHandler
@@ -58,9 +58,9 @@ from sickrage.core.webserver.handlers.home import HomeHandler, IsAliveHandler, T
     SettingsNMJv2Handler, GetTraktTokenHandler, TestTraktHandler, LoadShowNotifyListsHandler, SaveShowNotifyListHandler, \
     TestEmailHandler, TestNMAHandler, TestPushalotHandler, TestPushbulletHandler, GetPushbulletDevicesHandler, \
     StatusHandler, ShutdownHandler, RestartHandler, UpdateCheckHandler, UpdateHandler, VerifyPathHandler, \
-    InstallRequirementsHandler, BranchCheckoutHandler, DisplayShowHandler, EditShowHandler, TogglePauseHandler, \
+    InstallRequirementsHandler, BranchCheckoutHandler, DisplayShowHandler, TogglePauseHandler, \
     DeleteShowHandler, RefreshShowHandler, UpdateShowHandler, SubtitleShowHandler, UpdateKODIHandler, UpdatePLEXHandler, \
-    UpdateEMBYHandler, SyncTraktHandler, DeleteEpisodeHandler, SetStatusHandler, TestRenameHandler, DoRenameHandler, \
+    UpdateEMBYHandler, SyncTraktHandler, DeleteEpisodeHandler, TestRenameHandler, DoRenameHandler, \
     SearchEpisodeHandler, GetManualSearchStatusHandler, SearchEpisodeSubtitlesHandler, \
     SetSceneNumberingHandler
 from sickrage.core.webserver.handlers.home.add_shows import HomeAddShowsHandler, SearchIndexersForShowNameHandler, \
@@ -74,7 +74,7 @@ from sickrage.core.webserver.handlers.logs import LogsHandler, LogsClearAllHanld
     LogsClearErrorsHanlder, LogsClearWarningsHanlder
 from sickrage.core.webserver.handlers.manage import ManageHandler, ShowEpisodeStatusesHandler, EpisodeStatusesHandler, \
     ChangeEpisodeStatusesHandler, ShowSubtitleMissedHandler, SubtitleMissedHandler, DownloadSubtitleMissedHandler, \
-    BacklogShowHandler, BacklogOverviewHandler, MassEditHandler, MassUpdateHandler, FailedDownloadsHandler
+    BacklogShowHandler, BacklogOverviewHandler, MassEditHandler, MassUpdateHandler, FailedDownloadsHandler, EditShowHandler, SetEpisodeStatusHandler
 from sickrage.core.webserver.handlers.manage.queues import ManageQueuesHandler, ForceBacklogSearchHandler, \
     ForceFindPropersHandler, PauseDailySearcherHandler, PauseBacklogSearcherHandler, PausePostProcessorHandler, \
     ForceDailySearchHandler
@@ -157,7 +157,6 @@ class WebServer(object):
             gzip=sickrage.app.config.web_use_gzip,
             cookie_secret=sickrage.app.config.web_cookie_secret,
             login_url='%s/login/' % sickrage.app.config.web_root,
-            httpclient_secret=generate_secret()
         )
 
         # Websocket handler
@@ -286,7 +285,6 @@ class WebServer(object):
             (r'%s/home/installRequirements(/?)' % sickrage.app.config.web_root, InstallRequirementsHandler),
             (r'%s/home/branchCheckout(/?)' % sickrage.app.config.web_root, BranchCheckoutHandler),
             (r'%s/home/displayShow(/?)' % sickrage.app.config.web_root, DisplayShowHandler),
-            (r'%s/home/editShow(/?)' % sickrage.app.config.web_root, EditShowHandler),
             (r'%s/home/togglePause(/?)' % sickrage.app.config.web_root, TogglePauseHandler),
             (r'%s/home/deleteShow' % sickrage.app.config.web_root, DeleteShowHandler),
             (r'%s/home/refreshShow(/?)' % sickrage.app.config.web_root, RefreshShowHandler),
@@ -297,7 +295,6 @@ class WebServer(object):
             (r'%s/home/updateEMBY(/?)' % sickrage.app.config.web_root, UpdateEMBYHandler),
             (r'%s/home/syncTrakt(/?)' % sickrage.app.config.web_root, SyncTraktHandler),
             (r'%s/home/deleteEpisode(/?)' % sickrage.app.config.web_root, DeleteEpisodeHandler),
-            (r'%s/home/setStatus(/?)' % sickrage.app.config.web_root, SetStatusHandler),
             (r'%s/home/testRename(/?)' % sickrage.app.config.web_root, TestRenameHandler),
             (r'%s/home/doRename(/?)' % sickrage.app.config.web_root, DoRenameHandler),
             (r'%s/home/searchEpisode(/?)' % sickrage.app.config.web_root, SearchEpisodeHandler),
@@ -320,9 +317,11 @@ class WebServer(object):
             (r'%s/home/addShows/addNewShow(/?)' % sickrage.app.config.web_root, AddNewShowHandler),
             (r'%s/home/addShows/addExistingShows(/?)' % sickrage.app.config.web_root, AddExistingShowsHandler),
             (r'%s/manage(/?)' % sickrage.app.config.web_root, ManageHandler),
+            (r'%s/manage/editShow(/?)' % sickrage.app.config.web_root, EditShowHandler),
             (r'%s/manage/showEpisodeStatuses(/?)' % sickrage.app.config.web_root, ShowEpisodeStatusesHandler),
             (r'%s/manage/episodeStatuses(/?)' % sickrage.app.config.web_root, EpisodeStatusesHandler),
             (r'%s/manage/changeEpisodeStatuses(/?)' % sickrage.app.config.web_root, ChangeEpisodeStatusesHandler),
+            (r'%s/manage/setEpisodeStatus(/?)' % sickrage.app.config.web_root, SetEpisodeStatusHandler),
             (r'%s/manage/showSubtitleMissed(/?)' % sickrage.app.config.web_root, ShowSubtitleMissedHandler),
             (r'%s/manage/subtitleMissed(/?)' % sickrage.app.config.web_root, SubtitleMissedHandler),
             (r'%s/manage/downloadSubtitleMissed(/?)' % sickrage.app.config.web_root, DownloadSubtitleMissedHandler),
@@ -356,7 +355,7 @@ class WebServer(object):
             (r'%s/config/postProcessing(/?)' % sickrage.app.config.web_root, ConfigPostProcessingHandler),
             (r'%s/config/postProcessing/savePostProcessing(/?)' % sickrage.app.config.web_root, SavePostProcessingHandler),
             (r'%s/config/postProcessing/testNaming(/?)' % sickrage.app.config.web_root, TestNamingHandler),
-            (r'%s/config/postProcessing/isNamingValid(/?)' % sickrage.app.config.web_root, IsNamingValidHandler),
+            (r'%s/config/postProcessing/isNamingValid(/?)' % sickrage.app.config.web_root, IsNamingPatternValidHandler),
             (r'%s/config/postProcessing/isRarSupported(/?)' % sickrage.app.config.web_root, IsRarSupportedHandler),
             (r'%s/config/providers(/?)' % sickrage.app.config.web_root, ConfigProvidersHandler),
             (r'%s/config/providers/canAddNewznabProvider(/?)' % sickrage.app.config.web_root, CanAddNewznabProviderHandler),

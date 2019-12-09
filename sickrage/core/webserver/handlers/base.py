@@ -31,12 +31,10 @@ from mako.exceptions import RichTraceback
 from mako.lookup import TemplateLookup
 from requests import HTTPError
 from tornado import locale
-from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 from tornado.web import RequestHandler
 
 import sickrage
 from sickrage.core import helpers, API
-from sickrage.core.databases.main import MainDB
 
 
 class BaseHandler(RequestHandler, ABC):
@@ -104,9 +102,6 @@ class BaseHandler(RequestHandler, ABC):
         try:
             if not API().token:
                 return
-
-            if self.application.settings['httpclient_secret'] == self.get_cookie('sr_httpclient_token'):
-                return {'email': ''}
 
             token = sickrage.app.oidc_client.refresh_token(self.get_secure_cookie('sr_refresh_token'))
             self.set_secure_cookie('sr_access_token', token['access_token'])

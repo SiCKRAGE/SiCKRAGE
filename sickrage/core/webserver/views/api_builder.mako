@@ -1,13 +1,14 @@
 <%inherit file="./layouts/main.mako"/>
 
 <%!
+    import json
     from collections import OrderedDict
     from sickrage.core.webserver.handlers.api import ApiHandler
 %>
 
 <%block name="metas">
     <meta data-var="commands" data-content="${api_commands}">
-    <meta data-var="episodes" data-content="${episodes}">
+    <meta data-var="episodes" data-content="${json.dumps(episodes)}">
 </%block>
 
 <%block name="content">

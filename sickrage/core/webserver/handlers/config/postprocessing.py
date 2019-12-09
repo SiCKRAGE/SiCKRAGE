@@ -22,15 +22,62 @@
 import os
 from abc import ABC
 
-from tornado.httputil import url_concat
 from tornado.web import authenticated
 
 import sickrage
 from sickrage.core.helpers import checkbox_to_value
-from sickrage.core.helpers.tornado_http import TornadoHTTP
 from sickrage.core.nameparser import validator
 from sickrage.core.webserver import ConfigHandler
 from sickrage.core.webserver.handlers.base import BaseHandler
+
+
+def is_naming_pattern_valid(pattern=None, multi=None, abd=None, sports=None, anime_type=None):
+    if pattern is None:
+        return 'invalid'
+
+    if multi is not None:
+        multi = int(multi)
+
+    if anime_type is not None:
+        anime_type = int(anime_type)
+
+    # air by date shows just need one check, we don't need to worry about season folders
+    if abd:
+        is_valid = validator.check_valid_abd_naming(pattern)
+        require_season_folders = False
+
+    # sport shows just need one check, we don't need to worry about season folders
+    elif sports:
+        is_valid = validator.check_valid_sports_naming(pattern)
+        require_season_folders = False
+
+    else:
+        # check validity of single and multi ep cases for the whole path
+        is_valid = validator.check_valid_naming(pattern, multi, anime_type)
+
+        # check validity of single and multi ep cases for only the file name
+        require_season_folders = validator.check_force_season_folders(pattern, multi, anime_type)
+
+    if is_valid and not require_season_folders:
+        return 'valid'
+    elif is_valid and require_season_folders:
+        return 'seasonfolders'
+    else:
+        return 'invalid'
+
+
+def is_rar_supported():
+    """
+    Test Packing Support:
+        - Simulating in memory rar extraction on test.rar file
+    """
+
+    check = sickrage.app.config.change_unrar_tool(sickrage.app.config.unrar_tool, sickrage.app.config.unrar_alt_tool)
+
+    if not check:
+        sickrage.app.log.warning('Looks like unrar is not installed, check failed')
+
+    return ('not supported', 'supported')[check]
 
 
 class ConfigPostProcessingHandler(BaseHandler, ABC):
@@ -101,10 +148,7 @@ class SavePostProcessingHandler(BaseHandler, ABC):
         sickrage.app.config.process_automatically = checkbox_to_value(process_automatically)
 
         if unpack:
-            response = await TornadoHTTP().get(
-                self.get_url("/config/postProcessing/isRarSupported")
-            )
-            if response.body != "not supported":
+            if is_rar_supported() != "not supported":
                 sickrage.app.config.unpack = checkbox_to_value(unpack)
                 sickrage.app.config.unpack_dir = unpack_dir
             else:
@@ -136,55 +180,26 @@ class SavePostProcessingHandler(BaseHandler, ABC):
         sickrage.app.config.delete_non_associated_files = checkbox_to_value(delete_non_associated_files)
         sickrage.app.config.processor_follow_symlinks = checkbox_to_value(processor_follow_symlinks)
 
-        response = await TornadoHTTP().get(
-            url_concat(
-                self.get_url("/config/postProcessing/isNamingValid"),
-                dict(pattern=naming_pattern, multi=naming_multi_ep)
-            )
-        )
-
-        if response.body != "invalid":
+        if is_naming_pattern_valid(pattern=naming_pattern, multi=naming_multi_ep) != "invalid":
             sickrage.app.config.naming_pattern = naming_pattern
             sickrage.app.config.naming_multi_ep = int(naming_multi_ep)
             sickrage.app.config.naming_force_folders = validator.check_force_season_folders()
         else:
             results.append(_("You tried saving an invalid naming config, not saving your naming settings"))
 
-        response = await TornadoHTTP().get(
-            url_concat(
-                self.get_url("/config/postProcessing/isNamingValid"),
-                dict(pattern=naming_anime_pattern, multi=naming_anime_multi_ep, anime_type=naming_anime)
-            )
-        )
-
-        if response.body != "invalid":
+        if is_naming_pattern_valid(pattern=naming_anime_pattern, multi=naming_anime_multi_ep, anime_type=naming_anime) != "invalid":
             sickrage.app.config.naming_anime_pattern = naming_anime_pattern
             sickrage.app.config.naming_anime_multi_ep = int(naming_anime_multi_ep)
             sickrage.app.config.naming_anime = int(naming_anime)
         else:
             results.append(_("You tried saving an invalid anime naming config, not saving your naming settings"))
 
-        response = await TornadoHTTP().get(
-            url_concat(
-                self.get_url("/config/postProcessing/isNamingValid"),
-                dict(pattern=naming_abd_pattern, abd=True)
-            )
-        )
-
-        if response.body != "invalid":
+        if is_naming_pattern_valid(pattern=naming_abd_pattern, abd=True) != "invalid":
             sickrage.app.config.naming_abd_pattern = naming_abd_pattern
         else:
-            results.append(_("You tried saving an invalid air-by-date naming config, not saving your air-by-date "
-                             "settings"))
+            results.append(_("You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"))
 
-        response = await TornadoHTTP().get(
-            url_concat(
-                self.get_url("/config/postProcessing/isNamingValid"),
-                dict(pattern=naming_sports_pattern, multi=naming_multi_ep, sports=True)
-            )
-        )
-
-        if response.body != "invalid":
+        if is_naming_pattern_valid(pattern=naming_sports_pattern, multi=naming_multi_ep, sports=True) != "invalid":
             sickrage.app.config.naming_sports_pattern = naming_sports_pattern
         else:
             results.append(_("You tried saving an invalid sports naming config, not saving your sports settings"))
@@ -230,7 +245,7 @@ class TestNamingHandler(BaseHandler, ABC):
         return self.write(result)
 
 
-class IsNamingValidHandler(BaseHandler, ABC):
+class IsNamingPatternValidHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
         pattern = self.get_argument('pattern', None)
@@ -239,51 +254,10 @@ class IsNamingValidHandler(BaseHandler, ABC):
         sports = self.get_argument('sports', None)
         anime_type = self.get_argument('anime_type', None)
 
-        if pattern is None:
-            return self.write('invalid')
-
-        if multi is not None:
-            multi = int(multi)
-
-        if anime_type is not None:
-            anime_type = int(anime_type)
-
-        # air by date shows just need one check, we don't need to worry about season folders
-        if abd:
-            is_valid = validator.check_valid_abd_naming(pattern)
-            require_season_folders = False
-
-        # sport shows just need one check, we don't need to worry about season folders
-        elif sports:
-            is_valid = validator.check_valid_sports_naming(pattern)
-            require_season_folders = False
-
-        else:
-            # check validity of single and multi ep cases for the whole path
-            is_valid = validator.check_valid_naming(pattern, multi, anime_type)
-
-            # check validity of single and multi ep cases for only the file name
-            require_season_folders = validator.check_force_season_folders(pattern, multi, anime_type)
-
-        if is_valid and not require_season_folders:
-            return self.write('valid')
-        elif is_valid and require_season_folders:
-            return self.write('seasonfolders')
-        else:
-            return self.write('invalid')
+        return self.write(is_naming_pattern_valid(pattern=pattern, multi=multi, abd=abd, sports=sports, anime_type=anime_type))
 
 
 class IsRarSupportedHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        """
-        Test Packing Support:
-            - Simulating in memory rar extraction on test.rar file
-        """
-
-        check = sickrage.app.config.change_unrar_tool(sickrage.app.config.unrar_tool,
-                                                      sickrage.app.config.unrar_alt_tool)
-
-        if not check:
-            sickrage.app.log.warning('Looks like unrar is not installed, check failed')
-        return self.write(('not supported', 'supported')[check])
+        return self.write(is_rar_supported())

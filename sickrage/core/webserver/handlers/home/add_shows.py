@@ -34,7 +34,6 @@ from sickrage.core.common import Quality
 from sickrage.core.helpers import sanitize_file_name, make_dir, chmod_as_parent, checkbox_to_value, \
     try_int
 from sickrage.core.helpers.anidb import short_group_names
-from sickrage.core.helpers.tornado_http import TornadoHTTP
 from sickrage.core.imdb_popular import imdbPopular
 from sickrage.core.traktapi import TraktAPI
 from sickrage.core.tv.show import TVShow
@@ -355,16 +354,10 @@ class AddShowByIDHandler(BaseHandler, ABC):
 
         show_dir = os.path.join(location, sanitize_file_name(show_name))
 
-        response = await TornadoHTTP().get(
-            url_concat(
-                self.get_url("/home/addShows/newShow"),
-                {'show_to_add': '1|{show_dir}|{indexer_id}|{show_name}'.format(**{'show_dir': show_dir,
-                                                                                  'indexer_id': indexer_id,
-                                                                                  'show_name': show_name})}
-            )
-        )
-
-        return self.write(response.body)
+        return self.redirect(url_concat("/home/addShows/newShow",
+                                        {'show_to_add': '1|{show_dir}|{indexer_id}|{show_name}'.format(**{'show_dir': show_dir,
+                                                                                                          'indexer_id': indexer_id,
+                                                                                                          'show_name': show_name})}))
 
 
 class AddNewShowHandler(BaseHandler, ABC):
@@ -406,7 +399,7 @@ class AddNewShowHandler(BaseHandler, ABC):
 
         # if we're skipping then behave accordingly
         if skipShow:
-            return self.write(await self.finish_add_show(other_shows))
+            return self.finish_add_show(other_shows)
 
         if not whichSeries:
             return self.redirect("/home/")
@@ -497,9 +490,9 @@ class AddNewShowHandler(BaseHandler, ABC):
 
         sickrage.app.alerts.message(_('Adding Show'), _('Adding the specified show into ') + show_dir)
 
-        return self.write(await self.finish_add_show(other_shows))
+        return self.finish_add_show(other_shows)
 
-    async def finish_add_show(self, other_shows):
+    def finish_add_show(self, other_shows):
         # if there are no extra shows then go home
         if not other_shows:
             return self.redirect('/home/')
@@ -509,11 +502,7 @@ class AddNewShowHandler(BaseHandler, ABC):
         rest_of_show_dirs = other_shows[1:]
 
         # go to add the next show
-        response = await TornadoHTTP().get(
-            self.get_url("/home/addShows/newShow?" + urlencode({'show_to_add': next_show_dir, 'other_shows': rest_of_show_dirs}, True))
-        )
-
-        return response.body
+        return self.redirect("/home/addShows/newShow?" + urlencode({'show_to_add': next_show_dir, 'other_shows': rest_of_show_dirs}, True))
 
 
 class AddExistingShowsHandler(BaseHandler, ABC):
@@ -548,11 +537,7 @@ class AddExistingShowsHandler(BaseHandler, ABC):
 
         # if they want me to prompt for settings then I will just carry on to the newShow page
         if prompt_for_settings and shows_to_add:
-            response = await TornadoHTTP().get(
-                self.get_url("/home/addShows/newShow?" + urlencode({'show_to_add': shows_to_add[0], 'other_shows': shows_to_add[1:]}, True))
-            )
-
-            return self.write(response.body)
+            return self.redirect("/home/addShows/newShow?" + urlencode({'show_to_add': shows_to_add[0], 'other_shows': shows_to_add[1:]}, True))
 
         # if they don't want me to prompt for settings then I can just add all the nfo shows now
         num_added = 0
@@ -583,8 +568,4 @@ class AddExistingShowsHandler(BaseHandler, ABC):
             return self.redirect('/home/')
 
         # for the remaining shows we need to prompt for each one, so forward this on to the newShow page
-        response = await TornadoHTTP().get(
-            self.get_url("/home/addShows/newShow?" + urlencode({'show_to_add': dirs_only[0], 'other_shows': dirs_only[1:]}, True))
-        )
-
-        return self.write(response.body)
+        return self.redirect("/home/addShows/newShow?" + urlencode({'show_to_add': dirs_only[0], 'other_shows': dirs_only[1:]}, True))

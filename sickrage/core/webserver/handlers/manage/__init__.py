@@ -21,22 +21,300 @@
 
 import os
 from abc import ABC
-from urllib.parse import urlencode
 
 from tornado.escape import json_encode, json_decode
-from tornado.httputil import url_concat
 from tornado.web import authenticated
 
 import sickrage
-from sickrage.core.common import SNATCHED, Quality, Overview
+from sickrage.core.common import SNATCHED, Quality, Overview, statusStrings, WANTED, FAILED, UNAIRED, IGNORED, SKIPPED
 from sickrage.core.databases.main import MainDB
-from sickrage.core.exceptions import CantUpdateShowException, CantRefreshShowException
-from sickrage.core.helpers import try_int
-from sickrage.core.helpers.tornado_http import TornadoHTTP
+from sickrage.core.exceptions import CantUpdateShowException, CantRefreshShowException, EpisodeNotFoundException, AnidbAdbaConnectionException, NoNFOException
+from sickrage.core.helpers import try_int, checkbox_to_value
+from sickrage.core.helpers.anidb import get_release_groups_for_anime, short_group_names
+from sickrage.core.queues.search import BacklogQueueItem, FailedQueueItem
+from sickrage.core.scene_exceptions import get_scene_exceptions, update_scene_exceptions
+from sickrage.core.scene_numbering import xem_refresh
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
+from sickrage.indexers import IndexerApi
 from sickrage.subtitles import Subtitles
+
+
+@MainDB.with_session
+def set_episode_status(show, eps, status, direct=None, session=None):
+    if int(status) not in statusStrings:
+        err_msg = _("Invalid status")
+        if direct:
+            sickrage.app.alerts.error(_('Error'), err_msg)
+        return False, err_msg
+
+    show_obj = find_show(int(show), session=session)
+
+    if not show_obj:
+        err_msg = _("Error", "Show not in show list")
+        if direct:
+            sickrage.app.alerts.error(_('Error'), err_msg)
+        return False, err_msg
+
+    wanted = []
+    trakt_data = []
+
+    if eps:
+        for curEp in eps.split('|'):
+            if not curEp:
+                sickrage.app.log.debug("curEp was empty when trying to setStatus")
+
+            sickrage.app.log.debug("Attempting to set status on episode " + curEp + " to " + status)
+
+            ep_info = curEp.split('x')
+
+            if not all(ep_info):
+                sickrage.app.log.debug("Something went wrong when trying to setStatus, epInfo[0]: %s, epInfo[1]: %s" % (ep_info[0], ep_info[1]))
+                continue
+
+            try:
+                episode_object = show_obj.get_episode(int(ep_info[0]), int(ep_info[1]))
+            except EpisodeNotFoundException as e:
+                return False, _("Episode couldn't be retrieved")
+
+            if int(status) in [WANTED, FAILED]:
+                # figure out what episodes are wanted so we can backlog them
+                wanted += [(episode_object.season, episode_object.episode)]
+
+            # don't let them mess up UNAIRED episodes
+            if episode_object.status == UNAIRED:
+                sickrage.app.log.warning("Refusing to change status of " + curEp + " because it is UNAIRED")
+                continue
+
+            if int(status) in Quality.DOWNLOADED and episode_object.status not in Quality.SNATCHED + \
+                    Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.DOWNLOADED + [IGNORED] and not os.path.isfile(episode_object.location):
+                sickrage.app.log.warning("Refusing to change status of " + curEp + " to DOWNLOADED because it's not SNATCHED/DOWNLOADED")
+                continue
+
+            if int(status) == FAILED and episode_object.status not in Quality.SNATCHED + Quality.SNATCHED_PROPER + \
+                    Quality.SNATCHED_BEST + Quality.DOWNLOADED + Quality.ARCHIVED:
+                sickrage.app.log.warning("Refusing to change status of " + curEp + " to FAILED because it's not SNATCHED/DOWNLOADED")
+                continue
+
+            if episode_object.status in Quality.DOWNLOADED + Quality.ARCHIVED and int(status) == WANTED:
+                sickrage.app.log.info("Removing release_name for episode as you want to set a downloaded "
+                                      "episode back to wanted, so obviously you want it replaced")
+                episode_object.release_name = ""
+
+            episode_object.status = int(status)
+
+            trakt_data += [(episode_object.season, episode_object.episode)]
+
+        data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate(trakt_data)
+        if data and sickrage.app.config.use_trakt and sickrage.app.config.trakt_sync_watchlist:
+            if int(status) in [WANTED, FAILED]:
+                sickrage.app.log.debug(
+                    "Add episodes, showid: indexer_id " + str(show_obj.indexer_id) + ", Title " + str(show_obj.name) + " to Watchlist")
+                sickrage.app.notifier_providers['trakt'].update_watchlist(show_obj, data_episode=data, update="add")
+            elif int(status) in [IGNORED, SKIPPED] + Quality.DOWNLOADED + Quality.ARCHIVED:
+                sickrage.app.log.debug(
+                    "Remove episodes, showid: indexer_id " + str(show_obj.indexer_id) + ", Title " + str(show_obj.name) + " from Watchlist")
+                sickrage.app.notifier_providers['trakt'].update_watchlist(show_obj, data_episode=data, update="remove")
+
+    if int(status) == WANTED and not show_obj.paused:
+        msg = _("Backlog was automatically started for the following seasons of ") + "<b>" + show_obj.name + "</b>:<br>"
+        msg += '<ul>'
+
+        for season, episode in wanted:
+            if (show_obj.indexer_id, season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
+                sickrage.app.search_queue.SNATCH_HISTORY.remove((show_obj.indexer_id, season, episode))
+
+            sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(show_obj.indexer_id, season, episode))
+            msg += "<li>" + _("Season ") + str(season) + "</li>"
+            sickrage.app.log.info("Sending backlog for " + show_obj.name + " season " + str(season) + " because some eps were set to wanted")
+
+        msg += "</ul>"
+
+        if wanted:
+            sickrage.app.alerts.message(_("Backlog started"), msg)
+    elif int(status) == WANTED and show_obj.paused:
+        sickrage.app.log.info("Some episodes were set to wanted, but {} is paused. Not adding to Backlog until "
+                              "show is unpaused".format(show_obj.name))
+
+    if int(status) == FAILED:
+        msg = _(
+            "Retrying Search was automatically started for the following season of ") + "<b>" + show_obj.name + "</b>:<br>"
+        msg += '<ul>'
+
+        for season, episode in wanted:
+            if (show_obj.indexer_id, season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
+                sickrage.app.search_queue.SNATCH_HISTORY.remove((show_obj.indexer_id, season, episode))
+
+            sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, FailedQueueItem(show_obj.indexer_id, season, episode))
+
+            msg += "<li>" + _("Season ") + str(season) + "</li>"
+            sickrage.app.log.info("Retrying Search for {} season {} because some eps were set to failed".format(show_obj.name, season))
+
+        msg += "</ul>"
+
+        if wanted:
+            sickrage.app.alerts.message(_("Retry Search started"), msg)
+
+    return True, ""
+
+
+@MainDB.with_session
+def edit_show(show, any_qualities, best_qualities, exceptions_list, location=None, flatten_folders=None, paused=None, direct_call=None, air_by_date=None,
+              sports=None, dvdorder=None, indexer_lang=None, subtitles=None, sub_use_sr_metadata=None, skip_downloaded=None, rls_ignore_words=None,
+              rls_require_words=None, anime=None, blacklist=None, whitelist=None, scene=None, default_ep_status=None, quality_preset=None, search_delay=None,
+              session=None):
+    show_obj = find_show(int(show), session=session)
+
+    if not show_obj:
+        err_msg = _("Unable to find the specified show: ") + str(show)
+        if direct_call:
+            sickrage.app.alerts.error(_('Error'), err_msg)
+        return False, err_msg
+
+    show_obj.exceptions = get_scene_exceptions(show_obj.indexer_id)
+
+    flatten_folders = not checkbox_to_value(flatten_folders)  # UI inverts this value
+    dvdorder = checkbox_to_value(dvdorder)
+    skip_downloaded = checkbox_to_value(skip_downloaded)
+    paused = checkbox_to_value(paused)
+    air_by_date = checkbox_to_value(air_by_date)
+    scene = checkbox_to_value(scene)
+    sports = checkbox_to_value(sports)
+    anime = checkbox_to_value(anime)
+    subtitles = checkbox_to_value(subtitles)
+    sub_use_sr_metadata = checkbox_to_value(sub_use_sr_metadata)
+
+    if indexer_lang and indexer_lang in IndexerApi(show_obj.indexer).indexer().languages.keys():
+        indexer_lang = indexer_lang
+    else:
+        indexer_lang = show_obj.lang
+
+    # if we changed the language then kick off an update
+    if indexer_lang == show_obj.lang:
+        do_update = False
+    else:
+        do_update = True
+
+    if scene == show_obj.scene or anime == show_obj.anime:
+        do_update_scene_numbering = False
+    else:
+        do_update_scene_numbering = True
+
+    show_obj.paused = paused
+    show_obj.scene = scene
+    show_obj.anime = anime
+    show_obj.sports = sports
+    show_obj.subtitles = subtitles
+    show_obj.sub_use_sr_metadata = sub_use_sr_metadata
+    show_obj.air_by_date = air_by_date
+    show_obj.default_ep_status = int(default_ep_status)
+    show_obj.skip_downloaded = skip_downloaded
+
+    # If directCall from mass_edit_update no scene exceptions handling or blackandwhite list handling
+    if direct_call:
+        do_update_exceptions = False
+    else:
+        if set(exceptions_list) == set(show_obj.exceptions):
+            do_update_exceptions = False
+        else:
+            do_update_exceptions = True
+
+        if anime:
+            if whitelist:
+                shortwhitelist = short_group_names(whitelist)
+                show_obj.release_groups.set_white_keywords(shortwhitelist)
+            else:
+                show_obj.release_groups.set_white_keywords([])
+
+            if blacklist:
+                shortblacklist = short_group_names(blacklist)
+                show_obj.release_groups.set_black_keywords(shortblacklist)
+            else:
+                show_obj.release_groups.set_black_keywords([])
+
+    warnings, errors = [], []
+
+    new_quality = try_int(quality_preset, None)
+    if not new_quality:
+        new_quality = Quality.combine_qualities(list(map(int, any_qualities)), list(map(int, best_qualities)))
+
+    show_obj.quality = new_quality
+
+    # reversed for now
+    if bool(show_obj.flatten_folders) != bool(flatten_folders):
+        show_obj.flatten_folders = flatten_folders
+        try:
+            sickrage.app.show_queue.refresh_show(show_obj.indexer_id, True)
+        except CantRefreshShowException as e:
+            errors.append(_("Unable to refresh this show: {}").format(e))
+
+    if not direct_call:
+        show_obj.lang = indexer_lang
+        show_obj.dvdorder = dvdorder
+        show_obj.rls_ignore_words = rls_ignore_words.strip()
+        show_obj.rls_require_words = rls_require_words.strip()
+        show_obj.search_delay = int(search_delay)
+
+    # if we change location clear the db of episodes, change it, write to db, and rescan
+    if os.path.normpath(show_obj.location) != os.path.normpath(location):
+        sickrage.app.log.debug(os.path.normpath(show_obj.location) + " != " + os.path.normpath(location))
+        if not os.path.isdir(location) and not sickrage.app.config.create_missing_show_dirs:
+            warnings.append("New location {} does not exist".format(location))
+
+        # don't bother if we're going to update anyway
+        elif not do_update:
+            # change it
+            try:
+                show_obj.location = location
+                try:
+                    sickrage.app.show_queue.refresh_show(show_obj.indexer_id, True)
+                except CantRefreshShowException as e:
+                    errors.append(_("Unable to refresh this show:{}").format(e))
+                    # grab updated info from TVDB
+                    # showObj.loadEpisodesFromIndexer()
+                    # rescan the episodes in the new folder
+            except NoNFOException:
+                warnings.append(
+                    _("The folder at %s doesn't contain a tvshow.nfo - copy your files to that folder before "
+                      "you change the directory in SiCKRAGE.") % location)
+
+    # force the update
+    if do_update:
+        try:
+            sickrage.app.show_queue.update_show(show_obj.indexer_id, force=True)
+        except CantUpdateShowException as e:
+            errors.append(_("Unable to update show: {}").format(e))
+
+    if do_update_exceptions:
+        try:
+            update_scene_exceptions(show_obj.indexer_id, exceptions_list)
+        except CantUpdateShowException:
+            warnings.append(_("Unable to force an update on scene exceptions of the show."))
+
+    if do_update_scene_numbering:
+        try:
+            xem_refresh(show_obj.indexer_id, show_obj.indexer, True)
+        except CantUpdateShowException:
+            warnings.append(_("Unable to force an update on scene numbering of the show."))
+
+    if direct_call:
+        return True if len(warnings) == 0 and len(errors) == 0 else False, json_encode({'warnings': warnings, 'errors': errors})
+
+    if len(warnings) > 0:
+        sickrage.app.alerts.message(
+            _('{num_warnings:d} warning{plural} while saving changes:').format(num_warnings=len(warnings),
+                                                                               plural="" if len(
+                                                                                   warnings) == 1 else "s"),
+            '<ul>' + '\n'.join(['<li>{0}</li>'.format(warning) for warning in warnings]) + "</ul>")
+
+    if len(errors) > 0:
+        sickrage.app.alerts.error(
+            _('{num_errors:d} error{plural} while saving changes:').format(num_errors=len(errors),
+                                                                           plural="" if len(errors) == 1 else "s"),
+            '<ul>' + '\n'.join(['<li>{0}</li>'.format(error) for error in errors]) + "</ul>")
+
+    return True, ""
 
 
 class ManageHandler(BaseHandler, ABC):
@@ -139,14 +417,25 @@ class ChangeEpisodeStatusesHandler(BaseHandler, ABC):
                                                                                                          TVEpisode.season != 0)]
                 to_change[cur_indexer_id] = all_eps
 
-            await TornadoHTTP().get(
-                url_concat(
-                    self.get_url("/home/setStatus"),
-                    dict(show=cur_indexer_id, eps='|'.join(to_change[cur_indexer_id]), status=new_status, direct=True)
-                )
-            )
+            set_episode_status(show=cur_indexer_id, eps='|'.join(to_change[cur_indexer_id]), status=new_status, direct=True)
 
         return self.redirect('/manage/episodeStatuses/')
+
+
+class SetEpisodeStatusHandler(BaseHandler, ABC):
+    @authenticated
+    def get(self, *args, **kwargs):
+        show = self.get_argument('show')
+        eps = self.get_argument('eps')
+        status = self.get_argument('status')
+        direct = bool(self.get_argument('direct', None))
+
+        status, message = set_episode_status(show=show, eps=eps, status=status, direct=direct)
+
+        if direct:
+            return json_encode({'result': 'success'}) if status is True else json_encode({'result': 'error', 'message': message})
+
+        return self.redirect("/home/displayShow?show=" + show) if status is True else self._genericMessage(_("Error"), message)
 
 
 class ShowSubtitleMissedHandler(BaseHandler, ABC):
@@ -322,6 +611,95 @@ class BacklogOverviewHandler(BaseHandler, ABC):
             controller='manage',
             action='backlog_overview'
         )
+
+
+class EditShowHandler(BaseHandler, ABC):
+    @authenticated
+    def get(self, *args, **kwargs):
+        show = self.get_argument('show')
+
+        groups = []
+
+        show_obj = find_show(int(show), session=self.db_session)
+
+        if not show_obj:
+            err_string = _("Unable to find the specified show: ") + str(show)
+            return self._genericMessage(_("Error"), err_string)
+
+        scene_exceptions = get_scene_exceptions(show_obj.indexer_id)
+
+        if show_obj.is_anime:
+            whitelist = show_obj.release_groups.whitelist
+            blacklist = show_obj.release_groups.blacklist
+
+            try:
+                groups = get_release_groups_for_anime(show_obj.name)
+            except AnidbAdbaConnectionException as e:
+                sickrage.app.log.debug('Unable to get ReleaseGroups: {}'.format(e))
+
+            return self.render(
+                "/home/edit_show.mako",
+                show=show_obj,
+                quality=show_obj.quality,
+                scene_exceptions=scene_exceptions,
+                groups=groups,
+                whitelist=whitelist,
+                blacklist=blacklist,
+                title=_('Edit Show'),
+                header=_('Edit Show'),
+                controller='home',
+                action="edit_show"
+            )
+        else:
+            return self.render(
+                "/home/edit_show.mako",
+                show=show_obj,
+                quality=show_obj.quality,
+                scene_exceptions=scene_exceptions,
+                title=_('Edit Show'),
+                header=_('Edit Show'),
+                controller='home',
+                action="edit_show"
+            )
+
+    @authenticated
+    async def post(self, *args, **kwargs):
+        show = self.get_argument('show')
+        location = self.get_argument('location', None)
+        any_qualities = self.get_arguments('anyQualities')
+        best_qualities = self.get_arguments('bestQualities')
+        exceptions_list = self.get_arguments('exceptions_list')
+        flatten_folders = self.get_argument('flatten_folders', None)
+        paused = self.get_argument('paused', None)
+        direct_call = bool(self.get_argument('directCall', None))
+        air_by_date = self.get_argument('air_by_date', None)
+        sports = self.get_argument('sports', None)
+        dvdorder = self.get_argument('dvdorder', None)
+        indexer_lang = self.get_argument('indexerLang', None)
+        subtitles = self.get_argument('subtitles', None)
+        sub_use_sr_metadata = self.get_argument('sub_use_sr_metadata', None)
+        skip_downloaded = self.get_argument('skip_downloaded', None)
+        rls_ignore_words = self.get_argument('rls_ignore_words', None)
+        rls_require_words = self.get_argument('rls_require_words', None)
+        anime = self.get_argument('anime', None)
+        blacklist = self.get_argument('blacklist', None)
+        whitelist = self.get_argument('whitelist', None)
+        scene = self.get_argument('scene', None)
+        default_ep_status = self.get_argument('defaultEpStatus', None)
+        quality_preset = self.get_argument('quality_preset', None)
+        search_delay = self.get_argument('search_delay', None)
+
+        status, message = edit_show(show=show, location=location, any_qualities=any_qualities, best_qualities=best_qualities, exceptions_list=exceptions_list,
+                                    flatten_folders=flatten_folders, paused=paused, direct_call=direct_call, air_by_date=air_by_date, sports=sports,
+                                    dvdorder=dvdorder, indexer_lang=indexer_lang, subtitles=subtitles, sub_use_sr_metadata=sub_use_sr_metadata,
+                                    skip_downloaded=skip_downloaded, rls_ignore_words=rls_ignore_words, rls_require_words=rls_require_words, anime=anime,
+                                    blacklist=blacklist, whitelist=whitelist, scene=scene, default_ep_status=default_ep_status, quality_preset=quality_preset,
+                                    search_delay=search_delay)
+
+        if direct_call:
+            return json_encode({'result': 'success'}) if status is True else json_encode({'result': 'error', 'message': message})
+
+        return self.redirect("/home/displayShow?show=" + show) if status is True else self._genericMessage(_("Error"), message)
 
 
 class MassEditHandler(BaseHandler, ABC):
@@ -578,32 +956,14 @@ class MassEditHandler(BaseHandler, ABC):
             elif try_int(quality_preset, None):
                 best_qualities = []
 
-            post_data = {
-                'show': curShow,
-                'location': new_show_dir,
-                'anyQualities': any_qualities,
-                'bestQualities': best_qualities,
-                'exceptions_list': [],
-                'defaultEpStatus': new_default_ep_status,
-                'skip_downloaded': new_skip_downloaded,
-                'flatten_folders': new_flatten_folders,
-                'paused': new_paused,
-                'sports': new_sports,
-                'subtitles': new_subtitles,
-                'anime': new_anime,
-                'scene': new_scene,
-                'air_by_date': new_air_by_date,
-                'directCall': 'true'
-            }
+            status, message = edit_show(show=curShow, location=new_show_dir, any_qualities=any_qualities, best_qualities=best_qualities, exceptions_list=[],
+                                        default_ep_status=new_default_ep_status, skip_downloaded=new_skip_downloaded, flatten_folders=new_flatten_folders,
+                                        paused=new_paused, sports=new_sports, subtitles=new_subtitles, anime=new_anime, scene=new_scene,
+                                        air_by_date=new_air_by_date, direct_call=True)
 
-            response = await TornadoHTTP().post(
-                self.get_url("/home/editShow"),
-                body=urlencode(post_data, True)
-            )
-
-            if response.body:
-                cur_warnings += json_decode(response.body)['warnings']
-                cur_errors += json_decode(response.body)['errors']
+            if status is False:
+                cur_warnings += json_decode(message)['warnings']
+                cur_errors += json_decode(message)['errors']
 
             if cur_warnings:
                 sickrage.app.log.warning("Warnings: " + str(cur_warnings))
@@ -618,15 +978,12 @@ class MassEditHandler(BaseHandler, ABC):
         if len(warnings) > 0:
             sickrage.app.alerts.message(
                 _('{num_warnings:d} warning{plural} while saving changes:').format(num_warnings=len(warnings),
-                                                                                   plural="" if len(
-                                                                                       warnings) == 1 else "s"),
-                " ".join(warnings))
+                                                                                   plural="" if len(warnings) == 1 else "s"), " ".join(warnings))
 
         if len(errors) > 0:
             sickrage.app.alerts.error(
                 _('{num_errors:d} error{plural} while saving changes:').format(num_errors=len(errors),
-                                                                               plural="" if len(errors) == 1 else "s"),
-                " ".join(errors))
+                                                                               plural="" if len(errors) == 1 else "s"), " ".join(errors))
 
         return self.redirect("/manage/")
 

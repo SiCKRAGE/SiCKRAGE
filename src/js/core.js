@@ -44,7 +44,7 @@ $(document).ready(function ($) {
             var ws = new WebSocket(proto + '//' + window.location.hostname + ':' + window.location.port + SICKRAGE.srWebRoot + '/ws/ui');
 
             ws.onmessage = function (evt) {
-                var msg = JSON.parse(evt.data);
+                var msg = $.parseJSON(evt.data);
 
                 switch (msg.type) {
                     case 'notification':
@@ -1535,8 +1535,8 @@ $(document).ready(function ($) {
                     var command = $(this).data('command');
                     var select = $('[data-command=' + command + '][name=episode]');
                     var season = $(this).val();
-                    var show = $('[data-command=' + command + '][name=indexer_id]').val();
-                    var episodes = select.val();
+                    var show = $('[data-command=' + command + '][name=indexerid]').val();
+                    var episodes = $.parseJSON(SICKRAGE.getMeta('episodes'));
 
                     if (select !== undefined) {
                         select.removeClass('d-none');
@@ -1558,7 +1558,7 @@ $(document).ready(function ($) {
                     var command = $(this).data('command');
                     var select = $('[data-command=' + command + '][name=season]');
                     var show = $(this).val();
-                    var episodes = select.val();
+                    var episodes = $.parseJSON(SICKRAGE.getMeta('episodes'));
 
                     if (select !== undefined) {
                         select.removeClass('d-none');
@@ -1976,7 +1976,7 @@ $(document).ready(function ($) {
                             return false;
                         }
 
-                        window.location.href = SICKRAGE.srWebRoot + '/home/setStatus?show=' + $('#showID').attr('value') + '&eps=' + epArr.join('|') + '&status=' + $('#statusSelect').val();
+                        window.location.href = SICKRAGE.srWebRoot + '/manage/setEpisodeStatus?show=' + $('#showID').attr('value') + '&eps=' + epArr.join('|') + '&status=' + $('#statusSelect').val();
                     });
 
                     $('#deleteEpisode').on('click', function () {
