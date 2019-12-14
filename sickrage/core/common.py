@@ -382,34 +382,34 @@ class Quality(object):
         data = {}
         quality = Quality.UNKNOWN
 
-        if pathlib.Path(filename).is_file():
-            meta = get_file_metadata(filename)
+        try:
+            if pathlib.Path(filename).is_file():
+                meta = get_file_metadata(filename)
 
-            try:
                 if meta.get('resolution_width') and meta.get('resolution_height'):
                     data['resolution_width'] = meta.get('resolution_width')
                     data['resolution_height'] = meta.get('resolution_height')
                     data['aspect'] = round(float(meta.get('resolution_width')) / meta.get('resolution_height', 1), 2)
                 else:
                     data.update(get_resolution(filename))
-            except:
-                return quality
 
-            base_filename = pathlib.Path(filename).name
-            bluray = re.search(r"blue?-?ray|hddvd|b[rd](rip|mux)", base_filename, re.I) is not None
-            webdl = re.search(r"\bweb\b|web.?dl|web(rip|mux|hd)", base_filename, re.I) is not None
+                base_filename = pathlib.Path(filename).name
+                bluray = re.search(r"blue?-?ray|hddvd|b[rd](rip|mux)", base_filename, re.I) is not None
+                webdl = re.search(r"\bweb\b|web.?dl|web(rip|mux|hd)", base_filename, re.I) is not None
 
-            if 3240 < data['resolution_height']:
-                quality = ((Quality.UHD_8K_TV, Quality.UHD_8K_BLURAY)[bluray], Quality.UHD_8K_WEBDL)[webdl]
-            if 1620 < data['resolution_height'] <= 3240:
-                quality = ((Quality.UHD_4K_TV, Quality.UHD_4K_BLURAY)[bluray], Quality.UHD_4K_WEBDL)[webdl]
-            elif 800 < data['resolution_height'] <= 1620:
-                quality = ((Quality.FULLHDTV, Quality.FULLHDBLURAY)[bluray], Quality.FULLHDWEBDL)[webdl]
-            elif 680 < data['resolution_height'] < 800:
-                quality = ((Quality.HDTV, Quality.HDBLURAY)[bluray], Quality.HDWEBDL)[webdl]
-            elif data['resolution_height'] < 680:
-                quality = (Quality.SDTV, Quality.SDDVD)[
-                    re.search(r'dvd|b[rd]rip|blue?-?ray', base_filename, re.I) is not None]
+                if 3240 < data['resolution_height']:
+                    quality = ((Quality.UHD_8K_TV, Quality.UHD_8K_BLURAY)[bluray], Quality.UHD_8K_WEBDL)[webdl]
+                if 1620 < data['resolution_height'] <= 3240:
+                    quality = ((Quality.UHD_4K_TV, Quality.UHD_4K_BLURAY)[bluray], Quality.UHD_4K_WEBDL)[webdl]
+                elif 800 < data['resolution_height'] <= 1620:
+                    quality = ((Quality.FULLHDTV, Quality.FULLHDBLURAY)[bluray], Quality.FULLHDWEBDL)[webdl]
+                elif 680 < data['resolution_height'] < 800:
+                    quality = ((Quality.HDTV, Quality.HDBLURAY)[bluray], Quality.HDWEBDL)[webdl]
+                elif data['resolution_height'] < 680:
+                    quality = (Quality.SDTV, Quality.SDDVD)[
+                        re.search(r'dvd|b[rd]rip|blue?-?ray', base_filename, re.I) is not None]
+        except Exception:
+            pass
 
         return quality
 
