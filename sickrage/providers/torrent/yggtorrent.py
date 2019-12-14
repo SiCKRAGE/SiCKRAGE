@@ -31,7 +31,7 @@ from sickrage.providers import TorrentProvider
 class YggtorrentProvider(TorrentProvider):
     def __init__(self):
         """Initialize the class."""
-        super(YggtorrentProvider, self).__init__('Yggtorrent', 'https://www2.yggtorrent.ch', True)
+        super(YggtorrentProvider, self).__init__('Yggtorrent', 'https://www2.yggtorrent.ws', True)
 
         # URLs
         self.urls.update({

@@ -94,13 +94,13 @@ class WebSession(Session):
         except requests.exceptions.SSLError as e:
             if ssl.OPENSSL_VERSION_INFO < (1, 0, 1, 5):
                 sickrage.app.log.info(
-                    "SSL Error requesting url: '{}' You have {}, try upgrading OpenSSL to 1.0.1e+".format(
-                        e.request.url, ssl.OPENSSL_VERSION))
+                    "SSL Error requesting url: '{}' You have {}, try upgrading OpenSSL to 1.0.1e+".format(e.request.url, ssl.OPENSSL_VERSION)
+                )
 
             if sickrage.app.config.ssl_verify:
                 sickrage.app.log.info(
-                    "SSL Error requesting url: '{}', try disabling cert verification in advanced settings".format(
-                        e.request.url))
+                    "SSL Error requesting url: '{}', try disabling cert verification in advanced settings".format(e.request.url)
+                )
         except Exception:
             pass
 
