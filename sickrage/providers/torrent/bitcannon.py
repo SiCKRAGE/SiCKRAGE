@@ -35,7 +35,7 @@ class BitCannonProvider(TorrentProvider):
 
         self.custom_url = ""
 
-        self.urls.update({
+        self._urls.update({
             'search': '{base_url}/api/search'.format(**self.urls)
         })
 

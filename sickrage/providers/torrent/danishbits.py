@@ -18,7 +18,6 @@
 # along with SiCKRAGE. If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import convert_size
@@ -39,7 +38,7 @@ class DanishbitsProvider(TorrentProvider):
         self.freeleech = True
 
         # URLs
-        self.urls.update({
+        self._urls.update({
             'login': '{base_url}/login.php'.format(**self.urls),
             'search': '{base_url}/couchpotato.php'.format(**self.urls),
         })

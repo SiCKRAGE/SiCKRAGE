@@ -37,7 +37,7 @@ class NewpctProvider(TorrentProvider):
     def __init__(self):
         super(NewpctProvider, self).__init__("Newpct", 'http://www.newpct.com', False)
 
-        self.urls.update({
+        self._urls.update({
             'search': ['{base_url}/descargar-serie/%s'.format(**self.urls),
                        '{base_url}/descargar-seriehd/%s'.format(**self.urls),
                        '{base_url}/descargar-serievo/%s'.format(**self.urls)],

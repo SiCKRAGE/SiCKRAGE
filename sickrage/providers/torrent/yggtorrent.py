@@ -19,7 +19,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import re
 
 import sickrage
@@ -34,7 +33,7 @@ class YggtorrentProvider(TorrentProvider):
         super(YggtorrentProvider, self).__init__('Yggtorrent', 'https://www2.yggtorrent.ws', True)
 
         # URLs
-        self.urls.update({
+        self._urls.update({
             'auth': '{base_url}/user/ajax_usermenu'.format(**self.urls),
             'login': '{base_url}/user/login'.format(**self.urls),
             'search': '{base_url}/engine/search'.format(**self.urls),

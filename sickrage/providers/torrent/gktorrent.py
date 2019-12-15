@@ -21,7 +21,6 @@
 # ##############################################################################
 
 
-
 from urllib.parse import urljoin
 
 import sickrage
@@ -34,7 +33,7 @@ class GKTorrentProvider(TorrentProvider):
     def __init__(self):
         super(GKTorrentProvider, self).__init__('GKTorrent', 'https://www.gktorrent.biz', False)
 
-        self.urls.update({
+        self._urls.update({
             'search': '{base_url}/recherche/'.format(**self.urls),
             'rss': '{base_url}/torrents/séries'.format(**self.urls),
         })

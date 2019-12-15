@@ -17,7 +17,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import re
 
 from requests.utils import dict_from_cookiejar
@@ -32,7 +31,7 @@ class BitSoupProvider(TorrentProvider):
     def __init__(self):
         super(BitSoupProvider, self).__init__("BitSoup", 'https://www.bitsoup.me', True)
 
-        self.urls.update({
+        self._urls.update({
             'login': '{base_url}/takelogin.php'.format(**self.urls),
             'detail': '{base_url}/details.php?id=%s'.format(**self.urls),
             'search': '{base_url}/browse.php'.format(**self.urls),

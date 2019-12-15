@@ -19,7 +19,6 @@
 # along with SiCKRAGE. If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import convert_size
@@ -30,7 +29,7 @@ class HD4FreeProvider(TorrentProvider):
     def __init__(self):
         super(HD4FreeProvider, self).__init__('HD4Free', 'https://hd4free.xyz', True)
 
-        self.urls.update({
+        self._urls.update({
             'search': '{base_url}/searchapi.php'.format(**self.urls)
         })
 

@@ -15,7 +15,7 @@ from sickrage.core.api.exceptions import ApiUnauthorized, ApiError, APIResourceD
 class API(object):
     def __init__(self):
         self.name = 'SR-API'
-        self.api_url = 'https://www.sickrage.ca/api/v3/'
+        self.api_url = 'https://api-dev.sickrage.ca/api/v3/'
         self.client_id = sickrage.app.oidc_client_id
         self.client_secret = sickrage.app.oidc_client_secret
         self.token_url = sickrage.app.oidc_client.well_known['token_endpoint']
@@ -83,15 +83,18 @@ class API(object):
         for i in range(3):
             try:
                 resp = self.session.request(method, urljoin(self.api_url, url), timeout=timeout, hooks={'response': self.throttle_hook}, **kwargs)
-                if resp.status_code >= 400 and 'error' in resp.json():
-                    if resp.json()['error']['status'] == 400 and 'no result' in resp.json()['error']['message'].lower():
-                        raise APIResourceDoesNotExist(**resp.json()['error'])
-                    raise ApiError(**resp.json()['error'])
-                elif resp.status_code == 204:
-                    return
 
                 try:
-                    return resp.json()
+                    json_data = resp.json()
+
+                    if 400 >= resp.status_code < 500 and 'error' in json_data:
+                        if json_data['error']['status'] == 404 and 'no result' in json_data['error']['message'].lower():
+                            raise APIResourceDoesNotExist(**json_data['error'])
+                        raise ApiError(**json_data['error'])
+                    elif resp.status_code == 204:
+                        return
+
+                    return json_data
                 except ValueError:
                     return resp.content
             except (InvalidClientIdError, MissingTokenError) as e:

@@ -17,7 +17,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import re
 
 import sickrage
@@ -37,7 +36,7 @@ class TokyoToshokanProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.urls.update({
+        self._urls.update({
             'search': '{base_url}/search.php'.format(**self.urls),
             'rss': '{base_url}/rss.php'.format(**self.urls)
         })

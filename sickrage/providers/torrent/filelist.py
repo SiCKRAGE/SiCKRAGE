@@ -18,7 +18,6 @@
 # along with SiCKRAGE. If not, see <http://www.gnu.org/licenses/>.
 
 
-
 from requests.compat import urljoin
 from requests.utils import dict_from_cookiejar
 
@@ -41,7 +40,7 @@ class FileListProvider(TorrentProvider):
         self.minleech = None
 
         # URLs
-        self.urls.update({
+        self._urls.update({
             "login": "{base_url}/takelogin.php".format(**self.urls),
             "search": "{base_url}/browse.php".format(**self.urls),
         })

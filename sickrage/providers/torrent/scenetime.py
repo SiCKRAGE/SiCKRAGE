@@ -17,7 +17,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser
@@ -28,7 +27,7 @@ class SceneTimeProvider(TorrentProvider):
     def __init__(self):
         super(SceneTimeProvider, self).__init__("SceneTime", 'https://www.scenetime.com', True)
 
-        self.urls.update({
+        self._urls.update({
             'login': '{base_url}/takelogin.php'.format(**self.urls),
             'detail': '{base_url}/details.php?id=%s'.format(**self.urls),
             'search': '{base_url}/browse_API.php'.format(**self.urls),

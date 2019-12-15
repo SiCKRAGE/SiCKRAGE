@@ -20,7 +20,6 @@
 # ##############################################################################
 
 
-
 import datetime
 import re
 
@@ -33,7 +32,7 @@ class BinSearchProvider(NZBProvider):
         super(BinSearchProvider, self).__init__("BinSearch", 'http://www.binsearch.info', False)
         self.supports_backlog = False
 
-        self.urls.update({
+        self._urls.update({
             'rss': '{base_url}/rss.php'.format(**self.urls)
         })
 

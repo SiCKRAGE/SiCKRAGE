@@ -20,7 +20,6 @@
 # ##############################################################################
 
 
-
 import datetime
 import uuid
 from time import sleep
@@ -35,7 +34,7 @@ class RarbgProvider(TorrentProvider):
     def __init__(self):
         super(RarbgProvider, self).__init__("Rarbg", 'https://rarbg.com', False)
 
-        self.urls.update({
+        self._urls.update({
             'api': 'http://torrentapi.org/pubapi_v2.php'
         })
 

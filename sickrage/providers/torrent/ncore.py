@@ -17,7 +17,6 @@
 # along with SiCKRAGE. If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import re
 
 from requests.utils import dict_from_cookiejar
@@ -46,7 +45,7 @@ class NcoreProvider(TorrentProvider):
 
         categories = '&'.join(['kivalasztott_tipus[]=' + x for x in categories])
 
-        self.urls.update({
+        self._urls.update({
             'login': '{base_url}/login.php'.format(**self.urls),
             'search': ('{base_url}/torrents.php?{cats}&mire=%s&miben=name'
                        '&tipus=kivalasztottak_kozott&submit.x=0&submit.y=0&submit=Ok'

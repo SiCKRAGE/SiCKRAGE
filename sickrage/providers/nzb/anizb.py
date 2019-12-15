@@ -20,7 +20,6 @@
 # along with SiCKRAGE. If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser, try_int
@@ -35,7 +34,7 @@ class Anizb(NZBProvider):
         super(Anizb, self).__init__('Anizb', 'https://anizb.org', False)
 
         # URLs
-        self.urls.update({
+        self._urls.update({
             'rss': '{base_url}/'.format(**self.urls),
             'api': '{base_url}/api/?q='.format(**self.urls)
         })

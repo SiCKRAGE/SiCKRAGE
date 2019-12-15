@@ -17,7 +17,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import re
 
 from requests.compat import urljoin
@@ -33,6 +32,12 @@ class ABNormalProvider(TorrentProvider):
     def __init__(self):
         super(ABNormalProvider, self).__init__("ABNormal", 'https://abnormal.ws', True)
 
+        # URLs
+        self._urls.update({
+            'login': '{base_url}/login.php'.format(**self.urls),
+            'search': '{base_url}/torrents.php'.format(**self.urls),
+        })
+
         # Credentials
         self.username = None
         self.password = None
@@ -40,12 +45,6 @@ class ABNormalProvider(TorrentProvider):
         # Torrent Stats
         self.minseed = None
         self.minleech = None
-
-        # URLs
-        self.urls.update({
-            'login': '{base_url}/login.php'.format(**self.urls),
-            'search': '{base_url}/torrents.php'.format(**self.urls),
-        })
 
         # Proper Strings
         self.proper_strings = ['PROPER']

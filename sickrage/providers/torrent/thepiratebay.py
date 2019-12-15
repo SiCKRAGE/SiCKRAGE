@@ -17,9 +17,7 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import re
-
 from urllib.parse import urljoin
 
 import sickrage
@@ -32,7 +30,7 @@ class ThePirateBayProvider(TorrentProvider):
     def __init__(self):
         super(ThePirateBayProvider, self).__init__("ThePirateBay", 'https://thepiratebay.org', False)
 
-        self.urls.update({
+        self._urls.update({
             "search": "{base_url}/search/%s/0/3/200".format(**self.urls),
             "rss": "{base_url}/tv/latest".format(**self.urls),
         })

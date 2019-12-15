@@ -14,7 +14,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import re
 
 from requests.utils import dict_from_cookiejar
@@ -32,7 +31,7 @@ class TVChaosUKProvider(TorrentProvider):
     def __init__(self):
         super(TVChaosUKProvider, self).__init__('TvChaosUK', 'https://www.tvchaosuk.com', True)
 
-        self.urls.update({
+        self._urls.update({
             'login': '{base_url}/takelogin.php'.format(**self.urls),
             'index': '{base_url}/index.php'.format(**self.urls),
             'search': '{base_url}/browse.php'.format(**self.urls)

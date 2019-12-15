@@ -17,7 +17,6 @@
 # along with SiCKRAGE. If not, see <http://www.gnu.org/licenses/>.
 
 
-
 from requests.compat import urlencode
 
 import sickrage
@@ -36,7 +35,7 @@ class NorbitsProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.urls.update({
+        self._urls.update({
             'search': '{base_url}/api2.php?action=torrents'.format(**self.urls),
             'download': '{base_url}/download.php?'.format(**self.urls)
         })

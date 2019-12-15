@@ -17,8 +17,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
-from requests.utils import dict_from_cookiejar
 from urllib.parse import urljoin
 
 import sickrage
@@ -31,7 +29,7 @@ class SpeedCDProvider(TorrentProvider):
     def __init__(self):
         super(SpeedCDProvider, self).__init__("Speedcd", 'https://speed.cd', True)
 
-        self.urls.update({
+        self._urls.update({
             'login': '{base_url}/login.php'.format(**self.urls),
             'search': '{base_url}/browse.php'.format(**self.urls),
         })

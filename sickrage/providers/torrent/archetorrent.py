@@ -20,7 +20,6 @@
 # along with SiCKRAGE. If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import re
 
 from requests.compat import urljoin
@@ -47,7 +46,7 @@ class ArcheTorrentProvider(TorrentProvider):
         self.freeleech = False
 
         # URLs
-        self.urls.update({
+        self._urls.update({
             'login': '{base_url}/account-login.php'.format(**self.urls),
             'search': '{base_url}/torrents-search.php'.format(**self.urls),
             'download': '{base_url}/download.php'.format(**self.urls),

@@ -17,7 +17,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.exceptions import AuthException
@@ -28,7 +27,7 @@ class ShazbatProvider(TorrentProvider):
     def __init__(self):
         super(ShazbatProvider, self).__init__("Shazbat.tv", 'https://www.shazbat.tv', True)
 
-        self.urls.update({
+        self._urls.update({
             'login': '{base_url}/login'.format(**self.urls)
         })
 

@@ -18,11 +18,10 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import re
+from urllib.parse import urljoin
 
 from requests.utils import dict_from_cookiejar
-from urllib.parse import urljoin
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
@@ -34,7 +33,7 @@ class HoundDawgsProvider(TorrentProvider):
     def __init__(self):
         super(HoundDawgsProvider, self).__init__("HoundDawgs", 'https://hounddawgs.org', True)
 
-        self.urls.update({
+        self._urls.update({
             'search': '{base_url}/torrents.php'.format(**self.urls),
             'login': '{base_url}/login.php'.format(**self.urls)
         })

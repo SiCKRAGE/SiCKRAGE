@@ -14,7 +14,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import json
 from urllib.parse import urlencode
 
 import sickrage
@@ -30,7 +29,7 @@ class HDBitsProvider(TorrentProvider):
     def __init__(self):
         super(HDBitsProvider, self).__init__("HDBits", 'https://hdbits.org', True)
 
-        self.urls.update({
+        self._urls.update({
             'search': '{base_url}/api/torrents'.format(**self.urls),
             'rss': '{base_url}/api/torrents'.format(**self.urls),
             'download': '{base_url}/download.php'.format(**self.urls)

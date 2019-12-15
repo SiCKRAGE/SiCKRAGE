@@ -17,9 +17,7 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import re
-
 from urllib.parse import urljoin
 
 import sickrage
@@ -32,7 +30,7 @@ class IPTorrentsProvider(TorrentProvider):
     def __init__(self):
         super(IPTorrentsProvider, self).__init__("IPTorrents", 'https://iptorrents.eu', True)
 
-        self.urls.update({
+        self._urls.update({
             'login': '{base_url}/torrents'.format(**self.urls),
             'search': '{base_url}/t?%s%s&q=%s&qf=#torrents'.format(**self.urls)
         })

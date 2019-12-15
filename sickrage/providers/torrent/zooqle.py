@@ -32,7 +32,7 @@ class ZooqleProvider(TorrentProvider):
         super(ZooqleProvider, self).__init__('Zooqle', 'https://zooqle.com', False)
 
         # URLs
-        self.urls.update({
+        self._urls.update({
             'search': '{base_url}/search'.format(**self.urls),
             'api': '{base_url}/api/media/%s'.format(**self.urls),
         })

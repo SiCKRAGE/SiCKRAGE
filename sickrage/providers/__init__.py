@@ -24,12 +24,14 @@ import datetime
 import importlib
 import inspect
 import itertools
+import json
 import os
 import pkgutil
 import random
 import re
-from base64 import b16encode, b32decode, b64decode
+from base64 import b16encode, b32decode
 from collections import OrderedDict, defaultdict
+from json import JSONDecodeError
 from time import sleep
 from urllib.parse import urljoin
 from xml.sax import SAXParseException
@@ -41,6 +43,7 @@ from requests.utils import add_dict_to_cookiejar, dict_from_cookiejar
 import sickrage
 from sickrage.core.api import ApiError, APIResourceDoesNotExist
 from sickrage.core.api.cache import TorrentCacheAPI
+from sickrage.core.api.provider import ProviderAPI
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.classes import NZBSearchResult, SearchResult, TorrentSearchResult
 from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT, cpu_presets
@@ -57,7 +60,11 @@ from sickrage.core.websession import WebSession
 class GenericProvider(object):
     def __init__(self, name, url, private):
         self.name = name
-        self.urls = {'base_url': url}
+
+        # urls
+        self._urls = {'base_url': url}
+
+        # other options
         self.private = private
         self.supports_backlog = True
         self.supports_absolute_numbering = False
@@ -97,6 +104,17 @@ class GenericProvider(object):
     @property
     def isAlive(self):
         return True
+
+    @property
+    def urls(self):
+        try:
+            resp = ProviderAPI().get_urls(self.id)
+            if 'data' in resp:
+                return json.loads(resp['data']['urls'])
+        except (JSONDecodeError, ApiError):
+            pass
+
+        return self._urls
 
     def _check_auth(self):
         return True
@@ -1239,13 +1257,13 @@ class TorrentRssCache(TVCache):
         self.min_time = 15
 
     def _get_rss_data(self):
-        sickrage.app.log.debug("Cache update URL: %s" % self.provider.urls['base_url'])
+        sickrage.app.log.debug("Cache update URL: %s" % self.provider.url)
 
         if self.provider.cookies:
             add_dict_to_cookiejar(self.provider.session.cookies,
                                   dict(x.rsplit('=', 1) for x in self.provider.cookies.split(';')))
 
-        return self.get_rss_feed(self.provider.urls['base_url'])
+        return self.get_rss_feed(self.provider.url)
 
 
 class SearchProviders(dict):

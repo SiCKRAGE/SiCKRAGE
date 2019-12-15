@@ -17,11 +17,10 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import math
+from urllib.parse import urljoin
 
 from requests.utils import dict_from_cookiejar
-from urllib.parse import urljoin
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
@@ -33,7 +32,7 @@ class TorrentLeechProvider(TorrentProvider):
     def __init__(self):
         super(TorrentLeechProvider, self).__init__("TorrentLeech", 'https://www.torrentleech.org', True)
 
-        self.urls.update({
+        self._urls.update({
             'login': '{base_url}/user/account/login'.format(**self.urls),
             'search': '{base_url}/torrents/browse/list/'.format(**self.urls),
             'download': '{base_url}/download/%s/%s'.format(**self.urls),

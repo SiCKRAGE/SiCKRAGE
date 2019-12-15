@@ -18,7 +18,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import re
 from urllib.parse import urljoin
 
@@ -34,7 +33,7 @@ class HDTorrentsProvider(TorrentProvider):
     def __init__(self):
         super(HDTorrentsProvider, self).__init__("HDTorrents", 'https://hd-torrents.org', True)
 
-        self.urls.update({
+        self._urls.update({
             'login': '{base_url}/login.php'.format(**self.urls),
             'search': '{base_url}/torrents.php'.format(**self.urls)
         })

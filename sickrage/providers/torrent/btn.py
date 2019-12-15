@@ -29,7 +29,7 @@ class BTNProvider(TorrentProvider):
     def __init__(self):
         super(BTNProvider, self).__init__("BTN", 'https://broadcasthe.net', True)
 
-        self.urls.update({
+        self._urls.update({
             'api': 'https://api.broadcasthe.net',
         })
 

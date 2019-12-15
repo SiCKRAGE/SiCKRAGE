@@ -18,7 +18,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import re
 
 from unidecode import unidecode
@@ -34,7 +33,7 @@ class TNTVillageProvider(TorrentProvider):
     def __init__(self):
         super(TNTVillageProvider, self).__init__("TNTVillage", 'http://www.tntvillage.scambioetico.org', False)
 
-        self.urls.update({
+        self._urls.update({
             'search': '{base_url}/src/releaselist.php'.format(**self.urls),
         })
 

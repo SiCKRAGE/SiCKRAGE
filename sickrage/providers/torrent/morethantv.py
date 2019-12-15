@@ -17,11 +17,10 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import re
+from urllib.parse import urljoin
 
 import requests
-from urllib.parse import urljoin
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
@@ -34,7 +33,7 @@ class MoreThanTVProvider(TorrentProvider):
     def __init__(self):
         super(MoreThanTVProvider, self).__init__("MoreThanTV", 'https://www.morethan.tv', True)
 
-        self.urls.update({
+        self._urls.update({
             'login': '{base_url}/login.php'.format(**self.urls),
             'detail': '{base_url}/torrents.php'
                       '?id=%s'.format(**self.urls),

@@ -19,7 +19,6 @@
 # along with SiCKRAGE. If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import re
 
 import sickrage
@@ -32,7 +31,7 @@ class LimeTorrentsProvider(TorrentProvider):
     def __init__(self):
         super(LimeTorrentsProvider, self).__init__('LimeTorrents', 'https://www.limetorrents.cc', False)
 
-        self.urls.update({
+        self._urls.update({
             'update': '{base_url}/post/updatestats.php'.format(**self.urls),
             'search': '{base_url}/search/tv/%s/'.format(**self.urls),
             'rss': '{base_url}/browse-torrents/TV-shows/'.format(**self.urls),
@@ -120,7 +119,7 @@ class LimeTorrentsProvider(TorrentProvider):
 
                     try:
                         self.session.get(self.urls['update'], timeout=30,
-                                                  params={'torrent_id': torrent_id, 'infohash': info_hash})
+                                         params={'torrent_id': torrent_id, 'infohash': info_hash})
                     except Exception:
                         pass
 

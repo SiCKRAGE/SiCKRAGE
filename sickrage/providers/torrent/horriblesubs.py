@@ -17,7 +17,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser
@@ -35,7 +34,7 @@ class HorribleSubsProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.urls.update({
+        self._urls.update({
             'search': '{base_url}/lib/search.php'.format(**self.urls),
             'rss': '{base_url}/lib/latest.php'.format(**self.urls)
         })

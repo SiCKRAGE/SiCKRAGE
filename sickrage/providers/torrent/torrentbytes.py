@@ -20,11 +20,10 @@
 # ##############################################################################
 
 
-
 import re
+from urllib.parse import urljoin
 
 from requests.utils import dict_from_cookiejar
-from urllib.parse import urljoin
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
@@ -36,7 +35,7 @@ class TorrentBytesProvider(TorrentProvider):
     def __init__(self):
         super(TorrentBytesProvider, self).__init__("TorrentBytes", 'https://www.torrentbytes.net', True)
 
-        self.urls.update({
+        self._urls.update({
             'login': '{base_url}/takelogin.php'.format(**self.urls),
             'search': '{base_url}/browse.php'.format(**self.urls),
         })

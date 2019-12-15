@@ -19,7 +19,6 @@
 # along with SiCKRAGE. If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import re
 
 from requests.utils import dict_from_cookiejar
@@ -46,7 +45,7 @@ class ImmortalseedProvider(TorrentProvider):
         self.freeleech = None
 
         # URLs
-        self.urls.update({
+        self._urls.update({
             'login': '{base_url}/takelogin.php'.format(**self.urls),
             'search': '{base_url}/browse.php'.format(**self.urls),
             'rss': '{base_url}/rss.php'.format(**self.urls),

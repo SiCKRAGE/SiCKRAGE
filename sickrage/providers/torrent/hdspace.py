@@ -19,7 +19,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import re
 from urllib.parse import quote_plus
 
@@ -35,7 +34,7 @@ class HDSpaceProvider(TorrentProvider):
     def __init__(self):
         super(HDSpaceProvider, self).__init__("HDSpace", 'https://hd-space.org', True)
 
-        self.urls.update({
+        self._urls.update({
             'login': '{base_url}/index.php?page=login'.format(**self.urls),
             'search': '{base_url}/index.php?page=torrents&search=%s&active=1&options=0&category='.format(**self.urls),
             'rss': '{base_url}/rss_torrents.php?feed=dl'.format(**self.urls)

@@ -19,7 +19,6 @@
 # along with SiCKRAGE. If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import re
 
 import sickrage
@@ -33,7 +32,7 @@ class EliteTorrentProvider(TorrentProvider):
     def __init__(self):
         super(EliteTorrentProvider, self).__init__('EliteTorrent', 'https://elitetorrent.eu', False)
 
-        self.urls.update({
+        self._urls.update({
             'search': '{base_url}/torrents.php'.format(**self.urls)
         })
 

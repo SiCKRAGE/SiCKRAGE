@@ -20,9 +20,7 @@
 # ##############################################################################
 
 
-
 import re
-
 from urllib.parse import urljoin
 
 import sickrage
@@ -35,7 +33,7 @@ class TorrentDayProvider(TorrentProvider):
     def __init__(self):
         super(TorrentDayProvider, self).__init__("TorrentDay", 'https://www.torrentday.com', True)
 
-        self.urls.update({
+        self._urls.update({
             'login': '{base_url}/torrents/'.format(**self.urls),
             'search': '{base_url}/t.json'.format(**self.urls),
             'download': '{base_url}/download.php/'.format(**self.urls)

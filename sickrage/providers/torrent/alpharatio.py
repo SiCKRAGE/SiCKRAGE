@@ -20,7 +20,6 @@
 # ##############################################################################
 
 
-
 import re
 from urllib.parse import urljoin
 
@@ -41,7 +40,7 @@ class AlphaRatioProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.urls.update({
+        self._urls.update({
             'login': '{base_url}/login.php'.format(**self.urls),
             'search': '{base_url}/torrents.php?searchstr=%s%s'.format(**self.urls)
         })

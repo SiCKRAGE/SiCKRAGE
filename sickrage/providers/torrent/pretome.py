@@ -17,7 +17,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import re
 from urllib import parse
 
@@ -33,7 +32,7 @@ class PretomeProvider(TorrentProvider):
     def __init__(self):
         super(PretomeProvider, self).__init__("Pretome", 'https://pretome.info', True)
 
-        self.urls.update({
+        self._urls.update({
             'login': '{base_url}/takelogin.php'.format(**self.urls),
             'detail': '{base_url}/details.php?id=%s'.format(**self.urls),
             'search': '{base_url}/browse.php?search=%s%s'.format(**self.urls),

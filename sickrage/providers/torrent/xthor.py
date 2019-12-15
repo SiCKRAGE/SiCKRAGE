@@ -18,7 +18,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import try_int
@@ -29,7 +28,7 @@ class XthorProvider(TorrentProvider):
     def __init__(self):
         super(XthorProvider, self).__init__("Xthor", "https://xthor.to", True)
 
-        self.urls.update({
+        self._urls.update({
             'search': "https://api.xthor.to"
         })
 

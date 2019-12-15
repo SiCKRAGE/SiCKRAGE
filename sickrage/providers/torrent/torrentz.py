@@ -18,7 +18,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import re
 
 import sickrage
@@ -36,7 +35,7 @@ class TORRENTZProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.urls.update({
+        self._urls.update({
             'verified': '{base_url}/feed_verified'.format(**self.urls),
             'feed': '{base_url}/feed'.format(**self.urls)
         })
