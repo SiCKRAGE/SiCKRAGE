@@ -15,7 +15,7 @@ from sickrage.core.api.exceptions import APIError
 class API(object):
     def __init__(self):
         self.name = 'SR-API'
-        self.api_url = 'https://api-dev.sickrage.ca/api/v3/'
+        self.api_url = 'https://www.sickrage.ca/api/v3/'
         self.client_id = sickrage.app.oidc_client_id
         self.client_secret = sickrage.app.oidc_client_secret
         self.token_url = sickrage.app.oidc_client.well_known['token_endpoint']
