@@ -30,7 +30,7 @@ from tornado.httpserver import HTTPServer
 from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 import sickrage
-from sickrage.core.helpers import create_https_certificates, generate_secret
+from sickrage.core.helpers import create_https_certificates
 from sickrage.core.webserver.handlers.api import ApiHandler
 from sickrage.core.webserver.handlers.calendar import CalendarHandler
 from sickrage.core.webserver.handlers.changelog import ChangelogHandler
@@ -57,12 +57,12 @@ from sickrage.core.webserver.handlers.home import HomeHandler, IsAliveHandler, T
     TestPMSHandler, TestLibnotifyHandler, TestEMBYHandler, TestNMJHandler, SettingsNMJHandler, TestNMJv2Handler, \
     SettingsNMJv2Handler, GetTraktTokenHandler, TestTraktHandler, LoadShowNotifyListsHandler, SaveShowNotifyListHandler, \
     TestEmailHandler, TestNMAHandler, TestPushalotHandler, TestPushbulletHandler, GetPushbulletDevicesHandler, \
-    StatusHandler, ShutdownHandler, RestartHandler, UpdateCheckHandler, UpdateHandler, VerifyPathHandler, \
+    ShutdownHandler, RestartHandler, UpdateCheckHandler, UpdateHandler, VerifyPathHandler, \
     InstallRequirementsHandler, BranchCheckoutHandler, DisplayShowHandler, TogglePauseHandler, \
     DeleteShowHandler, RefreshShowHandler, UpdateShowHandler, SubtitleShowHandler, UpdateKODIHandler, UpdatePLEXHandler, \
     UpdateEMBYHandler, SyncTraktHandler, DeleteEpisodeHandler, TestRenameHandler, DoRenameHandler, \
     SearchEpisodeHandler, GetManualSearchStatusHandler, SearchEpisodeSubtitlesHandler, \
-    SetSceneNumberingHandler
+    SetSceneNumberingHandler, ProviderStatusHandler, ServerStatusHandler
 from sickrage.core.webserver.handlers.home.add_shows import HomeAddShowsHandler, SearchIndexersForShowNameHandler, \
     MassAddTableHandler, NewShowHandler, TraktShowsHandler, PopularShowsHandler, AddShowToBlacklistHandler, \
     ExistingShowsHandler, AddShowByIDHandler, AddNewShowHandler, AddExistingShowsHandler
@@ -276,7 +276,8 @@ class WebServer(object):
             (r'%s/home/testPushalot(/?)' % sickrage.app.config.web_root, TestPushalotHandler),
             (r'%s/home/testPushbullet(/?)' % sickrage.app.config.web_root, TestPushbulletHandler),
             (r'%s/home/getPushbulletDevices(/?)' % sickrage.app.config.web_root, GetPushbulletDevicesHandler),
-            (r'%s/home/status(/?)' % sickrage.app.config.web_root, StatusHandler),
+            (r'%s/home/serverStatus(/?)' % sickrage.app.config.web_root, ServerStatusHandler),
+            (r'%s/home/providerStatus(/?)' % sickrage.app.config.web_root, ProviderStatusHandler),
             (r'%s/home/shutdown(/?)' % sickrage.app.config.web_root, ShutdownHandler),
             (r'%s/home/restart(/?)' % sickrage.app.config.web_root, RestartHandler),
             (r'%s/home/updateCheck(/?)' % sickrage.app.config.web_root, UpdateCheckHandler),

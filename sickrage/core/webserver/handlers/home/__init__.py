@@ -36,22 +36,21 @@ from sickrage.clients import get_client_instance
 from sickrage.clients.sabnzbd import SabNZBd
 from sickrage.core.common import Overview, Quality, cpu_presets, statusStrings
 from sickrage.core.databases.main import MainDB
-from sickrage.core.exceptions import AnidbAdbaConnectionException, CantRefreshShowException, NoNFOException, \
-    CantUpdateShowException, CantRemoveShowException, EpisodeDeletedException, EpisodeNotFoundException, \
+from sickrage.core.exceptions import AnidbAdbaConnectionException, CantRefreshShowException, CantUpdateShowException, CantRemoveShowException, \
+    EpisodeDeletedException, EpisodeNotFoundException, \
     MultipleEpisodesInDatabaseException
-from sickrage.core.helpers import clean_url, clean_host, clean_hosts, get_disk_space_usage, checkbox_to_value, try_int
-from sickrage.core.helpers.anidb import get_release_groups_for_anime, short_group_names
+from sickrage.core.helpers import clean_url, clean_host, clean_hosts, get_disk_space_usage
+from sickrage.core.helpers.anidb import get_release_groups_for_anime
 from sickrage.core.helpers.srdatetime import SRDateTime
 from sickrage.core.queues.search import FailedQueueItem, ManualSearchQueueItem
-from sickrage.core.scene_exceptions import get_scene_exceptions, update_scene_exceptions
+from sickrage.core.scene_exceptions import get_scene_exceptions
 from sickrage.core.scene_numbering import get_scene_numbering_for_show, get_xem_numbering_for_show, \
-    get_scene_absolute_numbering_for_show, get_xem_absolute_numbering_for_show, xem_refresh, set_scene_numbering, \
+    get_scene_absolute_numbering_for_show, get_xem_absolute_numbering_for_show, set_scene_numbering, \
     get_scene_absolute_numbering, get_scene_numbering
 from sickrage.core.traktapi import TraktAPI
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
-from sickrage.indexers import IndexerApi
 from sickrage.subtitles import Subtitles
 
 
@@ -614,7 +613,7 @@ class GetPushbulletDevicesHandler(BaseHandler, ABC):
         return self.write(_('Error getting Pushbullet devices'))
 
 
-class StatusHandler(BaseHandler, ABC):
+class ServerStatusHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
         tvdir_free = get_disk_space_usage(sickrage.app.config.tv_download_dir)
@@ -630,14 +629,27 @@ class StatusHandler(BaseHandler, ABC):
                 root_dir[subject] = get_disk_space_usage(subject)
 
         return self.render(
-            "/home/status.mako",
-            title=_('Status'),
-            header=_('Status'),
+            "/home/server_status.mako",
+            title=_('Server Status'),
+            header=_('Server Status'),
             topmenu='system',
             tvdirFree=tvdir_free,
             rootDir=root_dir,
             controller='home',
             action='status'
+        )
+
+
+class ProviderStatusHandler(BaseHandler, ABC):
+    @authenticated
+    def get(self, *args, **kwargs):
+        return self.render(
+            "/home/provider_status.mako",
+            title=_('Provider Status'),
+            header=_('Provider Status'),
+            topmenu='system',
+            controller='home',
+            action='provider_status'
         )
 
 

@@ -326,8 +326,11 @@
                                     <i class="fas fa-fw fa-sign-out-alt"></i>&nbsp;${_('Logout')}
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="${srWebRoot}/home/status/">
+                                <a class="dropdown-item" href="${srWebRoot}/home/serverStatus/">
                                     <i class="fas fa-fw fa-server"></i>&nbsp;${_('Server Status')}
+                                </a>
+                                <a class="dropdown-item" href="${srWebRoot}/home/providerStatus/">
+                                    <i class="fas fa-fw fa-server"></i>&nbsp;${_('Provider Status')}
                                 </a>
                             </div>
                         </li>

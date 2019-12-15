@@ -26,3 +26,7 @@ class ProviderAPI(API):
     def get_urls(self, provider):
         query = 'provider/{}/urls'.format(provider)
         return self._request('GET', query)
+
+    def get_status(self, provider):
+        query = 'provider/{}/status'.format(provider)
+        return self._request('GET', query)
