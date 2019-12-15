@@ -31,8 +31,8 @@ class ThePirateBayProvider(TorrentProvider):
         super(ThePirateBayProvider, self).__init__("ThePirateBay", 'https://thepiratebay.org', False)
 
         self._urls.update({
-            "search": "{base_url}/search/%s/0/3/200".format(**self.urls),
-            "rss": "{base_url}/tv/latest".format(**self.urls),
+            "search": "{base_url}/search/%s/0/3/200".format(**self._urls),
+            "rss": "{base_url}/tv/latest".format(**self._urls),
         })
 
         self.confirmed = True

@@ -34,8 +34,8 @@ class GKTorrentProvider(TorrentProvider):
         super(GKTorrentProvider, self).__init__('GKTorrent', 'https://www.gktorrent.biz', False)
 
         self._urls.update({
-            'search': '{base_url}/recherche/'.format(**self.urls),
-            'rss': '{base_url}/torrents/séries'.format(**self.urls),
+            'search': '{base_url}/recherche/'.format(**self._urls),
+            'rss': '{base_url}/torrents/séries'.format(**self._urls),
         })
 
         self.minseed = None

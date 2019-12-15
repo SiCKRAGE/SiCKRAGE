@@ -30,9 +30,9 @@ class HDBitsProvider(TorrentProvider):
         super(HDBitsProvider, self).__init__("HDBits", 'https://hdbits.org', True)
 
         self._urls.update({
-            'search': '{base_url}/api/torrents'.format(**self.urls),
-            'rss': '{base_url}/api/torrents'.format(**self.urls),
-            'download': '{base_url}/download.php'.format(**self.urls)
+            'search': '{base_url}/api/torrents'.format(**self._urls),
+            'rss': '{base_url}/api/torrents'.format(**self._urls),
+            'download': '{base_url}/download.php'.format(**self._urls)
         })
 
         self.username = None

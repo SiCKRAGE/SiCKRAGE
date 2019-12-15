@@ -35,7 +35,7 @@ class SkyTorrents(TorrentProvider):
         self.minleech = None
 
         self._urls.update({
-            "search": "{base_url}/rss/all/%s/%s/%s".format(**self.urls)
+            "search": "{base_url}/rss/all/%s/%s/%s".format(**self._urls)
         })
 
         self.custom_url = ""

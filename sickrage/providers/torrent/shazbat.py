@@ -28,7 +28,7 @@ class ShazbatProvider(TorrentProvider):
         super(ShazbatProvider, self).__init__("Shazbat.tv", 'https://www.shazbat.tv', True)
 
         self._urls.update({
-            'login': '{base_url}/login'.format(**self.urls)
+            'login': '{base_url}/login'.format(**self._urls)
         })
 
         self.supports_backlog = False

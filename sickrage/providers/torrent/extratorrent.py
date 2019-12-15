@@ -30,8 +30,8 @@ class ExtraTorrentProvider(TorrentProvider):
         super(ExtraTorrentProvider, self).__init__("ExtraTorrent", 'https://extratorrent.si', False)
 
         self._urls.update({
-            'search': '{base_url}/search/'.format(**self.urls),
-            'rss': '{base_url}/category/8/TV+Torrents.html'.format(**self.urls)
+            'search': '{base_url}/search/'.format(**self._urls),
+            'rss': '{base_url}/category/8/TV+Torrents.html'.format(**self._urls)
         })
 
         self.minseed = None

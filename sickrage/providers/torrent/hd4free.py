@@ -30,7 +30,7 @@ class HD4FreeProvider(TorrentProvider):
         super(HD4FreeProvider, self).__init__('HD4Free', 'https://hd4free.xyz', True)
 
         self._urls.update({
-            'search': '{base_url}/searchapi.php'.format(**self.urls)
+            'search': '{base_url}/searchapi.php'.format(**self._urls)
         })
 
         self.freeleech = None

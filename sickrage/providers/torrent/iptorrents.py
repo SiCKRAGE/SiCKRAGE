@@ -31,8 +31,8 @@ class IPTorrentsProvider(TorrentProvider):
         super(IPTorrentsProvider, self).__init__("IPTorrents", 'https://iptorrents.eu', True)
 
         self._urls.update({
-            'login': '{base_url}/torrents'.format(**self.urls),
-            'search': '{base_url}/t?%s%s&q=%s&qf=#torrents'.format(**self.urls)
+            'login': '{base_url}/torrents'.format(**self._urls),
+            'search': '{base_url}/t?%s%s&q=%s&qf=#torrents'.format(**self._urls)
         })
 
         self.username = None

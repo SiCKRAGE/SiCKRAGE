@@ -30,8 +30,8 @@ class SpeedCDProvider(TorrentProvider):
         super(SpeedCDProvider, self).__init__("Speedcd", 'https://speed.cd', True)
 
         self._urls.update({
-            'login': '{base_url}/login.php'.format(**self.urls),
-            'search': '{base_url}/browse.php'.format(**self.urls),
+            'login': '{base_url}/login.php'.format(**self._urls),
+            'search': '{base_url}/browse.php'.format(**self._urls),
         })
 
         # self.username = None

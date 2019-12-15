@@ -38,11 +38,11 @@ class NewpctProvider(TorrentProvider):
         super(NewpctProvider, self).__init__("Newpct", 'http://www.newpct.com', False)
 
         self._urls.update({
-            'search': ['{base_url}/descargar-serie/%s'.format(**self.urls),
-                       '{base_url}/descargar-seriehd/%s'.format(**self.urls),
-                       '{base_url}/descargar-serievo/%s'.format(**self.urls)],
-            'rss': '{base_url}/feed'.format(**self.urls),
-            'download': 'https://tumejorserie.com/descargar/index.php?link=torrents/%s.torrent'.format(**self.urls),
+            'search': ['{base_url}/descargar-serie/%s'.format(**self._urls),
+                       '{base_url}/descargar-seriehd/%s'.format(**self._urls),
+                       '{base_url}/descargar-serievo/%s'.format(**self._urls)],
+            'rss': '{base_url}/feed'.format(**self._urls),
+            'download': 'https://tumejorserie.com/descargar/index.php?link=torrents/%s.torrent'.format(**self._urls),
         })
 
         self.onlyspasearch = None

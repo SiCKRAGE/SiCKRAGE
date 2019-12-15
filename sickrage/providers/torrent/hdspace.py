@@ -35,9 +35,9 @@ class HDSpaceProvider(TorrentProvider):
         super(HDSpaceProvider, self).__init__("HDSpace", 'https://hd-space.org', True)
 
         self._urls.update({
-            'login': '{base_url}/index.php?page=login'.format(**self.urls),
-            'search': '{base_url}/index.php?page=torrents&search=%s&active=1&options=0&category='.format(**self.urls),
-            'rss': '{base_url}/rss_torrents.php?feed=dl'.format(**self.urls)
+            'login': '{base_url}/index.php?page=login'.format(**self._urls),
+            'search': '{base_url}/index.php?page=torrents&search=%s&active=1&options=0&category='.format(**self._urls),
+            'rss': '{base_url}/rss_torrents.php?feed=dl'.format(**self._urls)
         })
 
         self.username = None

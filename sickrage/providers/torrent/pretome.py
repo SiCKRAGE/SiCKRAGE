@@ -33,10 +33,10 @@ class PretomeProvider(TorrentProvider):
         super(PretomeProvider, self).__init__("Pretome", 'https://pretome.info', True)
 
         self._urls.update({
-            'login': '{base_url}/takelogin.php'.format(**self.urls),
-            'detail': '{base_url}/details.php?id=%s'.format(**self.urls),
-            'search': '{base_url}/browse.php?search=%s%s'.format(**self.urls),
-            'download': '{base_url}/download.php/%s/%s.torrent'.format(**self.urls)
+            'login': '{base_url}/takelogin.php'.format(**self._urls),
+            'detail': '{base_url}/details.php?id=%s'.format(**self._urls),
+            'search': '{base_url}/browse.php?search=%s%s'.format(**self._urls),
+            'download': '{base_url}/download.php/%s/%s.torrent'.format(**self._urls)
         })
 
         self.username = None

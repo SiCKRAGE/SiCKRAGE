@@ -28,10 +28,10 @@ class SceneTimeProvider(TorrentProvider):
         super(SceneTimeProvider, self).__init__("SceneTime", 'https://www.scenetime.com', True)
 
         self._urls.update({
-            'login': '{base_url}/takelogin.php'.format(**self.urls),
-            'detail': '{base_url}/details.php?id=%s'.format(**self.urls),
-            'search': '{base_url}/browse_API.php'.format(**self.urls),
-            'download': '{base_url}/download.php/%s/%s'.format(**self.urls)
+            'login': '{base_url}/takelogin.php'.format(**self._urls),
+            'detail': '{base_url}/details.php?id=%s'.format(**self._urls),
+            'search': '{base_url}/browse_API.php'.format(**self._urls),
+            'download': '{base_url}/download.php/%s/%s'.format(**self._urls)
         })
 
         self.username = None

@@ -36,7 +36,7 @@ class BitCannonProvider(TorrentProvider):
         self.custom_url = ""
 
         self._urls.update({
-            'search': '{base_url}/api/search'.format(**self.urls)
+            'search': '{base_url}/api/search'.format(**self._urls)
         })
 
         self.cache = TVCache(self, search_strings={'RSS': ['tv', 'anime']})

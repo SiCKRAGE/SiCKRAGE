@@ -34,10 +34,10 @@ class YggtorrentProvider(TorrentProvider):
 
         # URLs
         self._urls.update({
-            'auth': '{base_url}/user/ajax_usermenu'.format(**self.urls),
-            'login': '{base_url}/user/login'.format(**self.urls),
-            'search': '{base_url}/engine/search'.format(**self.urls),
-            'download': '{base_url}/engine/download_torrent?id=%s'.format(**self.urls)
+            'auth': '{base_url}/user/ajax_usermenu'.format(**self._urls),
+            'login': '{base_url}/user/login'.format(**self._urls),
+            'search': '{base_url}/engine/search'.format(**self._urls),
+            'download': '{base_url}/engine/download_torrent?id=%s'.format(**self._urls)
         })
 
         # Credentials

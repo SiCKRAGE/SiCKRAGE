@@ -32,9 +32,9 @@ class TVChaosUKProvider(TorrentProvider):
         super(TVChaosUKProvider, self).__init__('TvChaosUK', 'https://www.tvchaosuk.com', True)
 
         self._urls.update({
-            'login': '{base_url}/takelogin.php'.format(**self.urls),
-            'index': '{base_url}/index.php'.format(**self.urls),
-            'search': '{base_url}/browse.php'.format(**self.urls)
+            'login': '{base_url}/takelogin.php'.format(**self._urls),
+            'index': '{base_url}/index.php'.format(**self._urls),
+            'search': '{base_url}/browse.php'.format(**self._urls)
         })
 
         self.username = None

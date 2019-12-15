@@ -32,10 +32,10 @@ class BitSoupProvider(TorrentProvider):
         super(BitSoupProvider, self).__init__("BitSoup", 'https://www.bitsoup.me', True)
 
         self._urls.update({
-            'login': '{base_url}/takelogin.php'.format(**self.urls),
-            'detail': '{base_url}/details.php?id=%s'.format(**self.urls),
-            'search': '{base_url}/browse.php'.format(**self.urls),
-            'download': '{base_url}/%s'.format(**self.urls)
+            'login': '{base_url}/takelogin.php'.format(**self._urls),
+            'detail': '{base_url}/details.php?id=%s'.format(**self._urls),
+            'search': '{base_url}/browse.php'.format(**self._urls),
+            'download': '{base_url}/%s'.format(**self._urls)
         })
 
         self.username = None

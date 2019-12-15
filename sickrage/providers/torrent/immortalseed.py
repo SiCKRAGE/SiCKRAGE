@@ -46,9 +46,9 @@ class ImmortalseedProvider(TorrentProvider):
 
         # URLs
         self._urls.update({
-            'login': '{base_url}/takelogin.php'.format(**self.urls),
-            'search': '{base_url}/browse.php'.format(**self.urls),
-            'rss': '{base_url}/rss.php'.format(**self.urls),
+            'login': '{base_url}/takelogin.php'.format(**self._urls),
+            'search': '{base_url}/browse.php'.format(**self._urls),
+            'rss': '{base_url}/rss.php'.format(**self._urls),
         })
 
         # Proper Strings

@@ -34,8 +34,8 @@ class HDTorrentsProvider(TorrentProvider):
         super(HDTorrentsProvider, self).__init__("HDTorrents", 'https://hd-torrents.org', True)
 
         self._urls.update({
-            'login': '{base_url}/login.php'.format(**self.urls),
-            'search': '{base_url}/torrents.php'.format(**self.urls)
+            'login': '{base_url}/login.php'.format(**self._urls),
+            'search': '{base_url}/torrents.php'.format(**self._urls)
         })
 
         self.username = None

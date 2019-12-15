@@ -36,8 +36,8 @@ class TORRENTZProvider(TorrentProvider):
         self.minleech = None
 
         self._urls.update({
-            'verified': '{base_url}/feed_verified'.format(**self.urls),
-            'feed': '{base_url}/feed'.format(**self.urls)
+            'verified': '{base_url}/feed_verified'.format(**self._urls),
+            'feed': '{base_url}/feed'.format(**self._urls)
         })
 
         self.cache = TVCache(self, min_time=15)

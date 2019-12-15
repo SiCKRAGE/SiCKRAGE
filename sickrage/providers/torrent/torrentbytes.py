@@ -36,8 +36,8 @@ class TorrentBytesProvider(TorrentProvider):
         super(TorrentBytesProvider, self).__init__("TorrentBytes", 'https://www.torrentbytes.net', True)
 
         self._urls.update({
-            'login': '{base_url}/takelogin.php'.format(**self.urls),
-            'search': '{base_url}/browse.php'.format(**self.urls),
+            'login': '{base_url}/takelogin.php'.format(**self._urls),
+            'search': '{base_url}/browse.php'.format(**self._urls),
         })
 
         self.username = None

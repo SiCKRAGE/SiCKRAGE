@@ -34,9 +34,9 @@ class TorrentDayProvider(TorrentProvider):
         super(TorrentDayProvider, self).__init__("TorrentDay", 'https://www.torrentday.com', True)
 
         self._urls.update({
-            'login': '{base_url}/torrents/'.format(**self.urls),
-            'search': '{base_url}/t.json'.format(**self.urls),
-            'download': '{base_url}/download.php/'.format(**self.urls)
+            'login': '{base_url}/torrents/'.format(**self._urls),
+            'search': '{base_url}/t.json'.format(**self._urls),
+            'download': '{base_url}/download.php/'.format(**self._urls)
         })
 
         self.username = None

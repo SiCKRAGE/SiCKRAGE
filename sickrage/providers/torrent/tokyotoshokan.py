@@ -37,8 +37,8 @@ class TokyoToshokanProvider(TorrentProvider):
         self.minleech = None
 
         self._urls.update({
-            'search': '{base_url}/search.php'.format(**self.urls),
-            'rss': '{base_url}/rss.php'.format(**self.urls)
+            'search': '{base_url}/search.php'.format(**self._urls),
+            'rss': '{base_url}/rss.php'.format(**self._urls)
         })
 
         self.cache = TVCache(self, min_time=15)

@@ -34,19 +34,19 @@ class MoreThanTVProvider(TorrentProvider):
         super(MoreThanTVProvider, self).__init__("MoreThanTV", 'https://www.morethan.tv', True)
 
         self._urls.update({
-            'login': '{base_url}/login.php'.format(**self.urls),
+            'login': '{base_url}/login.php'.format(**self._urls),
             'detail': '{base_url}/torrents.php'
-                      '?id=%s'.format(**self.urls),
+                      '?id=%s'.format(**self._urls),
             'search': '{base_url}/torrents.php'
                       '?tags_type=1'
                       '&order_by=time'
                       '&order_way=desc'
                       '&action=basic'
                       '&searchsubmit=1'
-                      '&searchstr=%s'.format(**self.urls),
+                      '&searchstr=%s'.format(**self._urls),
             'download': '{base_url}/torrents.php'
                         '?action=download'
-                        '&id=%s'.format(**self.urls)
+                        '&id=%s'.format(**self._urls)
         })
 
         self._uid = None

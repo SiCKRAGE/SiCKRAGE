@@ -33,7 +33,7 @@ class BinSearchProvider(NZBProvider):
         self.supports_backlog = False
 
         self._urls.update({
-            'rss': '{base_url}/rss.php'.format(**self.urls)
+            'rss': '{base_url}/rss.php'.format(**self._urls)
         })
 
         self.cache = BinSearchCache(self)

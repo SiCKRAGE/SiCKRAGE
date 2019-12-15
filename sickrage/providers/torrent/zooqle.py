@@ -33,8 +33,8 @@ class ZooqleProvider(TorrentProvider):
 
         # URLs
         self._urls.update({
-            'search': '{base_url}/search'.format(**self.urls),
-            'api': '{base_url}/api/media/%s'.format(**self.urls),
+            'search': '{base_url}/search'.format(**self._urls),
+            'api': '{base_url}/api/media/%s'.format(**self._urls),
         })
 
         # Proper Strings

@@ -33,10 +33,10 @@ class TorrentLeechProvider(TorrentProvider):
         super(TorrentLeechProvider, self).__init__("TorrentLeech", 'https://www.torrentleech.org', True)
 
         self._urls.update({
-            'login': '{base_url}/user/account/login'.format(**self.urls),
-            'search': '{base_url}/torrents/browse/list/'.format(**self.urls),
-            'download': '{base_url}/download/%s/%s'.format(**self.urls),
-            'details': '{base_url}/download/%s/%s'.format(**self.urls),
+            'login': '{base_url}/user/account/login'.format(**self._urls),
+            'search': '{base_url}/torrents/browse/list/'.format(**self._urls),
+            'download': '{base_url}/download/%s/%s'.format(**self._urls),
+            'details': '{base_url}/download/%s/%s'.format(**self._urls),
         })
 
         self.username = None

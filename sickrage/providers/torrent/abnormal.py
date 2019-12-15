@@ -34,8 +34,8 @@ class ABNormalProvider(TorrentProvider):
 
         # URLs
         self._urls.update({
-            'login': '{base_url}/login.php'.format(**self.urls),
-            'search': '{base_url}/torrents.php'.format(**self.urls),
+            'login': '{base_url}/login.php'.format(**self._urls),
+            'search': '{base_url}/torrents.php'.format(**self._urls),
         })
 
         # Credentials

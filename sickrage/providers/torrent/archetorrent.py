@@ -47,9 +47,9 @@ class ArcheTorrentProvider(TorrentProvider):
 
         # URLs
         self._urls.update({
-            'login': '{base_url}/account-login.php'.format(**self.urls),
-            'search': '{base_url}/torrents-search.php'.format(**self.urls),
-            'download': '{base_url}/download.php'.format(**self.urls),
+            'login': '{base_url}/account-login.php'.format(**self._urls),
+            'search': '{base_url}/torrents-search.php'.format(**self._urls),
+            'download': '{base_url}/download.php'.format(**self._urls),
         })
 
         # Proper Strings

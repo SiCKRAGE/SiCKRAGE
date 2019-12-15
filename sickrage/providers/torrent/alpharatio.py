@@ -41,8 +41,8 @@ class AlphaRatioProvider(TorrentProvider):
         self.minleech = None
 
         self._urls.update({
-            'login': '{base_url}/login.php'.format(**self.urls),
-            'search': '{base_url}/torrents.php?searchstr=%s%s'.format(**self.urls)
+            'login': '{base_url}/login.php'.format(**self._urls),
+            'search': '{base_url}/torrents.php?searchstr=%s%s'.format(**self._urls)
         })
 
         self.catagories = "&filter_cat[1]=1&filter_cat[2]=1&filter_cat[3]=1&filter_cat[4]=1&filter_cat[5]=1"

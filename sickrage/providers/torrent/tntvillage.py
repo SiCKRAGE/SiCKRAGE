@@ -34,7 +34,7 @@ class TNTVillageProvider(TorrentProvider):
         super(TNTVillageProvider, self).__init__("TNTVillage", 'http://www.tntvillage.scambioetico.org', False)
 
         self._urls.update({
-            'search': '{base_url}/src/releaselist.php'.format(**self.urls),
+            'search': '{base_url}/src/releaselist.php'.format(**self._urls),
         })
 
         self.subtitle = None

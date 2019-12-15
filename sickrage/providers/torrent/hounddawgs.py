@@ -34,8 +34,8 @@ class HoundDawgsProvider(TorrentProvider):
         super(HoundDawgsProvider, self).__init__("HoundDawgs", 'https://hounddawgs.org', True)
 
         self._urls.update({
-            'search': '{base_url}/torrents.php'.format(**self.urls),
-            'login': '{base_url}/login.php'.format(**self.urls)
+            'search': '{base_url}/torrents.php'.format(**self._urls),
+            'login': '{base_url}/login.php'.format(**self._urls)
         })
 
         self.username = None

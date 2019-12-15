@@ -33,9 +33,9 @@ class Torrent9Provider(TorrentProvider):
         super(Torrent9Provider, self).__init__('Torrent9', 'https://www.torrent9.ai', False)
 
         self._urls.update({
-            'search': '{base_url}/search_torrent/'.format(**self.urls),
-            'rss': '{base_url}/torrents_series.html,trie-date-d'.format(**self.urls),
-            'download': '{base_url}/get_torrent/%s.torrent'.format(**self.urls)
+            'search': '{base_url}/search_torrent/'.format(**self._urls),
+            'rss': '{base_url}/torrents_series.html,trie-date-d'.format(**self._urls),
+            'download': '{base_url}/get_torrent/%s.torrent'.format(**self._urls)
         })
 
         self.minseed = None

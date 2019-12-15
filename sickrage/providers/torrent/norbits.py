@@ -36,8 +36,8 @@ class NorbitsProvider(TorrentProvider):
         self.minleech = None
 
         self._urls.update({
-            'search': '{base_url}/api2.php?action=torrents'.format(**self.urls),
-            'download': '{base_url}/download.php?'.format(**self.urls)
+            'search': '{base_url}/api2.php?action=torrents'.format(**self._urls),
+            'download': '{base_url}/download.php?'.format(**self._urls)
         })
 
         self.cache = TVCache(self, min_time=20)

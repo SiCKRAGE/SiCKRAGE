@@ -33,7 +33,7 @@ class EliteTorrentProvider(TorrentProvider):
         super(EliteTorrentProvider, self).__init__('EliteTorrent', 'https://elitetorrent.eu', False)
 
         self._urls.update({
-            'search': '{base_url}/torrents.php'.format(**self.urls)
+            'search': '{base_url}/torrents.php'.format(**self._urls)
         })
 
         self.onlyspasearch = None

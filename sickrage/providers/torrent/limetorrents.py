@@ -32,9 +32,9 @@ class LimeTorrentsProvider(TorrentProvider):
         super(LimeTorrentsProvider, self).__init__('LimeTorrents', 'https://www.limetorrents.cc', False)
 
         self._urls.update({
-            'update': '{base_url}/post/updatestats.php'.format(**self.urls),
-            'search': '{base_url}/search/tv/%s/'.format(**self.urls),
-            'rss': '{base_url}/browse-torrents/TV-shows/'.format(**self.urls),
+            'update': '{base_url}/post/updatestats.php'.format(**self._urls),
+            'search': '{base_url}/search/tv/%s/'.format(**self._urls),
+            'rss': '{base_url}/browse-torrents/TV-shows/'.format(**self._urls),
         })
 
         self.minseed = None
