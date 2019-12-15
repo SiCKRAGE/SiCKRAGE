@@ -34,7 +34,6 @@ from tornado.escape import json_encode, recursive_unicode
 from tornado.web import RequestHandler
 
 import sickrage
-from sickrage.subtitles import Subtitles
 from sickrage.core.caches import image_cache
 from sickrage.core.common import ARCHIVED, DOWNLOADED, IGNORED, \
     Overview, Quality, SKIPPED, SNATCHED, SNATCHED_PROPER, UNAIRED, UNKNOWN, \
@@ -60,6 +59,7 @@ from sickrage.indexers.exceptions import indexer_error, \
     indexer_showincomplete, indexer_shownotfound
 from sickrage.indexers.helpers import map_indexers
 from sickrage.indexers.ui import AllShowsUI
+from sickrage.subtitles import Subtitles
 
 indexer_ids = ["indexerid", "tvdbid"]
 
@@ -208,7 +208,7 @@ class ApiHandler(RequestHandler):
                         curOutDict = await TVDBShorthandWrapper(cmd, self.application, self.request, *curArgs, **curKwargs).run()
                     else:
                         curOutDict = _responds(RESULT_ERROR, "No such cmd: '" + cmd + "'")
-                except ApiError as e:  # Api errors that we raised, they are harmless
+                except InternalApiError as e:  # Api errors that we raised, they are harmless
                     curOutDict = _responds(RESULT_ERROR, msg=str(e))
             else:  # if someone chained one of the forbiden cmds they will get an error for this one cmd
                 curOutDict = _responds(RESULT_ERROR, msg="The cmd '" + cmd + "' is not supported while chaining")
@@ -412,8 +412,7 @@ class ApiCall(ApiHandler):
             sickrage.app.log.error('Invalid param type: "{}" can not be checked. Ignoring it.'.format(str(arg_type)))
 
         if error:
-            # this is a real ApiError !!
-            raise ApiError(
+            raise InternalApiError(
                 'param "{}" with given value "{}" could not be parsed into "{}"'.format(str(name), str(value),
                                                                                         str(arg_type)))
 
@@ -436,8 +435,8 @@ class ApiCall(ApiHandler):
                     error = True
 
             if error:
-                # this is kinda a ApiError but raising an error is the only way of quitting here
-                raise ApiError("param: '" + str(name) + "' with given value: '" + str(
+                # this is kinda a InternalApiError but raising an error is the only way of quitting here
+                raise InternalApiError("param: '" + str(name) + "' with given value: '" + str(
                     value) + "' is out of allowed range '" + str(allowed_values) + "'")
 
 
@@ -594,7 +593,7 @@ def _get_root_dirs():
     return dir_list
 
 
-class ApiError(Exception):
+class InternalApiError(Exception):
     """
     Generic API error
     """
@@ -769,7 +768,7 @@ class CMD_Episode(ApiCall):
 
             return await _responds(RESULT_SUCCESS, episode.as_dict())
         except orm.exc.NoResultFound:
-            raise ApiError("Episode not found")
+            raise InternalApiError("Episode not found")
 
 
 class CMD_EpisodeSearch(ApiCall):
@@ -862,7 +861,7 @@ class CMD_EpisodeSetStatus(ApiCall):
                 break
         else:  # if we dont break out of the for loop we got here.
             # the allowed values has at least one item that could not be matched against the internal status strings
-            raise ApiError("The status string could not be matched to a status. Report to Devs!")
+            raise InternalApiError("The status string could not be matched to a status. Report to Devs!")
 
         if self.e:
             try:
@@ -1689,10 +1688,10 @@ class CMD_SiCKRAGESetDefaults(ApiCall):
                     break
             # this should be obsolete bcause of the above
             if not self.status in statusStrings.status_strings:
-                raise ApiError("Invalid Status")
+                raise InternalApiError("Invalid Status")
             # only allow the status options we want
             if int(self.status) not in (3, 5, 6, 7):
-                raise ApiError("Status Prohibited")
+                raise InternalApiError("Status Prohibited")
             sickrage.app.config.status_default = self.status
 
         if self.flatten_folders is not None:
@@ -2001,7 +2000,7 @@ class CMD_ShowAddNew(ApiCall):
                     break
 
             if self.status not in statusStrings.status_strings:
-                raise ApiError("Invalid Status")
+                raise InternalApiError("Invalid Status")
 
             # only allow the status options we want
             if int(self.status) not in (WANTED, SKIPPED, IGNORED):
@@ -2018,7 +2017,7 @@ class CMD_ShowAddNew(ApiCall):
                     break
 
             if self.future_status not in statusStrings.status_strings:
-                raise ApiError("Invalid Status")
+                raise InternalApiError("Invalid Status")
 
             # only allow the status options we want
             if int(self.future_status) not in (WANTED, SKIPPED, IGNORED):

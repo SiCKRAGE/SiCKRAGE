@@ -1,4 +1,4 @@
-class ApiError(Exception):
+class APIError(Exception):
     """
     API Error
     """
@@ -19,11 +19,11 @@ class ApiError(Exception):
         return self.__class__.__name__ + ': ' + self.message
 
 
-class APIResourceDoesNotExist(ApiError):
+class APIResourceDoesNotExist(APIError):
     """Custom exception when resource is not found."""
     pass
 
 
-class ApiUnauthorized(ApiError):
+class APIUnauthorized(APIError):
     """Need JWT Token"""
     pass

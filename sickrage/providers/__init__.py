@@ -41,7 +41,7 @@ from feedparser import FeedParserDict
 from requests.utils import add_dict_to_cookiejar, dict_from_cookiejar
 
 import sickrage
-from sickrage.core.api import ApiError, APIResourceDoesNotExist
+from sickrage.core.api import APIError
 from sickrage.core.api.cache import TorrentCacheAPI
 from sickrage.core.api.provider import ProviderAPI
 from sickrage.core.caches.tv_cache import TVCache
@@ -111,7 +111,7 @@ class GenericProvider(object):
             resp = ProviderAPI().get_urls(self.id)
             if 'data' in resp:
                 return json.loads(resp['data']['urls'])
-        except (JSONDecodeError, ApiError):
+        except (JSONDecodeError, APIError):
             pass
 
         return self._urls
@@ -619,7 +619,7 @@ class TorrentProvider(GenericProvider):
                 try:
                     # get content from external API
                     result = verify_torrent(TorrentCacheAPI().get(info_hash))
-                except APIResourceDoesNotExist as e:
+                except APIError as e:
                     # add torrent to external API
                     TorrentCacheAPI().add(url)
 

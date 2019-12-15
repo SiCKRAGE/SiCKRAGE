@@ -9,7 +9,7 @@ from raven.utils.json import JSONDecodeError
 from requests_oauthlib import OAuth2Session
 
 import sickrage
-from sickrage.core.api.exceptions import ApiUnauthorized, ApiError, APIResourceDoesNotExist
+from sickrage.core.api.exceptions import APIError
 
 
 class API(object):
@@ -88,9 +88,7 @@ class API(object):
                     json_data = resp.json()
 
                     if 400 >= resp.status_code < 500 and 'error' in json_data:
-                        if json_data['error']['status'] == 404 and 'no result' in json_data['error']['message'].lower():
-                            raise APIResourceDoesNotExist(**json_data['error'])
-                        raise ApiError(**json_data['error'])
+                        raise APIError(**json_data['error'])
                     elif resp.status_code == 204:
                         return
 

@@ -34,7 +34,7 @@ from sqlalchemy.orm import relationship, object_session
 from unidecode import unidecode
 
 import sickrage
-from sickrage.core.api import ApiError
+from sickrage.core.api import APIError
 from sickrage.core.api.imdb import IMDbAPI
 from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.caches.image_cache import ImageCache
@@ -473,7 +473,7 @@ class TVShow(MainDBBase):
         if not self.imdb_id:
             try:
                 resp = IMDbAPI().search_by_imdb_title(self.name)
-            except ApiError as e:
+            except APIError as e:
                 sickrage.app.log.error('{!r}'.format(e))
                 resp = {}
 
@@ -491,7 +491,7 @@ class TVShow(MainDBBase):
 
             try:
                 imdb_info = IMDbAPI().search_by_imdb_id(self.imdb_id)
-            except ApiError as e:
+            except APIError as e:
                 imdb_info = None
                 sickrage.app.log.error('{!r}'.format(e))
 

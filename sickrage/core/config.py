@@ -2368,7 +2368,7 @@ class Config(object):
                 buffer.seek(0)
                 fd.write(encryption.encrypt_string(buffer.read(), sickrage.app.public_key))
             sickrage.app.log.debug("Saved encrypted config to disk")
-        except sickrage.core.api.exceptions.ApiError:
+        except sickrage.core.api.exceptions.APIError:
             return False
 
         return True
