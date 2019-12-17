@@ -86,10 +86,12 @@ class API(object):
 
                 try:
                     json_data = resp.json()
+                    if not resp.ok:
+                        if 'error' in json_data:
+                            raise APIError(**json_data['error'])
+                        resp.raise_for_status()
 
-                    if 400 >= resp.status_code < 500 and 'error' in json_data:
-                        raise APIError(**json_data['error'])
-                    elif resp.status_code == 204:
+                    if resp.status_code == 204:
                         return
 
                     return json_data
@@ -99,6 +101,8 @@ class API(object):
                 latest_exception = "SiCKRAGE token issue, please try logging out and back in again to the web-ui"
             except requests.exceptions.ReadTimeout:
                 timeout += timeout
+            except requests.exceptions.HTTPError as e:
+                raise APIError(status=e.response.status_code, message=e.response.text)
             except requests.exceptions.RequestException as e:
                 latest_exception = e
 

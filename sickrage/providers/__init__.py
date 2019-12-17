@@ -109,7 +109,7 @@ class GenericProvider(object):
     def urls(self):
         try:
             resp = ProviderAPI().get_urls(self.id)
-            if 'data' in resp:
+            if resp and 'data' in resp:
                 return json.loads(resp['data']['urls'])
         except (JSONDecodeError, APIError):
             pass
