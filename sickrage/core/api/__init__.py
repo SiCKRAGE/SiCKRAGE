@@ -83,27 +83,26 @@ class API(object):
         for i in range(3):
             try:
                 resp = self.session.request(method, urljoin(self.api_url, url), timeout=timeout, hooks={'response': self.throttle_hook}, **kwargs)
+                resp.raise_for_status()
+                if resp.status_code == 204:
+                    return
 
                 try:
-                    json_data = resp.json()
-                    if not resp.ok:
-                        if 'error' in json_data:
-                            raise APIError(**json_data['error'])
-                        resp.raise_for_status()
-
-                    if resp.status_code == 204:
-                        return
-
-                    return json_data
+                    return resp.json()
                 except ValueError:
-                    resp.raise_for_status()
                     return resp.content
             except (InvalidClientIdError, MissingTokenError) as e:
                 latest_exception = "SiCKRAGE token issue, please try logging out and back in again to the web-ui"
             except requests.exceptions.ReadTimeout:
                 timeout += timeout
             except requests.exceptions.HTTPError as e:
-                raise APIError(status=e.response.status_code, message=e.response.text)
+                status_code = e.response.status_code
+                error_message = e.response.text
+                if 'application/json' in e.response.headers.get('content-type', ''):
+                    json_data = e.response.json().get('error', {})
+                    status_code = json_data.get('status', status_code)
+                    error_message = json_data.get('message', error_message)
+                raise APIError(status=status_code, message=error_message)
             except requests.exceptions.RequestException as e:
                 latest_exception = e
 
