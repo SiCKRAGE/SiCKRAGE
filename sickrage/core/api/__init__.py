@@ -96,6 +96,7 @@ class API(object):
 
                     return json_data
                 except ValueError:
+                    resp.raise_for_status()
                     return resp.content
             except (InvalidClientIdError, MissingTokenError) as e:
                 latest_exception = "SiCKRAGE token issue, please try logging out and back in again to the web-ui"
