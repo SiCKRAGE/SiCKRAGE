@@ -84,13 +84,17 @@ class WebSession(Session):
             response = super(WebSession, self).request(method, url, allow_redirects=False)
             url = self.get_redirect_target(response) or url
 
-        response = super(WebSession, self).request(method, url, verify=self._get_ssl_cert(verify), *args, **kwargs)
-        if self.cloudflare:
-            response = WebHelpers.cloudflare(self, response, **kwargs)
-
         try:
+            response = super(WebSession, self).request(method, url, verify=self._get_ssl_cert(verify), *args, **kwargs)
+
+            # check of cloudflare handling is required
+            if self.cloudflare:
+                response = WebHelpers.cloudflare(self, response, **kwargs)
+
             # check web response for errors
             response.raise_for_status()
+
+            return response
         except requests.exceptions.SSLError as e:
             if ssl.OPENSSL_VERSION_INFO < (1, 0, 1, 5):
                 sickrage.app.log.info(
@@ -101,10 +105,8 @@ class WebSession(Session):
                 sickrage.app.log.info(
                     "SSL Error requesting url: '{}', try disabling cert verification in advanced settings".format(e.request.url)
                 )
-        except Exception:
+        except requests.exceptions.RequestException as e:
             pass
-
-        return response
 
     def download(self, url, filename, **kwargs):
         try:
