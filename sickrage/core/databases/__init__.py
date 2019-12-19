@@ -148,7 +148,7 @@ class SRDatabase(object):
     def engine(self):
         if self.db_type == 'sqlite':
             return create_engine('sqlite:///{}'.format(self.db_path), echo=False, pool_size=1000, poolclass=QueuePool,
-                                 connect_args={'check_same_thread': False, 'timeout': 10})
+                                 connect_args={'check_same_thread': False, 'timeout': 20})
         elif self.db_type == 'mysql':
             mysql_engine = create_engine('mysql+pymysql://{}:{}@{}:{}/'.format(self.db_username, self.db_password, self.db_host, self.db_port), echo=False)
             mysql_engine.execute("CREATE DATABASE IF NOT EXISTS {}_{}".format(self.db_prefix, self.name))
