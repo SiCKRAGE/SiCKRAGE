@@ -107,7 +107,7 @@ class GKTorrentProvider(TorrentProvider):
 
                     title = '{name} {codec}'.format(name=title, codec='x264')
 
-                    if self.custom_url:
+                    if self.custom_url and self.urls['base_url'] in download_url:
                         if not validate_url(self.custom_url):
                             sickrage.app.log.warning("Invalid custom url: {}".format(self.custom_url))
                             return results
