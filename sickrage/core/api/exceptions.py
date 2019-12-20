@@ -27,3 +27,8 @@ class APIResourceDoesNotExist(APIError):
 class APIUnauthorized(APIError):
     """Need JWT Token"""
     pass
+
+
+class APITokenExpired(APIError):
+    """JWT Token Expired"""
+    pass

@@ -135,7 +135,10 @@ class GKTorrentProvider(TorrentProvider):
         return results
 
     def _get_download_link(self, url, download_type="torrent"):
-        data = self.session.get(url).text
+        try:
+            data = self.session.get(url).text
+        except Exception:
+            return
 
         links = {
             "torrent": "",

@@ -9,7 +9,7 @@ from raven.utils.json import JSONDecodeError
 from requests_oauthlib import OAuth2Session
 
 import sickrage
-from sickrage.core.api.exceptions import APIError
+from sickrage.core.api.exceptions import APIError, APITokenExpired
 
 
 class API(object):
