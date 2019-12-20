@@ -17,7 +17,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import json
 
 import requests
@@ -64,10 +63,9 @@ class SlackNotifier(Notifiers):
 
         headers = {"Content-Type": "application/json"}
         try:
-            r = requests.post(sickrage.app.config.slack_webhook,
-                              data=json.dumps(dict(text=message, username="SiCKRAGE")),
-                              headers=headers)
-            r.raise_for_status()
+            requests.post(sickrage.app.config.slack_webhook,
+                          data=json.dumps(dict(text=message, username="SiCKRAGE")),
+                          headers=headers)
         except Exception as e:
             sickrage.app.log.error("Error Sending Slack message: {}".format(e))
             return False

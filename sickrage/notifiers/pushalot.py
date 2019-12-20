@@ -20,6 +20,8 @@
 
 from urllib.parse import urlencode
 
+import requests
+
 import sickrage
 from sickrage.core.websession import WebSession
 from sickrage.notifiers import Notifiers
@@ -72,22 +74,17 @@ class PushalotNotifier(Notifiers):
                 'Title': event,
                 'Body': message}
 
-        resp = WebSession().post("https://pushalot.com/api/sendmessage",
-                                 headers={'Content-type': "application/x-www-form-urlencoded"},
-                                 data=urlencode(data))
-
         try:
-            resp.raise_for_status()
-            request_status = resp.status_code
-            if request_status == 200:
-                sickrage.app.log.debug("Pushalot notifications sent.")
-                return True
-            elif request_status == 410:
-                sickrage.app.log.error("Pushalot auth failed: %s" % resp.reason)
+            WebSession().post("https://pushalot.com/api/sendmessage",
+                              headers={'Content-type': "application/x-www-form-urlencoded"},
+                              data=urlencode(data))
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 410:
+                sickrage.app.log.warning("Pushalot auth failed: %s" % e.response.text)
                 return False
-            else:
-                sickrage.app.log.error("Pushalot notification failed.")
-                return False
-        except Exception:
+
             sickrage.app.log.error("Pushalot notification failed.")
             return False
+
+        sickrage.app.log.debug("Pushalot notifications sent.")
+        return True

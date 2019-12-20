@@ -17,7 +17,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import json
 
 import requests
@@ -70,11 +69,10 @@ class DiscordNotifier(Notifiers):
         headers = {"Content-Type": "application/json"}
 
         try:
-            r = requests.post(discord_webhook, data=json.dumps(dict(content=message,
-                                                                    username=discord_name,
-                                                                    avatar_url=avatar_icon,
-                                                                    tts=discord_tts)), headers=headers)
-            r.raise_for_status()
+            requests.post(discord_webhook, data=json.dumps(dict(content=message,
+                                                                username=discord_name,
+                                                                avatar_url=avatar_icon,
+                                                                tts=discord_tts)), headers=headers)
         except Exception as e:
             sickrage.app.log.warning("Unable to send Discord message: {}".format(e))
             return False

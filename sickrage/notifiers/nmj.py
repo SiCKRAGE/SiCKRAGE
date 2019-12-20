@@ -22,6 +22,8 @@ import telnetlib
 from urllib.parse import urlencode
 from xml.etree import ElementTree
 
+import requests
+
 import sickrage
 from sickrage.core.websession import WebSession
 from sickrage.notifiers import Notifiers
@@ -121,12 +123,11 @@ class NMJNotifier(Notifiers):
         # if a mount URL is provided then attempt to open a handle to that URL
         if mount:
             sickrage.app.log.debug("Try to mount network drive via url: %s" % mount)
-            resp = WebSession().get(mount)
 
             try:
-                resp.raise_for_status()
-            except Exception:
-                sickrage.app.log.warning("NMJ: Problem with Popcorn Hour on host %s: %s" % (host, resp.status_code))
+                WebSession().get(mount)
+            except requests.exceptions.HTTPError as e:
+                sickrage.app.log.warning("NMJ: Problem with Popcorn Hour on host %s: %s" % (host, e.response.status_code))
                 return False
 
         # build up the request URL and parameters
@@ -142,12 +143,11 @@ class NMJNotifier(Notifiers):
 
         # send the request to the server
         sickrage.app.log.debug("Sending NMJ scan update command via url: %s" % updateUrl)
-        resp = WebSession().get(updateUrl)
 
         try:
-            resp.raise_for_status()
-        except Exception:
-            sickrage.app.log.warning("NMJ: Problem with Popcorn Hour on host %s: %s" % (host, resp.status_code))
+            resp = WebSession().get(updateUrl)
+        except requests.exceptions.HTTPError as e:
+            sickrage.app.log.warning("NMJ: Problem with Popcorn Hour on host %s: %s" % (host, e.response.status_code))
             return False
 
         # try to parse the resulting XML
@@ -162,9 +162,9 @@ class NMJNotifier(Notifiers):
         if int(result) > 0:
             sickrage.app.log.error("Popcorn Hour returned an errorcode: {}".format(result))
             return False
-        else:
-            sickrage.app.log.info("NMJ started background scan")
-            return True
+
+        sickrage.app.log.info("NMJ started background scan")
+        return True
 
     def _notifyNMJ(self, host=None, database=None, mount=None, force=False):
         """

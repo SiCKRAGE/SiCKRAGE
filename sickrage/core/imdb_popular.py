@@ -20,7 +20,6 @@
 # ##############################################################################
 
 
-
 import datetime
 import os
 import posixpath
@@ -52,8 +51,8 @@ class imdbPopular(object):
 
         try:
             data = WebSession().get(self.url,
-                                                    headers={'Referer': 'http://akas.imdb.com/'},
-                                                    params=self.params).text
+                                    headers={'Referer': 'http://akas.imdb.com/'},
+                                    params=self.params).text
         except Exception:
             return None
 

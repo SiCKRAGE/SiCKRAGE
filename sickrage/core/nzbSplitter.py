@@ -124,8 +124,9 @@ def split_nzb_result(result, session=None):
     :param result: search result object
     :return: False upon failure, a list of episode objects otherwise
     """
-    url_data = WebSession().get(result.url, needBytes=True).text
-    if url_data is None:
+    try:
+        url_data = WebSession().get(result.url, needBytes=True).text
+    except Exception:
         sickrage.app.log.error("Unable to load url " + result.url + ", can't download season NZB")
         return False
 

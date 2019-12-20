@@ -168,8 +168,7 @@ class DownloadStationAPI(GenericClient):
 
         try:
             self.response = self.session.get(self.urls['info'], params=params, verify=False, timeout=120)
-            self.response.raise_for_status()
-        except RequestException as error:
+        except RequestException:
             self.session.cookies.clear()
             self.auth = False
             return False
@@ -196,8 +195,7 @@ class DownloadStationAPI(GenericClient):
 
                 try:
                     self.response = self.session.get(self.urls['info'], params=params, verify=False, timeout=120)
-                    self.response.raise_for_status()
-                except RequestException as error:
+                except RequestException:
                     self.session.cookies.clear()
                     self.auth = False
                     return False

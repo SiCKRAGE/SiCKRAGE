@@ -23,6 +23,7 @@
 import os
 from urllib.parse import urlencode
 
+import requests
 from requests import HTTPError
 
 import sickrage
@@ -88,26 +89,18 @@ class pyTivoNotifier(Notifiers):
         file = "/" + abs_path.replace(root, "")
 
         # Finally create the url and make request
-        request_url = "http://{}/TiVoConnect?{}".format(host, urlencode(
-            {'Command': 'Push', 'Container': container, 'File': file, 'tsn': tsn}))
+        request_url = "http://{}/TiVoConnect?{}".format(host, urlencode({'Command': 'Push', 'Container': container, 'File': file, 'tsn': tsn}))
 
         sickrage.app.log.debug("pyTivo notification: Requesting " + request_url)
 
-        resp = WebSession().get(request_url)
-
         try:
-            resp.raise_for_status()
-        except HTTPError as e:
-            if hasattr(e, 'reason'):
-                sickrage.app.log.error("pyTivo notification: Error, failed to reach a server - " + e.reason)
-                return False
-            elif hasattr(e, 'code'):
-                sickrage.app.log.error(
-                    "pyTivo notification: Error, the server couldn't fulfill the request - " + e.code)
+            WebSession().get(request_url)
+        except requests.exceptions.HTTPError as e:
+            sickrage.app.log.error("pyTivo notification: Error, the server couldn't fulfill the request - " + e.response.text)
             return False
         except Exception as e:
             sickrage.app.log.error("PYTIVO: Unknown exception: {}".format(e))
             return False
-        else:
-            sickrage.app.log.info("pyTivo notification: Successfully requested transfer of file")
-            return True
+
+        sickrage.app.log.info("pyTivo notification: Successfully requested transfer of file")
+        return True

@@ -723,12 +723,12 @@ class PipUpdateManager(UpdateManager):
     def _check_for_new_version(self):
         from distutils.version import LooseVersion
         url = "https://pypi.org/pypi/{}/json".format('sickrage')
-        resp = WebSession().get(url)
-        versions = resp.json()["releases"].keys()
-        versions = [x for x in versions if 'dev' not in x]
-        versions.sort(key=LooseVersion, reverse=True)
 
         try:
+            resp = WebSession().get(url)
+            versions = resp.json()["releases"].keys()
+            versions = [x for x in versions if 'dev' not in x]
+            versions.sort(key=LooseVersion, reverse=True)
             return versions[0]
         except Exception:
             return self._find_installed_version()

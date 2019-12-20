@@ -61,10 +61,10 @@ class NMJv2Notifier(Notifiers):
         """
 
         url_loc = "http://" + host + ":8008/file_operation?arg0=list_user_storage_file&arg1=&arg2=" + instance + "&arg3=20&arg4=true&arg5=true&arg6=true&arg7=all&arg8=name_asc&arg9=false&arg10=false"
-        resp = WebSession().get(url_loc)
 
         try:
-            resp.raise_for_status()
+            resp = WebSession().get(url_loc)
+
             response1 = resp.text
             xml = parseString(response1)
             time.sleep(300.0 / 1000.0)
@@ -73,14 +73,10 @@ class NMJv2Notifier(Notifiers):
                 xmlData = xmlTag.replace('<path>', '').replace('</path>', '').replace('[=]', '')
                 url_db = "http://" + host + ":8008/metadata_database?arg0=check_database&arg1=" + xmlData
                 respdb = WebSession().get(url_db)
-                respdb.raise_for_status()
                 xmldb = parseString(respdb.text)
-                returnvalue = xmldb.getElementsByTagName('returnValue')[0].toxml().replace('<returnValue>', '').replace(
-                    '</returnValue>', '')
+                returnvalue = xmldb.getElementsByTagName('returnValue')[0].toxml().replace('<returnValue>', '').replace('</returnValue>', '')
                 if returnvalue == "0":
-                    DB_path = xmldb.getElementsByTagName('database_path')[0].toxml().replace('<database_path>',
-                                                                                             '').replace(
-                        '</database_path>', '').replace('[=]', '')
+                    DB_path = xmldb.getElementsByTagName('database_path')[0].toxml().replace('<database_path>', '').replace('</database_path>', '').replace('[=]', '')
                     if dbloc == "local" and DB_path.find("localhost") > -1:
                         sickrage.app.config.nmjv2_host = host
                         sickrage.app.config.nmjv2_database = DB_path
@@ -89,10 +85,9 @@ class NMJv2Notifier(Notifiers):
                         sickrage.app.config.nmjv2_host = host
                         sickrage.app.config.nmjv2_database = DB_path
                         return True
-
         except Exception as e:
             sickrage.app.log.warning("Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e))
-            return False
+
         return False
 
     def _sendNMJ(self, host):
@@ -113,11 +108,9 @@ class NMJv2Notifier(Notifiers):
             url_updatedb = "http://" + host + ":8008/metadata_database?arg0=scanner_start&arg1=" + sickrage.app.config.nmjv2_database + "&arg2=background&arg3="
             sickrage.app.log.debug("Try to mount network drive via url: %s" % (host))
             preresp = WebSession().get(url_scandir)
-            preresp.raise_for_status()
             response1 = preresp.text
             time.sleep(300.0 / 1000.0)
             resp = WebSession().get(url_updatedb)
-            resp.raise_for_status()
             response2 = resp.text
         except IOError as e:
             sickrage.app.log.warning("Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e))

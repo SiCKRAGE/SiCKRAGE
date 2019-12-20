@@ -108,8 +108,7 @@ class PushbulletNotifier(Notifiers):
                 headers=headers
             )
         except Exception:
-            sickrage.app.log.debug(
-                'Pushbullet authorization failed with exception: %r' % traceback.format_exc())
+            sickrage.app.log.debug('Pushbullet authorization failed with exception: %r' % traceback.format_exc())
             return False
 
         if response.status_code == 410:

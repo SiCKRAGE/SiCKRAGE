@@ -236,13 +236,11 @@ class KODINotifier(Notifiers):
             sickrage.app.log.debug("Contacting KODI via url: " + url)
 
         try:
-            resp = WebSession().get(url, headers=headers)
-            resp.raise_for_status()
+            result = WebSession().get(url, headers=headers).text
         except Exception as e:
             sickrage.app.log.debug("Couldn't contact KODI HTTP at %r : %r" % (url, e))
             return False
 
-        result = resp.text
         sickrage.app.log.debug("KODI HTTP response: " + result.replace('\n', ''))
         return result
 
@@ -376,9 +374,7 @@ class KODINotifier(Notifiers):
             sickrage.app.log.debug("Contacting KODI via url: " + url)
 
         try:
-            resp = WebSession().post(url, json=command, headers=headers)
-            resp.raise_for_status()
-            result = resp.json()
+            result = WebSession().post(url, json=command, headers=headers).json()
             sickrage.app.log.debug("KODI JSON response: " + str(result))
             return result
         except Exception as e:

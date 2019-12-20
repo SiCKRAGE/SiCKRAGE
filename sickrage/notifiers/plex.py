@@ -75,18 +75,14 @@ class PLEXNotifier(Notifiers):
         else:
             sickrage.app.log.debug('PLEX: Contacting via url: ' + url)
 
-
         try:
-            resp = WebSession().get(url, headers=headers)
-            resp.raise_for_status()
-            result = resp.text
-
-            sickrage.app.log.debug('PLEX: HTTP response: ' + result.replace('\n', ''))
-            # could return result response = re.compile('<html><li>(.+\w)</html>').findall(result)
-            return 'OK'
+            result = WebSession().get(url, headers=headers).text
         except Exception as e:
             sickrage.app.log.warning('PLEX: Warning: Couldn\'t contact Plex at {}: {}'.format(url, e))
             return False
+
+        sickrage.app.log.debug('PLEX: HTTP response: ' + result.replace('\n', ''))
+        return 'OK'
 
     def _notify_pmc(self, message, title='SiCKRAGE', host=None, username=None, password=None, force=False):
         """Internal wrapper for the notify_snatch and notify_download functions
@@ -200,16 +196,13 @@ class PLEXNotifier(Notifiers):
                     'X-Plex-Version': '1.0'
                 }
 
-
                 try:
                     resp = WebSession().get('https://plex.tv/users/sign_in.xml', headers=headers)
-                    resp.raise_for_status()
                     auth_tree = ElementTree.fromstring(resp.text)
                     token = auth_tree.findall('.//authentication-token')[0].text
                     token_arg = '?X-Plex-Token=' + token
                 except Exception as e:
-                    sickrage.app.log.debug(
-                        'PLEX: Error fetching credentials from from plex.tv for user %s: %s' % (username, e))
+                    sickrage.app.log.debug('PLEX: Error fetching credentials from from plex.tv for user %s: %s' % (username, e))
 
                 except (ValueError, IndexError) as e:
                     sickrage.app.log.debug('PLEX: Error parsing plex.tv response: ' + e)
@@ -223,19 +216,16 @@ class PLEXNotifier(Notifiers):
                 try:
                     url = 'http://%s/library/sections%s' % (cur_host, token_arg)
                     resp = WebSession().get(url)
-                    resp.raise_for_status()
                     media_container = ElementTree.fromstring(resp.text)
                 except IOError as e:
-                    sickrage.app.log.warning(
-                        'PLEX: Error while trying to contact Plex Media Server: {}'.format(e))
+                    sickrage.app.log.warning('PLEX: Error while trying to contact Plex Media Server: {}'.format(e))
                     hosts_failed.append(cur_host)
                     continue
                 except Exception as e:
                     if 'invalid token' in str(e):
                         sickrage.app.log.error('PLEX: Please set TOKEN in Plex settings: ')
                     else:
-                        sickrage.app.log.error(
-                            'PLEX: Error while trying to contact Plex Media Server: {}'.format(e))
+                        sickrage.app.log.error('PLEX: Error while trying to contact Plex Media Server: {}'.format(e))
                     continue
 
                 sections = media_container.findall('.//Directory')
@@ -269,16 +259,12 @@ class PLEXNotifier(Notifiers):
                     force and WebSession().get(url)
                     host_list.append(cur_host)
                 except Exception as e:
-                    sickrage.app.log.warning(
-                        'PLEX: Error updating library section for Plex Media Server: {}'.format(e))
+                    sickrage.app.log.warning('PLEX: Error updating library section for Plex Media Server: {}'.format(e))
                     hosts_failed.append(cur_host)
 
             if hosts_match:
-                sickrage.app.log.debug(
-                    'PLEX: Updating hosts where TV section paths match the downloaded show: ' + ', '.join(
-                        set(host_list)))
+                sickrage.app.log.debug('PLEX: Updating hosts where TV section paths match the downloaded show: ' + ', '.join(set(host_list)))
             else:
-                sickrage.app.log.debug(
-                    'PLEX: Updating TV sections on these hosts: {}'.format(', '.join(set(host_list))))
+                sickrage.app.log.debug('PLEX: Updating TV sections on these hosts: {}'.format(', '.join(set(host_list))))
 
             return (', '.join(set(hosts_failed)), None)[not len(hosts_failed)]

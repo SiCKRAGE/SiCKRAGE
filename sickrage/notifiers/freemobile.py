@@ -19,6 +19,8 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 from urllib import parse
 
+import requests
+
 import sickrage
 from sickrage.core.websession import WebSession
 from sickrage.notifiers import Notifiers
@@ -56,25 +58,23 @@ class FreeMobileNotifier(Notifiers):
         msg_quoted = parse.quote(title + ": " + msg)
         URL = "https://smsapi.free-mobile.fr/sendmsg?user=" + id + "&pass=" + apiKey + "&msg=" + msg_quoted
 
-        resp = WebSession().get(URL
-                                )
         # send the request to Free Mobile
         try:
-            resp.raise_for_status()
-        except Exception as e:
-            if resp.status_code == 400:
+            WebSession().get(URL)
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 400:
                 message = "Missing parameter(s)."
                 sickrage.app.log.error(message)
                 return False, message
-            if resp.status_code == 402:
+            if e.response.status_code == 402:
                 message = "Too much SMS sent in a short time."
                 sickrage.app.log.error(message)
                 return False, message
-            if resp.status_code == 403:
+            if e.response.status_code == 403:
                 message = "API service isn't enabled in your account or ID / API key is incorrect."
                 sickrage.app.log.error(message)
                 return False, message
-            if resp.status_code == 500:
+            if e.response.status_code == 500:
                 message = "Server error. Please retry in few moment."
                 sickrage.app.log.error(message)
                 return False, message

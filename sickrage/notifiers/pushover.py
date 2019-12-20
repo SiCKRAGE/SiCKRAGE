@@ -22,6 +22,8 @@
 import time
 from urllib.parse import urlencode
 
+import requests
+
 import sickrage
 from sickrage.core.websession import WebSession
 from sickrage.notifiers import Notifiers
@@ -89,23 +91,21 @@ class PushoverNotifier(Notifiers):
         if sickrage.app.config.pushover_device:
             args["device"] = sickrage.app.config.pushover_device
 
-        resp = WebSession().post("https://api.pushover.net/1/messages.json", data=urlencode(args),
-                                 headers={"Content-type": "application/x-www-form-urlencoded"})
-
         try:
-            resp.raise_for_status()
-        except Exception as e:
-            sickrage.app.log.error("Pushover notification failed. Error code: " + str(resp.status_code))
+            WebSession().post("https://api.pushover.net/1/messages.json", data=urlencode(args),
+                              headers={"Content-type": "application/x-www-form-urlencoded"})
+        except requests.exceptions.HTTPError as e:
+            sickrage.app.log.error("Pushover notification failed. Error code: " + str(e.response.status_code))
 
             # HTTP status 404 if the provided email address isn't a Pushover user.
-            if resp.status_code == 404:
+            if e.response.status_code == 404:
                 sickrage.app.log.warning(
                     "Username is wrong/not a pushover email. Pushover will send an email to it")
                 return False
 
             # For HTTP status code 401's, it is because you are passing in either an invalid token, or the user has
             # not added your service.
-            elif resp.status_code == 401:
+            elif e.response.status_code == 401:
 
                 # HTTP status 401 if the user doesn't have the service added
                 subscribeNote = self._sendPushover(msg, title, sound=sound, userKey=userKey, apiKey=apiKey)
@@ -117,13 +117,13 @@ class PushoverNotifier(Notifiers):
                     return False
 
             # If you receive an HTTP status code of 400, it is because you failed to send the proper parameters
-            elif resp.status_code == 400:
+            elif e.response.status_code == 400:
                 sickrage.app.log.error("Wrong data sent to pushover")
                 return False
 
             # If you receive a HTTP status code of 429, it is because the message limit has been reached (free limit
             # is 7,500)
-            elif resp.status_code == 429:
+            elif e.response.status_code == 429:
                 sickrage.app.log.error("Pushover API message limit reached - try a different API key")
                 return False
 

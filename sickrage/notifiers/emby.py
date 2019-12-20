@@ -75,10 +75,8 @@ class EMBYNotifier(Notifiers):
             'Content-Type': 'application/json'
         }
 
-        resp = WebSession().get(url, data=data, headers=headers)
-
         try:
-            resp.raise_for_status()
+            resp = WebSession().get(url, data=data, headers=headers)
             sickrage.app.log.debug('EMBY: HTTP response: {}'.format(resp.text.replace('\n', '')))
         except Exception as e:
             sickrage.app.log.warning('EMBY: Warning: Couldn\'t contact Emby at {}: {}'.format(url, e))
@@ -127,10 +125,8 @@ class EMBYNotifier(Notifiers):
                 'Content-Type': 'application/json'
             }
 
-            resp = WebSession().get(url, data=data, headers=headers)
-
             try:
-                resp.raise_for_status()
+                resp = WebSession().get(url, data=data, headers=headers)
                 sickrage.app.log.debug('EMBY: HTTP response: ' + resp.text.replace('\n', ''))
             except Exception as e:
                 sickrage.app.log.warning('EMBY: Warning: Couldn\'t contact Emby at {}: {}'.format(url, e))

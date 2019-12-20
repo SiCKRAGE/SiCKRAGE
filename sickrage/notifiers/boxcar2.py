@@ -20,6 +20,7 @@
 # ##############################################################################
 from urllib.parse import urlencode
 
+import requests
 from requests import RequestException
 
 import sickrage
@@ -59,24 +60,25 @@ class Boxcar2Notifier(Notifiers):
             'notification[sound]': "notifier-2"
         })
 
-        # send the request to boxcar2
-        resp = WebSession().get(API_URL, data=data, timeout=120)
-
         try:
-            resp.raise_for_status()
-        except RequestException as e:
+            # send the request to boxcar2
+            WebSession().get(API_URL, data=data, timeout=120)
+        except requests.exceptions.HTTPError as e:
             # if we get an error back that doesn't have an error code then who knows what's really happening
-            sickrage.app.log.warning("Boxcar2 notification failed. Error code: {}".format(resp.status_code))
+            sickrage.app.log.warning("Boxcar2 notification failed. Error code: {}".format(e.response.status_code))
 
             # HTTP status 404
-            if resp.status_code == 404:
+            if e.response.status_code == 404:
                 sickrage.app.log.warning("Access token is invalid. Check it.")
                 return False
 
             # If you receive an HTTP status code of 400, it is because you failed to send the proper parameters
-            elif resp.status_code == 400:
-                sickrage.app.log.error("Wrong data send to boxcar2")
+            elif e.response.status_code == 400:
+                sickrage.app.log.warning("Wrong data send to boxcar2")
                 return False
+
+            sickrage.app.log.error("Boxcar2 notification failed.")
+            return False
 
         sickrage.app.log.debug("Boxcar2 notification successful.")
         return True

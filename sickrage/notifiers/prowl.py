@@ -19,6 +19,8 @@
 
 from urllib.parse import urlencode
 
+import requests
+
 import sickrage
 from sickrage.core.websession import WebSession
 from sickrage.notifiers import Notifiers
@@ -78,22 +80,18 @@ class ProwlNotifier(Notifiers):
                 'description': message,
                 'priority': prowl_priority}
 
-        resp = WebSession().post("https://api.prowlapp.com/publicapi/add",
-                                 headers={'Content-type': "application/x-www-form-urlencoded"},
-                                 data=urlencode(data))
         try:
-            resp.raise_for_status()
+            resp = WebSession().post("https://api.prowlapp.com/publicapi/add",
+                                     headers={'Content-type': "application/x-www-form-urlencoded"},
+                                     data=urlencode(data))
 
-            request_status = resp.status_code
-            if request_status == 200:
-                sickrage.app.log.info("Prowl notifications sent.")
-                return True
-            elif request_status == 401:
-                sickrage.app.log.error("Prowl auth failed: %s" % resp.reason)
-                return False
-            else:
+            if not resp.ok:
                 sickrage.app.log.error("Prowl notification failed.")
                 return False
-        except Exception:
-            sickrage.app.log.error("Prowl notification failed.")
-            return False
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 401:
+                sickrage.app.log.error("Prowl auth failed: %s" % e.response.text)
+                return False
+
+        sickrage.app.log.info("Prowl notifications sent.")
+        return True

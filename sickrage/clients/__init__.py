@@ -17,7 +17,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import re
 import time
 from base64 import b16encode, b32decode
@@ -199,14 +198,8 @@ class GenericClient(object):
             return False
 
         try:
-            self.response = self.session.request(method.upper(),
-                                                 self.url,
-                                                 params=params,
-                                                 data=data,
-                                                 auth=(self.username, self.password),
-                                                 timeout=120,
-                                                 verify=False,
-                                                 *args, **kwargs)
+            self.response = self.session.request(method.upper(), self.url, params=params, data=data, auth=(self.username, self.password), timeout=120,
+                                                 verify=False, *args, **kwargs)
         except Exception:
             return False
 
