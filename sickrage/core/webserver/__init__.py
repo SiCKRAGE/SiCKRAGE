@@ -305,7 +305,7 @@ class WebServer(object):
             (r'%s/home/retryEpisode(/?)' % sickrage.app.config.web_root, RetryEpisodeHandler),
             (r'%s/home/fetch_releasegroups(/?)' % sickrage.app.config.web_root, FetchReleasegroupsHandler),
             (r'%s/home/postprocess(/?)' % sickrage.app.config.web_root, HomePostProcessHandler),
-            # (r'%s/home/postprocess/processEpisode(/?)' % sickrage.app.config.web_root, HomeProcessEpisodeHandler),
+            (r'%s/home/postprocess/processEpisode(/?)' % sickrage.app.config.web_root, HomeProcessEpisodeHandler),
             (r'%s/home/addShows(/?)' % sickrage.app.config.web_root, HomeAddShowsHandler),
             (r'%s/home/addShows/searchIndexersForShowName(/?)' % sickrage.app.config.web_root, SearchIndexersForShowNameHandler),
             (r'%s/home/addShows/massAddTable(/?)' % sickrage.app.config.web_root, MassAddTableHandler),

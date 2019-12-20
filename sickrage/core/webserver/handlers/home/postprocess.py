@@ -42,6 +42,10 @@ class HomePostProcessHandler(BaseHandler, ABC):
 
 class HomeProcessEpisodeHandler(BaseHandler, ABC):
     @authenticated
+    async def get(self, *args, **kwargs):
+        return self.write("Please use our API instead for post-processing")
+
+    @authenticated
     async def post(self, *args, **kwargs):
         pp_options = {
             'proc_dir': self.get_argument('proc_dir'),
