@@ -105,8 +105,6 @@ class WebSession(Session):
                 sickrage.app.log.info(
                     "SSL Error requesting url: '{}', try disabling cert verification in advanced settings".format(e.request.url)
                 )
-        except requests.exceptions.RequestException as e:
-            pass
 
     def download(self, url, filename, **kwargs):
         try:

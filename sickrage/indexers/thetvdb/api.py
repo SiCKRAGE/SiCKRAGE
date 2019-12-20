@@ -30,6 +30,7 @@ from datetime import datetime
 from operator import itemgetter
 from urllib.parse import urljoin
 
+import requests
 from requests import RequestException
 from simplejson import JSONDecodeError
 from six import text_type
@@ -443,26 +444,20 @@ class Tvdb:
                     method, urljoin(self.config['api']['base'], url), headers=self.config['headers'],
                     timeout=sickrage.app.config.indexer_timeout, **kwargs
                 )
-            except Exception as e:
+            except requests.exceptions.HTTPError as e:
+                status_code = e.response.status_code
+                error_message = e.response.text
+
+                if 'application/json' in e.response.headers.get('content-type', ''):
+                    error_message = e.response.json().get('Error', error_message)
+
+                if status_code == 401:
+                    raise tvdb_unauthorized(error_message)
+
                 if i < retries - 1:
                     continue
-                raise tvdb_error(e)
 
-            # handle requests exceptions
-            try:
-                if resp.status_code == 401:
-                    raise tvdb_unauthorized(resp.json()['Error'])
-                elif resp.status_code >= 400:
-                    if i < retries - 1:
-                        continue
-                    raise tvdb_error(resp.json()['Error'])
-            except JSONDecodeError:
-                try:
-                    resp.raise_for_status()
-                except RequestException as e:
-                    if i < retries - 1:
-                        continue
-                    raise tvdb_error(e)
+                raise tvdb_error(error_message)
 
             return to_lowercase(resp.json())
 
