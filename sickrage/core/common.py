@@ -103,8 +103,8 @@ class Quality(object):
 
     qualitySizes = {NONE: 0,
                     UNKNOWN: 500,
-                    SDTV: 700,
-                    SDDVD: 700,
+                    SDTV: 1200,
+                    SDDVD: 1200,
                     HDTV: 1500,
                     RAWHDTV: 1500,
                     FULLHDTV: 1500,
