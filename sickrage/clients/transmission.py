@@ -43,21 +43,22 @@ class TransmissionAPI(GenericClient):
         self.url = self.host + self.rpcurl + '/rpc'
 
     def _get_auth(self):
-        self.response = self.session.post(self.url,
-                                          json={'method': 'session-get', },
-                                          timeout=120,
-                                          auth=(self.username, self.password),
-                                          verify=bool(sickrage.app.config.torrent_verify_cert))
+        try:
+            self.response = self.session.post(self.url,
+                                              json={'method': 'session-get', },
+                                              timeout=120,
+                                              auth=(self.username, self.password),
+                                              verify=bool(sickrage.app.config.torrent_verify_cert))
 
-        # get auth session header
-        self.auth = self.response.headers['x-transmission-session-id'] if self.response is not None else None
-        if not self.auth:
-            return
+            # get auth session header
+            self.auth = self.response.headers.get('x-transmission-session-id')
 
-        # Validating Transmission authorization
-        self._request(method='post',
-                      json={'arguments': {}, 'method': 'session-get'},
-                      headers={'x-transmission-session-id': self.auth})
+            # Validating Transmission authorization
+            self._request(method='post',
+                          json={'arguments': {}, 'method': 'session-get'},
+                          headers={'x-transmission-session-id': self.auth})
+        except Exception:
+            self.auth = None
 
         return self.auth
 

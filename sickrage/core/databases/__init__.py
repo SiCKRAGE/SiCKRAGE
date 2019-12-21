@@ -99,24 +99,17 @@ class ContextSession(sqlalchemy.orm.Session):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        attempt = 0
-
-        while attempt <= self.max_attempts:
+        for i in range(self.max_attempts):
             try:
                 self.commit()
                 break
-            except OperationalError as e:
+            except OperationalError:
+                sickrage.app.log.debug('Retrying database commit, attempt {}'.format(i))
                 self.rollback()
-                if not attempt < self.max_attempts:
-                    raise
                 sleep(1)
             except Exception as e:
                 self.rollback()
                 raise
-
-            attempt += 1
-
-            sickrage.app.log.debug('Retrying database commit, attempt {}'.format(attempt))
 
         self.close()
 

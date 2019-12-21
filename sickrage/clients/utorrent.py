@@ -50,9 +50,9 @@ class uTorrentAPI(GenericClient):
             self.auth = re.findall("<div.*?>(.*?)</", self.response.text)[0]
             self.cookies = self.response.cookies
         except Exception:
-            return None
+            self.auth = None
 
-        return self.auth if self.response.ok else None
+        return self.auth
 
     def _add_torrent_uri(self, result):
         params = {'action': 'add-url', 's': result.url[:1024]}

@@ -40,26 +40,27 @@ class qbittorrentAPI(GenericClient):
     def _get_auth(self):
         if self.api > 1:
             self.url = '{host}login'.format(host=self.host)
+
             data = {
                 'username': self.username,
                 'password': self.password,
             }
+
             try:
                 self.response = self.session.post(self.url, data=data)
+                self.session.cookies = self.response.cookies
+                self.auth = self.response.content
             except Exception:
-                return None
-
+                self.auth = None
         else:
             try:
                 self.response = self.session.get(self.host, verify=sickrage.app.config.torrent_verify_cert)
+                self.session.cookies = self.response.cookies
                 self.auth = self.response.content
             except Exception:
-                return None
+                self.auth = None
 
-        self.session.cookies = self.response.cookies
-        self.auth = self.response.content
-
-        return self.auth if not self.response.status_code == 404 else None
+        return self.auth
 
     def _set_torrent_label(self, result):
         label = sickrage.app.config.torrent_label

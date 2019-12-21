@@ -123,9 +123,12 @@ class SabNZBd(object):
 
         url = urljoin(host, 'api')
 
-        data = WebSession().get(url, params=params, verify=False).json()
-        if not data:
-            return False, data
+        try:
+            data = WebSession().get(url, params=params, verify=False).json()
+            if not data:
+                return False, data
+        except Exception:
+            return False, ""
 
         return SabNZBd._check_sab_response(data)
 
@@ -151,13 +154,16 @@ class SabNZBd(object):
 
         url = urljoin(host, 'api')
 
-        data = WebSession().get(url, params=params, verify=False).json()
-        if not data:
-            return False, data
+        try:
+            # check the result and determine if it's good or not
+            data = WebSession().get(url, params=params, verify=False).json()
+            if not data:
+                return False, data
 
-        # check the result and determine if it's good or not
-        result, sabText = SabNZBd._check_sab_response(data)
-        if not result:
-            return False, sabText
+            result, sab_text = SabNZBd._check_sab_response(data)
+            if not result:
+                return False, sab_text
+        except Exception:
+            return False, ""
 
         return True, 'Success'

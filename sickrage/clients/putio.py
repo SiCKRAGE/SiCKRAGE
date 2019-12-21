@@ -56,8 +56,7 @@ class PutioAPI(GenericClient):
             response = self.session.get(response.headers['location'],
                                         verify=bool(sickrage.app.config.torrent_verify_cert))
 
-            resulting_uri = '{redirect_uri}#access_token=(.*)'.format(
-                redirect_uri=re.escape(self.redirect_uri))
+            resulting_uri = '{redirect_uri}#access_token=(.*)'.format(redirect_uri=re.escape(self.redirect_uri))
 
             self.auth = re.search(resulting_uri, response.headers['location']).group(1)
         except Exception:

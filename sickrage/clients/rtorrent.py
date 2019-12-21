@@ -164,9 +164,7 @@ class rTorrentAPI(GenericClient):
 
     def test_authentication(self):
         try:
-            self._get_auth()
-
-            if self.auth is not None:
+            if self._get_auth():
                 return True, 'Success: Connected and Authenticated'
             else:
                 return False, 'Error: Unable to get ' + self.name + ' Authentication, check your config!'

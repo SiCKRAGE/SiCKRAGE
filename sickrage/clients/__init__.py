@@ -200,14 +200,14 @@ class GenericClient(object):
         try:
             self.response = self.session.request(method.upper(), self.url, params=params, data=data, auth=(self.username, self.password), timeout=120,
                                                  verify=False, *args, **kwargs)
+
+            sickrage.app.log.debug('{name}: Response to {method} request is {response}'.format(
+                name=self.name,
+                method=method.upper(),
+                response=self.response.text
+            ))
         except Exception:
             return False
-
-        sickrage.app.log.debug('{name}: Response to {method} request is {response}'.format(
-            name=self.name,
-            method=method.upper(),
-            response=self.response.text
-        ))
 
         return True
 
@@ -359,19 +359,11 @@ class GenericClient(object):
     def test_authentication(self):
         try:
             # verify valid url
-            self.response = self.session.get(self.url, timeout=120, verify=False)
-        except:
-            pass
-
-        try:
-            # get auth
-            self._get_auth()
-            if not self.response:
-                raise Exception
+            # self.response = self.session.get(self.url, timeout=120, verify=False)
 
             # verify auth
-            if self.auth:
+            if self._get_auth():
                 return True, 'Success: Connected and Authenticated'
             return False, 'Error: Unable to get ' + self.name + ' Authentication, check your config!'
-        except Exception as e:
+        except Exception:
             return False, 'Error: Unable to connect to ' + self.name

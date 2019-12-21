@@ -165,6 +165,5 @@ class NZBGet(object):
                 sickrage.app.log.warning("NZBGet could not add %s to the queue" % (nzb.name + ".nzb"))
                 return False
         except Exception:
-            sickrage.app.log.warning(
-                "Connect Error to NZBGet: could not add %s to the queue" % (nzb.name + ".nzb"))
+            sickrage.app.log.warning("Connect Error to NZBGet: could not add %s to the queue" % (nzb.name + ".nzb"))
             return False

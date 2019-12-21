@@ -238,6 +238,7 @@ def get_scene_exception_by_name_multiple(show_name, session=None):
     if exception_result.count():
         return [(int(x.indexer_id), int(x.season)) for x in exception_result]
 
+    # FIXME: Handle show names that are encoded
     for cur_exception in session.query(CacheDB.SceneException).order_by(CacheDB.SceneException.season):
         cur_exception_name = cur_exception.show_name
         cur_indexer_id = int(cur_exception.indexer_id)

@@ -20,7 +20,6 @@
 # ##############################################################################
 
 
-
 import sickrage
 from sickrage.clients import GenericClient
 
@@ -33,16 +32,15 @@ class mlnetAPI(GenericClient):
         self.url = self.host
 
     def _get_auth(self):
-
         try:
             self.response = self.session.get(self.host,
-                                                      auth=(self.username, self.password),
-                                                      verify=bool(sickrage.app.config.torrent_verify_cert))
+                                             auth=(self.username, self.password),
+                                             verify=bool(sickrage.app.config.torrent_verify_cert))
             self.auth = self.response.text
         except Exception:
-            return None
+            self.auth = None
 
-        return self.auth if self.response.ok else None
+        return self.auth
 
     def _add_torrent_uri(self, result):
 
