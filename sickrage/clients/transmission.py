@@ -17,10 +17,10 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
-import json
 import os
 from base64 import b64encode
+
+import requests
 
 import sickrage
 from sickrage.clients import GenericClient
@@ -28,7 +28,6 @@ from sickrage.clients import GenericClient
 
 class TransmissionAPI(GenericClient):
     def __init__(self, host=None, username=None, password=None):
-
         super(TransmissionAPI, self).__init__('Transmission', host, username, password)
 
         if not self.host.endswith('/'):
@@ -44,21 +43,24 @@ class TransmissionAPI(GenericClient):
 
     def _get_auth(self):
         try:
+            # Triggering HTTP 409 error
             self.response = self.session.post(self.url,
-                                              json={'method': 'session-get', },
                                               timeout=120,
+                                              json={'method': 'session-get'},
                                               auth=(self.username, self.password),
                                               verify=bool(sickrage.app.config.torrent_verify_cert))
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 409:
+                # Get X-Transmission-Session-Id auth session header
+                self.auth = e.response.headers.get('x-transmission-session-id')
 
-            # get auth session header
-            self.auth = self.response.headers.get('x-transmission-session-id')
+                # Validating Transmission authorization
+                success = self._request(method='post',
+                                        json={'arguments': {}, 'method': 'session-get'},
+                                        headers={'x-transmission-session-id': self.auth})
 
-            # Validating Transmission authorization
-            self._request(method='post',
-                          json={'arguments': {}, 'method': 'session-get'},
-                          headers={'x-transmission-session-id': self.auth})
-        except Exception:
-            self.auth = None
+                if not success:
+                    self.auth = None
 
         return self.auth
 

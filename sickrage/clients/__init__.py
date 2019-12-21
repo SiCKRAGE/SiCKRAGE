@@ -22,6 +22,7 @@ import time
 from base64 import b16encode, b32decode
 from hashlib import sha1
 
+import requests
 from bencode3 import bdecode, bencode, BencodeError
 
 import sickrage
@@ -198,15 +199,15 @@ class GenericClient(object):
             return False
 
         try:
-            self.response = self.session.request(method.upper(), self.url, params=params, data=data, auth=(self.username, self.password), timeout=120,
-                                                 verify=False, *args, **kwargs)
+            self.response = self.session.request(method.upper(), self.url,
+                                                 params=params, data=data, auth=(self.username, self.password), timeout=120, verify=False, *args, **kwargs)
 
             sickrage.app.log.debug('{name}: Response to {method} request is {response}'.format(
                 name=self.name,
                 method=method.upper(),
                 response=self.response.text
             ))
-        except Exception:
+        except requests.exceptions.HTTPError as e:
             return False
 
         return True
