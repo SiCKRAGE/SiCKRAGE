@@ -204,8 +204,7 @@ class DownloadStationAPI(GenericClient):
                     jdata = self.response.json()
                     destination = jdata.get('data', {}).get('default_destination')
                     if not destination:
-                        sickrage.app.log.info('Default destination could not be'
-                                              ' determined for DSM6: {}'.format(jdata))
+                        sickrage.app.log.info('Default destination could not be determined for DSM6: {}'.format(jdata))
                         return False
                     elif os.path.isabs(destination):
                         torrent_path = re.sub(r'^/volume\d/', '', destination).lstrip('/')
