@@ -11,9 +11,6 @@
     from sickrage.core.helpers import srdatetime, pretty_file_size
     from sickrage.core.media.util import showImage
 %>
-## <%block name="metas">
-##     <meta data-var="max_download_count" data-content="${overall_stats['episodes']['total'] * 100}">
-## </%block>
 
 <%block name="sub_navbar">
     <div class="row submenu">
@@ -25,18 +22,6 @@
                             <option value="name"
                                     data-sort="${srWebRoot}/setPosterSortBy/?sort=name" ${('', 'selected')[sickrage.app.config.poster_sortby == 'name']}>
                                 ${_('Name')}
-                            </option>
-                            <option value="date"
-                                    data-sort="${srWebRoot}/setPosterSortBy/?sort=date" ${('', 'selected')[sickrage.app.config.poster_sortby == 'date']}>
-                                ${_('Next Episode')}
-                            </option>
-                            <option value="network"
-                                    data-sort="${srWebRoot}/setPosterSortBy/?sort=network" ${('', 'selected')[sickrage.app.config.poster_sortby == 'network']}>
-                                ${_('Network')}
-                            </option>
-                            <option value="progress"
-                                    data-sort="${srWebRoot}/setPosterSortBy/?sort=progress" ${('', 'selected')[sickrage.app.config.poster_sortby == 'progress']}>
-                                ${_('Progress')}
                             </option>
                         </select>
                     </div>
@@ -98,10 +83,8 @@
 <%block name="content">
     <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
 
-    <% loading_show_list_ids = [] %>
-
     % for curListType, curShowlist in showlists.items():
-        % if curListType == "Anime":
+        % if curListType == "Anime" and curShowlist.count():
             <div class="row">
                 <div class="col mx-auto">
                     <div class="h4 card" style="text-align: center;">${_('Anime List')}</div>
@@ -110,149 +93,30 @@
         % endif
         % if sickrage.app.config.home_layout == 'poster':
             <div id="${('container', 'container-anime')[curListType == 'Anime' and sickrage.app.config.home_layout == 'poster']}"
-                 class="show-grid clearfix mx-auto">
+                 class="show-grid clearfix mx-auto d-none">
                 <div class="posterview">
-                    % for curLoadingShow in sickrage.app.show_queue.loading_show_list:
-                    <% loading_show_list_ids.append(curLoadingShow['indexer_id']) %>
-                        <div class="show-container" data-name="0" data-date="010101" data-network="0"
-                             data-progress="101">
-                            <div class="card card-block text-white bg-dark m-1 shadow">
-                                <img alt="" title="${curLoadingShow['name']}" class="card-img-top"
-                                     src="${srWebRoot}/images/poster.png"/>
-                                <div class="card-body text-truncate py-1 px-1 small">
-                                    <div class="show-title">
-                                        ${curLoadingShow['name']}
-                                    </div>
-                                </div>
-                                <div class="card-footer show-details p-1">
-                                    <div class="show-details">
-                                        <div class="show-add text-center">${_('... Loading ...')}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    % endfor
-
-                    % for curShow in sorted(curShowlist, key=cmp_to_key(lambda x, y: x.name < y.name)):
-                    <%
-                        if curShow.indexer_id in loading_show_list_ids:
-                            continue
-
-                        download_stat_tip = ''
-                        display_status = curShow.status
-
-                        if display_status:
-                            if re.search(r'(?i)(?:new|returning)\s*series', curShow.status):
-                                display_status = _('Continuing')
-                            elif re.search(r'(?i)(?:nded)', curShow.status):
-                                display_status = _('Ended')
-
-                        cur_airs_next = curShow.airs_next
-                        cur_snatched = curShow.episodes_snatched
-                        cur_downloaded = curShow.episodes_downloaded
-                        cur_total = len(curShow.episodes) - curShow.episodes_special - curShow.episodes_unaired
-
-                        if cur_total != 0:
-                            download_stat = str(cur_downloaded)
-                            download_stat_tip = _("Downloaded: ") + str(cur_downloaded)
-                            if cur_snatched > 0:
-                                download_stat = download_stat
-                                download_stat_tip = download_stat_tip + " " + _("Snatched: ") + str(cur_snatched)
-
-                            download_stat = download_stat + " / " + str(cur_total)
-                            download_stat_tip = download_stat_tip + " " + _("Total: ") + str(cur_total)
-                        else:
-                            download_stat = '?'
-                            download_stat_tip = _("no data")
-
-                        progressbar_percent = int(cur_downloaded * 100 / cur_total if cur_total > 0 else 1)
-
-                        data_date = '6000000000.0'
-                        if cur_airs_next > datetime.date.min:
-                            data_date = calendar.timegm(srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt.timetuple())
-                        elif display_status:
-                            if 'nded' not in display_status and 1 == int(curShow.paused):
-                                data_date = '5000000500.0'
-                            elif 'ontinu' in display_status:
-                                data_date = '5000000000.0'
-                            elif 'nded' in display_status:
-                                data_date = '5000000100.0'
-
-                        network_class_name = None
-                        if curShow.network:
-                            network_class_name = re.sub(r'(?!\w|\s).', '', unidecode.unidecode(curShow.network))
-                            network_class_name = re.sub(r'\s+', '-', network_class_name)
-                            network_class_name = re.sub(r'^(\s*)([\W\w]*)(\b\s*$)', '\\2', network_class_name)
-                            network_class_name = network_class_name.lower()
-                    %>
-                        <div class="show-container" id="show${curShow.indexer_id}" data-name="${curShow.name}"
-                             data-date="${data_date}" data-network="${curShow.network}"
-                             data-progress="${progressbar_percent}">
+                    % for curShow in curShowlist:
+                        <div class="show-container" id="show${curShow.indexer_id}" data-name="${curShow.name}">
                             <div class="card card-block text-white bg-dark m-1 shadow">
                                 <a href="${srWebRoot}/home/displayShow?show=${curShow.indexer_id}">
                                     <img alt="" class="card-img-top"
                                          src="${srWebRoot}${showImage(curShow.indexer_id, 'poster').url}"/>
                                 </a>
                                 <div class="card-header bg-dark py-0 px-0">
-                                    <span style="display: none;">${download_stat}</span>
-                                    <div class="bg-dark progress shadow">
-                                        <div class="progress-bar d-print-none"
-                                             style="width: ${progressbar_percent}%"
-                                             data-show-id="${curShow.indexer_id}"
-                                             data-progress-percentage="${progressbar_percent}"
-                                             data-progress-text="${download_stat}"
-                                             data-progress-tip="${download_stat_tip}">
+                                    % if curShow.indexer_id in sickrage.app.show_queue.loading_show_list:
+                                        <div class="bg-dark progress shadow"></div>
+                                    % else:
+                                        <div class="bg-dark progress shadow">
+                                            <div class="progress-bar d-print-none"
+                                                 data-show-id="${curShow.indexer_id}">
+                                            </div>
                                         </div>
-                                    </div>
+                                    % endif
                                 </div>
                                 <div class="card-body text-truncate py-1 px-1 small">
                                     <div class="show-title">
                                         ${curShow.name}
                                     </div>
-
-                                    <div class="show-date" style="color: grey">
-                                        % if cur_airs_next > datetime.date.min:
-                                            <% ldatetime = srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
-                                            <%
-                                                try:
-                                                  out = srdatetime.SRDateTime(ldatetime).srfdate()
-                                                except ValueError:
-                                                  out = _('Invalid date')
-                                            %>
-                                        % else:
-                                            <% display_status = curShow.status %>
-                                            <%
-                                                out = 'UNKNOWN'
-                                                if display_status:
-                                                  out = display_status
-                                                  if 'nded' not in display_status and 1 == int(curShow.paused):
-                                                      out = _('Paused')
-                                            %>
-                                        % endif
-                                      ${out}
-                                    </div>
-                                </div>
-                                <div class="card-footer show-details p-1">
-                                    <table class="show-details w-100" style="height:40px">
-                                        <tr>
-                                            <td class="text-left align-middle w-25">
-                                                % if curShow.network:
-                                                    <span>
-                                                        <i class="show-network-image sickrage-network sickrage-network-${network_class_name}"
-                                                           title="${curShow.network}"></i>
-                                                    </span>
-                                                % else:
-                                                    <span>
-                                                        <i class="show-network-image sickrage-network sickrage-network-unknown"
-                                                           title="${_('No Network')}"></i>
-                                                    </span>
-                                                % endif
-                                            </td>
-                                            <td class="text-right align-middle w-25">
-                                                ${renderQualityPill(curShow.quality, showTitle=True)}
-                                            </td>
-                                        </tr>
-                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -278,56 +142,12 @@
                             </tr>
                             </thead>
 
-                            % if sickrage.app.show_queue.loading_show_list:
-                                <tbody>
-                                    % for curLoadingShow in sickrage.app.show_queue.loading_show_list:
-                                        <% loading_show_list_ids.append(curLoadingShow['indexer_id']) %>
-                                        <tr>
-                                            <td class="table-fit">(${_('loading')})</td>
-                                            <td></td>
-                                            <td>
-                                                <a data-fancybox
-                                                   href="displayShow?show=${curLoadingShow['indexer_id']}">${curLoadingShow['name']}</a>
-                                            </td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                    % endfor
-                                </tbody>
-                            % endif
-
                             <tbody class="">
-                                % for curShow in sorted(curShowlist, key=cmp_to_key(lambda x, y: x.name < y.name)):
+                                % for curShow in curShowlist:
                                     <%
-                                        if curShow.indexer_id in loading_show_list_ids:
-                                            continue
-
-                                        download_stat_tip = ''
-
                                         cur_airs_next = curShow.airs_next
                                         cur_airs_prev = curShow.airs_prev
-                                        cur_snatched = curShow.episodes_snatched
-                                        cur_downloaded = curShow.episodes_downloaded
-                                        cur_total = len(curShow.episodes) - curShow.episodes_special - curShow.episodes_unaired
                                         show_size = curShow.total_size
-
-                                        if cur_total != 0:
-                                            download_stat = str(cur_downloaded)
-                                            download_stat_tip = _("Downloaded: ") + str(cur_downloaded)
-                                            if cur_snatched > 0:
-                                                download_stat = download_stat + "+" + str(cur_snatched)
-                                                download_stat_tip = download_stat_tip + "&#013;" + _("Snatched: ") + str(cur_snatched)
-
-                                            download_stat = download_stat + " / " + str(cur_total)
-                                            download_stat_tip = download_stat_tip + "&#013;" + _("Total: ") + str(cur_total)
-                                        else:
-                                            download_stat = '?'
-                                            download_stat_tip = _("no data")
-
-                                        progressbar_percent = int(cur_downloaded * 100 / cur_total if cur_total > 0 else 1)
 
                                         network_class_name = None
                                         if curShow.network:
@@ -416,16 +236,15 @@
                                         <td class="table-fit align-middle">${renderQualityPill(curShow.quality, showTitle=True)}</td>
 
                                         <td class="align-middle">
-                                            <span style="display: none;">${download_stat}</span>
-                                            <div class="bg-dark rounded shadow">
-                                                <div class="progress-bar rounded "
-                                                     style="width: ${progressbar_percent}%"
-                                                     data-show-id="${curShow.indexer_id}"
-                                                     data-progress-percentage="${progressbar_percent}"
-                                                     data-progress-text="${download_stat}"
-                                                     data-progress-tip="${download_stat_tip}">
+                                            % if curShow.indexer_id in sickrage.app.show_queue.loading_show_list:
+                                                <div class="bg-dark progress shadow"></div>
+                                            % else:
+                                                <div class="bg-dark progress shadow">
+                                                    <div class="progress-bar d-print-none"
+                                                         data-show-id="${curShow.indexer_id}">
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            % endif
                                         </td>
 
                                         <td class="table-fit align-middle" data-show-size="${show_size}">

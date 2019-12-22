@@ -16,6 +16,7 @@
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.1.0",
     "@sentry/browser": "^5.9.0",
+    "@sentry/integrations": "^5.10.2",
     "@sentry/webpack-plugin": "^1.9.3",
     "animate.css": "^3.6.1",
     "autoprefixer": "^8.6.5",

@@ -14,7 +14,7 @@ import 'jquery-ui/ui/widgets/autocomplete';
 import 'pnotify/dist/es/PNotifyMobile';
 import 'pnotify/dist/es/PNotifyButtons';
 import 'pnotify/dist/es/PNotifyDesktop';
-import {gettext, addLocale, useLocale} from 'ttag';
+import {addLocale, gettext, useLocale} from 'ttag';
 import {po} from 'gettext-parser'
 import jconfirm from 'jquery-confirm';
 import PNotify from 'pnotify/dist/es/PNotify';
@@ -24,10 +24,14 @@ import ImagesLoaded from 'imagesloaded';
 import Tokenfield from 'tokenfield';
 import _ from 'underscore';
 import * as Sentry from '@sentry/browser';
+import {RewriteFrames} from '@sentry/integrations'
 
 Sentry.init({
     dsn: 'https://d4bf4ed225c946c8972c7238ad07d124@sentry.sickrage.ca/2',
-    release: process.env.PACKAGE_VERSION
+    release: process.env.PACKAGE_VERSION,
+    integrations: [
+        new RewriteFrames(),
+    ],
 });
 
 jQueryBridget('isotope', Isotope, $);
@@ -1611,6 +1615,27 @@ $(document).ready(function ($) {
             },
 
             index: function () {
+                const progressbarObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            $.getJSON(SICKRAGE.srWebRoot + '/home/showProgress', {
+                                'show-id': $(entry.target).data('show-id')
+                            }, function (data) {
+                                const percentage = data.progressbar_percent;
+                                const classToAdd = percentage === 100 ? 100 : percentage > 80 ? 80 : percentage > 60 ? 60 : percentage > 40 ? 40 : 20;
+                                $(entry.target).append('<div class="progressbarText" title="' + data.progress_tip + '">' + data.progress_text + '</div>');
+                                $(entry.target).css({width: percentage + '%'});
+                                $(entry.target).addClass('progress-' + classToAdd);
+                                observer.unobserve(entry.target);
+                            });
+                        }
+                    })
+                });
+
+                document.querySelectorAll('div.progress-bar').forEach(item => {
+                    progressbarObserver.observe(item)
+                });
+
                 function resizePosters(newSize) {
                     var fontSize, spriteScale, borderRadius;
                     if (newSize < 125) { // small
@@ -1652,24 +1677,6 @@ $(document).ready(function ($) {
                         resizePosters(ui.value);
                         $('.show-grid').isotope('layout');
                     }
-                });
-
-                resizePosters(parseInt(localStorage.posterSize || 188));
-
-                // This needs to be refined to work a little faster.
-                $('.progress-bar').each(function () {
-                    //var showId = $(this).data('show-id');
-                    var percentage = $(this).data('progress-percentage');
-                    var classToAdd = percentage === 100 ? 100 : percentage > 80 ? 80 : percentage > 60 ? 60 : percentage > 40 ? 40 : 20;
-                    if ($(this).data('progress-text')) {
-                        $(this).append('<div class="progressbarText" title="' + $(this).data('progress-tip') + '">' + $(this).data('progress-text') + '</div>');
-                    }
-                    $(this).addClass('progress-' + classToAdd);
-                });
-
-                $("img#network").on('error', function () {
-                    $(this).parent().text($(this).attr('alt'));
-                    $(this).remove();
                 });
 
                 $("#showListTableShows:has(tbody tr), #showListTableAnime:has(tbody tr)").tablesorter({
@@ -1795,6 +1802,10 @@ $(document).ready(function ($) {
                 });
 
                 $('.show-grid').imagesLoaded(function () {
+                    resizePosters(parseInt(localStorage.posterSize || 188));
+
+                    $('.show-grid').removeClass('d-none');
+
                     $('.show-grid').isotope({
                         itemSelector: '.show-container',
                         sortBy: SICKRAGE.getMeta('sickrage.POSTER_SORTBY'),
@@ -1807,15 +1818,6 @@ $(document).ready(function ($) {
                             name: function (itemElem) {
                                 var name = $(itemElem).attr('data-name') || '';
                                 return (SICKRAGE.metaToBool('sickrage.SORT_ARTICLE') ? name : name.replace(/^((?:The|A|An)\s)/i, '')).toLowerCase();
-                            },
-                            network: '[data-network]',
-                            date: function (itemElem) {
-                                var date = $(itemElem).attr('data-date');
-                                return date.length && parseInt(date, 10) || Number.POSITIVE_INFINITY;
-                            },
-                            progress: function (itemElem) {
-                                var progress = $(itemElem).attr('data-progress');
-                                return progress.length && parseInt(progress, 10) || Number.NEGATIVE_INFINITY;
                             }
                         }
                     });
@@ -1911,7 +1913,6 @@ $(document).ready(function ($) {
                     }
                 });
             },
-
             display_show: {
                 init: function () {
                     SICKRAGE.home.display_show.imdbRating();

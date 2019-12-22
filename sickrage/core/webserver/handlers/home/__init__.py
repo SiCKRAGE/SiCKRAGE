@@ -23,6 +23,7 @@ import datetime
 import os
 from abc import ABC
 from collections import OrderedDict
+from functools import cmp_to_key
 from urllib.parse import unquote_plus, quote_plus
 
 from sqlalchemy import orm
@@ -83,24 +84,17 @@ class HomeHandler(BaseHandler, ABC):
         if not get_show_list().count():
             return self.redirect('/home/addShows/')
 
-        showlists = OrderedDict({'Shows': []})
-        if sickrage.app.config.anime_split_home:
-            for show in get_show_list():
-                if show.is_anime:
-                    if 'Anime' not in list(showlists.keys()):
-                        showlists['Anime'] = []
-                    showlists['Anime'] += [show]
-                else:
-                    showlists['Shows'] += [show]
-        else:
-            showlists['Shows'] = get_show_list()
+        show_lists = OrderedDict({
+            'Shows': get_show_list().filter_by(anime=False),
+            'Anime': get_show_list().filter_by(anime=True)
+        })
 
         return self.render(
             "/home/index.mako",
             title="Home",
             header="Show List",
             topmenu="home",
-            showlists=showlists,
+            showlists=show_lists,
             controller='home',
             action='index'
         )
@@ -147,6 +141,31 @@ class HomeHandler(BaseHandler, ABC):
             overall_stats['total_size'] += show_stat[show.indexer_id]['total_size']
 
         return show_stat, overall_stats
+
+
+class ShowProgressHandler(BaseHandler, ABC):
+    def get(self, *args, **kwargs):
+        show_id = self.get_argument('show-id')
+
+        show = find_show(show_id, session=self.db_session)
+        episodes_snatched = show.episodes_snatched
+        episodes_downloaded = show.episodes_downloaded
+        episodes_total = len(show.episodes) - show.episodes_special - show.episodes_unaired
+        progressbar_percent = int(episodes_downloaded * 100 / episodes_total if episodes_total > 0 else 1)
+
+        progress_text = '?'
+        progress_tip = _("no data")
+        if episodes_total != 0:
+            progress_text = str(episodes_downloaded)
+            progress_tip = _("Downloaded: ") + str(episodes_downloaded)
+            if episodes_snatched > 0:
+                progress_text = progress_text + "+" + str(episodes_snatched)
+                progress_tip = progress_tip + "&#013;" + _("Snatched: ") + str(episodes_snatched)
+
+            progress_text = progress_text + " / " + str(episodes_total)
+            progress_tip = progress_tip + "&#013;" + _("Total: ") + str(episodes_total)
+
+        return self.write(json_encode({'progress_text': progress_text, 'progress_tip': progress_tip, 'progressbar_percent': progressbar_percent}))
 
 
 class IsAliveHandler(BaseHandler, ABC):
