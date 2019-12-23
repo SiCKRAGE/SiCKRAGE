@@ -239,7 +239,7 @@ class TVShow(MainDBBase):
         else:
             sickrage.app.log.warning(str(self.indexer_id) + ": NOT loading info from " + IndexerApi(self.indexer).name + " as it is temporarily disabled.")
 
-        object_session(self).commit()
+        object_session(self).safe_commit()
 
     def load_episodes_from_indexer(self, cache=True):
         scanned_eps = {}
@@ -272,7 +272,7 @@ class TVShow(MainDBBase):
                                                           'season': season,
                                                           'episode': episode,
                                                           'location': ''}))
-                    object_session(self).commit()
+                    object_session(self).safe_commit()
                     episode_obj = self.get_episode(season, episode)
 
                 sickrage.app.log.debug("%s: Loading info from %s for episode S%02dE%02d" % (
@@ -289,7 +289,7 @@ class TVShow(MainDBBase):
         # Done updating save last update date
         self.last_update = datetime.date.today().toordinal()
 
-        object_session(self).commit()
+        object_session(self).safe_commit()
 
         return scanned_eps
 
@@ -452,7 +452,7 @@ class TVShow(MainDBBase):
             if ' ' not in ep_file_name and parse_result and parse_result.release_group:
                 sickrage.app.log.debug("Name " + ep_file_name + " gave release group of " + parse_result.release_group + ", seems valid")
                 curEpisode.release_name = ep_file_name
-                object_session(self).commit()
+                object_session(self).safe_commit()
 
             # store the reference in the show
             if self.subtitles and sickrage.app.config.use_subtitles:
@@ -481,7 +481,7 @@ class TVShow(MainDBBase):
                 try:
                     if int(x.get('Year'), 0) == self.startyear and x.get('Title') in self.name:
                         self.imdb_id = x.get('imdbID')
-                        object_session(self).commit()
+                        object_session(self).safe_commit()
                         break
                 except:
                     continue
@@ -525,7 +525,7 @@ class TVShow(MainDBBase):
             except orm.exc.NoResultFound:
                 object_session(self).add(MainDB.IMDbInfo(**imdb_info))
             finally:
-                object_session(self).commit()
+                object_session(self).safe_commit()
 
     def get_images(self, fanart=None, poster=None):
         fanart_result = poster_result = banner_result = False
@@ -583,7 +583,7 @@ class TVShow(MainDBBase):
                                                       'season': season,
                                                       'episode': episode,
                                                       'location': filename}))
-                object_session(self).commit()
+                object_session(self).safe_commit()
                 episode_obj = self.get_episode(season, episode)
 
             # if there is a new file associated with this ep then re-check the quality
@@ -656,7 +656,7 @@ class TVShow(MainDBBase):
         if root_ep:
             root_ep.create_meta_files()
 
-        object_session(self).commit()
+        object_session(self).safe_commit()
 
         return root_ep
 

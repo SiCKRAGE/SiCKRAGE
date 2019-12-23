@@ -241,7 +241,7 @@ class TVEpisode(MainDBBase):
         if not self.indexer_id:
             sickrage.app.log.warning("Failed to retrieve ID from " + IndexerApi(self.indexer).name)
             object_session(self).rollback()
-            object_session(self).commit()
+            object_session(self).safe_commit()
             self.delete_episode()
             return False
 
@@ -290,7 +290,7 @@ class TVEpisode(MainDBBase):
 
             # if I'm incomplete on the indexer but I once was complete then just delete myself from the DB for now
             object_session(self).rollback()
-            object_session(self).commit()
+            object_session(self).safe_commit()
             self.delete_episode()
             return False
 
@@ -336,7 +336,7 @@ class TVEpisode(MainDBBase):
             sickrage.app.log.debug("6 Status changes from " + str(self.status) + " to " + str(UNKNOWN))
             self.status = UNKNOWN
 
-        object_session(self).commit()
+        object_session(self).safe_commit()
 
         return True
 
@@ -422,7 +422,7 @@ class TVEpisode(MainDBBase):
             if os.path.isfile(replace_extension(nfoFile, "tbn")):
                 self.hastbn = True
 
-        object_session(self).commit()
+        object_session(self).safe_commit()
 
         return self.hasnfo
 
@@ -478,7 +478,7 @@ class TVEpisode(MainDBBase):
         sickrage.app.log.debug("Deleting myself from the database")
 
         object_session(self).query(self.__class__).filter_by(showid=self.show.indexer_id, season=self.season, episode=self.episode).delete()
-        object_session(self).commit()
+        object_session(self).safe_commit()
 
         data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate([(self.season, self.episode)])
         if sickrage.app.config.use_trakt and sickrage.app.config.trakt_sync_watchlist and data:

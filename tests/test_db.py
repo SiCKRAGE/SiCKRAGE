@@ -39,7 +39,7 @@ class DBBasicTests(tests.SiCKRAGETestDBCase):
         super(DBBasicTests, self).setUp()
         show = TVShow(**{'indexer': 1, 'indexer_id': 0o0001, 'lang': 'en'})
         session.add(show)
-        session.commit()
+        session.safe_commit()
 
         ep = TVEpisode(**{'showid': show.indexer_id, 'indexer': 1, 'season': 1, 'episode': 1, 'location': ''})
         session.add(ep)
@@ -47,7 +47,7 @@ class DBBasicTests(tests.SiCKRAGETestDBCase):
         ep.name = "test episode 1"
         ep.airdate = datetime.date.fromordinal(733832)
         ep.status = UNAIRED
-        session.commit()
+        session.safe_commit()
 
         ep = TVEpisode(**{'showid': show.indexer_id, 'indexer': 1, 'season': 1, 'episode': 2, 'location': ''})
         session.add(ep)
@@ -55,7 +55,7 @@ class DBBasicTests(tests.SiCKRAGETestDBCase):
         ep.name = "test episode 2"
         ep.airdate = datetime.date.fromordinal(733832)
         ep.status = UNAIRED
-        session.commit()
+        session.safe_commit()
 
         ep = TVEpisode(**{'showid': show.indexer_id, 'indexer': 1, 'season': 1, 'episode': 3, 'location': ''})
         session.add(ep)
@@ -63,7 +63,7 @@ class DBBasicTests(tests.SiCKRAGETestDBCase):
         ep.name = "test episode 3"
         ep.airdate = datetime.date.fromordinal(733832)
         ep.status = UNAIRED
-        session.commit()
+        session.safe_commit()
 
     @MainDB.with_session
     def test_unaired(self, session=None):

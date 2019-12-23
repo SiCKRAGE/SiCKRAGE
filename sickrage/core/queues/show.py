@@ -315,7 +315,7 @@ class QueueItemAdd(ShowQueueItem):
 
         # add show to database
         session.add(TVShow(**{'indexer': self.indexer, 'indexer_id': self.indexer_id, 'lang': self.lang, 'location': self.showDir}))
-        session.commit()
+        session.safe_commit()
 
         show_obj = find_show(self.indexer_id, session=session)
 
@@ -338,7 +338,7 @@ class QueueItemAdd(ShowQueueItem):
             show_obj.default_ep_status = self.default_status
 
             # save to database
-            session.commit()
+            session.safe_commit()
 
             if show_obj.anime:
                 if self.blacklist:
@@ -387,7 +387,7 @@ class QueueItemAdd(ShowQueueItem):
             sickrage.app.log.debug(traceback.format_exc())
 
         # save to database
-        session.commit()
+        session.safe_commit()
 
         sickrage.app.io_loop.add_callback(show_obj.write_metadata, force=True)
         sickrage.app.io_loop.add_callback(show_obj.populate_cache)
@@ -411,7 +411,7 @@ class QueueItemAdd(ShowQueueItem):
         # numbering.
         if not self.scene and get_xem_numbering_for_show(show_obj.indexer_id, show_obj.indexer):
             show_obj.scene = 1
-            session.commit()
+            session.safe_commit()
 
         # if they set default ep status to WANTED then run the backlog to search for episodes
         if show_obj.default_ep_status == WANTED:
@@ -419,7 +419,7 @@ class QueueItemAdd(ShowQueueItem):
             sickrage.app.io_loop.add_callback(sickrage.app.backlog_searcher.search_backlog, show_obj.indexer_id, session=session)
 
         show_obj.default_ep_status = self.default_status_after
-        session.commit()
+        session.safe_commit()
 
         sickrage.app.quicksearch_cache.add_show(show_obj.indexer_id)
 
@@ -578,7 +578,7 @@ class QueueItemUpdate(ShowQueueItem):
 
         sickrage.app.log.info("Finished updates in {}s for show: {}".format(round(time.time() - start_time, 2), show_obj.name))
 
-        session.commit()
+        session.safe_commit()
 
         # refresh show
         if not self.indexer_update_only:

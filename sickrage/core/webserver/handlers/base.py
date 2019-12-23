@@ -198,7 +198,7 @@ class BaseHandler(RequestHandler, ABC):
 
     def on_finish(self):
         if self.db_session:
-            self.db_session.commit()
+            self.db_session.safe_commit()
             self.db_session.close()
 
         super(BaseHandler, self).on_finish()

@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 import datetime
-import errno
 import os
 import pickle
 import shutil
@@ -71,38 +70,12 @@ class ContextSession(sqlalchemy.orm.Session):
 
     def __init__(self, *args, **kwargs):
         super(ContextSession, self).__init__(*args, **kwargs)
-        self.lockfile = self.bind.url.database + '-lock'
         self.max_attempts = 5
 
-    @property
-    def has_lock(self):
-        return os.path.exists(self.lockfile)
-
-    def write_lock(self):
-        if self.has_lock:
-            return
-
-        with open(self.lockfile, 'w', encoding='utf-8') as f:
-            f.write('PID: %s\n' % os.getpid())
-
-    def release_lock(self):
-        if not self.has_lock:
-            return
-
-        try:
-            os.remove(self.lockfile)
-        except OSError as e:
-            if e.errno != errno.ENOENT:
-                raise
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def safe_commit(self, close=False):
         for i in range(self.max_attempts):
             try:
                 self.commit()
-                break
             except OperationalError:
                 sickrage.app.log.debug('Retrying database commit, attempt {}'.format(i))
                 self.rollback()
@@ -110,8 +83,17 @@ class ContextSession(sqlalchemy.orm.Session):
             except Exception as e:
                 self.rollback()
                 raise
+            else:
+                break
+            finally:
+                if close:
+                    self.close()
 
-        self.close()
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.safe_commit(close=True)
 
 
 class SRDatabase(object):

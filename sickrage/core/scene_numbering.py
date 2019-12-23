@@ -486,7 +486,7 @@ def xem_refresh(indexer_id, indexer, force=False, session=None):
                 'indexer_id': indexer_id
             }))
         finally:
-            session.commit()
+            session.safe_commit()
 
         try:
             try:
@@ -500,7 +500,7 @@ def xem_refresh(indexer_id, indexer, force=False, session=None):
                 #     dbData.scene_season = 0
                 #     dbData.scene_episode = 0
                 #     dbData.scene_absolute_number = 0
-                #     session.commit()
+                #     session.safe_commit()
                 return
 
             try:
@@ -529,7 +529,7 @@ def xem_refresh(indexer_id, indexer, force=False, session=None):
                     dbData.scene_episode = entry['scene_2']['episode']
                     dbData.scene_absolute_number = entry['scene_2']['absolute']
 
-                session.commit()
+                session.safe_commit()
         except Exception as e:
             sickrage.app.log.warning("Exception while refreshing XEM data for show {} on {}: {}".format(indexer_id, IndexerApi(indexer).name, e))
             sickrage.app.log.debug(traceback.format_exc())

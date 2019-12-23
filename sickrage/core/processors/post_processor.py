@@ -1150,7 +1150,7 @@ class PostProcessor(object):
         # update video file metadata
         ep_obj.update_video_metadata()
 
-        session.commit()
+        session.safe_commit()
 
         # log it to history
         History.log_download(ep_obj.showid, ep_obj.season, ep_obj.episode, ep_obj.status, self.file_path, new_ep_quality, release_group, new_ep_version)

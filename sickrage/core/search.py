@@ -113,7 +113,7 @@ def snatch_episode(result, end_status=SNATCHED, session=None):
         else:
             episode_obj.status = Quality.composite_status(end_status, result.quality)
 
-        session.commit()
+        session.safe_commit()
 
         if episode_obj.status not in Quality.DOWNLOADED:
             try:
