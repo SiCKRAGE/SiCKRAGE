@@ -128,6 +128,7 @@ module.exports = {
     plugins: [
         new webpack.DefinePlugin({
             'process.env': {
+                SENTRY_DSN: "'https://d4bf4ed225c946c8972c7238ad07d124@sentry.sickrage.ca/2'",
                 PACKAGE_VERSION: '"' + version + '"'
             }
         }),

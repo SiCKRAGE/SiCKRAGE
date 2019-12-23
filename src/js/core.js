@@ -24,14 +24,18 @@ import ImagesLoaded from 'imagesloaded';
 import Tokenfield from 'tokenfield';
 import _ from 'underscore';
 import * as Sentry from '@sentry/browser';
-import {RewriteFrames} from '@sentry/integrations'
 
 Sentry.init({
-    dsn: 'https://d4bf4ed225c946c8972c7238ad07d124@sentry.sickrage.ca/2',
+    dsn: process.env.SENTRY_DSN,
     release: process.env.PACKAGE_VERSION,
-    integrations: [
-        new RewriteFrames(),
-    ],
+    beforeSend(event, hint) {
+        if (event.exception) {
+            event.exception.values[0].stacktrace.frames.forEach((frame) => {
+                frame.filename = frame.filename.substring(frame.filename.lastIndexOf("/"))
+            });
+        }
+        return event;
+    }
 });
 
 jQueryBridget('isotope', Isotope, $);
