@@ -4,7 +4,7 @@ import time
 from urllib.parse import urljoin
 
 import requests.exceptions
-from oauthlib.oauth2 import MissingTokenError, InvalidClientIdError
+from oauthlib.oauth2 import MissingTokenError, InvalidClientIdError, TokenExpiredError
 from raven.utils.json import JSONDecodeError
 from requests_oauthlib import OAuth2Session
 
@@ -91,6 +91,13 @@ class API(object):
                     return resp.json()
                 except ValueError:
                     return resp.content
+            except TokenExpiredError as e:
+                extra = {
+                    'client_id': self.client_id,
+                    'client_secret': self.client_secret
+                }
+
+                self.token = self.session.refresh_token(self.token_url, **extra)
             except (InvalidClientIdError, MissingTokenError) as e:
                 latest_exception = "SiCKRAGE token issue, please try logging out and back in again to the web-ui"
             except requests.exceptions.ReadTimeout:
