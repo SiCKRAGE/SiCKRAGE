@@ -18,13 +18,14 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
+from abc import ABC
 
 import sickrage
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class LogoutHandler(BaseHandler):
-    def prepare(self, *args, **kwargs):
+class LogoutHandler(BaseHandler, ABC):
+    def get(self, *args, **kwargs):
         logout_uri = sickrage.app.oidc_client.get_url('end_session_endpoint')
         redirect_uri = "{}://{}{}/login".format(self.request.protocol, self.request.host, sickrage.app.config.web_root)
 
