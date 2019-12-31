@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 import functools
+import time
 
 from sqlalchemy import Column, Integer, Text, String
 from sqlalchemy.ext.declarative import as_declarative
@@ -35,7 +36,7 @@ class CacheDBBase(object):
 
 
 class CacheDB(SRDatabase):
-    db_version = 3
+    db_version = 4
 
     session = sessionmaker(class_=ContextSession)
 
@@ -159,3 +160,13 @@ class CacheDB(SRDatabase):
         name = Column(Text)
         showname = Column(Text)
         img = Column(Text)
+
+    class OAuth2Token(CacheDBBase):
+        __tablename__ = 'oauth2_token'
+
+        id = Column(Integer, primary_key=True)
+        access_token = Column(String(255), unique=True, nullable=False)
+        refresh_token = Column(String(255), index=True)
+        expires_in = Column(Integer, nullable=False, default=0)
+        expires_at = Column(Integer, nullable=False, default=0)
+        scope = Column(Text, default="")

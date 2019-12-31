@@ -56,7 +56,7 @@ class LoginHandler(BaseHandler, ABC):
                         return self.redirect('/logout')
 
                 if not API().token:
-                    API().exchange_token(token)
+                    API().token = token
             except Exception as e:
                 return self.redirect('/logout')
 
@@ -67,5 +67,5 @@ class LoginHandler(BaseHandler, ABC):
             redirect_uri = self.get_argument('next', "/{}/".format(sickrage.app.config.default_page))
             return self.redirect("{}".format(redirect_uri))
         else:
-            authorization_url = sickrage.app.oidc_client.authorization_url(redirect_uri=redirect_uri)
+            authorization_url = sickrage.app.oidc_client.authorization_url(redirect_uri=redirect_uri, scope="profile email offline_access")
             return super(BaseHandler, self).redirect(authorization_url)

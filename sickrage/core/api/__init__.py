@@ -1,15 +1,14 @@
-import json
-import os
 import time
 from urllib.parse import urljoin
 
 import requests.exceptions
-from oauthlib.oauth2 import MissingTokenError, InvalidClientIdError, TokenExpiredError
-from raven.utils.json import JSONDecodeError
+from oauthlib.oauth2 import MissingTokenError, InvalidClientIdError, TokenExpiredError, InvalidGrantError, OAuth2Token
 from requests_oauthlib import OAuth2Session
+from sqlalchemy import orm
 
 import sickrage
 from sickrage.core.api.exceptions import APIError, APITokenExpired
+from sickrage.core.databases.cache import CacheDB
 
 
 class API(object):
@@ -19,8 +18,6 @@ class API(object):
         self.client_id = sickrage.app.oidc_client_id
         self.client_secret = sickrage.app.oidc_client_secret
         self.token_url = sickrage.app.oidc_client.well_known['token_endpoint']
-        self.token_file = os.path.abspath(os.path.join(sickrage.app.data_dir, 'token.json'))
-        self.token_refreshed = False
 
     @property
     def session(self):
@@ -38,31 +35,27 @@ class API(object):
                              token_updater=token_updater)
 
     @property
-    def token(self):
-        token = {}
-
-        if os.path.exists(self.token_file):
-            with open(self.token_file, 'r') as fd:
-                try:
-                    token = json.load(fd)
-                    if len(token) and not token.get('expires_at'):
-                        token['expires_at'] = time.time() - 10
-                except JSONDecodeError:
-                    token = {}
-
-        return token
+    @CacheDB.with_session
+    def token(self, session=None):
+        try:
+            token = session.query(CacheDB.OAuth2Token).one()
+            return token.as_dict()
+        except orm.exc.NoResultFound:
+            return {}
 
     @token.setter
-    def token(self, value):
-        token = value.decode() if isinstance(value, bytes) else value
-        if not isinstance(token, dict):
-            token = {}
+    @CacheDB.with_session
+    def token(self, value, session=None):
+        session.query(CacheDB.OAuth2Token).delete()
 
-        if token.get('expires_in'):
-            token['expires_at'] = int(time.time() + token['expires_in'])
-
-        with open(self.token_file, 'w') as fd:
-            json.dump(token, fd)
+        if value:
+            session.add(CacheDB.OAuth2Token(**{
+                'access_token': value.get('access_token'),
+                'refresh_token': value.get('refresh_token'),
+                'expires_in': value.get('expires_in'),
+                'expires_at': value.get('expires_at', int(time.time() + value.get('expires_in'))),
+                'scope': value.scope if isinstance(value, OAuth2Token) else value.get('scope')
+            }))
 
     @property
     def userinfo(self):
@@ -98,8 +91,8 @@ class API(object):
                 }
 
                 self.token = self.session.refresh_token(self.token_url, **extra)
-            except (InvalidClientIdError, MissingTokenError) as e:
-                latest_exception = "SiCKRAGE token issue, please try logging out and back in again to the web-ui"
+            except (InvalidClientIdError, MissingTokenError, InvalidGrantError) as e:
+                latest_exception = "Invalid token error, please re-authenticate by logging into web-ui"
             except requests.exceptions.ReadTimeout:
                 timeout += timeout
             except requests.exceptions.HTTPError as e:

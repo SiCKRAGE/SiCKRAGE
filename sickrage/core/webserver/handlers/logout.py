@@ -29,8 +29,8 @@ class LogoutHandler(BaseHandler, ABC):
         logout_uri = sickrage.app.oidc_client.get_url('end_session_endpoint')
         redirect_uri = "{}://{}{}/login".format(self.request.protocol, self.request.host, sickrage.app.config.web_root)
 
-        if self.get_secure_cookie('sr_refresh_token'):
-            sickrage.app.oidc_client.logout(self.get_secure_cookie('sr_refresh_token'))
+        # if self.get_secure_cookie('sr_refresh_token'):
+        #     sickrage.app.oidc_client.logout(self.get_secure_cookie('sr_refresh_token'))
 
         self.clear_all_cookies()
 
