@@ -21,7 +21,6 @@ import pickle
 import shutil
 import sqlite3
 from collections import OrderedDict
-from sqlite3 import OperationalError
 from time import sleep
 
 import sqlalchemy
@@ -29,6 +28,7 @@ from migrate import DatabaseAlreadyControlledError, DatabaseNotControlledError
 from migrate.versioning import api
 from sqlalchemy import create_engine, event, inspect
 from sqlalchemy.engine import Engine
+from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import sessionmaker, mapper
 from sqlalchemy.pool import QueuePool
 

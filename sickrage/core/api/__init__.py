@@ -92,7 +92,7 @@ class API(object):
 
                 self.token = self.session.refresh_token(self.token_url, **extra)
             except (InvalidClientIdError, MissingTokenError, InvalidGrantError) as e:
-                latest_exception = "Invalid token error, please re-authenticate by logging into web-ui"
+                latest_exception = "Invalid token error, please re-authenticate by logging out then logging back in from web-ui"
             except requests.exceptions.ReadTimeout:
                 timeout += timeout
             except requests.exceptions.HTTPError as e:
@@ -110,10 +110,6 @@ class API(object):
 
         if latest_exception:
             sickrage.app.log.warning('{!r}'.format(latest_exception))
-
-    def exchange_token(self, token, scope='offline_access'):
-        exchange = {'scope': scope, 'subject_token': token['access_token']}
-        self.token = sickrage.app.oidc_client.token_exchange(**exchange)
 
     @staticmethod
     def throttle_hook(response, **kwargs):
