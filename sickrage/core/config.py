@@ -31,14 +31,15 @@ import sys
 import uuid
 from ast import literal_eval
 from itertools import cycle
+from json import JSONDecodeError
 
 import rarfile
 from configobj import ConfigObj
 
 import sickrage
-from sickrage.core.api import API
 from sickrage.core.common import SD, WANTED, SKIPPED, Quality
-from sickrage.core.helpers import make_dir, generate_secret, auto_type, get_lan_ip, extract_zipfile, try_int, checkbox_to_value, generate_api_key, backup_versioned_file, encryption, move_file
+from sickrage.core.helpers import make_dir, generate_secret, auto_type, get_lan_ip, extract_zipfile, try_int, checkbox_to_value, generate_api_key, \
+    backup_versioned_file, encryption, move_file
 from sickrage.core.websession import WebSession
 
 
@@ -1259,7 +1260,7 @@ class Config(object):
         def_val = def_val if def_val is not None else self.defaults[section][key]
 
         try:
-            my_val = self.config_obj.get(section, {section: key}).as_int(key)
+            my_val = self.config_obj.get(section).as_int(key) or def_val
         except Exception:
             my_val = def_val
 
@@ -1280,7 +1281,7 @@ class Config(object):
         def_val = def_val if def_val is not None else self.defaults[section][key]
 
         try:
-            my_val = self.config_obj.get(section, {section: key}).as_float(key)
+            my_val = self.config_obj.get(section).as_float(key) or def_val
         except Exception:
             my_val = def_val
 
@@ -1296,7 +1297,7 @@ class Config(object):
         def_val = def_val if def_val is not None else self.defaults[section][key]
 
         try:
-            my_val = self.config_obj.get(section, {section: key}).get(key, def_val)
+            my_val = self.config_obj.get(section).get(key) or def_val
         except Exception:
             my_val = def_val
 
@@ -1315,7 +1316,7 @@ class Config(object):
         def_val = def_val if def_val is not None else self.defaults[section][key]
 
         try:
-            my_val = list(self.config_obj.get(section, {section: key}).get(key, def_val))
+            my_val = list(self.config_obj.get(section).get(key)) or def_val
         except Exception:
             my_val = def_val
 
@@ -1331,7 +1332,7 @@ class Config(object):
         def_val = def_val if def_val is not None else self.defaults[section][key]
 
         try:
-            my_val = dict(literal_eval(self.config_obj.get(section, {section: key}).get(key, def_val)))
+            my_val = dict(literal_eval(self.config_obj.get(section).get(key))) or def_val
         except Exception:
             my_val = def_val
 
@@ -1347,7 +1348,7 @@ class Config(object):
         def_val = def_val if def_val is not None else self.defaults[section][key]
 
         try:
-            my_val = self.config_obj.get(section, {section: key}).as_bool(key)
+            my_val = self.config_obj.get(section).as_bool(key) or def_val
         except Exception:
             my_val = def_val
 
@@ -1356,7 +1357,7 @@ class Config(object):
 
         return my_val
 
-    def load(self, config_file=None, defaults=False, save_config=True):
+    def load(self, config_file=None, defaults=False):
         if not config_file:
             config_file = sickrage.app.config_file
 
@@ -1370,18 +1371,9 @@ class Config(object):
                 raise SystemExit("Config file root dir '{}' must be writeable.".format(os.path.dirname(config_file)))
 
         # decrypt config
+        self.config_obj = ConfigObj(encoding='utf8')
         if os.path.exists(config_file):
-            try:
-                with io.BytesIO() as buffer, open(config_file, 'rb') as fd:
-                    buffer.write(encryption.decrypt_string(fd.read(), sickrage.app.private_key))
-                    buffer.seek(0)
-                    self.config_obj = ConfigObj(buffer, encoding='utf8')
-            except (AttributeError, ValueError):
-                # old encryption from python 2
-                self.config_obj = ConfigObj(config_file, encoding='utf8')
-                self.config_obj.walk(self.decrypt)
-
-        self.config_obj = self.config_obj or ConfigObj(encoding='utf8')
+            self.config_obj = self.decrypt_config(config_file)
 
         # use defaults
         if defaults:
@@ -1876,8 +1868,7 @@ class Config(object):
         self.loaded = True
 
         # save config settings
-        if save_config:
-            self.save()
+        self.save()
 
     def save(self):
         # dont bother saving settings if there not loaded
@@ -1889,10 +1880,10 @@ class Config(object):
                          'enable_backlog', 'cat', 'subtitle', 'api_key', 'hash', 'digest', 'username', 'password',
                          'passkey', 'pin', 'reject_m2ts', 'cookies', 'custom_url']
 
-        new_config = ConfigObj(indent_type='  ', encoding='utf8')
-        new_config.clear()
+        config_obj = ConfigObj(indent_type='  ', encoding='utf8')
+        config_obj.clear()
 
-        new_config.update({
+        config_obj.update({
             'General': {
                 'sub_id': self.sub_id,
                 'app_id': self.app_id,
@@ -2364,57 +2355,68 @@ class Config(object):
         })
 
         # encrypt config
+        return self.encrypt_config(config_obj)
+
+    def encrypt_config(self, config_obj):
+        # encrypt config
         with io.BytesIO() as buffer, open(sickrage.app.config_file + '.tmp', 'wb') as fd:
-            new_config.write(buffer)
+            config_obj.write(buffer)
             buffer.seek(0)
             fd.write(encryption.encrypt_string(buffer.read(), sickrage.app.public_key))
 
         try:
-            self.load(config_file=sickrage.app.config_file + '.tmp', save_config=False)
+            self.decrypt_config(config_file=sickrage.app.config_file + '.tmp')
             sickrage.app.log.debug("Saved encrypted config to disk")
             move_file(sickrage.app.config_file + '.tmp', sickrage.app.config_file)
+            return True
         except Exception as e:
             sickrage.app.log.debug("Failed to save encrypted config to disk")
             os.remove(sickrage.app.config_file + '.tmp')
             return False
 
-        return True
+    def decrypt_config(self, config_file):
+        try:
+            with io.BytesIO() as buffer, open(config_file, 'rb') as fd:
+                buffer.write(encryption.decrypt_string(fd.read(), sickrage.app.private_key))
+                buffer.seek(0)
+                config_obj = ConfigObj(buffer, encoding='utf8')
+        except (AttributeError, ValueError):
+            # old encryption from python 2
+            config_obj = ConfigObj(config_file, encoding='utf8')
+            config_obj.walk(self.legacy_decrypt,
+                            encryption_version=int(config_obj.get('General').get('encryption_version')),
+                            encryption_secret=config_obj.get('General').get('encryption_secret'),
+                            raise_errors=False)
 
-    def encrypt(self, section, key, _decrypt=False):
+        return config_obj or ConfigObj(encoding='utf8')
+
+    def legacy_encrypt(self, section, key, encryption_version, encryption_secret, _decrypt=False):
         """
         :rtype: basestring
         """
-
         # DO NOT ENCRYPT THESE
         if key in ['config_version', 'encryption_version', 'encryption_secret']:
             return
 
         try:
-            encryption_version = self.check_setting_int('General', 'encryption_version', '')
-            encryption_secret = self.check_setting_str('General', 'encryption_secret', '', censor=True)
-
             if encryption_version == 1:
                 unique_key1 = hex(uuid.getnode() ** 2)
 
                 if _decrypt:
-                    section[key] = ''.join(
-                        chr(ord(x) ^ ord(y)) for (x, y) in
-                        zip(base64.decodestring(section[key]), cycle(unique_key1)))
+                    section[key] = ''.join(chr(ord(x) ^ ord(y)) for (x, y) in zip(base64.decodestring(section[key]), cycle(unique_key1)))
                 else:
-                    section[key] = base64.encodestring(
-                        ''.join(chr(ord(x) ^ ord(y)) for (x, y) in zip(section[key], cycle(unique_key1)))).strip()
+                    section[key] = base64.encodestring(''.join(chr(ord(x) ^ ord(y)) for (x, y) in zip(section[key], cycle(unique_key1)))).strip()
             elif encryption_version == 2:
                 if _decrypt:
-                    section[key] = ''.join(chr(x ^ y) for x, y in zip(base64.b64decode(section[key]), cycle(
-                        map(ord, encryption_secret))))
+                    section[key] = ''.join(chr(x ^ y) for x, y in zip(base64.b64decode(section[key]), cycle(map(ord, encryption_secret))))
                 else:
                     section[key] = base64.b64encode(''.join(chr(x ^ y) for (x, y) in zip(map(ord, section[key]), cycle(
                         map(ord, encryption_secret)))).encode()).decode().strip()
-        except Exception as e:
-            return
+        except Exception:
+            pass
 
-    def decrypt(self, section, key):
-        return self.encrypt(section, key, _decrypt=True)
+    def legacy_decrypt(self, section, key, encryption_version, encryption_secret):
+        self.legacy_encrypt(section, key, encryption_version=encryption_version, encryption_secret=encryption_secret, _decrypt=True)
 
 
 class ConfigMigrator(Config):
@@ -2557,8 +2559,12 @@ class ConfigMigrator(Config):
     def _migrate_v12(self):
         app_oauth_token = self.check_setting_str('General', 'app_oauth_token', '')
         if app_oauth_token:
-            with open(API().token_file, 'w') as fd:
-                json.dump(json.loads(app_oauth_token), fd)
+            # token_file = os.path.abspath(os.path.join(sickrage.app.data_dir, 'token.json'))
+            # with open(token_file, 'w') as fd:
+            #     try:
+            #         json.dump(json.loads(app_oauth_token), fd)
+            #     except JSONDecodeError:
+            #         pass
             del self.config_obj['General']['app_oauth_token']
         return self.config_obj
 

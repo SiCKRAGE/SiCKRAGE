@@ -15,61 +15,28 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
-import functools
 
 from sqlalchemy import Column, Integer, Text, ForeignKeyConstraint, String, DateTime
 from sqlalchemy.ext.declarative import as_declarative
-from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.orm import sessionmaker
 
-from sickrage.core.databases import SRDatabase, ContextSession
+from sickrage.core.databases import SRDatabase, SRDatabaseBase, ContextSession
 
 
 @as_declarative()
-class MainDBBase(object):
-    def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
-
-    def update(self, **kwargs):
-        primary_keys = [pk.name for pk in self.__table__.primary_key]
-        for key, value in kwargs.items():
-            if key not in primary_keys:
-                setattr(self, key, value)
+class MainDBBase(SRDatabaseBase):
+    pass
 
 
 class MainDB(SRDatabase):
-    db_version = 10
-
     session = sessionmaker(class_=ContextSession)
 
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
-        super(MainDB, self).__init__('main', db_type, db_prefix, db_host, db_port, db_username, db_password)
-        MainDB.session.configure(bind=self.engine)
+        super(MainDB, self).__init__('main', 10, db_type, db_prefix, db_host, db_port, db_username, db_password)
         MainDBBase.metadata.create_all(self.engine)
         for model in MainDBBase._decl_class_registry.values():
             if hasattr(model, '__tablename__'):
                 self.tables[model.__tablename__] = model
-
-    @staticmethod
-    def with_session(*args, **kwargs):
-        def decorator(func):
-            def wrapper(*args, **kwargs):
-                if kwargs.get('session'):
-                    return func(*args, **kwargs)
-                with _Session() as session:
-                    kwargs['session'] = session
-                    return func(*args, **kwargs)
-
-            return wrapper
-
-        if len(args) == 1 and not kwargs and callable(args[0]):
-            # Used without arguments, e.g. @with_session
-            # We default to expire_on_commit being false, in case the decorated function returns db instances
-            _Session = functools.partial(MainDB.session, expire_on_commit=False)
-            return decorator(args[0])
-        else:
-            # Arguments were specified, turn them into arguments for Session creation e.g. @with_session(autocommit=True)
-            _Session = functools.partial(MainDB.session, *args, **kwargs)
-            return decorator
 
     class IMDbInfo(MainDBBase):
         __tablename__ = 'imdb_info'

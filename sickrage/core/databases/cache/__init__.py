@@ -15,60 +15,28 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
-import functools
-import time
 
 from sqlalchemy import Column, Integer, Text, String
 from sqlalchemy.ext.declarative import as_declarative
 from sqlalchemy.orm import sessionmaker
 
-from sickrage.core.databases import SRDatabase, ContextSession
+from sickrage.core.databases import SRDatabase, SRDatabaseBase, ContextSession
 
 
 @as_declarative()
-class CacheDBBase(object):
-    def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
-
-    def update(self, **kwargs):
-        for key, value in kwargs.items():
-            setattr(self, key, value)
+class CacheDBBase(SRDatabaseBase):
+    pass
 
 
 class CacheDB(SRDatabase):
-    db_version = 4
-
     session = sessionmaker(class_=ContextSession)
 
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
-        super(CacheDB, self).__init__('cache', db_type, db_prefix, db_host, db_port, db_username, db_password)
-        CacheDB.session.configure(bind=self.engine)
+        super(CacheDB, self).__init__('cache', 4, db_type, db_prefix, db_host, db_port, db_username, db_password)
         CacheDBBase.metadata.create_all(self.engine)
         for model in CacheDBBase._decl_class_registry.values():
             if hasattr(model, '__tablename__'):
                 self.tables[model.__tablename__] = model
-
-    @staticmethod
-    def with_session(*args, **kwargs):
-        def decorator(func):
-            def wrapper(*args, **kwargs):
-                if kwargs.get('session'):
-                    return func(*args, **kwargs)
-                with _Session() as session:
-                    kwargs['session'] = session
-                    return func(*args, **kwargs)
-
-            return wrapper
-
-        if len(args) == 1 and not kwargs and callable(args[0]):
-            # Used without arguments, e.g. @with_session
-            # We default to expire_on_commit being false, in case the decorated function returns db instances
-            _Session = functools.partial(CacheDB.session, expire_on_commit=False)
-            return decorator(args[0])
-        else:
-            # Arguments were specified, turn them into arguments for Session creation e.g. @with_session(autocommit=True)
-            _Session = functools.partial(CacheDB.session, *args, **kwargs)
-            return decorator
 
     def cleanup(self):
         def remove_duplicates_from_last_search_table():

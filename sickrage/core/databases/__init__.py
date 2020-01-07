@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 import datetime
+import functools
 import os
 import pickle
 import shutil
@@ -76,7 +77,7 @@ class ContextSession(sqlalchemy.orm.Session):
         for i in range(self.max_attempts):
             try:
                 self.commit()
-            except OperationalError:
+            except OperationalError as e:
                 sickrage.app.log.debug('Retrying database commit, attempt {}'.format(i))
                 self.rollback()
                 sleep(1)
@@ -96,9 +97,23 @@ class ContextSession(sqlalchemy.orm.Session):
         self.safe_commit(close=True)
 
 
+class SRDatabaseBase(object):
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+    def update(self, **kwargs):
+        primary_keys = [pk.name for pk in self.__table__.primary_key]
+        for key, value in kwargs.items():
+            if key not in primary_keys:
+                setattr(self, key, value)
+
+
 class SRDatabase(object):
-    def __init__(self, name, db_type='sqlite', db_prefix='sickrage', db_host='localhost', db_port='3306', db_username='sickrage', db_password='sickrage'):
+    session = sessionmaker(class_=ContextSession)
+
+    def __init__(self, name, db_version=0, db_type='sqlite', db_prefix='sickrage', db_host='localhost', db_port='3306', db_username='sickrage', db_password='sickrage'):
         self.name = name
+        self.db_version = db_version
         self.db_type = db_type
         self.db_prefix = db_prefix
         self.db_host = db_host
@@ -111,6 +126,8 @@ class SRDatabase(object):
         self.db_path = os.path.join(sickrage.app.data_dir, '{}.db'.format(self.name))
         self.db_repository = os.path.join(os.path.dirname(__file__), self.name, 'db_repository')
 
+        self.session.configure(bind=self.engine)
+
         if not self.version:
             api.version_control(self.engine, self.db_repository, api.version(self.db_repository))
         else:
@@ -118,6 +135,28 @@ class SRDatabase(object):
                 api.version_control(self.engine, self.db_repository)
             except DatabaseAlreadyControlledError:
                 pass
+
+    @classmethod
+    def with_session(cls, *args, **kwargs):
+        def decorator(func):
+            def wrapper(*args, **kwargs):
+                if kwargs.get('session'):
+                    return func(*args, **kwargs)
+                with _Session() as session:
+                    kwargs['session'] = session
+                    return func(*args, **kwargs)
+
+            return wrapper
+
+        if len(args) == 1 and not kwargs and callable(args[0]):
+            # Used without arguments, e.g. @with_session
+            # We default to expire_on_commit being false, in case the decorated function returns db instances
+            _Session = functools.partial(cls.session, expire_on_commit=False)
+            return decorator(args[0])
+        else:
+            # Arguments were specified, turn them into arguments for Session creation e.g. @with_session(autocommit=True)
+            _Session = functools.partial(cls.session, *args, **kwargs)
+            return decorator
 
     @property
     def engine(self):
@@ -130,10 +169,6 @@ class SRDatabase(object):
             return create_engine(
                 'mysql+pymysql://{}:{}@{}:{}/{}_{}'.format(self.db_username, self.db_password, self.db_host, self.db_port, self.db_prefix, self.name),
                 echo=False)
-
-    @property
-    def session(self):
-        return self.session
 
     @property
     def version(self):

@@ -103,7 +103,6 @@ def snatch_episode(result, end_status=SNATCHED, session=None):
 
     sickrage.app.alerts.message(_('Episode snatched'), result.name)
 
-    # don't notify when we re-download an episode
     trakt_data = []
     for episode_number in result.episodes:
         episode_obj = show_object.get_episode(result.season, episode_number)
@@ -115,6 +114,7 @@ def snatch_episode(result, end_status=SNATCHED, session=None):
 
         session.safe_commit()
 
+        # don't notify when we re-download an episode
         if episode_obj.status not in Quality.DOWNLOADED:
             try:
                 Notifiers.mass_notify_snatch(episode_obj._format_pattern('%SN - %Sx%0E - %EN - %QN') + " from " + result.provider.name)
