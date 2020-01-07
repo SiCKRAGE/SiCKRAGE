@@ -58,6 +58,6 @@ class ConfigHandler(BaseHandler, ABC):
 class ConfigResetHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        sickrage.app.config.load(True)
+        sickrage.app.config.load(defaults=True)
         sickrage.app.alerts.message(_('Configuration Reset to Defaults'), os.path.join(sickrage.app.config_file))
         return self.redirect("/config/general")

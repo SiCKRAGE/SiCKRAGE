@@ -81,7 +81,7 @@ def set_last_refresh(ex_list, session=None):
 
 
 @CacheDB.with_session
-def retrieve_exceptions(get_xem=True, get_anidb=True, session=None):
+def retrieve_exceptions(get_xem=True, get_anidb=True, force=False, session=None):
     """
     Looks up the exceptions on github, parses them into a dict, and inserts them into the
     scene_exceptions table in cache db and also clears the scene name cache.
@@ -92,7 +92,7 @@ def retrieve_exceptions(get_xem=True, get_anidb=True, session=None):
     for indexer in IndexerApi().indexers:
         indexer_name = IndexerApi(indexer).name
 
-        if should_refresh(indexer_name):
+        if should_refresh(indexer_name) or force:
             sickrage.app.log.info("Checking for SiCKRAGE scene exception updates on {}".format(indexer_name))
             loc = IndexerApi(indexer).config['scene_loc']
 
@@ -119,11 +119,11 @@ def retrieve_exceptions(get_xem=True, get_anidb=True, session=None):
 
     # XEM scene exceptions
     if get_xem:
-        _xem_exceptions_fetcher()
+        _xem_exceptions_fetcher(force)
 
     # AniDB scene exceptions
     if get_anidb:
-        _anidb_exceptions_fetcher()
+        _anidb_exceptions_fetcher(force)
 
     for cur_indexer_id, cur_exception_dict in exception_dict.copy().items():
         if not len(cur_exception_dict):
@@ -238,7 +238,7 @@ def get_scene_exception_by_name_multiple(show_name, session=None):
     if exception_result.count():
         return [(int(x.indexer_id), int(x.season)) for x in exception_result]
 
-    # FIXME: Handle show names that are encoded
+    # FIXME: Handle show names that are encoded in byte format
     for cur_exception in session.query(CacheDB.SceneException).order_by(CacheDB.SceneException.season):
         cur_exception_name = cur_exception.show_name
         cur_indexer_id = int(cur_exception.indexer_id)
@@ -282,8 +282,8 @@ def update_scene_exceptions(indexer_id, scene_exceptions, season=-1, session=Non
     session.bulk_insert_mappings(CacheDB.SceneException, sql_t)
 
 
-def _anidb_exceptions_fetcher():
-    if should_refresh('anidb'):
+def _anidb_exceptions_fetcher(force=False):
+    if should_refresh('anidb') or force:
         sickrage.app.log.info("Checking for AniDB scene exception updates")
         for show in get_show_list():
             if show.is_anime and show.indexer == 1:
@@ -306,12 +306,11 @@ def _anidb_exceptions_fetcher():
     return anidb_exception_dict
 
 
-def _xem_exceptions_fetcher():
-    if should_refresh('xem'):
+def _xem_exceptions_fetcher(force=False):
+    if should_refresh('xem') or force:
         sickrage.app.log.info("Checking for XEM scene exception updates")
 
         for indexer in IndexerApi().indexers:
-
             url = "http://thexem.de/map/allNames?origin=%s&seasonNumbers=1" % IndexerApi(indexer).config[
                 'xem_origin']
 

@@ -231,6 +231,7 @@ class Core(object):
         encryption.initialize()
 
         # load config
+        self.log.info("Loading encrypted config from disk")
         self.config.load()
 
         # set language
@@ -261,6 +262,7 @@ class Core(object):
 
         # Check available space
         try:
+            self.log.info("Performing disk space checks")
             total_space, available_space = get_free_space(self.data_dir)
             if available_space < 100:
                 self.log.warning('Shutting down as SiCKRAGE needs some space to work. You\'ll get corrupted data otherwise. Only %sMB left', available_space)
@@ -271,15 +273,19 @@ class Core(object):
         # perform database startup actions
         for db in [self.main_db, self.cache_db]:
             # perform integrity check
+            self.log.info("Performing integrity check on {} database".format(db.name))
             db.integrity_check()
 
             # migrate database
+            self.log.info("Performing migrations on {} database".format(db.name))
             db.migrate()
 
             # sync database repo
+            self.log.info("Performing sync on {} database".format(db.name))
             db.sync_db_repo()
 
             # cleanup
+            self.log.info("Performing cleanup on {} database".format(db.name))
             db.cleanup()
 
         # load name cache
@@ -478,7 +484,7 @@ class Core(object):
 
         # add namecache update job
         self.scheduler.add_job(
-            self.name_cache.build_all,
+            self.name_cache.run,
             IntervalTrigger(
                 days=1,
                 timezone='utc'

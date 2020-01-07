@@ -37,7 +37,6 @@ import string
 import tempfile
 import time
 import traceback
-import unicodedata
 import uuid
 import webbrowser
 import zipfile
@@ -47,6 +46,7 @@ from urllib.parse import uses_netloc, urlsplit, urlunsplit, urljoin
 
 import rarfile
 import requests
+import unicodedata
 from bs4 import BeautifulSoup
 
 import sickrage

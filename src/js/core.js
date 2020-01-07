@@ -1597,19 +1597,6 @@ $(document).ready(function ($) {
                 //}
                 //});
             },
-
-            status: function () {
-                $("#schedulerStatusTable").tablesorter({
-                    theme: 'bootstrap',
-                    widgets: ['saveSort']
-                });
-
-                $("#queueStatusTable").tablesorter({
-                    theme: 'bootstrap',
-                    sortList: [[3, 0], [4, 0], [2, 1]],
-                    widgets: ['saveSort']
-                });
-            }
         },
 
         home: {
@@ -1917,6 +1904,7 @@ $(document).ready(function ($) {
                     }
                 });
             },
+
             display_show: {
                 init: function () {
                     SICKRAGE.home.display_show.imdbRating();
@@ -2889,6 +2877,26 @@ $(document).ready(function ($) {
                     }
                 } else {
                     $('#blackwhitelist').hide();
+                }
+            },
+
+            server_status: {
+                init: function () {
+                    $("#schedulerStatusTable").tablesorter({
+                        theme: 'bootstrap',
+                        widgets: ['saveSort']
+                    });
+
+                    $("#queueStatusTable").tablesorter({
+                        theme: 'bootstrap',
+                        sortList: [[3, 0], [4, 0], [2, 1]],
+                        widgets: ['saveSort']
+                    });
+
+                    $('.forceSchedulerJob').click(function (e) {
+                        e.preventDefault();
+                        $.get($(this).data('target'));
+                    });
                 }
             }
         },

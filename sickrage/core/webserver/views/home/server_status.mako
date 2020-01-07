@@ -12,6 +12,7 @@
             _('Daily Search'): 'daily_searcher',
             _('Backlog'): 'backlog_searcher',
             _('Show Update'): 'show_updater',
+            _('Scene Exceptions'): 'name_cache',
         }
 
         if sickrage.app.config.version_notify:
@@ -42,6 +43,7 @@
                                 <th>${_('Active')}</th>
                                 <th>${_('Cycle Time')}</th>
                                 <th>${_('Next Run')}</th>
+                                <th>${_('Action')}</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -91,9 +93,13 @@
                                             <td align="center"></td>
                                         % endif
                                         % endif
+                                        <td align="center">
+                                            <button class="btn forceSchedulerJob"
+                                                    data-target="${srWebRoot}/forceSchedulerJob?name=${scheduler}">
+                                                <i class="fa fa-exclamation-triangle"></i> ${_('Force')}
+                                            </button>
+                                        </td>
                                     </tr>
-                                    <% del job %>
-                                    <% del service %>
                                 % endfor
                             </tbody>
                         </table>

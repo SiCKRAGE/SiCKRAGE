@@ -655,7 +655,7 @@ class ServerStatusHandler(BaseHandler, ABC):
             tvdirFree=tvdir_free,
             rootDir=root_dir,
             controller='home',
-            action='status'
+            action='server_status'
         )
 
 

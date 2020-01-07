@@ -31,13 +31,21 @@ from sickrage.core.tv.show.helpers import get_show_list
 class NameCache(object):
     def __init__(self, *args, **kwargs):
         self.name = "NAMECACHE"
+        self.amActive = False
         self.min_time = 10
         self.last_update = {}
         self.cache = {}
 
-    def run(self):
+    def run(self, force=False):
+        if self.amActive and not force:
+            return
+
+        self.amActive = True
+
         threading.currentThread().setName(self.name)
         self.build_all()
+
+        self.amActive = False
 
     def should_update(self, show):
         # if we've updated recently then skip the update
@@ -122,8 +130,6 @@ class NameCache(object):
         :param show: Specify show to build name cache for, if None, just do all shows
         """
 
-        retrieve_exceptions()
-
         if self.should_update(show):
             self.last_update[show.name] = datetime.fromtimestamp(int(time.mktime(datetime.today().timetuple())))
 
@@ -141,5 +147,6 @@ class NameCache(object):
                 self.put(show_name, show.indexer_id)
 
     def build_all(self):
+        retrieve_exceptions(force=True)
         for show in get_show_list():
             self.build(show)

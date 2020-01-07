@@ -20,12 +20,14 @@
                             </div>
                             <div class="card-body">
                                 <a class="btn" href="${srWebRoot}/manage/manageQueues/forceBacklogSearch">
-                                    <i class="icon-exclamation-sign"></i>${_('Force')}
+                                    <i class="fa fa-exclamation-triangle"></i> ${_('Force')}
                                 </a>
-                                <a class="btn"
-                                   href="${srWebRoot}/manage/manageQueues/pauseBacklogSearcher?paused=${('1', '0')[bool(backlogSearchPaused)]}">
-                                    <i class="icon-${('paused', 'play')[bool(backlogSearchPaused)]}"></i>${(_('Pause'), _('Unpause'))[bool(backlogSearchPaused)]}
-                                </a>
+                                % if postProcessorRunning:
+                                    <a class="btn"
+                                       href="${srWebRoot}/manage/manageQueues/pauseBacklogSearcher?paused=${('1', '0')[bool(backlogSearchPaused)]}">
+                                        <i class="fa fa-${('pause', 'play')[bool(backlogSearchPaused)]}"></i> ${(_('Pause'), _('Unpause'))[bool(backlogSearchPaused)]}
+                                    </a>
+                                % endif
                             </div>
                         </div>
 
@@ -38,12 +40,14 @@
                             </div>
                             <div class="card-body">
                                 <a class="btn" href="${srWebRoot}/manage/manageQueues/forceDailySearch">
-                                    <i class="icon-exclamation-sign"></i>${_('Force')}
+                                    <i class="fa fa-exclamation-triangle"></i> ${_('Force')}
                                 </a>
-                                <a class="btn"
-                                   href="${srWebRoot}/manage/manageQueues/pauseDailySearcher?paused=${('1', '0')[bool(dailySearchPaused)]}">
-                                    <i class="icon-${('paused', 'play')[bool(dailySearchPaused)]}"></i>${(_('Pause'), _('Unpause'))[bool(dailySearchPaused)]}
-                                </a>
+                                % if postProcessorRunning:
+                                    <a class="btn"
+                                       href="${srWebRoot}/manage/manageQueues/pauseDailySearcher?paused=${('1', '0')[bool(dailySearchPaused)]}">
+                                        <i class="fa fa-${('pause', 'play')[bool(dailySearchPaused)]}"></i> ${(_('Pause'), _('Unpause'))[bool(dailySearchPaused)]}
+                                    </a>
+                                % endif
                             </div>
                         </div>
 
@@ -63,7 +67,7 @@
                             <div class="card-body">
                                 <a class="btn ${('disabled', '')[bool(sickrage.app.config.download_propers)]}"
                                    href="${srWebRoot}/manage/manageQueues/forceFindPropers">
-                                    <i class="icon-exclamation-sign"></i>Force
+                                    <i class="fa fa-exclamation-triangle"></i> Force
                                 </a>
                             </div>
                         </div>
@@ -76,10 +80,12 @@
                                 </h3>
                             </div>
                             <div class="card-body">
-                                <a class="btn"
-                                   href="${srWebRoot}/manage/manageQueues/pausePostProcessor?paused=${('1', '0')[bool(postProcessorPaused)]}">
-                                    <i class="icon-${('paused', 'play')[bool(postProcessorPaused)]}"></i>${(_('Pause'), _('Unpause'))[bool(postProcessorPaused)]}
-                                </a>
+                                % if postProcessorRunning:
+                                    <a class="btn"
+                                       href="${srWebRoot}/manage/manageQueues/pausePostProcessor?paused=${('1', '0')[bool(postProcessorPaused)]}">
+                                        <i class="fa fa-${('pause', 'play')[bool(postProcessorPaused)]}"></i> ${(_('Pause'), _('Unpause'))[bool(postProcessorPaused)]}
+                                    </a>
+                                % endif
                             </div>
                         </div>
 

@@ -38,8 +38,7 @@ from configobj import ConfigObj
 import sickrage
 from sickrage.core.api import API
 from sickrage.core.common import SD, WANTED, SKIPPED, Quality
-from sickrage.core.helpers import make_dir, generate_secret, auto_type, get_lan_ip, \
-    extract_zipfile, try_int, checkbox_to_value, generate_api_key, backup_versioned_file, encryption
+from sickrage.core.helpers import make_dir, generate_secret, auto_type, get_lan_ip, extract_zipfile, try_int, checkbox_to_value, generate_api_key, backup_versioned_file, encryption, move_file
 from sickrage.core.websession import WebSession
 
 
@@ -1357,27 +1356,29 @@ class Config(object):
 
         return my_val
 
-    def load(self, defaults=False):
-        if not os.path.isabs(sickrage.app.config_file):
-            sickrage.app.config_file = os.path.abspath(os.path.join(sickrage.app.data_dir, sickrage.app.config_file))
+    def load(self, config_file=None, defaults=False, save_config=True):
+        if not config_file:
+            config_file = sickrage.app.config_file
 
-        if not os.access(sickrage.app.config_file, os.W_OK):
-            if os.path.isfile(sickrage.app.config_file):
-                raise SystemExit("Config file '{}' must be writeable.".format(sickrage.app.config_file))
-            elif not os.access(os.path.dirname(sickrage.app.config_file), os.W_OK):
-                raise SystemExit(
-                    "Config file root dir '{}' must be writeable.".format(os.path.dirname(sickrage.app.config_file)))
+        if not os.path.isabs(config_file):
+            config_file = os.path.abspath(os.path.join(sickrage.app.data_dir, config_file))
+
+        if not os.access(config_file, os.W_OK):
+            if os.path.isfile(config_file):
+                raise SystemExit("Config file '{}' must be writeable.".format(config_file))
+            elif not os.access(os.path.dirname(config_file), os.W_OK):
+                raise SystemExit("Config file root dir '{}' must be writeable.".format(os.path.dirname(config_file)))
 
         # decrypt config
-        if os.path.exists(sickrage.app.config_file):
+        if os.path.exists(config_file):
             try:
-                with io.BytesIO() as buffer, open(sickrage.app.config_file, 'rb') as fd:
+                with io.BytesIO() as buffer, open(config_file, 'rb') as fd:
                     buffer.write(encryption.decrypt_string(fd.read(), sickrage.app.private_key))
                     buffer.seek(0)
                     self.config_obj = ConfigObj(buffer, encoding='utf8')
             except (AttributeError, ValueError):
                 # old encryption from python 2
-                self.config_obj = ConfigObj(sickrage.app.config_file, encoding='utf8')
+                self.config_obj = ConfigObj(config_file, encoding='utf8')
                 self.config_obj.walk(self.decrypt)
 
         self.config_obj = self.config_obj or ConfigObj(encoding='utf8')
@@ -1875,7 +1876,8 @@ class Config(object):
         self.loaded = True
 
         # save config settings
-        self.save()
+        if save_config:
+            self.save()
 
     def save(self):
         # dont bother saving settings if there not loaded
@@ -2362,13 +2364,18 @@ class Config(object):
         })
 
         # encrypt config
+        with io.BytesIO() as buffer, open(sickrage.app.config_file + '.tmp', 'wb') as fd:
+            new_config.write(buffer)
+            buffer.seek(0)
+            fd.write(encryption.encrypt_string(buffer.read(), sickrage.app.public_key))
+
         try:
-            with io.BytesIO() as buffer, open(sickrage.app.config_file, 'wb') as fd:
-                new_config.write(buffer)
-                buffer.seek(0)
-                fd.write(encryption.encrypt_string(buffer.read(), sickrage.app.public_key))
+            self.load(config_file=sickrage.app.config_file + '.tmp', save_config=False)
             sickrage.app.log.debug("Saved encrypted config to disk")
-        except sickrage.core.api.exceptions.APIError:
+            move_file(sickrage.app.config_file + '.tmp', sickrage.app.config_file)
+        except Exception as e:
+            sickrage.app.log.debug("Failed to save encrypted config to disk")
+            os.remove(sickrage.app.config_file + '.tmp')
             return False
 
         return True

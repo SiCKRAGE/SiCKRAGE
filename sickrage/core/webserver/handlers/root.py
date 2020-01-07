@@ -261,3 +261,13 @@ class QuicksearchDotJsonHandler(BaseHandler, ABC):
             }]
 
         return self.write(json.dumps(shows + episodes))
+
+
+class ForceSchedulerJobHandler(BaseHandler, ABC):
+    @authenticated
+    def get(self, *args, **kwargs):
+        name = self.get_argument('name')
+
+        service = getattr(sickrage.app, name, None)
+        if service:
+            job = sickrage.app.scheduler.get_job(service.name).func(True)
