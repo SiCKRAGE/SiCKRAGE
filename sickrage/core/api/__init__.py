@@ -93,6 +93,7 @@ class API(object):
                 self.token = self.session.refresh_token(self.token_url, **extra)
             except (InvalidClientIdError, MissingTokenError, InvalidGrantError) as e:
                 latest_exception = "Invalid token error, please re-authenticate by logging out then logging back in from web-ui"
+                break
             except requests.exceptions.ReadTimeout:
                 timeout += timeout
             except requests.exceptions.HTTPError as e:

@@ -1373,7 +1373,10 @@ class Config(object):
         # decrypt config
         self.config_obj = ConfigObj(encoding='utf8')
         if os.path.exists(config_file):
-            self.config_obj = self.decrypt_config(config_file)
+            try:
+                self.config_obj = self.decrypt_config(config_file)
+            except Exception:
+                raise SystemExit("Unable to decrypt config file {}, config is most likely corrupted and needs to be deleted.".format(config_file))
 
         # use defaults
         if defaults:
@@ -2388,7 +2391,7 @@ class Config(object):
                             encryption_secret=config_obj.get('General').get('encryption_secret'),
                             raise_errors=False)
 
-        return config_obj or ConfigObj(encoding='utf8')
+        return config_obj
 
     def legacy_encrypt(self, section, key, encryption_version, encryption_secret, _decrypt=False):
         """
