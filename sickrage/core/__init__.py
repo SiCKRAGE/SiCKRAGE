@@ -208,11 +208,23 @@ class Core(object):
         realm = KeycloakRealm(server_url='https://auth.sickrage.ca', realm_name='sickrage')
         self.oidc_client = realm.open_id_connect(client_id=self.oidc_client_id, client_secret=self.oidc_client_secret)
 
-        # Check if we need to perform a restore first
+        # check available space
+        try:
+            self.log.info("Performing disk space checks")
+            total_space, available_space = get_free_space(self.data_dir)
+            if available_space < 100:
+                self.log.warning('Shutting down as SiCKRAGE needs some space to work. You\'ll get corrupted data otherwise. Only %sMB left', available_space)
+                return
+        except Exception:
+            self.log.error('Failed getting disk space: %s', traceback.format_exc())
+
+        # check if we need to perform a restore first
         if os.path.exists(os.path.abspath(os.path.join(self.data_dir, 'restore'))):
             success = restore_app_data(os.path.abspath(os.path.join(self.data_dir, 'restore')), self.data_dir)
             self.log.info("Restoring SiCKRAGE backup: %s!" % ("FAILED", "SUCCESSFUL")[success])
             if success:
+                self.main_db = MainDB(self.db_type, self.db_prefix, self.db_host, self.db_port, self.db_username, self.db_password)
+                self.cache_db = CacheDB(self.db_type, self.db_prefix, self.db_host, self.db_port, self.db_username, self.db_password)
                 shutil.rmtree(os.path.abspath(os.path.join(self.data_dir, 'restore')), ignore_errors=True)
 
         # migrate old database file names to new ones
@@ -250,26 +262,6 @@ class Core(object):
         # start logger
         self.log.start()
 
-        # user agent
-        if self.config.random_user_agent:
-            self.user_agent = UserAgent().random
-
-        uses_netloc.append('scgi')
-        FancyURLopener.version = self.user_agent
-
-        # set torrent client web url
-        torrent_webui_url(True)
-
-        # Check available space
-        try:
-            self.log.info("Performing disk space checks")
-            total_space, available_space = get_free_space(self.data_dir)
-            if available_space < 100:
-                self.log.warning('Shutting down as SiCKRAGE needs some space to work. You\'ll get corrupted data otherwise. Only %sMB left', available_space)
-                return
-        except Exception:
-            self.log.error('Failed getting disk space: %s', traceback.format_exc())
-
         # perform database startup actions
         for db in [self.main_db, self.cache_db]:
             # perform integrity check
@@ -287,6 +279,16 @@ class Core(object):
             # cleanup
             self.log.info("Performing cleanup on {} database".format(db.name))
             db.cleanup()
+
+        # user agent
+        if self.config.random_user_agent:
+            self.user_agent = UserAgent().random
+
+        uses_netloc.append('scgi')
+        FancyURLopener.version = self.user_agent
+
+        # set torrent client web url
+        torrent_webui_url(True)
 
         # load name cache
         self.name_cache.load()
