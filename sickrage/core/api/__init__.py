@@ -46,7 +46,11 @@ class API(object):
     @token.setter
     @CacheDB.with_session
     def token(self, value, session=None):
-        session.query(CacheDB.OAuth2Token).delete()
+        query = session.query(CacheDB.OAuth2Token)
+        if query.count():
+            token = query.first()
+            sickrage.app.oidc_client.logout(token.refresh_token)
+            query.delete()
 
         if value:
             session.add(CacheDB.OAuth2Token(**{
@@ -60,6 +64,14 @@ class API(object):
     @property
     def userinfo(self):
         return self._request('GET', 'userinfo')
+
+    def refresh_token(self):
+        extra = {
+            'client_id': self.client_id,
+            'client_secret': self.client_secret
+        }
+
+        self.token = self.session.refresh_token(self.token_url, **extra)
 
     def allowed_usernames(self):
         return self._request('GET', 'allowed-usernames')
@@ -85,12 +97,7 @@ class API(object):
                 except ValueError:
                     return resp.content
             except TokenExpiredError as e:
-                extra = {
-                    'client_id': self.client_id,
-                    'client_secret': self.client_secret
-                }
-
-                self.token = self.session.refresh_token(self.token_url, **extra)
+                self.refresh_token()
             except (InvalidClientIdError, MissingTokenError, InvalidGrantError) as e:
                 latest_exception = "Invalid token error, please re-authenticate by logging out then logging back in from web-ui"
                 break
