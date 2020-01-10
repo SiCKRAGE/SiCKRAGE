@@ -17,7 +17,6 @@ class API(object):
         self.api_url = 'https://www.sickrage.ca/api/v3/'
         self.client_id = sickrage.app.oidc_client_id
         self.client_secret = sickrage.app.oidc_client_secret
-        self.token_url = sickrage.app.oidc_client.well_known['token_endpoint']
 
     @property
     def session(self):
@@ -60,6 +59,13 @@ class API(object):
                 'expires_at': value.get('expires_at', int(time.time() + value.get('expires_in'))),
                 'scope': value.scope if isinstance(value, OAuth2Token) else value.get('scope')
             }))
+
+    @property
+    def token_url(self):
+        try:
+            return sickrage.app.oidc_client.well_known['token_endpoint']
+        except requests.exceptions.RequestException:
+            return "https://auth.sickrage.ca/auth/realms/sickrage/protocol/openid-connect/token"
 
     @property
     def userinfo(self):
