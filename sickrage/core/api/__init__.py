@@ -79,6 +79,10 @@ class API(object):
 
         self.token = self.session.refresh_token(self.token_url, **extra)
 
+    def exchange_token(self, token, scope='offline_access'):
+        exchange = {'scope': scope, 'subject_token': token['access_token']}
+        self.token = sickrage.app.oidc_client.token_exchange(**exchange)
+
     def allowed_usernames(self):
         return self._request('GET', 'allowed-usernames')
 

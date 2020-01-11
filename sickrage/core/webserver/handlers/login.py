@@ -18,6 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
+import json
 from abc import ABC
 
 import sickrage
@@ -37,8 +38,7 @@ class LoginHandler(BaseHandler, ABC):
                 token = sickrage.app.oidc_client.authorization_code(code, redirect_uri)
                 userinfo = sickrage.app.oidc_client.userinfo(token['access_token'])
 
-                self.set_secure_cookie('sr_access_token', token['access_token'])
-                self.set_secure_cookie('sr_refresh_token', token['refresh_token'])
+                self.set_secure_cookie('_sr', json.dumps(token))
 
                 if not userinfo.get('sub'):
                     return self.redirect('/logout')
@@ -67,5 +67,5 @@ class LoginHandler(BaseHandler, ABC):
             redirect_uri = self.get_argument('next', "/{}/".format(sickrage.app.config.default_page))
             return self.redirect("{}".format(redirect_uri))
         else:
-            authorization_url = sickrage.app.oidc_client.authorization_url(redirect_uri=redirect_uri, scope="profile email offline_access")
+            authorization_url = sickrage.app.oidc_client.authorization_url(redirect_uri=redirect_uri)
             return super(BaseHandler, self).redirect(authorization_url)
