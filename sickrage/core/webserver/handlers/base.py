@@ -101,10 +101,19 @@ class BaseHandler(RequestHandler, ABC):
                                              webroot=sickrage.app.config.web_root))
 
     def get_current_user(self):
+        cookie = self.get_secure_cookie('_sr')
+        if not cookie:
+            return
+
         try:
-            token = json.loads(self.get_secure_cookie('_sr'))
-            return sickrage.app.oidc_client.userinfo(token['access_token'])
-        except (KeycloakClientError, HTTPError, JSONDecodeError, OSError):
+            token = json.loads(cookie)
+            try:
+                return sickrage.app.oidc_client.userinfo(token['access_token'])
+            except KeycloakClientError as e:
+                token = sickrage.app.oidc_client.refresh_token(token['refresh_token'])
+                self.set_secure_cookie('_sr', json.dumps(token))
+                return sickrage.app.oidc_client.userinfo(token['access_token'])
+        except Exception:
             pass
 
     def render_string(self, template_name, **kwargs):

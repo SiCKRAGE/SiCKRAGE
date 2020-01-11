@@ -51,11 +51,13 @@ class LoginHandler(BaseHandler, ABC):
                     if API().token:
                         allowed_usernames = API().allowed_usernames()['data']
                         if not userinfo['preferred_username'] in allowed_usernames:
-                            sickrage.app.log.debug("USERNAME:{} IP:{} - ACCESS DENIED".format(userinfo['preferred_username'], self.request.remote_ip))
+                            sickrage.app.log.debug("USERNAME:{} IP:{} - WEB-UI ACCESS DENIED".format(userinfo['preferred_username'], self.request.remote_ip))
                             return self.redirect('/logout')
                     else:
                         return self.redirect('/logout')
                 else:
+                    if API().token:
+                        API().logout()
                     API().token = token
             except Exception as e:
                 return self.redirect('/logout')
@@ -67,5 +69,5 @@ class LoginHandler(BaseHandler, ABC):
             redirect_uri = self.get_argument('next', "/{}/".format(sickrage.app.config.default_page))
             return self.redirect("{}".format(redirect_uri))
         else:
-            authorization_url = sickrage.app.oidc_client.authorization_url(redirect_uri=redirect_uri)
+            authorization_url = sickrage.app.oidc_client.authorization_url(redirect_uri=redirect_uri, scope="profile email offline_access")
             return super(BaseHandler, self).redirect(authorization_url)
