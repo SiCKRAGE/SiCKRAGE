@@ -1,1 +1,0 @@
-{"version":3,"file":"response.js","sourceRoot":"","sources":["../src/response.ts"],"names":[],"mappings":"","sourcesContent":["import { Event } from './event';\nimport { Status } from './status';\n\n/** JSDoc */\nexport interface Response {\n  status: Status;\n  event?: Event;\n  reason?: string;\n}\n"]}
