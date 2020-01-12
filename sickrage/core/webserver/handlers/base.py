@@ -19,11 +19,13 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 import functools
+import json
 import os
 import threading
 import time
 import traceback
 from abc import ABC
+from json import JSONDecodeError
 from urllib.parse import urlparse, urljoin
 
 from keycloak.exceptions import KeycloakClientError
@@ -99,15 +101,19 @@ class BaseHandler(RequestHandler, ABC):
                                              webroot=sickrage.app.config.web_root))
 
     def get_current_user(self):
-        try:
-            if not API().token:
-                return
+        cookie = self.get_secure_cookie('_sr')
+        if not cookie:
+            return
 
-            token = sickrage.app.oidc_client.refresh_token(self.get_secure_cookie('sr_refresh_token'))
-            self.set_secure_cookie('sr_access_token', token['access_token'])
-            self.set_secure_cookie('sr_refresh_token', token['refresh_token'])
-            return sickrage.app.oidc_client.userinfo(token['access_token'])
-        except (KeycloakClientError, HTTPError, OSError):
+        try:
+            token = json.loads(cookie)
+            try:
+                return sickrage.app.oidc_client.userinfo(token['access_token'])
+            except KeycloakClientError as e:
+                token = sickrage.app.oidc_client.refresh_token(token['refresh_token'])
+                self.set_secure_cookie('_sr', json.dumps(token))
+                return sickrage.app.oidc_client.userinfo(token['access_token'])
+        except Exception:
             pass
 
     def render_string(self, template_name, **kwargs):

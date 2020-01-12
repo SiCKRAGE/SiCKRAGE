@@ -45,20 +45,24 @@ class API(object):
     @token.setter
     @CacheDB.with_session
     def token(self, value, session=None):
-        query = session.query(CacheDB.OAuth2Token)
-        if query.count():
-            token = query.first()
-            sickrage.app.oidc_client.logout(token.refresh_token)
-            query.delete()
+        new_token = {
+            'access_token': value.get('access_token'),
+            'refresh_token': value.get('refresh_token'),
+            'expires_in': value.get('expires_in'),
+            'expires_at': value.get('expires_at', int(time.time() + value.get('expires_in'))),
+            'scope': value.scope if isinstance(value, OAuth2Token) else value.get('scope')
+        }
 
-        if value:
-            session.add(CacheDB.OAuth2Token(**{
-                'access_token': value.get('access_token'),
-                'refresh_token': value.get('refresh_token'),
-                'expires_in': value.get('expires_in'),
-                'expires_at': value.get('expires_at', int(time.time() + value.get('expires_in'))),
-                'scope': value.scope if isinstance(value, OAuth2Token) else value.get('scope')
-            }))
+        try:
+            token = session.query(CacheDB.OAuth2Token).one()
+            token.update(**new_token)
+        except orm.exc.NoResultFound:
+            session.add(CacheDB.OAuth2Token(**new_token))
+
+    @token.deleter
+    @CacheDB.with_session
+    def token(self, session=None):
+        session.query(CacheDB.OAuth2Token).delete()
 
     @property
     def token_url(self):
@@ -71,6 +75,9 @@ class API(object):
     def userinfo(self):
         return self._request('GET', 'userinfo')
 
+    def logout(self):
+        sickrage.app.oidc_client.logout(self.token.get('refresh_token'))
+
     def refresh_token(self):
         extra = {
             'client_id': self.client_id,
@@ -78,6 +85,10 @@ class API(object):
         }
 
         self.token = self.session.refresh_token(self.token_url, **extra)
+
+    def exchange_token(self, token, scope='offline_access'):
+        exchange = {'scope': scope, 'subject_token': token['access_token']}
+        self.token = sickrage.app.oidc_client.token_exchange(**exchange)
 
     def allowed_usernames(self):
         return self._request('GET', 'allowed-usernames')

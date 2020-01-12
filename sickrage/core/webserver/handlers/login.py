@@ -18,6 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
+import json
 from abc import ABC
 
 import sickrage
@@ -37,8 +38,7 @@ class LoginHandler(BaseHandler, ABC):
                 token = sickrage.app.oidc_client.authorization_code(code, redirect_uri)
                 userinfo = sickrage.app.oidc_client.userinfo(token['access_token'])
 
-                self.set_secure_cookie('sr_access_token', token['access_token'])
-                self.set_secure_cookie('sr_refresh_token', token['refresh_token'])
+                self.set_secure_cookie('_sr', json.dumps(token))
 
                 if not userinfo.get('sub'):
                     return self.redirect('/logout')
@@ -51,11 +51,13 @@ class LoginHandler(BaseHandler, ABC):
                     if API().token:
                         allowed_usernames = API().allowed_usernames()['data']
                         if not userinfo['preferred_username'] in allowed_usernames:
-                            sickrage.app.log.debug("USERNAME:{} IP:{} - ACCESS DENIED".format(userinfo['preferred_username'], self.request.remote_ip))
+                            sickrage.app.log.debug("USERNAME:{} IP:{} - WEB-UI ACCESS DENIED".format(userinfo['preferred_username'], self.request.remote_ip))
                             return self.redirect('/logout')
                     else:
                         return self.redirect('/logout')
                 else:
+                    if API().token:
+                        API().logout()
                     API().token = token
             except Exception as e:
                 return self.redirect('/logout')
