@@ -60,6 +60,7 @@ class LoginHandler(BaseHandler, ABC):
                         API().logout()
                     API().token = token
             except Exception as e:
+                sickrage.app.log.debug('{!r}'.format(e))
                 return self.redirect('/logout')
 
             if not sickrage.app.config.app_id:

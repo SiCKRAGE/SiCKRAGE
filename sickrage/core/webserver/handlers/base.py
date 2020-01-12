@@ -106,14 +106,15 @@ class BaseHandler(RequestHandler, ABC):
             return
 
         try:
-            token = json.loads(cookie)
+            token = json.loads(cookie.decode("utf-8"))
             try:
                 return sickrage.app.oidc_client.userinfo(token['access_token'])
-            except KeycloakClientError as e:
+            except KeycloakClientError:
                 token = sickrage.app.oidc_client.refresh_token(token['refresh_token'])
                 self.set_secure_cookie('_sr', json.dumps(token))
                 return sickrage.app.oidc_client.userinfo(token['access_token'])
-        except Exception:
+        except Exception as e:
+            sickrage.app.log.debug('{!r}'.format(e))
             pass
 
     def render_string(self, template_name, **kwargs):
