@@ -6,6 +6,10 @@ stages:
   - release_sentry
   - release_deploy
 
+services:
+  - name: docker:dind
+    command: ["--mtu=1450"]
+
 #review:webpack:
 #  stage: review_webpack
 #  image:
