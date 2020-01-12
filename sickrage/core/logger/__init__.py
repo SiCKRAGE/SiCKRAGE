@@ -186,8 +186,7 @@ class Logger(logging.getLoggerClass()):
 
             # sending record to UI
             if record.levelno in [WARNING, ERROR]:
-                (self.warning_viewer, self.error_viewer)[record.levelno == ERROR].add(
-                    "{}::{}".format(record.threadName, record.msg), True)
+                (self.warning_viewer, self.error_viewer)[record.levelno == ERROR].add("{}::{}".format(record.threadName, record.msg), True)
 
             return record
 

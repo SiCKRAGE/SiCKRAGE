@@ -31,6 +31,7 @@ from tornado.web import authenticated
 import sickrage
 from sickrage.core import AccountAPI
 from sickrage.core.api import API
+from sickrage.core.api.announcements import AnnouncementsAPI
 from sickrage.core.helpers import remove_article
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
@@ -271,3 +272,16 @@ class ForceSchedulerJobHandler(BaseHandler, ABC):
         service = getattr(sickrage.app, name, None)
         if service:
             job = sickrage.app.scheduler.get_job(service.name).func(True)
+
+
+class AnnouncementsHandler(BaseHandler, ABC):
+    @authenticated
+    async def get(self, *args, **kwargs):
+        return self.render(
+            'announcements.mako',
+            title=_('Announcements'),
+            header=_('Announcements'),
+            topmenu='announcements',
+            controller='root',
+            action='announcements'
+        )

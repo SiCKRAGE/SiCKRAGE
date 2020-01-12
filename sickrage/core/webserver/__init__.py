@@ -81,7 +81,7 @@ from sickrage.core.webserver.handlers.manage.queues import ManageQueuesHandler, 
 from sickrage.core.webserver.handlers.root import RobotsDotTxtHandler, MessagesDotPoHandler, \
     APIBulderHandler, SetHomeLayoutHandler, SetPosterSortByHandler, SetPosterSortDirHandler, \
     ToggleDisplayShowSpecialsHandler, SetScheduleLayoutHandler, ToggleScheduleDisplayPausedHandler, \
-    SetScheduleSortHandler, ScheduleHandler, UnlinkHandler, QuicksearchDotJsonHandler, SetHistoryLayoutHandler, ForceSchedulerJobHandler
+    SetScheduleSortHandler, ScheduleHandler, UnlinkHandler, QuicksearchDotJsonHandler, SetHistoryLayoutHandler, ForceSchedulerJobHandler, AnnouncementsHandler
 from sickrage.core.webserver.handlers.web_file_browser import WebFileBrowserHandler, WebFileBrowserCompleteHandler
 from sickrage.core.websocket import WebSocketUIHandler
 
@@ -226,6 +226,7 @@ class WebServer(object):
             (r'%s/toggleScheduleDisplayPaused(/?)' % sickrage.app.config.web_root, ToggleScheduleDisplayPausedHandler),
             (r'%s/setScheduleSort(/?)' % sickrage.app.config.web_root, SetScheduleSortHandler),
             (r'%s/forceSchedulerJob(/?)' % sickrage.app.config.web_root, ForceSchedulerJobHandler),
+            (r'%s/announcements(/?)' % sickrage.app.config.web_root, AnnouncementsHandler),
             (r'%s/schedule(/?)' % sickrage.app.config.web_root, ScheduleHandler),
             (r'%s/unlink(/?)' % sickrage.app.config.web_root, UnlinkHandler),
             (r'%s/setScheduleLayout(/?)' % sickrage.app.config.web_root, SetScheduleLayoutHandler),

@@ -178,6 +178,9 @@ class ErrorViewer(object):
     def get(self):
         return self.errors
 
+    def count(self):
+        return len(self.errors)
+
 
 class WarningViewer(object):
     """
@@ -195,3 +198,6 @@ class WarningViewer(object):
 
     def get(self):
         return self.warnings
+
+    def count(self):
+        return len(self.warnings)

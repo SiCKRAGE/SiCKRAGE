@@ -42,6 +42,7 @@ from keycloak.realm import KeycloakRealm
 from tornado.ioloop import IOLoop
 
 import sickrage
+from sickrage.core.announcements import Announcements
 from sickrage.core.api import API
 from sickrage.core.api.account import AccountAPI
 from sickrage.core.caches.name_cache import NameCache
@@ -167,6 +168,7 @@ class Core(object):
         self.upnp_client = None
         self.oidc_client = None
         self.quicksearch_cache = None
+        self.announcements = None
 
     def start(self):
         self.started = True
@@ -203,6 +205,7 @@ class Core(object):
         self.auto_postprocessor = AutoPostProcessor()
         self.upnp_client = UPNPClient()
         self.quicksearch_cache = QuicksearchCache()
+        self.announcements = Announcements()
 
         # setup oidc client
         realm = KeycloakRealm(server_url='https://auth.sickrage.ca', realm_name='sickrage')
@@ -525,6 +528,11 @@ class Core(object):
             self.log.info("SiCKRAGE :: DATABASE TYPE:[{}]".format(self.db_type))
             self.log.info("SiCKRAGE :: URL:[{}://{}:{}{}]".format(('http', 'https')[self.config.enable_https], self.config.web_host, self.config.web_port,
                                                                   self.config.web_root))
+
+        self.announcements.add('test', 'test', 'test', 'test')
+        self.announcements.add('test', 'test', 'test', 'test')
+        self.announcements.add('test', 'test', 'test', 'test')
+        self.announcements.add('test', 'test', 'test', 'test')
 
         # start io_loop
         self.io_loop.add_callback(started)

@@ -73,17 +73,18 @@
 
     % if current_user:
         <%
-            numCombined = numErrors + numWarnings
+            toolsBadge = ''
+            numCombined = numErrors + numWarnings + numAnnouncements
             if numCombined:
                 toolsBadgeClass = ''
                 if numErrors:
                     toolsBadgeClass = 'badge-danger'
                 elif numWarnings:
                     toolsBadgeClass = 'badge-warning'
+                elif numAnnouncements:
+                    toolsBadgeClass = 'badge-info'
 
                 toolsBadge = '<span class="badge badge-pill ' + toolsBadgeClass + '" style="float:right;margin-bottom:-10px;">' + str(numCombined) + '</span>'
-            else:
-                toolsBadge = ''
         %>
 
         % if current_user and sickrage.app.newest_version_string:
@@ -285,6 +286,12 @@
                                 <a class="dropdown-item" href="https://www.paypal.me/sickrage" rel="noreferrer"
                                    onclick="window.open('${sickrage.app.config.anon_redirect}' + this.href); return false;">
                                     <i class="fas fa-fw fa-donate"></i>&nbsp;${_('Donate')}
+                                </a>
+                                <a class="dropdown-item" href="${srWebRoot}/announcements/">
+                                    <i class="fas fa-fw fa-circle"></i>&nbsp;${_('Announcements')}
+                                    %if numAnnouncements:
+                                        <span class="badge badge-info">${numAnnouncements}</span>
+                                    %endif
                                 </a>
                                 <div class="dropdown-divider"></div>
                                 %if numErrors:
