@@ -126,13 +126,14 @@ release:build:master:
     - git fetch . release-$(cat sickrage/version.txt):master
     - git fetch . release-$(cat sickrage/version.txt):develop
     - git tag -a $(cat sickrage/version.txt) -m "Release v$(cat sickrage/version.txt) master"
-    - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:master --follow-tags
+    - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:master
+    - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:master --tags
     - git checkout develop
     - bumpversion --allow-dirty patch package.json sickrage/version.txt
     - git add --all
     - git commit -m "[TASK] Bump develop branch to v$(cat sickrage/version.txt)"
-#    - git tag -a $(cat sickrage/version.txt) -m "Pre-Release v$(cat sickrage/version.txt) develop"
-    - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:develop --follow-tags
+    - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:develop
+    - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:develop --tags
   when: manual
   only:
     - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage
@@ -165,7 +166,8 @@ release:build:develop:
     - git add --all
     - git commit -m "[TASK] Pre-Releasing v$(cat sickrage/version.txt)"
     - git tag -a $(cat sickrage/version.txt) -m "Pre-release v$(cat sickrage/version.txt)"
-    - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME --follow-tags
+    - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME
+    - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME --tags
   only:
     - develop@SiCKRAGE/sickrage
   except:
