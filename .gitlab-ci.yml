@@ -6,9 +6,6 @@ stages:
   - release_sentry
   - release_deploy
 
-variables:
-  GIT_DEPTH: 10
-
 #review:webpack:
 #  stage: review_webpack
 #  image:
