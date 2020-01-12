@@ -1,0 +1,10 @@
+---
+github:
+  owner: getsentry
+  repo: sentry-webpack-plugin
+changelogPolicy: simple
+preReleaseCommand: bash scripts/craft-pre-release.sh
+targets:
+  - name: npm
+  - name: github
+    tagPrefix: v

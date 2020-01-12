@@ -1,0 +1,42 @@
+{
+  "name": "save-pixels",
+  "version": "2.3.4",
+  "description": "Saves an ndarray as an image to a file",
+  "main": "save-pixels.js",
+  "directories": {
+    "example": "example",
+    "test": "test"
+  },
+  "dependencies": {
+    "contentstream": "^1.0.0",
+    "gif-encoder": "~0.4.1",
+    "jpeg-js": "0.0.4",
+    "ndarray": "^1.0.18",
+    "ndarray-ops": "^1.2.2",
+    "pngjs-nozlib": "^1.0.0",
+    "through": "^2.3.4"
+  },
+  "devDependencies": {
+    "get-pixels": "^3.0.1",
+    "ndarray-scratch": "^1.1.1",
+    "tape": "^3.0.1"
+  },
+  "scripts": {
+    "test": "tap test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mikolalysenko/save-pixels.git"
+  },
+  "keywords": [
+    "save",
+    "pixel",
+    "image",
+    "png",
+    "ndarray"
+  ],
+  "author": "Mikola Lysenko",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "gitHead": "fda0977a1a5f2797d66f1557ffecc8c2dc759a47"
+}

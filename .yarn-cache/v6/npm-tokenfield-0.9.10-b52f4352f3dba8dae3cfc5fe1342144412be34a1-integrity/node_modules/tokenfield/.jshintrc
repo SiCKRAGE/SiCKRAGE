@@ -1,0 +1,8 @@
+{
+  "esnext": true,
+  "undef": true,
+  "predef": ["require", "describe", "it", "beforeEach"],
+  "node": true,
+  "browser": true,
+  "devel": true
+}

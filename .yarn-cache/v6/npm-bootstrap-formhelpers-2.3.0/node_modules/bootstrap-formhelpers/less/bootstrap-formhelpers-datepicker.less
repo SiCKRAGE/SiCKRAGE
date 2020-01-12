@@ -1,0 +1,81 @@
+//
+// Date Picker
+// --------------------------------------------------
+
+.bfh-datepicker-calendar {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: @zindex-datepicker;
+  display: none;
+  float: left;
+  min-width: @datepicker-width-base - 80;
+  
+  > table.calendar {
+    width: @datepicker-width-base;
+    background: @datepicker-bg;
+    
+    .months-header {
+      > th {
+        text-align: center;
+        font-size: @font-size-small;
+        
+        &.month > span {
+          width: @datepicker-month-width-base;
+          display: inline-block;
+        }
+        
+        &.year > span {
+          width: @datepicker-year-width-base;
+          display: inline-block;
+        }
+      }
+    }
+    
+    .days-header > th {
+      text-align: center;
+      font-size: @font-size-xsmall;
+      line-height: @font-size-xsmall + 1;
+      width: @datepicker-day-width-base;
+    }
+    
+    > tbody > tr > td {
+      text-align: center;
+      font-size: @font-size-xsmall;
+      line-height: @font-size-xsmall + 1;
+      width: @datepicker-day-width-base;
+      
+      &.today {
+        color: @datepicker-today-color;
+        background-color: @datepicker-today-bg;
+      }
+      
+      &.off {
+        color: @datepicker-disabled-color;
+      }
+      
+      &:not(.off):hover {
+        cursor: pointer;
+        color: @datepicker-hover-color;
+        background-color: @datepicker-hover-bg;
+      }
+    }
+  }
+}
+
+.bfh-datepicker {
+  position: relative;
+}
+
+.bfh-datepicker-toggle {
+  *margin-bottom: -3px;
+  
+  > input[readonly] {
+    cursor: inherit;
+    background-color: inherit;
+  }
+}
+
+.open > .bfh-datepicker-calendar {
+  display: block;
+}

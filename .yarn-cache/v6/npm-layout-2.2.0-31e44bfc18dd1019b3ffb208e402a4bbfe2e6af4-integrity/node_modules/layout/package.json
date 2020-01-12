@@ -1,0 +1,49 @@
+{
+  "name": "layout",
+  "description": "Organize and layout items based on various algorithms",
+  "version": "2.2.0",
+  "homepage": "https://github.com/twolfson/layout",
+  "author": {
+    "name": "Todd Wolfson",
+    "email": "todd@twolfson.com",
+    "url": "http://twolfson.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/twolfson/layout.git"
+  },
+  "bugs": {
+    "url": "https://github.com/twolfson/layout/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/twolfson/layout/blob/master/LICENSE-MIT"
+    }
+  ],
+  "main": "lib/layout",
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "lint": "jshint lib/ test/",
+    "test": "npm run lint && nodeunit test/"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-cli": "~0.1.13",
+    "grunt-spritesmith": "~2.20.0",
+    "jshint": "~2.5.10",
+    "nodeunit": "~0.9.0"
+  },
+  "keywords": [
+    "layout",
+    "blueprint",
+    "organize",
+    "pack",
+    "algorithm"
+  ],
+  "dependencies": {
+    "bin-pack": "~1.0.1"
+  }
+}

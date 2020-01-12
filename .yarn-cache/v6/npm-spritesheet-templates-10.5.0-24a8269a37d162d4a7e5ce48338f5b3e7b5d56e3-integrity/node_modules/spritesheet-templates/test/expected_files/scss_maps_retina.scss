@@ -1,0 +1,214 @@
+// SCSS variables are information about icon's compiled state, stored under its original file name
+//
+// .icon-home {
+//   width: map-get($icon-home, 'width');
+// }
+//
+// At the bottom of this section, we provide information about the spritesheet itself
+$sprite-dash-case: (
+  name: 'sprite-dash-case',
+  x: 0px,
+  y: 0px,
+  offset-x: 0px,
+  offset-y: 0px,
+  width: 10px,
+  height: 20px,
+  total-width: 80px,
+  total-height: 100px,
+  image: 'nested/dir/spritesheet.png'
+);
+$sprite-snake-case: (
+  name: 'sprite_snake_case',
+  x: 10px,
+  y: 20px,
+  offset-x: -10px,
+  offset-y: -20px,
+  width: 20px,
+  height: 30px,
+  total-width: 80px,
+  total-height: 100px,
+  image: 'nested/dir/spritesheet.png'
+);
+$sprite-camel-case: (
+  name: 'spriteCamelCase',
+  x: 30px,
+  y: 50px,
+  offset-x: -30px,
+  offset-y: -50px,
+  width: 50px,
+  height: 50px,
+  total-width: 80px,
+  total-height: 100px,
+  image: 'nested/dir/spritesheet.png'
+);
+$sprite-dash-case-2x: (
+  name: 'sprite-dash-case@2x',
+  x: 0px,
+  y: 0px,
+  offset-x: 0px,
+  offset-y: 0px,
+  width: 20px,
+  height: 40px,
+  total-width: 160px,
+  total-height: 200px,
+  image: 'nested/dir/spritesheet@2x.png'
+);
+$sprite-snake-case-2x: (
+  name: 'sprite_snake_case@2x',
+  x: 20px,
+  y: 40px,
+  offset-x: -20px,
+  offset-y: -40px,
+  width: 40px,
+  height: 60px,
+  total-width: 160px,
+  total-height: 200px,
+  image: 'nested/dir/spritesheet@2x.png'
+);
+$sprite-camel-case-2x: (
+  name: 'spriteCamelCase@2x',
+  x: 60px,
+  y: 100px,
+  offset-x: -60px,
+  offset-y: -100px,
+  width: 100px,
+  height: 100px,
+  total-width: 160px,
+  total-height: 200px,
+  image: 'nested/dir/spritesheet@2x.png'
+);
+$spritesheet: (
+  width: 80px,
+  height: 100px,
+  image: 'nested/dir/spritesheet.png',
+  sprites: ($sprite-dash-case, $sprite-snake-case, $sprite-camel-case, )
+);
+$retina-spritesheet: (
+  width: 160px,
+  height: 200px,
+  image: 'nested/dir/spritesheet@2x.png',
+  sprites: ($sprite-dash-case-2x, $sprite-snake-case-2x, $sprite-camel-case-2x, )
+);
+
+// These "retina group" variables are mappings for the naming and pairing of normal and retina sprites.
+//
+// The map variables are intended for the `retina-sprite` mixin. The list variable is for `retina-sprites`.
+$sprite-dash-case-group: (
+  name: 'sprite-dash-case',
+  normal: $sprite-dash-case,
+  retina: $sprite-dash-case-2x
+);
+$sprite-snake-case-group: (
+  name: 'sprite_snake_case',
+  normal: $sprite-snake-case,
+  retina: $sprite-snake-case-2x
+);
+$sprite-camel-case-group: (
+  name: 'spriteCamelCase',
+  normal: $sprite-camel-case,
+  retina: $sprite-camel-case-2x
+);
+$retina-groups: ($sprite-dash-case-group, $sprite-snake-case-group, $sprite-camel-case-group, );
+
+// The provided mixins are intended to be used with variables directly
+//
+// .icon-home {
+//   @include sprite-width($icon-home);
+// }
+//
+// .icon-email {
+//   @include sprite($icon-email);
+// }
+//
+// Example usage in HTML:
+//
+// `display: block` sprite:
+// <div class="icon-home"></div>
+//
+// To change `display` (e.g. `display: inline-block;`), we suggest using a common CSS class:
+//
+// // CSS
+// .icon {
+//   display: inline-block;
+// }
+//
+// // HTML
+// <i class="icon icon-home"></i>
+@mixin sprite-width($sprite) {
+  width: map-get($sprite, 'width');
+}
+
+@mixin sprite-height($sprite) {
+  height: map-get($sprite, 'height');
+}
+
+@mixin sprite-position($sprite) {
+  background-position: map-get($sprite, 'offset-x') map-get($sprite, 'offset-y');
+}
+
+@mixin sprite-image($sprite) {
+  background-image: url(map-get($sprite, 'image'));
+}
+
+@mixin sprite($sprite) {
+  @include sprite-image($sprite);
+  @include sprite-position($sprite);
+  @include sprite-width($sprite);
+  @include sprite-height($sprite);
+}
+
+// The `retina-sprite` mixin sets up rules and a media query for a sprite/retina sprite.
+//   It should be used with a "retina group" variable.
+//
+// The media query is from CSS Tricks: https://css-tricks.com/snippets/css/retina-display-media-query/
+//
+// $icon-home-group: (
+//   name: 'icon-home',
+//   normal: $icon-home,
+//   retina: $icon-home-2x
+// );
+//
+// .icon-home {
+//   @include retina-sprite($icon-home-group);
+// }
+@mixin sprite-background-size($sprite) {
+  background-size: map-get($sprite, 'total-width') map-get($sprite, 'total-height');
+}
+
+@mixin retina-sprite($retina-group) {
+  $normal-sprite: map-get($retina-group, 'normal');
+  $retina-sprite: map-get($retina-group, 'retina');
+  @include sprite($normal-sprite);
+
+  @media (-webkit-min-device-pixel-ratio: 2),
+         (min-resolution: 192dpi) {
+    @include sprite-image($retina-sprite);
+    @include sprite-background-size($normal-sprite);
+  }
+}
+
+// The `sprites` mixin generates identical output to the CSS template
+//   but can be overridden inside of SCSS
+//
+// @include sprites(map-get($spritesheet, 'sprites'));
+@mixin sprites($sprites) {
+  @each $sprite in $sprites {
+    $sprite-name: map-get($sprite, 'name');
+    .#{$sprite-name} {
+      @include sprite($sprite);
+    }
+  }
+}
+
+// The `retina-sprites` mixin generates a CSS rule and media query for retina groups
+//   This yields the same output as CSS retina template but can be overridden in SCSS
+//
+// @include retina-sprites($retina-groups);
+@mixin retina-sprites($retina-groups) {
+  @each $retina-group in $retina-groups {
+    $sprite-name: map-get($retina-group, 'name');
+    .#{$sprite-name} {
+      @include retina-sprite($retina-group);
+    }
+  }
+}

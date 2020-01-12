@@ -1,0 +1,19 @@
+{{#extend "deep-a"}}
+	{{#content "top" mode="prepend"}}
+		<p>b1</p>
+	{{/content}}
+
+	{{#content "top" mode="prepend"}}
+		<p>b1.1</p>
+	{{/content}}
+
+	{{#content "middle"}}
+		<p>b2</p>
+	{{/content}}
+
+	{{#content "bottom" mode="append"}}
+		<p>b3</p>
+
+		{{{block "b"}}}
+	{{/content}}
+{{/extend}}

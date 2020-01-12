@@ -1,0 +1,43 @@
+{
+  "name": "json-content-demux",
+  "description": "Break up JSON from content in a JSON-first file",
+  "version": "0.1.3",
+  "homepage": "https://github.com/twolfson/json-content-demux",
+  "author": {
+    "name": "Todd Wolfson",
+    "email": "todd@twolfson.com",
+    "url": "http://twolfson.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/twolfson/json-content-demux.git"
+  },
+  "bugs": {
+    "url": "https://github.com/twolfson/json-content-demux/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/twolfson/json-content-demux/blob/master/LICENSE-MIT"
+    }
+  ],
+  "main": "lib/json-content-demux",
+  "engines": {
+    "node": ">= 0.6.0"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "devDependencies": {
+    "grunt": "~0.3.12"
+  },
+  "keywords": [
+    "json",
+    "content",
+    "demux",
+    "combined",
+    "splitter",
+    "breaker",
+    "break up"
+  ]
+}

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en-us">
+<head>
+		<title>{{title}}</title>
+
+		<link rel="stylesheet" href="assets/css/screen.css" />
+</head>
+<body>
+	<div class="site">
+		{{#if (content "header")}}
+			<div class="site-hd" role="banner">
+				{{#block "header"}}
+					<h1>{{title}}</h1>
+				{{/block}}
+			</div>
+		{{/if}}
+
+		<div class="site-bd" role="main">
+			{{#block "body"}}
+				<p>Lorem ipsum.</p>
+			{{/block}}
+		</div>
+
+		{{#if (content "footer")}}
+			<div class="site-ft" role="contentinfo">
+				{{#block "footer"}}
+					<small>&copy; 1984</small>
+				{{/block}}
+			</div>
+		{{/if}}
+	</div>
+
+	{{#block "foot"}}
+		<script src="assets/js/controllers/home.js"></script>
+	{{/block}}
+</body>
+</html>

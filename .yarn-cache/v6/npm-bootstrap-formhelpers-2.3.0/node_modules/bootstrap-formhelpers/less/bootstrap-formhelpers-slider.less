@@ -1,0 +1,52 @@
+//
+// Slider
+// --------------------------------------------------
+
+.bfh-slider {
+  background-color: @slider-bg;
+  height: 20px;
+  margin-top: 8px;
+  margin-bottom: 23px;
+  -moz-user-select: none; 
+  -khtml-user-select: none; 
+  -webkit-user-select: none; 
+  -o-user-select: none; 
+  border-radius: @border-radius-base;
+  border: 1px solid @slider-fallback-border; // IE8 fallback
+  border: 1px solid @slider-border;
+  
+  > .bfh-slider-handle {
+    position: absolute;
+    width: 20px;
+    height: 34px;
+    background: @slider-handle-bg;
+    border: 1px solid @slider-fallback-border; // IE8 fallback
+    border: 1px solid @slider-border;
+    border-radius: @border-radius-base;
+    margin-top: -7px;
+    cursor: col-resize;
+  
+    > .bfh-slider-value {
+      margin-top: 5px;
+      position: absolute;
+      width: 48px;
+      text-align: center;
+      border: 1px solid @slider-fallback-border; // IE8 fallback
+      border: 1px solid @slider-border;
+      border-radius: @border-radius-base;
+      height: 20px;
+      line-height: 20px;
+      cursor: col-resize;
+      background-color: @slider-bg;
+      margin-left: -15px;
+      
+      .disabled {
+        color: @slider-disabled-color;
+      }
+    }
+  }
+  
+  &.disabled .bfh-slider-value {
+    color: @slider-disabled-color;
+  }
+}

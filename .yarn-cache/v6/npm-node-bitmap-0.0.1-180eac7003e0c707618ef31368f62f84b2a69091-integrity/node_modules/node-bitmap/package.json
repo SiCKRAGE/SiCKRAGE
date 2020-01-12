@@ -1,0 +1,18 @@
+{
+  "author": "Yusuke Hata",
+  "name": "node-bitmap",
+  "description": "pure javascript Bitmap library",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/nowelium/node-bitmap.git"
+  },
+  "engines": {
+    "node": ">=v0.6.5"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {},
+  "homepage": "https://github.com/nowelium/node-bitmap",
+  "main": "./index"
+}

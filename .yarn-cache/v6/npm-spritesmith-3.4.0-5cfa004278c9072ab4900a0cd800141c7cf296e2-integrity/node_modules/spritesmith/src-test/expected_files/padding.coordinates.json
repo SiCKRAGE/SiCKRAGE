@@ -1,0 +1,20 @@
+{
+    "sprite1.png": {
+        "x": 102,
+        "y": 0,
+        "width": 50,
+        "height": 50
+    },
+    "sprite2.jpg": {
+        "x": 102,
+        "y": 52,
+        "width": 50,
+        "height": 50
+    },
+    "sprite3.png": {
+        "x": 0,
+        "y": 0,
+        "width": 100,
+        "height": 200
+    }
+}

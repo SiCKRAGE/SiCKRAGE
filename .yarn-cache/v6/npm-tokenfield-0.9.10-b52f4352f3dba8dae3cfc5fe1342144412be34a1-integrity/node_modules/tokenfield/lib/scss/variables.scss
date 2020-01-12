@@ -1,0 +1,40 @@
+$brand-primary:             darken(#428bca, 6.5%);
+
+$font-size-base:            14px !default;
+
+$line-height-base:          1.428571429 !default; // 20/14
+$line-height-computed:      floor(($font-size-base * $line-height-base)) !default; // ~20px
+
+$padding-base-vertical:     6px !default;
+$padding-base-horizontal:   12px !default;
+
+$padding-large-vertical:    10px !default;
+
+$padding-small-vertical:    5px !default;
+$padding-small-horizontal:  10px !default;
+
+$padding-xs-vertical:       1px !default;
+$padding-xs-horizontal:     5px !default;
+
+$gray:                       lighten(#000, 33.5%) !default; // #555
+$gray-lighter:               lighten(#000, 93.5%) !default;
+
+$input-bg:                   #fff !default;
+$input-bg-disabled:          $gray-lighter !default;
+
+$input-color:                $gray !default;
+$input-color-placeholder:    #999 !default;
+$input-height-base:          ($line-height-computed + ($padding-base-vertical * 2) + 2) !default;
+$input-border:               #ccc !default;
+$input-border-focus:         #66afe9 !default;
+$input-border-radius:        4px !default;
+
+$border-radius-base:         4px !default;
+
+$cursor-disabled:            not-allowed !default;
+
+$tokenfield-bg:              #fff;
+$tokenfield-border:          rgba(0,0,0,.15);
+$tokenfield-focus-bg:        rgba(0,0,0,0.04);
+$tokenfield-select-bg:       rgba(0,0,0,0.1);
+$tokenfield-focus-border:    0 0 0 1px $brand-primary inset;

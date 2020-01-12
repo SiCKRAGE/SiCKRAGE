@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>GIF input data generator</title>
+    <style>
+      body {
+        background: linen;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script>
+      var WIDTH = 10;
+      var HEIGHT = 10;
+
+      // TODO: Output canvas to a file, perceptual diff GIF to canvas output =3
+      var $canvas = document.getElementById('canvas');
+      $canvas.height = HEIGHT;
+      $canvas.width = WIDTH;
+      var context = $canvas.getContext('2d');
+
+      // DEV: We are drawing a checkerboard (white on black)
+      // +----+
+      // |xx  |
+      // |xx  |
+      // |  xx|
+      // |  xx|
+      // +----+
+
+      // Draw black background
+      var BACKGROUND = '#000000';
+      var FOREGROUND = '#FFFFFF';
+      context.fillStyle = BACKGROUND;
+      context.fillRect(0, 0, WIDTH, HEIGHT);
+
+      // Draw white squares
+      context.fillStyle = FOREGROUND;
+      context.fillRect(0, 0, WIDTH / 2, HEIGHT / 2);
+      context.fillRect(WIDTH / 2, HEIGHT / 2, WIDTH / 2, HEIGHT / 2);
+
+      // Output pixel data [r, g, b, a] * 10 (width) * 10 (height)
+      var pixels = context.getImageData(0, 0, WIDTH, HEIGHT).data;
+      var pixelsStr = JSON.stringify([].slice.call(pixels));
+      console.log(pixelsStr);
+    </script>
+  </body>
+</html>

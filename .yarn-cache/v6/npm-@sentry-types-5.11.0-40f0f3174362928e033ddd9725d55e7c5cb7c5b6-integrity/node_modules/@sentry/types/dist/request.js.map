@@ -1,0 +1,1 @@
+{"version":3,"file":"request.js","sourceRoot":"","sources":["../src/request.ts"],"names":[],"mappings":"","sourcesContent":["/** JSDoc */\nexport interface Request {\n  url?: string;\n  method?: string;\n  data?: any;\n  query_string?: string;\n  cookies?: { [key: string]: string };\n  env?: { [key: string]: string };\n  headers?: { [key: string]: string };\n}\n"]}

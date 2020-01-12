@@ -1,0 +1,97 @@
+{
+  // Default options
+  'functions': true,
+  'variableNameTransforms': ['dasherize']
+}
+
+{{#extend "scss_maps"}}
+{{#content "sprites" mode="append"}}
+{{#each retina_sprites}}
+${{strings.name}}: (
+  {{strings.bare_name}}: '{{name}}',
+  {{strings.bare_x}}: {{px.x}},
+  {{strings.bare_y}}: {{px.y}},
+  {{strings.bare_offset_x}}: {{px.offset_x}},
+  {{strings.bare_offset_y}}: {{px.offset_y}},
+  {{strings.bare_width}}: {{px.width}},
+  {{strings.bare_height}}: {{px.height}},
+  {{strings.bare_total_width}}: {{px.total_width}},
+  {{strings.bare_total_height}}: {{px.total_height}},
+  {{strings.bare_image}}: '{{{escaped_image}}}'
+);
+{{/each}}
+{{/content}}
+{{#content "spritesheet" mode="append"}}
+${{retina_spritesheet_info.strings.name}}: (
+  {{retina_spritesheet_info.strings.bare_width}}: {{retina_spritesheet.px.width}},
+  {{retina_spritesheet_info.strings.bare_height}}: {{retina_spritesheet.px.height}},
+  {{retina_spritesheet_info.strings.bare_image}}: '{{{retina_spritesheet.escaped_image}}}',
+  {{retina_spritesheet_info.strings.bare_sprites}}: ({{#each retina_sprites}}${{strings.name}}, {{/each}})
+);
+
+// These "retina group" variables are mappings for the naming and pairing of normal and retina sprites.
+//
+// The map variables are intended for the `retina-sprite` mixin. The list variable is for `retina-sprites`.
+{{#each retina_groups}}
+${{strings.name_group}}: (
+  {{strings.bare_name}}: '{{name}}',
+  {{strings.bare_normal}}: ${{normal.strings.name}},
+  {{strings.bare_retina}}: ${{retina.strings.name}}
+);
+{{/each}}
+${{retina_groups_info.strings.name}}: ({{#each retina_groups}}${{strings.name_group}}, {{/each}});
+{{/content}}
+
+{{#content "sprite-functions" mode="append"}}
+{{#if options.functions}}
+
+// The `retina-sprite` mixin sets up rules and a media query for a sprite/retina sprite.
+//   It should be used with a "retina group" variable.
+//
+// The media query is from CSS Tricks: https://css-tricks.com/snippets/css/retina-display-media-query/
+//
+// $icon-home-group: (
+//   name: 'icon-home',
+//   normal: $icon-home,
+//   retina: $icon-home-2x
+// );
+//
+// .icon-home {
+//   @include retina-sprite($icon-home-group);
+// }
+@mixin sprite-background-size($sprite) {
+  background-size: map-get($sprite, '{{strings.bare_total_width}}') map-get($sprite, '{{strings.bare_total_height}}');
+}
+
+@mixin retina-sprite($retina-group) {
+  $normal-sprite: map-get($retina-group, '{{strings.bare_normal}}');
+  $retina-sprite: map-get($retina-group, '{{strings.bare_retina}}');
+  @include sprite($normal-sprite);
+
+  @media (-webkit-min-device-pixel-ratio: 2),
+         (min-resolution: 192dpi) {
+    @include sprite-image($retina-sprite);
+    @include sprite-background-size($normal-sprite);
+  }
+}
+{{/if}}
+{{/content}}
+
+{{#content "spritesheet-functions" mode="append"}}
+{{#if options.functions}}
+
+// The `retina-sprites` mixin generates a CSS rule and media query for retina groups
+//   This yields the same output as CSS retina template but can be overridden in SCSS
+//
+// @include retina-sprites($retina-groups);
+@mixin retina-sprites($retina-groups) {
+  @each $retina-group in $retina-groups {
+    $sprite-name: map-get($retina-group, '{{strings.bare_name}}');
+    .#{$sprite-name} {
+      @include retina-sprite($retina-group);
+    }
+  }
+}
+{{/if}}
+{{/content}}
+{{/extend}}

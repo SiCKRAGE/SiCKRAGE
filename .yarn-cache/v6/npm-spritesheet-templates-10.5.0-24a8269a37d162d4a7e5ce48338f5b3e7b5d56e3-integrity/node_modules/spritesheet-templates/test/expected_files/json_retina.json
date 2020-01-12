@@ -1,0 +1,140 @@
+{
+    "sprite-dash-case": {
+        "normal": {
+            "x": 0,
+            "y": 0,
+            "width": 10,
+            "height": 20,
+            "image": "nested/dir/spritesheet.png",
+            "escaped_image": "nested/dir/spritesheet.png",
+            "total_width": 80,
+            "total_height": 100,
+            "offset_x": 0,
+            "offset_y": 0,
+            "px": {
+                "x": "0px",
+                "y": "0px",
+                "offset_x": "0px",
+                "offset_y": "0px",
+                "height": "20px",
+                "width": "10px",
+                "total_height": "100px",
+                "total_width": "80px"
+            }
+        },
+        "retina": {
+            "x": 0,
+            "y": 0,
+            "width": 20,
+            "height": 40,
+            "image": "nested/dir/spritesheet@2x.png",
+            "escaped_image": "nested/dir/spritesheet@2x.png",
+            "total_width": 160,
+            "total_height": 200,
+            "offset_x": 0,
+            "offset_y": 0,
+            "px": {
+                "x": "0px",
+                "y": "0px",
+                "offset_x": "0px",
+                "offset_y": "0px",
+                "height": "40px",
+                "width": "20px",
+                "total_height": "200px",
+                "total_width": "160px"
+            }
+        }
+    },
+    "sprite_snake_case": {
+        "normal": {
+            "x": 10,
+            "y": 20,
+            "width": 20,
+            "height": 30,
+            "image": "nested/dir/spritesheet.png",
+            "escaped_image": "nested/dir/spritesheet.png",
+            "total_width": 80,
+            "total_height": 100,
+            "offset_x": -10,
+            "offset_y": -20,
+            "px": {
+                "x": "10px",
+                "y": "20px",
+                "offset_x": "-10px",
+                "offset_y": "-20px",
+                "height": "30px",
+                "width": "20px",
+                "total_height": "100px",
+                "total_width": "80px"
+            }
+        },
+        "retina": {
+            "x": 20,
+            "y": 40,
+            "width": 40,
+            "height": 60,
+            "image": "nested/dir/spritesheet@2x.png",
+            "escaped_image": "nested/dir/spritesheet@2x.png",
+            "total_width": 160,
+            "total_height": 200,
+            "offset_x": -20,
+            "offset_y": -40,
+            "px": {
+                "x": "20px",
+                "y": "40px",
+                "offset_x": "-20px",
+                "offset_y": "-40px",
+                "height": "60px",
+                "width": "40px",
+                "total_height": "200px",
+                "total_width": "160px"
+            }
+        }
+    },
+    "spriteCamelCase": {
+        "normal": {
+            "x": 30,
+            "y": 50,
+            "width": 50,
+            "height": 50,
+            "image": "nested/dir/spritesheet.png",
+            "escaped_image": "nested/dir/spritesheet.png",
+            "total_width": 80,
+            "total_height": 100,
+            "offset_x": -30,
+            "offset_y": -50,
+            "px": {
+                "x": "30px",
+                "y": "50px",
+                "offset_x": "-30px",
+                "offset_y": "-50px",
+                "height": "50px",
+                "width": "50px",
+                "total_height": "100px",
+                "total_width": "80px"
+            }
+        },
+        "retina": {
+            "x": 60,
+            "y": 100,
+            "width": 100,
+            "height": 100,
+            "image": "nested/dir/spritesheet@2x.png",
+            "escaped_image": "nested/dir/spritesheet@2x.png",
+            "total_width": 160,
+            "total_height": 200,
+            "offset_x": -60,
+            "offset_y": -100,
+            "px": {
+                "x": "60px",
+                "y": "100px",
+                "offset_x": "-60px",
+                "offset_y": "-100px",
+                "height": "100px",
+                "width": "100px",
+                "total_height": "200px",
+                "total_width": "160px"
+            }
+        }
+    }
+}

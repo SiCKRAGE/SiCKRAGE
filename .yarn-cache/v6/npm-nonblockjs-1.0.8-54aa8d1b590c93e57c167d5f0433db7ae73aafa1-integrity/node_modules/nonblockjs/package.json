@@ -1,0 +1,41 @@
+{
+  "name": "nonblockjs",
+  "version": "1.0.8",
+  "description": "Unobtrusive (click through) UI elements in JavaScript.",
+  "keywords": [
+    "non blocking",
+    "nonblocking",
+    "nonblock",
+    "ui",
+    "unobtrusive",
+    "click through"
+  ],
+  "homepage": "https://github.com/sciactive/nonblockjs",
+  "bugs": {
+    "url": "https://github.com/sciactive/nonblockjs/issues"
+  },
+  "license": "Apache-2.0",
+  "author": "Hunter Perrin",
+  "files": [
+    "NonBlock.es5.js",
+    "NonBlock.js"
+  ],
+  "main": "NonBlock.js",
+  "scripts": {
+    "build": "babel -o NonBlock.es5.js NonBlock.js",
+    "watch": "babel --watch -o NonBlock.es5.js NonBlock.js",
+    "prepare": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sciactive/nonblockjs.git"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-iife-wrap": "^1.1.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-3": "^6.24.1"
+  }
+}

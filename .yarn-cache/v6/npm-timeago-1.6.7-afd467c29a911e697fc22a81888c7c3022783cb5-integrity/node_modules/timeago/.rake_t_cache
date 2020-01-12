@@ -1,0 +1,2 @@
+rake publish  # Publish "marketing" docs
+rake test     # Open your default browser with the test page

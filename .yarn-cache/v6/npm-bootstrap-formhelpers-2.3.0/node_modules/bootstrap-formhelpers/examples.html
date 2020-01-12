@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<title>Bootstrap Form Helpers Basic Template</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- Bootstrap -->
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	
+	<!-- Bootstrap Form Helpers -->
+	<link href="dist/css/bootstrap-formhelpers.min.css" rel="stylesheet" media="screen">
+
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	  <script src="js/html5shiv.js"></script>
+	  <script src="js/respond.min.js"></script>
+	<![endif]-->
+  </head>
+  <body>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<h1>Bootstrap Form Helpers Examples</h1>
+				<hr>
+				<h4>Time Picker</h4>
+				<div class="bfh-timepicker" id="timepicker" data-align="right"></div>
+				<br>
+				<button onclick="getVal()" class="btn btn-default">Get Value</button>
+				<hr>
+				<h4>Select</h4>
+				<div class="bfh-selectbox" data-name="selectbox1">
+					<div data-value="1">Option 1</div>
+					<div data-value="2">Option 2</div>
+					<div data-value="3">Option 3</div>
+					<div data-value="4">Option 4</div>
+					<div data-value="5">Option 5</div>
+					<div data-value="6">Option 6</div>
+					<div data-value="7">Option 7</div>
+					<div data-value="8">Option 8</div>
+					<div data-value="9">Option 9</div>
+					<div data-value="10">Option 10</div>
+					<div data-value="11">Option 11</div>
+					<div data-value="12">Option 12</div>
+					<div data-value="13">Option 13</div>
+					<div data-value="14">Option 14</div>
+					<div data-value="15">Option 15</div>
+				</div>
+				<hr>
+				<h4>Color Picker</h4>
+				<div class="bfh-colorpicker" data-name="colorpicker1">
+				</div>
+				<hr>
+				<h4>Date Picker</h4>
+				<div class="bfh-datepicker">
+				</div>
+				<hr>
+				<h4>Time Picker</h4>
+				<div class="bfh-timepicker">
+				</div>
+				<hr>
+				<h4>Slider</h4>
+				<div class="bfh-slider" data-name="slider1">
+				</div>
+				<hr>
+				<h4>Phone Input</h4>
+				<form action="#">
+					<input type="text" class="form-control bfh-phone" data-format="+1 (ddd) ddd-dddd">
+				</form>
+				<hr>
+				<h4>Number Input</h4>
+				<form action="">
+					<input type="text" class="form-control bfh-number">
+				</form>
+				<hr>
+				<h4>Country Picker</h4>
+				<form action="">
+					<select class="form-control bfh-countries" data-country="US"></select>
+				</form>
+				<hr>
+				<h4>State Picker</h4>
+				<div class="bfh-selectbox bfh-countries" data-country="US" data-flags="true">
+				</div>
+				<hr>
+				<h4>Currency Picker</h4>
+				<form action="">
+					<select class="form-control bfh-currencies" data-currency="EUR"></select>
+				</form>
+				<hr>
+				<h4>Language Picker</h4>
+				<form action="">
+					<select class="form-control bfh-languages" data-language="en"></select>
+				</form>
+				<hr>
+				<h4>Timezone Picker</h4>
+				<form action="">
+					<select class="form-control bfh-timezones" data-country="US"></select>
+				</form>
+				<hr>
+				<h4>Google Font Picker</h4>
+				<form action="">
+					<select class="form-control bfh-googlefonts" data-font="Lato"></select>
+				</form>
+				<hr>
+				<h4>Font Picker</h4>
+				<form action="">
+						<select class="form-control bfh-fonts" data-font="Arial"></select>
+				</form>
+				<hr>
+				<h4>Font Size Picker</h4>
+				<form action="">
+					<select class="form-control bfh-fontsizes" data-fontsize="12"></select>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- jQuery -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	
+	<!-- Bootstrap -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	<!-- Bootstrap Form Helpers -->
+	<script src="dist/js/bootstrap-formhelpers.min.js"></script>
+	<script>
+	function getVal() {
+		// This will get the value of #timepicker
+		alert($("#timepicker").val())
+	}
+	</script>
+  </body>
+</html>

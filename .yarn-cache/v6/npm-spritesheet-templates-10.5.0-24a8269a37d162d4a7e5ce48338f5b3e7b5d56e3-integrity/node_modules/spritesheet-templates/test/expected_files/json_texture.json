@@ -1,0 +1,38 @@
+{
+    "frames": {
+        "sprite-dash-case": {
+            "frame": {
+                "x": 0,
+                "y": 0,
+                "w": 10,
+                "h": 20
+            }
+        },
+        "sprite_snake_case": {
+            "frame": {
+                "x": 10,
+                "y": 20,
+                "w": 20,
+                "h": 30
+            }
+        },
+        "spriteCamelCase": {
+            "frame": {
+                "x": 30,
+                "y": 50,
+                "w": 50,
+                "h": 50
+            }
+        }
+    },
+    "meta": {
+        "app": "spritesheet-templates",
+        "version": "__VERSION__",
+        "image": "nested/dir/spritesheet.png",
+        "scale": 1,
+        "size": {
+            "w": 80,
+            "h": 100
+        }
+    }
+}

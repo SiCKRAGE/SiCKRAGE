@@ -1,0 +1,9 @@
+
+coverage/
+docs/
+node_modules/
+test/actual/
+
+*.log
+.*.swp
+

@@ -1,0 +1,62 @@
+{
+  "name": "spritesmith",
+  "description": "Utility that takes images and creates a spritesheet with JSON sprite data",
+  "version": "3.4.0",
+  "homepage": "https://github.com/twolfson/spritesmith",
+  "author": {
+    "name": "Todd Wolfson",
+    "email": "todd@twolfson.com",
+    "url": "http://twolfson.com/"
+  },
+  "contributors": [
+    "Alex Bain <alex@alexba.in"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/twolfson/spritesmith.git"
+  },
+  "bugs": {
+    "url": "https://github.com/twolfson/spritesmith/issues"
+  },
+  "license": "MIT",
+  "main": "src/smith.js",
+  "engines": {
+    "node": ">= 4.0.0"
+  },
+  "scripts": {
+    "precheck": "eslint src/ src-test/",
+    "lint": "eslint src/ src-test/ --max-warnings 0",
+    "test": "npm run precheck && mocha src-test/ --timeout 60000 --reporter dot && npm run lint"
+  },
+  "dependencies": {
+    "concat-stream": "~1.5.1",
+    "layout": "~2.2.0",
+    "pixelsmith": "^2.3.0",
+    "semver": "~5.0.3",
+    "through2": "~2.0.0"
+  },
+  "devDependencies": {
+    "canvassmith": "~1.0.0",
+    "eslint": "~4.10.0",
+    "eslint-config-twolfson": "~1.0.0",
+    "foundry": "~4.3.2",
+    "foundry-release-git": "~2.0.2",
+    "foundry-release-npm": "~2.0.2",
+    "get-pixels": "~3.1.0",
+    "mocha": "~1.21.4",
+    "phantomjssmith": "~1.0.0",
+    "pixelmatch": "~4.0.2",
+    "vinyl": "~2.1.0"
+  },
+  "keywords": [
+    "sprite",
+    "spritesheet",
+    "css"
+  ],
+  "foundry": {
+    "releaseCommands": [
+      "foundry-release-git",
+      "foundry-release-npm"
+    ]
+  }
+}

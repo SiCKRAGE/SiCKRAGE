@@ -1,0 +1,216 @@
+/*
+LESS variables are information about icon's compiled state, stored under its original file name
+
+.icon-home {
+  width: @icon-home-width;
+}
+
+The large array-like variables contain all information about a single icon
+@icon-home: x y offset_x offset_y width height total_width total_height image_path name;
+
+At the bottom of this section, we provide information about the spritesheet itself
+@spritesheet: width height image @spritesheet-sprites;
+*/
+@sprite-dash-case-name: 'sprite-dash-case';
+@sprite-dash-case-x: 0px;
+@sprite-dash-case-y: 0px;
+@sprite-dash-case-offset-x: 0px;
+@sprite-dash-case-offset-y: 0px;
+@sprite-dash-case-width: 10px;
+@sprite-dash-case-height: 20px;
+@sprite-dash-case-total-width: 80px;
+@sprite-dash-case-total-height: 100px;
+@sprite-dash-case-image: 'nested/dir/spritesheet.png';
+@sprite-dash-case: 0px 0px 0px 0px 10px 20px 80px 100px 'nested/dir/spritesheet.png' 'sprite-dash-case';
+@sprite-snake-case-name: 'sprite_snake_case';
+@sprite-snake-case-x: 10px;
+@sprite-snake-case-y: 20px;
+@sprite-snake-case-offset-x: -10px;
+@sprite-snake-case-offset-y: -20px;
+@sprite-snake-case-width: 20px;
+@sprite-snake-case-height: 30px;
+@sprite-snake-case-total-width: 80px;
+@sprite-snake-case-total-height: 100px;
+@sprite-snake-case-image: 'nested/dir/spritesheet.png';
+@sprite-snake-case: 10px 20px -10px -20px 20px 30px 80px 100px 'nested/dir/spritesheet.png' 'sprite_snake_case';
+@sprite-camel-case-name: 'spriteCamelCase';
+@sprite-camel-case-x: 30px;
+@sprite-camel-case-y: 50px;
+@sprite-camel-case-offset-x: -30px;
+@sprite-camel-case-offset-y: -50px;
+@sprite-camel-case-width: 50px;
+@sprite-camel-case-height: 50px;
+@sprite-camel-case-total-width: 80px;
+@sprite-camel-case-total-height: 100px;
+@sprite-camel-case-image: 'nested/dir/spritesheet.png';
+@sprite-camel-case: 30px 50px -30px -50px 50px 50px 80px 100px 'nested/dir/spritesheet.png' 'spriteCamelCase';
+@sprite-dash-case-2x-name: 'sprite-dash-case@2x';
+@sprite-dash-case-2x-x: 0px;
+@sprite-dash-case-2x-y: 0px;
+@sprite-dash-case-2x-offset-x: 0px;
+@sprite-dash-case-2x-offset-y: 0px;
+@sprite-dash-case-2x-width: 20px;
+@sprite-dash-case-2x-height: 40px;
+@sprite-dash-case-2x-total-width: 160px;
+@sprite-dash-case-2x-total-height: 200px;
+@sprite-dash-case-2x-image: 'nested/dir/spritesheet@2x.png';
+@sprite-dash-case-2x: 0px 0px 0px 0px 20px 40px 160px 200px 'nested/dir/spritesheet@2x.png' 'sprite-dash-case@2x';
+@sprite-snake-case-2x-name: 'sprite_snake_case@2x';
+@sprite-snake-case-2x-x: 20px;
+@sprite-snake-case-2x-y: 40px;
+@sprite-snake-case-2x-offset-x: -20px;
+@sprite-snake-case-2x-offset-y: -40px;
+@sprite-snake-case-2x-width: 40px;
+@sprite-snake-case-2x-height: 60px;
+@sprite-snake-case-2x-total-width: 160px;
+@sprite-snake-case-2x-total-height: 200px;
+@sprite-snake-case-2x-image: 'nested/dir/spritesheet@2x.png';
+@sprite-snake-case-2x: 20px 40px -20px -40px 40px 60px 160px 200px 'nested/dir/spritesheet@2x.png' 'sprite_snake_case@2x';
+@sprite-camel-case-2x-name: 'spriteCamelCase@2x';
+@sprite-camel-case-2x-x: 60px;
+@sprite-camel-case-2x-y: 100px;
+@sprite-camel-case-2x-offset-x: -60px;
+@sprite-camel-case-2x-offset-y: -100px;
+@sprite-camel-case-2x-width: 100px;
+@sprite-camel-case-2x-height: 100px;
+@sprite-camel-case-2x-total-width: 160px;
+@sprite-camel-case-2x-total-height: 200px;
+@sprite-camel-case-2x-image: 'nested/dir/spritesheet@2x.png';
+@sprite-camel-case-2x: 60px 100px -60px -100px 100px 100px 160px 200px 'nested/dir/spritesheet@2x.png' 'spriteCamelCase@2x';
+@spritesheet-width: 80px;
+@spritesheet-height: 100px;
+@spritesheet-image: 'nested/dir/spritesheet.png';
+@spritesheet-sprites: @sprite-dash-case @sprite-snake-case @sprite-camel-case;
+@spritesheet: 80px 100px 'nested/dir/spritesheet.png' @spritesheet-sprites;
+@retina-spritesheet-width: 160px;
+@retina-spritesheet-height: 200px;
+@retina-spritesheet-image: 'nested/dir/spritesheet@2x.png';
+@retina-spritesheet-sprites: @sprite-dash-case-2x @sprite-snake-case-2x @sprite-camel-case-2x;
+@retina-spritesheet: 160px 200px 'nested/dir/spritesheet@2x.png' @retina-spritesheet-sprites;
+
+/*
+These "retina group" variables are mappings for the naming and pairing of normal and retina sprites.
+
+The list formatted variables are intended for mixins like `retina-sprite` and `retina-sprites`.
+*/
+@sprite-dash-case-group-name: 'sprite-dash-case';
+@sprite-dash-case-group: 'sprite-dash-case' @sprite-dash-case @sprite-dash-case-2x;
+@sprite-snake-case-group-name: 'sprite_snake_case';
+@sprite-snake-case-group: 'sprite_snake_case' @sprite-snake-case @sprite-snake-case-2x;
+@sprite-camel-case-group-name: 'spriteCamelCase';
+@sprite-camel-case-group: 'spriteCamelCase' @sprite-camel-case @sprite-camel-case-2x;
+@retina-groups: @sprite-dash-case-group @sprite-snake-case-group @sprite-camel-case-group;
+
+/*
+The provided classes are intended to be used with the array-like variables
+
+.icon-home {
+  .sprite-width(@icon-home);
+}
+.icon-email {
+  .sprite(@icon-email);
+}
+
+Example usage in HTML:
+
+`display: block` sprite:
+<div class="icon-home"></div>
+
+To change `display` (e.g. `display: inline-block;`), we suggest using a common CSS class:
+
+// CSS
+.icon {
+  display: inline-block;
+}
+
+// HTML
+<i class="icon icon-home"></i>
+*/
+.sprite-width(@sprite) {
+  width: extract(@sprite, 5);
+}
+
+.sprite-height(@sprite) {
+  height: extract(@sprite, 6);
+}
+
+.sprite-position(@sprite) {
+  @sprite-offset-x: extract(@sprite, 3);
+  @sprite-offset-y: extract(@sprite, 4);
+  background-position: @sprite-offset-x @sprite-offset-y;
+}
+
+.sprite-image(@sprite) {
+  @sprite-image: extract(@sprite, 9);
+  background-image: e(%('url(%a)', e(@sprite-image)));
+}
+
+.sprite(@sprite) {
+  .sprite-image(@sprite);
+  .sprite-position(@sprite);
+  .sprite-width(@sprite);
+  .sprite-height(@sprite);
+}
+
+/*
+The `retina-sprite` class sets up rules and a media query for a sprite/retina sprite.
+  It should be used with a "retina group" variable.
+
+The media query is from CSS Tricks: https://css-tricks.com/snippets/css/retina-display-media-query/
+
+@icon-home-group: 'icon-home' @icon-home @icon-home-2x;
+
+.icon-home {
+  .retina-sprite(@icon-home-group);
+}
+*/
+.sprite-background-size(@sprite) {
+  @sprite-total-width: extract(@sprite, 7);
+  @sprite-total-height: extract(@sprite, 8);
+  background-size: @sprite-total-width @sprite-total-height;
+}
+
+.retina-sprite(@retina-group) {
+  @normal-sprite: extract(@retina-group, 2);
+  @retina-sprite: extract(@retina-group, 3);
+  .sprite(@normal-sprite);
+
+  @media (-webkit-min-device-pixel-ratio: 2),
+         (min-resolution: 192dpi) {
+    .sprite-image(@retina-sprite);
+    .sprite-background-size(@normal-sprite);
+  }
+}
+
+/*
+The `.sprites` mixin generates identical output to the CSS template
+  but can be overridden inside of LESS
+
+This must be run when you have at least 2 sprites.
+  If run with a single sprite, then there will be reference errors.
+
+.sprites(@spritesheet-sprites);
+*/
+.sprites(@sprites, @i: 1) when (@i <= length(@sprites)) {
+  @sprite: extract(@sprites, @i);
+  @sprite-name: e(extract(@sprite, 10));
+  .@{sprite-name} {
+    .sprite(@sprite);
+  }
+  .sprites(@sprites, @i + 1);
+}
+
+/*
+The `.retina-sprites` mixin generates a CSS rule and media query for retina groups
+  This yields the same output as CSS retina template but can be overridden in LESS
+
+.retina-sprites(@retina-groups);
+*/
+.retina-sprites(@retina-groups, @i: 1) when (@i <= length(@retina-groups)) {
+  @retina-group: extract(@retina-groups, @i);
+  @sprite-name: e(extract(@retina-group, 1));
+  .@{sprite-name} {
+    .retina-sprite(@retina-group);
+  }
+  .retina-sprites(@retina-groups, @i + 1);
+}

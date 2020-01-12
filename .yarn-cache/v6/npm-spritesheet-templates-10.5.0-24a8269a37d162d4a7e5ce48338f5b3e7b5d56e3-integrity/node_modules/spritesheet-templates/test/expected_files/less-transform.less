@@ -1,0 +1,120 @@
+/*
+LESS variables are information about icon's compiled state, stored under its original file name
+
+.icon-home {
+  width: @icon-home-width;
+}
+
+The large array-like variables contain all information about a single icon
+@icon-home: x y offset_x offset_y width height total_width total_height image_path name;
+
+At the bottom of this section, we provide information about the spritesheet itself
+@spritesheet: width height image @spritesheet-sprites;
+*/
+@SPRITE_DASH_CASE_NAME: 'sprite-dash-case';
+@SPRITE_DASH_CASE_X: 0px;
+@SPRITE_DASH_CASE_Y: 0px;
+@SPRITE_DASH_CASE_OFFSET_X: 0px;
+@SPRITE_DASH_CASE_OFFSET_Y: 0px;
+@SPRITE_DASH_CASE_WIDTH: 10px;
+@SPRITE_DASH_CASE_HEIGHT: 20px;
+@SPRITE_DASH_CASE_TOTAL_WIDTH: 80px;
+@SPRITE_DASH_CASE_TOTAL_HEIGHT: 100px;
+@SPRITE_DASH_CASE_IMAGE: 'nested/dir/spritesheet.png';
+@SPRITE_DASH_CASE: 0px 0px 0px 0px 10px 20px 80px 100px 'nested/dir/spritesheet.png' 'sprite-dash-case';
+@SPRITE_SNAKE_CASE_NAME: 'sprite_snake_case';
+@SPRITE_SNAKE_CASE_X: 10px;
+@SPRITE_SNAKE_CASE_Y: 20px;
+@SPRITE_SNAKE_CASE_OFFSET_X: -10px;
+@SPRITE_SNAKE_CASE_OFFSET_Y: -20px;
+@SPRITE_SNAKE_CASE_WIDTH: 20px;
+@SPRITE_SNAKE_CASE_HEIGHT: 30px;
+@SPRITE_SNAKE_CASE_TOTAL_WIDTH: 80px;
+@SPRITE_SNAKE_CASE_TOTAL_HEIGHT: 100px;
+@SPRITE_SNAKE_CASE_IMAGE: 'nested/dir/spritesheet.png';
+@SPRITE_SNAKE_CASE: 10px 20px -10px -20px 20px 30px 80px 100px 'nested/dir/spritesheet.png' 'sprite_snake_case';
+@SPRITE_CAMEL_CASE_NAME: 'spriteCamelCase';
+@SPRITE_CAMEL_CASE_X: 30px;
+@SPRITE_CAMEL_CASE_Y: 50px;
+@SPRITE_CAMEL_CASE_OFFSET_X: -30px;
+@SPRITE_CAMEL_CASE_OFFSET_Y: -50px;
+@SPRITE_CAMEL_CASE_WIDTH: 50px;
+@SPRITE_CAMEL_CASE_HEIGHT: 50px;
+@SPRITE_CAMEL_CASE_TOTAL_WIDTH: 80px;
+@SPRITE_CAMEL_CASE_TOTAL_HEIGHT: 100px;
+@SPRITE_CAMEL_CASE_IMAGE: 'nested/dir/spritesheet.png';
+@SPRITE_CAMEL_CASE: 30px 50px -30px -50px 50px 50px 80px 100px 'nested/dir/spritesheet.png' 'spriteCamelCase';
+@SPRITESHEET_WIDTH: 80px;
+@SPRITESHEET_HEIGHT: 100px;
+@SPRITESHEET_IMAGE: 'nested/dir/spritesheet.png';
+@SPRITESHEET_SPRITES: @SPRITE_DASH_CASE @SPRITE_SNAKE_CASE @SPRITE_CAMEL_CASE;
+@SPRITESHEET: 80px 100px 'nested/dir/spritesheet.png' @SPRITESHEET_SPRITES;
+
+/*
+The provided classes are intended to be used with the array-like variables
+
+.icon-home {
+  .sprite-width(@icon-home);
+}
+.icon-email {
+  .sprite(@icon-email);
+}
+
+Example usage in HTML:
+
+`display: block` sprite:
+<div class="icon-home"></div>
+
+To change `display` (e.g. `display: inline-block;`), we suggest using a common CSS class:
+
+// CSS
+.icon {
+  display: inline-block;
+}
+
+// HTML
+<i class="icon icon-home"></i>
+*/
+.sprite-width(@sprite) {
+  width: extract(@sprite, 5);
+}
+
+.sprite-height(@sprite) {
+  height: extract(@sprite, 6);
+}
+
+.sprite-position(@sprite) {
+  @sprite-offset-x: extract(@sprite, 3);
+  @sprite-offset-y: extract(@sprite, 4);
+  background-position: @sprite-offset-x @sprite-offset-y;
+}
+
+.sprite-image(@sprite) {
+  @sprite-image: extract(@sprite, 9);
+  background-image: e(%('url(%a)', e(@sprite-image)));
+}
+
+.sprite(@sprite) {
+  .sprite-image(@sprite);
+  .sprite-position(@sprite);
+  .sprite-width(@sprite);
+  .sprite-height(@sprite);
+}
+
+/*
+The `.sprites` mixin generates identical output to the CSS template
+  but can be overridden inside of LESS
+
+This must be run when you have at least 2 sprites.
+  If run with a single sprite, then there will be reference errors.
+
+.sprites(@spritesheet-sprites);
+*/
+.sprites(@sprites, @i: 1) when (@i <= length(@sprites)) {
+  @sprite: extract(@sprites, @i);
+  @sprite-name: e(extract(@sprite, 10));
+  .@{sprite-name} {
+    .sprite(@sprite);
+  }
+  .sprites(@sprites, @i + 1);
+}

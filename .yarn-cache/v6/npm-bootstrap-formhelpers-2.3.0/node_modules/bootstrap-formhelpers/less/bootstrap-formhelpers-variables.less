@@ -1,0 +1,90 @@
+//
+// Variables
+// --------------------------------------------------
+
+// Media queries breakpoints
+@screen-sm:                      768px;
+@screen-sm-min:                  @screen-sm;
+
+// Grid system
+@grid-float-breakpoint:          @screen-sm-min;
+
+// Base Variables
+@font-size-base:                 14px;
+@font-size-small:                ceil(@font-size-base * 0.85); // ~12px
+@font-size-xsmall:               ceil(@font-size-base * 0.75); // ~11px
+@border-radius-base:             4px;
+@caret-width-base:               4px;
+@line-height-base:               1.428571429; // 20/14
+@line-height-computed:           floor(@font-size-base * @line-height-base); // ~20px
+@input-small:                    90px;
+@input-medium:                   150px;
+@input-large:                    210px;
+
+// Brand Colours
+@brand-primary:                  #428bca;
+
+// Base Colours
+@gray-dark:                      lighten(#000, 20%);   // #333
+@gray-light:                     lighten(#000, 60%);   // #999
+@gray-lighter:                   lighten(#000, 80%);
+@component-active-color:         #fff;
+@component-active-bg:            @brand-primary;
+@component-hover-color:          darken(@gray-dark, 5%);
+@component-hover-bg:             #f5f5f5;
+
+// Select Box Variables
+@select-bg:                      #fff;
+@select-border:                  rgba(0,0,0,.15);
+@select-fallback-border:         #ccc;
+@select-caret-color:             #000;
+@select-divider-bg:              #e5e5e5;
+@select-link-color:              @gray-dark;
+@select-link-hover-color:        @component-hover-color;
+@select-link-hover-bg:           @component-hover-bg;
+@select-link-active-color:       @component-active-color;
+@select-link-active-bg:          @component-active-bg;
+@select-link-disabled-color:     @gray-light;
+@select-header-color:            @gray-light;
+@select-width-base:              240px;
+@select-height-base:             200px;
+
+// Date Picker Variables
+@datepicker-bg:                  #fff;
+@datepicker-width-base:          376px;
+@datepicker-month-width-base:    100px;
+@datepicker-year-width-base:     50px;
+@datepicker-day-width-base:      30px;
+@datepicker-hover-color:         @component-hover-color;
+@datepicker-hover-bg:            @component-hover-bg;
+@datepicker-today-color:         @component-active-color;
+@datepicker-today-bg:            @component-active-bg;
+@datepicker-disabled-color:      @gray-light;
+
+// Time Picker Variables
+@timepicker-bg:                  #fff;
+@timepicker-border:              rgba(0,0,0,.15);
+@timepicker-fallback-border:     #ccc;
+@timepicker-width-base:          180px;
+
+// Color Picker Variables
+@colorpicker-bg:                 #fff;
+@colorpicker-border:             rgba(0,0,0,.15);
+@colorpicker-fallback-border:    #ccc;
+@colorpicker-width-base:         180px;
+
+// Slider Variables
+@slider-bg:                      #fff;
+@slider-border:                  rgba(0,0,0,.15);
+@slider-fallback-border:         #ccc;
+@slider-handle-bg:               #efefef;
+@slider-disabled-color:          @gray-light;
+
+// Number Variables
+@number-button-hover-bg:         @gray-lighter;
+
+// Z-Indexes
+@zindex-select:                  1000;
+@zindex-datepicker:              1000;
+@zindex-timepicker:              1000;
+@zindex-colorpicker:             1000;

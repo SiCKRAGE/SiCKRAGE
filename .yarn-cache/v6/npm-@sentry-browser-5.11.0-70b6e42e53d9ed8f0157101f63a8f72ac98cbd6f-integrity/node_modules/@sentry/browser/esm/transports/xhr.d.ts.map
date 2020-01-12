@@ -1,0 +1,1 @@
+{"version":3,"file":"xhr.d.ts","sourceRoot":"","sources":["../../src/transports/xhr.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,KAAK,EAAE,QAAQ,EAAU,MAAM,eAAe,CAAC;AAGxD,OAAO,EAAE,aAAa,EAAE,MAAM,QAAQ,CAAC;AAEvC,4BAA4B;AAC5B,qBAAa,YAAa,SAAQ,aAAa;IAC7C,mDAAmD;IACnD,OAAO,CAAC,cAAc,CAA8B;IAEpD;;OAEG;IACI,SAAS,CAAC,KAAK,EAAE,KAAK,GAAG,WAAW,CAAC,QAAQ,CAAC;CA4CtD"}

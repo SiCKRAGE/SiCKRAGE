@@ -1,0 +1,32 @@
+{
+	"name": "vlamanna/bootstrapformhelpers",
+	"description": "A collection of jQuery plugins for Bootstrap.",
+	"homepage": "http://bootstrapformhelpers.com",
+	"version": "2.3.0",
+	"authors": [
+		{
+			"name": "Vincent Lamanna",
+			"email": "v@cakemail.com"
+		}
+	],
+	"support": {
+		"issues": "https://github.com/vlamanna/BootstrapFormHelpers/issues"
+	},
+	"repositories": [
+        	{
+			"type": "package",
+			"package": {
+				"name": "jquery/jquery",
+				"version": "1.10.2",
+				"dist": {
+					"url": "http://code.jquery.com/jquery-1.10.2.min.js",
+					"type": "file"
+				}
+			}
+        	}
+    	],
+	"require": {
+		"jquery/jquery": "1.10.*",
+		"twitter/bootstrap": "3.0.*"
+	}
+}

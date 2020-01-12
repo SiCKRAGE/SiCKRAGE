@@ -1,0 +1,58 @@
+{
+  "name": "isotope-layout",
+  "version": "3.0.6",
+  "description": "Filter and sort magical layouts",
+  "main": "js/isotope.js",
+  "files": [
+    "js",
+    "dist"
+  ],
+  "dependencies": {
+    "desandro-matches-selector": "^2.0.0",
+    "fizzy-ui-utils": "^2.0.4",
+    "get-size": "^2.0.0",
+    "masonry-layout": "^4.1.0",
+    "outlayer": "^2.1.0"
+  },
+  "devDependencies": {
+    "chalk": "^1.1.1",
+    "gulp": "^3.9.1",
+    "gulp-jshint": "^2.0.0",
+    "gulp-json-lint": "^0.1.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-replace": "^0.5.4",
+    "gulp-requirejs-optimize": "github:metafizzy/gulp-requirejs-optimize",
+    "gulp-uglify": "^1.5.3",
+    "gulp-util": "^3.0.7",
+    "jquery": "2 < 4",
+    "jquery-bridget": "^2",
+    "jshint": "^2.9.1",
+    "minimist": "^1.2.0",
+    "qunitjs": "^1.15"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/metafizzy/isotope.git"
+  },
+  "bugs": {
+    "url": "https://github.com/metafizzy/isotope/issues"
+  },
+  "homepage": "https://isotope.metafizzy.co",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "DOM",
+    "browser",
+    "masonry",
+    "layout",
+    "filter",
+    "sort",
+    "jquery-plugin"
+  ],
+  "author": "Metafizzy",
+  "license": "GPL-3.0"
+}

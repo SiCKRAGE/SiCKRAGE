@@ -1,0 +1,983 @@
+//
+// Flags
+// --------------------------------------------------
+
+.bfh-flag-AD, .bfh-flag-AE, .bfh-flag-AF, .bfh-flag-AG, .bfh-flag-AI, .bfh-flag-AL, .bfh-flag-AM, .bfh-flag-AN, .bfh-flag-AO, .bfh-flag-AQ, .bfh-flag-AR, .bfh-flag-AS, .bfh-flag-AT, .bfh-flag-AU, .bfh-flag-AW, .bfh-flag-AX, .bfh-flag-AZ, .bfh-flag-BA, .bfh-flag-BB, .bfh-flag-BD, .bfh-flag-BE, .bfh-flag-BG, .bfh-flag-BH, .bfh-flag-BI, .bfh-flag-BJ, .bfh-flag-BL, .bfh-flag-BM, .bfh-flag-BN, .bfh-flag-BO, .bfh-flag-BR, .bfh-flag-BS, .bfh-flag-BT, .bfh-flag-BW, .bfh-flag-BY, .bfh-flag-BZ, .bfh-flag-CA, .bfh-flag-CD, .bfh-flag-CF, .bfh-flag-CG, .bfh-flag-CH, .bfh-flag-CI, .bfh-flag-CL, .bfh-flag-CM, .bfh-flag-CN, .bfh-flag-CO, .bfh-flag-CR, .bfh-flag-CV, .bfh-flag-CY, .bfh-flag-CZ, .bfh-flag-DJ, .bfh-flag-DK, .bfh-flag-DM, .bfh-flag-DO, .bfh-flag-DZ, .bfh-flag-EC, .bfh-flag-EE, .bfh-flag-EG, .bfh-flag-EH, .bfh-flag-ER, .bfh-flag-ES, .bfh-flag-ET, .bfh-flag-EU, .bfh-flag-FI, .bfh-flag-FJ, .bfh-flag-FK, .bfh-flag-FM, .bfh-flag-FO, .bfh-flag-FR, .bfh-flag-FX, .bfh-flag-GF, .bfh-flag-GP, .bfh-flag-MQ, .bfh-flag-NC, .bfh-flag-PF, .bfh-flag-PM, .bfh-flag-RE, .bfh-flag-TF, .bfh-flag-WF, .bfh-flag-GA, .bfh-flag-GB, .bfh-flag-GD, .bfh-flag-GE, .bfh-flag-GG, .bfh-flag-GH, .bfh-flag-GL, .bfh-flag-GM, .bfh-flag-GN, .bfh-flag-GQ, .bfh-flag-GR, .bfh-flag-GS, .bfh-flag-GT, .bfh-flag-GU, .bfh-flag-GW, .bfh-flag-GY, .bfh-flag-HK, .bfh-flag-HN, .bfh-flag-HR, .bfh-flag-HT, .bfh-flag-HU, .bfh-flag-ID, .bfh-flag-IE, .bfh-flag-IL, .bfh-flag-IM, .bfh-flag-IN, .bfh-flag-IQ, .bfh-flag-IS, .bfh-flag-IT, .bfh-flag-JE, .bfh-flag-JM, .bfh-flag-JO, .bfh-flag-JP, .bfh-flag-KE, .bfh-flag-KG, .bfh-flag-KH, .bfh-flag-KI, .bfh-flag-KM, .bfh-flag-KN, .bfh-flag-KP, .bfh-flag-KR, .bfh-flag-KV, .bfh-flag-KW, .bfh-flag-KY, .bfh-flag-LA, .bfh-flag-LC, .bfh-flag-LK, .bfh-flag-LR, .bfh-flag-LS, .bfh-flag-LT, .bfh-flag-LU, .bfh-flag-LV, .bfh-flag-LY, .bfh-flag-MA, .bfh-flag-ME, .bfh-flag-MG, .bfh-flag-MH, .bfh-flag-ML, .bfh-flag-MM, .bfh-flag-MP, .bfh-flag-MR, .bfh-flag-MS, .bfh-flag-MT, .bfh-flag-MU, .bfh-flag-MV, .bfh-flag-MW, .bfh-flag-MZ, .bfh-flag-NA, .bfh-flag-NE, .bfh-flag-NF, .bfh-flag-NG, .bfh-flag-NI, .bfh-flag-NL, .bfh-flag-NO, .bfh-flag-NP, .bfh-flag-NR, .bfh-flag-NZ, .bfh-flag-OM, .bfh-flag-PA, .bfh-flag-PE, .bfh-flag-PG, .bfh-flag-PH, .bfh-flag-PK, .bfh-flag-PL, .bfh-flag-PN, .bfh-flag-PS, .bfh-flag-PT, .bfh-flag-PW, .bfh-flag-PY, .bfh-flag-QA, .bfh-flag-RS, .bfh-flag-RU, .bfh-flag-RW, .bfh-flag-SA, .bfh-flag-SB, .bfh-flag-SC, .bfh-flag-SD, .bfh-flag-SE, .bfh-flag-SG, .bfh-flag-SH, .bfh-flag-SI, .bfh-flag-SK, .bfh-flag-SM, .bfh-flag-SN, .bfh-flag-SO, .bfh-flag-SR, .bfh-flag-SS, .bfh-flag-ST, .bfh-flag-SV, .bfh-flag-SY, .bfh-flag-SZ, .bfh-flag-TC, .bfh-flag-TD, .bfh-flag-TG, .bfh-flag-TH, .bfh-flag-TJ, .bfh-flag-TM, .bfh-flag-TN, .bfh-flag-TP, .bfh-flag-TR, .bfh-flag-TT, .bfh-flag-TV, .bfh-flag-TW, .bfh-flag-TZ, .bfh-flag-UA, .bfh-flag-UG, .bfh-flag-US, .bfh-flag-UY, .bfh-flag-UZ, .bfh-flag-VC, .bfh-flag-VE, .bfh-flag-VG, .bfh-flag-VI, .bfh-flag-VN, .bfh-flag-VU, .bfh-flag-WS, .bfh-flag-YE, .bfh-flag-ZA, .bfh-flag-ZM, .bfh-flag-BF, .bfh-flag-CU, .bfh-flag-DE, .bfh-flag-IR, .bfh-flag-KZ, .bfh-flag-LB, .bfh-flag-LI, .bfh-flag-MC, .bfh-flag-MD, .bfh-flag-MK, .bfh-flag-MN, .bfh-flag-MO, .bfh-flag-MX, .bfh-flag-MY, .bfh-flag-PR, .bfh-flag-RO, .bfh-flag-SL, .bfh-flag-TO, .bfh-flag-VA, .bfh-flag-ZW{
+  background: url(../img/bootstrap-formhelpers-countries.flags.png) no-repeat;
+  width: 16px;
+  height: 14px;
+  
+  &:empty {
+    width: 16px;
+  }
+}
+
+.bfh-flag-AD, .bfh-flag-AE, .bfh-flag-AF, .bfh-flag-AG, .bfh-flag-AI, .bfh-flag-AL, .bfh-flag-AM, .bfh-flag-AN, .bfh-flag-AO, .bfh-flag-AQ, .bfh-flag-AR, .bfh-flag-AS, .bfh-flag-AT, .bfh-flag-AU, .bfh-flag-AW, .bfh-flag-AX, .bfh-flag-AZ, .bfh-flag-BA, .bfh-flag-BB, .bfh-flag-BD, .bfh-flag-BE, .bfh-flag-BG, .bfh-flag-BH, .bfh-flag-BI, .bfh-flag-BJ, .bfh-flag-BL, .bfh-flag-BM, .bfh-flag-BN, .bfh-flag-BO, .bfh-flag-BR, .bfh-flag-BS, .bfh-flag-BT, .bfh-flag-BW, .bfh-flag-BY, .bfh-flag-BZ, .bfh-flag-CA, .bfh-flag-CD, .bfh-flag-CF, .bfh-flag-CG, .bfh-flag-CH, .bfh-flag-CI, .bfh-flag-CL, .bfh-flag-CM, .bfh-flag-CN, .bfh-flag-CO, .bfh-flag-CR, .bfh-flag-CV, .bfh-flag-CY, .bfh-flag-CZ, .bfh-flag-DJ, .bfh-flag-DK, .bfh-flag-DM, .bfh-flag-DO, .bfh-flag-DZ, .bfh-flag-EC, .bfh-flag-EE, .bfh-flag-EG, .bfh-flag-EH, .bfh-flag-ER, .bfh-flag-ES, .bfh-flag-ET, .bfh-flag-EU, .bfh-flag-FI, .bfh-flag-FJ, .bfh-flag-FK, .bfh-flag-FM, .bfh-flag-FO, .bfh-flag-FR, .bfh-flag-FX, .bfh-flag-GF, .bfh-flag-GP, .bfh-flag-MQ, .bfh-flag-NC, .bfh-flag-PF, .bfh-flag-PM, .bfh-flag-RE, .bfh-flag-TF, .bfh-flag-WF, .bfh-flag-GA, .bfh-flag-GB, .bfh-flag-GD, .bfh-flag-GE, .bfh-flag-GG, .bfh-flag-GH, .bfh-flag-GL, .bfh-flag-GM, .bfh-flag-GN, .bfh-flag-GQ, .bfh-flag-GR, .bfh-flag-GS, .bfh-flag-GT, .bfh-flag-GU, .bfh-flag-GW, .bfh-flag-GY, .bfh-flag-HK, .bfh-flag-HN, .bfh-flag-HR, .bfh-flag-HT, .bfh-flag-HU, .bfh-flag-ID, .bfh-flag-IE, .bfh-flag-IL, .bfh-flag-IM, .bfh-flag-IN, .bfh-flag-IQ, .bfh-flag-IS, .bfh-flag-IT, .bfh-flag-JE, .bfh-flag-JM, .bfh-flag-JO, .bfh-flag-JP, .bfh-flag-KE, .bfh-flag-KG, .bfh-flag-KH, .bfh-flag-KI, .bfh-flag-KM, .bfh-flag-KN, .bfh-flag-KP, .bfh-flag-KR, .bfh-flag-KV, .bfh-flag-KW, .bfh-flag-KY, .bfh-flag-LA, .bfh-flag-LC, .bfh-flag-LK, .bfh-flag-LR, .bfh-flag-LS, .bfh-flag-LT, .bfh-flag-LU, .bfh-flag-LV, .bfh-flag-LY, .bfh-flag-MA, .bfh-flag-ME, .bfh-flag-MG, .bfh-flag-MH, .bfh-flag-ML, .bfh-flag-MM, .bfh-flag-MP, .bfh-flag-MR, .bfh-flag-MS, .bfh-flag-MT, .bfh-flag-MU, .bfh-flag-MV, .bfh-flag-MW, .bfh-flag-MZ, .bfh-flag-NA, .bfh-flag-NE, .bfh-flag-NF, .bfh-flag-NG, .bfh-flag-NI, .bfh-flag-NL, .bfh-flag-NO, .bfh-flag-NP, .bfh-flag-NR, .bfh-flag-NZ, .bfh-flag-OM, .bfh-flag-PA, .bfh-flag-PE, .bfh-flag-PG, .bfh-flag-PH, .bfh-flag-PK, .bfh-flag-PL, .bfh-flag-PN, .bfh-flag-PS, .bfh-flag-PT, .bfh-flag-PW, .bfh-flag-PY, .bfh-flag-QA, .bfh-flag-RS, .bfh-flag-RU, .bfh-flag-RW, .bfh-flag-SA, .bfh-flag-SB, .bfh-flag-SC, .bfh-flag-SD, .bfh-flag-SE, .bfh-flag-SG, .bfh-flag-SH, .bfh-flag-SI, .bfh-flag-SK, .bfh-flag-SM, .bfh-flag-SN, .bfh-flag-SO, .bfh-flag-SR, .bfh-flag-SS, .bfh-flag-ST, .bfh-flag-SV, .bfh-flag-SY, .bfh-flag-SZ, .bfh-flag-TC, .bfh-flag-TD, .bfh-flag-TG, .bfh-flag-TH, .bfh-flag-TJ, .bfh-flag-TM, .bfh-flag-TN, .bfh-flag-TP, .bfh-flag-TR, .bfh-flag-TT, .bfh-flag-TV, .bfh-flag-TW, .bfh-flag-TZ, .bfh-flag-UA, .bfh-flag-UG, .bfh-flag-US, .bfh-flag-UY, .bfh-flag-UZ, .bfh-flag-VC, .bfh-flag-VE, .bfh-flag-VG, .bfh-flag-VI, .bfh-flag-VN, .bfh-flag-VU, .bfh-flag-WS, .bfh-flag-YE, .bfh-flag-ZA, .bfh-flag-ZM, .bfh-flag-BF, .bfh-flag-CU, .bfh-flag-DE, .bfh-flag-IR, .bfh-flag-KZ, .bfh-flag-LB, .bfh-flag-LI, .bfh-flag-MC, .bfh-flag-MD, .bfh-flag-MK, .bfh-flag-MN, .bfh-flag-MO, .bfh-flag-MX, .bfh-flag-MY, .bfh-flag-PR, .bfh-flag-RO, .bfh-flag-SL, .bfh-flag-TO, .bfh-flag-VA, .bfh-flag-ZW, .bfh-flag-EUR, .bfh-flag-XCD{
+  margin-right: 5px;
+}
+
+.bfh-flag-AD{
+  background-position: -1921px 0;
+}
+
+.bfh-flag-AE{
+  background-position: -1904px 0;
+}
+
+.bfh-flag-AF{
+  background-position: -3689px 0;
+}
+
+.bfh-flag-AG{
+  background-position: -34px 0;
+}
+
+.bfh-flag-AI{
+  background-position: -51px 0;
+}
+
+.bfh-flag-AL{
+  background-position: -68px 0;
+}
+
+.bfh-flag-AM{
+  background-position: -85px 0;
+}
+
+.bfh-flag-AN{
+  background-position: -102px 0;
+}
+
+.bfh-flag-AO{
+  background-position: -119px 0;
+}
+
+.bfh-flag-AQ{
+  background-position: -136px 0;
+}
+
+.bfh-flag-AR{
+  background-position: -153px 0;
+}
+
+.bfh-flag-AS{
+  background-position: -170px 0;
+}
+
+.bfh-flag-AT{
+  background-position: -187px 0;
+}
+
+.bfh-flag-AU{
+  background-position: -204px 0;
+}
+
+.bfh-flag-AW{
+  background-position: -221px 0;
+}
+
+.bfh-flag-AX{
+  background-position: -238px 0;
+}
+
+.bfh-flag-AZ{
+  background-position: -255px 0;
+}
+
+.bfh-flag-BA{
+  background-position: -272px 0;
+}
+
+.bfh-flag-BB{
+  background-position: -289px 0;
+}
+
+.bfh-flag-BD{
+  background-position: -306px 0;
+}
+
+.bfh-flag-BE{
+  background-position: -323px 0;
+}
+
+.bfh-flag-BG{
+  background-position: -340px 0;
+}
+
+.bfh-flag-BH{
+  background-position: -357px 0;
+}
+
+.bfh-flag-BI{
+  background-position: -374px 0;
+}
+
+.bfh-flag-BJ{
+  background-position: -391px 0;
+}
+
+.bfh-flag-BL{
+  background-position: -408px 0;
+}
+
+.bfh-flag-BM{
+  background-position: -425px 0;
+}
+
+.bfh-flag-BN{
+  background-position: -442px 0;
+}
+
+.bfh-flag-BO{
+  background-position: -459px 0;
+}
+
+.bfh-flag-BR{
+  background-position: -476px 0;
+}
+
+.bfh-flag-BS{
+  background-position: -493px 0;
+}
+
+.bfh-flag-BT{
+  background-position: -510px 0;
+}
+
+.bfh-flag-BW{
+  background-position: -527px 0;
+}
+
+.bfh-flag-BY{
+  background-position: -544px 0;
+}
+
+.bfh-flag-BZ{
+  background-position: -561px 0;
+}
+
+.bfh-flag-CA{
+  background-position: -578px 0;
+}
+
+.bfh-flag-CD{
+  background-position: -595px 0;
+}
+
+.bfh-flag-CF{
+  background-position: -612px 0;
+}
+
+.bfh-flag-CG{
+  background-position: -629px 0;
+}
+
+.bfh-flag-CH{
+  background-position: -646px 0;
+}
+
+.bfh-flag-CI{
+  background-position: -663px 0;
+}
+
+.bfh-flag-CL{
+  background-position: -680px 0;
+}
+
+.bfh-flag-CM{
+  background-position: -697px 0;
+}
+
+.bfh-flag-CN{
+  background-position: -714px 0;
+}
+
+.bfh-flag-CO{
+  background-position: -731px 0;
+}
+
+.bfh-flag-CR{
+  background-position: -748px 0;
+}
+
+.bfh-flag-CV{
+  background-position: -765px 0;
+}
+
+.bfh-flag-CY{
+  background-position: -782px 0;
+}
+
+.bfh-flag-CZ{
+  background-position: -799px 0;
+}
+
+.bfh-flag-DJ{
+  background-position: -816px 0;
+}
+
+.bfh-flag-DK{
+  background-position: -833px 0;
+}
+
+.bfh-flag-DM{
+  background-position: -850px 0;
+}
+
+.bfh-flag-DO{
+  background-position: -867px 0;
+}
+
+.bfh-flag-DZ{
+  background-position: -884px 0;
+}
+
+.bfh-flag-EC{
+  background-position: -901px 0;
+}
+
+.bfh-flag-EE{
+  background-position: -918px 0;
+}
+
+.bfh-flag-EG{
+  background-position: -935px 0;
+}
+
+.bfh-flag-EH{
+  background-position: -952px 0;
+}
+
+.bfh-flag-ER{
+  background-position: -969px 0;
+}
+
+.bfh-flag-ES{
+  background-position: -986px 0;
+}
+
+.bfh-flag-ET{
+  background-position: -1003px 0;
+}
+
+.bfh-flag-EU{
+  background-position: -1020px 0;
+}
+
+.bfh-flag-FI{
+  background-position: -1037px 0;
+}
+
+.bfh-flag-FJ{
+  background-position: -1054px 0;
+}
+
+.bfh-flag-FK{
+  background-position: -1071px 0;
+}
+
+.bfh-flag-FM{
+  background-position: -1088px 0;
+}
+
+.bfh-flag-FO{
+  background-position: -1105px 0;
+}
+
+.bfh-flag-FR, .bfh-flag-FX, .bfh-flag-GF, .bfh-flag-GP, .bfh-flag-MQ, .bfh-flag-NC, .bfh-flag-PF, .bfh-flag-PM, .bfh-flag-RE, .bfh-flag-TF, .bfh-flag-WF{
+  background-position: -1122px 0;
+}
+
+.bfh-flag-GA{
+  background-position: -1139px 0;
+}
+
+.bfh-flag-GB{
+  background-position: -1156px 0;
+}
+
+.bfh-flag-GD{
+  background-position: -1173px 0;
+}
+
+.bfh-flag-GE{
+  background-position: -1190px 0;
+}
+
+.bfh-flag-GG{
+  background-position: -1207px 0;
+}
+
+.bfh-flag-GH{
+  background-position: -1224px 0;
+}
+
+.bfh-flag-GL{
+  background-position: -1241px 0;
+}
+
+.bfh-flag-GM{
+  background-position: -1258px 0;
+}
+
+.bfh-flag-GN{
+  background-position: -1275px 0;
+}
+
+.bfh-flag-GQ{
+  background-position: -1292px 0;
+}
+
+.bfh-flag-GR{
+  background-position: -1309px 0;
+}
+
+.bfh-flag-GS{
+  background-position: -1326px 0;
+}
+
+.bfh-flag-GT{
+  background-position: -1343px 0;
+}
+
+.bfh-flag-GU{
+  background-position: -1360px 0;
+}
+
+.bfh-flag-GW{
+  background-position: -1377px 0;
+}
+
+.bfh-flag-GY{
+  background-position: -1394px 0;
+}
+
+.bfh-flag-HK{
+  background-position: -1411px 0;
+}
+
+.bfh-flag-HN{
+  background-position: -1428px 0;
+}
+
+.bfh-flag-HR{
+  background-position: -1445px 0;
+}
+
+.bfh-flag-HT{
+  background-position: -1462px 0;
+}
+
+.bfh-flag-HU{
+  background-position: -1479px 0;
+}
+
+.bfh-flag-ID{
+  background-position: -1496px 0;
+}
+
+.bfh-flag-IE{
+  background-position: -1513px 0;
+}
+
+.bfh-flag-IL{
+  background-position: -1530px 0;
+}
+
+.bfh-flag-IM{
+  background-position: -1547px 0;
+}
+
+.bfh-flag-IN{
+  background-position: -1564px 0;
+}
+
+.bfh-flag-IQ{
+  background-position: -1581px 0;
+}
+
+.bfh-flag-IS{
+  background-position: -1598px 0;
+}
+
+.bfh-flag-IT{
+  background-position: -1615px 0;
+}
+
+.bfh-flag-JE{
+  background-position: -1632px 0;
+}
+
+.bfh-flag-JM{
+  background-position: -1649px 0;
+}
+
+.bfh-flag-JO{
+  background-position: -1666px 0;
+}
+
+.bfh-flag-JP{
+  background-position: -1683px 0;
+}
+
+.bfh-flag-KE{
+  background-position: -1700px 0;
+}
+
+.bfh-flag-KG{
+  background-position: -1717px 0;
+}
+
+.bfh-flag-KH{
+  background-position: -1734px 0;
+}
+
+.bfh-flag-KI{
+  background-position: -1751px 0;
+}
+
+.bfh-flag-KM{
+  background-position: -1768px 0;
+}
+
+.bfh-flag-KN{
+  background-position: -1785px 0;
+}
+
+.bfh-flag-KP{
+  background-position: -1802px 0;
+}
+
+.bfh-flag-KR{
+  background-position: -1819px 0;
+}
+
+.bfh-flag-KV{
+  background-position: -1836px 0;
+}
+
+.bfh-flag-KW{
+  background-position: -1853px 0;
+}
+
+.bfh-flag-KY{
+  background-position: -1870px 0;
+}
+
+.bfh-flag-LA{
+  background-position: -1887px 0;
+}
+
+.bfh-flag-LC{
+  background-position: 0 0;
+}
+
+.bfh-flag-LK{
+  background-position: -17px 0;
+}
+
+.bfh-flag-LR{
+  background-position: -1938px 0;
+}
+
+.bfh-flag-LS{
+  background-position: -1955px 0;
+}
+
+.bfh-flag-LT{
+  background-position: -1972px 0;
+}
+
+.bfh-flag-LU{
+  background-position: -1989px 0;
+}
+
+.bfh-flag-LV{
+  background-position: -2006px 0;
+}
+
+.bfh-flag-LY{
+  background-position: -2023px 0;
+}
+
+.bfh-flag-MA{
+  background-position: -2040px 0;
+}
+
+.bfh-flag-ME{
+  background-position: -2057px 0;
+}
+
+.bfh-flag-MG{
+  background-position: -2074px 0;
+}
+
+.bfh-flag-MH{
+  background-position: -2091px 0;
+}
+
+.bfh-flag-ML{
+  background-position: -2108px 0;
+}
+
+.bfh-flag-MM{
+  background-position: -2125px 0;
+}
+
+.bfh-flag-MP{
+  background-position: -2142px 0;
+}
+
+.bfh-flag-MR{
+  background-position: -2159px 0;
+}
+
+.bfh-flag-MS{
+  background-position: -2176px 0;
+}
+
+.bfh-flag-MT{
+  background-position: -2193px 0;
+}
+
+.bfh-flag-MU{
+  background-position: -2210px 0;
+}
+
+.bfh-flag-MV{
+  background-position: -2227px 0;
+}
+
+.bfh-flag-MW{
+  background-position: -2244px 0;
+}
+
+.bfh-flag-MZ{
+  background-position: -2261px 0;
+}
+
+.bfh-flag-NA{
+  background-position: -2278px 0;
+}
+
+.bfh-flag-NE{
+  background-position: -2295px 0;
+}
+
+.bfh-flag-NF{
+  background-position: -2312px 0;
+}
+
+.bfh-flag-NG{
+  background-position: -2329px 0;
+}
+
+.bfh-flag-NI{
+  background-position: -2346px 0;
+}
+
+.bfh-flag-NL{
+  background-position: -2363px 0;
+}
+
+.bfh-flag-NO{
+  background-position: -2380px 0;
+}
+
+.bfh-flag-NP{
+  background-position: -2397px 0;
+}
+
+.bfh-flag-NR{
+  background-position: -2414px 0;
+}
+
+.bfh-flag-NZ{
+  background-position: -2431px 0;
+}
+
+.bfh-flag-OM{
+  background-position: -2448px 0;
+}
+
+.bfh-flag-PA{
+  background-position: -2465px 0;
+}
+
+.bfh-flag-PE{
+  background-position: -2482px 0;
+}
+
+.bfh-flag-PG{
+  background-position: -2499px 0;
+}
+
+.bfh-flag-PH{
+  background-position: -2516px 0;
+}
+
+.bfh-flag-PK{
+  background-position: -2533px 0;
+}
+
+.bfh-flag-PL{
+  background-position: -2550px 0;
+}
+
+.bfh-flag-PN{
+  background-position: -2567px 0;
+}
+
+.bfh-flag-PS{
+  background-position: -2584px 0;
+}
+
+.bfh-flag-PT{
+  background-position: -2601px 0;
+}
+
+.bfh-flag-PW{
+  background-position: -2618px 0;
+}
+
+.bfh-flag-PY{
+  background-position: -2635px 0;
+}
+
+.bfh-flag-QA{
+  background-position: -2652px 0;
+}
+
+.bfh-flag-RS{
+  background-position: -2669px 0;
+}
+
+.bfh-flag-RU{
+  background-position: -2686px 0;
+}
+
+.bfh-flag-RW{
+  background-position: -2703px 0;
+}
+
+.bfh-flag-SA{
+  background-position: -2720px 0;
+}
+
+.bfh-flag-SB{
+  background-position: -2737px 0;
+}
+
+.bfh-flag-SC{
+  background-position: -2754px 0;
+}
+
+.bfh-flag-SD{
+  background-position: -2771px 0;
+}
+
+.bfh-flag-SE{
+  background-position: -2788px 0;
+}
+
+.bfh-flag-SG{
+  background-position: -2805px 0;
+}
+
+.bfh-flag-SH{
+  background-position: -2822px 0;
+}
+
+.bfh-flag-SI{
+  background-position: -2839px 0;
+}
+
+.bfh-flag-SK{
+  background-position: -2856px 0;
+}
+
+.bfh-flag-SM{
+  background-position: -2873px 0;
+}
+
+.bfh-flag-SN{
+  background-position: -2890px 0;
+}
+
+.bfh-flag-SO{
+  background-position: -2907px 0;
+}
+
+.bfh-flag-SR{
+  background-position: -2924px 0;
+}
+
+.bfh-flag-SS{
+  background-position: -2941px 0;
+}
+
+.bfh-flag-ST{
+  background-position: -2958px 0;
+}
+
+.bfh-flag-SV{
+  background-position: -2975px 0;
+}
+
+.bfh-flag-SY{
+  background-position: -2992px 0;
+}
+
+.bfh-flag-SZ{
+  background-position: -3009px 0;
+}
+
+.bfh-flag-TC{
+  background-position: -3026px 0;
+}
+
+.bfh-flag-TD{
+  background-position: -3043px 0;
+}
+
+.bfh-flag-TG{
+  background-position: -3060px 0;
+}
+
+.bfh-flag-TH{
+  background-position: -3077px 0;
+}
+
+.bfh-flag-TJ{
+  background-position: -3094px 0;
+}
+
+.bfh-flag-TM{
+  background-position: -3111px 0;
+}
+
+.bfh-flag-TN{
+  background-position: -3128px 0;
+}
+
+.bfh-flag-TP{
+  background-position: -3145px 0;
+}
+
+.bfh-flag-TR{
+  background-position: -3162px 0;
+}
+
+.bfh-flag-TT{
+  background-position: -3179px 0;
+}
+
+.bfh-flag-TV{
+  background-position: -3196px 0;
+}
+
+.bfh-flag-TW{
+  background-position: -3213px 0;
+}
+
+.bfh-flag-TZ{
+  background-position: -3230px 0;
+}
+
+.bfh-flag-UA{
+  background-position: -3247px 0;
+}
+
+.bfh-flag-UG{
+  background-position: -3264px 0;
+}
+
+.bfh-flag-US{
+  background-position: -3281px 0;
+}
+
+.bfh-flag-UY{
+  background-position: -3298px 0;
+}
+
+.bfh-flag-UZ{
+  background-position: -3315px 0;
+}
+
+.bfh-flag-VC{
+  background-position: -3332px 0;
+}
+
+.bfh-flag-VE{
+  background-position: -3349px 0;
+}
+
+.bfh-flag-VG{
+  background-position: -3366px 0;
+}
+
+.bfh-flag-VI{
+  background-position: -3383px 0;
+}
+
+.bfh-flag-VN{
+  background-position: -3400px 0;
+}
+
+.bfh-flag-VU{
+  background-position: -3417px 0;
+}
+
+.bfh-flag-WS{
+  background-position: -3434px 0;
+}
+
+.bfh-flag-YE{
+  background-position: -3451px 0;
+}
+
+.bfh-flag-ZA{
+  background-position: -3468px 0;
+}
+
+.bfh-flag-ZM{
+  background-position: -3485px 0;
+}
+
+.bfh-flag-BF{
+  background-position: -3502px 0;
+}
+
+.bfh-flag-CU{
+  background-position: -3519px 0;
+}
+
+.bfh-flag-DE{
+  background-position: -3536px 0;
+}
+
+.bfh-flag-IR{
+  background-position: -3553px 0;
+}
+
+.bfh-flag-KZ{
+  background-position: -3570px 0;
+}
+
+.bfh-flag-LB{
+  background-position: -3587px 0;
+}
+
+.bfh-flag-LI{
+  background-position: -3604px 0;
+}
+
+.bfh-flag-MC{
+  background-position: -3621px 0;
+}
+
+.bfh-flag-MD{
+  background-position: -3638px 0;
+}
+
+.bfh-flag-MK{
+  background-position: -3655px 0;
+}
+
+.bfh-flag-MN{
+  background-position: -3672px 0;
+}
+
+.bfh-flag-MO{
+  background-position: -3706px 0;
+}
+
+.bfh-flag-MX{
+  background-position: -3723px 0;
+}
+
+.bfh-flag-MY{
+  background-position: -3740px 0;
+}
+
+.bfh-flag-PR{
+  background-position: -3757px 0;
+}
+
+.bfh-flag-RO{
+  background-position: -3774px 0;
+}
+
+.bfh-flag-SL{
+  background-position: -3791px 0;
+}
+
+.bfh-flag-TO{
+  background-position: -3808px 0;
+}
+
+.bfh-flag-VA{
+  background-position: -3825px 0;
+}
+
+.bfh-flag-ZW{
+  background-position: -3842px 0;
+}
+
+.bfh-flag-EUR{
+  background: url(../img/eu.png) no-repeat;
+}
+
+.bfh-flag-XCD{
+  background: url(../img/xcd.png) no-repeat;
+}
+
+.bfh-flag-AUD, .bfh-flag-CHF, .bfh-flag-DKK, .bfh-flag-EUR, .bfh-flag-XAF, .bfh-flag-XCD, .bfh-flag-XOF, .bfh-flag-XPF, .bfh-flag-ZAR{
+  background: url(../img/bootstrap-formhelpers-currencies.flags.png) no-repeat;
+  width: 16px;
+  height: 14px;
+  
+  &:empty {
+    width: 16px;
+  }
+}
+
+.bfh-flag-AUD, .bfh-flag-CHF, .bfh-flag-DKK, .bfh-flag-EUR, .bfh-flag-XAF, .bfh-flag-XCD, .bfh-flag-XOF, .bfh-flag-XPF, .bfh-flag-ZAR {
+  margin-right: 5px;
+}
+
+.bfh-flag-AUD{
+  background-position: -32px 0px;
+}
+
+.bfh-flag-CHF{
+  background-position: -224px 0px;
+}
+
+.bfh-flag-DKK{
+  background-position: -64px -16px;
+}
+
+.bfh-flag-EUR{
+  background-position: -96px -16px;
+}
+
+.bfh-flag-XAF{
+  background-position: -160px -80px;
+}
+
+.bfh-flag-XCD{
+  background-position: -176px -80px;
+}
+
+.bfh-flag-XOF{
+  background-position: -192px -80px;
+}
+
+.bfh-flag-XPF{
+  background-position: -208px -80px;
+}
+
+.bfh-flag-ZAR{
+  background-position: -224px -80px;
+}

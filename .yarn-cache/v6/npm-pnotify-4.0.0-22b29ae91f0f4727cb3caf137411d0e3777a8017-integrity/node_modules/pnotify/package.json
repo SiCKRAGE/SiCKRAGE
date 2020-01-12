@@ -1,0 +1,67 @@
+{
+  "name": "pnotify",
+  "version": "4.0.0",
+  "description": "Beautiful dependency free notifications and prompts.",
+  "keywords": [
+    "notice",
+    "notices",
+    "notification",
+    "notifications",
+    "alert",
+    "alerts",
+    "web notifications",
+    "prompts",
+    "non blocking",
+    "notify"
+  ],
+  "homepage": "https://github.com/sciactive/pnotify",
+  "bugs": {
+    "url": "https://github.com/sciactive/pnotify/issues"
+  },
+  "license": "Apache-2.0",
+  "author": "Hunter Perrin",
+  "files": [
+    "dist",
+    "lib",
+    "src",
+    "make.js"
+  ],
+  "directories": {
+    "lib": "lib/umd"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sciactive/pnotify.git"
+  },
+  "scripts": {
+    "build": "npm run build-iife && npm run build-umd && npm run build-es",
+    "build-iife": "node make.js dist -- --format=iife",
+    "build-umd": "node make.js dist -- --format=umd",
+    "build-es": "node make.js dist -- --format=es",
+    "prepare": "npm run lint && npm run build",
+    "lint": "eslint index.html make.js src/*.html src/*.js demo/*"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-plugin-add-module-exports": "^1.0.2",
+    "babel-plugin-iife-wrap": "^1.1.0",
+    "babel-plugin-transform-object-assign": "^6.22.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-3": "^6.24.1",
+    "clean-css": "^4.2.1",
+    "eslint": "^5.16.0",
+    "eslint-config-semistandard": "^13.0.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-html": "^5.0.3",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-react": "^7.12.4",
+    "eslint-plugin-standard": "^4.0.0",
+    "shelljs": "^0.8.3",
+    "svelte": "^2.16.1",
+    "uglify-es": "3.3.9",
+    "uglify-js": "^3.5.7"
+  },
+  "dependencies": {}
+}

@@ -1,0 +1,62 @@
+{
+  "name": "get-pixels",
+  "version": "3.3.2",
+  "description": "Reads the pixels of an image as an ndarray",
+  "main": "node-pixels.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "data-uri-to-buffer": "0.0.3",
+    "jpeg-js": "^0.3.2",
+    "mime-types": "^2.0.1",
+    "ndarray": "^1.0.13",
+    "ndarray-pack": "^1.1.1",
+    "node-bitmap": "0.0.1",
+    "omggif": "^1.0.5",
+    "parse-data-uri": "^0.2.0",
+    "pngjs": "^3.3.3",
+    "request": "^2.44.0",
+    "through": "^2.3.4"
+  },
+  "devDependencies": {
+    "beefy": "^2.1.8",
+    "brfs": "^1.2.0",
+    "browserify": "^3.44.0",
+    "tap": "^10.7.0",
+    "tape": "^2.12.3"
+  },
+  "scripts": {
+    "test": "tap test/*.js",
+    "test-browser": "beefy test/test.js --open  -- -t brfs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/scijs/get-pixels.git"
+  },
+  "keywords": [
+    "ndarray",
+    "pixel",
+    "get",
+    "read",
+    "pixel",
+    "image",
+    "png",
+    "jpeg",
+    "jpg",
+    "jpe",
+    "gif",
+    "decode",
+    "buffer",
+    "data",
+    "parse",
+    "dom",
+    "node",
+    "browserify"
+  ],
+  "browser": "dom-pixels.js",
+  "author": "Mikola Lysenko",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "gitHead": "380bbda330666e4a4066c48ef5a42770d13bcd5c"
+}
