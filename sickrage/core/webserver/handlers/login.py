@@ -38,7 +38,7 @@ class LoginHandler(BaseHandler, ABC):
                 token = sickrage.app.oidc_client.authorization_code(code, redirect_uri)
                 userinfo = sickrage.app.oidc_client.userinfo(token['access_token'])
 
-                self.set_secure_cookie('_sr', json.dumps(token))
+                self.set_secure_cookie('_sr', json.dumps({'access_token': token['access_token'], 'refresh_token': token['refresh_token']}))
 
                 if not userinfo.get('sub'):
                     return self.redirect('/logout')

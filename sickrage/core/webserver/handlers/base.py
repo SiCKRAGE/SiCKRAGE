@@ -111,7 +111,7 @@ class BaseHandler(RequestHandler, ABC):
                 return sickrage.app.oidc_client.userinfo(token['access_token'])
             except KeycloakClientError:
                 token = sickrage.app.oidc_client.refresh_token(token['refresh_token'])
-                self.set_secure_cookie('_sr', json.dumps(token))
+                self.set_secure_cookie('_sr', json.dumps({'access_token': token['access_token'], 'refresh_token': token['refresh_token']}))
                 return sickrage.app.oidc_client.userinfo(token['access_token'])
         except Exception as e:
             sickrage.app.log.debug('{!r}'.format(e))
