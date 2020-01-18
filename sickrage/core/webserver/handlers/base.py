@@ -25,18 +25,17 @@ import threading
 import time
 import traceback
 from abc import ABC
-from json import JSONDecodeError
 from urllib.parse import urlparse, urljoin
 
+from jose import ExpiredSignatureError
 from keycloak.exceptions import KeycloakClientError
 from mako.exceptions import RichTraceback
 from mako.lookup import TemplateLookup
-from requests import HTTPError
 from tornado import locale
 from tornado.web import RequestHandler
 
 import sickrage
-from sickrage.core import helpers, API
+from sickrage.core import helpers
 
 
 class BaseHandler(RequestHandler, ABC):
@@ -108,11 +107,11 @@ class BaseHandler(RequestHandler, ABC):
         try:
             token = json.loads(cookie.decode("utf-8"))
             try:
-                return sickrage.app.oidc_client.userinfo(token['access_token'])
-            except KeycloakClientError:
+                return sickrage.app.oidc_client.decode_token(token['access_token'], sickrage.app.oidc_client.certs())
+            except (KeycloakClientError, ExpiredSignatureError):
                 token = sickrage.app.oidc_client.refresh_token(token['refresh_token'])
                 self.set_secure_cookie('_sr', json.dumps({'access_token': token['access_token'], 'refresh_token': token['refresh_token']}))
-                return sickrage.app.oidc_client.userinfo(token['access_token'])
+                return sickrage.app.oidc_client.decode_token(token['access_token'], sickrage.app.oidc_client.certs())
         except Exception as e:
             sickrage.app.log.debug('{!r}'.format(e))
             pass
