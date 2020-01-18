@@ -36,22 +36,22 @@ class LoginHandler(BaseHandler, ABC):
         if code:
             try:
                 token = sickrage.app.oidc_client.authorization_code(code, redirect_uri)
-                userinfo = sickrage.app.oidc_client.userinfo(token['access_token'])
+                decoded_token = sickrage.app.oidc_client.decode_token(token['access_token'], sickrage.app.oidc_client.certs())
 
-                self.set_secure_cookie('_sr', json.dumps(token))
+                self.set_secure_cookie('_sr', json.dumps({'access_token': token['access_token'], 'refresh_token': token['refresh_token']}))
 
-                if not userinfo.get('sub'):
+                if not decoded_token.get('sub'):
                     return self.redirect('/logout')
 
                 if not sickrage.app.config.sub_id:
-                    sickrage.app.config.sub_id = userinfo.get('sub')
+                    sickrage.app.config.sub_id = decoded_token.get('sub')
                     sickrage.app.config.save()
 
-                if sickrage.app.config.sub_id != userinfo.get('sub'):
+                if sickrage.app.config.sub_id != decoded_token.get('sub'):
                     if API().token:
                         allowed_usernames = API().allowed_usernames()['data']
-                        if not userinfo['preferred_username'] in allowed_usernames:
-                            sickrage.app.log.debug("USERNAME:{} IP:{} - WEB-UI ACCESS DENIED".format(userinfo['preferred_username'], self.request.remote_ip))
+                        if not decoded_token['preferred_username'] in allowed_usernames:
+                            sickrage.app.log.debug("USERNAME:{} IP:{} - WEB-UI ACCESS DENIED".format(decoded_token['preferred_username'], self.request.remote_ip))
                             return self.redirect('/logout')
                     else:
                         return self.redirect('/logout')
@@ -60,6 +60,7 @@ class LoginHandler(BaseHandler, ABC):
                         API().logout()
                     API().token = token
             except Exception as e:
+                sickrage.app.log.debug('{!r}'.format(e))
                 return self.redirect('/logout')
 
             if not sickrage.app.config.app_id:
