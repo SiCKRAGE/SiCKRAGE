@@ -498,6 +498,17 @@ class Core(object):
             id=self.name_cache.name
         )
 
+        # add announcements job
+        self.scheduler.add_job(
+            self.announcements.run,
+            IntervalTrigger(
+                minutes=15,
+                timezone='utc'
+            ),
+            name=self.announcements.name,
+            id=self.announcements.name
+        )
+
         # start scheduler service
         self.scheduler.start()
 
@@ -511,6 +522,7 @@ class Core(object):
         self.io_loop.run_in_executor(None, self.name_cache.run)
         self.io_loop.run_in_executor(None, self.version_updater.run)
         self.io_loop.run_in_executor(None, self.tz_updater.run)
+        self.io_loop.run_in_executor(None, self.announcements.run)
 
         # start web server
         self.wserver.start()
@@ -526,13 +538,8 @@ class Core(object):
             self.log.info("SiCKRAGE :: CONFIG VERSION:[v{}]".format(self.config.config_version))
             self.log.info("SiCKRAGE :: DATABASE VERSION:[v{}]".format(self.main_db.version))
             self.log.info("SiCKRAGE :: DATABASE TYPE:[{}]".format(self.db_type))
-            self.log.info("SiCKRAGE :: URL:[{}://{}:{}{}]".format(('http', 'https')[self.config.enable_https], self.config.web_host, self.config.web_port,
-                                                                  self.config.web_root))
-
-        self.announcements.add('test', 'test', 'test', 'test')
-        self.announcements.add('test', 'test', 'test', 'test')
-        self.announcements.add('test', 'test', 'test', 'test')
-        self.announcements.add('test', 'test', 'test', 'test')
+            self.log.info("SiCKRAGE :: URL:[{}://{}:{}{}]".format(('http', 'https')[self.config.enable_https],
+                                                                  self.config.web_host, self.config.web_port, self.config.web_root))
 
         # start io_loop
         self.io_loop.add_callback(started)

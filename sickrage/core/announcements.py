@@ -18,6 +18,10 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
+import threading
+
+from sickrage.core.api import APIError
+from sickrage.core.api.announcements import AnnouncementsAPI
 
 
 class Announcement(object):
@@ -39,16 +43,30 @@ class Announcements(object):
     """
 
     def __init__(self):
-        self.announcements = []
+        self.name = "ANNOUNCEMENTS"
+        self.announcements = {}
+        self.seen = 0
 
-    def add(self, title, description, image, date):
-        self.announcements += [Announcement(title, description, image, date)]
+    def run(self):
+        threading.currentThread().setName(self.name)
+
+        try:
+            resp = AnnouncementsAPI().get_announcements()
+            if resp and 'data' in resp:
+                for announcement in resp['data']:
+                    self.add(announcement['hash'], announcement['title'], announcement['description'], announcement['image'], announcement['date'])
+        except APIError:
+            pass
+
+    def add(self, ahash, title, description, image, date):
+        self.announcements[ahash] = Announcement(title, description, image, date)
 
     def clear(self):
-        self.announcements = []
+        self.announcements.clear()
 
     def get(self):
-        return self.announcements
+        self.seen = len(self.announcements)
+        return sorted(self.announcements.values(), key=lambda k: k.date)
 
     def count(self):
-        return len(self.announcements)
+        return len(self.announcements) - self.seen

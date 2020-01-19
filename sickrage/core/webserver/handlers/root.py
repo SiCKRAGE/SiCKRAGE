@@ -31,7 +31,6 @@ from tornado.web import authenticated
 import sickrage
 from sickrage.core import AccountAPI
 from sickrage.core.api import API
-from sickrage.core.api.announcements import AnnouncementsAPI
 from sickrage.core.helpers import remove_article
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes

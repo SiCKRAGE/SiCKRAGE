@@ -1,29 +1,37 @@
 <%inherit file="./layouts/main.mako"/>
 <%!
+    from datetime import datetime
     import sickrage
 %>
 
 <%block name="content">
-    <div class="row">
-        % for announcement in sickrage.app.announcements.get():
-            <div class="col-lg-2 mx-auto">
-                <div class="announcement-container">
-                    <div class="card mb-3" style="max-width: 540px;">
-                        <div class="row no-gutters">
-                            <div class="col-md-4">
-                                <img src="${announcement.image}" class="card-img" alt="">
-                            </div>
-                            <div class="col-md-8">
-                                <div class="card-body">
+    <div class="container">
+        <div class="row">
+            % for announcement in sickrage.app.announcements.get():
+                <div class="col-md-4 offset-md-0 offset-sm-1 mx-auto">
+                    <div class="card-group">
+                        <div class="card mb-3" style="max-width: 540px; height: 250px">
+                            <div class="row ml-3 mt-3">
+                                <div class="col">
                                     <h5 class="card-title">${announcement.title}</h5>
-                                    <p class="card-text">${announcement.description}</p>
-                                    <p class="card-text"><small class="text-muted">${announcement.date}</small></p>
+                                </div>
+                            </div>
+                            <div class="row no-gutters mx-3">
+                                <div class="col-md-2">
+                                    <img src="${announcement.image}" class="card-img rounded-circle" alt=""
+                                         style="width: 85px;height: 85px;">
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="card-body pt-0">
+                                        <div class="card-text"><div class="text-muted">${datetime.strptime(announcement.date, '%Y-%m-%d').strftime("%b %d, %Y")}</div></div>
+                                        <div class="card-text">${announcement.description}</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        % endfor
+            % endfor
+        </div>
     </div>
 </%block>
