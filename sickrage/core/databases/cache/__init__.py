@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
-from sqlalchemy import Column, Integer, Text, String
+from sqlalchemy import Column, Integer, Text, String, Boolean
 from sqlalchemy.ext.declarative import as_declarative
 from sqlalchemy.orm import sessionmaker
 
@@ -32,7 +32,7 @@ class CacheDB(SRDatabase):
     session = sessionmaker(class_=ContextSession)
 
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
-        super(CacheDB, self).__init__('cache', 4, db_type, db_prefix, db_host, db_port, db_username, db_password)
+        super(CacheDB, self).__init__('cache', 5, db_type, db_prefix, db_host, db_port, db_username, db_password)
         CacheDBBase.metadata.create_all(self.engine)
         for model in CacheDBBase._decl_class_registry.values():
             if hasattr(model, '__tablename__'):
@@ -138,3 +138,10 @@ class CacheDB(SRDatabase):
         expires_in = Column(Integer, nullable=False, default=0)
         expires_at = Column(Integer, nullable=False, default=0)
         scope = Column(Text, default="")
+
+    class Announcements(CacheDBBase):
+        __tablename__ = 'announcements'
+
+        id = Column(Integer, primary_key=True)
+        hash = Column(String(255), unique=True, nullable=False)
+        seen = Column(Boolean, default=False)

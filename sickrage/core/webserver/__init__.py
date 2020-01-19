@@ -31,6 +31,7 @@ from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 import sickrage
 from sickrage.core.helpers import create_https_certificates
+from sickrage.core.webserver.handlers.announcements import AnnouncementsHandler, MarkAnnouncementSeenHandler, AnnouncementCountHandler
 from sickrage.core.webserver.handlers.api import ApiHandler
 from sickrage.core.webserver.handlers.calendar import CalendarHandler
 from sickrage.core.webserver.handlers.changelog import ChangelogHandler
@@ -71,7 +72,7 @@ from sickrage.core.webserver.handlers.irc import IRCHandler
 from sickrage.core.webserver.handlers.login import LoginHandler
 from sickrage.core.webserver.handlers.logout import LogoutHandler
 from sickrage.core.webserver.handlers.logs import LogsHandler, LogsClearAllHanlder, LogsViewHandler, \
-    LogsClearErrorsHanlder, LogsClearWarningsHanlder
+    LogsClearErrorsHanlder, LogsClearWarningsHanlder, ErrorCountHandler, WarningCountHandler
 from sickrage.core.webserver.handlers.manage import ManageHandler, ShowEpisodeStatusesHandler, EpisodeStatusesHandler, \
     ChangeEpisodeStatusesHandler, ShowSubtitleMissedHandler, SubtitleMissedHandler, DownloadSubtitleMissedHandler, \
     BacklogShowHandler, BacklogOverviewHandler, MassEditHandler, MassUpdateHandler, FailedDownloadsHandler, EditShowHandler, SetEpisodeStatusHandler
@@ -81,7 +82,7 @@ from sickrage.core.webserver.handlers.manage.queues import ManageQueuesHandler, 
 from sickrage.core.webserver.handlers.root import RobotsDotTxtHandler, MessagesDotPoHandler, \
     APIBulderHandler, SetHomeLayoutHandler, SetPosterSortByHandler, SetPosterSortDirHandler, \
     ToggleDisplayShowSpecialsHandler, SetScheduleLayoutHandler, ToggleScheduleDisplayPausedHandler, \
-    SetScheduleSortHandler, ScheduleHandler, UnlinkHandler, QuicksearchDotJsonHandler, SetHistoryLayoutHandler, ForceSchedulerJobHandler, AnnouncementsHandler
+    SetScheduleSortHandler, ScheduleHandler, UnlinkHandler, QuicksearchDotJsonHandler, SetHistoryLayoutHandler, ForceSchedulerJobHandler
 from sickrage.core.webserver.handlers.web_file_browser import WebFileBrowserHandler, WebFileBrowserCompleteHandler
 from sickrage.core.websocket import WebSocketUIHandler
 
@@ -227,6 +228,8 @@ class WebServer(object):
             (r'%s/setScheduleSort(/?)' % sickrage.app.config.web_root, SetScheduleSortHandler),
             (r'%s/forceSchedulerJob(/?)' % sickrage.app.config.web_root, ForceSchedulerJobHandler),
             (r'%s/announcements(/?)' % sickrage.app.config.web_root, AnnouncementsHandler),
+            (r'%s/announcements/announcementCount(/?)' % sickrage.app.config.web_root, AnnouncementCountHandler),
+            (r'%s/announcements/mark-seen(/?)' % sickrage.app.config.web_root, MarkAnnouncementSeenHandler),
             (r'%s/schedule(/?)' % sickrage.app.config.web_root, ScheduleHandler),
             (r'%s/unlink(/?)' % sickrage.app.config.web_root, UnlinkHandler),
             (r'%s/setScheduleLayout(/?)' % sickrage.app.config.web_root, SetScheduleLayoutHandler),
@@ -237,6 +240,8 @@ class WebServer(object):
             (r'%s/history/trim(/?)' % sickrage.app.config.web_root, HistoryTrimHandler),
             (r'%s/irc(/?)' % sickrage.app.config.web_root, IRCHandler),
             (r'%s/logs(/?)' % sickrage.app.config.web_root, LogsHandler),
+            (r'%s/logs/errorCount(/?)' % sickrage.app.config.web_root, ErrorCountHandler),
+            (r'%s/logs/warningCount(/?)' % sickrage.app.config.web_root, WarningCountHandler),
             (r'%s/logs/view(/?)' % sickrage.app.config.web_root, LogsViewHandler),
             (r'%s/logs/clearAll(/?)' % sickrage.app.config.web_root, LogsClearAllHanlder),
             (r'%s/logs/clearWarnings(/?)' % sickrage.app.config.web_root, LogsClearWarningsHanlder),

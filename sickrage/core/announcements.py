@@ -20,8 +20,11 @@
 # ##############################################################################
 import threading
 
+from sqlalchemy import orm
+
 from sickrage.core.api import APIError
 from sickrage.core.api.announcements import AnnouncementsAPI
+from sickrage.core.databases.cache import CacheDB
 
 
 class Announcement(object):
@@ -29,11 +32,30 @@ class Announcement(object):
     Represents an announcement.
     """
 
-    def __init__(self, title, description, image, date):
+    def __init__(self, title, description, image, date, ahash):
         self.title = title
         self.description = description
         self.image = image
         self.date = date
+        self.ahash = ahash
+
+    @property
+    @CacheDB.with_session
+    def seen(self, session=None):
+        try:
+            announcement = session.query(CacheDB.Announcements).filter_by(hash=self.ahash).one()
+            return True if announcement.seen else False
+        except orm.exc.NoResultFound:
+            pass
+
+    @seen.setter
+    @CacheDB.with_session
+    def seen(self, value, session=None):
+        try:
+            announcement = session.query(CacheDB.Announcements).filter_by(hash=self.ahash).one()
+            announcement.seen = value
+        except orm.exc.NoResultFound:
+            pass
 
 
 class Announcements(object):
@@ -44,8 +66,7 @@ class Announcements(object):
 
     def __init__(self):
         self.name = "ANNOUNCEMENTS"
-        self.announcements = {}
-        self.seen = 0
+        self._announcements = {}
 
     def run(self):
         threading.currentThread().setName(self.name)
@@ -58,15 +79,23 @@ class Announcements(object):
         except APIError:
             pass
 
-    def add(self, ahash, title, description, image, date):
-        self.announcements[ahash] = Announcement(title, description, image, date)
+    @CacheDB.with_session
+    def add(self, ahash, title, description, image, date, session=None):
+        self._announcements[ahash] = Announcement(title, description, image, date, ahash)
+        if not session.query(CacheDB.Announcements).filter_by(hash=ahash).count():
+            session.add(CacheDB.Announcements(**{'hash': ahash}))
 
-    def clear(self):
-        self.announcements.clear()
+    @CacheDB.with_session
+    def clear(self, session=None):
+        self._announcements.clear()
+        session.query(CacheDB.Announcements).delete()
 
-    def get(self):
-        self.seen = len(self.announcements)
-        return sorted(self.announcements.values(), key=lambda k: k.date)
+    def get_all(self):
+        return sorted(self._announcements.values(), key=lambda k: k.date)
 
-    def count(self):
-        return len(self.announcements) - self.seen
+    def get(self, ahash):
+        return self._announcements.get(ahash)
+
+    @CacheDB.with_session
+    def count(self, session=None):
+        return session.query(CacheDB.Announcements).filter(CacheDB.Announcements.seen == False).count()

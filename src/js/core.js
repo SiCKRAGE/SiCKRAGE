@@ -287,6 +287,57 @@ $(document).ready(function ($) {
             });
         },
 
+        updateProfileBadge: function () {
+            let total_count = 0;
+
+            $.getJSON(SICKRAGE.srWebRoot + "/logs/errorCount", function (data) {
+                if (data.count) {
+                    total_count += data.count;
+                    $('#numErrors').text(data.count);
+                    $('#numErrors').parent().removeClass('d-none');
+                } else {
+                    $('#numErrors').parent().addClass('d-none');
+                }
+
+                if (total_count) {
+                    $('#profile-badge').text(total_count);
+                } else {
+                    $('#profile-badge').text('');
+                }
+            });
+
+            $.getJSON(SICKRAGE.srWebRoot + "/logs/warningCount", function (data) {
+                if (data.count) {
+                    total_count += data.count;
+                    $('#numWarnings').text(data.count);
+                    $('#numWarnings').parent().removeClass('d-none');
+                } else {
+                    $('#numWarnings').parent().addClass('d-none');
+                }
+
+                if (total_count) {
+                    $('#profile-badge').text(total_count);
+                } else {
+                    $('#profile-badge').text('');
+                }
+            });
+
+            $.getJSON(SICKRAGE.srWebRoot + "/announcements/announcementCount", function (data) {
+                if (data.count) {
+                    total_count += data.count;
+                    $('#numAnnouncements').text(data.count);
+                } else {
+                    $('#numAnnouncements').text('');
+                }
+
+                if (total_count) {
+                    $('#profile-badge').text(total_count);
+                } else {
+                    $('#profile-badge').text('');
+                }
+            });
+        },
+
         common: {
             init: function () {
                 SICKRAGE.srPID = SICKRAGE.getMeta('srPID');
@@ -296,6 +347,7 @@ $(document).ready(function ($) {
                 SICKRAGE.anonURL = SICKRAGE.getMeta('anonURL');
 
                 SICKRAGE.ws_notifications();
+                SICKRAGE.updateProfileBadge();
 
                 // add locale translation
                 $.get(`${SICKRAGE.srWebRoot}/messages.po`, function (data) {
@@ -324,10 +376,8 @@ $(document).ready(function ($) {
                     return false;
                 });
 
-
                 // tooltips
                 $('[title!=""]').tooltipster();
-
 
                 var imgDefer = document.getElementsByTagName('img');
                 for (var i = 0; i < imgDefer.length; i++) {
@@ -1597,6 +1647,18 @@ $(document).ready(function ($) {
                 //}
                 //});
             },
+
+            announcements: function () {
+                $('.mark-seen').on('click', function () {
+                    let elm = $(this);
+                    $.post(SICKRAGE.srWebRoot + "/announcements/mark-seen", {
+                        ahash: $(this).closest('.announcement')[0].id
+                    }, function () {
+                        SICKRAGE.updateProfileBadge();
+                        elm.hide()
+                    });
+                });
+            }
         },
 
         home: {

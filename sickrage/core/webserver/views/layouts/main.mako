@@ -72,21 +72,6 @@
     <%block name="modals" />
 
     % if current_user:
-        <%
-            toolsBadge = ''
-            numCombined = numErrors + numWarnings + numAnnouncements
-            if numCombined:
-                toolsBadgeClass = ''
-                if numErrors:
-                    toolsBadgeClass = 'badge-danger'
-                elif numWarnings:
-                    toolsBadgeClass = 'badge-warning'
-                elif numAnnouncements:
-                    toolsBadgeClass = 'badge-info'
-
-                toolsBadge = '<span class="badge badge-pill ' + toolsBadgeClass + '" style="float:right;margin-bottom:-10px;">' + str(numCombined) + '</span>'
-        %>
-
         % if current_user and sickrage.app.newest_version_string:
             <div class="alert alert-success alert-dismissible fade show text-center m-0 rounded-0">
                 <strong>${sickrage.app.newest_version_string}</strong>
@@ -269,10 +254,10 @@
                                 <span class="d-none d-sm-block dropdown-toggle d-md-none">
                                     ${_('Tools')}
                                 </span>
-                                <span class="d-sm-none d-md-block">
+                                <span id="profile-container" class="d-sm-none d-md-block">
                                     <img class="rounded-circle shadow"
                                          src="https://gravatar.com/avatar/${md5(current_user['email'].encode('utf-8')).hexdigest()}?d=mm&s=40"/>
-                                    ${toolsBadge}
+                                    <span id="profile-badge" class="badge badge-info" style="float:right;margin-bottom:-10px;"></span>
                                 </span>
                             </a>
 
@@ -289,24 +274,19 @@
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/announcements/">
                                     <i class="fas fa-fw fa-circle"></i>&nbsp;${_('Announcements')}
-                                    %if numAnnouncements:
-                                        <span class="badge badge-info">${numAnnouncements}</span>
-                                    %endif
+                                    <span id="numAnnouncements" class="badge badge-info"></span>
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                %if numErrors:
-                                    <a class="dropdown-item" href="${srWebRoot}/logs/">
-                                        <i class="fas fa-fw fa-exclamation-circle"></i>&nbsp;${_('View Errors')}
-                                        <span class="badge badge-danger">${numErrors}</span>
-                                    </a>
-                                %endif
-                                %if numWarnings:
-                                    <a class="dropdown-item"
-                                       href="${srWebRoot}/logs/?level=${sickrage.app.log.WARNING}">
-                                        <i class="fas fa-fw fa-exclamation-triangle"></i>&nbsp;${_('View Warnings')}
-                                        <span class="badge badge-warning">${numWarnings}</span>
-                                    </a>
-                                %endif
+                                <a class="dropdown-item d-none"
+                                   href="${srWebRoot}/logs/">
+                                    <i class="fas fa-fw fa-exclamation-circle"></i>&nbsp;${_('View Errors')}
+                                    <span id="numErrors" class="badge badge-danger"></span>
+                                </a>
+                                <a class="dropdown-item d-none"
+                                   href="${srWebRoot}/logs/?level=${sickrage.app.log.WARNING}">
+                                    <i class="fas fa-fw fa-exclamation-triangle"></i>&nbsp;${_('View Warnings')}
+                                    <span id="numWarnings" class="badge badge-warning"></span>
+                                </a>
                                 <a class="dropdown-item" href="${srWebRoot}/logs/view/">
                                     <i class="fas fa-fw fa-file-archive"></i>&nbsp;${_('View Log')}
                                 </a>

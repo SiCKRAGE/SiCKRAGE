@@ -271,16 +271,3 @@ class ForceSchedulerJobHandler(BaseHandler, ABC):
         service = getattr(sickrage.app, name, None)
         if service:
             job = sickrage.app.scheduler.get_job(service.name).func(True)
-
-
-class AnnouncementsHandler(BaseHandler, ABC):
-    @authenticated
-    async def get(self, *args, **kwargs):
-        return self.render(
-            'announcements.mako',
-            title=_('Announcements'),
-            header=_('Announcements'),
-            topmenu='announcements',
-            controller='root',
-            action='announcements'
-        )

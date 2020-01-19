@@ -18,7 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-
+import json
 import os
 import re
 from abc import ABC
@@ -153,3 +153,15 @@ class LogsViewHandler(BaseHandler, ABC):
             controller='logs',
             action='view'
         )
+
+
+class ErrorCountHandler(BaseHandler, ABC):
+    @authenticated
+    async def get(self, *args, **kwargs):
+        return self.write(json.dumps({'count': sickrage.app.log.error_viewer.count()}))
+
+
+class WarningCountHandler(BaseHandler, ABC):
+    @authenticated
+    async def get(self, *args, **kwargs):
+        return self.write(json.dumps({'count': sickrage.app.log.warning_viewer.count()}))
