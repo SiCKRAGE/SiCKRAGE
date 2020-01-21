@@ -22,6 +22,7 @@ import threading
 
 from sqlalchemy import orm
 
+import sickrage
 from sickrage.core.api import APIError
 from sickrage.core.api.announcements import AnnouncementsAPI
 from sickrage.core.databases.cache import CacheDB
@@ -86,6 +87,7 @@ class Announcements(object):
     def add(self, ahash, title, description, image, date, session=None):
         self._announcements[ahash] = Announcement(title, description, image, date, ahash)
         if not session.query(CacheDB.Announcements).filter_by(hash=ahash).count():
+            sickrage.app.log.debug('Adding new announcement to Web-UI')
             session.add(CacheDB.Announcements(**{'hash': ahash}))
 
     @CacheDB.with_session
