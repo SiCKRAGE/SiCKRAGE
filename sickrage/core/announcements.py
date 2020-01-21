@@ -75,7 +75,10 @@ class Announcements(object):
             resp = AnnouncementsAPI().get_announcements()
             if resp and 'data' in resp:
                 for announcement in resp['data']:
-                    self.add(announcement['hash'], announcement['title'], announcement['description'], announcement['image'], announcement['date'])
+                    if announcement['enabled']:
+                        self.add(announcement['hash'], announcement['title'], announcement['description'], announcement['image'], announcement['date'])
+                    else:
+                        self.clear(announcement['hash'])
         except APIError:
             pass
 
@@ -86,9 +89,14 @@ class Announcements(object):
             session.add(CacheDB.Announcements(**{'hash': ahash}))
 
     @CacheDB.with_session
-    def clear(self, session=None):
-        self._announcements.clear()
-        session.query(CacheDB.Announcements).delete()
+    def clear(self, ahash=None, session=None):
+        if not ahash:
+            self._announcements.clear()
+            session.query(CacheDB.Announcements).delete()
+        else:
+            if ahash in self._announcements:
+                del self._announcements[ahash]
+            session.query(CacheDB.Announcements).filter_by(hash=ahash).delete()
 
     def get_all(self):
         return sorted(self._announcements.values(), key=lambda k: k.date)
