@@ -269,6 +269,9 @@ class GenericProvider(object):
             return provider_results
 
         show_object = find_show(show_id, session=session)
+        if not show_object:
+            return provider_results
+
         episode_object = show_object.get_episode(season, episode)
 
         # search cache for episode result
