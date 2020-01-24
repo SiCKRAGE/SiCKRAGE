@@ -103,7 +103,7 @@ class GenericProvider(object):
 
     @property
     def is_alive(self):
-        return self.session.get(self.urls['base_url']).ok
+        return True
 
     @property
     def urls(self):
