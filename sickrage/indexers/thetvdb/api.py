@@ -53,11 +53,11 @@ def login_required(f):
         if not obj.jwt_token:
             obj.authenticate()
 
-        try:
-            return f(obj, *args, **kwargs)
-        except tvdb_unauthorized:
-            obj.authenticate()
-            return f(obj, *args, **kwargs)
+        for i in range(3):
+            try:
+                return f(obj, *args, **kwargs)
+            except tvdb_unauthorized:
+                obj.authenticate()
 
     return wrapper
 
@@ -437,13 +437,16 @@ class Tvdb:
         self.config['headers'].update({'Accept-Language': lang or self.config['language']})
         self.config['headers'].update({'Accept': 'application/vnd.thetvdb.v{}'.format(self.config['api']['version'])})
 
-        for i in range(0, retries):
+        error_message = None
+        for i in range(retries):
             try:
                 # get response from theTVDB
                 resp = WebSession(cache=self.config['cache_enabled']).request(
                     method, urljoin(self.config['api']['base'], url), headers=self.config['headers'],
                     timeout=sickrage.app.config.indexer_timeout, **kwargs
                 )
+
+                return to_lowercase(resp.json())
             except requests.exceptions.HTTPError as e:
                 status_code = e.response.status_code
                 error_message = e.response.text
@@ -454,12 +457,8 @@ class Tvdb:
                 if status_code == 401:
                     raise tvdb_unauthorized(error_message)
 
-                if i < retries - 1:
-                    continue
-
-                raise tvdb_error(error_message)
-
-            return to_lowercase(resp.json())
+        if error_message:
+            raise tvdb_error(error_message)
 
     def _setItem(self, sid, seas, ep, attrib, value):
         """Creates a new episode, creating Show(), Season() and
