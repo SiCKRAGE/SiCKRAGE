@@ -5,7 +5,7 @@ CacheControl == 0.12.6
 cfscrape == 2.0.8
 configobj == 5.0.6
 feedparser == 5.2.1
-guessit == 3.0.3
+guessit == 3.1.0
 hachoir == 3.0a5
 Mako == 1.0.9
 markdown2 == 2.3.6
