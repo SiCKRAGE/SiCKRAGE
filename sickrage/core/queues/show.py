@@ -318,6 +318,8 @@ class QueueItemAdd(ShowQueueItem):
         session.safe_commit()
 
         show_obj = find_show(self.indexer_id, session=session)
+        if not show_obj:
+            return self._finish_early()
 
         try:
             show_obj.load_from_indexer()
