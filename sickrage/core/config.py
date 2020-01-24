@@ -793,7 +793,7 @@ class Config(object):
                 'naming_abd_pattern': '%SN - %A.D - %EN',
                 'socket_timeout': 30,
                 'proxy_setting': '',
-                'backlog_frequency': 21,
+                'backlog_frequency': 1440,
                 'notify_on_login': False,
                 'rename_episodes': True,
                 'quality_default': SD,
