@@ -98,8 +98,9 @@ class TVCache(object):
     def get_rss_feed(self, url, params=None):
         try:
             if self.provider.login():
-                resp = WebSession().get(url, params=params).text
-                return feedparser.parse(resp)
+                resp = WebSession().get(url, params=params)
+                if resp:
+                    return feedparser.parse(resp.text)
         except Exception as e:
             sickrage.app.log.debug("RSS Error: {}".format(e))
 

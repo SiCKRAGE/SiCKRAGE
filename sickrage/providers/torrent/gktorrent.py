@@ -135,24 +135,23 @@ class GKTorrentProvider(TorrentProvider):
         return results
 
     def _get_download_link(self, url, download_type="torrent"):
-        try:
-            data = self.session.get(url).text
-        except Exception:
-            return
-
         links = {
             "torrent": "",
             "magnet": "",
         }
 
-        with bs4_parser(data) as html:
-            downloads = html.find('div', {'class': 'download'})
-            if downloads:
-                for download in downloads.findAll('a'):
-                    link = download['href']
-                    if link.startswith("magnet"):
-                        links["magnet"] = link
-                    else:
-                        links["torrent"] = urljoin(self.urls['base_url'], link)
+        try:
+            data = self.session.get(url).text
+            with bs4_parser(data) as html:
+                downloads = html.find('div', {'class': 'download'})
+                if downloads:
+                    for download in downloads.findAll('a'):
+                        link = download['href']
+                        if link.startswith("magnet"):
+                            links["magnet"] = link
+                        else:
+                            links["torrent"] = urljoin(self.urls['base_url'], link)
+        except Exception:
+            pass
 
         return links[download_type]

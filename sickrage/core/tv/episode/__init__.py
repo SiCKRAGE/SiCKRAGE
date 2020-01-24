@@ -413,7 +413,7 @@ class TVEpisode(MainDBBase):
 
                     self.airdate = datetime.date.min
                     if epDetails.findtext('aired'):
-                        rawAirdate = [int(x) for x in epDetails.findtext('aired').split("-")]
+                        rawAirdate = [int(x.strip()) for x in epDetails.findtext('aired').split("-")]
                         self.airdate = datetime.date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
 
                     self.hasnfo = True

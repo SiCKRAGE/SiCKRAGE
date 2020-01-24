@@ -210,11 +210,12 @@ class GenericProvider(object):
                 episode_string += episode_object.airdate.strftime('%b')
             elif show_object.anime:
                 # If the show name is a season scene exception, we want to use the indexer episode number.
-                if (episode_object.scene_season > 1 and show_name in get_scene_exceptions(show_object.indexer_id, episode_object.scene_season)):
+                if episode_object.scene_season > 1 and show_name in get_scene_exceptions(show_object.indexer_id, episode_object.scene_season):
                     # This is apparently a season exception, let's use the scene_episode instead of absolute
                     ep = episode_object.scene_episode
                 else:
                     ep = episode_object.scene_absolute_number
+
                 episode_string += '{episode:0>2}'.format(episode=ep)
                 episode_string_fallback = episode_string + '{episode:0>3}'.format(episode=ep)
             else:
@@ -225,7 +226,8 @@ class GenericProvider(object):
 
             if add_string:
                 episode_string += self.search_separator + add_string
-                episode_string_fallback += self.search_separator + add_string
+                if episode_string_fallback:
+                    episode_string_fallback += self.search_separator + add_string
 
             search_string['Episode'].append(episode_string.strip())
             if episode_string_fallback:

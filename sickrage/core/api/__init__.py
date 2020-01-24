@@ -1,7 +1,9 @@
+import requests
 import time
 from urllib.parse import urljoin
 
 import requests.exceptions
+from keycloak.exceptions import KeycloakClientError
 from oauthlib.oauth2 import MissingTokenError, InvalidClientIdError, TokenExpiredError, InvalidGrantError, OAuth2Token
 from requests_oauthlib import OAuth2Session
 from sqlalchemy import orm
@@ -14,7 +16,8 @@ from sickrage.core.databases.cache import CacheDB
 class API(object):
     def __init__(self):
         self.name = 'SR-API'
-        self.api_url = 'https://www.sickrage.ca/api/v3/'
+        self.api_base = 'https://www.sickrage.ca/api/'
+        self.api_version = 'v3'
         self.client_id = sickrage.app.oidc_client_id
         self.client_secret = sickrage.app.oidc_client_secret
 
@@ -68,8 +71,12 @@ class API(object):
     def token_url(self):
         try:
             return sickrage.app.oidc_client.well_known['token_endpoint']
-        except requests.exceptions.RequestException:
+        except KeycloakClientError:
             return "https://auth.sickrage.ca/auth/realms/sickrage/protocol/openid-connect/token"
+
+    @property
+    def health(self):
+        return requests.get(urljoin(self.api_base, "oauth/health")).ok
 
     @property
     def userinfo(self):
@@ -103,8 +110,12 @@ class API(object):
         latest_exception = None
 
         for i in range(3):
+            if not self.health:
+                latest_exception = "SiCKRAGE backend API is currently unreachable ..."
+                continue
+
             try:
-                resp = self.session.request(method, urljoin(self.api_url, url), timeout=timeout, hooks={'response': self.throttle_hook}, **kwargs)
+                resp = self.session.request(method, urljoin(self.api_base, "/".join([self.api_version, url])), timeout=timeout, hooks={'response': self.throttle_hook}, **kwargs)
                 resp.raise_for_status()
                 if resp.status_code == 204:
                     return
@@ -113,9 +124,9 @@ class API(object):
                     return resp.json()
                 except ValueError:
                     return resp.content
-            except TokenExpiredError as e:
+            except TokenExpiredError:
                 self.refresh_token()
-            except (InvalidClientIdError, MissingTokenError, InvalidGrantError) as e:
+            except (InvalidClientIdError, MissingTokenError, InvalidGrantError):
                 latest_exception = "Invalid token error, please re-authenticate by logging out then logging back in from web-ui"
                 break
             except requests.exceptions.ReadTimeout:
