@@ -19,7 +19,7 @@ class RSSCacheUpdater(object):
         threading.currentThread().setName(self.name)
 
         for providerID, providerObj in sickrage.app.search_providers.sort().items():
-            if providerObj.isEnabled:
+            if providerObj.is_enabled:
                 sickrage.app.log.debug("Updating RSS cache for provider: [{}]".format(providerObj.name))
                 threading.currentThread().setName(self.name + "::[" + providerObj.name + "]")
                 providerObj.cache.update(force)

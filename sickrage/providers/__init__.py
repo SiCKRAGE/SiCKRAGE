@@ -90,11 +90,11 @@ class GenericProvider(object):
         return str(re.sub(r"[^\w\d_]", "_", self.name.strip().lower()))
 
     @property
-    def isEnabled(self):
+    def is_enabled(self):
         return self.enabled
 
     @property
-    def imageName(self):
+    def image_name(self):
         return ""
 
     @property
@@ -102,8 +102,8 @@ class GenericProvider(object):
         return ''
 
     @property
-    def isAlive(self):
-        return True
+    def is_alive(self):
+        return self.session.get(self.urls['base_url']).ok
 
     @property
     def urls(self):
@@ -122,7 +122,7 @@ class GenericProvider(object):
     def login(self):
         return True
 
-    def getResult(self, season=None, episodes=None):
+    def get_result(self, season=None, episodes=None):
         """
         Returns a result of the correct type for this provider
         """
@@ -313,7 +313,7 @@ class GenericProvider(object):
 
         # filter results
         for item in item_list:
-            provider_result = self.getResult()
+            provider_result = self.get_result()
 
             provider_result.name, provider_result.url = self._get_title_and_url(item)
 
@@ -405,7 +405,7 @@ class GenericProvider(object):
         for term in self.proper_strings:
             search_strngs = self._get_episode_search_strings(show_id, season, episode, add_string=term)
             for item in self.search(search_strngs[0], show_id=show_id, season=season, episode=episode):
-                result = self.getResult(season, [episode])
+                result = self.get_result(season, [episode])
                 result.name, result.url = self._get_title_and_url(item)
                 if not validate_url(result.url) and not result.url.startswith('magnet'):
                     continue
@@ -579,10 +579,10 @@ class TorrentProvider(GenericProvider):
 
     @property
     def isActive(self):
-        return sickrage.app.config.use_torrents and self.isEnabled
+        return sickrage.app.config.use_torrents and self.is_enabled
 
     @property
-    def imageName(self):
+    def image_name(self):
         return self.id
 
     @property
@@ -593,7 +593,7 @@ class TorrentProvider(GenericProvider):
         """
         return self.ratio
 
-    def getResult(self, season=None, episodes=None):
+    def get_result(self, season=None, episodes=None):
         """
         Returns a result of the correct type for this provider
         """
@@ -738,13 +738,13 @@ class NZBProvider(GenericProvider):
 
     @property
     def isActive(self):
-        return sickrage.app.config.use_nzbs and self.isEnabled
+        return sickrage.app.config.use_nzbs and self.is_enabled
 
     @property
-    def imageName(self):
+    def image_name(self):
         return self.id
 
-    def getResult(self, season=None, episodes=None):
+    def get_result(self, season=None, episodes=None):
         """
         Returns a result of the correct type for this provider
         """
@@ -1306,10 +1306,10 @@ class SearchProviders(dict):
         return OrderedDict([(x.id, x) for x in sorted_providers])
 
     def enabled(self):
-        return dict([(pID, pObj) for pID, pObj in self.all().items() if pObj.isEnabled])
+        return dict([(pID, pObj) for pID, pObj in self.all().items() if pObj.is_enabled])
 
     def disabled(self):
-        return dict([(pID, pObj) for pID, pObj in self.all().items() if not pObj.isEnabled])
+        return dict([(pID, pObj) for pID, pObj in self.all().items() if not pObj.is_enabled])
 
     def all(self):
         return {**self.nzb(), **self.torrent(), **self.newznab(), **self.torrentrss()}

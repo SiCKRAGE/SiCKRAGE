@@ -97,7 +97,7 @@ class ProperSearcher(object):
                     continue
                 elif not sickrage.app.config.use_torrents and providerObj.type in [TorrentProvider.type, TorrentRssProvider.type]:
                     continue
-                elif not providerObj.isEnabled:
+                elif not providerObj.is_enabled:
                     continue
 
                 threading.currentThread().setName(orig_thread_name + " :: [" + providerObj.name + "]")
@@ -261,7 +261,7 @@ class ProperSearcher(object):
                 continue
 
             # make the result object
-            result = curProper.provider.getResult(curProper.season, [curProper.episode])
+            result = curProper.provider.get_result(curProper.season, [curProper.episode])
             result.show_id = curProper.indexer_id
             result.url = curProper.url
             result.name = curProper.name

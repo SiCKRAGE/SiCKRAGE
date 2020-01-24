@@ -98,7 +98,7 @@
                                 <div class="align-middle">
                                     <label class="form-check-label" for="enable_${providerID}">
                                         <input type="checkbox" id="enable_${providerID}"
-                                               class="provider_enabler text-left" ${('', 'checked')[bool(providerObj.isEnabled)]}/>
+                                               class="provider_enabler text-left" ${('', 'checked')[bool(providerObj.is_enabled)]}/>
                                         <a href="${anon_url(provider_url)}" class="text-right" rel="noreferrer"
                                            onclick="window.open(this.href, '_blank'); return false;">
                                             % if providerObj.type in ['nzb', 'torrent']:
@@ -111,7 +111,7 @@
                                     </label>
                                     <span class="float-right d-inline-block">
                                         ${('<i class="text-warning fas fa-chevron-circle-left"></i>', '')[bool(providerObj.supports_backlog)]}
-                                        ${('<i class="text-danger fas fa-exclamation-circle"></i>', '')[bool(providerObj.isAlive)]}
+                                        ${('<i class="text-danger fas fa-exclamation-circle"></i>', '')[bool(providerObj.is_alive)]}
                                         <i class="fas ${('fa-unlock text-success','fa-lock text-danger')[bool(providerObj.private)]}"></i>
                                     </span>
                                 </div>
@@ -120,7 +120,7 @@
                     % endfor
                 </div>
                 <input type="hidden" name="provider_order" id="provider_order"
-                       value="${"!!!".join(["{}:{}".format(providerID, int(providerObj.isEnabled)) for providerID, providerObj in sickrage.app.search_providers.all().items()])}"/>
+                       value="${"!!!".join(["{}:{}".format(providerID, int(providerObj.is_enabled)) for providerID, providerObj in sickrage.app.search_providers.all().items()])}"/>
                 <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
             </fieldset>
         </div>

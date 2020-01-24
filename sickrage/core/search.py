@@ -330,7 +330,7 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
 
     for providerID, providerObj in sickrage.app.search_providers.sort(randomize=sickrage.app.config.randomize_providers).items():
         # check if provider is enabled
-        if not providerObj.isEnabled:
+        if not providerObj.is_enabled:
             continue
 
         # check provider type

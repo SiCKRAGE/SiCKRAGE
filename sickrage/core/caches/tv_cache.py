@@ -279,7 +279,7 @@ class TVCache(object):
                 if not show_object:
                     continue
 
-                result = self.provider.getResult()
+                result = self.provider.get_result()
 
                 # ignore invalid and private IP address urls
                 if not validate_url(curResult["url"]):
