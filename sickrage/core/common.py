@@ -516,7 +516,7 @@ UHD_4K = Quality.combine_qualities([Quality.UHD_4K_TV, Quality.UHD_4K_WEBDL, Qua
 UHD_8K = Quality.combine_qualities([Quality.UHD_8K_TV, Quality.UHD_8K_WEBDL, Quality.UHD_8K_BLURAY], [])
 
 SD = Quality.combine_qualities([Quality.SDTV, Quality.SDDVD], [])
-HD = Quality.combine_qualities([HD720p, HD1080p], [])
+HD = Quality.combine_qualities([HD720p, HD1080p, Quality.RAWHDTV], [])
 UHD = Quality.combine_qualities([UHD_4K, UHD_8K], [])
 ANY = Quality.combine_qualities([SD, HD, UHD], [])
 ANY_PLUS_UNKNOWN = Quality.combine_qualities([Quality.UNKNOWN, SD, HD, UHD], [])
