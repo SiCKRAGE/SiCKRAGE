@@ -443,7 +443,7 @@ class Tvdb:
                 # get response from theTVDB
                 resp = WebSession(cache=self.config['cache_enabled']).request(
                     method, urljoin(self.config['api']['base'], url), headers=self.config['headers'],
-                    timeout=sickrage.app.config.indexer_timeout, **kwargs
+                    timeout=sickrage.app.config.indexer_timeout, verify=False, **kwargs
                 )
 
                 resp.raise_for_status()

@@ -100,17 +100,18 @@ class BaseHandler(RequestHandler, ABC):
                                              webroot=sickrage.app.config.web_root))
 
     def get_current_user(self):
-        cookie = self.get_secure_cookie('_sr')
-        if not cookie:
-            return
-
         try:
-            token = json.loads(cookie.decode("utf-8"))
+            access_token = self.get_secure_cookie('_sr_access_token')
+            refresh_token = self.get_secure_cookie('_sr_refresh_token')
+            if not all([access_token, refresh_token]):
+                return
+
             try:
-                return sickrage.app.oidc_client.decode_token(token['access_token'], sickrage.app.oidc_client.certs())
+                return sickrage.app.oidc_client.decode_token(access_token.decode("utf-8"), sickrage.app.oidc_client.certs())
             except (KeycloakClientError, ExpiredSignatureError):
-                token = sickrage.app.oidc_client.refresh_token(token['refresh_token'])
-                self.set_secure_cookie('_sr', json.dumps({'access_token': token['access_token'], 'refresh_token': token['refresh_token']}))
+                token = sickrage.app.oidc_client.refresh_token(refresh_token.decode("utf-8"))
+                self.set_secure_cookie('_sr_access_token', token['access_token'])
+                self.set_secure_cookie('_sr_refresh_token', token['refresh_token'])
                 return sickrage.app.oidc_client.decode_token(token['access_token'], sickrage.app.oidc_client.certs())
         except Exception as e:
             sickrage.app.log.debug('{!r}'.format(e))
