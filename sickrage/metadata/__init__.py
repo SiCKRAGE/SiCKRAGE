@@ -711,8 +711,7 @@ class GenericMetadata(object):
         except (indexer_error, IOError) as e:
             sickrage.app.log.warning("{}: Unable to look up show on ".format(show_obj.indexer_id) + IndexerApi(
                 show_obj.indexer).name + ", not downloading images: {}".format(e))
-            sickrage.app.log.debug("Indexer " + IndexerApi(
-                show_obj.indexer).name + " maybe experiencing some problems. Try again later")
+            sickrage.app.log.debug("Indexer " + IndexerApi(show_obj.indexer).name + " maybe experiencing some problems. Try again later")
         except (KeyError, IndexError):
             pass
 

@@ -432,8 +432,8 @@ class Tvdb:
             return result
 
     def _request(self, method, url, lang=None, retries=3, **kwargs):
+        self.config['headers'].update({'Authorization': 'Bearer {}'.format(self.jwt_token)})
         self.config['headers'].update({'Content-type': 'application/json'})
-        self.config['headers']['Authorization'] = 'Bearer {}'.format(self.jwt_token)
         self.config['headers'].update({'Accept-Language': lang or self.config['language']})
         self.config['headers'].update({'Accept': 'application/vnd.thetvdb.v{}'.format(self.config['api']['version'])})
 
@@ -446,6 +446,8 @@ class Tvdb:
                     timeout=sickrage.app.config.indexer_timeout, **kwargs
                 )
 
+                resp.raise_for_status()
+
                 return to_lowercase(resp.json())
             except requests.exceptions.HTTPError as e:
                 status_code = e.response.status_code
@@ -456,6 +458,8 @@ class Tvdb:
 
                 if status_code == 401:
                     raise tvdb_unauthorized(error_message)
+            except Exception as e:
+                error_message = "{!r}".format(e)
 
         if error_message:
             raise tvdb_error(error_message)
