@@ -22,16 +22,16 @@ import inspect
 import os
 import pkgutil
 import re
-import sys
 from xml.etree.ElementTree import ElementTree
 
 import fanart
+
 import sickrage
 from sickrage.core.helpers import chmod_as_parent, replace_extension, try_int
-from sickrage.indexers.helpers import map_indexers
 from sickrage.core.websession import WebSession
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_error, indexer_episodenotfound, indexer_seasonnotfound
+from sickrage.indexers.helpers import map_indexers
 
 
 class GenericMetadata(object):
@@ -360,8 +360,7 @@ class GenericMetadata(object):
 
             chmod_as_parent(nfo_file_path)
         except IOError as e:
-            sickrage.app.log.warning(
-                "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e))
+            sickrage.app.log.warning("Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e))
             return False
 
         return True
@@ -404,8 +403,7 @@ class GenericMetadata(object):
 
             chmod_as_parent(nfo_file_path)
         except IOError as e:
-            sickrage.app.log.warning(
-                "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e))
+            sickrage.app.log.warning("Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e))
             return False
 
         return True
@@ -506,8 +504,7 @@ class GenericMetadata(object):
 
         season_poster_file_path = self.get_season_poster_path(show_obj, season)
         if not season_poster_file_path:
-            sickrage.app.log.debug(
-                "Path for season " + str(season) + " came back blank, skipping this season")
+            sickrage.app.log.debug("Path for season " + str(season) + " came back blank, skipping this season")
             return False
 
         seasonData = self.get_show_image(season_url)
@@ -587,8 +584,7 @@ class GenericMetadata(object):
 
             chmod_as_parent(image_path)
         except IOError as e:
-            sickrage.app.log.warning(
-                "Unable to write image to " + image_path + " - are you sure the show folder is writable? {}".format(e))
+            sickrage.app.log.warning("Unable to write image to " + image_path + " - are you sure the show folder is writable? {}".format(e))
             return False
 
         return True
@@ -622,14 +618,11 @@ class GenericMetadata(object):
         except (indexer_error, IOError) as e:
             sickrage.app.log.warning("{}: Unable to look up show on ".format(show_obj.indexer_id) + IndexerApi(
                 show_obj.indexer).name + ", not downloading images: {}".format(e))
-            sickrage.app.log.debug("Indexer " + IndexerApi(
-                show_obj.indexer).name + " maybe experiencing some problems. Try again later")
+            sickrage.app.log.debug("Indexer " + IndexerApi(show_obj.indexer).name + " maybe experiencing some problems. Try again later")
             return None
 
         if image_type not in ('fanart', 'poster', 'series', 'poster_thumb', 'series_thumb'):
-            sickrage.app.log.warning(
-                "Invalid image type " + str(image_type) + ", couldn't find it in the " + IndexerApi(
-                    show_obj.indexer).name + " object")
+            sickrage.app.log.warning("Invalid image type " + str(image_type) + ", couldn't find it in the " + IndexerApi(show_obj.indexer).name + " object")
             return
 
         if image_type == 'poster_thumb':
@@ -740,10 +733,9 @@ class GenericMetadata(object):
 
             if showXML.findtext('title') is None or (
                     showXML.findtext('tvdbid') is None and showXML.findtext('id') is None):
-                sickrage.app.log.info(
-                    "Invalid info in tvshow.nfo (missing name or id): {} {} {}".format(showXML.findtext('title'),
-                                                                                       showXML.findtext('tvdbid'),
-                                                                                       showXML.findtext('id')))
+                sickrage.app.log.info("Invalid info in tvshow.nfo (missing name or id): {} {} {}".format(showXML.findtext('title'),
+                                                                                                         showXML.findtext('tvdbid'),
+                                                                                                         showXML.findtext('id')))
                 return empty_return
 
             name = showXML.findtext('title')
@@ -752,12 +744,10 @@ class GenericMetadata(object):
             if indexer_id_text:
                 indexer_id = try_int(indexer_id_text, None)
                 if indexer_id is None or indexer_id < 1:
-                    sickrage.app.log.debug(
-                        "Invalid Indexer ID (" + str(indexer_id) + "), not using metadata file")
+                    sickrage.app.log.debug("Invalid Indexer ID (" + str(indexer_id) + "), not using metadata file")
                     return empty_return
             else:
-                sickrage.app.log.debug(
-                    "Empty <id> or <tvdbid> field in NFO, unable to find a ID, not using metadata file")
+                sickrage.app.log.debug("Empty <id> or <tvdbid> field in NFO, unable to find a ID, not using metadata file")
                 return empty_return
 
             if showXML.findtext('tvdbid') is not None:
@@ -773,13 +763,11 @@ class GenericMetadata(object):
             if epg_url_text:
                 epg_url = epg_url_text.lower()
                 if str(indexer_id) in epg_url and 'tvrage' in epg_url:
-                    sickrage.app.log.warning("Invalid Indexer ID (" + str(
-                        indexer_id) + "), not using metadata file because it has TVRage info")
+                    sickrage.app.log.warning("Invalid Indexer ID (" + str(indexer_id) + "), not using metadata file because it has TVRage info")
                     return empty_return
 
         except Exception as e:
-            sickrage.app.log.warning(
-                "There was an error parsing your existing metadata file: '" + metadata_path + "' error: {}".format(e))
+            sickrage.app.log.warning("There was an error parsing your existing metadata file: '" + metadata_path + "' error: {}".format(e))
             return empty_return
 
         return indexer_id, name, indexer
@@ -846,9 +834,9 @@ class GenericMetadata(object):
         sickrage.app.log.debug("Fetching image from " + url)
 
         try:
-            return WebSession().get(url).content
+            return WebSession().get(url, verify=False).content
         except Exception:
-            sickrage.app.log.warning("There was an error trying to retrieve the image, aborting")
+            sickrage.app.log.debug("There was an error trying to retrieve the image, aborting")
 
 
 class MetadataProviders(dict):
