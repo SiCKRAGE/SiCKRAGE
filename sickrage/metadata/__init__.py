@@ -627,8 +627,8 @@ class GenericMetadata(object):
 
         image_types = {
             '{}'.format(image_type): {
-                'indexer': lambda: t.images(show_obj.indexer_id, key_type=image_type.strip('_thumb'))[which][('filename', 'thumbnail')[image_thumb]],
-                'fanart': lambda: self._retrieve_show_images_from_fanart(show_obj, image_type.strip('_thumb'), image_thumb)
+                'indexer': lambda: t.images(show_obj.indexer_id, key_type=image_type.replace('_thumb', ''))[which][('filename', 'thumbnail')[image_thumb]],
+                'fanart': lambda: self._retrieve_show_images_from_fanart(show_obj, image_type.replace('_thumb', ''), image_thumb)
             }
         }
 
