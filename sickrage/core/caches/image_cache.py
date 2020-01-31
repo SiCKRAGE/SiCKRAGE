@@ -39,9 +39,9 @@ class ImageCache(object):
     FANART_THUMB = 6
 
     IMAGE_TYPES = {
-        BANNER: 'banner',
+        BANNER: 'series',
         POSTER: 'poster',
-        BANNER_THUMB: 'banner_thumb',
+        BANNER_THUMB: 'series_thumb',
         POSTER_THUMB: 'poster_thumb',
         FANART: 'fanart',
         FANART_THUMB: 'fanart_thumb'
