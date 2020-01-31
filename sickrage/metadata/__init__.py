@@ -625,24 +625,42 @@ class GenericMetadata(object):
             sickrage.app.log.warning("Invalid image type " + str(image_type) + ", couldn't find it in the " + IndexerApi(show_obj.indexer).name + " object")
             return
 
-        if image_type == 'poster_thumb':
-            try:
-                image_url = t.images(show_obj.indexer_id, key_type='poster')[which]['thumbnail']
-            except (KeyError, IndexError):
-                image_url = self._retrieve_show_images_from_fanart(show_obj, image_type, True)
-        elif image_type == 'series_thumb':
-            try:
-                image_url = t.images(show_obj.indexer_id, key_type='series')[which]['thumbnail']
-            except (KeyError, IndexError):
-                image_url = self._retrieve_show_images_from_fanart(show_obj, image_type, True)
-        else:
-            try:
-                image_url = t.images(show_obj.indexer_id, key_type=image_type)[which]['filename']
-            except (KeyError, IndexError):
-                image_url = self._retrieve_show_images_from_fanart(show_obj, image_type)
+        image_types = {
+            'poster_thumb': {
+                'indexer': lambda: t.images(show_obj.indexer_id, key_type='poster')[which]['thumbnail'],
+                'fanart': lambda: self._retrieve_show_images_from_fanart(show_obj, image_type, True)
+            },
+            'series_thumb': {
+                'indexer': lambda: t.images(show_obj.indexer_id, key_type='series')[which]['thumbnail'],
+                'fanart': lambda: self._retrieve_show_images_from_fanart(show_obj, image_type, True)
+            },
+            'fanart_thumb': {
+                'indexer': lambda: t.images(show_obj.indexer_id, key_type='fanart')[which]['thumbnail'],
+                'fanart': lambda: self._retrieve_show_images_from_fanart(show_obj, image_type, True)
+            },
+            'poster': {
+                'indexer': lambda: t.images(show_obj.indexer_id, key_type='poster')[which]['filename'],
+                'fanart': lambda: self._retrieve_show_images_from_fanart(show_obj, image_type)
+            },
+            'series': {
+                'indexer': lambda: t.images(show_obj.indexer_id, key_type='series')[which]['filename'],
+                'fanart': lambda: self._retrieve_show_images_from_fanart(show_obj, image_type)
+            },
+            'fanart': {
+                'indexer': lambda: t.images(show_obj.indexer_id, key_type='fanart')[which]['filename'],
+                'fanart': lambda: self._retrieve_show_images_from_fanart(show_obj, image_type)
+            }
+        }
 
-        if image_url:
-            image_data = self.get_show_image(image_url)
+        for func in ['indexer', 'fanart']:
+            try:
+                image_url = image_types[image_type][func]()
+                if image_url:
+                    image_data = self.get_show_image(image_url)
+                    if image_data:
+                        break
+            except (KeyError, IndexError):
+                pass
 
         return image_data
 
