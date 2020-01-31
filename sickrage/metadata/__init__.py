@@ -589,7 +589,7 @@ class GenericMetadata(object):
 
         return True
 
-    def _retrieve_show_image(self, image_type, image_thumb, show_obj, which=0):
+    def _retrieve_show_image(self, image_type, show_obj, which=0):
         """
         Gets an image URL from theTVDB.com and fanart.tv, downloads it and returns the data.
 
@@ -625,10 +625,11 @@ class GenericMetadata(object):
             sickrage.app.log.debug("Indexer " + IndexerApi(show_obj.indexer).name + " maybe experiencing some problems. Try again later")
             return None
 
+        is_image_thumb = '_thumb' in image_type
         image_types = {
             '{}'.format(image_type): {
-                'indexer': lambda: t.images(show_obj.indexer_id, key_type=image_type.replace('_thumb', ''))[which][('filename', 'thumbnail')[image_thumb]],
-                'fanart': lambda: self._retrieve_show_images_from_fanart(show_obj, image_type.replace('_thumb', ''), image_thumb)
+                'indexer': lambda: t.images(show_obj.indexer_id, key_type=image_type.replace('_thumb', ''))[which][('filename', 'thumbnail')[is_image_thumb]],
+                'fanart': lambda: self._retrieve_show_images_from_fanart(show_obj, image_type.replace('_thumb', ''), is_image_thumb)
             }
         }
 

@@ -247,22 +247,16 @@ class ImageCache(object):
 
         # generate the path based on the type & indexer_id
         if img_type == self.POSTER:
-            img_thumb = False
             dest_path = self.poster_path(show_obj.indexer_id)
         elif img_type == self.BANNER:
-            img_thumb = False
             dest_path = self.banner_path(show_obj.indexer_id)
         elif img_type == self.FANART:
-            img_thumb = False
             dest_path = self.fanart_path(show_obj.indexer_id)
         elif img_type == self.POSTER_THUMB:
-            img_thumb = True
             dest_path = self.poster_thumb_path(show_obj.indexer_id)
         elif img_type == self.BANNER_THUMB:
-            img_thumb = True
             dest_path = self.banner_thumb_path(show_obj.indexer_id)
         elif img_type == self.FANART_THUMB:
-            img_thumb = True
             dest_path = self.fanart_thumb_path(show_obj.indexer_id)
         else:
             sickrage.app.log.error("Invalid cache image type: {}".format(img_type))
@@ -270,7 +264,7 @@ class ImageCache(object):
 
         # retrieve the image from indexer using the generic metadata class
         metadata_generator = GenericMetadata()
-        img_data = metadata_generator._retrieve_show_image(self.IMAGE_TYPES[img_type], img_thumb, show_obj)
+        img_data = metadata_generator._retrieve_show_image(self.IMAGE_TYPES[img_type], show_obj)
         result = metadata_generator._write_image(img_data, dest_path, force)
 
         return result
