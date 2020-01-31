@@ -29,8 +29,6 @@ from tornado.httputil import url_concat
 from tornado.web import authenticated
 
 import sickrage
-from sickrage.core import AccountAPI
-from sickrage.core.api import API
 from sickrage.core.helpers import remove_article
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
@@ -228,14 +226,14 @@ class UnlinkHandler(BaseHandler, ABC):
         if not sickrage.app.config.sub_id == self.get_current_user().get('sub'):
             return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
-        AccountAPI().unregister_app_id(sickrage.app.config.app_id)
+        sickrage.app.api.account.unregister_app_id(sickrage.app.config.app_id)
 
         sickrage.app.config.app_id = ""
         sickrage.app.config.sub_id = ""
         sickrage.app.config.save()
 
-        API().logout()
-        del API().token
+        sickrage.app.api.logout()
+        del sickrage.app.api.token
 
         return self.redirect('/logout/')
 

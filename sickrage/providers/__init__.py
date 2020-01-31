@@ -42,8 +42,6 @@ from requests.utils import add_dict_to_cookiejar, dict_from_cookiejar
 
 import sickrage
 from sickrage.core.api import APIError
-from sickrage.core.api.cache import TorrentCacheAPI
-from sickrage.core.api.provider import ProviderAPI
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.classes import NZBSearchResult, SearchResult, TorrentSearchResult
 from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT, cpu_presets
@@ -108,7 +106,7 @@ class GenericProvider(object):
     @property
     def urls(self):
         try:
-            resp = ProviderAPI().get_urls(self.id)
+            resp = sickrage.app.api.provider.get_urls(self.id)
             if resp and 'data' in resp:
                 return json.loads(resp['data']['urls'])
         except (JSONDecodeError, APIError) as e:
@@ -623,10 +621,10 @@ class TorrentProvider(GenericProvider):
             if info_hash:
                 try:
                     # get content from external API
-                    result = verify_torrent(TorrentCacheAPI().get(info_hash))
+                    result = verify_torrent(sickrage.app.api.torrent_cache.get(info_hash))
                 except APIError as e:
                     # add torrent to external API
-                    TorrentCacheAPI().add(url)
+                    sickrage.app.api.torrent_cache.add(url)
 
                     # get content from other torrent hash search engines
                     for torrent_url in [x.format(info_hash=info_hash) for x in self.bt_cache_urls]:

@@ -22,8 +22,6 @@ import json
 from abc import ABC
 
 import sickrage
-from sickrage.core import AccountAPI
-from sickrage.core.api import API
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
@@ -49,23 +47,23 @@ class LoginHandler(BaseHandler, ABC):
                     sickrage.app.config.save()
 
                 if sickrage.app.config.sub_id != decoded_token.get('sub'):
-                    if API().token:
-                        allowed_usernames = API().allowed_usernames()['data']
+                    if sickrage.app.api.token:
+                        allowed_usernames = sickrage.app.api.allowed_usernames()['data']
                         if not decoded_token['preferred_username'] in allowed_usernames:
                             sickrage.app.log.debug("USERNAME:{} IP:{} - WEB-UI ACCESS DENIED".format(decoded_token['preferred_username'], self.request.remote_ip))
                             return self.redirect('/logout')
                     else:
                         return self.redirect('/logout')
                 else:
-                    if API().token:
-                        API().logout()
-                    API().token = token
+                    if sickrage.app.api.token:
+                        sickrage.app.api.logout()
+                    sickrage.app.api.token = token
             except Exception as e:
                 sickrage.app.log.debug('{!r}'.format(e))
                 return self.redirect('/logout')
 
             if not sickrage.app.config.app_id:
-                sickrage.app.config.app_id = AccountAPI().register_app_id()
+                sickrage.app.config.app_id = sickrage.app.api.account.register_app_id()
                 sickrage.app.config.save()
 
             redirect_uri = self.get_argument('next', "/{}/".format(sickrage.app.config.default_page))

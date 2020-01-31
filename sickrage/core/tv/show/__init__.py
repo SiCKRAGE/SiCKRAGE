@@ -35,7 +35,6 @@ from unidecode import unidecode
 
 import sickrage
 from sickrage.core.api import APIError
-from sickrage.core.api.imdb import IMDbAPI
 from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.caches.image_cache import ImageCache
 from sickrage.core.common import Quality, SKIPPED, WANTED, UNKNOWN, DOWNLOADED, IGNORED, SNATCHED, SNATCHED_PROPER, \
@@ -472,7 +471,7 @@ class TVShow(MainDBBase):
 
         if not self.imdb_id:
             try:
-                resp = IMDbAPI().search_by_imdb_title(self.name)
+                resp = sickrage.app.api.imdb.search_by_imdb_title(self.name)
             except APIError as e:
                 sickrage.app.log.error('{!r}'.format(e))
                 resp = {}
@@ -490,7 +489,7 @@ class TVShow(MainDBBase):
             sickrage.app.log.debug(str(self.indexer_id) + ": Obtaining IMDb info")
 
             try:
-                imdb_info = IMDbAPI().search_by_imdb_id(self.imdb_id)
+                imdb_info = sickrage.app.api.imdb.search_by_imdb_id(self.imdb_id)
             except APIError as e:
                 imdb_info = None
                 sickrage.app.log.error('{!r}'.format(e))

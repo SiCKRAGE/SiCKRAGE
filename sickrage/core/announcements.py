@@ -24,7 +24,6 @@ from sqlalchemy import orm
 
 import sickrage
 from sickrage.core.api import APIError
-from sickrage.core.api.announcements import AnnouncementsAPI
 from sickrage.core.databases.cache import CacheDB
 
 
@@ -73,7 +72,7 @@ class Announcements(object):
         threading.currentThread().setName(self.name)
 
         try:
-            resp = AnnouncementsAPI().get_announcements()
+            resp = sickrage.app.api.get_announcements()
             if resp and 'data' in resp:
                 for announcement in resp['data']:
                     if announcement['enabled']:

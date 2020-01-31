@@ -2,8 +2,6 @@
 <%!
     import requests
     import sickrage
-
-    from sickrage.core.api.provider import ProviderAPI
 %>
 <%block name="content">
     <div class="row">
@@ -29,7 +27,7 @@
                                         try:
                                             online = True
                                             if 'localhost' not in providerURL:
-                                                online = bool(ProviderAPI().get_status(providerID)['data']['status'])
+                                                online = bool(sickrage.app.api.provider.get_status(providerID)['data']['status'])
                                         except Exception:
                                             online = False
                                     %>

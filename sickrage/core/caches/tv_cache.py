@@ -29,7 +29,6 @@ from sqlalchemy import orm
 from sqlalchemy.exc import IntegrityError
 
 import sickrage
-from sickrage.core.api.cache import ProviderCacheAPI
 from sickrage.core.common import Quality
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.exceptions import AuthException
@@ -248,7 +247,7 @@ class TVCache(object):
                     # add to external provider cache database
                     if sickrage.app.config.enable_api_providers_cache and not self.provider.private:
                         try:
-                            sickrage.app.io_loop.run_in_executor(None, functools.partial(ProviderCacheAPI().add, data=dbData))
+                            sickrage.app.io_loop.run_in_executor(None, functools.partial(sickrage.app.api.provider_cache.add, data=dbData))
                         except Exception as e:
                             pass
         except (InvalidShowException, InvalidNameException):
@@ -262,7 +261,7 @@ class TVCache(object):
         # get data from external database
         if sickrage.app.config.enable_api_providers_cache and not self.provider.private:
             try:
-                dbData += ProviderCacheAPI().get(self.providerID, show_id, season, episode)['data']
+                dbData += sickrage.app.api.provider_cache.get(self.providerID, show_id, season, episode)['data']
             except Exception:
                 pass
 

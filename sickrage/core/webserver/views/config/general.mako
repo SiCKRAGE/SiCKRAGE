@@ -14,7 +14,6 @@ c<%inherit file="../layouts/config.mako"/>
     from sickrage.core.helpers import anon_url
     from sickrage.indexers import IndexerApi
     from sickrage.metadata import GenericMetadata
-    from sickrage.core.api.google import GoogleDriveAPI
 %>
 <%block name="menus">
     <li class="nav-item px-1"><a class="nav-link" data-toggle="tab" href="#misc">${_('Misc')}</a></li>
@@ -57,7 +56,7 @@ c<%inherit file="../layouts/config.mako"/>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                     % try:
-                        % if GoogleDriveAPI().is_connected()['success']:
+                        % if sickrage.app.api.google.is_connected()['success']:
                             <div class="form-row">
                                 <div class="col-md-12">
                                     <span class="badge badge-success">CONNECTED</span>

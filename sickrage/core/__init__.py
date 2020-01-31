@@ -44,7 +44,6 @@ from tornado.ioloop import IOLoop
 import sickrage
 from sickrage.core.announcements import Announcements
 from sickrage.core.api import API
-from sickrage.core.api.account import AccountAPI
 from sickrage.core.caches.name_cache import NameCache
 from sickrage.core.caches.quicksearch_cache import QuicksearchCache
 from sickrage.core.common import SD, SKIPPED, WANTED
@@ -169,6 +168,7 @@ class Core(object):
         self.oidc_client = None
         self.quicksearch_cache = None
         self.announcements = None
+        self.api = None
 
     def start(self):
         self.started = True
@@ -206,6 +206,7 @@ class Core(object):
         self.upnp_client = UPNPClient()
         self.quicksearch_cache = QuicksearchCache()
         self.announcements = Announcements()
+        self.api = API()
 
         # setup oidc client
         realm = KeycloakRealm(server_url='https://auth.sickrage.ca', realm_name='sickrage')
