@@ -178,6 +178,7 @@ class Core(object):
         threading.currentThread().setName('CORE')
 
         # init core classes
+        self.api = API()
         self.main_db = MainDB(self.db_type, self.db_prefix, self.db_host, self.db_port, self.db_username, self.db_password)
         self.cache_db = CacheDB(self.db_type, self.db_prefix, self.db_host, self.db_port, self.db_username, self.db_password)
         self.notifier_providers = NotifierProviders()
@@ -206,7 +207,6 @@ class Core(object):
         self.upnp_client = UPNPClient()
         self.quicksearch_cache = QuicksearchCache()
         self.announcements = Announcements()
-        self.api = API()
 
         # setup oidc client
         realm = KeycloakRealm(server_url='https://auth.sickrage.ca', realm_name='sickrage')

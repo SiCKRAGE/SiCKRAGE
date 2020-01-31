@@ -20,16 +20,35 @@ class API(object):
         self.api_version = 'v3'
         self.client_id = sickrage.app.oidc_client_id
         self.client_secret = sickrage.app.oidc_client_secret
-
-        self.imdb = self.IMDbAPI(self)
-        self.account = self.AccountAPI(self)
-        self.provider = self.ProviderAPI(self)
-        self.google = self.GoogleDriveAPI(self)
-        self.announcement = self.AnnouncementsAPI(self)
-        self.torrent_cache = self.TorrentCacheAPI(self)
-        self.provider_cache = self.ProviderCacheAPI(self)
-
         self._session = None
+
+    @property
+    def imdb(self):
+        return self.IMDbAPI(self)
+
+    @property
+    def account(self):
+        return self.AccountAPI(self)
+
+    @property
+    def provider(self):
+        return self.ProviderAPI(self)
+
+    @property
+    def announcement(self):
+        return self.AnnouncementsAPI(self)
+
+    @property
+    def google(self):
+        return self.GoogleDriveAPI(self)
+
+    @property
+    def torrent_cache(self):
+        return self.TorrentCacheAPI(self)
+
+    @property
+    def provider_cache(self):
+        return self.ProviderCacheAPI(self)
 
     @property
     def session(self):
@@ -38,11 +57,8 @@ class API(object):
             'client_secret': self.client_secret
         }
 
-        def token_updater(value):
-            self.token = value
-
         if not self._session:
-            self._session = OAuth2Session(token=self.token, auto_refresh_kwargs=extra, auto_refresh_url=self.token_url, token_updater=token_updater)
+            self._session = OAuth2Session(token=self.token, auto_refresh_kwargs=extra, auto_refresh_url=self.token_url, token_updater=self.token_updater)
 
         return self._session
 
@@ -72,6 +88,8 @@ class API(object):
         except orm.exc.NoResultFound:
             session.add(CacheDB.OAuth2Token(**new_token))
 
+        self._session = None
+
     @token.deleter
     @CacheDB.with_session
     def token(self, session=None):
@@ -92,6 +110,9 @@ class API(object):
     def userinfo(self):
         return self.request('GET', 'userinfo')
 
+    def token_updater(self, value):
+        self.token = value
+
     def logout(self):
         sickrage.app.oidc_client.logout(self.token.get('refresh_token'))
 
@@ -106,6 +127,7 @@ class API(object):
     def exchange_token(self, token, scope='offline_access'):
         exchange = {'scope': scope, 'subject_token': token['access_token']}
         self.token = sickrage.app.oidc_client.token_exchange(**exchange)
+
 
     def allowed_usernames(self):
         return self.request('GET', 'allowed-usernames')
@@ -137,7 +159,7 @@ class API(object):
                     return resp.content
             except TokenExpiredError:
                 self.refresh_token()
-            except (InvalidClientIdError, MissingTokenError, InvalidGrantError):
+            except (InvalidClientIdError, MissingTokenError, InvalidGrantError) as e:
                 latest_exception = "Invalid token error, please re-authenticate by logging out then logging back in from web-ui"
                 break
             except requests.exceptions.ReadTimeout:
