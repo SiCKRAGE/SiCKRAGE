@@ -589,7 +589,7 @@ class GenericMetadata(object):
 
         return True
 
-    def _retrieve_show_image(self, image_type, show_obj, which=0):
+    def _retrieve_show_image(self, image_type, image_thumb, show_obj, which=0):
         """
         Gets an image URL from theTVDB.com and fanart.tv, downloads it and returns the data.
 
@@ -602,6 +602,10 @@ class GenericMetadata(object):
 
         image_data = None
         indexer_lang = show_obj.lang or sickrage.app.config.indexer_default_language
+
+        if image_type not in ('fanart', 'poster', 'series', 'poster_thumb', 'series_thumb', 'fanart_thumb'):
+            sickrage.app.log.warning("Invalid image type " + str(image_type) + ", couldn't find it in the " + IndexerApi(show_obj.indexer).name + " object")
+            return
 
         try:
             # There's gotta be a better way of doing this but we don't wanna
@@ -621,40 +625,16 @@ class GenericMetadata(object):
             sickrage.app.log.debug("Indexer " + IndexerApi(show_obj.indexer).name + " maybe experiencing some problems. Try again later")
             return None
 
-        if image_type not in ('fanart', 'poster', 'series', 'poster_thumb', 'series_thumb'):
-            sickrage.app.log.warning("Invalid image type " + str(image_type) + ", couldn't find it in the " + IndexerApi(show_obj.indexer).name + " object")
-            return
-
         image_types = {
-            'poster_thumb': {
-                'indexer': lambda: t.images(show_obj.indexer_id, key_type='poster')[which]['thumbnail'],
-                'fanart': lambda: self._retrieve_show_images_from_fanart(show_obj, image_type, True)
-            },
-            'series_thumb': {
-                'indexer': lambda: t.images(show_obj.indexer_id, key_type='series')[which]['thumbnail'],
-                'fanart': lambda: self._retrieve_show_images_from_fanart(show_obj, image_type, True)
-            },
-            'fanart_thumb': {
-                'indexer': lambda: t.images(show_obj.indexer_id, key_type='fanart')[which]['thumbnail'],
-                'fanart': lambda: self._retrieve_show_images_from_fanart(show_obj, image_type, True)
-            },
-            'poster': {
-                'indexer': lambda: t.images(show_obj.indexer_id, key_type='poster')[which]['filename'],
-                'fanart': lambda: self._retrieve_show_images_from_fanart(show_obj, image_type)
-            },
-            'series': {
-                'indexer': lambda: t.images(show_obj.indexer_id, key_type='series')[which]['filename'],
-                'fanart': lambda: self._retrieve_show_images_from_fanart(show_obj, image_type)
-            },
-            'fanart': {
-                'indexer': lambda: t.images(show_obj.indexer_id, key_type='fanart')[which]['filename'],
-                'fanart': lambda: self._retrieve_show_images_from_fanart(show_obj, image_type)
+            '{}'.format(image_type): {
+                'indexer': lambda: t.images(show_obj.indexer_id, key_type=image_type.strip('_thumb'))[which][('filename', 'thumbnail')[image_thumb]],
+                'fanart': lambda: self._retrieve_show_images_from_fanart(show_obj, image_type.strip('_thumb'), image_thumb)
             }
         }
 
-        for func in ['indexer', 'fanart']:
+        for fname in ['indexer', 'fanart']:
             try:
-                image_url = image_types[image_type][func]()
+                image_url = image_types[image_type][fname]()
                 if image_url:
                     image_data = self.get_show_image(image_url)
                     if image_data:
@@ -795,8 +775,6 @@ class GenericMetadata(object):
         types = {
             'poster': fanart.TYPE.TV.POSTER,
             'series': fanart.TYPE.TV.BANNER,
-            'poster_thumb': fanart.TYPE.TV.POSTER,
-            'series_thumb': fanart.TYPE.TV.BANNER,
             'fanart': fanart.TYPE.TV.BACKGROUND,
         }
 
