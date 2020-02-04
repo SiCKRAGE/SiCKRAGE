@@ -77,33 +77,34 @@ class ContextSession(sqlalchemy.orm.Session):
         self.max_attempts = 50
 
     def safe_commit(self, close=False):
-        with self._lock:
-            for i in range(self.max_attempts):
-                try:
-                    self.commit()
-                except OperationalError as e:
-                    self.rollback()
+        for i in range(self.max_attempts):
+            try:
+                self.commit()
+            except OperationalError as e:
+                self.rollback()
 
-                    if 'database is locked' not in str(e):
-                        raise
-
-                    timer = random.randint(10, 30)
-                    sickrage.app.log.debug('Retrying database commit in {}s, attempt {}'.format(timer, i))
-                    sleep(timer)
-                except Exception as e:
-                    self.rollback()
+                if 'database is locked' not in str(e):
                     raise
-                else:
-                    break
-                finally:
-                    if close:
-                        self.close()
+
+                timer = random.randint(10, 30)
+                sickrage.app.log.debug('Retrying database commit in {}s, attempt {}'.format(timer, i))
+                sleep(timer)
+            except Exception as e:
+                self.rollback()
+                raise
+            else:
+                break
+            finally:
+                if close:
+                    self.close()
 
     def __enter__(self):
+        self._lock.acquire()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.safe_commit(close=True)
+        self._lock.release()
 
 
 class SRDatabaseBase(object):
