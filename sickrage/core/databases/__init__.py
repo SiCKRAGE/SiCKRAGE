@@ -73,10 +73,10 @@ class ContextSession(sqlalchemy.orm.Session):
 
     def __init__(self, *args, **kwargs):
         super(ContextSession, self).__init__(*args, **kwargs)
-        self._lock = threading.Lock()
+        self._lock = threading.RLock()
         self.max_attempts = 50
 
-    def safe_commit(self):
+    def safe_commit(self, close=False):
         with self._lock:
             for i in range(self.max_attempts):
                 try:
@@ -96,13 +96,14 @@ class ContextSession(sqlalchemy.orm.Session):
                 else:
                     break
                 finally:
-                    self.close()
+                    if close:
+                        self.close()
 
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.safe_commit()
+        self.safe_commit(close=True)
 
 
 class SRDatabaseBase(object):
@@ -119,7 +120,8 @@ class SRDatabaseBase(object):
 class SRDatabase(object):
     session = sessionmaker(class_=ContextSession)
 
-    def __init__(self, name, db_version=0, db_type='sqlite', db_prefix='sickrage', db_host='localhost', db_port='3306', db_username='sickrage', db_password='sickrage'):
+    def __init__(self, name, db_version=0, db_type='sqlite', db_prefix='sickrage', db_host='localhost', db_port='3306', db_username='sickrage',
+                 db_password='sickrage'):
         self.name = name
         self.db_version = db_version
         self.db_type = db_type
