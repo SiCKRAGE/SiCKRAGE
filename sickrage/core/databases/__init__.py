@@ -19,8 +19,10 @@ import datetime
 import functools
 import os
 import pickle
+import random
 import shutil
 import sqlite3
+import threading
 from collections import OrderedDict
 from time import sleep
 
@@ -71,30 +73,37 @@ class ContextSession(sqlalchemy.orm.Session):
 
     def __init__(self, *args, **kwargs):
         super(ContextSession, self).__init__(*args, **kwargs)
-        self.max_attempts = 5
+        self._lock = threading.RLock()
+        self.max_attempts = 50
 
-    def safe_commit(self, close=False):
+    def safe_commit(self):
         for i in range(self.max_attempts):
             try:
                 self.commit()
             except OperationalError as e:
-                sickrage.app.log.debug('Retrying database commit, attempt {}'.format(i))
+                if 'database is locked' in str(e):
+                    timer = random.randint(10, 30)
+                    sickrage.app.log.debug('Retrying database commit in {}s, attempt {}'.format(timer, i))
+                    sleep(timer)
+                    continue
+
                 self.rollback()
-                sleep(1)
+                raise
             except Exception as e:
                 self.rollback()
                 raise
             else:
                 break
             finally:
-                if close:
-                    self.close()
+                self.close()
 
     def __enter__(self):
+        self._lock.acquire()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.safe_commit(close=True)
+        self.safe_commit()
+        self._lock.release()
 
 
 class SRDatabaseBase(object):
@@ -162,7 +171,7 @@ class SRDatabase(object):
     def engine(self):
         if self.db_type == 'sqlite':
             return create_engine('sqlite:///{}'.format(self.db_path), echo=False, pool_size=1000, poolclass=QueuePool,
-                                 connect_args={'check_same_thread': False, 'timeout': 20})
+                                 connect_args={'check_same_thread': False, 'timeout': 30})
         elif self.db_type == 'mysql':
             mysql_engine = create_engine('mysql+pymysql://{}:{}@{}:{}/'.format(self.db_username, self.db_password, self.db_host, self.db_port), echo=False)
             mysql_engine.execute("CREATE DATABASE IF NOT EXISTS {}_{}".format(self.db_prefix, self.name))

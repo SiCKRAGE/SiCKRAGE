@@ -80,9 +80,6 @@ class ShowQueue(SRQueue):
         if self.is_being_updated(indexer_id):
             raise CantUpdateShowException("{} is already being updated, can't update again until it's done.".format(show_obj.name))
 
-        if self.is_being_updated(indexer_id):
-            raise CantUpdateShowException("{} is in the process of being updated, can't update again until it's done.".format(show_obj.name))
-
         if force:
             sickrage.app.io_loop.add_callback(self.put, QueueItemForceUpdate(indexer_id, indexer_update_only))
         else:
