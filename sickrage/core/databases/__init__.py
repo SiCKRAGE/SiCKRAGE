@@ -81,14 +81,14 @@ class ContextSession(sqlalchemy.orm.Session):
             try:
                 self.commit()
             except OperationalError as e:
-                if 'database is locked' in str(e):
-                    timer = random.randint(10, 30)
-                    sickrage.app.log.debug('Retrying database commit in {}s, attempt {}'.format(timer, i))
-                    sleep(timer)
-                    continue
-
                 self.rollback()
-                raise
+
+                if 'database is locked' not in str(e):
+                    raise
+
+                timer = random.randint(10, 30)
+                sickrage.app.log.debug('Retrying database commit in {}s, attempt {}'.format(timer, i))
+                sleep(timer)
             except Exception as e:
                 self.rollback()
                 raise
