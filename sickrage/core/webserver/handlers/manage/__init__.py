@@ -294,7 +294,7 @@ def edit_show(show, any_qualities, best_qualities, exceptions_list, location=Non
 
     if do_update_scene_numbering:
         try:
-            xem_refresh(show_obj.indexer_id, show_obj.indexer, True)
+            xem_refresh(show_obj.indexer_id, show_obj.indexer, True, session=session)
         except CantUpdateShowException:
             warnings.append(_("Unable to force an update on scene numbering of the show."))
 
@@ -558,7 +558,7 @@ class BacklogShowHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         indexer_id = self.get_argument('indexer_id')
 
-        sickrage.app.backlog_searcher.search_backlog(int(indexer_id))
+        sickrage.app.backlog_searcher.search_backlog(int(indexer_id), session=self.db_session)
 
         return self.redirect("/manage/backlogOverview/")
 

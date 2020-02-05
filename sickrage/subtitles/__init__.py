@@ -168,7 +168,7 @@ class Subtitles(object):
         if sickrage.app.config.subtitles_history:
             for subtitle in found_subtitles:
                 sickrage.app.log.debug('history.logSubtitle %s, %s' % (subtitle.provider_name, subtitle.language.opensubtitles))
-                History.log_subtitle(show_id, season, episode, episode_object.status, subtitle)
+                History.log_subtitle(show_id, season, episode, episode_object.status, subtitle, session=session)
 
         return current_subtitles, new_subtitles
 

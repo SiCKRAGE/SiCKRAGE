@@ -250,7 +250,7 @@ def find_xem_numbering(indexer_id, indexer, season, episode, session=None):
     indexer_id = int(indexer_id)
     indexer = int(indexer)
 
-    xem_refresh(indexer_id, indexer)
+    xem_refresh(indexer_id, indexer, session=session)
 
     try:
         dbData = session.query(TVEpisode).filter_by(showid=indexer_id, indexer=indexer, season=season, episode=episode).filter(TVEpisode.scene_season != 0,

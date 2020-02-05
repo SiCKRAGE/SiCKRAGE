@@ -130,7 +130,8 @@ class History:
         }))
 
     @staticmethod
-    def log_snatch(search_result):
+    @MainDB.with_session
+    def log_snatch(search_result, session=None):
         """
         Log history of snatch
 
@@ -148,7 +149,7 @@ class History:
 
             release_group = search_result.release_group
 
-            History._log_history_item(action, search_result.show_id, search_result.season, episode, quality, resource, provider, version, release_group)
+            History._log_history_item(action, search_result.show_id, search_result.season, episode, quality, resource, provider, version, release_group, session=session)
 
     @staticmethod
     @MainDB.with_session
@@ -169,10 +170,11 @@ class History:
         if dbData:
             provider = dbData.provider
 
-        History._log_history_item(status, show_id, season, episode, new_ep_quality, filename, provider, version, release_group)
+        History._log_history_item(status, show_id, season, episode, new_ep_quality, filename, provider, version, release_group, session=session)
 
     @staticmethod
-    def log_subtitle(show_id, season, episode, status, subtitle):
+    @MainDB.with_session
+    def log_subtitle(show_id, season, episode, status, subtitle, session=None):
         """
         Log download of subtitle
 
@@ -188,7 +190,7 @@ class History:
         status, quality = Quality.split_composite_status(status)
         action = Quality.composite_status(SUBTITLED, quality)
 
-        History._log_history_item(action, show_id, season, episode, quality, resource, provider)
+        History._log_history_item(action, show_id, season, episode, quality, resource, provider, session=session)
 
     @staticmethod
     @MainDB.with_session

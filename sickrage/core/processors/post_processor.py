@@ -1063,7 +1063,7 @@ class PostProcessor(object):
         # Just want to keep this consistent for failed handling right now
         release_name = show_names.determine_release_name(self.folder_path, self.nzb_name)
         if release_name is not None:
-            FailedHistory.log_success(release_name)
+            FailedHistory.log_success(release_name, session=session)
         else:
             self._log("Couldn't find release in snatch history", sickrage.app.log.WARNING)
 
@@ -1153,7 +1153,7 @@ class PostProcessor(object):
         session.safe_commit()
 
         # log it to history
-        History.log_download(ep_obj.showid, ep_obj.season, ep_obj.episode, ep_obj.status, self.file_path, new_ep_quality, release_group, new_ep_version)
+        History.log_download(ep_obj.showid, ep_obj.season, ep_obj.episode, ep_obj.status, self.file_path, new_ep_quality, release_group, new_ep_version, session=session)
 
         # If any notification fails, don't stop postProcessor
         try:

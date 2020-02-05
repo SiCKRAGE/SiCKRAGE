@@ -50,7 +50,7 @@ class FailedSnatchSearcher(object):
         threading.currentThread().setName(self.name)
 
         # trim failed download history
-        FailedHistory.trim_history()
+        FailedHistory.trim_history(session=session)
 
         sickrage.app.log.info("Searching for failed snatches")
 

@@ -98,8 +98,8 @@ def snatch_episode(result, end_status=SNATCHED, session=None):
     if not dlResult:
         return False
 
-    FailedHistory.log_snatch(result)
-    History.log_snatch(result)
+    FailedHistory.log_snatch(result, session=session)
+    History.log_snatch(result, session=session)
 
     sickrage.app.alerts.message(_('Episode snatched'), result.name)
 
@@ -192,12 +192,11 @@ def pick_best_result(results, season_pack=False, session=None):
             continue
 
         if not show_names.filter_bad_releases(cur_result.name, parse=False):
-            sickrage.app.log.info(
-                "Ignoring " + cur_result.name + " because its not a valid scene release that we want")
+            sickrage.app.log.info("Ignoring " + cur_result.name + " because its not a valid scene release that we want")
             continue
 
         if hasattr(cur_result, 'size'):
-            if FailedHistory.has_failed(cur_result.name, cur_result.size, cur_result.provider.name):
+            if FailedHistory.has_failed(cur_result.name, cur_result.size, cur_result.provider.name, session=session):
                 sickrage.app.log.info(cur_result.name + " has previously failed, rejecting it")
                 continue
 

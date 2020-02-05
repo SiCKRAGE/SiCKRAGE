@@ -408,7 +408,7 @@ class QueueItemAdd(ShowQueueItem):
 
         # check if show has XEM mapping so we can determine if searches should go by scene numbering or indexer
         # numbering.
-        if not self.scene and get_xem_numbering_for_show(show_obj.indexer_id, show_obj.indexer):
+        if not self.scene and get_xem_numbering_for_show(show_obj.indexer_id, show_obj.indexer, session=session):
             show_obj.scene = 1
             session.safe_commit()
 

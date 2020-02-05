@@ -1475,7 +1475,7 @@ class SetSceneNumberingHandler(BaseHandler, ABC):
             if scene_absolute is not None:
                 scene_absolute = int(scene_absolute)
 
-            set_scene_numbering(show, indexer, absolute_number=for_absolute, sceneAbsolute=scene_absolute)
+            set_scene_numbering(show, indexer, absolute_number=for_absolute, sceneAbsolute=scene_absolute, session=self.db_session)
         else:
             sickrage.app.log.debug("setEpisodeSceneNumbering for %s from %sx%s to %sx%s" % (show, for_season, for_episode, scene_season, scene_episode))
 
@@ -1488,16 +1488,16 @@ class SetSceneNumberingHandler(BaseHandler, ABC):
             if scene_episode is not None:
                 scene_episode = int(scene_episode)
 
-            set_scene_numbering(show, indexer, season=for_season, episode=for_episode, sceneSeason=scene_season, sceneEpisode=scene_episode)
+            set_scene_numbering(show, indexer, season=for_season, episode=for_episode, sceneSeason=scene_season, sceneEpisode=scene_episode, session=self.db_session)
 
         if show_obj.is_anime:
-            sn = get_scene_absolute_numbering(show, indexer, for_absolute)
+            sn = get_scene_absolute_numbering(show, indexer, for_absolute, session=self.db_session)
             if sn:
                 result['sceneAbsolute'] = sn
             else:
                 result['sceneAbsolute'] = None
         else:
-            sn = get_scene_numbering(show, indexer, for_season, for_episode)
+            sn = get_scene_numbering(show, indexer, for_season, for_episode, session=self.db_session)
             if sn:
                 (result['sceneSeason'], result['sceneEpisode']) = sn
             else:

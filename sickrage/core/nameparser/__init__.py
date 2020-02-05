@@ -308,7 +308,7 @@ class NameParser(object):
                         (s, e) = get_indexer_numbering(show_obj.indexer_id,
                                                        show_obj.indexer,
                                                        season_number,
-                                                       epNo)
+                                                       epNo, session=session)
                     new_episode_numbers.append(e)
                     new_season_numbers.append(s)
 
@@ -320,7 +320,7 @@ class NameParser(object):
                         scene_season = scene_exceptions.get_scene_exception_by_name(best_result.series_name)[1]
                         a = get_indexer_absolute_numbering(show_obj.indexer_id,
                                                            show_obj.indexer, epAbsNo,
-                                                           True, scene_season)
+                                                           True, scene_season, session=session)
 
                     (s, e) = show_obj.get_all_episodes_from_absolute_number([a])
 
@@ -337,9 +337,9 @@ class NameParser(object):
                         (s, e) = get_indexer_numbering(show_obj.indexer_id,
                                                        show_obj.indexer,
                                                        best_result.season_number,
-                                                       epNo)
+                                                       epNo, session=session)
                     if show_obj.is_anime:
-                        a = get_absolute_number_from_season_and_episode(show_obj.indexer_id, s, e)
+                        a = get_absolute_number_from_season_and_episode(show_obj.indexer_id, s, e, session=session)
                         if a:
                             new_absolute_numbers.append(a)
 
