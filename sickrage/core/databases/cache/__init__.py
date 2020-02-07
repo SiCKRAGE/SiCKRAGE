@@ -42,12 +42,14 @@ class CacheDB(SRDatabase):
         def remove_duplicates_from_last_search_table():
             found = []
 
-            with self.session() as session:
-                for x in session.query(CacheDB.LastSearch).all():
-                    if x.provider in found:
-                        x.delete()
-                    else:
-                        found.append(x.provider)
+            session = self.session()
+
+            for x in session.query(CacheDB.LastSearch).all():
+                if x.provider in found:
+                    x.delete()
+                    session.commit()
+                else:
+                    found.append(x.provider)
 
         remove_duplicates_from_last_search_table()
 

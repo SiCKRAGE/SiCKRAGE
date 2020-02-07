@@ -22,7 +22,6 @@ import re
 from xml.etree import ElementTree
 
 import sickrage
-from sickrage.core.databases.main import MainDB
 from sickrage.core.classes import NZBDataSearchResult
 from sickrage.core.common import Quality
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
@@ -116,8 +115,7 @@ def stripNS(element, ns):
     return element
 
 
-@MainDB.with_session
-def split_nzb_result(result, session=None):
+def split_nzb_result(result):
     """
     Split result into separate episodes
 
@@ -168,7 +166,7 @@ def split_nzb_result(result, session=None):
 
         want_ep = True
         for epNo in parse_result.episode_numbers:
-            show_object = find_show(parse_result.indexer_id, session=session)
+            show_object = find_show(parse_result.indexer_id)
             if not show_object.want_episode(parse_result.season_number, epNo, result.quality):
                 sickrage.app.log.info("Ignoring result {} because we don't want an episode that is {}".format(newNZB, Quality.qualityStrings[result.quality]))
                 want_ep = False

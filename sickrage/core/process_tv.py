@@ -37,7 +37,6 @@ from sickrage.core.helpers import is_media_file, is_rar_file, is_hidden_folder, 
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
 from sickrage.core.processors import failed_processor, post_processor
-from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import get_show_list
 
 
@@ -455,8 +454,7 @@ class ProcessResult(object):
 
         return unpacked_dirs
 
-    @MainDB.with_session
-    def already_postprocessed(self, dirName, videofile, force, session=None):
+    def already_postprocessed(self, dirName, videofile, force):
         """
         Check if we already post processed a file
 
@@ -468,8 +466,10 @@ class ProcessResult(object):
         if force:
             return False
 
+        session = sickrage.app.main_db.session()
+
         # Avoid processing the same dir again if we use a process method <> move
-        if session.query(TVEpisode).filter(or_(TVEpisode.release_name.contains(dirName), TVEpisode.release_name.contains(videofile))).count() > 0:
+        if session.query(MainDB.TVEpisode).filter(or_(MainDB.TVEpisode.release_name.contains(dirName), MainDB.TVEpisode.release_name.contains(videofile))).count() > 0:
             return True
 
         # Needed if we have downloaded the same episode @ different quality
@@ -481,7 +481,7 @@ class ProcessResult(object):
             parse_result = False
 
         for h in session.query(MainDB.History).filter(MainDB.History.resource.endswith(videofile)):
-            for e in session.query(TVEpisode).filter_by(showid=h.showid, season=h.season, episode=h.episode).filter(TVEpisode.status.in_(Quality.DOWNLOADED)):
+            for e in session.query(MainDB.TVEpisode).filter_by(showid=h.showid, season=h.season, episode=h.episode).filter(MainDB.TVEpisode.status.in_(Quality.DOWNLOADED)):
                 # If we find a showid, a season number, and one or more episode numbers then we need to use those in the
                 # query
                 if parse_result and (parse_result.indexer_id and parse_result.episode_numbers and parse_result.season_number):

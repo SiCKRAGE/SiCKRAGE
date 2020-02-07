@@ -32,11 +32,13 @@ class BlackAndWhiteList(object):
         self.show_id = show_id
         self.load()
 
-    @MainDB.with_session
-    def load(self, session=None):
+    def load(self):
         """
         Builds black and whitelist
         """
+
+        session = sickrage.app.main_db.session()
+
         sickrage.app.log.debug('Building black and white list for ' + str(self.show_id))
 
         self.blacklist = self._load_list(session.query(MainDB.Blacklist).filter_by(show_id=self.show_id))
@@ -45,22 +47,24 @@ class BlackAndWhiteList(object):
         self.whitelist = self._load_list(session.query(MainDB.Whitelist).filter_by(show_id=self.show_id))
         sickrage.app.log.debug('BWL: {} loaded keywords from {}: {}'.format(self.show_id, MainDB.Whitelist.__tablename__, self.whitelist))
 
-    @MainDB.with_session
-    def _add_keywords(self, table, values, session=None):
+    def _add_keywords(self, table, values):
         """
         DB: Adds keywords into database for current show
 
         :param table: database table to add keywords to
         :param values: Values to be inserted in table
         """
+
+        session = sickrage.app.main_db.session()
+
         for value in values:
             session.add(table(**{
                 'show_id': self.show_id,
                 'keyword': value
             }))
+            session.commit()
 
-    @MainDB.with_session
-    def set_black_keywords(self, values, session=None):
+    def set_black_keywords(self, values):
         """
         Sets blacklist to new value
 
@@ -68,23 +72,29 @@ class BlackAndWhiteList(object):
         :param session: Database session
         """
 
+        session = sickrage.app.main_db.session()
         session.query(MainDB.Blacklist).filter_by(show_id=self.show_id).delete()
-        self._add_keywords(MainDB.Blacklist, values, session=session)
+        session.commit()
+
+        self._add_keywords(MainDB.Blacklist, values)
         self.blacklist = values
+
         sickrage.app.log.debug('Blacklist set to: %s' % self.blacklist)
 
-    @MainDB.with_session
-    def set_white_keywords(self, values, session=None):
+    def set_white_keywords(self, values):
         """
         Sets whitelist to new value
 
         :param values: Complete list of keywords to be set as whitelist
         :param session: Database session
         """
-
+        session = sickrage.app.main_db.session()
         session.query(MainDB.Whitelist).filter_by(show_id=self.show_id).delete()
-        self._add_keywords(MainDB.Whitelist, values, session=session)
+        session.commit()
+
+        self._add_keywords(MainDB.Whitelist, values)
         self.whitelist = values
+
         sickrage.app.log.debug('Whitelist set to: %s' % self.whitelist)
 
     def _load_list(self, keyword_list):

@@ -23,7 +23,6 @@ import datetime
 import os
 from abc import ABC
 from collections import OrderedDict
-from functools import cmp_to_key
 from urllib.parse import unquote_plus, quote_plus
 
 from sqlalchemy import orm
@@ -49,18 +48,16 @@ from sickrage.core.scene_numbering import get_scene_numbering_for_show, get_xem_
     get_scene_absolute_numbering_for_show, get_xem_absolute_numbering_for_show, set_scene_numbering, \
     get_scene_absolute_numbering, get_scene_numbering
 from sickrage.core.traktapi import TraktAPI
-from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
 from sickrage.subtitles import Subtitles
 
 
-@MainDB.with_session
-def _get_episode(show, season=None, episode=None, absolute=None, session=None):
+def _get_episode(show, season=None, episode=None, absolute=None):
     if show is None:
         return _("Invalid show parameters")
 
-    show_obj = find_show(int(show), session=session)
+    show_obj = find_show(int(show))
 
     if show_obj is None:
         return _("Invalid show paramaters")
@@ -81,12 +78,14 @@ def _get_episode(show, season=None, episode=None, absolute=None, session=None):
 class HomeHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
-        if not get_show_list().count():
+        session = sickrage.app.main_db.session()
+
+        if not session.query(MainDB.TVShow).count():
             return self.redirect('/home/addShows/')
 
         show_lists = OrderedDict({
-            'Shows': get_show_list().filter_by(anime=False),
-            'Anime': get_show_list().filter_by(anime=True)
+            'Shows': session.query(MainDB.TVShow).filter_by(anime=False),
+            'Anime': session.query(MainDB.TVShow).filter_by(anime=True)
         })
 
         return self.render(
@@ -115,7 +114,7 @@ class HomeHandler(BaseHandler, ABC):
             'total_size': 0
         }
 
-        for show in get_show_list(session=self.db_session):
+        for show in get_show_list():
             if sickrage.app.show_queue.is_being_added(show.indexer_id) or sickrage.app.show_queue.is_being_removed(show.indexer_id):
                 show_stat[show.indexer_id] = {
                     'ep_airs_next': datetime.date.min,
@@ -131,7 +130,7 @@ class HomeHandler(BaseHandler, ABC):
                     'ep_airs_prev': show.airs_prev or datetime.date.min,
                     'ep_snatched': show.episodes_snatched or 0,
                     'ep_downloaded': show.episodes_downloaded or 0,
-                    'ep_total': len(show.episodes),
+                    'ep_total': show.episodes.count(),
                     'total_size': show.total_size or 0
                 }
 
@@ -147,10 +146,10 @@ class ShowProgressHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         show_id = self.get_argument('show-id')
 
-        show = find_show(show_id, session=self.db_session)
+        show = find_show(show_id)
         episodes_snatched = show.episodes_snatched
         episodes_downloaded = show.episodes_downloaded
-        episodes_total = len(show.episodes) - show.episodes_special - show.episodes_unaired
+        episodes_total = show.episodes.count() - show.episodes_special - show.episodes_unaired
         progressbar_percent = int(episodes_downloaded * 100 / episodes_total if episodes_total > 0 else 1)
 
         progress_text = '?'
@@ -565,7 +564,7 @@ class SaveShowNotifyListHandler(BaseHandler, ABC):
         emails = self.get_argument('emails')
 
         try:
-            show = find_show(int(show), session=self.db_session)
+            show = find_show(int(show))
             show.notify_list = emails
         except Exception:
             return self.write('ERROR')
@@ -786,7 +785,7 @@ class DisplayShowHandler(BaseHandler, ABC):
 
         submenu = []
 
-        show_obj = find_show(int(show), session=self.db_session)
+        show_obj = find_show(int(show))
 
         if show_obj is None:
             return self._genericMessage(_("Error"), _("Show not in show list"))
@@ -971,10 +970,10 @@ class DisplayShowHandler(BaseHandler, ABC):
             epCounts=ep_counts,
             epCats=ep_cats,
             all_scene_exceptions=show_obj.exceptions,
-            scene_numbering=get_scene_numbering_for_show(indexer_id, indexer, session=self.db_session),
-            xem_numbering=get_xem_numbering_for_show(indexer_id, indexer, session=self.db_session),
-            scene_absolute_numbering=get_scene_absolute_numbering_for_show(indexer_id, indexer, session=self.db_session),
-            xem_absolute_numbering=get_xem_absolute_numbering_for_show(indexer_id, indexer, session=self.db_session),
+            scene_numbering=get_scene_numbering_for_show(indexer_id, indexer),
+            xem_numbering=get_xem_numbering_for_show(indexer_id, indexer),
+            scene_absolute_numbering=get_scene_absolute_numbering_for_show(indexer_id, indexer),
+            xem_absolute_numbering=get_xem_absolute_numbering_for_show(indexer_id, indexer),
             title=show_obj.name,
             controller='home',
             action="display_show"
@@ -995,7 +994,7 @@ class TogglePauseHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
 
-        show_obj = find_show(int(show), session=self.db_session)
+        show_obj = find_show(int(show))
 
         if show_obj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
@@ -1014,7 +1013,7 @@ class DeleteShowHandler(BaseHandler, ABC):
         show = self.get_argument('show')
         full = self.get_argument('full', None)
 
-        show_obj = find_show(int(show), session=self.db_session)
+        show_obj = find_show(int(show))
 
         if show_obj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
@@ -1043,7 +1042,7 @@ class RefreshShowHandler(BaseHandler, ABC):
     async def get(self, *args, **kwargs):
         show = self.get_argument('show')
 
-        show_obj = find_show(int(show), session=self.db_session)
+        show_obj = find_show(int(show))
 
         if show_obj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
@@ -1064,7 +1063,7 @@ class UpdateShowHandler(BaseHandler, ABC):
         show = self.get_argument('show')
         force = self.get_argument('force', None)
 
-        show_obj = find_show(int(show), session=self.db_session)
+        show_obj = find_show(int(show))
 
         if show_obj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
@@ -1086,7 +1085,7 @@ class SubtitleShowHandler(BaseHandler, ABC):
     async def get(self, *args, **kwargs):
         show = self.get_argument('show')
 
-        show_obj = find_show(int(show), session=self.db_session)
+        show_obj = find_show(int(show))
 
         if show_obj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
@@ -1106,7 +1105,7 @@ class UpdateKODIHandler(BaseHandler, ABC):
 
         show_name = None
 
-        show_obj = find_show(int(show), session=self.db_session)
+        show_obj = find_show(int(show))
         if show_obj:
             show_name = quote_plus(show_obj.name.encode())
 
@@ -1146,7 +1145,7 @@ class UpdateEMBYHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
 
-        show_obj = find_show(int(show), session=self.db_session)
+        show_obj = find_show(int(show))
 
         if show_obj:
             if sickrage.app.notifier_providers['emby'].update_library(show_obj):
@@ -1178,7 +1177,7 @@ class DeleteEpisodeHandler(BaseHandler, ABC):
         eps = self.get_argument('eps')
         direct = self.get_argument('direct', None)
 
-        show_obj = find_show(int(show), session=self.db_session)
+        show_obj = find_show(int(show))
 
         if not show_obj:
             err_msg = _("Error", "Show not in show list")
@@ -1224,7 +1223,7 @@ class TestRenameHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
 
-        show_object = find_show(int(show), session=self.db_session)
+        show_object = find_show(int(show))
 
         if show_object is None:
             return self._genericMessage(_("Error"), _("Show not in show list"))
@@ -1269,7 +1268,9 @@ class DoRenameHandler(BaseHandler, ABC):
         show = self.get_argument('show')
         eps = self.get_argument('eps')
 
-        show_obj = find_show(int(show), session=self.db_session)
+        session = sickrage.app.main_db.session()
+
+        show_obj = find_show(int(show))
 
         if show_obj is None:
             err_msg = _("Show not in show list")
@@ -1285,7 +1286,7 @@ class DoRenameHandler(BaseHandler, ABC):
             ep_info = curEp.split('x')
 
             try:
-                ep_result = self.db_session.query(TVEpisode).filter_by(showid=int(show), season=int(ep_info[0]), episode=int(ep_info[1])).one()
+                ep_result = session.query(MainDB.TVEpisode).filter_by(showid=int(show), season=int(ep_info[0]), episode=int(ep_info[1])).one()
             except orm.exc.NoResultFound:
                 sickrage.app.log.warning("Unable to find an episode for " + curEp + ", skipping")
                 continue
@@ -1293,7 +1294,7 @@ class DoRenameHandler(BaseHandler, ABC):
             root_ep_obj = show_obj.get_episode(int(ep_info[0]), int(ep_info[1]))
             root_ep_obj.related_episodes = []
 
-            for cur_related_ep in self.db_session.query(TVEpisode).filter_by(location=ep_result.location).filter(TVEpisode.episode != int(ep_info[1])):
+            for cur_related_ep in session.query(MainDB.TVEpisode).filter_by(location=ep_result.location).filter(MainDB.TVEpisode.episode != int(ep_info[1])):
                 related_ep_obj = show_obj.get_episode(int(cur_related_ep.season), int(cur_related_ep.episode))
                 if related_ep_obj not in root_ep_obj.related_episodes:
                     root_ep_obj.related_episodes.append(related_ep_obj)
@@ -1361,7 +1362,7 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
         if not show_id:
             return results
 
-        show_object = find_show(show_id, session=self.db_session)
+        show_object = find_show(show_id)
         if not show_object:
             return results
 
@@ -1398,7 +1399,7 @@ class SearchEpisodeSubtitlesHandler(BaseHandler, ABC):
         season = self.get_argument('season')
         episode = self.get_argument('episode')
 
-        ep_obj = _get_episode(show, season, episode, session=self.db_session)
+        ep_obj = _get_episode(show, season, episode)
         if isinstance(ep_obj, TVEpisode):
             try:
                 subs = ep_obj.download_subtitles()
@@ -1443,7 +1444,7 @@ class SetSceneNumberingHandler(BaseHandler, ABC):
         if scene_absolute in ['null', '']:
             scene_absolute = None
 
-        show_obj = find_show(int(show), session=self.db_session)
+        show_obj = find_show(int(show))
 
         if show_obj.is_anime:
             result = {
@@ -1459,9 +1460,9 @@ class SetSceneNumberingHandler(BaseHandler, ABC):
 
         # retrieve the episode object and fail if we can't get one
         if show_obj.is_anime:
-            ep_obj = _get_episode(show, absolute=for_absolute, session=self.db_session)
+            ep_obj = _get_episode(show, absolute=for_absolute)
         else:
-            ep_obj = _get_episode(show, for_season, for_episode, session=self.db_session)
+            ep_obj = _get_episode(show, for_season, for_episode)
 
         if isinstance(ep_obj, str):
             result['success'] = False
@@ -1475,7 +1476,7 @@ class SetSceneNumberingHandler(BaseHandler, ABC):
             if scene_absolute is not None:
                 scene_absolute = int(scene_absolute)
 
-            set_scene_numbering(show, indexer, absolute_number=for_absolute, sceneAbsolute=scene_absolute, session=self.db_session)
+            set_scene_numbering(show, indexer, absolute_number=for_absolute, sceneAbsolute=scene_absolute)
         else:
             sickrage.app.log.debug("setEpisodeSceneNumbering for %s from %sx%s to %sx%s" % (show, for_season, for_episode, scene_season, scene_episode))
 
@@ -1488,16 +1489,16 @@ class SetSceneNumberingHandler(BaseHandler, ABC):
             if scene_episode is not None:
                 scene_episode = int(scene_episode)
 
-            set_scene_numbering(show, indexer, season=for_season, episode=for_episode, sceneSeason=scene_season, sceneEpisode=scene_episode, session=self.db_session)
+            set_scene_numbering(show, indexer, season=for_season, episode=for_episode, sceneSeason=scene_season, sceneEpisode=scene_episode)
 
         if show_obj.is_anime:
-            sn = get_scene_absolute_numbering(show, indexer, for_absolute, session=self.db_session)
+            sn = get_scene_absolute_numbering(show, indexer, for_absolute)
             if sn:
                 result['sceneAbsolute'] = sn
             else:
                 result['sceneAbsolute'] = None
         else:
-            sn = get_scene_numbering(show, indexer, for_season, for_episode, session=self.db_session)
+            sn = get_scene_numbering(show, indexer, for_season, for_episode)
             if sn:
                 (result['sceneSeason'], result['sceneEpisode']) = sn
             else:

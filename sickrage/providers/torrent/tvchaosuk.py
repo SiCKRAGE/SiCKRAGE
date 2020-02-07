@@ -51,12 +51,11 @@ class TVChaosUKProvider(TorrentProvider):
 
         raise AuthException('Your authentication credentials for ' + self.name + ' are missing, check your config.')
 
-    @MainDB.with_session
-    def _get_season_search_strings(self, show_id, season, episode, session=None):
+    def _get_season_search_strings(self, show_id, season, episode):
 
         search_string = {'Season': []}
 
-        show_object = find_show(show_id, session=session)
+        show_object = find_show(show_id)
         episode_object = show_object.get_episode(season, episode)
 
         for show_name in set(show_names.all_possible_show_names(show_id)):
@@ -73,12 +72,11 @@ class TVChaosUKProvider(TorrentProvider):
 
         return [search_string]
 
-    @MainDB.with_session
-    def _get_episode_search_strings(self, show_id, season, episode, add_string='', session=None):
+    def _get_episode_search_strings(self, show_id, season, episode, add_string=''):
 
         search_string = {'Episode': []}
 
-        show_object = find_show(show_id, session=session)
+        show_object = find_show(show_id)
         episode_object = show_object.get_episode(season, episode)
 
         for show_name in set(show_names.all_possible_show_names(show_id)):

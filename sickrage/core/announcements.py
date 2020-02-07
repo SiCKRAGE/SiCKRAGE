@@ -40,8 +40,8 @@ class Announcement(object):
         self.ahash = ahash
 
     @property
-    @CacheDB.with_session
-    def seen(self, session=None):
+    def seen(self):
+        session = sickrage.app.cache_db.session()
         try:
             announcement = session.query(CacheDB.Announcements).filter_by(hash=self.ahash).one()
             return True if announcement.seen else False
@@ -49,8 +49,8 @@ class Announcement(object):
             pass
 
     @seen.setter
-    @CacheDB.with_session
-    def seen(self, value, session=None):
+    def seen(self, value):
+        session = sickrage.app.cache_db.session()
         try:
             announcement = session.query(CacheDB.Announcements).filter_by(hash=self.ahash).one()
             announcement.seen = value
@@ -82,22 +82,26 @@ class Announcements(object):
         except APIError:
             pass
 
-    @CacheDB.with_session
-    def add(self, ahash, title, description, image, date, session=None):
+    def add(self, ahash, title, description, image, date):
+        session = sickrage.app.cache_db.session()
         self._announcements[ahash] = Announcement(title, description, image, date, ahash)
         if not session.query(CacheDB.Announcements).filter_by(hash=ahash).count():
             sickrage.app.log.debug('Adding new announcement to Web-UI')
             session.add(CacheDB.Announcements(**{'hash': ahash}))
+            session.commit()
 
-    @CacheDB.with_session
-    def clear(self, ahash=None, session=None):
+    def clear(self, ahash=None):
+        session = sickrage.app.cache_db.session()
+
         if not ahash:
             self._announcements.clear()
             session.query(CacheDB.Announcements).delete()
+            session.commit()
         else:
             if ahash in self._announcements:
                 del self._announcements[ahash]
             session.query(CacheDB.Announcements).filter_by(hash=ahash).delete()
+            session.commit()
 
     def get_all(self):
         return sorted(self._announcements.values(), key=lambda k: k.date)
@@ -105,6 +109,6 @@ class Announcements(object):
     def get(self, ahash):
         return self._announcements.get(ahash)
 
-    @CacheDB.with_session
-    def count(self, session=None):
-        return session.query(CacheDB.Announcements).filter(CacheDB.Announcements.seen == False).count()
+    def count(self):
+        session = sickrage.app.cache_db.session()
+        return session.query(CacheDB.Announcements).filter(CacheDB.Announcements.seen is False).count()

@@ -18,7 +18,7 @@
 import uuid
 
 import sickrage
-from sickrage.core import scene_exceptions, MainDB
+from sickrage.core import scene_exceptions
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import sanitize_scene_name, episode_num, try_int
 from sickrage.core.tv.show.helpers import find_show
@@ -150,11 +150,10 @@ class BTNProvider(TorrentProvider):
 
         return title, url
 
-    @MainDB.with_session
-    def _search_params(self, show_id, season, episode, mode, season_numbering=None, session=None):
+    def _search_params(self, show_id, season, episode, mode, season_numbering=None):
         searches = []
 
-        show_object = find_show(show_id, session=session)
+        show_object = find_show(show_id)
         episode_object = show_object.get_episode(season, episode)
 
         air_by_date = show_object.air_by_date

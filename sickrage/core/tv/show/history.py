@@ -32,21 +32,23 @@ from sickrage.core.tv.show.helpers import get_show_list, find_show
 
 
 class History:
-    @MainDB.with_session
-    def clear(self, session=None):
+    def clear(self):
         """
         Clear all the history
         """
+        session = sickrage.app.main_db.session()
         session.query(MainDB.History).delete()
+        session.commit()
 
-    @MainDB.with_session
-    def get(self, limit=100, action=None, session=None):
+    def get(self, limit=100, action=None):
         """
         :param limit: The maximum number of elements to return
         :param action: The type of action to filter in the history. Either 'downloaded' or 'snatched'. Anything else or
                         no value will return everything (up to ``limit``)
         :return: The last ``limit`` elements of type ``action`` in the history
         """
+
+        session = sickrage.app.main_db.session()
 
         data = []
 
@@ -91,18 +93,19 @@ class History:
 
         return data
 
-    @MainDB.with_session
-    def trim(self, session=None):
+    def trim(self):
         """
         Remove all elements older than 30 days from the history
         """
 
+        session = sickrage.app.main_db.session()
+
         date = (datetime.today() - timedelta(days=30))
         session.query(MainDB.History).filter(MainDB.History.date < date).delete()
+        session.commit()
 
     @staticmethod
-    @MainDB.with_session
-    def _log_history_item(action, showid, season, episode, quality, resource, provider, version=-1, release_group='', session=None):
+    def _log_history_item(action, showid, season, episode, quality, resource, provider, version=-1, release_group=''):
         """
         Insert a history item in DB
 
@@ -113,6 +116,9 @@ class History:
         :param provider: provider used
         :param version: tracked version of file (defaults to -1)
         """
+
+        session = sickrage.app.main_db.session()
+
         logDate = datetime.today()
         resource = resource
 
@@ -129,9 +135,10 @@ class History:
             'release_group': release_group or ''
         }))
 
+        session.commit()
+
     @staticmethod
-    @MainDB.with_session
-    def log_snatch(search_result, session=None):
+    def log_snatch(search_result):
         """
         Log history of snatch
 
@@ -149,11 +156,10 @@ class History:
 
             release_group = search_result.release_group
 
-            History._log_history_item(action, search_result.show_id, search_result.season, episode, quality, resource, provider, version, release_group, session=session)
+            History._log_history_item(action, search_result.show_id, search_result.season, episode, quality, resource, provider, version, release_group)
 
     @staticmethod
-    @MainDB.with_session
-    def log_download(show_id, season, episode, status, filename, new_ep_quality, release_group='', version=-1, session=None):
+    def log_download(show_id, season, episode, status, filename, new_ep_quality, release_group='', version=-1):
         """
         Log history of download
 
@@ -164,25 +170,26 @@ class History:
         :param version: Version of file (defaults to -1)
         """
 
+        session = sickrage.app.main_db.session()
+
         provider = ''
 
         dbData = session.query(MainDB.History).filter(MainDB.History.resource.contains(os.path.basename(filename).rpartition(".")[0])).first()
         if dbData:
             provider = dbData.provider
 
-        History._log_history_item(status, show_id, season, episode, new_ep_quality, filename, provider, version, release_group, session=session)
+        History._log_history_item(status, show_id, season, episode, new_ep_quality, filename, provider, version, release_group)
 
     @staticmethod
-    @MainDB.with_session
-    def log_subtitle(show_id, season, episode, status, subtitle, session=None):
+    def log_subtitle(show_id, season, episode, status, subtitle):
         """
         Log download of subtitle
 
-        :param showid: Showid of download
+        :param show_id: Showid of download
         :param season: Show season
         :param episode: Show episode
         :param status: Status of download
-        :param subtitleResult: Result object
+        :param subtitle: Result object
         """
         resource = subtitle.language.opensubtitles
         provider = subtitle.provider_name
@@ -190,11 +197,10 @@ class History:
         status, quality = Quality.split_composite_status(status)
         action = Quality.composite_status(SUBTITLED, quality)
 
-        History._log_history_item(action, show_id, season, episode, quality, resource, provider, session=session)
+        History._log_history_item(action, show_id, season, episode, quality, resource, provider)
 
     @staticmethod
-    @MainDB.with_session
-    def log_failed(show_id, season, episode, release, provider=None, session=None):
+    def log_failed(show_id, season, episode, release, provider=None):
         """
         Log a failed download
 
@@ -202,13 +208,13 @@ class History:
         :param release: Release group
         :param provider: Provider used for snatch
         """
-        show_object = find_show(show_id, session=session)
+        show_object = find_show(show_id)
         episode_object = show_object.get_episode(season, episode)
 
         status, quality = Quality.split_composite_status(episode_object.status)
         action = Quality.composite_status(FAILED, quality)
 
-        History._log_history_item(action, show_id, season, episode, quality, release, provider, session=session)
+        History._log_history_item(action, show_id, season, episode, quality, release, provider)
 
 
 class FailedHistory(object):
@@ -226,11 +232,12 @@ class FailedHistory(object):
         return fixed
 
     @staticmethod
-    @MainDB.with_session
-    def log_failed(release, session=None):
+    def log_failed(release):
         log_str = ""
         size = -1
         provider = ""
+
+        session = sickrage.app.main_db.session()
 
         release = FailedHistory.prepare_failed_name(release)
 
@@ -246,7 +253,7 @@ class FailedHistory(object):
                 size = dbData[0].size
             else:
                 sickrage.app.log.warning("They also vary in size. Deleting the logged snatches and recording this release with no size/provider")
-                [FailedHistory.delete_logged_snatch(result.release, result.size, result.provider, session=session) for result in dbData]
+                [FailedHistory.delete_logged_snatch(result.release, result.size, result.provider) for result in dbData]
 
             if len(set(x.provider for x in dbData)) == 1:
                 sickrage.app.log.info("They're also from the same provider. Using it as well.")
@@ -255,22 +262,23 @@ class FailedHistory(object):
             size = dbData[0].size
             provider = dbData[0].provider
 
-        if not FailedHistory.has_failed(release, size, provider, session=session):
+        if not FailedHistory.has_failed(release, size, provider):
             session.add(MainDB.FailedSnatch(**{'release': release, 'size': size, 'provider': provider}))
+            session.commit()
 
-        FailedHistory.delete_logged_snatch(release, size, provider, session=session)
+        FailedHistory.delete_logged_snatch(release, size, provider)
 
         return log_str
 
     @staticmethod
-    @MainDB.with_session
-    def log_success(release, session=None):
+    def log_success(release):
+        session = sickrage.app.main_db.session()
         release = FailedHistory.prepare_failed_name(release)
         session.query(MainDB.FailedSnatchHistory).filter_by(release=release).delete()
+        session.commit()
 
     @staticmethod
-    @MainDB.with_session
-    def has_failed(release, size, provider="%", session=None):
+    def has_failed(release, size, provider="%"):
         """
         Returns True if a release has previously failed.
 
@@ -285,16 +293,18 @@ class FailedHistory(object):
         :return: True if a release has previously failed.
         """
 
+        session = sickrage.app.main_db.session()
         release = FailedHistory.prepare_failed_name(release)
         return session.query(MainDB.FailedSnatch).filter_by(release=release, size=size, provider=provider).count() > 0
 
     @staticmethod
-    @MainDB.with_session
-    def revert_failed_episode(show_id, season, episode, session=None):
+    def revert_failed_episode(show_id, season, episode):
         """Restore the episodes of a failed download to their original state"""
+        session = sickrage.app.main_db.session()
+
         history_eps = dict((x.episode, x) for x in session.query(MainDB.FailedSnatchHistory).filter_by(showid=show_id, season=season, episode=episode))
 
-        show_object = find_show(show_id, session=session)
+        show_object = find_show(show_id)
         episode_object = show_object.get_episode(season, episode)
 
         try:
@@ -310,8 +320,7 @@ class FailedHistory(object):
             sickrage.app.log.warning("Unable to create episode, please set its status manually: {}".format(e))
 
     @staticmethod
-    @MainDB.with_session
-    def mark_failed(show_id, season, episode, session=None):
+    def mark_failed(show_id, season, episode):
         """
         Mark an episode as failed
 
@@ -320,7 +329,7 @@ class FailedHistory(object):
         """
         log_str = ""
 
-        show_object = find_show(show_id, session=session)
+        show_object = find_show(show_id)
         episode_object = show_object.get_episode(season, episode)
 
         try:
@@ -332,8 +341,7 @@ class FailedHistory(object):
         return log_str
 
     @staticmethod
-    @MainDB.with_session
-    def log_snatch(search_result, session=None):
+    def log_snatch(search_result):
         """
         Logs a successful snatch
 
@@ -343,7 +351,9 @@ class FailedHistory(object):
         release = FailedHistory.prepare_failed_name(search_result.name)
         provider = search_result.provider.name if search_result.provider else "unknown"
 
-        show_object = find_show(search_result.show_id, session=session)
+        session = sickrage.app.main_db.session()
+
+        show_object = find_show(search_result.show_id)
 
         for episode in search_result.episodes:
             episode_object = show_object.get_episode(search_result.season, episode)
@@ -357,10 +367,10 @@ class FailedHistory(object):
                 'episode': episode,
                 'old_status': episode_object.status
             }))
+            session.commit()
 
     @staticmethod
-    @MainDB.with_session
-    def delete_logged_snatch(release, size, provider, session=None):
+    def delete_logged_snatch(release, size, provider):
         """
         Remove a snatch from history
 
@@ -368,19 +378,23 @@ class FailedHistory(object):
         :param size: Size of release
         :param provider: Provider to delete it from
         """
+
+        session = sickrage.app.main_db.session()
         release = FailedHistory.prepare_failed_name(release)
         session.query(MainDB.FailedSnatchHistory).filter_by(release=release, size=size, provider=provider).delete()
+        session.commit()
 
     @staticmethod
-    @MainDB.with_session
-    def trim_history(session=None):
+    def trim_history():
         """Trims history table to 1 month of history from today"""
+
+        session = sickrage.app.main_db.session()
         date = (datetime.today() - timedelta(days=30))
         session.query(MainDB.FailedSnatchHistory).filter(MainDB.FailedSnatchHistory.date < date).delete()
+        session.commit()
 
     @staticmethod
-    @MainDB.with_session
-    def find_failed_release(show_id, season, episode, session=None):
+    def find_failed_release(show_id, season, episode):
         """
         Find releases in history by show ID and season.
         Return None for release if multiple found or no release found.
@@ -389,9 +403,12 @@ class FailedHistory(object):
         release = None
         provider = None
 
+        session = sickrage.app.main_db.session()
+
         # Clear old snatches for this release if any exist
         session.query(MainDB.FailedSnatchHistory).filter_by(showid=show_id, season=season, episode=episode).filter(
             MainDB.FailedSnatchHistory.date < MainDB.FailedSnatchHistory.date).delete()
+        session.commit()
 
         # Search for release in snatch history
         for dbData in session.query(MainDB.FailedSnatchHistory).filter_by(showid=show_id, season=season, episode=episode):

@@ -63,8 +63,7 @@ class BacklogSearcher(object):
         sickrage.app.log.debug("amWaiting: " + str(self.amWaiting) + ", amActive: " + str(self.amActive))
         return (not self.amWaiting) and self.amActive
 
-    @MainDB.with_session
-    def search_backlog(self, show_id=None, session=None):
+    def search_backlog(self, show_id=None):
         if self.amActive:
             sickrage.app.log.debug("Backlog is still running, not starting it again")
             return
@@ -72,7 +71,7 @@ class BacklogSearcher(object):
         self.amActive = True
         self.amPaused = False
 
-        show_list = [find_show(show_id, session=session)] if show_id else get_show_list(session=session)
+        show_list = [find_show(show_id)] if show_id else get_show_list()
 
         cur_date = datetime.date.today()
         from_date = datetime.date.min

@@ -27,53 +27,52 @@ import unittest
 
 import sickrage
 import tests
+from sickrage.core import MainDB
 from sickrage.core.common import UNAIRED
-from sickrage.core.tv.episode import TVEpisode
-from sickrage.core.tv.show import TVShow
-from sickrage.core.databases.main import MainDB
 
 
 class DBBasicTests(tests.SiCKRAGETestDBCase):
-    @MainDB.with_session
-    def setUp(self, session=None):
+    def setUp(self):
         super(DBBasicTests, self).setUp()
-        show = TVShow(**{'indexer': 1, 'indexer_id': 0o0001, 'lang': 'en'})
+        session = sickrage.app.main_db.session()
+        show = MainDB.TVShow(**{'indexer_id': 0o0001, 'indexer': 1, 'lang': 'en'})
         session.add(show)
-        session.safe_commit()
+        session.commit()
 
-        ep = TVEpisode(**{'showid': show.indexer_id, 'indexer': 1, 'season': 1, 'episode': 1, 'location': ''})
+        ep = MainDB.TVEpisode(**{'showid': show.indexer_id, 'indexer': 1, 'season': 1, 'episode': 1, 'location': ''})
         session.add(ep)
         ep.indexer_id = 1
         ep.name = "test episode 1"
         ep.airdate = datetime.date.fromordinal(733832)
         ep.status = UNAIRED
-        session.safe_commit()
+        session.commit()
 
-        ep = TVEpisode(**{'showid': show.indexer_id, 'indexer': 1, 'season': 1, 'episode': 2, 'location': ''})
+        ep = MainDB.TVEpisode(**{'showid': show.indexer_id, 'indexer': 1, 'season': 1, 'episode': 2, 'location': ''})
         session.add(ep)
         ep.indexer_id = 2
         ep.name = "test episode 2"
         ep.airdate = datetime.date.fromordinal(733832)
         ep.status = UNAIRED
-        session.safe_commit()
+        session.commit()
 
-        ep = TVEpisode(**{'showid': show.indexer_id, 'indexer': 1, 'season': 1, 'episode': 3, 'location': ''})
+        ep = MainDB.TVEpisode(**{'showid': show.indexer_id, 'indexer': 1, 'season': 1, 'episode': 3, 'location': ''})
         session.add(ep)
         ep.indexer_id = 3
         ep.name = "test episode 3"
         ep.airdate = datetime.date.fromordinal(733832)
         ep.status = UNAIRED
-        session.safe_commit()
+        session.commit()
 
-    @MainDB.with_session
-    def test_unaired(self, session=None):
+    def test_unaired(self):
         count = 0
 
-        for episode_obj in session.query(TVEpisode):
+        session = sickrage.app.main_db.session()
+
+        for episode_obj in session.query(MainDB.TVEpisode):
             if all([episode_obj.status == UNAIRED, episode_obj.season > 0, episode_obj.airdate > datetime.date.min]):
                 count += 1
 
-                ep = TVEpisode(**{'indexer': 1, 'episode': episode_obj.episode})
+                ep = MainDB.TVEpisode(**{'indexer': 1, 'episode': episode_obj.episode})
                 ep.indexer_id = episode_obj.episode
                 ep.name = "test episode {}".format(episode_obj.episode)
                 ep.airdate = datetime.date.fromordinal(733832)
@@ -81,18 +80,20 @@ class DBBasicTests(tests.SiCKRAGETestDBCase):
 
         self.assertEqual(count, 3)
 
-    @MainDB.with_session
-    def test_multithread(self, session=None):
+    def test_multithread(self):
         threads = []
 
+        session = sickrage.app.main_db.session()
+
         for __ in range(1, 200):
-            threads.append(threading.Thread(target=lambda: session.query(TVEpisode).all()))
+            threads.append(threading.Thread(target=lambda: session.query(MainDB.TVEpisode).all()))
 
         for t in threads:
             t.start()
 
         for t in threads:
             t.join()
+
 
 if __name__ == '__main__':
     print("==================")

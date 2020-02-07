@@ -93,9 +93,8 @@ class Subtitles(object):
     def getEnabledServiceList(self):
         return [x['name'] for x in self.sortedServiceList() if x['enabled']]
 
-    @MainDB.with_session
-    def download_subtitles(self, show_id, season, episode, session=None):
-        show_object = find_show(show_id, session=session)
+    def download_subtitles(self, show_id, season, episode):
+        show_object = find_show(show_id)
         episode_object = show_object.get_episode(season, episode)
 
         existing_subtitles = episode_object.subtitles
@@ -168,7 +167,7 @@ class Subtitles(object):
         if sickrage.app.config.subtitles_history:
             for subtitle in found_subtitles:
                 sickrage.app.log.debug('history.logSubtitle %s, %s' % (subtitle.provider_name, subtitle.language.opensubtitles))
-                History.log_subtitle(show_id, season, episode, episode_object.status, subtitle, session=session)
+                History.log_subtitle(show_id, season, episode, episode_object.status, subtitle)
 
         return current_subtitles, new_subtitles
 
@@ -180,9 +179,8 @@ class Subtitles(object):
             return set() if 'und' in subtitles else {self.from_code(language) for language in self.wanted_languages()}
         return {self.from_code(language) for language in self.wanted_languages().difference(subtitles)}
 
-    @MainDB.with_session
-    def refresh_subtitles(self, show_id, season, episode, session=None):
-        show_object = find_show(show_id, session=session)
+    def refresh_subtitles(self, show_id, season, episode):
+        show_object = find_show(show_id)
         episode_object = show_object.get_episode(season, episode)
 
         video = self.get_video(episode_object.location, episode_object=episode_object)

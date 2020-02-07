@@ -25,8 +25,9 @@ from sickrage.core.databases.main import MainDB
 from sickrage.indexers import IndexerApi, ShowListUI
 
 
-@MainDB.with_session
-def map_indexers(indexer, indexer_id, name, session=None):
+def map_indexers(indexer, indexer_id, name):
+    session = sickrage.app.main_db.session()
+
     mapped = {}
 
     # init mapped indexers object
@@ -73,5 +74,6 @@ def map_indexers(indexer, indexer_id, name, session=None):
                         'mindexer_id': int(mapped_show['id']),
                         'mindexer': mindexer
                     }))
+                    session.commit()
 
     return mapped

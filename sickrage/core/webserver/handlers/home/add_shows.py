@@ -31,8 +31,8 @@ from tornado.web import authenticated
 
 import sickrage
 from sickrage.core.common import Quality
-from sickrage.core.helpers import sanitize_file_name, make_dir, chmod_as_parent, checkbox_to_value, \
-    try_int
+from sickrage.core.databases.main import MainDB
+from sickrage.core.helpers import sanitize_file_name, make_dir, chmod_as_parent, checkbox_to_value, try_int
 from sickrage.core.helpers.anidb import short_group_names
 from sickrage.core.imdb_popular import imdbPopular
 from sickrage.core.traktapi import TraktAPI
@@ -92,8 +92,7 @@ class SearchIndexersForShowNameHandler(BaseHandler, ABC):
             l_indexer_api_parms['custom_ui'] = AllShowsUI
             t = IndexerApi(indexer).indexer(**l_indexer_api_parms)
 
-            sickrage.app.log.debug("Searching for Show with term: %s on Indexer: %s" % (
-                search_term, IndexerApi(indexer).name))
+            sickrage.app.log.debug("Searching for Show with term: %s on Indexer: %s" % (search_term, IndexerApi(indexer).name))
 
             try:
                 # search via series name
@@ -106,9 +105,11 @@ class SearchIndexersForShowNameHandler(BaseHandler, ABC):
                 continue
 
         for i, shows in results.items():
-            final_results.extend([[IndexerApi(i).name, i, IndexerApi(i).config["show_url"],
-                                   int(show['id']), show['seriesname'], show['firstaired'],
-                                   ('', 'disabled')[isinstance(find_show(int(show['id'])), TVShow)]] for show in shows])
+            final_results.extend([
+                [IndexerApi(i).name, i, IndexerApi(i).config["show_url"],
+                 int(show['id']), show['seriesname'], show['firstaired'],
+                 ('', 'disabled')[isinstance(find_show(int(show['id'])), TVShow)]] for show in shows
+            ])
 
         lang_id = IndexerApi().indexer().languages[lang] or 7
         return self.write(json_encode({'results': final_results, 'langid': lang_id}))
@@ -118,6 +119,8 @@ class MassAddTableHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
         root_dir = self.get_arguments('rootDir')
+
+        session = sickrage.app.main_db.session()
 
         root_dirs = [unquote_plus(x) for x in root_dir]
 
@@ -158,7 +161,7 @@ class MassAddTableHandler(BaseHandler, ABC):
 
                     # see if the folder is in database already
                     try:
-                        self.db_session.query(TVShow).filter_by(location=cur_path).one()
+                        session.query(MainDB.TVShow).filter_by(location=cur_path).one()
                         cur_dir['added_already'] = True
                     except orm.exc.NoResultFound:
                         cur_dir['added_already'] = False
@@ -184,7 +187,7 @@ class MassAddTableHandler(BaseHandler, ABC):
                                 showid = i
 
                     cur_dir['existing_info'] = (showid, show_name, indexer)
-                    if showid and find_show(showid, session=self.db_session):
+                    if showid and find_show(showid):
                         cur_dir['added_already'] = True
                 except Exception:
                     pass
@@ -265,7 +268,7 @@ class TraktShowsHandler(BaseHandler, ABC):
         shows, black_list = getattr(TraktAPI()['shows'], show_list)(extended="full", limit=int(limit) + get_show_list().count()), False
 
         while len(trakt_shows) < int(limit):
-            trakt_shows += [x for x in shows if 'tvdb' in x.ids and not find_show(int(x.ids['tvdb']), session=self.db_session)]
+            trakt_shows += [x for x in shows if 'tvdb' in x.ids and not find_show(int(x.ids['tvdb']))]
 
         return self.render("/home/trakt_shows.mako",
                            title="Trakt {} Shows".format(show_list.capitalize()),
@@ -340,7 +343,7 @@ class AddShowByIDHandler(BaseHandler, ABC):
             t = IndexerApi(1).indexer(**l_indexer_api_parms)
             indexer_id = t[indexer_id]['id']
 
-        if find_show(int(indexer_id), session=self.db_session):
+        if find_show(int(indexer_id)):
             return
 
         location = None

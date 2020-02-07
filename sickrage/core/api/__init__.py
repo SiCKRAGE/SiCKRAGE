@@ -63,8 +63,8 @@ class API(object):
         return self._session
 
     @property
-    @CacheDB.with_session
-    def token(self, session=None):
+    def token(self):
+        session = sickrage.app.cache_db.session()
         try:
             token = session.query(CacheDB.OAuth2Token).one()
             return token.as_dict()
@@ -72,8 +72,7 @@ class API(object):
             return {}
 
     @token.setter
-    @CacheDB.with_session
-    def token(self, value, session=None):
+    def token(self, value):
         new_token = {
             'access_token': value.get('access_token'),
             'refresh_token': value.get('refresh_token'),
@@ -82,18 +81,23 @@ class API(object):
             'scope': value.scope if isinstance(value, OAuth2Token) else value.get('scope')
         }
 
+        session = sickrage.app.cache_db.session()
+
         try:
             token = session.query(CacheDB.OAuth2Token).one()
             token.update(**new_token)
         except orm.exc.NoResultFound:
             session.add(CacheDB.OAuth2Token(**new_token))
+        finally:
+            session.commit()
 
         self._session = None
 
     @token.deleter
-    @CacheDB.with_session
-    def token(self, session=None):
+    def token(self):
+        session = sickrage.app.cache_db.session()
         session.query(CacheDB.OAuth2Token).delete()
+        session.commit()
 
     @property
     def token_url(self):

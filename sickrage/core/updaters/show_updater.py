@@ -38,8 +38,7 @@ class ShowUpdater(object):
         self.lock = threading.Lock()
         self.amActive = False
 
-    @CacheDB.with_session
-    def run(self, force=False, session=None):
+    def run(self, force=False):
         if self.amActive:
             return
 
@@ -47,6 +46,8 @@ class ShowUpdater(object):
 
         # set thread name
         threading.currentThread().setName(self.name)
+
+        session = sickrage.app.cache_db.session()
 
         update_timestamp = int(time.mktime(datetime.datetime.now().timetuple()))
 
@@ -60,6 +61,8 @@ class ShowUpdater(object):
                 'time': 0
             })
             session.add(dbData)
+        finally:
+            session.commit()
 
         # get indexer updated show ids
         indexer_api = IndexerApi().indexer(**IndexerApi().api_params.copy())

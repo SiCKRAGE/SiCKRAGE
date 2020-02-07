@@ -45,7 +45,6 @@ from sickrage.core.api import APIError
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.classes import NZBSearchResult, SearchResult, TorrentSearchResult
 from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT, cpu_presets
-from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import chmod_as_parent, sanitize_file_name, clean_url, bs4_parser, \
     validate_url, try_int, convert_size
 from sickrage.core.helpers.show_names import all_possible_show_names
@@ -156,8 +155,7 @@ class GenericProvider(object):
     def search(self, search_strings, age=0, show_id=None, season=None, episode=None, **kwargs):
         return []
 
-    @MainDB.with_session
-    def _get_season_search_strings(self, show_id, season, episode, session=None):
+    def _get_season_search_strings(self, show_id, season, episode):
         """
         Get season search strings.
         """
@@ -166,7 +164,7 @@ class GenericProvider(object):
             'Season': []
         }
 
-        show_object = find_show(show_id, session=session)
+        show_object = find_show(show_id)
         episode_object = show_object.get_episode(season, episode)
 
         for show_name in all_possible_show_names(show_id, episode_object.scene_season):
@@ -183,8 +181,7 @@ class GenericProvider(object):
 
         return [search_string]
 
-    @MainDB.with_session
-    def _get_episode_search_strings(self, show_id, season, episode, add_string='', session=None):
+    def _get_episode_search_strings(self, show_id, season, episode, add_string=''):
         """
         Get episode search strings.
         """
@@ -193,7 +190,7 @@ class GenericProvider(object):
             'Episode': []
         }
 
-        show_object = find_show(show_id, session=session)
+        show_object = find_show(show_id)
         episode_object = show_object.get_episode(season, episode)
 
         for show_name in all_possible_show_names(show_id, episode_object.scene_season):
@@ -258,15 +255,14 @@ class GenericProvider(object):
         leechers = item.get('leechers', -1)
         return try_int(seeders, -1), try_int(leechers, -1)
 
-    @MainDB.with_session
-    def find_search_results(self, show_id, season, episode, search_mode, manualSearch=False, downCurQuality=False, cacheOnly=False, session=None):
+    def find_search_results(self, show_id, season, episode, search_mode, manualSearch=False, downCurQuality=False, cacheOnly=False):
         provider_results = {}
         item_list = []
 
         if not self._check_auth:
             return provider_results
 
-        show_object = find_show(show_id, session=session)
+        show_object = find_show(show_id)
         if not show_object:
             return provider_results
 
@@ -341,7 +337,7 @@ class GenericProvider(object):
             if not provider_result.show_id:
                 continue
 
-            provider_result_show_obj = find_show(provider_result.show_id, session=session)
+            provider_result_show_obj = find_show(provider_result.show_id)
             if not provider_result_show_obj:
                 continue
 
@@ -527,13 +523,13 @@ class GenericProvider(object):
 
     @classmethod
     def getProvider(cls, name):
-        providerMatch = [x for x in cls.get_providers() if x.name == name]
+        providerMatch = [x for x in cls.get_providers() if getattr(x, 'name', None) == name]
         if len(providerMatch) == 1:
             return providerMatch[0]
 
     @classmethod
     def getProviderByID(cls, id):
-        providerMatch = [x for x in cls.get_providers() if x.id == id]
+        providerMatch = [x for x in cls.get_providers() if getattr(x, 'id', None) == id]
         if len(providerMatch) == 1:
             return providerMatch[0]
 
@@ -818,7 +814,7 @@ class TorrentRssProvider(TorrentProvider):
                  search_fallback=False,
                  enable_daily=False,
                  enable_backlog=False,
-                 default=False, ):
+                 default=False):
         super(TorrentRssProvider, self).__init__(name, clean_url(url), False)
 
         self.cache = TorrentRssCache(self)
@@ -1057,8 +1053,7 @@ class NewznabProvider(NZBProvider):
 
         return False
 
-    @MainDB.with_session
-    def search(self, search_strings, age=0, show_id=None, season=None, episode=None, session=None, **kwargs):
+    def search(self, search_strings, age=0, show_id=None, season=None, episode=None, **kwargs):
         """
         Search indexer using the params in search_strings, either for latest releases, or a string/id search.
 
@@ -1073,7 +1068,7 @@ class NewznabProvider(NZBProvider):
         if not self.caps:
             self.get_newznab_categories(just_caps=True)
 
-        show_object = find_show(show_id, session=session)
+        show_object = find_show(show_id)
         episode_object = show_object.get_episode(season, episode)
 
         for mode in search_strings:

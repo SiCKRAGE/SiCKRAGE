@@ -160,11 +160,10 @@ class DailySearchQueueItem(SRQueueItem):
         self.success = False
         self.started = False
 
-    @MainDB.with_session
-    def run(self, session=None):
+    def run(self):
         self.started = True
 
-        show_obj = find_show(self.show_id, session=session)
+        show_obj = find_show(self.show_id)
 
         try:
             sickrage.app.log.info("Starting daily search for: [" + show_obj.name + "]")
@@ -202,11 +201,10 @@ class ManualSearchQueueItem(SRQueueItem):
         self.priority = SRQueuePriorities.EXTREME
         self.downCurQuality = downCurQuality
 
-    @MainDB.with_session
-    def run(self, session=None):
+    def run(self):
         self.started = True
 
-        show_object = find_show(self.show_id, session=session)
+        show_object = find_show(self.show_id)
         episode_object = show_object.get_episode(self.season, self.episode)
 
         try:
@@ -245,11 +243,10 @@ class BacklogQueueItem(SRQueueItem):
         self.success = False
         self.started = False
 
-    @MainDB.with_session
-    def run(self, session=None):
+    def run(self):
         self.started = True
 
-        show_object = find_show(self.show_id, session=session)
+        show_object = find_show(self.show_id)
 
         try:
             sickrage.app.log.info("Starting backlog search for: [" + show_object.name + "]")
@@ -287,11 +284,10 @@ class FailedQueueItem(SRQueueItem):
         self.success = False
         self.started = False
 
-    @MainDB.with_session
-    def run(self, session=None):
+    def run(self):
         self.started = True
 
-        show_object = find_show(self.show_id, session=session)
+        show_object = find_show(self.show_id)
         episode_object = show_object.get_episode(self.season, self.episode)
 
         try:
@@ -299,14 +295,14 @@ class FailedQueueItem(SRQueueItem):
 
             sickrage.app.log.info("Marking episode as bad: [" + episode_object.pretty_name() + "]")
 
-            FailedHistory.mark_failed(self.show_id, self.season, self.episode, session=session)
+            FailedHistory.mark_failed(self.show_id, self.season, self.episode)
 
-            (release, provider) = FailedHistory.find_failed_release(self.show_id, self.season, self.episode, session=session)
+            (release, provider) = FailedHistory.find_failed_release(self.show_id, self.season, self.episode)
             if release:
-                FailedHistory.log_failed(release, session=session)
-                History.log_failed(self.show_id, self.season, self.episode, release, provider, session=session)
+                FailedHistory.log_failed(release)
+                History.log_failed(self.show_id, self.season, self.episode, release, provider)
 
-            FailedHistory.revert_failed_episode(self.show_id, self.season, self.episode, session=session)
+            FailedHistory.revert_failed_episode(self.show_id, self.season, self.episode)
 
             search_result = search_providers(self.show_id, self.season, self.episode, manualSearch=True, downCurQuality=False)
             if search_result:

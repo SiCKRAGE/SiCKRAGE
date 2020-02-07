@@ -32,7 +32,7 @@ from migrate.versioning import api
 from sqlalchemy import create_engine, event, inspect
 from sqlalchemy.engine import Engine
 from sqlalchemy.exc import OperationalError
-from sqlalchemy.orm import sessionmaker, mapper
+from sqlalchemy.orm import sessionmaker, mapper, scoped_session
 from sqlalchemy.pool import QueuePool
 
 import sickrage
@@ -76,36 +76,28 @@ class ContextSession(sqlalchemy.orm.Session):
         self._lock = threading.RLock()
         self.max_attempts = 50
 
-    def safe_commit(self, close=False):
-        for i in range(self.max_attempts):
-            try:
-                self.commit()
-            except OperationalError as e:
-                self.rollback()
+    def commit(self, close=False):
+        with self._lock:
+            for i in range(self.max_attempts):
+                try:
+                    super(ContextSession, self).commit()
+                except OperationalError as e:
+                    self.rollback()
 
-                if 'database is locked' not in str(e):
+                    if 'database is locked' not in str(e):
+                        raise
+
+                    timer = random.randint(10, 30)
+                    sickrage.app.log.debug('Retrying database commit in {}s, attempt {}'.format(timer, i))
+                    sleep(timer)
+                except Exception as e:
+                    self.rollback()
                     raise
-
-                timer = random.randint(10, 30)
-                sickrage.app.log.debug('Retrying database commit in {}s, attempt {}'.format(timer, i))
-                sleep(timer)
-            except Exception as e:
-                self.rollback()
-                raise
-            else:
-                break
-            finally:
-                if close:
-                    self.close()
-
-    def __enter__(self):
-        self._lock.acquire()
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.safe_commit(close=True)
-        self._lock.release()
-
+                else:
+                    break
+                finally:
+                    if close:
+                        self.close()
 
 class SRDatabaseBase(object):
     def as_dict(self):
@@ -119,8 +111,6 @@ class SRDatabaseBase(object):
 
 
 class SRDatabase(object):
-    session = sessionmaker(class_=ContextSession)
-
     def __init__(self, name, db_version=0, db_type='sqlite', db_prefix='sickrage', db_host='localhost', db_port='3306', db_username='sickrage',
                  db_password='sickrage'):
         self.name = name
@@ -137,7 +127,7 @@ class SRDatabase(object):
         self.db_path = os.path.join(sickrage.app.data_dir, '{}.db'.format(self.name))
         self.db_repository = os.path.join(os.path.dirname(__file__), self.name, 'db_repository')
 
-        self.session.configure(bind=self.engine)
+        self.session = scoped_session(sessionmaker(class_=ContextSession, bind=self.engine))
 
         if not self.version:
             api.version_control(self.engine, self.db_repository, api.version(self.db_repository))
@@ -146,28 +136,6 @@ class SRDatabase(object):
                 api.version_control(self.engine, self.db_repository)
             except DatabaseAlreadyControlledError:
                 pass
-
-    @classmethod
-    def with_session(cls, *args, **kwargs):
-        def decorator(func):
-            def wrapper(*args, **kwargs):
-                if kwargs.get('session'):
-                    return func(*args, **kwargs)
-                with _Session() as session:
-                    kwargs['session'] = session
-                    return func(*args, **kwargs)
-
-            return wrapper
-
-        if len(args) == 1 and not kwargs and callable(args[0]):
-            # Used without arguments, e.g. @with_session
-            # We default to expire_on_commit being false, in case the decorated function returns db instances
-            _Session = functools.partial(cls.session, expire_on_commit=False)
-            return decorator(args[0])
-        else:
-            # Arguments were specified, turn them into arguments for Session creation e.g. @with_session(autocommit=True)
-            _Session = functools.partial(cls.session, *args, **kwargs)
-            return decorator
 
     @property
     def engine(self):
@@ -275,6 +243,7 @@ class SRDatabase(object):
 
                 migrate_tables[table] += [row]
 
+            session = self.session()
             for table, rows in migrate_tables.items():
                 if not len(rows):
                     continue
@@ -282,19 +251,19 @@ class SRDatabase(object):
                 sickrage.app.log.info('Migrating {} database table {}'.format(self.name, table))
 
                 try:
-                    with self.session() as session:
-                        session.query(self.tables[table]).delete()
+                    session.query(self.tables[table]).delete()
+                    session.commit()
                 except Exception:
                     pass
 
                 try:
-                    with self.session() as session:
-                        session.bulk_insert_mappings(self.tables[table], rows)
+                    session.bulk_insert_mappings(self.tables[table], rows)
+                    session.commit()
                 except Exception:
                     for row in rows:
                         try:
-                            with self.session() as session:
-                                session.add(self.tables[table](**row))
+                            session.add(self.tables[table](**row))
+                            session.commit()
                         except Exception:
                             continue
 

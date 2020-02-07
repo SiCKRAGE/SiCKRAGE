@@ -28,7 +28,6 @@ from functools import partial
 
 import sickrage
 from sickrage.core import common
-from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import sanitize_scene_name, strip_accents
 from sickrage.core.tv.show.helpers import find_show
 
@@ -164,11 +163,10 @@ def make_scene_show_search_strings(show_id, season=-1, anime=False):
         return map(sanitize_scene_name, showNames)
 
 
-@MainDB.with_session
-def make_scene_season_search_string(show_id, season, episode, extraSearchType=None, session=None):
+def make_scene_season_search_string(show_id, season, episode, extraSearchType=None):
     numseasons = 0
 
-    show_object = find_show(show_id, session=session)
+    show_object = find_show(show_id)
     episode_object = show_object.get_episode(season, episode)
 
     if show_object.air_by_date or show_object.sports:
@@ -230,11 +228,10 @@ def make_scene_season_search_string(show_id, season, episode, extraSearchType=No
     return toReturn
 
 
-@MainDB.with_session
-def make_scene_search_string(show_id, season, episode, session=None):
+def make_scene_search_string(show_id, season, episode):
     toReturn = []
 
-    show_object = find_show(show_id, session=session)
+    show_object = find_show(show_id)
     show_object = show_object.get_episode(season, episode)
 
     numseasons = len({x.season for x in show_object.episodes if x.season > 0})
@@ -271,8 +268,7 @@ def make_scene_search_string(show_id, season, episode, session=None):
     return toReturn
 
 
-@MainDB.with_session
-def all_possible_show_names(show_id, season=-1, session=None):
+def all_possible_show_names(show_id, season=-1):
     """
     Figures out every possible variation of the name for a particular show. Includes TVDB name, TVRage name,
     country codes on the end, eg. "Show Name (AU)", and any scene exception names.
@@ -285,7 +281,7 @@ def all_possible_show_names(show_id, season=-1, session=None):
 
     from sickrage.core.scene_exceptions import get_scene_exceptions
 
-    show = find_show(show_id, session=session)
+    show = find_show(show_id)
 
     show_names = get_scene_exceptions(show_id, season=season)[:]
     if not show_names:  # if we dont have any season specific exceptions fallback to generic exceptions
@@ -351,7 +347,7 @@ def determine_release_name(dir_name=None, nzb_name=None):
             found_file = found_file.rpartition('.')[0]
             if filter_bad_releases(found_file):
                 sickrage.app.log.info("Release name ({}) found from file ({})".format(found_file, results[0]))
-                return found_file.rpartition('.')[0]
+                return found_file.rpartition(b'.')[0]
 
     # If that fails, we try the folder
     folder = os.path.basename(dir_name)

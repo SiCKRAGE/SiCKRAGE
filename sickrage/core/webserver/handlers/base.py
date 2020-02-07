@@ -19,7 +19,6 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 import functools
-import json
 import os
 import threading
 import time
@@ -42,9 +41,6 @@ class BaseHandler(RequestHandler, ABC):
     def __init__(self, application, request, **kwargs):
         super(BaseHandler, self).__init__(application, request, **kwargs)
         self.startTime = time.time()
-
-        # main database session
-        self.db_session = sickrage.app.main_db.session()
 
         # template settings
         self.mako_lookup = TemplateLookup(
@@ -200,10 +196,3 @@ class BaseHandler(RequestHandler, ABC):
             return f(*args, **kwargs)
 
         return sickrage.app.io_loop.run_in_executor(None, functools.partial(wrapper, *args, **kwargs))
-
-    def on_finish(self):
-        if self.db_session:
-            self.db_session.safe_commit()
-            self.db_session.close()
-
-        super(BaseHandler, self).on_finish()

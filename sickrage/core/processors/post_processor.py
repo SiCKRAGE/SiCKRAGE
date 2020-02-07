@@ -38,7 +38,6 @@ from sickrage.core.helpers import show_names, replace_extension, make_dir, chmod
     touch_file
 from sickrage.core.helpers.anidb import get_anime_episode
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
-from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.tv.show.history import FailedHistory, History
 from sickrage.notifiers import Notifiers
@@ -503,13 +502,14 @@ class PostProcessor(object):
         self._combined_file_operation(file_path, new_path, new_base_name, associated_files,
                                       action=_int_sym_link, subs=subtitles)
 
-    @MainDB.with_session
-    def _history_lookup(self, session=None):
+    def _history_lookup(self):
         """
         Look up the NZB name in the history and see if it contains a record for self.nzb_name
 
         :return: A (indexer_id, season, [], quality, version) tuple. The first two may be None if none were found.
         """
+
+        session = sickrage.app.main_db.session()
 
         self.in_history = False
         to_return = None, None, [], None, None, None
@@ -585,8 +585,7 @@ class PostProcessor(object):
             sickrage.app.log.debug("Parse result(air_date): " + str(parse_result.air_date))
             sickrage.app.log.debug("Parse result(release_group): " + str(parse_result.release_group))
 
-    @MainDB.with_session
-    def _analyze_name(self, name, session=None):
+    def _analyze_name(self, name):
         """
         Takes a name and tries to figure out a show, season, and episode from it.
 
@@ -601,6 +600,8 @@ class PostProcessor(object):
         if not name:
             return to_return
 
+        session = sickrage.app.main_db.session()
+
         sickrage.app.log.debug("Analyzing name " + repr(name))
 
         name = remove_non_release_groups(remove_extension(name))
@@ -614,7 +615,7 @@ class PostProcessor(object):
         if parse_result.is_air_by_date:
             self._log("Looks like this is an air-by-date or sports show, attempting to convert the date to episode ID", sickrage.app.log.DEBUG)
             try:
-                episode_object = session.query(TVEpisode).filter_by(showid=parse_result.indexer_id, airdate=parse_result.air_date).one()
+                episode_object = session.query(MainDB.TVEpisode).filter_by(showid=parse_result.indexer_id, airdate=parse_result.air_date).one()
                 season = episode_object.season
                 episodes += [episode_object.episode]
             except orm.exc.MultipleResultsFound:
@@ -626,7 +627,7 @@ class PostProcessor(object):
         else:
             for episode_number in parse_result.episode_numbers:
                 try:
-                    episode_object = session.query(TVEpisode).filter_by(showid=parse_result.indexer_id, season=parse_result.season_number,
+                    episode_object = session.query(MainDB.TVEpisode).filter_by(showid=parse_result.indexer_id, season=parse_result.season_number,
                                                                         episode=episode_number).one()
                     season = episode_object.season
                     episodes += [episode_object.episode]
@@ -656,8 +657,7 @@ class PostProcessor(object):
                 except Exception as e:
                     sickrage.app.log.debug('Exception message: {0!r}'.format(e))
 
-    @MainDB.with_session
-    def _find_info(self, session=None):
+    def _find_info(self):
         """
         For a given file try to find the showid, season, and episode.
 
@@ -725,8 +725,7 @@ class PostProcessor(object):
 
         return show_id, season, episodes, quality, version, release_group
 
-    @MainDB.with_session
-    def _get_ep_obj(self, show_id, season, episodes, session=None):
+    def _get_ep_obj(self, show_id, season, episodes):
         """
         Retrieve the TVEpisode object requested.
 
@@ -738,7 +737,7 @@ class PostProcessor(object):
 
         root_ep = None
 
-        show_object = find_show(show_id, session=session)
+        show_object = find_show(show_id)
         for episode in episodes:
             episode_object = show_object.get_episode(season, episode)
 
@@ -896,13 +895,14 @@ class PostProcessor(object):
     def _add_processed_marker_file(self, file_path):
         touch_file(file_path + '.sr_processed')
 
-    @MainDB.with_session
-    def process(self, session=None):
+    def process(self):
         """
         Post-process a given file
 
         :return: True on success, False on failure
         """
+
+        session = sickrage.app.main_db.session()
 
         self._log("Processing {}".format(self.file_path))
 
@@ -928,7 +928,7 @@ class PostProcessor(object):
         # try to find the file info
         show_id, season, episodes, quality, version, release_group = self._find_info()
 
-        show_object = find_show(show_id, session=session)
+        show_object = find_show(show_id)
         if not show_object:
             self._log("This show isn't in your list, you need to add it to SiCKRAGE before post-processing an episode")
             raise EpisodePostProcessingFailedException()
@@ -937,7 +937,7 @@ class PostProcessor(object):
             return False
 
         # retrieve/create the corresponding TVEpisode objects
-        ep_obj = self._get_ep_obj(show_id, season, episodes, session=session)
+        ep_obj = self._get_ep_obj(show_id, season, episodes)
         __, old_ep_quality = Quality.split_composite_status(ep_obj.status)
 
         # get the quality of the episode we're processing
@@ -1063,7 +1063,7 @@ class PostProcessor(object):
         # Just want to keep this consistent for failed handling right now
         release_name = show_names.determine_release_name(self.folder_path, self.nzb_name)
         if release_name is not None:
-            FailedHistory.log_success(release_name, session=session)
+            FailedHistory.log_success(release_name)
         else:
             self._log("Couldn't find release in snatch history", sickrage.app.log.WARNING)
 
@@ -1150,10 +1150,10 @@ class PostProcessor(object):
         # update video file metadata
         ep_obj.update_video_metadata()
 
-        session.safe_commit()
+        session.commit()
 
         # log it to history
-        History.log_download(ep_obj.showid, ep_obj.season, ep_obj.episode, ep_obj.status, self.file_path, new_ep_quality, release_group, new_ep_version, session=session)
+        History.log_download(ep_obj.showid, ep_obj.season, ep_obj.episode, ep_obj.status, self.file_path, new_ep_quality, release_group, new_ep_version)
 
         # If any notification fails, don't stop postProcessor
         try:

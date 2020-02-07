@@ -47,7 +47,7 @@ class SceneTests(tests.SiCKRAGETestDBCase):
         if expected is None:
             expected = []
 
-        s = TVShow(1, indexer_id)
+        s = TVShow(indexer_id, 1)
         s.name = name
 
         result = show_names.all_possible_show_names(s)
@@ -74,11 +74,15 @@ class SceneTests(tests.SiCKRAGETestDBCase):
         self._test_sceneToNormalShowNames('Show Name YA', ['Show Name YA'])
 
     def test_allPossibleShowNames(self):
-        sickrage.app.cache_db.session.add(CacheDB.SceneException(**{
+        session = sickrage.app.cache_db.session()
+
+        session.add(CacheDB.SceneException(**{
             'indexer_id': 1,
             'show_name': 'Exception Test',
             'season': -1
         }))
+
+        session.commit()
 
         exceptionsCache[-1] = ['Exception Test']
         countryList['Full Country Name'] = 'FCN'
@@ -120,8 +124,12 @@ class SceneExceptionTestCase(tests.SiCKRAGETestDBCase):
         self.assertEqual(get_scene_exception_by_name('nothing useful'), (None, None))
 
     def test_sceneExceptionsResetNameCache(self):
+        # create database session
+        session = sickrage.app.cache_db.session()
+
         # clear the exceptions
-        sickrage.app.cache_db.session.query(CacheDB.SceneException).delete()
+        session.query(CacheDB.SceneException).delete()
+        session.commit()
 
         # put something in the cache
         sickrage.app.name_cache.put('Cached Name', 0)

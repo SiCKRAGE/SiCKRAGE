@@ -30,7 +30,7 @@ from tornado.web import authenticated
 
 import sickrage
 from sickrage.core.helpers import remove_article
-from sickrage.core.tv.episode import TVEpisode
+from sickrage.core.databases.main import MainDB
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
 from sickrage.core.tv.show.helpers import get_show_list
 from sickrage.core.webserver import ApiHandler
@@ -66,8 +66,10 @@ class APIBulderHandler(BaseHandler, ABC):
         def titler(x):
             return (remove_article(x), x)[not x or sickrage.app.config.sort_article]
 
+        session = sickrage.app.main_db.session()
+
         episodes = {}
-        for result in self.db_session.query(TVEpisode).order_by(TVEpisode.season, TVEpisode.episode):
+        for result in session.query(MainDB.TVEpisode).order_by(MainDB.TVEpisode.season, MainDB.TVEpisode.episode):
             if result.showid not in episodes:
                 episodes[result.showid] = {}
 

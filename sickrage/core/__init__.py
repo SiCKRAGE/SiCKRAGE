@@ -65,6 +65,7 @@ from sickrage.core.searchers.failed_snatch_searcher import FailedSnatchSearcher
 from sickrage.core.searchers.proper_searcher import ProperSearcher
 from sickrage.core.searchers.subtitle_searcher import SubtitleSearcher
 from sickrage.core.searchers.trakt_searcher import TraktSearcher
+from sickrage.core.tv.show.helpers import get_show_list
 from sickrage.core.ui import Notifications
 from sickrage.core.updaters.rsscache_updater import RSSCacheUpdater
 from sickrage.core.updaters.show_updater import ShowUpdater

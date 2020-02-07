@@ -45,8 +45,7 @@ class ComingEpisodes:
         pass
 
     @staticmethod
-    @MainDB.with_session
-    def get_coming_episodes(categories, sort, group, paused=False, session=None):
+    def get_coming_episodes(categories, sort, group, paused=False):
         """
         :param categories: The categories of coming episodes. See ``ComingEpisodes.categories``
         :param sort: The sort to apply to the coming episodes. See ``ComingEpisodes.sorts``
@@ -96,7 +95,7 @@ class ComingEpisodes:
                          Quality.IGNORED
 
         results = []
-        for s in get_show_list(session=session):
+        for s in get_show_list():
             for e in s.episodes:
                 if e.season == 0:
                     continue

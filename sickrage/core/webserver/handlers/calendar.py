@@ -26,9 +26,7 @@ import dateutil
 from tornado.web import authenticated
 
 import sickrage
-from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import try_int
-from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
 
@@ -64,7 +62,7 @@ class CalendarHandler(BaseHandler, ABC):
         future_date = datetime.date.today() + datetime.timedelta(weeks=52)
 
         # Get all the shows that are not paused and are currently on air (from kjoconnor Fork)
-        for show in get_show_list(session=self.db_session):
+        for show in get_show_list():
             if show.status.lower() not in ['continuing', 'returning series'] or show.paused:
                 continue
 

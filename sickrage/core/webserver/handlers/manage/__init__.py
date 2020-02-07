@@ -34,22 +34,20 @@ from sickrage.core.helpers.anidb import get_release_groups_for_anime, short_grou
 from sickrage.core.queues.search import BacklogQueueItem, FailedQueueItem
 from sickrage.core.scene_exceptions import get_scene_exceptions, update_scene_exceptions
 from sickrage.core.scene_numbering import xem_refresh
-from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
 from sickrage.indexers import IndexerApi
 from sickrage.subtitles import Subtitles
 
 
-@MainDB.with_session
-def set_episode_status(show, eps, status, direct=None, session=None):
+def set_episode_status(show, eps, status, direct=None):
     if int(status) not in statusStrings:
         err_msg = _("Invalid status")
         if direct:
             sickrage.app.alerts.error(_('Error'), err_msg)
         return False, err_msg
 
-    show_obj = find_show(int(show), session=session)
+    show_obj = find_show(int(show))
 
     if not show_obj:
         err_msg = _("Error", "Show not in show list")
@@ -159,12 +157,10 @@ def set_episode_status(show, eps, status, direct=None, session=None):
     return True, ""
 
 
-@MainDB.with_session
 def edit_show(show, any_qualities, best_qualities, exceptions_list, location=None, flatten_folders=None, paused=None, direct_call=None, air_by_date=None,
               sports=None, dvdorder=None, indexer_lang=None, subtitles=None, sub_use_sr_metadata=None, skip_downloaded=None, rls_ignore_words=None,
-              rls_require_words=None, anime=None, blacklist=None, whitelist=None, scene=None, default_ep_status=None, quality_preset=None, search_delay=None,
-              session=None):
-    show_obj = find_show(int(show), session=session)
+              rls_require_words=None, anime=None, blacklist=None, whitelist=None, scene=None, default_ep_status=None, quality_preset=None, search_delay=None):
+    show_obj = find_show(int(show))
 
     if not show_obj:
         err_msg = _("Unable to find the specified show: ") + str(show)
@@ -294,7 +290,7 @@ def edit_show(show, any_qualities, best_qualities, exceptions_list, location=Non
 
     if do_update_scene_numbering:
         try:
-            xem_refresh(show_obj.indexer_id, show_obj.indexer, True, session=session)
+            xem_refresh(show_obj.indexer_id, show_obj.indexer, True)
         except CantUpdateShowException:
             warnings.append(_("Unable to force an update on scene numbering of the show."))
 
@@ -329,12 +325,15 @@ class ShowEpisodeStatusesHandler(BaseHandler, ABC):
         indexer_id = self.get_argument('indexer_id')
         which_status = self.get_argument('whichStatus')
 
+        session = sickrage.app.main_db.session()
+
         status_list = [int(which_status)]
         if status_list[0] == SNATCHED:
             status_list = Quality.SNATCHED + Quality.SNATCHED_PROPER
 
         result = {}
-        for dbData in self.db_session.query(TVEpisode).filter_by(showid=int(indexer_id)).filter(TVEpisode.season != 0, TVEpisode.status.in_(status_list)):
+        for dbData in session.query(MainDB.TVEpisode).filter_by(showid=int(indexer_id)).filter(MainDB.TVEpisode.season != 0,
+                                                                                               MainDB.TVEpisode.status.in_(status_list)):
             cur_season = int(dbData.season)
             cur_episode = int(dbData.episode)
 
@@ -363,7 +362,7 @@ class EpisodeStatusesHandler(BaseHandler, ABC):
 
         # if we have no status then this is as far as we need to go
         if len(status_list):
-            for show in sorted(get_show_list(session=self.db_session), key=lambda d: d.name):
+            for show in sorted(get_show_list(), key=lambda d: d.name):
                 for episode in show.episodes:
                     if episode.season != 0 and episode.status in status_list:
                         if show.indexer_id not in ep_counts:
@@ -395,6 +394,8 @@ class ChangeEpisodeStatusesHandler(BaseHandler, ABC):
         old_status = self.get_argument('oldStatus')
         new_status = self.get_argument('newStatus')
 
+        session = sickrage.app.main_db.session()
+
         status_list = [int(old_status)]
         if status_list[0] == SNATCHED:
             status_list = Quality.SNATCHED + Quality.SNATCHED_PROPER
@@ -413,8 +414,8 @@ class ChangeEpisodeStatusesHandler(BaseHandler, ABC):
             # get a list of all the eps we want to change if they just said "all"
             if 'all' in to_change[cur_indexer_id]:
                 all_eps = ['{}x{}'.format(x.season, x.episode) for x in
-                           self.db_session.query(TVEpisode).filter_by(showid=int(cur_indexer_id)).filter(TVEpisode.status.in_(status_list),
-                                                                                                         TVEpisode.season != 0)]
+                           session.query(MainDB.TVEpisode).filter_by(showid=int(cur_indexer_id)).filter(MainDB.TVEpisode.status.in_(status_list),
+                                                                                                        MainDB.TVEpisode.season != 0)]
                 to_change[cur_indexer_id] = all_eps
 
             set_episode_status(show=cur_indexer_id, eps='|'.join(to_change[cur_indexer_id]), status=new_status, direct=True)
@@ -444,9 +445,12 @@ class ShowSubtitleMissedHandler(BaseHandler, ABC):
         indexer_id = self.get_argument('indexer_id')
         which_subs = self.get_argument('whichSubs')
 
+        session = sickrage.app.main_db.session()
+
         result = {}
-        for dbData in self.db_session.query(TVEpisode).filter_by(showid=int(indexer_id)).filter(TVEpisode.status.endswith(4),
-                                                                                                TVEpisode.season != 0):
+
+        for dbData in session.query(MainDB.TVEpisode).filter_by(showid=int(indexer_id)).filter(MainDB.TVEpisode.status.endswith(4),
+                                                                                               MainDB.TVEpisode.season != 0):
             if which_subs == 'all':
                 if not frozenset(Subtitles().wanted_languages()).difference(dbData.subtitles.split(',')):
                     continue
@@ -480,7 +484,7 @@ class SubtitleMissedHandler(BaseHandler, ABC):
         status_results = []
 
         if which_subs:
-            for s in get_show_list(session=self.db_session):
+            for s in get_show_list():
                 if not s.subtitles == 1:
                     continue
 
@@ -527,6 +531,8 @@ class SubtitleMissedHandler(BaseHandler, ABC):
 class DownloadSubtitleMissedHandler(BaseHandler, ABC):
     @authenticated
     def post(self, *args, **kwargs):
+        session = sickrage.app.main_db.session()
+
         # make a list of all shows and their associated args
         to_download = {}
         for arg in self.get_arguments('toDownload'):
@@ -541,13 +547,13 @@ class DownloadSubtitleMissedHandler(BaseHandler, ABC):
             # get a list of all the eps we want to download subtitles if they just said "all"
             if 'all' in to_download[cur_indexer_id]:
                 to_download[cur_indexer_id] = ['{}x{}'.format(x.season, x.episode) for x in
-                                               self.db_session.query(TVEpisode).filter_by(showid=int(cur_indexer_id)).filter(
-                                                   TVEpisode.status.endswith(4), TVEpisode.season != 0)]
+                                               session.query(MainDB.TVEpisode).filter_by(showid=int(cur_indexer_id)).filter(
+                                                   MainDB.TVEpisode.status.endswith(4), MainDB.TVEpisode.season != 0)]
 
             for epResult in to_download[cur_indexer_id]:
                 season, episode = epResult.split('x')
 
-                show = find_show(int(cur_indexer_id), session=self.db_session)
+                show = find_show(int(cur_indexer_id))
                 show.get_episode(int(season), int(episode)).download_subtitles()
 
         return self.redirect('/manage/subtitleMissed/')
@@ -558,7 +564,7 @@ class BacklogShowHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         indexer_id = self.get_argument('indexer_id')
 
-        sickrage.app.backlog_searcher.search_backlog(int(indexer_id), session=self.db_session)
+        sickrage.app.backlog_searcher.search_backlog(int(indexer_id))
 
         return self.redirect("/manage/backlogOverview/")
 
@@ -570,7 +576,7 @@ class BacklogOverviewHandler(BaseHandler, ABC):
         show_cats = {}
         show_results = {}
 
-        for curShow in get_show_list(session=self.db_session):
+        for curShow in get_show_list():
             if curShow.paused:
                 continue
 
@@ -620,7 +626,7 @@ class EditShowHandler(BaseHandler, ABC):
 
         groups = []
 
-        show_obj = find_show(int(show), session=self.db_session)
+        show_obj = find_show(int(show))
 
         if not show_obj:
             err_string = _("Unable to find the specified show: ") + str(show)
@@ -711,7 +717,7 @@ class MassEditHandler(BaseHandler, ABC):
         show_list = []
         show_names = []
         for curID in show_ids:
-            show_obj = find_show(curID, session=self.db_session)
+            show_obj = find_show(curID)
             if show_obj:
                 show_list.append(show_obj)
                 show_names.append(show_obj.name)
@@ -884,7 +890,7 @@ class MassEditHandler(BaseHandler, ABC):
             cur_warnings = []
             cur_errors = []
 
-            show_obj = find_show(int(curShow), session=self.db_session)
+            show_obj = find_show(int(curShow))
             if not show_obj:
                 continue
 
@@ -1028,7 +1034,7 @@ class MassUpdateHandler(BaseHandler, ABC):
             if curShowID == '':
                 continue
 
-            show_obj = find_show(int(curShowID), session=self.db_session)
+            show_obj = find_show(int(curShowID))
             if show_obj is None:
                 continue
 
@@ -1101,15 +1107,16 @@ class FailedDownloadsHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         limit = self.get_argument('limit', None) or 100
 
-        if int(limit) == 0:
-            dbData = self.db_session.query(MainDB.FailedSnatch).all()
-        else:
-            dbData = self.db_session.query(MainDB.FailedSnatch).limit(int(limit)).all()
+        session = sickrage.app.main_db.session()
+
+        query = session.query(MainDB.FailedSnatch)
+        if int(limit):
+            query = session.query(MainDB.FailedSnatch).limit(int(limit))
 
         return self.render(
             "/manage/failed_downloads.mako",
             limit=int(limit),
-            failedResults=dbData,
+            failedResults=query.all(),
             title=_('Failed Downloads'),
             header=_('Failed Downloads'),
             topmenu='manage',
@@ -1120,7 +1127,11 @@ class FailedDownloadsHandler(BaseHandler, ABC):
     @authenticated
     def post(self, *args, **kwargs):
         to_remove = self.get_argument('toRemove', None)
+
+        session = sickrage.app.main_db.session()
+
         if to_remove:
             to_remove = to_remove.split("|")
-            self.db_session.query(MainDB.FailedSnatch).filter(MainDB.FailedSnatch.release.in_(to_remove)).delete(synchronize_session=False)
+            session.query(MainDB.FailedSnatch).filter(MainDB.FailedSnatch.release.in_(to_remove)).delete(synchronize_session=False)
+            session.commit()
             return self.redirect('/manage/failedDownloads/')

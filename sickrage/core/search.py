@@ -30,29 +30,28 @@ from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import show_names
 from sickrage.core.nzbSplitter import split_nzb_result
-from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.tv.show.history import FailedHistory, History
 from sickrage.notifiers import Notifiers
 from sickrage.providers import NZBProvider, NewznabProvider, TorrentProvider, TorrentRssProvider
 
 
-@MainDB.with_session
-def snatch_episode(result, end_status=SNATCHED, session=None):
+def snatch_episode(result, end_status=SNATCHED):
     """
     Contains the internal logic necessary to actually "snatch" a result that
     has been found.
 
     :param result: SearchResult instance to be snatched.
     :param end_status: the episode status that should be used for the episode object once it's snatched.
-    :param session: Database session.
     :return: boolean, True on success
     """
 
     if result is None:
         return False
 
-    show_object = find_show(result.show_id, session=session)
+    session = sickrage.app.main_db.session()
+
+    show_object = find_show(result.show_id)
 
     result.priority = 0  # -1 = low, 0 = normal, 1 = high
     if sickrage.app.config.allow_high_priority:
@@ -72,10 +71,10 @@ def snatch_episode(result, end_status=SNATCHED, session=None):
         if sickrage.app.config.nzb_method == "blackhole":
             dlResult = result.provider.download_result(result)
         elif sickrage.app.config.nzb_method == "sabnzbd":
-            dlResult = SabNZBd.sendNZB(result, session=session)
+            dlResult = SabNZBd.sendNZB(result)
         elif sickrage.app.config.nzb_method == "nzbget":
             is_proper = True if end_status == SNATCHED_PROPER else False
-            dlResult = NZBGet.sendNZB(result, is_proper, session=session)
+            dlResult = NZBGet.sendNZB(result, is_proper)
         else:
             sickrage.app.log.error("Unknown NZB action specified in config: " + sickrage.app.config.nzb_method)
     elif result.type in ("torrent", "torznab"):
@@ -98,8 +97,8 @@ def snatch_episode(result, end_status=SNATCHED, session=None):
     if not dlResult:
         return False
 
-    FailedHistory.log_snatch(result, session=session)
-    History.log_snatch(result, session=session)
+    FailedHistory.log_snatch(result)
+    History.log_snatch(result)
 
     sickrage.app.alerts.message(_('Episode snatched'), result.name)
 
@@ -112,7 +111,7 @@ def snatch_episode(result, end_status=SNATCHED, session=None):
         else:
             episode_obj.status = Quality.composite_status(end_status, result.quality)
 
-        session.safe_commit()
+        session.commit()
 
         # don't notify when we re-download an episode
         if episode_obj.status not in Quality.DOWNLOADED:
@@ -132,8 +131,7 @@ def snatch_episode(result, end_status=SNATCHED, session=None):
     return True
 
 
-@MainDB.with_session
-def pick_best_result(results, season_pack=False, session=None):
+def pick_best_result(results, season_pack=False):
     """
     Find the best result out of a list of search results for a show
 
@@ -141,6 +139,9 @@ def pick_best_result(results, season_pack=False, session=None):
     :param show_id: Show ID we check for
     :return: best result object
     """
+
+    session = sickrage.app.main_db.session()
+
     results = results if isinstance(results, list) else [results]
 
     sickrage.app.log.debug("Picking the best result out of " + str([x.name for x in results]))
@@ -181,14 +182,12 @@ def pick_best_result(results, season_pack=False, session=None):
 
         if show_obj.rls_ignore_words and show_names.contains_at_least_one_word(cur_result.name,
                                                                                show_obj.rls_ignore_words):
-            sickrage.app.log.info(
-                "Ignoring " + cur_result.name + " based on ignored words filter: " + show_obj.rls_ignore_words)
+            sickrage.app.log.info("Ignoring " + cur_result.name + " based on ignored words filter: " + show_obj.rls_ignore_words)
             continue
 
         if show_obj.rls_require_words and not show_names.contains_at_least_one_word(cur_result.name,
                                                                                     show_obj.rls_require_words):
-            sickrage.app.log.info(
-                "Ignoring " + cur_result.name + " based on required words filter: " + show_obj.rls_require_words)
+            sickrage.app.log.info("Ignoring " + cur_result.name + " based on required words filter: " + show_obj.rls_require_words)
             continue
 
         if not show_names.filter_bad_releases(cur_result.name, parse=False):
@@ -196,7 +195,7 @@ def pick_best_result(results, season_pack=False, session=None):
             continue
 
         if hasattr(cur_result, 'size'):
-            if FailedHistory.has_failed(cur_result.name, cur_result.size, cur_result.provider.name, session=session):
+            if FailedHistory.has_failed(cur_result.name, cur_result.size, cur_result.provider.name):
                 sickrage.app.log.info(cur_result.name + " has previously failed, rejecting it")
                 continue
 
@@ -206,7 +205,7 @@ def pick_best_result(results, season_pack=False, session=None):
                     quality_size = sickrage.app.config.quality_sizes[cur_result.quality]
 
                     if season_pack and not len(cur_result.episodes):
-                        episode_count = session.query(TVEpisode).filter_by(showid=show_obj.indexer_id, season=cur_result.season).count()
+                        episode_count = session.query(MainDB.TVEpisode).filter_by(showid=show_obj.indexer_id, season=cur_result.season).count()
                         file_size = float(cur_result.size / episode_count / 1000000)
                     else:
                         file_size = float(cur_result.size / len(cur_result.episodes) / 1000000)
@@ -224,8 +223,7 @@ def pick_best_result(results, season_pack=False, session=None):
                     # Attempt downloading unverified torrent magnet link
                     pass
                 else:
-                    sickrage.app.log.info(
-                        "Ignoring {} because we are unable to verify the download url".format(cur_result.name))
+                    sickrage.app.log.info("Ignoring {} because we are unable to verify the download url".format(cur_result.name))
                     continue
 
         if not best_result:
@@ -306,8 +304,7 @@ def is_first_best_match(result):
     return False
 
 
-@MainDB.with_session
-def search_providers(show_id, season, episode, manualSearch=False, downCurQuality=False, cacheOnly=False, session=None):
+def search_providers(show_id, season, episode, manualSearch=False, downCurQuality=False, cacheOnly=False):
     """
     Walk providers for information on shows
 
@@ -320,7 +317,9 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
 
     orig_thread_name = threading.currentThread().getName()
 
-    show_object = find_show(show_id, session=session)
+    session = sickrage.app.main_db.session()
+
+    show_object = find_show(show_id)
 
     # build name cache for show
     sickrage.app.name_cache.build(show_object)
@@ -423,7 +422,7 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
             season_qual = best_season_result.quality
             sickrage.app.log.debug("The quality of the season " + best_season_result.provider.type + " is " + Quality.qualityStrings[season_qual])
 
-            all_episodes = set([x.episode for x in session.query(TVEpisode).filter_by(showid=best_season_result.show_id, season=best_season_result.season)])
+            all_episodes = set([x.episode for x in session.query(MainDB.TVEpisode).filter_by(showid=best_season_result.show_id, season=best_season_result.season)])
 
             sickrage.app.log.debug("Episodes list: {}".format(','.join(map(str, all_episodes))))
 

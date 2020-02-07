@@ -35,8 +35,7 @@ class DailySearcher(object):
         self.lock = threading.Lock()
         self.amActive = False
 
-    @MainDB.with_session
-    def run(self, force=False, session=None):
+    def run(self, force=False):
         """
         Runs the daily searcher, queuing selected episodes for search
         :param force: Force search
@@ -52,7 +51,7 @@ class DailySearcher(object):
         # find new released episodes and update their statuses
         new_episode_finder()
 
-        for curShow in get_show_list(session=session):
+        for curShow in get_show_list():
             if curShow.paused:
                 sickrage.app.log.debug("Skipping search for {} because the show is paused".format(curShow.name))
                 continue

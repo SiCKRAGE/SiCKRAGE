@@ -50,7 +50,7 @@ class PPInitTests(tests.SiCKRAGETestCase):
 
 class PPBasicTests(tests.SiCKRAGETestDBCase):
     def test_process(self):
-        show = TVShow(1, 3)
+        show = TVShow(3, 1)
         show.name = self.SHOWNAME
         show.location = self.SHOWDIR
         sickrage.app.showlist = [show]
@@ -70,7 +70,7 @@ class PPMultiEPTests(tests.SiCKRAGETestDBCase):
         super(PPMultiEPTests, self).setUp()
 
     def test_process(self):
-        show = TVShow(1, 3)
+        show = TVShow(3, 1)
         show.name = self.SHOWNAME
         show.location = self.SHOWDIR
         sickrage.app.showlist = [show]

@@ -33,7 +33,6 @@ from sickrage.core.exceptions import CantRefreshShowException, CantRemoveShowExc
 from sickrage.core.queues import SRQueue, SRQueueItem, SRQueuePriorities
 from sickrage.core.scene_numbering import xem_refresh, get_xem_numbering_for_show
 from sickrage.core.traktapi import TraktAPI
-from sickrage.core.tv.show import TVShow
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_attributenotfound, indexer_error, indexer_exception
@@ -239,8 +238,9 @@ class QueueItemAdd(ShowQueueItem):
         if find_show(self.indexer_id):
             return True
 
-    @MainDB.with_session
-    def run(self, session=None):
+    def run(self):
+        session = sickrage.app.main_db.session()
+
         start_time = time.time()
 
         sickrage.app.log.info("Started adding show {} from show dir: {}".format(self.show_name, self.showDir))
@@ -311,10 +311,10 @@ class QueueItemAdd(ShowQueueItem):
             return self._finish_early()
 
         # add show to database
-        session.add(TVShow(**{'indexer': self.indexer, 'indexer_id': self.indexer_id, 'lang': self.lang, 'location': self.showDir}))
-        session.safe_commit()
+        session.add(MainDB.TVShow(**{'indexer_id': self.indexer_id, 'indexer': self.indexer, 'lang': self.lang, 'location': self.showDir}))
+        session.commit()
 
-        show_obj = find_show(self.indexer_id, session=session)
+        show_obj = find_show(self.indexer_id)
         if not show_obj:
             return self._finish_early()
 
@@ -337,7 +337,7 @@ class QueueItemAdd(ShowQueueItem):
             show_obj.default_ep_status = self.default_status
 
             # save to database
-            session.safe_commit()
+            session.commit()
 
             if show_obj.anime:
                 if self.blacklist:
@@ -385,9 +385,6 @@ class QueueItemAdd(ShowQueueItem):
             sickrage.app.log.debug("Error searching dir for episodes: {}".format(e))
             sickrage.app.log.debug(traceback.format_exc())
 
-        # save to database
-        session.safe_commit()
-
         sickrage.app.io_loop.add_callback(show_obj.write_metadata, force=True)
         sickrage.app.io_loop.add_callback(show_obj.populate_cache)
 
@@ -404,21 +401,21 @@ class QueueItemAdd(ShowQueueItem):
                 sickrage.app.notifier_providers['trakt'].update_watchlist(show_obj)
 
         # Load XEM data to DB for show
-        xem_refresh(show_obj.indexer_id, show_obj.indexer, force=True, session=session)
+        xem_refresh(show_obj.indexer_id, show_obj.indexer, force=True)
 
         # check if show has XEM mapping so we can determine if searches should go by scene numbering or indexer
         # numbering.
-        if not self.scene and get_xem_numbering_for_show(show_obj.indexer_id, show_obj.indexer, session=session):
+        if not self.scene and get_xem_numbering_for_show(show_obj.indexer_id, show_obj.indexer):
             show_obj.scene = 1
-            session.safe_commit()
+            session.commit()
 
         # if they set default ep status to WANTED then run the backlog to search for episodes
         if show_obj.default_ep_status == WANTED:
             sickrage.app.log.info(_("Launching backlog for this show since it has episodes that are WANTED"))
-            sickrage.app.io_loop.add_callback(sickrage.app.backlog_searcher.search_backlog, show_obj.indexer_id, session=session)
+            sickrage.app.io_loop.add_callback(sickrage.app.backlog_searcher.search_backlog, show_obj.indexer_id)
 
         show_obj.default_ep_status = self.default_status_after
-        session.safe_commit()
+        session.commit()
 
         sickrage.app.quicksearch_cache.add_show(show_obj.indexer_id)
 
@@ -438,9 +435,8 @@ class QueueItemRefresh(ShowQueueItem):
         # force refresh certain items
         self.force = force
 
-    @MainDB.with_session
-    def run(self, session=None):
-        show_obj = find_show(self.indexer_id, session=session)
+    def run(self):
+        show_obj = find_show(self.indexer_id)
 
         start_time = time.time()
 
@@ -463,9 +459,8 @@ class QueueItemRename(ShowQueueItem):
     def __init__(self, indexer_id=None):
         super(QueueItemRename, self).__init__(indexer_id, ShowQueueActions.RENAME)
 
-    @MainDB.with_session
-    def run(self, session=None):
-        show_obj = find_show(self.indexer_id, session=session)
+    def run(self):
+        show_obj = find_show(self.indexer_id)
 
         sickrage.app.log.info("Performing renames for show: {}".format(show_obj.name))
 
@@ -503,9 +498,8 @@ class QueueItemSubtitle(ShowQueueItem):
     def __init__(self, indexer_id=None):
         super(QueueItemSubtitle, self).__init__(indexer_id, ShowQueueActions.SUBTITLE)
 
-    @MainDB.with_session
-    def run(self, session=None):
-        show_obj = find_show(self.indexer_id, session=session)
+    def run(self):
+        show_obj = find_show(self.indexer_id)
 
         sickrage.app.log.info("Started downloading subtitles for show: {}".format(show_obj.name))
 
@@ -520,9 +514,10 @@ class QueueItemUpdate(ShowQueueItem):
         self.indexer_update_only = indexer_update_only
         self.force = False
 
-    @MainDB.with_session
-    def run(self, session=None):
-        show_obj = find_show(self.indexer_id, session=session)
+    def run(self):
+        session = sickrage.app.main_db.session()
+
+        show_obj = find_show(self.indexer_id)
 
         start_time = time.time()
 
@@ -577,7 +572,7 @@ class QueueItemUpdate(ShowQueueItem):
 
         sickrage.app.log.info("Finished updates in {}s for show: {}".format(round(time.time() - start_time, 2), show_obj.name))
 
-        session.safe_commit()
+        session.commit()
 
         # refresh show
         if not self.indexer_update_only:
@@ -606,9 +601,8 @@ class QueueItemRemove(ShowQueueItem):
         """
         return False
 
-    @MainDB.with_session
-    def run(self, session=None):
-        show_obj = find_show(self.indexer_id, session=session)
+    def run(self):
+        show_obj = find_show(self.indexer_id)
 
         sickrage.app.log.info("Removing show: {}".format(show_obj.name))
 

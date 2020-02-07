@@ -30,8 +30,8 @@ from dateutil import parser
 from sqlalchemy import orm
 
 import sickrage
-from sickrage.core.databases.main import MainDB
 from sickrage.core import scene_exceptions, common
+from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import MultipleShowObjectsException
 from sickrage.core.helpers import remove_extension, strip_accents
 from sickrage.core.nameparser import regexes
@@ -149,10 +149,11 @@ class NameParser(object):
                 else:
                     self.compiled_regexes.append((cur_pattern_num, cur_pattern_name, cur_regex))
 
-    @MainDB.with_session
-    def _parse_string(self, name, skip_scene_detection=False, session=None):
+    def _parse_string(self, name, skip_scene_detection=False):
         if not name:
             return
+
+        session = sickrage.app.main_db.session()
 
         matches = []
         best_result = None
@@ -255,7 +256,7 @@ class NameParser(object):
             if not self.naming_pattern:
                 # try and create a show object for this result
                 best_result.indexer_id = self.get_show(best_result.series_name)
-                show_obj = find_show(best_result.indexer_id, session=session)
+                show_obj = find_show(best_result.indexer_id)
 
             # if this is a naming pattern test or result doesn't have a show object then return best result
             if not show_obj or self.naming_pattern:
@@ -271,8 +272,7 @@ class NameParser(object):
             # if we have an air-by-date show then get the real season/episode numbers
             if best_result.is_air_by_date:
                 try:
-                    from sickrage.core.tv.episode import TVEpisode
-                    dbData = session.query(TVEpisode).filter_by(showid=show_obj.indexer_id, indexer=show_obj.indexer, airdate=best_result.air_date).one()
+                    dbData = session.query(MainDB.TVEpisode).filter_by(showid=show_obj.indexer_id, indexer=show_obj.indexer, airdate=best_result.air_date).one()
                     season_number = int(dbData.season)
                     episode_numbers = [int(dbData.episode)]
                 except (orm.exc.NoResultFound, orm.exc.MultipleResultsFound):
@@ -308,7 +308,7 @@ class NameParser(object):
                         (s, e) = get_indexer_numbering(show_obj.indexer_id,
                                                        show_obj.indexer,
                                                        season_number,
-                                                       epNo, session=session)
+                                                       epNo)
                     new_episode_numbers.append(e)
                     new_season_numbers.append(s)
 
@@ -320,7 +320,7 @@ class NameParser(object):
                         scene_season = scene_exceptions.get_scene_exception_by_name(best_result.series_name)[1]
                         a = get_indexer_absolute_numbering(show_obj.indexer_id,
                                                            show_obj.indexer, epAbsNo,
-                                                           True, scene_season, session=session)
+                                                           True, scene_season)
 
                     (s, e) = show_obj.get_all_episodes_from_absolute_number([a])
 
@@ -337,9 +337,9 @@ class NameParser(object):
                         (s, e) = get_indexer_numbering(show_obj.indexer_id,
                                                        show_obj.indexer,
                                                        best_result.season_number,
-                                                       epNo, session=session)
+                                                       epNo)
                     if show_obj.is_anime:
-                        a = get_absolute_number_from_season_and_episode(show_obj.indexer_id, s, e, session=session)
+                        a = get_absolute_number_from_season_and_episode(show_obj.indexer_id, s, e)
                         if a:
                             new_absolute_numbers.append(a)
 

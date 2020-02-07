@@ -66,7 +66,7 @@ class HoundDawgsProvider(TorrentProvider):
 
         if any([re.search('Dit brugernavn eller kodeord er forkert.', response),
                 re.search('<title>Login :: HoundDawgs</title>', response),
-                re.search('Dine cookies er ikke aktiveret.', response)], ):
+                re.search('Dine cookies er ikke aktiveret.', response)]):
             sickrage.app.log.warning('Invalid username or password. Check your settings')
             return False
 

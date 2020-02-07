@@ -24,10 +24,9 @@ import threading
 from sqlalchemy import or_, and_
 
 import sickrage
-from sickrage.subtitles import Subtitles
 from sickrage.core.databases.main import MainDB
-from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import get_show_list, find_show
+from sickrage.subtitles import Subtitles
 
 
 class SubtitleSearcher(object):
@@ -40,8 +39,7 @@ class SubtitleSearcher(object):
         self.name = "SUBTITLESEARCHER"
         self.amActive = False
 
-    @MainDB.with_session
-    def run(self, force=False, session=None):
+    def run(self, force=False):
         if self.amActive or not sickrage.app.config.use_subtitles and not force:
             return
 
@@ -53,6 +51,8 @@ class SubtitleSearcher(object):
         if len(Subtitles().getEnabledServiceList()) < 1:
             sickrage.app.log.warning('Not enough services selected. At least 1 service is required to search subtitles in the background')
             return
+
+        session = sickrage.app.main_db.session()
 
         sickrage.app.log.info('Checking for subtitles')
 
@@ -71,12 +71,10 @@ class SubtitleSearcher(object):
             if s.subtitles != 1:
                 continue
 
-            for e in session.query(TVEpisode).filter_by(showid=s.indexer_id).filter(
-                    TVEpisode.location != '', ~TVEpisode.subtitles.in_(
-                        Subtitles().wanted_languages()
-                    ), or_(TVEpisode.subtitles_searchcount <= 2,
-                           and_(TVEpisode.subtitles_searchcount <= 7,
-                                datetime.date.today() - TVEpisode.airdate))):
+            for e in session.query(MainDB.TVEpisode).filter_by(showid=s.indexer_id).filter(MainDB.TVEpisode.location != '', ~MainDB.TVEpisode.subtitles.in_(
+                    Subtitles().wanted_languages()
+            ), or_(MainDB.TVEpisode.subtitles_searchcount <= 2, and_(MainDB.TVEpisode.subtitles_searchcount <= 7,
+                                                                     datetime.date.today() - MainDB.TVEpisode.airdate))):
                 results += [{
                     'show_name': s.name,
                     'show_id': s.indexer_id,
@@ -95,7 +93,7 @@ class SubtitleSearcher(object):
             return
 
         for epToSub in results:
-            show_object = find_show(epToSub['show_id'], session=session)
+            show_object = find_show(epToSub['show_id'])
             episode_object = show_object.get_episode(epToSub['season'], epToSub['episode'])
 
             if not os.path.isfile(epToSub['location']):

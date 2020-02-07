@@ -49,8 +49,7 @@ class NewpctProvider(TorrentProvider):
 
         self.cache = NewpctCache(self, min_time=20)
 
-    @MainDB.with_session
-    def _get_season_search_strings(self, show_id, season, episode, session=None):
+    def _get_season_search_strings(self, show_id, season, episode):
         """
         Get season search strings.
         """
@@ -64,7 +63,7 @@ class NewpctProvider(TorrentProvider):
                           '%s/capitulo-%s%s/hdtv-1080p-ac3-5-1/',
                           '%s/capitulo-%s%s/bluray-1080p/']
 
-        show_object = find_show(show_id, session=session)
+        show_object = find_show(show_id)
         episode_object = show_object.get_episode(season, episode)
 
         for show_name in all_possible_show_names(show_id, episode_object.scene_season):
@@ -76,13 +75,12 @@ class NewpctProvider(TorrentProvider):
 
         return [search_strings]
 
-    @MainDB.with_session
-    def _get_episode_search_strings(self, show_id, season, episode, add_string='', session=None):
+    def _get_episode_search_strings(self, show_id, season, episode, add_string=''):
         """
         Get episode search strings.
         """
 
-        show_object = find_show(show_id, session=session)
+        show_object = find_show(show_id)
         episode_object = show_object.get_episode(season, episode)
 
         search_strings = {

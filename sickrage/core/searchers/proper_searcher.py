@@ -34,7 +34,6 @@ from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import remove_non_release_groups
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
 from sickrage.core.search import pick_best_result, snatch_episode
-from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.providers import NZBProvider, NewznabProvider, TorrentProvider, TorrentRssProvider
 
@@ -69,11 +68,12 @@ class ProperSearcher(object):
 
         self.amActive = False
 
-    @MainDB.with_session
-    def _get_proper_list(self, session=None):
+    def _get_proper_list(self):
         """
         Walk providers for propers
         """
+
+        session = sickrage.app.main_db.session()
 
         propers = {}
         final_propers = []
@@ -82,7 +82,7 @@ class ProperSearcher(object):
 
         orig_thread_name = threading.currentThread().getName()
 
-        for show in get_show_list(session=session):
+        for show in get_show_list():
             wanted = self._get_wanted(show, search_date)
             if not wanted:
                 sickrage.app.log.debug("Nothing needs to be downloaded for {}, skipping".format(show.name))
@@ -126,7 +126,7 @@ class ProperSearcher(object):
 
                 threading.currentThread().setName(orig_thread_name)
 
-            self._set_last_proper_search(show.indexer_id, datetime.datetime.today().toordinal(), session=session)
+            self._set_last_proper_search(show.indexer_id, datetime.datetime.today().toordinal())
 
         # take the list of unique propers and get it sorted by
         sorted_propers = sorted(propers.values(), key=operator.attrgetter('date'), reverse=True)
@@ -147,7 +147,7 @@ class ProperSearcher(object):
                 sickrage.app.log.debug("Ignoring " + curProper.name + " because it's for a full season rather than specific episode")
                 continue
 
-            show = find_show(parse_result.indexer_id, session=session)
+            show = find_show(parse_result.indexer_id)
             sickrage.app.log.debug("Successful match! Result " + parse_result.original_name + " matched to show " + show.name)
 
             # set the indexer_id in the db to the show's indexer_id
@@ -177,7 +177,7 @@ class ProperSearcher(object):
                     continue
 
             # check if we actually want this proper (if it's the right quality)            
-            dbData = session.query(TVEpisode).filter_by(showid=best_result.indexer_id, season=best_result.season, episode=best_result.episode).one_or_none()
+            dbData = session.query(MainDB.TVEpisode).filter_by(showid=best_result.indexer_id, season=best_result.season, episode=best_result.episode).one_or_none()
             if not dbData:
                 continue
 
@@ -188,7 +188,7 @@ class ProperSearcher(object):
 
             # check if we actually want this proper (if it's the right release group and a higher version)
             if show.is_anime:
-                dbData = session.query(TVEpisode).filter_by(showid=best_result.indexer_id, season=best_result.season, episode=best_result.episode).one()
+                dbData = session.query(MainDB.TVEpisode).filter_by(showid=best_result.indexer_id, season=best_result.season, episode=best_result.episode).one()
 
                 old_version = int(dbData.version)
                 old_release_group = dbData.release_group
@@ -211,23 +211,25 @@ class ProperSearcher(object):
 
         return final_propers
 
-    @MainDB.with_session
-    def _get_wanted(self, show, search_date, session=None):
+    def _get_wanted(self, show, search_date):
+        session = sickrage.app.main_db.session()
+
         wanted = []
 
-        for episode_object in session.query(TVEpisode).filter_by(showid=show.indexer_id).filter(
-                TVEpisode.airdate >= search_date, TVEpisode.status.in_(Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST)):
+        for episode_object in session.query(MainDB.TVEpisode).filter_by(showid=show.indexer_id).filter(
+                MainDB.TVEpisode.airdate >= search_date, MainDB.TVEpisode.status.in_(Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST)):
             wanted += [(episode_object.season, episode_object.episode)]
 
         return wanted
 
-    @MainDB.with_session
-    def _download_propers(self, proper_list, session=None):
+    def _download_propers(self, proper_list):
         """
         Download proper (snatch it)
 
         :param proper_list:
         """
+
+        session = sickrage.app.main_db.session()
 
         for curProper in proper_list:
             history_limit = datetime.datetime.today() - datetime.timedelta(days=30)
@@ -281,24 +283,25 @@ class ProperSearcher(object):
     def _generic_name(self, name):
         return name.replace(".", " ").replace("-", " ").replace("_", " ").lower()
 
-    @MainDB.with_session
-    def _set_last_proper_search(self, show_id, when, session=None):
+    def _set_last_proper_search(self, show_id, when):
         """
         Record last propersearch in DB
 
         :param when: When was the last proper search
         """
 
+        session = sickrage.app.main_db.session()
+
         sickrage.app.log.debug("Setting the last proper search in database to " + str(when))
 
         try:
-            show = find_show(show_id, session=session)
+            show = find_show(show_id)
             show.last_proper_search = when
+            session.commit()
         except orm.exc.NoResultFound:
             pass
 
-    @MainDB.with_session
-    def _get_last_proper_search(self, show_id, session=None):
+    def _get_last_proper_search(self, show_id):
         """
         Find last propersearch from DB
         """
@@ -306,7 +309,7 @@ class ProperSearcher(object):
         sickrage.app.log.debug("Retrieving the last check time from the DB")
 
         try:
-            show = find_show(show_id, session=session)
+            show = find_show(show_id)
             return int(show.last_proper_search)
         except orm.exc.NoResultFound:
             return 1

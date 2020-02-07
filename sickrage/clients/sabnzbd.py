@@ -30,14 +30,13 @@ from sickrage.core.databases.main import MainDB
 
 class SabNZBd(object):
     @staticmethod
-    @MainDB.with_session
-    def sendNZB(nzb, session=None):
+    def sendNZB(nzb):
         """
         Sends an NZB to SABnzbd via the API.
         :param nzb: The NZBSearchResult object to send to SAB
         """
 
-        show_object = find_show(nzb.show_id, session=session)
+        show_object = find_show(nzb.show_id)
         if not show_object:
             return False
 

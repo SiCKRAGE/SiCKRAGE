@@ -67,6 +67,8 @@ class FakeEpisode(object):
         self.scene_absolute_number = absolute_number
         self.related_episodes = []
 
+        self.session = sickrage.app.main_db.session()
+
     def formatted_filename(self, *args, **kwargs):
         return TVEpisode.formatted_filename(self, *args, **kwargs)
 

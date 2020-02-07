@@ -45,10 +45,11 @@ class TVCache(object):
         self.min_time = kwargs.pop('min_time', 10)
         self.search_strings = kwargs.pop('search_strings', dict(RSS=['']))
 
-    @CacheDB.with_session
-    def clear(self, session=None):
+    def clear(self):
+        session = sickrage.app.cache_db.session()
         if self.shouldClearCache():
             session.query(CacheDB.Provider).filter_by(provider=self.providerID).delete()
+            session.commit()
 
     def _get_title_and_url(self, item):
         return self.provider._get_title_and_url(item)
@@ -125,8 +126,9 @@ class TVCache(object):
                 "The data returned from the " + self.provider.name + " feed is incomplete, this result is unusable")
 
     @property
-    @CacheDB.with_session
-    def last_update(self, session=None):
+    def last_update(self):
+        session = sickrage.app.cache_db.session()
+
         try:
             dbData = session.query(CacheDB.LastUpdate).filter_by(provider=self.providerID).one()
             lastTime = int(dbData.time)
@@ -138,8 +140,9 @@ class TVCache(object):
         return datetime.datetime.fromtimestamp(lastTime)
 
     @last_update.setter
-    @CacheDB.with_session
-    def last_update(self, toDate, session=None):
+    def last_update(self, toDate):
+        session = sickrage.app.cache_db.session()
+
         try:
             dbData = session.query(CacheDB.LastUpdate).filter_by(provider=self.providerID).one()
             dbData.time = int(time.mktime(toDate.timetuple()))
@@ -148,10 +151,13 @@ class TVCache(object):
                 'provider': self.providerID,
                 'time': int(time.mktime(toDate.timetuple()))
             }))
+        finally:
+            session.commit()
 
     @property
-    @CacheDB.with_session
-    def last_search(self, session=None):
+    def last_search(self):
+        session = sickrage.app.cache_db.session()
+
         try:
             dbData = session.query(CacheDB.LastSearch).filter_by(provider=self.providerID).one()
             lastTime = int(dbData.time)
@@ -163,8 +169,9 @@ class TVCache(object):
         return datetime.datetime.fromtimestamp(lastTime)
 
     @last_search.setter
-    @CacheDB.with_session
-    def last_search(self, toDate, session=None):
+    def last_search(self, toDate):
+        session = sickrage.app.cache_db.session()
+
         try:
             dbData = session.query(CacheDB.LastSearch).filter_by(provider=self.providerID).one()
             dbData.time = int(time.mktime(toDate.timetuple()))
@@ -173,6 +180,8 @@ class TVCache(object):
                 'provider': self.providerID,
                 'time': int(time.mktime(toDate.timetuple()))
             }))
+        finally:
+            session.commit()
 
     def should_update(self):
         # if we've updated recently then skip the update
@@ -186,8 +195,9 @@ class TVCache(object):
             return False
         return True
 
-    @CacheDB.with_session
-    def add_cache_entry(self, name, url, seeders, leechers, size, session=None):
+    def add_cache_entry(self, name, url, seeders, leechers, size):
+        session = sickrage.app.cache_db.session()
+
         # check for existing entry in cache
         if session.query(CacheDB.Provider).filter_by(url=url).count():
             return
@@ -238,10 +248,9 @@ class TVCache(object):
                     # add to internal database
                     try:
                         session.add(CacheDB.Provider(**dbData))
-                        session.safe_commit()
+                        session.commit()
                         sickrage.app.log.debug("SEARCH RESULT:[{}] ADDED TO CACHE!".format(name))
                     except IntegrityError:
-                        session.rollback()
                         pass
 
                     # add to external provider cache database
@@ -274,7 +283,7 @@ class TVCache(object):
 
         with sickrage.app.main_db.session() as session:
             for curResult in dbData:
-                show_object = find_show(int(curResult["series_id"]), session=session)
+                show_object = find_show(int(curResult["series_id"]))
                 if not show_object:
                     continue
 

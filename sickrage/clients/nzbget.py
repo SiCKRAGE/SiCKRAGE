@@ -28,13 +28,11 @@ from sickrage.core.common import Quality
 from sickrage.core.helpers import try_int
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.websession import WebSession
-from sickrage.core.databases.main import MainDB
 
 
 class NZBGet(object):
     @staticmethod
-    @MainDB.with_session
-    def sendNZB(nzb, proper=False, session=None):
+    def sendNZB(nzb, proper=False):
         """
         Sends NZB to NZBGet client
 
@@ -84,7 +82,7 @@ class NZBGet(object):
                 sickrage.app.log.warning("NZBGet Protocol Error: " + e.errmsg)
             return False
 
-        show_object = find_show(nzb.show_id, session=session)
+        show_object = find_show(nzb.show_id)
         if not show_object:
             return False
 

@@ -25,22 +25,21 @@ import traceback
 import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.common import SKIPPED, WANTED, UNKNOWN
-from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import EpisodeNotFoundException
 from sickrage.core.helpers import sanitize_file_name, make_dir, chmod_as_parent
 from sickrage.core.queues.search import BacklogQueueItem
 from sickrage.core.traktapi import TraktAPI
-from sickrage.core.tv.episode import TVEpisode
+from sickrage.core.databases.main import MainDB
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.indexers import IndexerApi
 
 
-def set_episode_to_wanted(show, s, e):
+def set_episode_to_wanted(show, s: int, e: int):
     """
     Sets an episode to wanted, only if it is currently skipped
     """
     try:
-        epObj = show.get_episode(int(s), int(e))
+        epObj = show.get_episode(s, e)
         if epObj.status != SKIPPED or not epObj.airdate > datetime.date.min:
             return
 
@@ -184,13 +183,12 @@ class TraktSearcher(object):
                 sickrage.app.log.warning("Could not connect to Trakt service. Aborting adding show %s to Trakt library. Error: %s" % (show_obj.name, repr(e)))
                 return
 
-    @MainDB.with_session
-    def add_episodes_to_trakt_collection(self, session=None):
+    def add_episodes_to_trakt_collection(self):
         trakt_data = []
 
         sickrage.app.log.debug("COLLECTION::SYNC::START - Look for Episodes to Add to Trakt Collection")
 
-        for s in get_show_list(session=session):
+        for s in get_show_list():
             for e in s.episodes:
                 trakt_id = IndexerApi(s.indexer).trakt_id
                 if not self._check_in_list(trakt_id, str(e.showid), e.season, e.episode, 'Collection'):
@@ -207,14 +205,13 @@ class TraktSearcher(object):
 
         sickrage.app.log.debug("COLLECTION::ADD::FINISH - Look for Episodes to Add to Trakt Collection")
 
-    @MainDB.with_session
-    def remove_episodes_from_trakt_collection(self, session=None):
+    def remove_episodes_from_trakt_collection(self):
         trakt_data = []
 
         sickrage.app.log.debug(
             "COLLECTION::REMOVE::START - Look for Episodes to Remove From Trakt Collection")
 
-        for s in get_show_list(session=session):
+        for s in get_show_list():
             for e in s.episodes:
                 if e.location:
                     continue
@@ -235,14 +232,13 @@ class TraktSearcher(object):
         sickrage.app.log.debug(
             "COLLECTION::REMOVE::FINISH - Look for Episodes to Remove From Trakt Collection")
 
-    @MainDB.with_session
-    def remove_episodes_from_trakt_watch_list(self, session=None):
+    def remove_episodes_from_trakt_watch_list(self):
         trakt_data = []
 
         sickrage.app.log.debug(
             "WATCHLIST::REMOVE::START - Look for Episodes to Remove from Trakt Watchlist")
 
-        for s in get_show_list(session=session):
+        for s in get_show_list():
             for e in s.episodes:
                 trakt_id = IndexerApi(s.indexer).trakt_id
                 if self._check_in_list(trakt_id, str(e.showid), e.season, e.episode):
@@ -261,15 +257,16 @@ class TraktSearcher(object):
         sickrage.app.log.debug(
             "WATCHLIST::REMOVE::FINISH - Look for Episodes to Remove from Trakt Watchlist")
 
-    @MainDB.with_session
-    def add_episodes_to_trakt_watch_list(self, session=None):
+    def add_episodes_to_trakt_watch_list(self):
+        session = sickrage.app.main_db.session()
+
         trakt_data = []
 
         sickrage.app.log.debug("WATCHLIST::ADD::START - Look for Episodes to Add to Trakt Watchlist")
 
-        for s in get_show_list(session=session):
-            for e in session.query(TVEpisode).filter_by(showid=s.indexer_id).filter(
-                    ~TVEpisode.episode.in_(Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN] + [WANTED])):
+        for s in get_show_list():
+            for e in session.query(MainDB.TVEpisode).filter_by(showid=s.indexer_id).filter(
+                    ~MainDB.TVEpisode.episode.in_(Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN] + [WANTED])):
                 trakt_id = IndexerApi(s.indexer).trakt_id
                 if self._check_in_list(trakt_id, str(e.showid), e.season, e.episode):
                     sickrage.app.log.debug("Adding Episode %s S%02dE%02d to watchlist" % (s.name, e.season, e.episode))
@@ -331,8 +328,7 @@ class TraktSearcher(object):
 
         sickrage.app.log.debug("SHOW_SICKRAGE::REMOVE::FINISH - Trakt Show Watchlist")
 
-    @MainDB.with_session
-    def update_shows(self, session=None):
+    def update_shows(self):
         sickrage.app.log.debug("SHOW_WATCHLIST::CHECK::START - Trakt Show Watchlist")
 
         if not len(self.ShowWatchlist):
@@ -356,7 +352,7 @@ class TraktSearcher(object):
                     self.add_default_show(indexer, indexer_id, show.title, WANTED)
 
                 if int(sickrage.app.config.trakt_method_add) == 1:
-                    newShow = find_show(indexer_id, session=session)
+                    newShow = find_show(indexer_id)
 
                     if newShow is not None:
                         set_episode_to_wanted(newShow, 1, 1)
@@ -365,8 +361,7 @@ class TraktSearcher(object):
 
         sickrage.app.log.debug("SHOW_WATCHLIST::CHECK::FINISH - Trakt Show Watchlist")
 
-    @MainDB.with_session
-    def update_episodes(self, session=None):
+    def update_episodes(self):
         """
         Sets episodes to wanted that are in trakt watchlist
         """
@@ -388,7 +383,7 @@ class TraktSearcher(object):
             except KeyError:
                 continue
 
-            show_object = find_show(indexer_id, session=session)
+            show_object = find_show(indexer_id)
 
             try:
                 if show_object is None:
@@ -449,7 +444,7 @@ class TraktSearcher(object):
         sickrage.app.log.debug("Checking if trakt watch list wants to search for episodes from new show " + show.name)
         for episode in [i for i in self.todoWanted if i[0] == show.indexer_id]:
             self.todoWanted.remove(episode)
-            set_episode_to_wanted(show, episode[1], episode[2])
+            set_episode_to_wanted(show, int(episode[1]), int(episode[2]))
 
     def _check_in_list(self, trakt_id, showid, season, episode, List=None):
         """

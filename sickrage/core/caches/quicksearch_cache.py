@@ -44,8 +44,9 @@ class QuicksearchCache(object):
         self.load()
         [self.add_show(show.indexer_id) for show in get_show_list()]
 
-    @CacheDB.with_session
-    def load(self, session=None):
+    def load(self):
+        session = sickrage.app.cache_db.session()
+
         for x in session.query(CacheDB.QuickSearchShow):
             self.cache['shows'][x.showid] = x.as_dict()
         for x in session.query(CacheDB.QuickSearchEpisode):
@@ -64,8 +65,9 @@ class QuicksearchCache(object):
         self.del_show(indexer_id)
         self.add_show(indexer_id)
 
-    @CacheDB.with_session
-    def add_show(self, indexer_id, session=None):
+    def add_show(self, indexer_id):
+        session = sickrage.app.cache_db.session()
+
         show = find_show(indexer_id)
 
         if indexer_id not in self.cache['shows']:
@@ -81,6 +83,7 @@ class QuicksearchCache(object):
 
             self.cache['shows'][indexer_id] = qsData
             session.add(CacheDB.QuickSearchShow(**qsData))
+            session.commit()
 
             sql_t = []
             for e in show.episodes:
@@ -100,9 +103,11 @@ class QuicksearchCache(object):
                 self.cache['episodes'][e.indexer_id] = qsData
 
             session.bulk_insert_mappings(CacheDB.QuickSearchEpisode, sql_t)
+            session.commit()
 
-    @CacheDB.with_session
-    def del_show(self, indexer_id, session=None):
+    def del_show(self, indexer_id):
+        session = sickrage.app.cache_db.session()
+
         show = find_show(indexer_id)
 
         sickrage.app.log.debug("Deleting show {} from QuickSearch cache".format(show.name))
@@ -117,3 +122,4 @@ class QuicksearchCache(object):
         # remove from database
         session.query(CacheDB.QuickSearchShow).filter_by(showid=indexer_id).delete()
         session.query(CacheDB.QuickSearchEpisode).filter_by(showid=indexer_id).delete()
+        session.commit()

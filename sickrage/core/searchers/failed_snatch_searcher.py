@@ -35,8 +35,7 @@ class FailedSnatchSearcher(object):
         self.lock = threading.Lock()
         self.amActive = False
 
-    @MainDB.with_session
-    def run(self, force=False, session=None):
+    def run(self, force=False):
         """
         Runs the failed searcher, queuing selected episodes for search that have failed to snatch
         :param force: Force search
@@ -50,14 +49,14 @@ class FailedSnatchSearcher(object):
         threading.currentThread().setName(self.name)
 
         # trim failed download history
-        FailedHistory.trim_history(session=session)
+        FailedHistory.trim_history()
 
         sickrage.app.log.info("Searching for failed snatches")
 
         failed_snatches = False
 
         for snatched_episode_obj in [x for x in self.snatched_episodes() if (x.showid, x.season, x.episode) not in self.downloaded_releases()]:
-            show_object = find_show(snatched_episode_obj.showid, session=session)
+            show_object = find_show(snatched_episode_obj.showid)
             episode_object = show_object.get_episode(snatched_episode_obj.season, snatched_episode_obj.episode)
             if episode_object.show.paused:
                 continue
@@ -76,12 +75,12 @@ class FailedSnatchSearcher(object):
 
         self.amActive = False
 
-    @MainDB.with_session
-    def snatched_episodes(self, session=None):
+    def snatched_episodes(self):
+        session = sickrage.app.main_db.session()
         return (x for x in
                 session.query(MainDB.History).filter(MainDB.History.action.in_(Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER)) if
                 24 >= int((datetime.datetime.now() - datetime.datetime.fromordinal(x.date)).total_seconds() / 3600) >= sickrage.app.config.failed_snatch_age)
 
-    @MainDB.with_session
-    def downloaded_releases(self, session=None):
+    def downloaded_releases(self):
+        session = sickrage.app.main_db.session()
         return ((x.showid, x.season, x.episode) for x in session.query(MainDB.History).filter(MainDB.History.action.in_(Quality.DOWNLOADED)))

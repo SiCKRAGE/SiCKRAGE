@@ -43,9 +43,10 @@ class TimeZoneUpdater(object):
 
         self.update_network_timezones()
 
-    @CacheDB.with_session
-    def update_network_timezones(self, session=None):
+    def update_network_timezones(self):
         """Update timezone information from SR repositories"""
+
+        session = sickrage.app.cache_db.session()
 
         network_timezones = {}
 
@@ -66,6 +67,7 @@ class TimeZoneUpdater(object):
         for x in session.query(CacheDB.NetworkTimezone):
             if x.network_name not in network_timezones:
                 session.query(CacheDB.NetworkTimezone).filter_by(network_name=x.network_name).delete()
+                session.commit()
 
         for network, timezone in network_timezones.items():
             try:
@@ -77,12 +79,13 @@ class TimeZoneUpdater(object):
                     'network_name': network,
                     'timezone': timezone
                 }))
+            finally:
+                session.commit()
 
         # cleanup
         del network_timezones
 
-    @CacheDB.with_session
-    def get_network_timezone(self, network, session=None):
+    def get_network_timezone(self, network):
         """
         Get a timezone of a network from a given network dict
 
@@ -91,6 +94,8 @@ class TimeZoneUpdater(object):
         """
         if network is None:
             return sickrage.app.tz
+
+        session = sickrage.app.cache_db.session()
 
         try:
             return tz.gettz(session.query(CacheDB.NetworkTimezone).filter_by(network_name=network).one().timezone)
