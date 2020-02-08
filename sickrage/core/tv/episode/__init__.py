@@ -68,14 +68,14 @@ class TVEpisode(object):
 
     def __getattr__(self, item):
         _data = object.__getattribute__(self, '_data')
-        if _data:
+        if _data and hasattr(_data, item):
             return getattr(_data, item)
         else:
             return object.__getattribute__(self, item)
 
     def __setattr__(self, key, value):
         _data = object.__getattribute__(self, '_data')
-        if _data:
+        if _data and hasattr(_data, key):
             setattr(_data, key, value)
             self.session.flush()
         else:
