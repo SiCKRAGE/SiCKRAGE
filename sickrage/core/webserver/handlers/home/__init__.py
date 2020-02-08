@@ -130,7 +130,7 @@ class HomeHandler(BaseHandler, ABC):
                     'ep_airs_prev': show.airs_prev or datetime.date.min,
                     'ep_snatched': show.episodes_snatched or 0,
                     'ep_downloaded': show.episodes_downloaded or 0,
-                    'ep_total': show.episodes.count(),
+                    'ep_total': len(show.episodes.count()),
                     'total_size': show.total_size or 0
                 }
 
@@ -149,7 +149,7 @@ class ShowProgressHandler(BaseHandler, ABC):
         show = find_show(show_id)
         episodes_snatched = show.episodes_snatched
         episodes_downloaded = show.episodes_downloaded
-        episodes_total = show.episodes.count() - show.episodes_special - show.episodes_unaired
+        episodes_total = len(show.episodes) - show.episodes_special - show.episodes_unaired
         progressbar_percent = int(episodes_downloaded * 100 / episodes_total if episodes_total > 0 else 1)
 
         progress_text = '?'

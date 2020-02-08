@@ -29,7 +29,6 @@ from xml.etree.ElementTree import ElementTree
 
 from mutagen.mp4 import MP4, MP4StreamInfoError
 from sqlalchemy import orm
-from sqlalchemy.orm import validates
 
 import sickrage
 from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, SKIPPED, NAMING_EXTEND, NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, \
@@ -37,7 +36,8 @@ from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, SKIPP
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import NoNFOException, EpisodeNotFoundException, EpisodeDeletedException, MultipleEpisodesInDatabaseException
 from sickrage.core.helpers import is_media_file, try_int, replace_extension, modify_file_timestamp, sanitize_scene_name, remove_non_release_groups, \
-    remove_extension, sanitize_file_name, safe_getattr, make_dirs, move_file, delete_empty_folders, file_size
+    remove_extension, sanitize_file_name, safe_getattr, make_dirs, move_file, delete_empty_folders
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_seasonnotfound, indexer_error, indexer_episodenotfound
 from sickrage.notifiers import Notifiers
@@ -91,7 +91,7 @@ class TVEpisode(object):
 
     @property
     def show(self):
-        return self.session.query(MainDB.TVShow).filter_by(indexer_id=self.showid, indexer=self.indexer).one_or_none()
+        return find_show(self.showid, self.indexer)
 
     @property
     def related_episodes(self):

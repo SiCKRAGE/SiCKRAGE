@@ -85,7 +85,8 @@ class TVShow(object):
 
     @property
     def episodes(self):
-        return self.session.query(MainDB.TVEpisode).filter_by(showid=self.indexer_id, indexer=self.indexer)
+        return [TVEpisode(x.showid, x.indexer, x.season, x.episode) for x in
+                self.session.query(MainDB.TVEpisode).filter_by(showid=self.indexer_id, indexer=self.indexer)]
 
     @property
     def imdb_info(self):
