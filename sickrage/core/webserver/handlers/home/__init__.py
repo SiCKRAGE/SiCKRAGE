@@ -48,6 +48,7 @@ from sickrage.core.scene_numbering import get_scene_numbering_for_show, get_xem_
     get_scene_absolute_numbering_for_show, get_xem_absolute_numbering_for_show, set_scene_numbering, \
     get_scene_absolute_numbering, get_scene_numbering
 from sickrage.core.traktapi import TraktAPI
+from sickrage.core.tv.show import TVShow
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
 from sickrage.subtitles import Subtitles
@@ -84,8 +85,8 @@ class HomeHandler(BaseHandler, ABC):
             return self.redirect('/home/addShows/')
 
         show_lists = OrderedDict({
-            'Shows': session.query(MainDB.TVShow).filter_by(anime=False),
-            'Anime': session.query(MainDB.TVShow).filter_by(anime=True)
+            'Shows': [TVShow(x.indexer_id, x.indexer) for x in session.query(MainDB.TVShow).filter_by(anime=False)],
+            'Anime': [TVShow(x.indexer_id, x.indexer) for x in session.query(MainDB.TVShow).filter_by(anime=True)]
         })
 
         return self.render(

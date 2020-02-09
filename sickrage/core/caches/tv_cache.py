@@ -323,8 +323,7 @@ class TVCache(object):
                     wantEp = True
 
             if not wantEp:
-                sickrage.app.log.info(
-                    "Skipping " + curResult["name"] + " because we don't want an episode that's " + Quality.qualityStrings[result.quality])
+                sickrage.app.log.info("Skipping " + curResult["name"] + " because we don't want an episode that's " + Quality.qualityStrings[result.quality])
                 continue
 
             # build a result object
