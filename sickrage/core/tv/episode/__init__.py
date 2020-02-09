@@ -51,10 +51,12 @@ class TVEpisode(object):
         self.session = sickrage.app.main_db.session()
 
         try:
-            self._data = self.session.query(MainDB.TVEpisode).filter_by(showid=showid, indexer=indexer, season=season, episode=episode).one()
+            query = self.session.query(MainDB.TVEpisode).filter_by(showid=showid, indexer=indexer, season=season, episode=episode)
             if absolute_number is not None:
-                self._data = self._data.filter_by(absolute_number=absolute_number)
-                sickrage.app.log.debug("Found episode by absolute_number %s which is S%02dE%02d" % (absolute_number, season or 0, episode or 0))
+                query = self._data.filter_by(absolute_number=absolute_number)
+                if query.count():
+                    sickrage.app.log.debug("Found episode by absolute_number %s which is S%02dE%02d" % (absolute_number, season or 0, episode or 0))
+            self._data = query.one()
         except orm.exc.MultipleResultsFound:
             if absolute_number is not None:
                 sickrage.app.log.warning("Multiple entries for absolute number: " + str(absolute_number) + " in show: " + self.name + " found ")
