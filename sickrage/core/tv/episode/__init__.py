@@ -53,7 +53,7 @@ class TVEpisode(object):
         try:
             query = self.session.query(MainDB.TVEpisode).filter_by(showid=showid, indexer=indexer, season=season, episode=episode)
             if absolute_number is not None:
-                query = self._data.filter_by(absolute_number=absolute_number)
+                query = query.filter_by(absolute_number=absolute_number)
                 if query.count():
                     sickrage.app.log.debug("Found episode by absolute_number %s which is S%02dE%02d" % (absolute_number, season or 0, episode or 0))
             self._data = query.one()
