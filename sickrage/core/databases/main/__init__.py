@@ -80,8 +80,8 @@ class MainDB(SRDatabase):
         last_backlog_search = Column(Integer, default=datetime.datetime.now().toordinal())
         last_proper_search = Column(Integer, default=datetime.datetime.now().toordinal())
 
-        # episodes = relationship('TVEpisode', uselist=True, backref='tv_shows', lazy='select')
-        # imdb_info = relationship('IMDbInfo', uselist=False, backref='tv_shows', lazy='select')
+        _episodes = relationship('TVEpisode', uselist=True, backref='tv_shows')
+        imdb_info = relationship('IMDbInfo', uselist=False, backref='tv_shows')
 
     class TVEpisode(MainDBBase):
         __tablename__ = 'tv_episodes'
@@ -119,7 +119,7 @@ class MainDB(SRDatabase):
         version = Column(Integer, default=-1)
         release_group = Column(Text, default='')
 
-        # show = relationship('TVShow', uselist=False, backref='tv_episodes', lazy='select')
+        # show = relationship('TVShow', uselist=False, backref='tv_episodes')
 
         @validates('location')
         def validate_location(self, key, location):

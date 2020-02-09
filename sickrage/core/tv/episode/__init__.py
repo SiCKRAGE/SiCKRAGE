@@ -69,8 +69,7 @@ class TVEpisode(object):
     def __getattribute__(self, item):
         try:
             _data = super(TVEpisode, self).__getattribute__('_data')
-            if item not in _data.as_dict():
-                raise AttributeError
+            hasattr(_data, item)
             return getattr(_data, item)
         except AttributeError:
             return super(TVEpisode, self).__getattribute__(item)
@@ -78,8 +77,7 @@ class TVEpisode(object):
     def __setattr__(self, key, value):
         try:
             _data = super(TVEpisode, self).__getattribute__('_data')
-            if key not in _data.as_dict():
-                raise AttributeError
+            hasattr(_data, key)
             setattr(_data, key, value)
             self.session.flush()
         except AttributeError:

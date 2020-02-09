@@ -61,8 +61,7 @@ class TVShow(object):
     def __getattribute__(self, item):
         try:
             _data = super(TVShow, self).__getattribute__('_data')
-            if item not in _data.as_dict():
-                raise AttributeError
+            hasattr(_data, item)
             return getattr(_data, item)
         except AttributeError:
             return super(TVShow, self).__getattribute__(item)
@@ -70,8 +69,7 @@ class TVShow(object):
     def __setattr__(self, key, value):
         try:
             _data = super(TVShow, self).__getattribute__('_data')
-            if key not in _data.as_dict():
-                raise AttributeError
+            hasattr(_data, key)
             setattr(_data, key, value)
             self.session.flush()
         except AttributeError:
@@ -79,12 +77,7 @@ class TVShow(object):
 
     @property
     def episodes(self):
-        return [self.get_episode(x.season, x.episode) for x in
-                self.session.query(MainDB.TVEpisode).filter_by(showid=self.indexer_id, indexer=self.indexer)]
-
-    @property
-    def imdb_info(self):
-        return self.session.query(MainDB.IMDbInfo).filter_by(imdb_id=self.imdb_id).one_or_none()
+        return [self.get_episode(x.season, x.episode) for x in self._episodes]
 
     @property
     def is_anime(self):
@@ -101,24 +94,25 @@ class TVShow(object):
     @property
     def airs_next(self):
         _airs_next = datetime.date.min
-        for episode_object in self.episodes:
-            if episode_object.season != 0 and episode_object.status in [UNAIRED,
-                                                                        WANTED] and episode_object.airdate >= datetime.date.today() and _airs_next == datetime.date.min:
-                _airs_next = episode_object.airdate
+        for episode_object in self._episodes:
+            if episode_object.season != 0 and episode_object.status in [UNAIRED, WANTED]:
+                if episode_object.airdate >= datetime.date.today() and _airs_next == datetime.date.min:
+                    _airs_next = episode_object.airdate
         return _airs_next
 
     @property
     def airs_prev(self):
         _airs_prev = datetime.date.min
-        for episode_object in self.episodes:
-            if episode_object.season != 0 and episode_object.status != UNAIRED and episode_object.airdate < datetime.date.today() > _airs_prev:
-                _airs_prev = episode_object.airdate
+        for episode_object in self._episodes:
+            if episode_object.season != 0 and episode_object.status != UNAIRED:
+                if episode_object.airdate < datetime.date.today() > _airs_prev:
+                    _airs_prev = episode_object.airdate
         return _airs_prev
 
     @property
     def episodes_unaired(self):
         _episodes_unaired = 0
-        for episode_object in self.episodes:
+        for episode_object in self._episodes:
             if episode_object.season != 0 and episode_object.status == UNAIRED:
                 _episodes_unaired += 1
         return _episodes_unaired
@@ -126,7 +120,7 @@ class TVShow(object):
     @property
     def episodes_snatched(self):
         _episodes_snatched = 0
-        for episode_object in self.episodes:
+        for episode_object in self._episodes:
             if episode_object.season != 0 and episode_object.status in Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER:
                 _episodes_snatched += 1
         return _episodes_snatched
@@ -134,7 +128,7 @@ class TVShow(object):
     @property
     def episodes_downloaded(self):
         _episodes_downloaded = 0
-        for episode_object in self.episodes:
+        for episode_object in self._episodes:
             if episode_object.season != 0 and episode_object.status in Quality.DOWNLOADED + Quality.ARCHIVED:
                 _episodes_downloaded += 1
         return _episodes_downloaded
@@ -142,7 +136,7 @@ class TVShow(object):
     @property
     def episodes_special(self):
         _episodes_specials = 0
-        for episode_object in self.episodes:
+        for episode_object in self._episodes:
             if episode_object.season == 0:
                 _episodes_specials += 1
         return _episodes_specials
@@ -150,7 +144,7 @@ class TVShow(object):
     @property
     def episodes_special_unaired(self):
         _episodes_specials_unaired = 0
-        for episode_object in self.episodes:
+        for episode_object in self._episodes:
             if episode_object.season == 0 and episode_object.status == UNAIRED:
                 _episodes_specials_unaired += 1
         return _episodes_specials_unaired
@@ -158,7 +152,7 @@ class TVShow(object):
     @property
     def episodes_special_downloaded(self):
         _episodes_special_downloaded = 0
-        for episode_object in self.episodes:
+        for episode_object in self._episodes:
             if episode_object.season == 0 and episode_object.status in Quality.DOWNLOADED + Quality.ARCHIVED:
                 _episodes_special_downloaded += 1
         return _episodes_special_downloaded
@@ -166,7 +160,7 @@ class TVShow(object):
     @property
     def episodes_special_snatched(self):
         _episodes_special_snatched = 0
-        for episode_object in self.episodes:
+        for episode_object in self._episodes:
             if episode_object.season == 0 and episode_object.status in Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER:
                 _episodes_special_snatched += 1
         return _episodes_special_snatched
@@ -174,7 +168,7 @@ class TVShow(object):
     @property
     def total_size(self):
         _total_size = 0
-        for episode_object in self.episodes:
+        for episode_object in self._episodes:
             _total_size += episode_object.file_size
         return _total_size
 

@@ -192,8 +192,7 @@ class TraktSearcher(object):
             for e in s.episodes:
                 trakt_id = IndexerApi(s.indexer).trakt_id
                 if not self._check_in_list(trakt_id, str(e.showid), e.season, e.episode, 'Collection'):
-                    sickrage.app.log.debug(
-                        "Adding Episode %s S%02dE%02d to collection" % (s.name, e.season, e.episode))
+                    sickrage.app.log.debug("Adding Episode %s S%02dE%02d to collection" % (s.name, e.season, e.episode))
                     trakt_data.append((e.showid, s.indexer, s.name, s.startyear, e.season, e.episode))
 
         if len(trakt_data):
