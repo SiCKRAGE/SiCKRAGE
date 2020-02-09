@@ -27,6 +27,7 @@ from sqlalchemy import orm
 import sickrage
 from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import try_int
+from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.websession import WebSession
 from sickrage.indexers import IndexerApi
@@ -260,8 +261,8 @@ def find_xem_numbering(indexer_id, indexer, season, episode):
     xem_refresh(indexer_id, indexer)
 
     try:
-        dbData = session.query(MainDB.TVEpisode).filter_by(showid=indexer_id, indexer=indexer, season=season, episode=episode).filter(
-            MainDB.TVEpisode.scene_season != 0, MainDB.TVEpisode.scene_episode != 0).one()
+        dbData = session.query(TVEpisode).filter_by(showid=indexer_id, indexer=indexer, season=season, episode=episode).filter(
+            TVEpisode.scene_season != 0, TVEpisode.scene_episode != 0).one()
         return try_int(dbData.scene_season), try_int(dbData.scene_episode)
     except orm.exc.NoResultFound:
         return None
@@ -287,8 +288,8 @@ def find_xem_absolute_numbering(indexer_id, indexer, absolute_number):
     xem_refresh(indexer_id, indexer)
 
     try:
-        dbData = session.query(MainDB.TVEpisode).filter_by(showid=indexer_id, indexer=indexer,
-                                                           absolute_number=absolute_number).filter(MainDB.TVEpisode.scene_absolute_number != 0).one()
+        dbData = session.query(TVEpisode).filter_by(showid=indexer_id, indexer=indexer,
+                                                           absolute_number=absolute_number).filter(TVEpisode.scene_absolute_number != 0).one()
         return try_int(dbData.scene_absolute_number)
     except orm.exc.MultipleResultsFound:
         return None
@@ -316,7 +317,7 @@ def get_indexer_numbering_for_xem(indexer_id, indexer, sceneSeason, sceneEpisode
     xem_refresh(indexer_id, indexer)
 
     try:
-        dbData = session.query(MainDB.TVEpisode).filter_by(showid=indexer_id, indexer=indexer, scene_season=sceneSeason, scene_episode=sceneEpisode).one()
+        dbData = session.query(TVEpisode).filter_by(showid=indexer_id, indexer=indexer, scene_season=sceneSeason, scene_episode=sceneEpisode).one()
         return try_int(dbData.season), try_int(dbData.episode)
     except (orm.exc.NoResultFound, orm.exc.MultipleResultsFound):
         return sceneSeason, sceneEpisode
@@ -342,9 +343,9 @@ def get_indexer_absolute_numbering_for_xem(indexer_id, indexer, sceneAbsoluteNum
 
     try:
         if scene_season is None:
-            dbData = session.query(MainDB.TVEpisode).filter_by(showid=indexer_id, indexer=indexer, scene_absolute_number=sceneAbsoluteNumber).one()
+            dbData = session.query(TVEpisode).filter_by(showid=indexer_id, indexer=indexer, scene_absolute_number=sceneAbsoluteNumber).one()
         else:
-            dbData = session.query(MainDB.TVEpisode).filter_by(showid=indexer_id, indexer=indexer, scene_absolute_number=sceneAbsoluteNumber,
+            dbData = session.query(TVEpisode).filter_by(showid=indexer_id, indexer=indexer, scene_absolute_number=sceneAbsoluteNumber,
                                                                scene_season=scene_season).one()
         return try_int(dbData.absolute_number)
     except (orm.exc.NoResultFound, orm.exc.MultipleResultsFound):
@@ -396,7 +397,7 @@ def get_xem_numbering_for_show(indexer_id, indexer):
     xem_refresh(indexer_id, indexer)
 
     result = {}
-    for dbData in session.query(MainDB.TVEpisode).filter_by(showid=indexer_id):
+    for dbData in session.query(TVEpisode).filter_by(showid=indexer_id):
         season = try_int(dbData.season)
         episode = try_int(dbData.episode)
         scene_season = try_int(dbData.scene_season)
@@ -452,7 +453,7 @@ def get_xem_absolute_numbering_for_show(indexer_id, indexer):
     xem_refresh(indexer_id, indexer)
 
     result = {}
-    for dbData in session.query(MainDB.TVEpisode).filter_by(showid=indexer_id):
+    for dbData in session.query(TVEpisode).filter_by(showid=indexer_id):
         absolute_number = try_int(dbData.absolute_number)
         scene_absolute_number = try_int(dbData.scene_absolute_number)
         if try_int(dbData.indexer) != indexer or scene_absolute_number == 0:
@@ -529,7 +530,7 @@ def xem_refresh(indexer_id, indexer, force=False):
 
             for entry in parsed_json['data']:
                 try:
-                    dbData = session.query(MainDB.TVEpisode).filter_by(showid=indexer_id, season=entry[IndexerApi(indexer).config['xem_origin']]['season'],
+                    dbData = session.query(TVEpisode).filter_by(showid=indexer_id, season=entry[IndexerApi(indexer).config['xem_origin']]['season'],
                                                                        episode=entry[IndexerApi(indexer).config['xem_origin']]['episode']).one()
                 except orm.exc.NoResultFound:
                     continue
@@ -566,7 +567,7 @@ def get_absolute_number_from_season_and_episode(show_id, season, episode):
 
     if season and episode:
         try:
-            dbData = session.query(MainDB.TVEpisode).filter_by(showid=show_id, season=season, episode=episode).one()
+            dbData = session.query(TVEpisode).filter_by(showid=show_id, season=season, episode=episode).one()
             absolute_number = try_int(dbData.absolute_number)
             sickrage.app.log.debug("Found absolute number %s for show %s S%02dE%02d" % (absolute_number, show.name, season, episode))
         except orm.exc.NoResultFound:

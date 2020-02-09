@@ -19,73 +19,84 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 
-
 import datetime
 import os
 import re
+import threading
 import traceback
 from collections import OrderedDict
 from xml.etree.ElementTree import ElementTree
 
 from mutagen.mp4 import MP4, MP4StreamInfoError
-from sqlalchemy import orm
+from sqlalchemy import Column, Integer, Text, ForeignKeyConstraint, Boolean, Date, BigInteger, Index, orm
+from sqlalchemy.orm import relationship, validates, object_session
 
 import sickrage
-from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, SKIPPED, NAMING_EXTEND, NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, \
+from sickrage.core import common
+from sickrage.core.common import NAMING_EXTEND, NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, \
     NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
-from sickrage.core.databases.main import MainDB
-from sickrage.core.exceptions import NoNFOException, EpisodeNotFoundException, EpisodeDeletedException, MultipleEpisodesInDatabaseException
-from sickrage.core.helpers import is_media_file, try_int, replace_extension, modify_file_timestamp, sanitize_scene_name, remove_non_release_groups, \
-    remove_extension, sanitize_file_name, safe_getattr, make_dirs, move_file, delete_empty_folders
-from sickrage.core.tv.show.helpers import find_show
+from sickrage.core.common import Quality, SKIPPED, UNKNOWN, UNAIRED, statusStrings
+from sickrage.core.databases.main import MainDBBase
+from sickrage.core.exceptions import EpisodeNotFoundException, EpisodeDeletedException
+from sickrage.core.exceptions import NoNFOException
+from sickrage.core.helpers import file_size
+from sickrage.core.helpers import is_media_file, try_int, safe_getattr
+from sickrage.core.helpers import replace_extension, modify_file_timestamp, sanitize_scene_name, remove_non_release_groups, \
+    remove_extension, sanitize_file_name, make_dirs, move_file, delete_empty_folders
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_seasonnotfound, indexer_error, indexer_episodenotfound
 from sickrage.notifiers import Notifiers
 from sickrage.subtitles import Subtitles
 
 
-class TVEpisode(object):
-    def __init__(self, showid, indexer, season, episode, absolute_number=None):
-        self.session = sickrage.app.main_db.session()
+class TVEpisode(MainDBBase):
+    __tablename__ = 'tv_episodes'
+    __table_args__ = (
+        ForeignKeyConstraint(['showid', 'indexer'], ['tv_shows.indexer_id', 'tv_shows.indexer']),
+        Index('idx_showid_indexer', 'showid', 'indexer'),
+        Index('idx_showid_indexerid', 'showid', 'indexer_id'),
+        Index('idx_sta_epi_air', 'status', 'episode', 'airdate'),
+        Index('idx_sea_epi_sta_air', 'season', 'episode', 'status', 'airdate'),
+        Index('idx_indexer_id_airdate', 'indexer_id', 'airdate'),
+    )
 
-        try:
-            query = self.session.query(MainDB.TVEpisode).filter_by(showid=showid, indexer=indexer, season=season, episode=episode)
-            if absolute_number is not None:
-                query = query.filter_by(absolute_number=absolute_number)
-                if query.count():
-                    sickrage.app.log.debug("Found episode by absolute_number %s which is S%02dE%02d" % (absolute_number, season or 0, episode or 0))
-            self._data = query.one()
-        except orm.exc.MultipleResultsFound:
-            if absolute_number is not None:
-                sickrage.app.log.warning("Multiple entries for absolute number: " + str(absolute_number) + " in show: " + self.name + " found ")
-            raise MultipleEpisodesInDatabaseException
-        except orm.exc.NoResultFound:
-            if absolute_number is not None:
-                sickrage.app.log.debug("No entries for absolute number: " + str(absolute_number) + " in show: " + self.name + " found.")
-            raise EpisodeNotFoundException
+    showid = Column(Integer, index=True, primary_key=True)
+    indexer_id = Column(Integer, default=0)
+    indexer = Column(Integer, index=True, primary_key=True)
+    season = Column(Integer, index=True, primary_key=True)
+    episode = Column(Integer, index=True, primary_key=True)
+    scene_season = Column(Integer, default=0)
+    scene_episode = Column(Integer, default=0)
+    name = Column(Text, default='')
+    description = Column(Text, default='')
+    subtitles = Column(Text, default='')
+    subtitles_searchcount = Column(Integer, default=0)
+    subtitles_lastsearch = Column(Integer, default=0)
+    airdate = Column(Date, default=datetime.datetime.min)
+    hasnfo = Column(Boolean, default=False)
+    hastbn = Column(Boolean, default=False)
+    status = Column(Integer, default=common.UNKNOWN)
+    location = Column(Text, default='')
+    file_size = Column(BigInteger, default=0)
+    release_name = Column(Text, default='')
+    is_proper = Column(Boolean, default=False)
+    absolute_number = Column(Integer, default=0)
+    scene_absolute_number = Column(Integer, default=0)
+    version = Column(Integer, default=-1)
+    release_group = Column(Text, default='')
 
-        self.checkForMetaFiles()
+    show = relationship('TVShow', uselist=False, backref='tv_episodes')
 
-    def __getattribute__(self, item):
-        try:
-            _data = super(TVEpisode, self).__getattribute__('_data')
-            hasattr(_data, item)
-            return getattr(_data, item)
-        except AttributeError:
-            return super(TVEpisode, self).__getattribute__(item)
+    def __init__(self, **kwargs):
+        super(TVEpisode, self).__init__(**kwargs)
+        self._lock = threading.RLock()
+        # self.checkForMetaFiles()
 
-    def __setattr__(self, key, value):
-        try:
-            _data = super(TVEpisode, self).__getattribute__('_data')
-            hasattr(_data, key)
-            setattr(_data, key, value)
-            self.session.flush()
-        except AttributeError:
-            super(TVEpisode, self).__setattr__(key, value)
-
-    @property
-    def show(self):
-        return find_show(self.showid, self.indexer)
+    @validates('location')
+    def validate_location(self, key, location):
+        if os.path.exists(location):
+            self.file_size = file_size(location)
+        return location
 
     @property
     def related_episodes(self):
@@ -100,7 +111,7 @@ class TVEpisode(object):
         subtitles, save_subtitles = Subtitles().refresh_subtitles(self.showid, self.season, self.episode)
         if save_subtitles:
             self.subtitles = ','.join(subtitles)
-            self.session.commit()
+            object_session(self).commit()
 
     def download_subtitles(self):
         if self.location == '':
@@ -129,7 +140,7 @@ class TVEpisode(object):
             sickrage.app.log.debug("%s: No subtitles downloaded for S%02dE%02d" %
                                    (self.show.indexer_id, self.season or 0, self.episode or 0))
 
-        self.session.commit()
+        object_session(self).commit()
 
         return newSubtitles
 
@@ -158,7 +169,7 @@ class TVEpisode(object):
         self.hasnfo = cur_nfo
         self.hastbn = cur_tbn
 
-        self.session.commit()
+        object_session(self).commit()
 
         # if either setting has changed return true, if not return false
         return oldhasnfo != self.hasnfo or oldhastbn != self.hastbn
@@ -239,8 +250,8 @@ class TVEpisode(object):
         self.indexer_id = try_int(safe_getattr(myEp, 'id'), self.indexer_id)
         if not self.indexer_id:
             sickrage.app.log.warning("Failed to retrieve ID from " + IndexerApi(self.indexer).name)
-            self.session.rollback()
-            self.session.commit()
+            object_session(self).rollback()
+            object_session(self).commit()
             self.delete_episode()
             return False
 
@@ -286,12 +297,12 @@ class TVEpisode(object):
                 firstaired, indexer_name, self.show.name, season or 0, episode or 0))
 
             # if I'm incomplete on the indexer but I once was complete then just delete myself from the DB for now
-            self.session.rollback()
-            self.session.commit()
+            object_session(self).rollback()
+            object_session(self).commit()
             self.delete_episode()
             return False
 
-        self.session.commit()
+        object_session(self).commit()
 
         # don't update show status if show dir is missing, unless it's missing on purpose
         if not os.path.isdir(self.show.location) and not sickrage.app.config.create_missing_show_dirs and not sickrage.app.config.add_shows_wo_dir:
@@ -330,7 +341,7 @@ class TVEpisode(object):
             sickrage.app.log.debug("6 Status changes from " + str(self.status) + " to " + str(UNKNOWN))
             self.status = UNKNOWN
 
-        self.session.commit()
+        object_session(self).commit()
 
         return True
 
@@ -364,8 +375,8 @@ class TVEpisode(object):
                     except Exception as e:
                         sickrage.app.log.warning("Failed to rename your episode's NFO file - you need to delete it or fix it: {}".format(e))
 
-                    self.session.rollback()
-                    self.session.commit()
+                    object_session(self).rollback()
+                    object_session(self).commit()
 
                     raise NoNFOException("Error in NFO format")
 
@@ -381,8 +392,8 @@ class TVEpisode(object):
                         continue
 
                     if epDetails.findtext('title') is None or epDetails.findtext('aired') is None:
-                        self.session.rollback()
-                        self.session.commit()
+                        object_session(self).rollback()
+                        object_session(self).commit()
                         raise NoNFOException("Error in NFO format (missing episode title or airdate)")
 
                     self.name = epDetails.findtext('title')
@@ -416,7 +427,7 @@ class TVEpisode(object):
             if os.path.isfile(replace_extension(nfoFile, "tbn")):
                 self.hastbn = True
 
-        self.session.commit()
+        object_session(self).commit()
 
         return self.hasnfo
 
@@ -471,8 +482,8 @@ class TVEpisode(object):
         # delete myself from the DB
         sickrage.app.log.debug("Deleting myself from the database")
 
-        self.session.query(MainDB.TVEpisode).filter_by(showid=self.show.indexer_id, season=self.season, episode=self.episode).delete()
-        self.session.commit()
+        object_session(self).query(TVEpisode).filter_by(showid=self.show.indexer_id, season=self.season, episode=self.episode).delete()
+        object_session(self).commit()
 
         data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate([(self.season, self.episode)])
         if sickrage.app.config.use_trakt and sickrage.app.config.trakt_sync_watchlist and data:
@@ -619,7 +630,7 @@ class TVEpisode(object):
         # save the ep
         if result:
             self.location = absolute_proper_path + file_ext
-            self.session.commit()
+            object_session(self).commit()
             for relEp in self.related_episodes:
                 relEp.location = absolute_proper_path + file_ext
 
@@ -862,11 +873,17 @@ class TVEpisode(object):
             if not hasattr(self, '_release_group'):
                 sickrage.app.log.debug("Episode has no release group, replacing it with '" + replace_map['%RG'] + "'")
                 self.release_group = replace_map['%RG']  # if release_group is not in the db, put it there
-                self.session.commit()
+                try:
+                    object_session(self).commit()
+                except orm.exc.UnmappedInstanceError:
+                    pass
             elif not self.release_group:
                 sickrage.app.log.debug("Episode has no release group, replacing it with '" + replace_map['%RG'] + "'")
                 self.release_group = replace_map['%RG']  # if release_group is not in the db, put it there
-                self.session.commit()
+                try:
+                    object_session(self).commit()
+                except orm.exc.UnmappedInstanceError:
+                    pass
 
         # if there's no release name then replace it with a reasonable facsimile
         if not replace_map['%RN']:
@@ -1109,3 +1126,10 @@ class TVEpisode(object):
         to_return += "hastbn: %r\n" % self.hastbn
         to_return += "status: %r\n" % self.status
         return to_return
+
+    def __enter__(self):
+        self._lock.acquire()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._lock.release()

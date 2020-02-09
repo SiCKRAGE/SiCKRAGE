@@ -15,22 +15,17 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
-import datetime
-import os
 
-from sqlalchemy import Column, Integer, Text, ForeignKeyConstraint, String, DateTime, Boolean, Date, BigInteger, Index
+from sqlalchemy import Column, Integer, Text, ForeignKeyConstraint, String, DateTime
 from sqlalchemy.ext.declarative import as_declarative
-from sqlalchemy.orm import sessionmaker, relationship, validates
+from sqlalchemy.orm import sessionmaker, scoped_session
 
-from sickrage.core import common
 from sickrage.core.databases import SRDatabase, SRDatabaseBase, ContextSession
-from sickrage.core.helpers import file_size
 
 
 @as_declarative()
 class MainDBBase(SRDatabaseBase):
     pass
-
 
 class MainDB(SRDatabase):
     session = sessionmaker(class_=ContextSession)
@@ -41,91 +36,6 @@ class MainDB(SRDatabase):
         for model in MainDBBase._decl_class_registry.values():
             if hasattr(model, '__tablename__'):
                 self.tables[model.__tablename__] = model
-
-    class TVShow(MainDBBase):
-        __tablename__ = 'tv_shows'
-
-        indexer_id = Column(Integer, index=True, primary_key=True)
-        indexer = Column(Integer, index=True, primary_key=True)
-        name = Column(Text, default='')
-        location = Column(Text, default='')
-        network = Column(Text, default='')
-        genre = Column(Text, default='')
-        overview = Column(Text, default='')
-        classification = Column(Text, default='Scripted')
-        runtime = Column(Integer, default=0)
-        quality = Column(Integer, default=-1)
-        airs = Column(Text, default='')
-        status = Column(Text, default='')
-        flatten_folders = Column(Boolean, default=0)
-        paused = Column(Boolean, default=0)
-        air_by_date = Column(Boolean, default=0)
-        anime = Column(Boolean, default=0)
-        scene = Column(Boolean, default=0)
-        sports = Column(Boolean, default=0)
-        subtitles = Column(Boolean, default=0)
-        dvdorder = Column(Boolean, default=0)
-        skip_downloaded = Column(Boolean, default=0)
-        startyear = Column(Integer, default=0)
-        lang = Column(Text, default='')
-        imdb_id = Column(Text, default='')
-        rls_ignore_words = Column(Text, default='')
-        rls_require_words = Column(Text, default='')
-        default_ep_status = Column(Integer, default=common.SKIPPED)
-        sub_use_sr_metadata = Column(Boolean, default=0)
-        notify_list = Column(Text, default='')
-        search_delay = Column(Integer, default=0)
-        last_update = Column(Integer, default=datetime.datetime.now().toordinal())
-        last_refresh = Column(Integer, default=datetime.datetime.now().toordinal())
-        last_backlog_search = Column(Integer, default=datetime.datetime.now().toordinal())
-        last_proper_search = Column(Integer, default=datetime.datetime.now().toordinal())
-
-        _episodes = relationship('TVEpisode', uselist=True, backref='tv_shows')
-        imdb_info = relationship('IMDbInfo', uselist=False, backref='tv_shows')
-
-    class TVEpisode(MainDBBase):
-        __tablename__ = 'tv_episodes'
-        __table_args__ = (
-            ForeignKeyConstraint(['showid', 'indexer'], ['tv_shows.indexer_id', 'tv_shows.indexer']),
-            Index('idx_showid_indexer', 'showid', 'indexer'),
-            Index('idx_showid_indexerid', 'showid', 'indexer_id'),
-            Index('idx_sta_epi_air', 'status', 'episode', 'airdate'),
-            Index('idx_sea_epi_sta_air', 'season', 'episode', 'status', 'airdate'),
-            Index('idx_indexer_id_airdate', 'indexer_id', 'airdate'),
-        )
-
-        showid = Column(Integer, index=True, primary_key=True)
-        indexer_id = Column(Integer, default=0)
-        indexer = Column(Integer, index=True, primary_key=True)
-        season = Column(Integer, index=True, primary_key=True)
-        episode = Column(Integer, index=True, primary_key=True)
-        scene_season = Column(Integer, default=0)
-        scene_episode = Column(Integer, default=0)
-        name = Column(Text, default='')
-        description = Column(Text, default='')
-        subtitles = Column(Text, default='')
-        subtitles_searchcount = Column(Integer, default=0)
-        subtitles_lastsearch = Column(Integer, default=0)
-        airdate = Column(Date, default=datetime.datetime.min)
-        hasnfo = Column(Boolean, default=False)
-        hastbn = Column(Boolean, default=False)
-        status = Column(Integer, default=common.UNKNOWN)
-        location = Column(Text, default='')
-        file_size = Column(BigInteger, default=0)
-        release_name = Column(Text, default='')
-        is_proper = Column(Boolean, default=False)
-        absolute_number = Column(Integer, default=0)
-        scene_absolute_number = Column(Integer, default=0)
-        version = Column(Integer, default=-1)
-        release_group = Column(Text, default='')
-
-        # show = relationship('TVShow', uselist=False, backref='tv_episodes')
-
-        @validates('location')
-        def validate_location(self, key, location):
-            if os.path.exists(location):
-                self.file_size = file_size(location)
-            return location
 
     class IMDbInfo(MainDBBase):
         __tablename__ = 'imdb_info'

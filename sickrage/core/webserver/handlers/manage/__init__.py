@@ -34,6 +34,7 @@ from sickrage.core.helpers.anidb import get_release_groups_for_anime, short_grou
 from sickrage.core.queues.search import BacklogQueueItem, FailedQueueItem
 from sickrage.core.scene_exceptions import get_scene_exceptions, update_scene_exceptions
 from sickrage.core.scene_numbering import xem_refresh
+from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
 from sickrage.indexers import IndexerApi
@@ -332,8 +333,7 @@ class ShowEpisodeStatusesHandler(BaseHandler, ABC):
             status_list = Quality.SNATCHED + Quality.SNATCHED_PROPER
 
         result = {}
-        for dbData in session.query(MainDB.TVEpisode).filter_by(showid=int(indexer_id)).filter(MainDB.TVEpisode.season != 0,
-                                                                                               MainDB.TVEpisode.status.in_(status_list)):
+        for dbData in session.query(TVEpisode).filter_by(showid=int(indexer_id)).filter(TVEpisode.season != 0, TVEpisode.status.in_(status_list)):
             cur_season = int(dbData.season)
             cur_episode = int(dbData.episode)
 
@@ -414,8 +414,8 @@ class ChangeEpisodeStatusesHandler(BaseHandler, ABC):
             # get a list of all the eps we want to change if they just said "all"
             if 'all' in to_change[cur_indexer_id]:
                 all_eps = ['{}x{}'.format(x.season, x.episode) for x in
-                           session.query(MainDB.TVEpisode).filter_by(showid=int(cur_indexer_id)).filter(MainDB.TVEpisode.status.in_(status_list),
-                                                                                                        MainDB.TVEpisode.season != 0)]
+                           session.query(TVEpisode).filter_by(showid=int(cur_indexer_id)).filter(TVEpisode.status.in_(status_list),
+                                                                                                 TVEpisode.season != 0)]
                 to_change[cur_indexer_id] = all_eps
 
             set_episode_status(show=cur_indexer_id, eps='|'.join(to_change[cur_indexer_id]), status=new_status, direct=True)
@@ -449,8 +449,8 @@ class ShowSubtitleMissedHandler(BaseHandler, ABC):
 
         result = {}
 
-        for dbData in session.query(MainDB.TVEpisode).filter_by(showid=int(indexer_id)).filter(MainDB.TVEpisode.status.endswith(4),
-                                                                                               MainDB.TVEpisode.season != 0):
+        for dbData in session.query(TVEpisode).filter_by(showid=int(indexer_id)).filter(TVEpisode.status.endswith(4),
+                                                                                        TVEpisode.season != 0):
             if which_subs == 'all':
                 if not frozenset(Subtitles().wanted_languages()).difference(dbData.subtitles.split(',')):
                     continue
@@ -547,8 +547,8 @@ class DownloadSubtitleMissedHandler(BaseHandler, ABC):
             # get a list of all the eps we want to download subtitles if they just said "all"
             if 'all' in to_download[cur_indexer_id]:
                 to_download[cur_indexer_id] = ['{}x{}'.format(x.season, x.episode) for x in
-                                               session.query(MainDB.TVEpisode).filter_by(showid=int(cur_indexer_id)).filter(
-                                                   MainDB.TVEpisode.status.endswith(4), MainDB.TVEpisode.season != 0)]
+                                               session.query(TVEpisode).filter_by(showid=int(cur_indexer_id)).filter(
+                                                   TVEpisode.status.endswith(4), TVEpisode.season != 0)]
 
             for epResult in to_download[cur_indexer_id]:
                 season, episode = epResult.split('x')

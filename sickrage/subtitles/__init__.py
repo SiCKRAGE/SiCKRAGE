@@ -30,7 +30,6 @@ from babelfish import language_converters, Language
 from subliminal import save_subtitles
 
 import sickrage
-from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import chmod_as_parent, make_dir
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.tv.show.history import History

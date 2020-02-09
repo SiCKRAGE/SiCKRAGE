@@ -33,6 +33,7 @@ from sickrage.core.exceptions import CantRefreshShowException, CantRemoveShowExc
 from sickrage.core.queues import SRQueue, SRQueueItem, SRQueuePriorities
 from sickrage.core.scene_numbering import xem_refresh, get_xem_numbering_for_show
 from sickrage.core.traktapi import TraktAPI
+from sickrage.core.tv.show import TVShow
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_attributenotfound, indexer_error, indexer_exception
@@ -311,7 +312,7 @@ class QueueItemAdd(ShowQueueItem):
             return self._finish_early()
 
         # add show to database
-        session.add(MainDB.TVShow(**{'indexer_id': self.indexer_id, 'indexer': self.indexer, 'lang': self.lang, 'location': self.showDir}))
+        session.add(TVShow(**{'indexer_id': self.indexer_id, 'indexer': self.indexer, 'lang': self.lang, 'location': self.showDir}))
         session.commit()
 
         show_obj = find_show(self.indexer_id)

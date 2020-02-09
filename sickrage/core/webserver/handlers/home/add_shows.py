@@ -161,7 +161,7 @@ class MassAddTableHandler(BaseHandler, ABC):
 
                     # see if the folder is in database already
                     try:
-                        session.query(MainDB.TVShow).filter_by(location=cur_path).one()
+                        session.query(TVShow).filter_by(location=cur_path).one()
                         cur_dir['added_already'] = True
                     except orm.exc.NoResultFound:
                         cur_dir['added_already'] = False

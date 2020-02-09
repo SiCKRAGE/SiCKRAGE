@@ -20,8 +20,6 @@
 # ##############################################################################
 import threading
 
-from tornado import gen
-
 import sickrage
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.media.util import showImage

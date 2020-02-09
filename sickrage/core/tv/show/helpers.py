@@ -18,35 +18,23 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-from sqlalchemy import orm
 
 import sickrage
-from sickrage.core.databases.main import MainDB
-from sickrage.core.exceptions import ShowNotFoundException
 
 
 def find_show(indexer_id, indexer=1):
     from sickrage.core.tv.show import TVShow
-
-    try:
-        return TVShow(indexer_id, indexer)
-    except ShowNotFoundException as e:
-        pass
+    session = sickrage.app.main_db.session()
+    return session.query(TVShow).filter_by(indexer_id=indexer_id, indexer=indexer).one_or_none()
 
 
 def find_show_by_name(term):
+    from sickrage.core.tv.show import TVShow
     session = sickrage.app.main_db.session()
-
-    try:
-        query = session.query(MainDB.TVShow).filter(MainDB.TVShow.name.like('%{}%'.format(term))).one()
-        from sickrage.core.tv.show import TVShow
-        return TVShow(query.indexer_id, query.indexer)
-    except orm.exc.NoResultFound:
-        pass
+    return session.query(TVShow).filter(TVShow.name.like('%{}%'.format(term))).one_or_none()
 
 
 def get_show_list():
-    session = sickrage.app.main_db.session()
-
     from sickrage.core.tv.show import TVShow
-    return [TVShow(x.indexer_id, x.indexer) for x in session.query(MainDB.TVShow).all()]
+    session = sickrage.app.main_db.session()
+    return session.query(TVShow)

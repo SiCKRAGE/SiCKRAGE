@@ -24,7 +24,7 @@ import threading
 from sqlalchemy import or_, and_
 
 import sickrage
-from sickrage.core.databases.main import MainDB
+from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import get_show_list, find_show
 from sickrage.subtitles import Subtitles
 
@@ -71,10 +71,9 @@ class SubtitleSearcher(object):
             if s.subtitles != 1:
                 continue
 
-            for e in session.query(MainDB.TVEpisode).filter_by(showid=s.indexer_id).filter(MainDB.TVEpisode.location != '', ~MainDB.TVEpisode.subtitles.in_(
-                    Subtitles().wanted_languages()
-            ), or_(MainDB.TVEpisode.subtitles_searchcount <= 2, and_(MainDB.TVEpisode.subtitles_searchcount <= 7,
-                                                                     datetime.date.today() - MainDB.TVEpisode.airdate))):
+            for e in session.query(TVEpisode).filter_by(showid=s.indexer_id).filter(TVEpisode.location != '', ~TVEpisode.subtitles.in_(
+                    Subtitles().wanted_languages()), or_(TVEpisode.subtitles_searchcount <= 2,
+                                                         and_(TVEpisode.subtitles_searchcount <= 7, datetime.date.today() - TVEpisode.airdate))):
                 results += [{
                     'show_name': s.name,
                     'show_id': s.indexer_id,
