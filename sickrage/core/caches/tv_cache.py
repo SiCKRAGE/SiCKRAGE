@@ -264,7 +264,6 @@ class TVCache(object):
 
     def search_cache(self, show_id, season, episode, manualSearch=False, downCurQuality=False):
         cache_results = {}
-
         dbData = []
 
         # get data from external database
@@ -275,78 +274,75 @@ class TVCache(object):
                 pass
 
         # get data from internal database
-        with sickrage.app.cache_db.session() as session:
-            dbData += [
-                x.as_dict() for x in session.query(CacheDB.Provider).filter_by(provider=self.providerID, series_id=show_id, season=season).filter(
-                    CacheDB.Provider.episodes.contains("|{}|".format(episode)))
-            ]
+        session = sickrage.app.cache_db.session()
+        dbData += [x.as_dict() for x in session.query(CacheDB.Provider).filter_by(provider=self.providerID, series_id=show_id, season=season).filter(
+            CacheDB.Provider.episodes.contains("|{}|".format(episode)))]
 
-        with sickrage.app.main_db.session() as session:
-            for curResult in dbData:
-                show_object = find_show(int(curResult["series_id"]))
-                if not show_object:
+        for curResult in dbData:
+            show_object = find_show(int(curResult["series_id"]))
+            if not show_object:
+                continue
+
+            result = self.provider.get_result()
+
+            # ignore invalid and private IP address urls
+            if not validate_url(curResult["url"]):
+                if not curResult["url"].startswith('magnet'):
                     continue
+            elif is_ip_private(curResult["url"].split(r'//')[-1].split(r'/')[0]):
+                continue
 
-                result = self.provider.get_result()
+            # ignored/required words, and non-tv junk
+            if not show_names.filter_bad_releases(curResult["name"]):
+                continue
 
-                # ignore invalid and private IP address urls
-                if not validate_url(curResult["url"]):
-                    if not curResult["url"].startswith('magnet'):
-                        continue
-                elif is_ip_private(curResult["url"].split(r'//')[-1].split(r'/')[0]):
-                    continue
+            # get the show object, or if it's not one of our shows then ignore it
+            result.show_id = int(curResult["series_id"])
 
-                # ignored/required words, and non-tv junk
-                if not show_names.filter_bad_releases(curResult["name"]):
-                    continue
+            # skip if provider is anime only and show is not anime
+            if self.provider.anime_only and not show_object.is_anime:
+                sickrage.app.log.debug("" + str(show_object.name) + " is not an anime, skiping")
+                continue
 
-                # get the show object, or if it's not one of our shows then ignore it
-                result.show_id = int(curResult["series_id"])
+            # get season and ep data (ignoring multi-eps for now)
+            curSeason = int(curResult["season"])
+            if curSeason == -1:
+                continue
 
-                # skip if provider is anime only and show is not anime
-                if self.provider.anime_only and not show_object.is_anime:
-                    sickrage.app.log.debug("" + str(show_object.name) + " is not an anime, skiping")
-                    continue
+            result.season = curSeason
+            result.episodes = [int(curEp) for curEp in filter(None, curResult["episodes"].split("|"))]
 
-                # get season and ep data (ignoring multi-eps for now)
-                curSeason = int(curResult["season"])
-                if curSeason == -1:
-                    continue
+            result.quality = int(curResult["quality"])
+            result.release_group = curResult["release_group"]
+            result.version = curResult["version"]
 
-                result.season = curSeason
-                result.episodes = [int(curEp) for curEp in filter(None, curResult["episodes"].split("|"))]
+            # make sure we want the episode
+            wantEp = False
+            for result_episode in result.episodes:
+                if show_object.want_episode(result.season, result_episode, result.quality, manualSearch, downCurQuality):
+                    wantEp = True
 
-                result.quality = int(curResult["quality"])
-                result.release_group = curResult["release_group"]
-                result.version = curResult["version"]
+            if not wantEp:
+                sickrage.app.log.info(
+                    "Skipping " + curResult["name"] + " because we don't want an episode that's " + Quality.qualityStrings[result.quality])
+                continue
 
-                # make sure we want the episode
-                wantEp = False
-                for result_episode in result.episodes:
-                    if show_object.want_episode(result.season, result_episode, result.quality, manualSearch, downCurQuality):
-                        wantEp = True
+            # build a result object
+            result.name = curResult["name"]
+            result.url = curResult["url"]
 
-                if not wantEp:
-                    sickrage.app.log.info(
-                        "Skipping " + curResult["name"] + " because we don't want an episode that's " + Quality.qualityStrings[result.quality])
-                    continue
+            sickrage.app.log.info("Found cached {} result {}".format(result.type, result.name))
 
-                # build a result object
-                result.name = curResult["name"]
-                result.url = curResult["url"]
+            result.seeders = curResult.get("seeders", -1)
+            result.leechers = curResult.get("leechers", -1)
+            result.size = curResult.get("size", -1)
+            result.content = None
 
-                sickrage.app.log.info("Found cached {} result {}".format(result.type, result.name))
-
-                result.seeders = curResult.get("seeders", -1)
-                result.leechers = curResult.get("leechers", -1)
-                result.size = curResult.get("size", -1)
-                result.content = None
-
-                # add it to the list
-                if episode not in cache_results:
-                    cache_results[int(episode)] = [result]
-                else:
-                    cache_results[int(episode)] += [result]
+            # add it to the list
+            if episode not in cache_results:
+                cache_results[int(episode)] = [result]
+            else:
+                cache_results[int(episode)] += [result]
 
         # datetime stamp this search so cache gets cleared
         self.last_search = datetime.datetime.today()
