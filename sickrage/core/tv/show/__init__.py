@@ -51,8 +51,6 @@ from sickrage.indexers.exceptions import indexer_attributenotfound
 
 class TVShow(object):
     def __init__(self, indexer_id, indexer):
-        object.__setattr__(self, '_data', None)
-
         self.session = sickrage.app.main_db.session()
 
         try:
@@ -60,28 +58,24 @@ class TVShow(object):
         except orm.exc.NoResultFound:
             raise ShowNotFoundException
 
-    def __getattr__(self, item):
-        _data = object.__getattribute__(self, '_data')
-
+    def __getattribute__(self, item):
         try:
-            if _data and hasattr(_data, item):
-                return getattr(_data, item)
-            else:
-                return object.__getattribute__(self, item)
+            _data = super(TVShow, self).__getattribute__('_data')
+            if item not in _data.as_dict():
+                raise AttributeError
+            return getattr(_data, item)
         except AttributeError:
-            return object.__getattribute__(self, item)
+            return super(TVShow, self).__getattribute__(item)
 
     def __setattr__(self, key, value):
-        _data = object.__getattribute__(self, '_data')
-
         try:
-            if _data and hasattr(_data, key):
-                setattr(_data, key, value)
-                self.session.flush()
-            else:
-                object.__setattr__(self, key, value)
+            _data = super(TVShow, self).__getattribute__('_data')
+            if key not in _data.as_dict():
+                raise AttributeError
+            setattr(_data, key, value)
+            self.session.flush()
         except AttributeError:
-            object.__setattr__(self, key, value)
+            super(TVShow, self).__setattr__(key, value)
 
     @property
     def episodes(self):

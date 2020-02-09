@@ -46,8 +46,6 @@ from sickrage.subtitles import Subtitles
 
 class TVEpisode(object):
     def __init__(self, showid, indexer, season, episode, absolute_number=None):
-        object.__setattr__(self, '_data', None)
-
         self.session = sickrage.app.main_db.session()
 
         try:
@@ -68,28 +66,24 @@ class TVEpisode(object):
 
         self.checkForMetaFiles()
 
-    def __getattr__(self, item):
-        _data = object.__getattribute__(self, '_data')
-
+    def __getattribute__(self, item):
         try:
-            if _data and hasattr(_data, item):
-                return getattr(_data, item)
-            else:
-                return object.__getattribute__(self, item)
+            _data = super(TVEpisode, self).__getattribute__('_data')
+            if item not in _data.as_dict():
+                raise AttributeError
+            return getattr(_data, item)
         except AttributeError:
-            return object.__getattribute__(self, item)
+            return super(TVEpisode, self).__getattribute__(item)
 
     def __setattr__(self, key, value):
-        _data = object.__getattribute__(self, '_data')
-
         try:
-            if _data and hasattr(_data, key):
-                setattr(_data, key, value)
-                self.session.flush()
-            else:
-                object.__setattr__(self, key, value)
+            _data = super(TVEpisode, self).__getattribute__('_data')
+            if key not in _data.as_dict():
+                raise AttributeError
+            setattr(_data, key, value)
+            self.session.flush()
         except AttributeError:
-            object.__setattr__(self, key, value)
+            super(TVEpisode, self).__setattr__(key, value)
 
     @property
     def show(self):
