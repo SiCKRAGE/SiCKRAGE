@@ -161,7 +161,8 @@ def set_episode_status(show, eps, status, direct=None):
 def edit_show(show, any_qualities, best_qualities, exceptions_list, location=None, flatten_folders=None, paused=None, direct_call=None, air_by_date=None,
               sports=None, dvdorder=None, indexer_lang=None, subtitles=None, sub_use_sr_metadata=None, skip_downloaded=None, rls_ignore_words=None,
               rls_require_words=None, anime=None, blacklist=None, whitelist=None, scene=None, default_ep_status=None, quality_preset=None, search_delay=None):
-    show_obj = find_show(int(show))
+    session = sickrage.app.main_db.session()
+    show_obj = find_show(int(show), session=session)
 
     if not show_obj:
         err_msg = _("Unable to find the specified show: ") + str(show)
@@ -294,6 +295,9 @@ def edit_show(show, any_qualities, best_qualities, exceptions_list, location=Non
             xem_refresh(show_obj.indexer_id, show_obj.indexer, True)
         except CantUpdateShowException:
             warnings.append(_("Unable to force an update on scene numbering of the show."))
+
+    # commit changes to database
+    session.commit()
 
     if direct_call:
         return True if len(warnings) == 0 and len(errors) == 0 else False, json_encode({'warnings': warnings, 'errors': errors})

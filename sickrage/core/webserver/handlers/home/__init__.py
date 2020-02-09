@@ -784,9 +784,9 @@ class DisplayShowHandler(BaseHandler, ABC):
 
         submenu = []
 
-        show_obj = find_show(int(show))
-
-        if show_obj is None:
+        session = sickrage.app.main_db.session()
+        show_obj = find_show(int(show), session=session)
+        if not show_obj:
             return self._genericMessage(_("Error"), _("Show not in show list"))
 
         episode_objects = sorted(show_obj.episodes, key=lambda x: (x.season, x.episode), reverse=True)
@@ -938,6 +938,7 @@ class DisplayShowHandler(BaseHandler, ABC):
             bwl = show_obj.release_groups
 
         show_obj.exceptions = await self.run_task(get_scene_exceptions, show_obj.indexer_id)
+        session.commit()
 
         indexer_id = int(show_obj.indexer_id)
         indexer = int(show_obj.indexer)
@@ -993,12 +994,14 @@ class TogglePauseHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
 
-        show_obj = find_show(int(show))
+        session = sickrage.app.main_db.session()
+        show_obj = find_show(int(show), session=session)
 
         if show_obj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         show_obj.paused = not show_obj.paused
+        session.commit()
 
         sickrage.app.alerts.message(
             _('%s has been %s') % (show_obj.name, (_('resumed'), _('paused'))[show_obj.paused]))

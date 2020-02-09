@@ -95,7 +95,6 @@ class TVShow(MainDBBase):
 
     def __init__(self, **kwargs):
         super(TVShow, self).__init__(**kwargs)
-        self._lock = threading.RLock()
 
     @property
     def is_anime(self):
@@ -274,11 +273,13 @@ class TVShow(MainDBBase):
                 try:
                     episode_obj = self.get_episode(season, episode)
                 except EpisodeNotFoundException:
-                    object_session(self).add(TVEpisode(**{'showid': self.indexer_id,
-                                                                 'indexer': self.indexer,
-                                                                 'season': season,
-                                                                 'episode': episode,
-                                                                 'location': ''}))
+                    object_session(self).add(TVEpisode(**{
+                        'showid': self.indexer_id,
+                        'indexer': self.indexer,
+                        'season': season,
+                        'episode': episode,
+                        'location': ''
+                    }))
                     object_session(self).commit()
                     episode_obj = self.get_episode(season, episode)
 
@@ -323,7 +324,7 @@ class TVShow(MainDBBase):
                            r.episode != cur_ep.episode]) > 0:
 
                     related_eps_result = object_session(self).query(TVEpisode).filter_by(showid=self.indexer_id, season=cur_ep.season,
-                                                                                                location=cur_ep.location).filter(
+                                                                                         location=cur_ep.location).filter(
                         TVEpisode.episode != cur_ep.episode).order_by(TVEpisode.episode)
 
                     for cur_related_ep in related_eps_result:
@@ -348,7 +349,7 @@ class TVShow(MainDBBase):
             return query.one()
         except orm.exc.MultipleResultsFound:
             if absolute_number is not None:
-                sickrage.app.log.warning("Multiple entries for absolute number: " + str(absolute_number) + " in show: " + self.name + " found ")
+                sickrage.app.log.debug("Multiple entries for absolute number: " + str(absolute_number) + " in show: " + self.name + " found ")
             raise MultipleEpisodesInDatabaseException
         except orm.exc.NoResultFound:
             if absolute_number is not None:
@@ -578,10 +579,10 @@ class TVShow(MainDBBase):
                 episode_obj = self.get_episode(season, episode)
             except EpisodeNotFoundException:
                 object_session(self).add(TVEpisode(**{'showid': self.indexer_id,
-                                                             'indexer': self.indexer,
-                                                             'season': season,
-                                                             'episode': episode,
-                                                             'location': filename}))
+                                                      'indexer': self.indexer,
+                                                      'season': season,
+                                                      'episode': episode,
+                                                      'location': filename}))
                 object_session(self).commit()
                 episode_obj = self.get_episode(season, episode)
 
@@ -954,10 +955,3 @@ class TVShow(MainDBBase):
         toReturn += "sports: {}\n".format(self.is_sports)
         toReturn += "anime: {}\n".format(self.is_anime)
         return toReturn
-
-    def __enter__(self):
-        self._lock.acquire()
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self._lock.release()

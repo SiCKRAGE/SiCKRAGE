@@ -90,6 +90,7 @@ class ContextSession(sqlalchemy.orm.Session):
                     timer = random.randint(10, 30)
                     sickrage.app.log.debug('Retrying database commit in {}s, attempt {}'.format(timer, i))
                     sleep(timer)
+                    continue
                 except Exception as e:
                     self.rollback()
                     raise

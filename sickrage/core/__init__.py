@@ -520,11 +520,11 @@ class Core(object):
         self.io_loop.add_callback(self.postprocessor_queue.watch)
 
         # fire off startup events
-        # self.io_loop.run_in_executor(None, self.quicksearch_cache.run)
-        # self.io_loop.run_in_executor(None, self.name_cache.run)
-        # self.io_loop.run_in_executor(None, self.version_updater.run)
-        # self.io_loop.run_in_executor(None, self.tz_updater.run)
-        # self.io_loop.run_in_executor(None, self.announcements.run)
+        self.io_loop.run_in_executor(None, self.quicksearch_cache.run)
+        self.io_loop.run_in_executor(None, self.name_cache.run)
+        self.io_loop.run_in_executor(None, self.version_updater.run)
+        self.io_loop.run_in_executor(None, self.tz_updater.run)
+        self.io_loop.run_in_executor(None, self.announcements.run)
 
         # start web server
         self.wserver.start()

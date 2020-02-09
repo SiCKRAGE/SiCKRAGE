@@ -121,10 +121,12 @@ class DelugeAPI(GenericClient):
 
     def _set_torrent_label(self, result):
         label = sickrage.app.config.torrent_label
-        show_object = find_show(result.show_id)
 
-        if show_object.is_anime:
+        tv_show = find_show(result.show_id)
+
+        if tv_show.is_anime:
             label = sickrage.app.config.torrent_label_anime
+
         if ' ' in label:
             sickrage.app.log.warning(self.name + ': Invalid label. Label must not contain a space')
             return False

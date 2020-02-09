@@ -315,7 +315,7 @@ class QueueItemAdd(ShowQueueItem):
         session.add(TVShow(**{'indexer_id': self.indexer_id, 'indexer': self.indexer, 'lang': self.lang, 'location': self.showDir}))
         session.commit()
 
-        show_obj = find_show(self.indexer_id)
+        show_obj = find_show(self.indexer_id, session=session)
         if not show_obj:
             return self._finish_early()
 
@@ -437,23 +437,26 @@ class QueueItemRefresh(ShowQueueItem):
         self.force = force
 
     def run(self):
-        show_obj = find_show(self.indexer_id)
+        session = sickrage.app.main_db.session()
 
         start_time = time.time()
 
-        sickrage.app.log.info("Performing refresh for show: {}".format(show_obj.name))
+        tv_show = find_show(self.indexer_id, session=session)
 
-        show_obj.refresh_dir()
+        sickrage.app.log.info("Performing refresh for show: {}".format(tv_show.name))
 
-        show_obj.write_metadata(force=self.force)
-        show_obj.populate_cache(force=self.force)
+        tv_show.refresh_dir()
+        tv_show.write_metadata(force=self.force)
+        tv_show.populate_cache(force=self.force)
 
         # Load XEM data to DB for show
         # xem_refresh(show.indexer_id, show.indexer)
 
-        show_obj.last_refresh = datetime.date.today().toordinal()
+        tv_show.last_refresh = datetime.date.today().toordinal()
 
-        sickrage.app.log.info("Finished refresh in {}s for show: {}".format(round(time.time() - start_time, 2), show_obj.name))
+        session.commit()
+
+        sickrage.app.log.info("Finished refresh in {}s for show: {}".format(round(time.time() - start_time, 2), tv_show.name))
 
 
 class QueueItemRename(ShowQueueItem):
@@ -466,8 +469,7 @@ class QueueItemRename(ShowQueueItem):
         sickrage.app.log.info("Performing renames for show: {}".format(show_obj.name))
 
         if not os.path.isdir(show_obj.location):
-            sickrage.app.log.warning(
-                "Can't perform rename on " + show_obj.name + " when the show dir is missing.")
+            sickrage.app.log.warning("Can't perform rename on " + show_obj.name + " when the show dir is missing.")
             return
 
         ep_obj_rename_list = []
@@ -516,8 +518,6 @@ class QueueItemUpdate(ShowQueueItem):
         self.force = False
 
     def run(self):
-        session = sickrage.app.main_db.session()
-
         show_obj = find_show(self.indexer_id)
 
         start_time = time.time()
@@ -572,8 +572,6 @@ class QueueItemUpdate(ShowQueueItem):
         sickrage.app.quicksearch_cache.update_show(show_obj.indexer_id)
 
         sickrage.app.log.info("Finished updates in {}s for show: {}".format(round(time.time() - start_time, 2), show_obj.name))
-
-        session.commit()
 
         # refresh show
         if not self.indexer_update_only:

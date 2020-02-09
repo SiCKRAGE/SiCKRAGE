@@ -89,7 +89,6 @@ class TVEpisode(MainDBBase):
 
     def __init__(self, **kwargs):
         super(TVEpisode, self).__init__(**kwargs)
-        self._lock = threading.RLock()
         # self.checkForMetaFiles()
 
     @validates('location')
@@ -202,6 +201,8 @@ class TVEpisode(MainDBBase):
         raise EpisodeNotFoundException("Couldn't find episode S%02dE%02d" % (season or 0, episode or 0))
 
     def load_from_indexer(self, season=None, episode=None, cache=True, tvapi=None, cachedSeason=None):
+        from sickrage.core.scene_numbering import get_scene_absolute_numbering, get_scene_numbering
+
         indexer_name = IndexerApi(self.indexer).name
 
         season = (self.season, season)[season is not None]
@@ -261,17 +262,17 @@ class TVEpisode(MainDBBase):
                                   "Setting to an empty string".format(self.show.name, season or 0, episode or 0, indexer_name))
 
         if not myEp.get('absolutenumber'):
-            sickrage.app.log.debug("This episode {} - S{:02d}E{:02d} has no absolute number on {}".format(
-                self.show.name, season or 0, episode or 0, indexer_name))
+            sickrage.app.log.debug(
+                "This episode {} - S{:02d}E{:02d} has no absolute number on {}".format(self.show.name, season or 0, episode or 0, indexer_name))
         else:
-            sickrage.app.log.debug("{}: The absolute_number for S{:02d}E{:02d} is: {}".format(
-                self.show.indexer_id, season or 0, episode or 0, myEp["absolutenumber"]))
+            sickrage.app.log.debug(
+                "{}: The absolute_number for S{:02d}E{:02d} is: {}".format(self.show.indexer_id, season or 0, episode or 0, myEp["absolutenumber"]))
             self.absolute_number = try_int(safe_getattr(myEp, 'absolutenumber'), self.absolute_number)
 
         self.season = season
         self.episode = episode
 
-        from sickrage.core.scene_numbering import get_scene_absolute_numbering, get_scene_numbering
+        object_session(self).commit()
 
         self.scene_absolute_number = get_scene_absolute_numbering(
             self.show.indexer_id,
@@ -279,11 +280,15 @@ class TVEpisode(MainDBBase):
             self.absolute_number
         )
 
+        object_session(self).commit()
+
         self.scene_season, self.scene_episode = get_scene_numbering(
             self.show.indexer_id,
             self.show.indexer,
             self.season, self.episode
         )
+
+        object_session(self).commit()
 
         self.description = safe_getattr(myEp, 'overview', self.description)
 
@@ -317,9 +322,7 @@ class TVEpisode(MainDBBase):
 
         if not os.path.isfile(self.location):
             if self.airdate >= datetime.date.today() or not self.airdate > datetime.date.min:
-                sickrage.app.log.debug(
-                    "Episode airs in the future or has no airdate, marking it %s" % statusStrings[
-                        UNAIRED])
+                sickrage.app.log.debug("Episode airs in the future or has no airdate, marking it %s" % statusStrings[UNAIRED])
                 self.status = UNAIRED
             elif self.status in [UNAIRED, UNKNOWN]:
                 # Only do UNAIRED/UNKNOWN, it could already be snatched/ignored/skipped, or downloaded/archived to
@@ -479,12 +482,6 @@ class TVEpisode(MainDBBase):
     def delete_episode(self, full=False):
         sickrage.app.log.debug("Deleting %s S%02dE%02d from the DB" % (self.show.name, self.season or 0, self.episode or 0))
 
-        # delete myself from the DB
-        sickrage.app.log.debug("Deleting myself from the database")
-
-        object_session(self).query(TVEpisode).filter_by(showid=self.show.indexer_id, season=self.season, episode=self.episode).delete()
-        object_session(self).commit()
-
         data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate([(self.season, self.episode)])
         if sickrage.app.config.use_trakt and sickrage.app.config.trakt_sync_watchlist and data:
             sickrage.app.log.debug("Deleting myself from Trakt")
@@ -495,7 +492,12 @@ class TVEpisode(MainDBBase):
             try:
                 os.remove(self.location)
             except OSError as e:
-                sickrage.app.log.warning('Unable to delete %s: %s / %s' % (self.location, repr(e), str(e)))
+                sickrage.app.log.warning('Unable to delete episode file %s: %s / %s' % (self.location, repr(e), str(e)))
+
+        # delete myself from the DB
+        sickrage.app.log.debug("Deleting myself from the database")
+        object_session(self).delete(self)
+        object_session(self).commit()
 
         raise EpisodeDeletedException()
 
@@ -1126,10 +1128,3 @@ class TVEpisode(MainDBBase):
         to_return += "hastbn: %r\n" % self.hastbn
         to_return += "status: %r\n" % self.status
         return to_return
-
-    def __enter__(self):
-        self._lock.acquire()
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self._lock.release()
