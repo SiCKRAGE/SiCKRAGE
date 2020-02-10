@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 import datetime
-import functools
 import os
 import pickle
 import random
@@ -73,7 +72,7 @@ class ContextSession(sqlalchemy.orm.Session):
 
     def __init__(self, *args, **kwargs):
         super(ContextSession, self).__init__(*args, **kwargs)
-        self._lock = threading.RLock()
+        self._lock = threading.Lock()
         self.max_attempts = 50
 
     def commit(self, close=False):
@@ -90,7 +89,6 @@ class ContextSession(sqlalchemy.orm.Session):
                     timer = random.randint(10, 30)
                     sickrage.app.log.debug('Retrying database commit in {}s, attempt {}'.format(timer, i))
                     sleep(timer)
-                    continue
                 except Exception as e:
                     self.rollback()
                     raise
@@ -99,6 +97,7 @@ class ContextSession(sqlalchemy.orm.Session):
                 finally:
                     if close:
                         self.close()
+
 
 class SRDatabaseBase(object):
     def as_dict(self):

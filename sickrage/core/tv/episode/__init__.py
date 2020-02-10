@@ -22,7 +22,6 @@
 import datetime
 import os
 import re
-import threading
 import traceback
 from collections import OrderedDict
 from xml.etree.ElementTree import ElementTree
@@ -107,12 +106,16 @@ class TVEpisode(MainDBBase):
 
     def refresh_subtitles(self):
         """Look for subtitles files and refresh the subtitles property"""
+        session = object_session(self)
+
         subtitles, save_subtitles = Subtitles().refresh_subtitles(self.showid, self.season, self.episode)
         if save_subtitles:
             self.subtitles = ','.join(subtitles)
-            object_session(self).commit()
+            session.commit()
 
     def download_subtitles(self):
+        session = object_session(self)
+
         if self.location == '':
             return
 
@@ -139,11 +142,13 @@ class TVEpisode(MainDBBase):
             sickrage.app.log.debug("%s: No subtitles downloaded for S%02dE%02d" %
                                    (self.show.indexer_id, self.season or 0, self.episode or 0))
 
-        object_session(self).commit()
+        session.commit()
 
         return newSubtitles
 
     def checkForMetaFiles(self):
+        session = object_session(self)
+
         oldhasnfo = self.hasnfo
         oldhastbn = self.hastbn
 
@@ -168,7 +173,7 @@ class TVEpisode(MainDBBase):
         self.hasnfo = cur_nfo
         self.hastbn = cur_tbn
 
-        object_session(self).commit()
+        session.commit()
 
         # if either setting has changed return true, if not return false
         return oldhasnfo != self.hasnfo or oldhastbn != self.hastbn
@@ -202,6 +207,8 @@ class TVEpisode(MainDBBase):
 
     def load_from_indexer(self, season=None, episode=None, cache=True, tvapi=None, cachedSeason=None):
         from sickrage.core.scene_numbering import get_scene_absolute_numbering, get_scene_numbering
+
+        session = object_session(self)
 
         indexer_name = IndexerApi(self.indexer).name
 
@@ -251,8 +258,8 @@ class TVEpisode(MainDBBase):
         self.indexer_id = try_int(safe_getattr(myEp, 'id'), self.indexer_id)
         if not self.indexer_id:
             sickrage.app.log.warning("Failed to retrieve ID from " + IndexerApi(self.indexer).name)
-            object_session(self).rollback()
-            object_session(self).commit()
+            session.rollback()
+            session.commit()
             self.delete_episode()
             return False
 
@@ -272,7 +279,7 @@ class TVEpisode(MainDBBase):
         self.season = season
         self.episode = episode
 
-        object_session(self).commit()
+        session.commit()
 
         self.scene_absolute_number = get_scene_absolute_numbering(
             self.show.indexer_id,
@@ -280,7 +287,7 @@ class TVEpisode(MainDBBase):
             self.absolute_number
         )
 
-        object_session(self).commit()
+        session.commit()
 
         self.scene_season, self.scene_episode = get_scene_numbering(
             self.show.indexer_id,
@@ -288,7 +295,7 @@ class TVEpisode(MainDBBase):
             self.season, self.episode
         )
 
-        object_session(self).commit()
+        session.commit()
 
         self.description = safe_getattr(myEp, 'overview', self.description)
 
@@ -302,12 +309,12 @@ class TVEpisode(MainDBBase):
                 firstaired, indexer_name, self.show.name, season or 0, episode or 0))
 
             # if I'm incomplete on the indexer but I once was complete then just delete myself from the DB for now
-            object_session(self).rollback()
-            object_session(self).commit()
+            session.rollback()
+            session.commit()
             self.delete_episode()
             return False
 
-        object_session(self).commit()
+        session.commit()
 
         # don't update show status if show dir is missing, unless it's missing on purpose
         if not os.path.isdir(self.show.location) and not sickrage.app.config.create_missing_show_dirs and not sickrage.app.config.add_shows_wo_dir:
@@ -344,11 +351,13 @@ class TVEpisode(MainDBBase):
             sickrage.app.log.debug("6 Status changes from " + str(self.status) + " to " + str(UNKNOWN))
             self.status = UNKNOWN
 
-        object_session(self).commit()
+        session.commit()
 
         return True
 
     def load_from_nfo(self, location):
+        session = object_session(self)
+
         if not os.path.isdir(self.show.location):
             sickrage.app.log.info("{}: The show dir is missing, not bothering to try loading the episode NFO".format(self.show.indexer_id))
             return False
@@ -378,8 +387,8 @@ class TVEpisode(MainDBBase):
                     except Exception as e:
                         sickrage.app.log.warning("Failed to rename your episode's NFO file - you need to delete it or fix it: {}".format(e))
 
-                    object_session(self).rollback()
-                    object_session(self).commit()
+                    session.rollback()
+                    session.commit()
 
                     raise NoNFOException("Error in NFO format")
 
@@ -395,8 +404,8 @@ class TVEpisode(MainDBBase):
                         continue
 
                     if epDetails.findtext('title') is None or epDetails.findtext('aired') is None:
-                        object_session(self).rollback()
-                        object_session(self).commit()
+                        session.rollback()
+                        session.commit()
                         raise NoNFOException("Error in NFO format (missing episode title or airdate)")
 
                     self.name = epDetails.findtext('title')
@@ -430,7 +439,7 @@ class TVEpisode(MainDBBase):
             if os.path.isfile(replace_extension(nfoFile, "tbn")):
                 self.hastbn = True
 
-        object_session(self).commit()
+        session.commit()
 
         return self.hasnfo
 
@@ -480,6 +489,8 @@ class TVEpisode(MainDBBase):
         return result
 
     def delete_episode(self, full=False):
+        session = object_session(self)
+
         sickrage.app.log.debug("Deleting %s S%02dE%02d from the DB" % (self.show.name, self.season or 0, self.episode or 0))
 
         data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate([(self.season, self.episode)])
@@ -496,8 +507,8 @@ class TVEpisode(MainDBBase):
 
         # delete myself from the DB
         sickrage.app.log.debug("Deleting myself from the database")
-        object_session(self).delete(self)
-        object_session(self).commit()
+        session.delete(self)
+        session.commit()
 
         raise EpisodeDeletedException()
 
@@ -568,6 +579,8 @@ class TVEpisode(MainDBBase):
         in the naming settings.
         """
 
+        session = object_session(self)
+
         if not os.path.isfile(self.location):
             sickrage.app.log.warning(
                 "Can't perform rename on " + self.location + " when it doesn't exist, skipping")
@@ -632,7 +645,7 @@ class TVEpisode(MainDBBase):
         # save the ep
         if result:
             self.location = absolute_proper_path + file_ext
-            object_session(self).commit()
+            session.commit()
             for relEp in self.related_episodes:
                 relEp.location = absolute_proper_path + file_ext
 
@@ -854,6 +867,11 @@ class TVEpisode(MainDBBase):
         Manipulates an episode naming pattern and then fills the template in
         """
 
+        try:
+            session = object_session(self)
+        except orm.exc.UnmappedInstanceError:
+            session = sickrage.app.main_db.session()
+
         if pattern is None:
             pattern = sickrage.app.config.naming_pattern
 
@@ -875,17 +893,11 @@ class TVEpisode(MainDBBase):
             if not hasattr(self, '_release_group'):
                 sickrage.app.log.debug("Episode has no release group, replacing it with '" + replace_map['%RG'] + "'")
                 self.release_group = replace_map['%RG']  # if release_group is not in the db, put it there
-                try:
-                    object_session(self).commit()
-                except orm.exc.UnmappedInstanceError:
-                    pass
+                session.commit()
             elif not self.release_group:
                 sickrage.app.log.debug("Episode has no release group, replacing it with '" + replace_map['%RG'] + "'")
                 self.release_group = replace_map['%RG']  # if release_group is not in the db, put it there
-                try:
-                    object_session(self).commit()
-                except orm.exc.UnmappedInstanceError:
-                    pass
+                session.commit()
 
         # if there's no release name then replace it with a reasonable facsimile
         if not replace_map['%RN']:
