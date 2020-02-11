@@ -148,7 +148,7 @@ class ShowProgressHandler(BaseHandler, ABC):
         show = find_show(show_id)
         episodes_snatched = show.episodes_snatched
         episodes_downloaded = show.episodes_downloaded
-        episodes_total = len(show.episodes) - show.episodes_special - show.episodes_unaired
+        episodes_total = show.episodes.count() - show.episodes_special - show.episodes_unaired
         progressbar_percent = int(episodes_downloaded * 100 / episodes_total if episodes_total > 0 else 1)
 
         progress_text = '?'

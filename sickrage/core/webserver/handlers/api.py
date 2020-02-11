@@ -2679,7 +2679,7 @@ class CMD_ShowsStats(ApiCall):
 
             overall_stats['episodes']['snatched'] += show.episodes_snatched or 0
             overall_stats['episodes']['downloaded'] += show.episodes_downloaded or 0
-            overall_stats['episodes']['total'] += len(show.episodes) or 0
+            overall_stats['episodes']['total'] += show.episodes.count() or 0
             overall_stats['total_size'] += show.total_size or 0
 
         return await _responds(RESULT_SUCCESS, {

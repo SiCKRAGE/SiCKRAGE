@@ -409,8 +409,7 @@ class TVShow(MainDBBase):
             if episode_obj.location == '':
                 continue
 
-            sickrage.app.log.debug(
-                str(self.indexer_id) + ": Updating video metadata for episode S%02dE%02d" % (episode_obj.season, episode_obj.episode))
+            sickrage.app.log.debug(str(self.indexer_id) + ": Updating video metadata for episode S%02dE%02d" % (episode_obj.season, episode_obj.episode))
 
             episode_obj.update_video_metadata()
 
