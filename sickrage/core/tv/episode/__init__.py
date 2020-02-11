@@ -86,9 +86,10 @@ class TVEpisode(MainDBBase):
 
     show = relationship('TVShow', uselist=False, backref='tv_episodes')
 
-    def __init__(self, **kwargs):
-        super(TVEpisode, self).__init__(**kwargs)
-        # self.checkForMetaFiles()
+    @orm.reconstructor
+    def init_on_load(self):
+        self.populate_episode(self.season, self.episode)
+        self.checkForMetaFiles()
 
     @validates('location')
     def validate_location(self, key, location):
@@ -193,8 +194,7 @@ class TVEpisode(MainDBBase):
             try:
                 success[method] = func()
             except NoNFOException:
-                sickrage.app.log.warning("%s: There was an issue loading the NFO for episode S%02dE%02d" % (
-                    self.show.indexer_id, season or 0, episode or 0))
+                sickrage.app.log.warning("%s: There was an issue loading the NFO for episode S%02dE%02d" % (self.show.indexer_id, season or 0, episode or 0))
             except EpisodeDeletedException:
                 pass
 

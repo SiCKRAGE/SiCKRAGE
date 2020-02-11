@@ -89,7 +89,7 @@ class TVShow(MainDBBase):
     last_backlog_search = Column(Integer, default=datetime.datetime.now().toordinal())
     last_proper_search = Column(Integer, default=datetime.datetime.now().toordinal())
 
-    episodes = relationship('TVEpisode', uselist=True, backref='tv_shows')
+    episodes = relationship('TVEpisode', uselist=True, backref='tv_shows', lazy='dynamic')
     imdb_info = relationship('IMDbInfo', uselist=False, backref='tv_shows')
 
     def __init__(self, **kwargs):
@@ -284,15 +284,16 @@ class TVShow(MainDBBase):
                         'location': ''
                     }))
                     session.commit()
+
                     episode_obj = self.get_episode(season, episode)
 
-                sickrage.app.log.debug("%s: Loading info from %s for episode S%02dE%02d" % (
-                    self.indexer_id, IndexerApi(self.indexer).name, season or 0, episode or 0
-                ))
-
                 try:
-                    episode_obj.populate_episode(season, episode, tvapi=t)
-                except EpisodeNotFoundException:
+                    sickrage.app.log.debug("%s: Loading info from %s for episode S%02dE%02d" % (
+                        self.indexer_id, IndexerApi(self.indexer).name, season or 0, episode or 0
+                    ))
+
+                    episode_obj.load_from_indexer(season, episode, tvapi=t)
+                except EpisodeDeletedException:
                     continue
 
                 scanned_eps[season][episode] = True
@@ -328,8 +329,7 @@ class TVShow(MainDBBase):
                            r.location == cur_ep.location and
                            r.episode != cur_ep.episode]) > 0:
 
-                    related_eps_result = session.query(TVEpisode).filter_by(showid=self.indexer_id, season=cur_ep.season,
-                                                                                         location=cur_ep.location).filter(
+                    related_eps_result = self.episodes.filter_by(showid=self.indexer_id, season=cur_ep.season, location=cur_ep.location).filter(
                         TVEpisode.episode != cur_ep.episode).order_by(TVEpisode.episode)
 
                     for cur_related_ep in related_eps_result:
@@ -345,10 +345,8 @@ class TVShow(MainDBBase):
         return ep_list
 
     def get_episode(self, season=None, episode=None, absolute_number=None):
-        session = object_session(self)
-
         try:
-            query = session.query(TVEpisode).filter_by(showid=self.indexer_id, indexer=self.indexer, season=season, episode=episode)
+            query = self.episodes.filter_by(showid=self.indexer_id, indexer=self.indexer, season=season, episode=episode)
             if absolute_number is not None:
                 query = query.filter_by(absolute_number=absolute_number)
                 if query.count():
@@ -592,10 +590,10 @@ class TVShow(MainDBBase):
                 episode_obj = self.get_episode(season, episode)
             except EpisodeNotFoundException:
                 session.add(TVEpisode(**{'showid': self.indexer_id,
-                                                      'indexer': self.indexer,
-                                                      'season': season,
-                                                      'episode': episode,
-                                                      'location': filename}))
+                                         'indexer': self.indexer,
+                                         'season': season,
+                                         'episode': episode,
+                                         'location': filename}))
                 session.commit()
                 episode_obj = self.get_episode(season, episode)
 
@@ -679,7 +677,7 @@ class TVShow(MainDBBase):
         # choose delete or trash action
         action = ('delete', 'trash')[sickrage.app.config.trash_remove_show]
 
-        session.query(TVEpisode).filter_by(showid=self.indexer_id).delete()
+        self.episodes.filter_by(showid=self.indexer_id).delete()
         session.query(TVShow).filter_by(indexer_id=self.indexer_id).delete()
         session.query(MainDB.IMDbInfo).filter_by(indexer_id=self.indexer_id).delete()
         session.query(MainDB.XEMRefresh).filter_by(indexer_id=self.indexer_id).delete()

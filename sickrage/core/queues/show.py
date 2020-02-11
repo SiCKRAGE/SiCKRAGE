@@ -541,28 +541,32 @@ class QueueItemUpdate(ShowQueueItem):
         except Exception as e:
             sickrage.app.log.warning("Error loading IMDb info for {}: {}".format(IndexerApi(show_obj.indexer).name, e))
 
-        # get episode list from DB
-        db_ep_list = {dbData.season: {dbData.episode: True} for dbData in show_obj.episodes}
-        indexer_ep_list = None
+        # get episodes from database
+        db_episodes = {}
+        for data in show_obj.episodes:
+            if data.season not in db_episodes:
+                db_episodes[data.season] = {}
+            db_episodes[data.season].update({data.episode: True})
 
-        # get episode list from TVDB
+        # get episodes from indexers
         try:
-            indexer_ep_list = show_obj.load_episodes_from_indexer()
+            indexer_episodes = show_obj.load_episodes_from_indexer()
         except indexer_exception as e:
             sickrage.app.log.warning("Unable to get info from " + IndexerApi(show_obj.indexer).name + ", the show info will not be refreshed: {}".format(e))
+            indexer_episodes = None
 
-        if not indexer_ep_list:
+        if not indexer_episodes:
             sickrage.app.log.warning("No data returned from " + IndexerApi(show_obj.indexer).name + ", unable to update this show")
         else:
             # for each ep we found on indexer delete it from the DB list
-            for curSeason in indexer_ep_list:
-                for curEpisode in indexer_ep_list[curSeason]:
-                    if curSeason in db_ep_list and curEpisode in db_ep_list[curSeason]:
-                        del db_ep_list[curSeason][curEpisode]
+            for curSeason in indexer_episodes:
+                for curEpisode in indexer_episodes[curSeason]:
+                    if curSeason in db_episodes and curEpisode in db_episodes[curSeason]:
+                        del db_episodes[curSeason][curEpisode]
 
             # remaining episodes in the DB list are not on the indexer, just delete them from the DB
-            for curSeason in db_ep_list:
-                for curEpisode in db_ep_list[curSeason]:
+            for curSeason in db_episodes:
+                for curEpisode in db_episodes[curSeason]:
                     sickrage.app.log.info("Permanently deleting episode " + str(curSeason) + "x" + str(curEpisode) + " from the database")
                     try:
                         show_obj.get_episode(curSeason, curEpisode).delete_episode()
