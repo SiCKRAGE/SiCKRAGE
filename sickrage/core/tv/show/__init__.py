@@ -288,11 +288,7 @@ class TVShow(MainDBBase):
                     episode_obj = self.get_episode(season, episode)
 
                 try:
-                    sickrage.app.log.debug("%s: Loading info from %s for episode S%02dE%02d" % (
-                        self.indexer_id, IndexerApi(self.indexer).name, season or 0, episode or 0
-                    ))
-
-                    episode_obj.load_from_indexer(season, episode, tvapi=t)
+                    episode_obj.load()
                 except EpisodeDeletedException:
                     continue
 

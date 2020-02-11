@@ -86,8 +86,8 @@ class TVEpisode(MainDBBase):
 
     show = relationship('TVShow', uselist=False, backref='tv_episodes')
 
-    @orm.reconstructor
-    def init_on_load(self):
+    def load(self):
+        sickrage.app.log.debug(f"{self.showid}: Populating info for episode S{self.season:02d}E{self.episode:02d}")
         self.populate_episode(self.season, self.episode)
         self.checkForMetaFiles()
 
