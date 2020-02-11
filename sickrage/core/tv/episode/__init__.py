@@ -320,7 +320,8 @@ class TVEpisode(MainDBBase):
         if not os.path.isdir(self.show.location) and not sickrage.app.config.create_missing_show_dirs and not sickrage.app.config.add_shows_wo_dir:
             sickrage.app.log.info("The show dir %s is missing, not bothering to change the episode statuses since "
                                   "it'd probably be invalid" % self.show.location)
-            return False
+            session.commit()
+            return True
 
         if self.location:
             sickrage.app.log.debug("%s: Setting status for S%02dE%02d based on status %s and location %s" %
