@@ -87,7 +87,7 @@ class TVEpisode(MainDBBase):
     show = relationship('TVShow', uselist=False, backref='tv_episodes')
 
     def load(self):
-        sickrage.app.log.debug(f"{self.showid}: Populating info for episode S{self.season:02d}E{self.episode:02d}")
+        sickrage.app.log.debug("{}: Populating info for episode S{:02d}E{:02d}".format(self.showid, self.season, self.episode))
         self.populate_episode(self.season, self.episode)
         self.checkForMetaFiles()
 
