@@ -30,12 +30,12 @@ from dateutil import parser
 from sqlalchemy import orm
 
 import sickrage
+from sickrage.core.databases.main import MainDB
 from sickrage.core import scene_exceptions, common
 from sickrage.core.exceptions import MultipleShowObjectsException
 from sickrage.core.helpers import remove_extension, strip_accents
 from sickrage.core.nameparser import regexes
 from sickrage.core.scene_numbering import get_absolute_number_from_season_and_episode, get_indexer_absolute_numbering, get_indexer_numbering
-from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show_by_name, find_show
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_episodenotfound, indexer_error
@@ -272,7 +272,7 @@ class NameParser(object):
             # if we have an air-by-date show then get the real season/episode numbers
             if best_result.is_air_by_date:
                 try:
-                    dbData = session.query(TVEpisode).filter_by(showid=show_obj.indexer_id, indexer=show_obj.indexer, airdate=best_result.air_date).one()
+                    dbData = session.query(MainDB.TVEpisode).filter_by(showid=show_obj.indexer_id, indexer=show_obj.indexer, airdate=best_result.air_date).one()
                     season_number = int(dbData.season)
                     episode_numbers = [int(dbData.episode)]
                 except (orm.exc.NoResultFound, orm.exc.MultipleResultsFound):

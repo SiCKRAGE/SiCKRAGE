@@ -315,7 +315,7 @@ class QueueItemAdd(ShowQueueItem):
         session.add(TVShow(**{'indexer_id': self.indexer_id, 'indexer': self.indexer, 'lang': self.lang, 'location': self.showDir}))
         session.commit()
 
-        show_obj = find_show(self.indexer_id, session=session)
+        show_obj = find_show(self.indexer_id)
         if not show_obj:
             return self._finish_early()
 
@@ -441,7 +441,7 @@ class QueueItemRefresh(ShowQueueItem):
 
         start_time = time.time()
 
-        tv_show = find_show(self.indexer_id, session=session)
+        tv_show = find_show(self.indexer_id)
 
         sickrage.app.log.info("Performing refresh for show: {}".format(tv_show.name))
 

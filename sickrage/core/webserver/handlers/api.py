@@ -739,7 +739,7 @@ class CMD_Episode(ApiCall):
             return await _responds(RESULT_FAILURE, msg="Show not found")
 
         try:
-            episode = session.query(TVEpisode).filter_by(showid=self.indexerid, season=self.s, episode=self.e).one()
+            episode = session.query(MainDB.TVEpisode).filter_by(showid=self.indexerid, season=self.s, episode=self.e).one()
 
             show_path = show_obj.location
 
@@ -2348,8 +2348,8 @@ class CMD_ShowSeasonList(ApiCall):
         if not show_obj:
             return await _responds(RESULT_FAILURE, msg="Show not found")
 
-        season_list = list(set(x.season for x in session.query(TVEpisode).filter_by(showid=self.indexerid).order_by(
-            TVEpisode.season if not self.sort == 'desc' else TVEpisode.season.desc())))
+        season_list = list(set(x.season for x in session.query(MainDB.TVEpisode).filter_by(showid=self.indexerid).
+                               order_by(MainDB.TVEpisode.season if not self.sort == 'desc' else MainDB.TVEpisode.season.desc())))
 
         return await _responds(RESULT_SUCCESS, season_list)
 
@@ -2384,9 +2384,9 @@ class CMD_ShowSeasons(ApiCall):
             return await _responds(RESULT_FAILURE, msg="Show not found")
 
         if self.season is None:
-            db_data = session.query(TVEpisode).filter_by(showid=self.indexerid)
+            db_data = session.query(MainDB.TVEpisode).filter_by(showid=self.indexerid)
         else:
-            db_data = session.query(TVEpisode).filter_by(showid=self.indexerid, season=self.season)
+            db_data = session.query(MainDB.TVEpisode).filter_by(showid=self.indexerid, season=self.season)
 
         for row in db_data:
             episode_dict = row.as_dict()
@@ -2509,7 +2509,7 @@ class CMD_ShowStats(ApiCall):
             episode_qualities_counts_snatch[statusCode] = 0
 
         # the main loop that goes through all episodes
-        for row in session.query(TVEpisode).filter_by(showid=self.indexerid).filter(TVEpisode.season != 0):
+        for row in session.query(MainDB.TVEpisode).filter_by(showid=self.indexerid).filter(MainDB.TVEpisode.season != 0):
             status, quality = Quality.split_composite_status(int(row.status))
             if quality in [Quality.NONE]:
                 continue
@@ -2668,7 +2668,7 @@ class CMD_ShowsStats(ApiCall):
             },
             'shows': {
                 'active': len([show for show in get_show_list() if show.paused == 0 and show.status.lower() == 'continuing']),
-                'total': get_show_list().count(),
+                'total': len(get_show_list()),
             },
             'total_size': 0
         }

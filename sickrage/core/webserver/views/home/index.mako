@@ -84,7 +84,7 @@
     <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
 
     % for curListType, curShowlist in showlists.items():
-        % if curListType == "Anime" and curShowlist.count():
+        % if curListType == "Anime" and len(curShowlist):
             <div class="row">
                 <div class="col mx-auto">
                     <div class="h4 card" style="text-align: center;">${_('Anime List')}</div>

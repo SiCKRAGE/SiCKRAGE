@@ -29,7 +29,7 @@ from sickrage.core.exceptions import EpisodeNotFoundException
 from sickrage.core.helpers import sanitize_file_name, make_dir, chmod_as_parent
 from sickrage.core.queues.search import BacklogQueueItem
 from sickrage.core.traktapi import TraktAPI
-from sickrage.core.tv.episode import TVEpisode
+from sickrage.core.databases.main import MainDB
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.indexers import IndexerApi
 
@@ -264,8 +264,8 @@ class TraktSearcher(object):
         sickrage.app.log.debug("WATCHLIST::ADD::START - Look for Episodes to Add to Trakt Watchlist")
 
         for s in get_show_list():
-            for e in session.query(TVEpisode).filter_by(showid=s.indexer_id).filter(
-                    ~TVEpisode.episode.in_(Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN] + [WANTED])):
+            for e in session.query(MainDB.TVEpisode).filter_by(showid=s.indexer_id).filter(
+                    ~MainDB.TVEpisode.episode.in_(Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN] + [WANTED])):
                 trakt_id = IndexerApi(s.indexer).trakt_id
                 if self._check_in_list(trakt_id, str(e.showid), e.season, e.episode):
                     sickrage.app.log.debug("Adding Episode %s S%02dE%02d to watchlist" % (s.name, e.season, e.episode))

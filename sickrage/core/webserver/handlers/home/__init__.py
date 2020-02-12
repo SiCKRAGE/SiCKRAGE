@@ -48,7 +48,7 @@ from sickrage.core.scene_numbering import get_scene_numbering_for_show, get_xem_
     get_scene_absolute_numbering, get_scene_numbering
 from sickrage.core.traktapi import TraktAPI
 from sickrage.core.tv.episode import TVEpisode
-from sickrage.core.tv.show import TVShow
+from sickrage.core.databases.main import MainDB
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
 from sickrage.subtitles import Subtitles
@@ -79,12 +79,12 @@ def _get_episode(show, season=None, episode=None, absolute=None):
 class HomeHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
-        if not get_show_list().count():
+        if not len(get_show_list()):
             return self.redirect('/home/addShows/')
 
         show_lists = OrderedDict({
-            'Shows': get_show_list().filter_by(anime=False),
-            'Anime': get_show_list().filter_by(anime=True)
+            'Shows': [x for x in get_show_list() if x.anime is False],
+            'Anime': [x for x in get_show_list() if x.anime is True]
         })
 
         return self.render(
@@ -108,7 +108,7 @@ class HomeHandler(BaseHandler, ABC):
             },
             'shows': {
                 'active': len([show for show in get_show_list() if show.paused == 0 and show.status.lower() == 'continuing']),
-                'total': get_show_list().count(),
+                'total': len(get_show_list()),
             },
             'total_size': 0
         }
@@ -129,7 +129,7 @@ class HomeHandler(BaseHandler, ABC):
                     'ep_airs_prev': show.airs_prev or datetime.date.min,
                     'ep_snatched': show.episodes_snatched or 0,
                     'ep_downloaded': show.episodes_downloaded or 0,
-                    'ep_total': len(show.episodes.count()),
+                    'ep_total': len(show.episodes),
                     'total_size': show.total_size or 0
                 }
 
@@ -148,7 +148,7 @@ class ShowProgressHandler(BaseHandler, ABC):
         show = find_show(show_id)
         episodes_snatched = show.episodes_snatched
         episodes_downloaded = show.episodes_downloaded
-        episodes_total = show.episodes.count() - show.episodes_special - show.episodes_unaired
+        episodes_total = len(show.episodes) - show.episodes_special - show.episodes_unaired
         progressbar_percent = int(episodes_downloaded * 100 / episodes_total if episodes_total > 0 else 1)
 
         progress_text = '?'
@@ -785,7 +785,7 @@ class DisplayShowHandler(BaseHandler, ABC):
         submenu = []
 
         session = sickrage.app.main_db.session()
-        show_obj = find_show(int(show), session=session)
+        show_obj = find_show(int(show))
         if not show_obj:
             return self._genericMessage(_("Error"), _("Show not in show list"))
 
@@ -995,7 +995,7 @@ class TogglePauseHandler(BaseHandler, ABC):
         show = self.get_argument('show')
 
         session = sickrage.app.main_db.session()
-        show_obj = find_show(int(show), session=session)
+        show_obj = find_show(int(show))
 
         if show_obj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
@@ -1288,7 +1288,7 @@ class DoRenameHandler(BaseHandler, ABC):
             ep_info = curEp.split('x')
 
             try:
-                ep_result = session.query(TVEpisode).filter_by(showid=int(show), season=int(ep_info[0]), episode=int(ep_info[1])).one()
+                ep_result = session.query(MainDB.TVEpisode).filter_by(showid=int(show), season=int(ep_info[0]), episode=int(ep_info[1])).one()
             except orm.exc.NoResultFound:
                 sickrage.app.log.warning("Unable to find an episode for " + curEp + ", skipping")
                 continue
@@ -1296,7 +1296,7 @@ class DoRenameHandler(BaseHandler, ABC):
             root_ep_obj = show_obj.get_episode(int(ep_info[0]), int(ep_info[1]))
             root_ep_obj.related_episodes = []
 
-            for cur_related_ep in session.query(TVEpisode).filter_by(location=ep_result.location).filter(TVEpisode.episode != int(ep_info[1])):
+            for cur_related_ep in session.query(MainDB.TVEpisode).filter_by(location=ep_result.location).filter(MainDB.TVEpisode.episode != int(ep_info[1])):
                 related_ep_obj = show_obj.get_episode(int(cur_related_ep.season), int(cur_related_ep.episode))
                 if related_ep_obj not in root_ep_obj.related_episodes:
                     root_ep_obj.related_episodes.append(related_ep_obj)

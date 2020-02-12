@@ -41,7 +41,7 @@ class DBBasicTests(tests.SiCKRAGETestDBCase):
         session.add(show)
         session.commit()
 
-        ep = TVEpisode(**{'showid': show.indexer_id, 'indexer': 1, 'season': 1, 'episode': 1, 'location': ''})
+        ep = MainDB.TVEpisode(**{'showid': show.indexer_id, 'indexer': 1, 'season': 1, 'episode': 1, 'location': ''})
         session.add(ep)
         ep.indexer_id = 1
         ep.name = "test episode 1"
@@ -49,7 +49,7 @@ class DBBasicTests(tests.SiCKRAGETestDBCase):
         ep.status = UNAIRED
         session.commit()
 
-        ep = TVEpisode(**{'showid': show.indexer_id, 'indexer': 1, 'season': 1, 'episode': 2, 'location': ''})
+        ep = MainDB.TVEpisode(**{'showid': show.indexer_id, 'indexer': 1, 'season': 1, 'episode': 2, 'location': ''})
         session.add(ep)
         ep.indexer_id = 2
         ep.name = "test episode 2"
@@ -57,7 +57,7 @@ class DBBasicTests(tests.SiCKRAGETestDBCase):
         ep.status = UNAIRED
         session.commit()
 
-        ep = TVEpisode(**{'showid': show.indexer_id, 'indexer': 1, 'season': 1, 'episode': 3, 'location': ''})
+        ep = MainDB.TVEpisode(**{'showid': show.indexer_id, 'indexer': 1, 'season': 1, 'episode': 3, 'location': ''})
         session.add(ep)
         ep.indexer_id = 3
         ep.name = "test episode 3"
@@ -70,11 +70,11 @@ class DBBasicTests(tests.SiCKRAGETestDBCase):
 
         session = sickrage.app.main_db.session()
 
-        for episode_obj in session.query(TVEpisode):
+        for episode_obj in session.query(MainDB.TVEpisode):
             if all([episode_obj.status == UNAIRED, episode_obj.season > 0, episode_obj.airdate > datetime.date.min]):
                 count += 1
 
-                ep = TVEpisode(**{'indexer': 1, 'episode': episode_obj.episode})
+                ep = MainDB.TVEpisode(**{'indexer': 1, 'episode': episode_obj.episode})
                 ep.indexer_id = episode_obj.episode
                 ep.name = "test episode {}".format(episode_obj.episode)
                 ep.airdate = datetime.date.fromordinal(733832)
@@ -88,7 +88,7 @@ class DBBasicTests(tests.SiCKRAGETestDBCase):
         session = sickrage.app.main_db.session()
 
         for __ in range(1, 200):
-            threads.append(threading.Thread(target=lambda: session.query(TVEpisode).all()))
+            threads.append(threading.Thread(target=lambda: session.query(MainDB.TVEpisode).all()))
 
         for t in threads:
             t.start()

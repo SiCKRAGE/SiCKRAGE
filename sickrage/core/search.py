@@ -26,10 +26,10 @@ from sickrage.clients import get_client_instance
 from sickrage.clients.nzbget import NZBGet
 from sickrage.clients.sabnzbd import SabNZBd
 from sickrage.core.common import Quality, SEASON_RESULT, SNATCHED_BEST, SNATCHED_PROPER, SNATCHED, MULTI_EP_RESULT
+from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import show_names
 from sickrage.core.nzbSplitter import split_nzb_result
-from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.tv.show.history import FailedHistory, History
 from sickrage.notifiers import Notifiers
@@ -205,7 +205,7 @@ def pick_best_result(results, season_pack=False):
                     quality_size = sickrage.app.config.quality_sizes[cur_result.quality]
 
                     if season_pack and not len(cur_result.episodes):
-                        episode_count = session.query(TVEpisode).filter_by(showid=show_obj.indexer_id, season=cur_result.season).count()
+                        episode_count = session.query(MainDB.TVEpisode).filter_by(showid=show_obj.indexer_id, season=cur_result.season).count()
                         file_size = float(cur_result.size / episode_count / 1000000)
                     else:
                         file_size = float(cur_result.size / len(cur_result.episodes) / 1000000)
@@ -422,7 +422,8 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
             season_qual = best_season_result.quality
             sickrage.app.log.debug("The quality of the season " + best_season_result.provider.type + " is " + Quality.qualityStrings[season_qual])
 
-            all_episodes = set([x.episode for x in session.query(TVEpisode).filter_by(showid=best_season_result.show_id, season=best_season_result.season)])
+            all_episodes = set(
+                [x.episode for x in session.query(MainDB.TVEpisode).filter_by(showid=best_season_result.show_id, season=best_season_result.season)])
 
             sickrage.app.log.debug("Episodes list: {}".format(','.join(map(str, all_episodes))))
 

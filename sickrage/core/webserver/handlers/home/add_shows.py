@@ -24,20 +24,18 @@ import re
 from abc import ABC
 from urllib.parse import unquote_plus, urlencode
 
-from sqlalchemy import orm
 from tornado.escape import json_encode
 from tornado.httputil import url_concat
 from tornado.web import authenticated
 
 import sickrage
 from sickrage.core.common import Quality
-from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import sanitize_file_name, make_dir, chmod_as_parent, checkbox_to_value, try_int
 from sickrage.core.helpers.anidb import short_group_names
 from sickrage.core.imdb_popular import imdbPopular
 from sickrage.core.traktapi import TraktAPI
 from sickrage.core.tv.show import TVShow
-from sickrage.core.tv.show.helpers import find_show, get_show_list
+from sickrage.core.tv.show.helpers import find_show, get_show_list, find_show_by_location
 from sickrage.core.webserver.handlers.base import BaseHandler
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.ui import AllShowsUI
@@ -153,18 +151,12 @@ class MassAddTableHandler(BaseHandler, ABC):
                     if cur_file.lower() in ['#recycle', '@eadir']:
                         continue
 
-                    cur_dir = {
-                        'dir': cur_path,
-                        'display_dir': '<b>{}{}</b>{}'.format(os.path.dirname(cur_path), os.sep,
-                                                              os.path.basename(cur_path)),
-                    }
+                    cur_dir = {'dir': cur_path, 'display_dir': '<b>{}{}</b>{}'.format(os.path.dirname(cur_path), os.sep, os.path.basename(cur_path))}
 
                     # see if the folder is in database already
-                    try:
-                        session.query(TVShow).filter_by(location=cur_path).one()
+                    cur_dir['added_already'] = False
+                    if find_show_by_location(cur_path):
                         cur_dir['added_already'] = True
-                    except orm.exc.NoResultFound:
-                        cur_dir['added_already'] = False
 
                     dir_list.append(cur_dir)
 
@@ -265,7 +257,7 @@ class TraktShowsHandler(BaseHandler, ABC):
 
         trakt_shows = []
 
-        shows, black_list = getattr(TraktAPI()['shows'], show_list)(extended="full", limit=int(limit) + get_show_list().count()), False
+        shows, black_list = getattr(TraktAPI()['shows'], show_list)(extended="full", limit=int(limit) + len(get_show_list())), False
 
         while len(trakt_shows) < int(limit):
             trakt_shows += [x for x in shows if 'tvdb' in x.ids and not find_show(int(x.ids['tvdb']))]

@@ -38,7 +38,6 @@ from sickrage.core.helpers import show_names, replace_extension, make_dir, chmod
     touch_file
 from sickrage.core.helpers.anidb import get_anime_episode
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
-from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.tv.show.history import FailedHistory, History
 from sickrage.notifiers import Notifiers
@@ -616,7 +615,7 @@ class PostProcessor(object):
         if parse_result.is_air_by_date:
             self._log("Looks like this is an air-by-date or sports show, attempting to convert the date to episode ID", sickrage.app.log.DEBUG)
             try:
-                episode_object = session.query(TVEpisode).filter_by(showid=parse_result.indexer_id, airdate=parse_result.air_date).one()
+                episode_object = session.query(MainDB.TVEpisode).filter_by(showid=parse_result.indexer_id, airdate=parse_result.air_date).one()
                 season = episode_object.season
                 episodes += [episode_object.episode]
             except orm.exc.MultipleResultsFound:
@@ -628,8 +627,8 @@ class PostProcessor(object):
         else:
             for episode_number in parse_result.episode_numbers:
                 try:
-                    episode_object = session.query(TVEpisode).filter_by(showid=parse_result.indexer_id, season=parse_result.season_number,
-                                                                        episode=episode_number).one()
+                    episode_object = session.query(MainDB.TVEpisode).filter_by(showid=parse_result.indexer_id, season=parse_result.season_number,
+                                                                               episode=episode_number).one()
                     season = episode_object.season
                     episodes += [episode_object.episode]
                 except orm.exc.NoResultFound:

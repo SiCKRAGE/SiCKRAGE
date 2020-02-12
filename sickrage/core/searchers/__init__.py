@@ -33,7 +33,7 @@ def new_episode_finder():
     cur_date += datetime.timedelta(days=1)
     cur_time = datetime.datetime.now(sickrage.app.tz)
 
-    for episode_object in session.query(TVEpisode).filter_by(status=UNAIRED).filter(TVEpisode.season > 0, TVEpisode.airdate > datetime.date.min):
+    for episode_object in session.query(MainDB.TVEpisode).filter_by(status=UNAIRED).filter(MainDB.TVEpisode.season > 0, MainDB.TVEpisode.airdate > datetime.date.min):
         if episode_object.show.paused:
             continue
 

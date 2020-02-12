@@ -21,20 +21,37 @@
 
 import sickrage
 
-
-def find_show(indexer_id, indexer=1, session=None):
+def find_show(indexer_id, indexer=1):
+    from sickrage.core import MainDB
     from sickrage.core.tv.show import TVShow
-    session = session or sickrage.app.main_db.session()
-    return session.query(TVShow).filter_by(indexer_id=indexer_id, indexer=indexer).one_or_none()
+    session = sickrage.app.main_db.session()
+    query = session.query(MainDB.TVShow).with_entities(MainDB.TVShow.indexer_id, MainDB.TVShow.indexer).filter_by(indexer_id=indexer_id,
+                                                                                                                  indexer=indexer).one_or_none()
+    if query:
+        return TVShow(query.indexer_id, query.indexer)
 
 
-def find_show_by_name(term, session=None):
+def find_show_by_name(term):
+    from sickrage.core import MainDB
     from sickrage.core.tv.show import TVShow
-    session = session or sickrage.app.main_db.session()
-    return session.query(TVShow).filter(TVShow.name.like('%{}%'.format(term))).one_or_none()
+    session = sickrage.app.main_db.session()
+    query = session.query(MainDB.TVShow).with_entities(MainDB.TVShow.indexer_id, MainDB.TVShow.indexer).\
+        filter(MainDB.TVShow.name.like('%{}%'.format(term))).one_or_none()
+    if query:
+        return TVShow(query.indexer_id, query.indexer)
 
 
-def get_show_list(session=None):
+def find_show_by_location(location):
+    from sickrage.core import MainDB
     from sickrage.core.tv.show import TVShow
-    session = session or sickrage.app.main_db.session()
-    return session.query(TVShow)
+    session = sickrage.app.main_db.session()
+    query = session.query(MainDB.TVShow).with_entities(MainDB.TVShow.indexer_id, MainDB.TVShow.indexer).filter_by(location=location).one_or_none()
+    if query:
+        return TVShow(query.indexer_id, query.indexer)
+
+
+def get_show_list():
+    from sickrage.core import MainDB
+    from sickrage.core.tv.show import TVShow
+    session = sickrage.app.main_db.session()
+    return [TVShow(x.indexer_id, x.indexer) for x in session.query(MainDB.TVShow).with_entities(MainDB.TVShow.indexer_id, MainDB.TVShow.indexer)]
