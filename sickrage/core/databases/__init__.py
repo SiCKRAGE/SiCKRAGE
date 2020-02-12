@@ -77,14 +77,21 @@ class ContextSession(sqlalchemy.orm.Session):
 
     def commit(self, close=False):
         with self._lock:
+            statement = None
+            params = None
             for i in range(self.max_attempts):
                 try:
+                    if statement and params:
+                        self.bind.execute(statement, params)
                     super(ContextSession, self).commit()
                 except OperationalError as e:
                     self.rollback()
 
                     if 'database is locked' not in str(e):
                         raise
+
+                    statement = e.statement
+                    params = e.params
 
                     timer = random.randint(10, 30)
                     sickrage.app.log.debug('Retrying database commit in {}s, attempt {}'.format(timer, i))
@@ -140,8 +147,7 @@ class SRDatabase(object):
     @property
     def engine(self):
         if self.db_type == 'sqlite':
-            return create_engine('sqlite:///{}'.format(self.db_path), echo=False, pool_size=1000, poolclass=QueuePool,
-                                 connect_args={'check_same_thread': False, 'timeout': 30})
+            return create_engine('sqlite:///{}'.format(self.db_path), echo=False, connect_args={'check_same_thread': False, 'timeout': 30})
         elif self.db_type == 'mysql':
             mysql_engine = create_engine('mysql+pymysql://{}:{}@{}:{}/'.format(self.db_username, self.db_password, self.db_host, self.db_port), echo=False)
             mysql_engine.execute("CREATE DATABASE IF NOT EXISTS {}_{}".format(self.db_prefix, self.name))

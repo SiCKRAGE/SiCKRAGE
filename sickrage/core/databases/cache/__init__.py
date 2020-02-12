@@ -29,8 +29,6 @@ class CacheDBBase(SRDatabaseBase):
 
 
 class CacheDB(SRDatabase):
-    session = sessionmaker(class_=ContextSession)
-
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
         super(CacheDB, self).__init__('cache', 5, db_type, db_prefix, db_host, db_port, db_username, db_password)
         CacheDBBase.metadata.create_all(self.engine)

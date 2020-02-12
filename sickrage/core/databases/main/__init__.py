@@ -28,8 +28,6 @@ class MainDBBase(SRDatabaseBase):
     pass
 
 class MainDB(SRDatabase):
-    session = sessionmaker(class_=ContextSession)
-
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
         super(MainDB, self).__init__('main', 10, db_type, db_prefix, db_host, db_port, db_username, db_password)
         MainDBBase.metadata.create_all(self.engine)
