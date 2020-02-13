@@ -302,7 +302,7 @@ class TVEpisode(object):
         subtitles, save_subtitles = Subtitles().refresh_subtitles(self.showid, self.season, self.episode)
         if save_subtitles:
             self.subtitles = ','.join(subtitles)
-            self.db_session.commit()
+            self.save()
 
     def download_subtitles(self):
         if self.location == '':
@@ -331,7 +331,7 @@ class TVEpisode(object):
             sickrage.app.log.debug("%s: No subtitles downloaded for S%02dE%02d" %
                                    (self.show.indexer_id, self.season or 0, self.episode or 0))
 
-        self.db_session.commit()
+        self.save()
 
         return newSubtitles
 
@@ -360,7 +360,7 @@ class TVEpisode(object):
         self.hasnfo = cur_nfo
         self.hastbn = cur_tbn
 
-        self.db_session.commit()
+        self.save()
 
         # if either setting has changed return true, if not return false
         return oldhasnfo != self.hasnfo or oldhastbn != self.hastbn
@@ -443,7 +443,6 @@ class TVEpisode(object):
         if not self.indexer_id:
             sickrage.app.log.warning("Failed to retrieve ID from " + IndexerApi(self.indexer).name)
             self.db_session.rollback()
-            self.db_session.commit()
             self.delete_episode()
             return False
 
@@ -463,23 +462,17 @@ class TVEpisode(object):
         self.season = season
         self.episode = episode
 
-        self.db_session.commit()
-
         self.scene_absolute_number = get_scene_absolute_numbering(
             self.show.indexer_id,
             self.show.indexer,
             self.absolute_number
         )
 
-        self.db_session.commit()
-
         self.scene_season, self.scene_episode = get_scene_numbering(
             self.show.indexer_id,
             self.show.indexer,
             self.season, self.episode
         )
-
-        self.db_session.commit()
 
         self.description = safe_getattr(myEp, 'overview', self.description)
 
@@ -494,17 +487,14 @@ class TVEpisode(object):
 
             # if I'm incomplete on the indexer but I once was complete then just delete myself from the DB for now
             self.db_session.rollback()
-            self.db_session.commit()
             self.delete_episode()
             return False
 
-        self.db_session.commit()
-
         # don't update show status if show dir is missing, unless it's missing on purpose
         if not os.path.isdir(self.show.location) and not sickrage.app.config.create_missing_show_dirs and not sickrage.app.config.add_shows_wo_dir:
-            sickrage.app.log.info("The show dir %s is missing, not bothering to change the episode statuses since "
-                                  "it'd probably be invalid" % self.show.location)
-            self.db_session.commit()
+            sickrage.app.log.info("The show dir {} is missing, not bothering to change the episode statuses since it'd "
+                                  "probably be invalid".format(self.show.location))
+            self.save()
             return True
 
         if self.location:
@@ -536,7 +526,7 @@ class TVEpisode(object):
             sickrage.app.log.debug("6 Status changes from " + str(self.status) + " to " + str(UNKNOWN))
             self.status = UNKNOWN
 
-        self.db_session.commit()
+        self.save()
 
         return True
 
@@ -571,7 +561,6 @@ class TVEpisode(object):
                         sickrage.app.log.warning("Failed to rename your episode's NFO file - you need to delete it or fix it: {}".format(e))
 
                     self.db_session.rollback()
-                    self.db_session.commit()
 
                     raise NoNFOException("Error in NFO format")
 
@@ -588,7 +577,6 @@ class TVEpisode(object):
 
                     if epDetails.findtext('title') is None or epDetails.findtext('aired') is None:
                         self.db_session.rollback()
-                        self.db_session.commit()
                         raise NoNFOException("Error in NFO format (missing episode title or airdate)")
 
                     self.name = epDetails.findtext('title')
@@ -622,7 +610,7 @@ class TVEpisode(object):
             if os.path.isfile(replace_extension(nfoFile, "tbn")):
                 self.hastbn = True
 
-        self.db_session.commit()
+        self.save()
 
         return self.hasnfo
 
@@ -689,7 +677,7 @@ class TVEpisode(object):
         # delete myself from the DB
         sickrage.app.log.debug("Deleting myself from the database")
         self.db_session.delete(self)
-        self.db_session.commit()
+        self.save()
 
         raise EpisodeDeletedException()
 
@@ -824,9 +812,9 @@ class TVEpisode(object):
         # save the ep
         if result:
             self.location = absolute_proper_path + file_ext
-            self.db_session.commit()
             for relEp in self.related_episodes:
                 relEp.location = absolute_proper_path + file_ext
+            self.save()
 
         # in case something changed with the metadata just do a quick check
         for curEp in [self] + self.related_episodes:
@@ -1068,12 +1056,12 @@ class TVEpisode(object):
                 sickrage.app.log.debug("Episode has no release group, replacing it with '" + replace_map['%RG'] + "'")
                 self.release_group = replace_map['%RG']  # if release_group is not in the db, put it there
                 if getattr(self, 'db_session', None):
-                    self.db_session.commit()
+                    self.save()
             elif not self.release_group:
                 sickrage.app.log.debug("Episode has no release group, replacing it with '" + replace_map['%RG'] + "'")
                 self.release_group = replace_map['%RG']  # if release_group is not in the db, put it there
                 if getattr(self, 'db_session', None):
-                    self.db_session.commit()
+                    self.save()
 
         # if there's no release name then replace it with a reasonable facsimile
         if not replace_map['%RN']:
