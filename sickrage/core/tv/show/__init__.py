@@ -520,7 +520,7 @@ class TVShow(object):
 
             self.status = safe_getattr(myEp, 'status', self.status)
 
-            self.db_session.commit()
+            self.save()
         else:
             sickrage.app.log.warning(str(self.indexer_id) + ": NOT loading info from " + IndexerApi(self.indexer).name + " as it is temporarily disabled.")
 
@@ -557,7 +557,8 @@ class TVShow(object):
                         'episode': episode,
                         'location': ''
                     }))
-                    self.db_session.commit()
+
+                    self.save()
 
                     episode_obj = self.get_episode(season, episode)
 
@@ -571,7 +572,7 @@ class TVShow(object):
         # Done updating save last update date
         self.last_update = datetime.date.today().toordinal()
 
-        self.db_session.commit()
+        self.save()
 
         return scanned_eps
 
@@ -726,7 +727,7 @@ class TVShow(object):
             if ' ' not in ep_file_name and parse_result and parse_result.release_group:
                 sickrage.app.log.debug("Name " + ep_file_name + " gave release group of " + parse_result.release_group + ", seems valid")
                 curEpisode.release_name = ep_file_name
-                self.db_session.commit()
+                self.save()
 
             # store the reference in the show
             if self.subtitles and sickrage.app.config.use_subtitles:
@@ -755,7 +756,7 @@ class TVShow(object):
                 try:
                     if int(x.get('Year'), 0) == self.startyear and x.get('Title') in self.name:
                         self.imdb_id = x.get('imdbID')
-                        self.db_session.commit()
+                        self.save()
                         break
                 except:
                     continue
@@ -799,7 +800,7 @@ class TVShow(object):
             except orm.exc.NoResultFound:
                 self.db_session.add(MainDB.IMDbInfo(**imdb_info))
             finally:
-                self.db_session.commit()
+                self.save()
 
     def get_images(self, fanart=None, poster=None):
         fanart_result = poster_result = banner_result = False
@@ -857,7 +858,7 @@ class TVShow(object):
                                                         'season': season,
                                                         'episode': episode,
                                                         'location': filename}))
-                self.db_session.commit()
+                self.save()
                 episode_obj = self.get_episode(season, episode)
 
             # if there is a new file associated with this ep then re-check the quality
@@ -930,7 +931,7 @@ class TVShow(object):
         if root_ep:
             root_ep.create_meta_files()
 
-        self.db_session.commit()
+        self.save()
 
         return root_ep
 
@@ -943,7 +944,7 @@ class TVShow(object):
         self.db_session.query(MainDB.IMDbInfo).filter_by(indexer_id=self.indexer_id).delete()
         self.db_session.query(MainDB.XEMRefresh).filter_by(indexer_id=self.indexer_id).delete()
         self.db_session.query(MainDB.SceneNumbering).filter_by(indexer_id=self.indexer_id).delete()
-        self.db_session.commit()
+        self.save()
 
         # clear the cache
         image_cache_dir = os.path.join(sickrage.app.cache_dir, 'images')
