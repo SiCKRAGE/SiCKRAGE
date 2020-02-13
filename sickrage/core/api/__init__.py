@@ -171,6 +171,9 @@ class API(object):
             except requests.exceptions.HTTPError as e:
                 status_code = e.response.status_code
                 error_message = e.response.text
+                if status_code == 403 and "login-pf-page" in error_message:
+                    self.refresh_token()
+                    continue
                 if 'application/json' in e.response.headers.get('content-type', ''):
                     json_data = e.response.json().get('error', {})
                     status_code = json_data.get('status', status_code)
