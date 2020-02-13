@@ -515,7 +515,7 @@ def xem_refresh(indexer_id, indexer, force=False):
                 #     dbData.scene_season = 0
                 #     dbData.scene_episode = 0
                 #     dbData.scene_absolute_number = 0
-                #     session.commit()
+                #     dbData.save()
                 return
 
             try:

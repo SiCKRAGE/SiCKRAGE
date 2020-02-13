@@ -938,7 +938,7 @@ class DisplayShowHandler(BaseHandler, ABC):
             bwl = show_obj.release_groups
 
         show_obj.exceptions = await self.run_task(get_scene_exceptions, show_obj.indexer_id)
-        session.commit()
+        show_obj.save()
 
         indexer_id = int(show_obj.indexer_id)
         indexer = int(show_obj.indexer)
@@ -1001,7 +1001,7 @@ class TogglePauseHandler(BaseHandler, ABC):
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         show_obj.paused = not show_obj.paused
-        session.commit()
+        show_obj.save()
 
         sickrage.app.alerts.message(
             _('%s has been %s') % (show_obj.name, (_('resumed'), _('paused'))[show_obj.paused]))

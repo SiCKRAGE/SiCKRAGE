@@ -49,8 +49,6 @@ def snatch_episode(result, end_status=SNATCHED):
     if result is None:
         return False
 
-    session = sickrage.app.main_db.session()
-
     show_object = find_show(result.show_id)
 
     result.priority = 0  # -1 = low, 0 = normal, 1 = high
@@ -111,7 +109,7 @@ def snatch_episode(result, end_status=SNATCHED):
         else:
             episode_obj.status = Quality.composite_status(end_status, result.quality)
 
-        session.commit()
+        episode_obj.save()
 
         # don't notify when we re-download an episode
         if episode_obj.status not in Quality.DOWNLOADED:

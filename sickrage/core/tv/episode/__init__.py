@@ -289,6 +289,9 @@ class TVEpisode(object):
     def related_episodes(self, value):
         setattr(self, '_related_episodes', value)
 
+    def rollback(self):
+        self.db_session.rollback()
+
     def save(self):
         self.db_session.commit()
 

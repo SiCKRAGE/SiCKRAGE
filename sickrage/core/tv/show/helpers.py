@@ -21,6 +21,7 @@
 
 import sickrage
 
+
 def find_show(indexer_id, indexer=1):
     from sickrage.core import MainDB
     from sickrage.core.tv.show import TVShow
@@ -35,7 +36,7 @@ def find_show_by_name(term):
     from sickrage.core import MainDB
     from sickrage.core.tv.show import TVShow
     session = sickrage.app.main_db.session()
-    query = session.query(MainDB.TVShow).with_entities(MainDB.TVShow.indexer_id, MainDB.TVShow.indexer).\
+    query = session.query(MainDB.TVShow).with_entities(MainDB.TVShow.indexer_id, MainDB.TVShow.indexer). \
         filter(MainDB.TVShow.name.like('%{}%'.format(term))).one_or_none()
     if query:
         return TVShow(query.indexer_id, query.indexer)

@@ -902,8 +902,6 @@ class PostProcessor(object):
         :return: True on success, False on failure
         """
 
-        session = sickrage.app.main_db.session()
-
         self._log("Processing {}".format(self.file_path))
 
         if os.path.isdir(self.file_path):
@@ -967,22 +965,18 @@ class PostProcessor(object):
             # Not a priority and the quality is lower than what we already have
             if (new_ep_quality < old_ep_quality != Quality.UNKNOWN) and not existing_file_status == PostProcessor.DOESNT_EXIST:
                 self._log("File exists and new file quality is lower than existing, marking it unsafe to replace")
-                session.rollback()
                 return False
 
             # if there's an existing file that we don't want to replace stop here
             if existing_file_status == PostProcessor.EXISTS_LARGER:
                 if self.is_proper:
                     self._log("File exists and new file is smaller, new file is a proper/repack, marking it safe to replace")
-                    session.rollback()
                     return True
                 else:
                     self._log("File exists and new file is smaller, marking it unsafe to replace")
-                    session.rollback()
                     return False
             elif existing_file_status == PostProcessor.EXISTS_SAME:
                 self._log("File exists and new file is same size, marking it unsafe to replace")
-                session.rollback()
                 return False
         # if the file is priority then we're going to replace it even if it exists
         else:
@@ -992,7 +986,6 @@ class PostProcessor(object):
         if not is_file_locked(self.file_path, False):
             if not verify_freespace(self.file_path, show_object.location, [ep_obj] + ep_obj.related_episodes):
                 self._log("Not enough space to continue PostProcessing, exiting", sickrage.app.log.WARNING)
-                session.rollback()
                 raise NoFreeSpaceException
         else:
             self._log("Unable to determine needed filespace as the source file is locked for access")
@@ -1006,7 +999,6 @@ class PostProcessor(object):
                 if cur_ep.location:
                     delete_empty_folders(os.path.dirname(cur_ep.location), keep_dir=show_object.location)
             except (OSError, IOError):
-                session.rollback()
                 raise EpisodePostProcessingFailedException("Unable to delete the existing files")
 
                 # set the status of the episodes
@@ -1024,7 +1016,6 @@ class PostProcessor(object):
                 # do the library update for synoindex
                 sickrage.app.notifier_providers['synoindex'].addFolder(show_object.location)
             except (OSError, IOError):
-                session.rollback()
                 raise EpisodePostProcessingFailedException("Unable to create the show directory: " + show_object.location)
 
             # write metadata for the show (but not episode because it hasn't been fully processed)
@@ -1032,7 +1023,6 @@ class PostProcessor(object):
 
         # find the destination folder
         if not os.path.isdir(show_object.location):
-            session.rollback()
             raise EpisodePostProcessingFailedException("Unable to post-process an episode if the show dir doesn't exist, quitting")
 
         # update the ep info before we rename so the quality & release name go into the name properly
@@ -1094,13 +1084,13 @@ class PostProcessor(object):
             # move the episode and associated files to the show dir
             if self.process_method == self.PROCESS_METHOD_COPY:
                 if is_file_locked(self.file_path, False):
-                    session.rollback()
+                    [cur_ep.rollback() for cur_ep in [ep_obj] + ep_obj.related_episodes]
                     raise EpisodePostProcessingFailedException("File is locked for reading")
                 self._copy(self.file_path, dest_path, new_base_name, sickrage.app.config.move_associated_files,
                            sickrage.app.config.use_subtitles and show_object.subtitles)
             elif self.process_method == self.PROCESS_METHOD_MOVE:
                 if is_file_locked(self.file_path, True):
-                    session.rollback()
+                    [cur_ep.rollback() for cur_ep in [ep_obj] + ep_obj.related_episodes]
                     raise EpisodePostProcessingFailedException("File is locked for reading/writing")
                 self._move(self.file_path, dest_path, new_base_name, sickrage.app.config.move_associated_files,
                            sickrage.app.config.use_subtitles and show_object.subtitles)
@@ -1109,7 +1099,7 @@ class PostProcessor(object):
                                sickrage.app.config.use_subtitles and show_object.subtitles)
             elif self.process_method == self.PROCESS_METHOD_SYMLINK:
                 if is_file_locked(self.file_path, True):
-                    session.rollback()
+                    [cur_ep.rollback() for cur_ep in [ep_obj] + ep_obj.related_episodes]
                     raise EpisodePostProcessingFailedException("File is locked for reading/writing")
                 self._moveAndSymlink(self.file_path, dest_path, new_base_name,
                                      sickrage.app.config.move_associated_files,
@@ -1119,10 +1109,10 @@ class PostProcessor(object):
                               sickrage.app.config.use_subtitles and show_object.subtitles)
             else:
                 sickrage.app.log.error("Unknown process method: " + str(self.process_method))
-                session.rollback()
+                [cur_ep.rollback() for cur_ep in [ep_obj] + ep_obj.related_episodes]
                 raise EpisodePostProcessingFailedException("Unable to move the files to their new home")
         except (OSError, IOError):
-            session.rollback()
+            [cur_ep.rollback() for cur_ep in [ep_obj] + ep_obj.related_episodes]
             raise EpisodePostProcessingFailedException("Unable to move the files to their new home")
 
         # add processed marker file
@@ -1150,7 +1140,8 @@ class PostProcessor(object):
         # update video file metadata
         ep_obj.update_video_metadata()
 
-        session.commit()
+        # save changes to database
+        [cur_ep.save() for cur_ep in [ep_obj] + ep_obj.related_episodes]
 
         # log it to history
         History.log_download(ep_obj.showid, ep_obj.season, ep_obj.episode, ep_obj.status, self.file_path, new_ep_quality, release_group, new_ep_version)

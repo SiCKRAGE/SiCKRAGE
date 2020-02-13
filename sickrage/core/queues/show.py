@@ -338,7 +338,7 @@ class QueueItemAdd(ShowQueueItem):
             show_obj.default_ep_status = self.default_status
 
             # save to database
-            session.commit()
+            show_obj.save()
 
             if show_obj.anime:
                 if self.blacklist:
@@ -408,7 +408,6 @@ class QueueItemAdd(ShowQueueItem):
         # numbering.
         if not self.scene and get_xem_numbering_for_show(show_obj.indexer_id, show_obj.indexer):
             show_obj.scene = 1
-            session.commit()
 
         # if they set default ep status to WANTED then run the backlog to search for episodes
         if show_obj.default_ep_status == WANTED:
@@ -416,7 +415,8 @@ class QueueItemAdd(ShowQueueItem):
             sickrage.app.io_loop.add_callback(sickrage.app.backlog_searcher.search_backlog, show_obj.indexer_id)
 
         show_obj.default_ep_status = self.default_status_after
-        session.commit()
+
+        show_obj.save()
 
         sickrage.app.quicksearch_cache.add_show(show_obj.indexer_id)
 
@@ -437,8 +437,6 @@ class QueueItemRefresh(ShowQueueItem):
         self.force = force
 
     def run(self):
-        session = sickrage.app.main_db.session()
-
         start_time = time.time()
 
         tv_show = find_show(self.indexer_id)
@@ -454,7 +452,7 @@ class QueueItemRefresh(ShowQueueItem):
 
         tv_show.last_refresh = datetime.date.today().toordinal()
 
-        session.commit()
+        tv_show.save()
 
         sickrage.app.log.info("Finished refresh in {}s for show: {}".format(round(time.time() - start_time, 2), tv_show.name))
 

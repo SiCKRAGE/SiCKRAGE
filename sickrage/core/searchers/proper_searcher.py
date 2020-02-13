@@ -298,7 +298,7 @@ class ProperSearcher(object):
         try:
             show = find_show(show_id)
             show.last_proper_search = when
-            session.commit()
+            show.save()
         except orm.exc.NoResultFound:
             pass
 

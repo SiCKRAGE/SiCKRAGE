@@ -71,7 +71,6 @@ class BacklogSearcher(object):
         self.amActive = True
         self.amPaused = False
 
-        session = sickrage.app.main_db.session()
         show_list = [find_show(show_id)] if show_id else get_show_list()
 
         cur_date = datetime.date.today()
@@ -102,7 +101,7 @@ class BacklogSearcher(object):
 
             if from_date == datetime.date.min and not show_id:
                 self._set_last_backlog_search(curShow, cur_date)
-                session.commit()
+                curShow.save()
 
         self.amActive = False
 
