@@ -626,12 +626,16 @@ class GenericMetadata(object):
             return None
 
         is_image_thumb = '_thumb' in image_type
-        image_types = {
-            '{}'.format(image_type): {
-                'indexer': lambda: t.images(show_obj.indexer_id, key_type=image_type.replace('_thumb', ''))[which][('filename', 'thumbnail')[is_image_thumb]],
-                'fanart': lambda: self._retrieve_show_images_from_fanart(show_obj, image_type.replace('_thumb', ''), is_image_thumb)
+
+        try:
+            image_types = {
+                '{}'.format(image_type): {
+                    'indexer': lambda: t.images(show_obj.indexer_id, key_type=image_type.replace('_thumb', ''))[which][('filename', 'thumbnail')[is_image_thumb]],
+                    'fanart': lambda: self._retrieve_show_images_from_fanart(show_obj, image_type.replace('_thumb', ''), is_image_thumb)
+                }
             }
-        }
+        except Exception as e:
+            return None
 
         for fname in ['indexer', 'fanart']:
             try:

@@ -295,6 +295,10 @@ class TVEpisode(object):
     def save(self):
         self.db_session.commit()
 
+    def delete(self):
+        self.db_session.delete(self._data)
+        self.save()
+
     def load(self):
         sickrage.app.log.debug("{}: Populating info for episode S{:02d}E{:02d}".format(self.showid, self.season, self.episode))
         self.populate_episode(self.season, self.episode)
@@ -679,8 +683,7 @@ class TVEpisode(object):
 
         # delete myself from the DB
         sickrage.app.log.debug("Deleting myself from the database")
-        self.db_session.delete(self)
-        self.save()
+        self.delete()
 
         raise EpisodeDeletedException()
 

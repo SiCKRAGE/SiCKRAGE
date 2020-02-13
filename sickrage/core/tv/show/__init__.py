@@ -478,6 +478,10 @@ class TVShow(object):
     def save(self):
         self.db_session.commit()
 
+    def delete(self):
+        self.db_session.delete(self._data)
+        self.save()
+
     def load_from_indexer(self, cache=True, tvapi=None):
         if self.indexer is not INDEXER_TVRAGE:
             sickrage.app.log.debug(
