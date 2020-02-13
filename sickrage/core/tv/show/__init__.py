@@ -363,7 +363,7 @@ class TVShow(object):
 
     @property
     def episodes(self):
-        return [TVEpisode(x.showid, x.indexer, x.season, x.episode) for x in
+        return [TVEpisode(self.indexer_id, self.indexer, x.season, x.episode) for x in
                 self._data.episodes.with_entities(MainDB.TVEpisode.season, MainDB.TVEpisode.episode)]
 
     @property
