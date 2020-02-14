@@ -22,11 +22,10 @@ import datetime
 import threading
 
 import sickrage
+from sickrage.core import common
 from sickrage.core.common import Quality, WANTED, DOWNLOADED, SNATCHED, SNATCHED_PROPER
 from sickrage.core.queues.search import DailySearchQueueItem
-from sickrage.core.searchers import new_episode_finder
 from sickrage.core.tv.show.helpers import get_show_list
-from sickrage.core.databases.main import MainDB
 
 
 class DailySearcher(object):
@@ -49,12 +48,19 @@ class DailySearcher(object):
         threading.currentThread().setName(self.name)
 
         # find new released episodes and update their statuses
-        new_episode_finder()
-
         for curShow in get_show_list():
             if curShow.paused:
                 sickrage.app.log.debug("Skipping search for {} because the show is paused".format(curShow.name))
                 continue
+
+            for tv_episode in curShow.new_episodes:
+                tv_episode.status = tv_episode.show.default_ep_status if tv_episode.season > 0 else common.SKIPPED
+                tv_episode.save()
+                sickrage.app.log.info('Setting status ({status}) for show airing today: {name} {special}'.format(
+                    name=tv_episode.pretty_name(),
+                    status=common.statusStrings[tv_episode.status],
+                    special='(specials are not supported)' if not tv_episode.season > 0 else '',
+                ))
 
             wanted = self._get_wanted(curShow, datetime.date.today())
             if not wanted:

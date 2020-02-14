@@ -23,13 +23,9 @@
 import datetime
 import threading
 
-from sqlalchemy import orm
-
 import sickrage
 from sickrage.core.common import Quality, DOWNLOADED, SNATCHED, SNATCHED_PROPER, WANTED
-from sickrage.core.databases.main import MainDB
 from sickrage.core.queues.search import BacklogQueueItem
-from sickrage.core.searchers import new_episode_finder
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 
 

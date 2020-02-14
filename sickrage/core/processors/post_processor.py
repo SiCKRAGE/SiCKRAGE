@@ -1039,15 +1039,10 @@ class PostProcessor(object):
                 cur_ep.status = Quality.composite_status(DOWNLOADED, new_ep_quality)
 
             cur_ep.subtitles = ''
-
             cur_ep.subtitles_searchcount = 0
-
             cur_ep.subtitles_lastsearch = 0
-
             cur_ep.is_proper = self.is_proper
-
             cur_ep.version = new_ep_version
-
             cur_ep.release_group = release_group or ""
 
         # Just want to keep this consistent for failed handling right now

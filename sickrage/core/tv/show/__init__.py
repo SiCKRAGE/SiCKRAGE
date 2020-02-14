@@ -457,6 +457,38 @@ class TVShow(object):
         return _episodes_special_snatched
 
     @property
+    def new_episodes(self):
+        cur_date = datetime.date.today()
+        cur_date += datetime.timedelta(days=1)
+        cur_time = datetime.datetime.now(sickrage.app.tz)
+
+        new_episodes = []
+        for episode_object in self.episodes:
+            if episode_object.status != UNAIRED or episode_object.season == 0 or episode_object.airdate < datetime.date.min:
+                continue
+
+            air_date = episode_object.airdate
+            air_date += datetime.timedelta(days=episode_object.show.search_delay)
+            if not cur_date >= air_date:
+                continue
+
+            if episode_object.show.airs and episode_object.show.network:
+                # This is how you assure it is always converted to local time
+                air_time = sickrage.app.tz_updater.parse_date_time(episode_object.airdate,
+                                                                   episode_object.show.airs,
+                                                                   episode_object.show.network).astimezone(sickrage.app.tz)
+
+                # filter out any episodes that haven't started airing yet,
+                # but set them to the default status while they are airing
+                # so they are snatched faster
+                if air_time > cur_time:
+                    continue
+
+            new_episodes += [episode_object]
+
+        return new_episodes
+
+    @property
     def total_size(self):
         _total_size = 0
         for episode_object in self._data.episodes:
