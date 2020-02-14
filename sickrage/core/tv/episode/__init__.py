@@ -273,7 +273,8 @@ class TVEpisode(object):
 
     @property
     def show(self):
-        return self._data.show
+        from sickrage.core.tv.show import TVShow
+        return TVShow(self.showid, self.indexer)
 
     @validates('location')
     def validate_location(self, key, location):
