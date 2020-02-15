@@ -28,7 +28,7 @@ from bencode3 import bdecode, bencode, BencodeError
 import sickrage
 from sickrage.core.websession import WebSession
 
-__all__ = [
+_clients = [
     'utorrent',
     'transmission',
     'deluge',
@@ -54,17 +54,11 @@ default_host = {
 
 
 def get_client_module(name):
-    name = name.lower()
-    prefix = "sickrage.clients."
-
-    return __import__(prefix + name, fromlist=__all__)
+    return __import__("{}.{}".format(__name__, name.lower()), fromlist=_clients)
 
 
 def get_client_instance(name):
-    module = get_client_module(name)
-    className = module.api.__class__.__name__
-
-    return getattr(module, className)
+    return get_client_module(name)
 
 
 class GenericClient(object):

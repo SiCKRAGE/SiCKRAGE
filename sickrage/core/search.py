@@ -25,15 +25,30 @@ import sickrage
 from sickrage.clients import get_client_instance
 from sickrage.clients.nzbget import NZBGet
 from sickrage.clients.sabnzbd import SabNZBd
-from sickrage.core.common import Quality, SEASON_RESULT, SNATCHED_BEST, SNATCHED_PROPER, SNATCHED, MULTI_EP_RESULT
+from sickrage.core.common import (
+    Quality,
+    SEASON_RESULT,
+    SNATCHED_BEST,
+    SNATCHED_PROPER,
+    SNATCHED,
+    MULTI_EP_RESULT
+)
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import show_names
 from sickrage.core.nzbSplitter import split_nzb_result
 from sickrage.core.tv.show.helpers import find_show
-from sickrage.core.tv.show.history import FailedHistory, History
+from sickrage.core.tv.show.history import (
+    FailedHistory,
+    History
+)
 from sickrage.notifiers import Notifiers
-from sickrage.providers import NZBProvider, NewznabProvider, TorrentProvider, TorrentRssProvider
+from sickrage.providers import (
+    NZBProvider,
+    NewznabProvider,
+    TorrentProvider,
+    TorrentRssProvider
+)
 
 
 def snatch_episode(result, end_status=SNATCHED):
