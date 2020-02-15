@@ -28,7 +28,7 @@ from urllib.parse import urljoin
 from requests import RequestException
 
 import sickrage
-from sickrage.clients import GenericClient
+from sickrage.clients.torrent import GenericClient
 
 
 class DownloadStationAPI(GenericClient):

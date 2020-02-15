@@ -25,7 +25,7 @@ import re
 from urllib.parse import urlencode
 
 import sickrage
-from sickrage.clients import GenericClient
+from sickrage.clients.torrent import GenericClient
 
 
 class PutioAPI(GenericClient):

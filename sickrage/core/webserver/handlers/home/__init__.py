@@ -33,7 +33,7 @@ from tornado.web import authenticated
 
 import sickrage
 from sickrage.clients import get_client_instance
-from sickrage.clients.sabnzbd import SabNZBd
+from sickrage.clients.nzb.sabnzbd import SabNZBd
 from sickrage.core.common import Overview, Quality, cpu_presets, statusStrings
 from sickrage.core.exceptions import AnidbAdbaConnectionException, CantRefreshShowException, CantUpdateShowException, CantRemoveShowException, \
     EpisodeDeletedException, EpisodeNotFoundException, \
@@ -204,7 +204,7 @@ class TestTorrentHandler(BaseHandler, ABC):
         username = self.get_argument('username')
         password = self.get_argument('password')
 
-        client = get_client_instance(torrent_method)
+        client = get_client_instance(torrent_method, client_type='torrent')
         __, access_msg = client(host, username, password).test_authentication()
         return self.write(access_msg)
 

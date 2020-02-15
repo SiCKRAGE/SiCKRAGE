@@ -21,7 +21,7 @@
 
 
 import sickrage
-from sickrage.clients import GenericClient
+from sickrage.clients.torrent import GenericClient
 
 
 class mlnetAPI(GenericClient):

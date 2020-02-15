@@ -23,8 +23,8 @@ from datetime import date, timedelta
 
 import sickrage
 from sickrage.clients import get_client_instance
-from sickrage.clients.nzbget import NZBGet
-from sickrage.clients.sabnzbd import SabNZBd
+from sickrage.clients.nzb.nzbget import NZBGet
+from sickrage.clients.nzb.sabnzbd import SabNZBd
 from sickrage.core.common import (
     Quality,
     SEASON_RESULT,
@@ -99,7 +99,7 @@ def snatch_episode(result, end_status=SNATCHED):
             dlResult = result.provider.download_result(result)
         else:
             if any([result.content, result.url.startswith('magnet:')]):
-                client = get_client_instance(sickrage.app.config.torrent_method)()
+                client = get_client_instance(sickrage.app.config.torrent_method, client_type='torrent')()
                 dlResult = client.send_torrent(result)
             else:
                 sickrage.app.log.warning("Torrent file content is empty")

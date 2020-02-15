@@ -23,7 +23,7 @@ from deluge_client import DelugeRPCClient
 from base64 import b64encode
 
 import sickrage
-from sickrage.clients import GenericClient
+from sickrage.clients.torrent import GenericClient
 from sickrage.core.tv.show.helpers import find_show
 
 
