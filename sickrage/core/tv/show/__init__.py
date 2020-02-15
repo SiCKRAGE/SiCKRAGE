@@ -1251,24 +1251,24 @@ class TVShow(object):
         return season, episodes
 
     def __unicode__(self):
-        toReturn = ""
-        toReturn += "indexer_id: {}\n".format(self.indexer_id)
-        toReturn += "indexer: {}\n".format(self.indexer)
-        toReturn += "name: {}\n".format(self.name)
-        toReturn += "location: {}\n".format(self.location)
+        to_return = ""
+        to_return += "indexer_id: {}\n".format(self.indexer_id)
+        to_return += "indexer: {}\n".format(self.indexer)
+        to_return += "name: {}\n".format(self.name)
+        to_return += "location: {}\n".format(self.location)
         if self.network:
-            toReturn += "network: {}\n".format(self.network)
+            to_return += "network: {}\n".format(self.network)
         if self.airs:
-            toReturn += "airs: {}\n".format(self.airs)
-        toReturn += "status: {}\n".format(self.status)
-        toReturn += "startyear: {}\n".format(self.startyear)
+            to_return += "airs: {}\n".format(self.airs)
+        to_return += "status: {}\n".format(self.status)
+        to_return += "startyear: {}\n".format(self.startyear)
         if self.genre:
-            toReturn += "genre: {}\n".format(self.genre)
-        toReturn += "overview: {}\n".format(self.overview)
-        toReturn += "classification: {}\n".format(self.classification)
-        toReturn += "runtime: {}\n".format(self.runtime)
-        toReturn += "quality: {}\n".format(self.quality)
-        toReturn += "scene: {}\n".format(self.is_scene)
-        toReturn += "sports: {}\n".format(self.is_sports)
-        toReturn += "anime: {}\n".format(self.is_anime)
-        return toReturn
+            to_return += "genre: {}\n".format(self.genre)
+        to_return += "overview: {}\n".format(self.overview)
+        to_return += "classification: {}\n".format(self.classification)
+        to_return += "runtime: {}\n".format(self.runtime)
+        to_return += "quality: {}\n".format(self.quality)
+        to_return += "scene: {}\n".format(self.is_scene)
+        to_return += "sports: {}\n".format(self.is_sports)
+        to_return += "anime: {}\n".format(self.is_anime)
+        return to_return
