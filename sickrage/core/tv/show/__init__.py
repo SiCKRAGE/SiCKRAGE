@@ -1093,6 +1093,9 @@ class TVShow(object):
                 if sickrage.app.config.airdate_episodes:
                     curEp.airdateModifyStamp()
 
+            # save episode to database
+            curEp.save()
+
     def download_subtitles(self):
         if not os.path.isdir(self.location):
             sickrage.app.log.debug(str(self.indexer_id) + ": Show dir doesn't exist, can't download subtitles")
