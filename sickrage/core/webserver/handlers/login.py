@@ -19,6 +19,7 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 import json
+import re
 from abc import ABC
 
 import sickrage
@@ -62,7 +63,7 @@ class LoginHandler(BaseHandler, ABC):
                 sickrage.app.log.debug('{!r}'.format(e))
                 return self.redirect('/logout')
 
-            if not sickrage.app.config.app_id:
+            if not re.match(r'[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}', sickrage.app.config.app_id or ""):
                 sickrage.app.config.app_id = sickrage.app.api.account.register_app_id()
                 sickrage.app.config.save()
 
