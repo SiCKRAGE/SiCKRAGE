@@ -37,7 +37,7 @@ class DBBasicTests(tests.SiCKRAGETestDBCase):
     def setUp(self):
         super(DBBasicTests, self).setUp()
         session = sickrage.app.main_db.session()
-        show = TVShow(**{'indexer_id': 0o0001, 'indexer': 1, 'lang': 'en'})
+        show = MainDB.TVShow(**{'indexer_id': 0o0001, 'indexer': 1, 'lang': 'en'})
         session.add(show)
         session.commit()
 
