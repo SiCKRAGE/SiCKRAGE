@@ -613,6 +613,7 @@ class Tvdb:
             sickrage.app.log.debug('Series results incomplete')
             return
 
+        episode_incomplete = False
         for cur_ep in episodes:
             try:
                 use_dvd = False
@@ -627,7 +628,7 @@ class Tvdb:
                 if seasnum is None or epno is None:
                     raise Exception
             except Exception as e:
-                sickrage.app.log.warning("Episode has incomplete season/episode numbers, skipping!")
+                episode_incomplete = True
                 continue
 
             seas_no = int(float(seasnum))
@@ -644,9 +645,11 @@ class Tvdb:
                 self._setItem(sid, seas_no, ep_no, k, v)
 
             # add episode image url
-            image_url = self.config['api']['images']['prefix'].format(
-                value='episodes/{}/{}.jpg'.format(sid, cur_ep['id']))
+            image_url = self.config['api']['images']['prefix'].format(value='episodes/{}/{}.jpg'.format(sid, cur_ep['id']))
             self._setItem(sid, seas_no, ep_no, 'filename', image_url)
+
+        if episode_incomplete:
+            sickrage.app.log.debug("{}: Series has incomplete season/episode numbers".format(sid))
 
         # set last updated
         self._setShowData(sid, 'last_updated', int(time.mktime(datetime.now().timetuple())))

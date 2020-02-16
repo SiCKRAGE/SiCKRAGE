@@ -248,7 +248,6 @@ class Core(object):
         encryption.initialize()
 
         # load config
-        self.log.info("Loading encrypted config from disk")
         self.config.load()
 
         # set language

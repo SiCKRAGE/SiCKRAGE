@@ -1358,6 +1358,8 @@ class Config(object):
         return my_val
 
     def load(self, config_file=None, defaults=False):
+        sickrage.app.log.info("Loading encrypted config from disk")
+
         if not config_file:
             config_file = sickrage.app.config_file
 
