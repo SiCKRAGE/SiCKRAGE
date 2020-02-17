@@ -32,7 +32,6 @@ from sqlalchemy import create_engine, event, inspect
 from sqlalchemy.engine import Engine
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import sessionmaker, mapper, scoped_session
-from sqlalchemy.pool import QueuePool
 
 import sickrage
 from sickrage.core.helpers import backup_versioned_file

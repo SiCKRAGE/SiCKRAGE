@@ -28,7 +28,6 @@ from xml.etree.ElementTree import ElementTree
 
 from mutagen.mp4 import MP4, MP4StreamInfoError
 from sqlalchemy import orm
-from sqlalchemy.orm import validates
 
 import sickrage
 from sickrage.core.common import NAMING_EXTEND, NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
@@ -205,6 +204,8 @@ class TVEpisode(object):
 
     @location.setter
     def location(self, value):
+        if os.path.exists(value):
+            self.file_size = file_size(value)
         self._data.location = value
         self.db_session.flush()
         
@@ -275,12 +276,6 @@ class TVEpisode(object):
     def show(self):
         from sickrage.core.tv.show import TVShow
         return TVShow(self.showid, self.indexer)
-
-    @validates('location')
-    def validate_location(self, key, location):
-        if os.path.exists(location):
-            self.file_size = file_size(location)
-        return location
 
     @property
     def related_episodes(self):
