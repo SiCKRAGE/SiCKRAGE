@@ -19,8 +19,6 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 
-
-
 import re
 from urllib.parse import urlencode
 
@@ -95,5 +93,3 @@ class PutioAPI(GenericClient):
 
         return self.response.json()['status'] == "OK"
 
-
-api = PutioAPI()

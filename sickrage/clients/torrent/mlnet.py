@@ -19,7 +19,6 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 
-
 import sickrage
 from sickrage.clients.torrent import GenericClient
 
@@ -53,6 +52,3 @@ class mlnetAPI(GenericClient):
         self.url = self.host + 'submit'
         params = {'q': 'dllink ' + result.url}
         return self._request(method='get', params=params)
-
-
-api = mlnetAPI()

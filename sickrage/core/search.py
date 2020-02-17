@@ -170,11 +170,9 @@ def pick_best_result(results, season_pack=False):
             if not show_obj.release_groups.is_valid(cur_result):
                 continue
 
-        sickrage.app.log.info(
-            "Quality of " + cur_result.name + " is " + Quality.qualityStrings[cur_result.quality])
+        sickrage.app.log.info("Quality of " + cur_result.name + " is " + Quality.qualityStrings[cur_result.quality])
 
         any_qualities, best_qualities = Quality.split_quality(show_obj.quality)
-
         if cur_result.quality not in any_qualities + best_qualities:
             sickrage.app.log.debug(cur_result.name + " is a quality we know we don't want, rejecting it")
             continue
@@ -193,13 +191,11 @@ def pick_best_result(results, season_pack=False):
                                       "{}".format(cur_result.name, cur_result.leechers))
                 continue
 
-        if show_obj.rls_ignore_words and show_names.contains_at_least_one_word(cur_result.name,
-                                                                               show_obj.rls_ignore_words):
+        if show_obj.rls_ignore_words and show_names.contains_at_least_one_word(cur_result.name, show_obj.rls_ignore_words):
             sickrage.app.log.info("Ignoring " + cur_result.name + " based on ignored words filter: " + show_obj.rls_ignore_words)
             continue
 
-        if show_obj.rls_require_words and not show_names.contains_at_least_one_word(cur_result.name,
-                                                                                    show_obj.rls_require_words):
+        if show_obj.rls_require_words and not show_names.contains_at_least_one_word(cur_result.name, show_obj.rls_require_words):
             sickrage.app.log.info("Ignoring " + cur_result.name + " based on required words filter: " + show_obj.rls_require_words)
             continue
 

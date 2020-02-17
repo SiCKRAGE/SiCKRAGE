@@ -225,5 +225,3 @@ class DownloadStationAPI(GenericClient):
         self._request(method=method, data=data, **kwargs)
         return self._check_response()
 
-
-api = DownloadStationAPI()

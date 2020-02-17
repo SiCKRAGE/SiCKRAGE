@@ -17,22 +17,22 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-_clients = [
-    'utorrent',
-    'transmission',
-    'deluge',
-    'deluged',
-    'download_station',
-    'rtorrent',
-    'qbittorrent',
-    'mlnet',
-    'putio',
-]
+_clients = {
+    'utorrent': 'uTorrentAPI',
+    'transmission': 'TransmissionAPI',
+    'deluge': 'DelugeAPI',
+    'deluged': 'DelugeDAPI',
+    'download_station': 'DownloadStationAPI',
+    'rtorrent': 'rTorrentAPI',
+    'qbittorrent': 'QBittorrentAPI',
+    'mlnet': 'mlnetAPI',
+    'putio': 'PutioAPI',
+}
 
 
 def get_client_module(name, client_type):
-    return __import__("{}.{}.{}".format(__name__, client_type, name.lower()), fromlist=_clients)
+    return __import__("{}.{}.{}".format(__name__, client_type, name.lower()), fromlist=list(_clients.keys()))
 
 
 def get_client_instance(name, client_type):
-    return get_client_module(name, client_type)
+    return getattr(get_client_module(name, client_type), _clients[name])

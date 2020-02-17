@@ -19,8 +19,9 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 
-from deluge_client import DelugeRPCClient
 from base64 import b64encode
+
+from deluge_client import DelugeRPCClient
 
 import sickrage
 from sickrage.clients.torrent import GenericClient
@@ -277,6 +278,3 @@ class DelugeRPC(object):
             return torrent_hash
 
         return False
-
-
-api = DelugeDAPI()

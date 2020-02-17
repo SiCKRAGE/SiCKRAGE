@@ -206,6 +206,3 @@ class TransmissionAPI(GenericClient):
 
         if self._request(method='post', json=post_data):
             return self.response.json()['result'] == "success"
-
-
-api = TransmissionAPI()

@@ -214,6 +214,3 @@ class DelugeAPI(GenericClient):
             return not self.response.json()['error']
 
         return True
-
-
-api = DelugeAPI()

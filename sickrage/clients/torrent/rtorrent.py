@@ -19,30 +19,11 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 
-# Author: jkaberg <joel.kaberg@gmail.com>, based on fuzemans work (https://github.com/RuudBurger/CouchPotatoServer/blob/develop/couchpotato/core/downloaders/rtorrent/main.py)
-# URL: https://sickrage.ca
-#
-# This file is part of SiCKRAGE.
-#
-# SiCKRAGE is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# SiCKRAGE is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
-
-
-
 import traceback
 
-import sickrage
 from rtorrentlib import RTorrent
+
+import sickrage
 from sickrage.clients.torrent import GenericClient
 from sickrage.core.tv.show.helpers import find_show
 
@@ -193,5 +174,3 @@ class rTorrentAPI(GenericClient):
             sickrage.app.log.debug(traceback.format_exc())
             return False, 'Error: Unable to connect to ' + self.name
 
-
-api = rTorrentAPI()
