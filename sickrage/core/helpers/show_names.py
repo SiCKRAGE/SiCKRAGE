@@ -347,7 +347,7 @@ def determine_release_name(dir_name=None, nzb_name=None):
             found_file = found_file.rpartition('.')[0]
             if filter_bad_releases(found_file):
                 sickrage.app.log.info("Release name ({}) found from file ({})".format(found_file, results[0]))
-                return found_file.rpartition(b'.')[0]
+                return found_file.rpartition('.')[0]
 
     # If that fails, we try the folder
     folder = os.path.basename(dir_name)
