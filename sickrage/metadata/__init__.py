@@ -439,6 +439,7 @@ class GenericMetadata(object):
 
         for cur_ep in [ep_obj] + ep_obj.related_episodes:
             cur_ep.hastbn = True
+            cur_ep.save()
 
         return True
 
