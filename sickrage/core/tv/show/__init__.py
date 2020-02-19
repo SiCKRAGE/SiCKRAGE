@@ -471,10 +471,6 @@ class TVShow(object):
         if self.is_anime:
             return BlackAndWhiteList(self.indexer_id)
 
-    def rollback(self):
-        self.db_session.rollback()
-        self._data_local = self._data_db.as_dict()
-
     def save(self):
         self._data_db.update(**self._data_local)
         self.db_session.commit()

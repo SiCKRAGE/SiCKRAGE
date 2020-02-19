@@ -263,10 +263,6 @@ class TVEpisode(object):
     def related_episodes(self, value):
         setattr(self, '_related_episodes', value)
 
-    def rollback(self):
-        self.db_session.rollback()
-        self._data_local = self._data_db.as_dict()
-
     def save(self):
         self._data_db.update(**self._data_local)
         self.db_session.commit()
@@ -425,7 +421,6 @@ class TVEpisode(object):
         self.indexer_id = try_int(safe_getattr(myEp, 'id'), self.indexer_id)
         if not self.indexer_id:
             sickrage.app.log.warning("Failed to retrieve ID from " + IndexerApi(self.indexer).name)
-            self.db_session.rollback()
             self.delete_episode()
             return False
 
@@ -469,7 +464,6 @@ class TVEpisode(object):
                 firstaired, indexer_name, self.show.name, season or 0, episode or 0))
 
             # if I'm incomplete on the indexer but I once was complete then just delete myself from the DB for now
-            self.db_session.rollback()
             self.delete_episode()
             return False
 
@@ -543,8 +537,6 @@ class TVEpisode(object):
                     except Exception as e:
                         sickrage.app.log.warning("Failed to rename your episode's NFO file - you need to delete it or fix it: {}".format(e))
 
-                    self.db_session.rollback()
-
                     raise NoNFOException("Error in NFO format")
 
                 for epDetails in showXML.iter('episodedetails'):
@@ -559,7 +551,6 @@ class TVEpisode(object):
                         continue
 
                     if epDetails.findtext('title') is None or epDetails.findtext('aired') is None:
-                        self.db_session.rollback()
                         raise NoNFOException("Error in NFO format (missing episode title or airdate)")
 
                     self.name = epDetails.findtext('title')

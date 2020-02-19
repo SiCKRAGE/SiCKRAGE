@@ -1079,13 +1079,11 @@ class PostProcessor(object):
             # move the episode and associated files to the show dir
             if self.process_method == self.PROCESS_METHOD_COPY:
                 if is_file_locked(self.file_path, False):
-                    [cur_ep.rollback() for cur_ep in [ep_obj] + ep_obj.related_episodes]
                     raise EpisodePostProcessingFailedException("File is locked for reading")
                 self._copy(self.file_path, dest_path, new_base_name, sickrage.app.config.move_associated_files,
                            sickrage.app.config.use_subtitles and show_object.subtitles)
             elif self.process_method == self.PROCESS_METHOD_MOVE:
                 if is_file_locked(self.file_path, True):
-                    [cur_ep.rollback() for cur_ep in [ep_obj] + ep_obj.related_episodes]
                     raise EpisodePostProcessingFailedException("File is locked for reading/writing")
                 self._move(self.file_path, dest_path, new_base_name, sickrage.app.config.move_associated_files,
                            sickrage.app.config.use_subtitles and show_object.subtitles)
@@ -1094,7 +1092,6 @@ class PostProcessor(object):
                                sickrage.app.config.use_subtitles and show_object.subtitles)
             elif self.process_method == self.PROCESS_METHOD_SYMLINK:
                 if is_file_locked(self.file_path, True):
-                    [cur_ep.rollback() for cur_ep in [ep_obj] + ep_obj.related_episodes]
                     raise EpisodePostProcessingFailedException("File is locked for reading/writing")
                 self._moveAndSymlink(self.file_path, dest_path, new_base_name,
                                      sickrage.app.config.move_associated_files,
@@ -1104,10 +1101,8 @@ class PostProcessor(object):
                               sickrage.app.config.use_subtitles and show_object.subtitles)
             else:
                 sickrage.app.log.error("Unknown process method: " + str(self.process_method))
-                [cur_ep.rollback() for cur_ep in [ep_obj] + ep_obj.related_episodes]
                 raise EpisodePostProcessingFailedException("Unable to move the files to their new home")
         except (OSError, IOError):
-            [cur_ep.rollback() for cur_ep in [ep_obj] + ep_obj.related_episodes]
             raise EpisodePostProcessingFailedException("Unable to move the files to their new home")
 
         # add processed marker file
