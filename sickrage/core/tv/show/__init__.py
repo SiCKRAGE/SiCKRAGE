@@ -51,324 +51,291 @@ class TVShow(object):
         self.db_session = sickrage.app.main_db.session()
 
         try:
-            self._data = self.db_session.query(MainDB.TVShow).filter_by(indexer_id=indexer_id, indexer=indexer).one()
+            self._data_db = self.db_session.query(MainDB.TVShow).filter_by(indexer_id=indexer_id, indexer=indexer).one()
+            self._data_local = self._data_db.as_dict()
         except orm.exc.NoResultFound:
             raise ShowNotFoundException
 
     @property
     def indexer_id(self):
-        return self._data.indexer_id
+        return self._data_local['indexer_id']
 
     @indexer_id.setter
     def indexer_id(self, value):
-        self._data.indexer_id = value
-        self.db_session.flush()
+        self._data_local['indexer_id'] = value
 
     @property
     def indexer(self):
-        return self._data.indexer
+        return self._data_local['indexer']
 
     @indexer.setter
     def indexer(self, value):
-        self._data.indexer = value
-        self.db_session.flush()
+        self._data_local['indexer'] = value
 
     @property
     def name(self):
-        return self._data.name
+        return self._data_local['name']
 
     @name.setter
     def name(self, value):
-        self._data.name = value
-        self.db_session.flush()
+        self._data_local['name'] = value
 
     @property
     def location(self):
-        return self._data.location
+        return self._data_local['location']
 
     @location.setter
     def location(self, value):
-        self._data.location = value
-        self.db_session.flush()
+        self._data_local['location'] = value
 
     @property
     def network(self):
-        return self._data.network
+        return self._data_local['network']
 
     @network.setter
     def network(self, value):
-        self._data.network = value
-        self.db_session.flush()
+        self._data_local['network'] = value
 
     @property
     def genre(self):
-        return self._data.genre
+        return self._data_local['genre']
 
     @genre.setter
     def genre(self, value):
-        self._data.genre = value
-        self.db_session.flush()
+        self._data_local['genre'] = value
 
     @property
     def overview(self):
-        return self._data.overview
+        return self._data_local['overview']
 
     @overview.setter
     def overview(self, value):
-        self._data.overview = value
-        self.db_session.flush()
+        self._data_local['overview'] = value
 
     @property
     def classification(self):
-        return self._data.classification
+        return self._data_local['classification']
 
     @classification.setter
     def classification(self, value):
-        self._data.classification = value
-        self.db_session.flush()
+        self._data_local['classification'] = value
 
     @property
     def runtime(self):
-        return self._data.runtime
+        return self._data_local['runtime']
 
     @runtime.setter
     def runtime(self, value):
-        self._data.runtime = value
-        self.db_session.flush()
+        self._data_local['runtime'] = value
 
     @property
     def quality(self):
-        return self._data.quality
+        return self._data_local['quality']
 
     @quality.setter
     def quality(self, value):
-        self._data.quality = value
-        self.db_session.flush()
+        self._data_local['quality'] = value
 
     @property
     def airs(self):
-        return self._data.airs
+        return self._data_local['airs']
 
     @airs.setter
     def airs(self, value):
-        self._data.airs = value
-        self.db_session.flush()
+        self._data_local['airs'] = value
 
     @property
     def status(self):
-        return self._data.status
+        return self._data_local['status']
 
     @status.setter
     def status(self, value):
-        self._data.status = value
-        self.db_session.flush()
+        self._data_local['status'] = value
 
     @property
     def flatten_folders(self):
-        return self._data.flatten_folders
+        return self._data_local['flatten_folders']
 
     @flatten_folders.setter
     def flatten_folders(self, value):
-        self._data.flatten_folders = value
-        self.db_session.flush()
+        self._data_local['flatten_folders'] = value
 
     @property
     def paused(self):
-        return self._data.paused
+        return self._data_local['paused']
 
     @paused.setter
     def paused(self, value):
-        self._data.paused = value
-        self.db_session.flush()
+        self._data_local['paused'] = value
 
     @property
     def air_by_date(self):
-        return self._data.air_by_date
+        return self._data_local['air_by_date']
 
     @air_by_date.setter
     def air_by_date(self, value):
-        self._data.air_by_date = value
-        self.db_session.flush()
+        self._data_local['air_by_date'] = value
 
     @property
     def anime(self):
-        return self._data.anime
+        return self._data_local['anime']
 
     @anime.setter
     def anime(self, value):
-        self._data.anime = value
-        self.db_session.flush()
+        self._data_local['anime'] = value
 
     @property
     def scene(self):
-        return self._data.scene
+        return self._data_local['scene']
 
     @scene.setter
     def scene(self, value):
-        self._data.scene = value
-        self.db_session.flush()
+        self._data_local['scene'] = value
 
     @property
     def sports(self):
-        return self._data.sports
+        return self._data_local['sports']
 
     @sports.setter
     def sports(self, value):
-        self._data.sports = value
-        self.db_session.flush()
+        self._data_local['sports'] = value
 
     @property
     def subtitles(self):
-        return self._data.subtitles
+        return self._data_local['subtitles']
 
     @subtitles.setter
     def subtitles(self, value):
-        self._data.subtitles = value
-        self.db_session.flush()
+        self._data_local['subtitles'] = value
 
     @property
     def dvdorder(self):
-        return self._data.dvdorder
+        return self._data_local['dvdorder']
 
     @dvdorder.setter
     def dvdorder(self, value):
-        self._data.dvdorder = value
-        self.db_session.flush()
+        self._data_local['dvdorder'] = value
 
     @property
     def skip_downloaded(self):
-        return self._data.skip_downloaded
+        return self._data_local['skip_downloaded']
 
     @skip_downloaded.setter
     def skip_downloaded(self, value):
-        self._data.skip_downloaded = value
-        self.db_session.flush()
+        self._data_local['skip_downloaded'] = value
 
     @property
     def startyear(self):
-        return self._data.startyear
+        return self._data_local['startyear']
 
     @startyear.setter
     def startyear(self, value):
-        self._data.startyear = value
-        self.db_session.flush()
+        self._data_local['startyear'] = value
 
     @property
     def lang(self):
-        return self._data.lang
+        return self._data_local['lang']
 
     @lang.setter
     def lang(self, value):
-        self._data.lang = value
-        self.db_session.flush()
+        self._data_local['lang'] = value
 
     @property
     def imdb_id(self):
-        return self._data.imdb_id
+        return self._data_local['imdb_id']
 
     @imdb_id.setter
     def imdb_id(self, value):
-        self._data.imdb_id = value
-        self.db_session.flush()
+        self._data_local['imdb_id'] = value
 
     @property
     def rls_ignore_words(self):
-        return self._data.rls_ignore_words
+        return self._data_local['rls_ignore_words']
 
     @rls_ignore_words.setter
     def rls_ignore_words(self, value):
-        self._data.rls_ignore_words = value
-        self.db_session.flush()
+        self._data_local['rls_ignore_words'] = value
 
     @property
     def rls_require_words(self):
-        return self._data.rls_require_words
+        return self._data_local['rls_require_words']
 
     @rls_require_words.setter
     def rls_require_words(self, value):
-        self._data.rls_require_words = value
-        self.db_session.flush()
+        self._data_local['rls_require_words'] = value
 
     @property
     def default_ep_status(self):
-        return self._data.default_ep_status
+        return self._data_local['default_ep_status']
 
     @default_ep_status.setter
     def default_ep_status(self, value):
-        self._data.default_ep_status = value
-        self.db_session.flush()
+        self._data_local['default_ep_status'] = value
 
     @property
     def sub_use_sr_metadata(self):
-        return self._data.sub_use_sr_metadata
+        return self._data_local['sub_use_sr_metadata']
 
     @sub_use_sr_metadata.setter
     def sub_use_sr_metadata(self, value):
-        self._data.sub_use_sr_metadata = value
-        self.db_session.flush()
+        self._data_local['sub_use_sr_metadata'] = value
 
     @property
     def notify_list(self):
-        return self._data.notify_list
+        return self._data_local['notify_list']
 
     @notify_list.setter
     def notify_list(self, value):
-        self._data.notify_list = value
-        self.db_session.flush()
+        self._data_local['notify_list'] = value
 
     @property
     def search_delay(self):
-        return self._data.search_delay
+        return self._data_local['search_delay']
 
     @search_delay.setter
     def search_delay(self, value):
-        self._data.search_delay = value
-        self.db_session.flush()
+        self._data_local['search_delay'] = value
 
     @property
     def last_update(self):
-        return self._data.last_update
+        return self._data_local['last_update']
 
     @last_update.setter
     def last_update(self, value):
-        self._data.last_update = value
-        self.db_session.flush()
+        self._data_local['last_update'] = value
 
     @property
     def last_refresh(self):
-        return self._data.last_refresh
+        return self._data_local['last_refresh']
 
     @last_refresh.setter
     def last_refresh(self, value):
-        self._data.last_refresh = value
-        self.db_session.flush()
+        self._data_local['last_refresh'] = value
 
     @property
     def last_backlog_search(self):
-        return self._data.last_backlog_search
+        return self._data_local['last_backlog_search']
 
     @last_backlog_search.setter
     def last_backlog_search(self, value):
-        self._data.last_backlog_search = value
-        self.db_session.flush()
+        self._data_local['last_backlog_search'] = value
 
     @property
     def last_proper_search(self):
-        return self._data.last_proper_search
+        return self._data_local['last_proper_search']
 
     @last_proper_search.setter
     def last_proper_search(self, value):
-        self._data.last_proper_search = value
-        self.db_session.flush()
+        self._data_local['last_proper_search'] = value
 
     @property
     def episodes(self):
         return [TVEpisode(self.indexer_id, self.indexer, x.season, x.episode) for x in
-                self._data.episodes.with_entities(MainDB.TVEpisode.season, MainDB.TVEpisode.episode)]
+                self._data_db.episodes.with_entities(MainDB.TVEpisode.season, MainDB.TVEpisode.episode)]
 
     @property
     def imdb_info(self):
-        return self._data.imdb_info
+        return self._data_db.imdb_info
 
     @property
     def is_anime(self):
@@ -385,7 +352,7 @@ class TVShow(object):
     @property
     def airs_next(self):
         _airs_next = datetime.date.min
-        for episode_object in self._data.episodes:
+        for episode_object in self._data_db.episodes:
             if episode_object.season != 0 and episode_object.status in [UNAIRED, WANTED]:
                 if episode_object.airdate >= datetime.date.today() and _airs_next == datetime.date.min:
                     _airs_next = episode_object.airdate
@@ -394,7 +361,7 @@ class TVShow(object):
     @property
     def airs_prev(self):
         _airs_prev = datetime.date.min
-        for episode_object in self._data.episodes:
+        for episode_object in self._data_db.episodes:
             if episode_object.season != 0 and episode_object.status != UNAIRED:
                 if episode_object.airdate < datetime.date.today() > _airs_prev:
                     _airs_prev = episode_object.airdate
@@ -403,7 +370,7 @@ class TVShow(object):
     @property
     def episodes_unaired(self):
         _episodes_unaired = 0
-        for episode_object in self._data.episodes:
+        for episode_object in self._data_db.episodes:
             if episode_object.season != 0 and episode_object.status == UNAIRED:
                 _episodes_unaired += 1
         return _episodes_unaired
@@ -411,7 +378,7 @@ class TVShow(object):
     @property
     def episodes_snatched(self):
         _episodes_snatched = 0
-        for episode_object in self._data.episodes:
+        for episode_object in self._data_db.episodes:
             if episode_object.season != 0 and episode_object.status in Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER:
                 _episodes_snatched += 1
         return _episodes_snatched
@@ -419,7 +386,7 @@ class TVShow(object):
     @property
     def episodes_downloaded(self):
         _episodes_downloaded = 0
-        for episode_object in self._data.episodes:
+        for episode_object in self._data_db.episodes:
             if episode_object.season != 0 and episode_object.status in Quality.DOWNLOADED + Quality.ARCHIVED:
                 _episodes_downloaded += 1
         return _episodes_downloaded
@@ -427,7 +394,7 @@ class TVShow(object):
     @property
     def episodes_special(self):
         _episodes_specials = 0
-        for episode_object in self._data.episodes:
+        for episode_object in self._data_db.episodes:
             if episode_object.season == 0:
                 _episodes_specials += 1
         return _episodes_specials
@@ -435,7 +402,7 @@ class TVShow(object):
     @property
     def episodes_special_unaired(self):
         _episodes_specials_unaired = 0
-        for episode_object in self._data.episodes:
+        for episode_object in self._data_db.episodes:
             if episode_object.season == 0 and episode_object.status == UNAIRED:
                 _episodes_specials_unaired += 1
         return _episodes_specials_unaired
@@ -443,7 +410,7 @@ class TVShow(object):
     @property
     def episodes_special_downloaded(self):
         _episodes_special_downloaded = 0
-        for episode_object in self._data.episodes:
+        for episode_object in self._data_db.episodes:
             if episode_object.season == 0 and episode_object.status in Quality.DOWNLOADED + Quality.ARCHIVED:
                 _episodes_special_downloaded += 1
         return _episodes_special_downloaded
@@ -451,7 +418,7 @@ class TVShow(object):
     @property
     def episodes_special_snatched(self):
         _episodes_special_snatched = 0
-        for episode_object in self._data.episodes:
+        for episode_object in self._data_db.episodes:
             if episode_object.season == 0 and episode_object.status in Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER:
                 _episodes_special_snatched += 1
         return _episodes_special_snatched
@@ -491,7 +458,7 @@ class TVShow(object):
     @property
     def total_size(self):
         _total_size = 0
-        for episode_object in self._data.episodes:
+        for episode_object in self._data_db.episodes:
             _total_size += episode_object.file_size
         return _total_size
 
@@ -506,13 +473,15 @@ class TVShow(object):
 
     def rollback(self):
         self.db_session.rollback()
+        self._data_local = self._data_db.as_dict()
 
     def save(self):
+        self._data_db.update(**self._data_local)
         self.db_session.commit()
 
     def delete(self):
-        self.db_session.delete(self._data)
-        self.save()
+        self.db_session.delete(self._data_db)
+        self.db_session.commit()
 
     def load_from_indexer(self, cache=True, tvapi=None):
         if self.indexer is not INDEXER_TVRAGE:

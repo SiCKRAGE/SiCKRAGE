@@ -50,226 +50,204 @@ class TVEpisode(object):
         self.db_session = sickrage.app.main_db.session()
 
         try:
-            self._data = self.db_session.query(MainDB.TVEpisode).filter_by(showid=indexer_id, indexer=indexer, season=season, episode=episode).one()
+            self._data_db = self.db_session.query(MainDB.TVEpisode).filter_by(showid=indexer_id, indexer=indexer, season=season, episode=episode).one()
+            self._data_local = self._data_db.as_dict()
         except orm.exc.NoResultFound:
             raise EpisodeNotFoundException
 
     @property
     def showid(self):
-        return self._data.showid
+        return self._data_local['showid']
 
     @showid.setter
     def showid(self, value):
-        self._data.showid = value
-        self.db_session.flush()
+        self._data_local['showid'] = value
         
     @property
     def indexer_id(self):
-        return self._data.indexer_id
+        return self._data_local['indexer_id']
 
     @indexer_id.setter
     def indexer_id(self, value):
-        self._data.indexer_id = value
-        self.db_session.flush()
+        self._data_local['indexer_id'] = value
 
     @property
     def indexer(self):
-        return self._data.indexer
+        return self._data_local['indexer']
 
     @indexer.setter
     def indexer(self, value):
-        self._data.indexer = value
-        self.db_session.flush()
+        self._data_local['indexer'] = value
         
     @property
     def season(self):
-        return self._data.season
+        return self._data_local['season']
 
     @season.setter
     def season(self, value):
-        self._data.season = value
-        self.db_session.flush()
+        self._data_local['season'] = value
         
     @property
     def episode(self):
-        return self._data.episode
+        return self._data_local['episode']
 
     @episode.setter
     def episode(self, value):
-        self._data.episode = value
-        self.db_session.flush()
+        self._data_local['episode'] = value
         
     @property
     def scene_season(self):
-        return self._data.scene_season
+        return self._data_local['scene_season']
 
     @scene_season.setter
     def scene_season(self, value):
-        self._data.scene_season = value
-        self.db_session.flush()
+        self._data_local['scene_season'] = value
         
     @property
     def scene_episode(self):
-        return self._data.scene_episode
+        return self._data_local['scene_episode']
 
     @scene_episode.setter
     def scene_episode(self, value):
-        self._data.scene_episode = value
-        self.db_session.flush()
+        self._data_local['scene_episode'] = value
         
     @property
     def name(self):
-        return self._data.name
+        return self._data_local['name']
 
     @name.setter
     def name(self, value):
-        self._data.name = value
-        self.db_session.flush()
+        self._data_local['name'] = value
         
     @property
     def description(self):
-        return self._data.description
+        return self._data_local['description']
 
     @description.setter
     def description(self, value):
-        self._data.description = value
-        self.db_session.flush()
+        self._data_local['description'] = value
         
     @property
     def subtitles(self):
-        return self._data.subtitles
+        return self._data_local['subtitles']
 
     @subtitles.setter
     def subtitles(self, value):
-        self._data.subtitles = value
-        self.db_session.flush()
+        self._data_local['subtitles'] = value
         
     @property
     def subtitles_searchcount(self):
-        return self._data.subtitles_searchcount
+        return self._data_local['subtitles_searchcount']
 
     @subtitles_searchcount.setter
     def subtitles_searchcount(self, value):
-        self._data.subtitles_searchcount = value
-        self.db_session.flush()
+        self._data_local['subtitles_searchcount'] = value
         
     @property
     def subtitles_lastsearch(self):
-        return self._data.subtitles_lastsearch
+        return self._data_local['subtitles_lastsearch']
 
     @subtitles_lastsearch.setter
     def subtitles_lastsearch(self, value):
-        self._data.subtitles_lastsearch = value
-        self.db_session.flush()
+        self._data_local['subtitles_lastsearch'] = value
         
     @property
     def airdate(self):
-        return self._data.airdate
+        return self._data_local['airdate']
 
     @airdate.setter
     def airdate(self, value):
-        self._data.airdate = value
-        self.db_session.flush()
+        self._data_local['airdate'] = value
         
     @property
     def hasnfo(self):
-        return self._data.hasnfo
+        return self._data_local['hasnfo']
 
     @hasnfo.setter
     def hasnfo(self, value):
-        self._data.hasnfo = value
-        self.db_session.flush()
+        self._data_local['hasnfo'] = value
         
     @property
     def hastbn(self):
-        return self._data.hastbn
+        return self._data_local['hastbn']
 
     @hastbn.setter
     def hastbn(self, value):
-        self._data.hastbn = value
-        self.db_session.flush()
+        self._data_local['hastbn'] = value
         
     @property
     def status(self):
-        return self._data.status
+        return self._data_local['status']
 
     @status.setter
     def status(self, value):
-        self._data.status = value
-        self.db_session.flush()
+        self._data_local['status'] = value
         
     @property
     def location(self):
-        return self._data.location
+        return self._data_local['location']
 
     @location.setter
     def location(self, value):
         if os.path.exists(value):
             self.file_size = file_size(value)
-        self._data.location = value
-        self.db_session.flush()
+        self._data_local['location'] = value
         
     @property
     def file_size(self):
-        return self._data.file_size
+        return self._data_local['file_size']
 
     @file_size.setter
     def file_size(self, value):
-        self._data.file_size = value
-        self.db_session.flush()
+        self._data_local['file_size'] = value
         
     @property
     def release_name(self):
-        return self._data.release_name
+        return self._data_local['release_name']
 
     @release_name.setter
     def release_name(self, value):
-        self._data.release_name = value
-        self.db_session.flush()
+        self._data_local['release_name'] = value
         
     @property
     def is_proper(self):
-        return self._data.is_proper
+        return self._data_local['is_proper']
 
     @is_proper.setter
     def is_proper(self, value):
-        self._data.is_proper = value
-        self.db_session.flush()
+        self._data_local['is_proper'] = value
         
     @property
     def absolute_number(self):
-        return self._data.absolute_number
+        return self._data_local['absolute_number']
 
     @absolute_number.setter
     def absolute_number(self, value):
-        self._data.absolute_number = value
-        self.db_session.flush()
+        self._data_local['absolute_number'] = value
         
     @property
     def scene_absolute_number(self):
-        return self._data.scene_absolute_number
+        return self._data_local['scene_absolute_number']
 
     @scene_absolute_number.setter
     def scene_absolute_number(self, value):
-        self._data.scene_absolute_number = value
-        self.db_session.flush()
+        self._data_local['scene_absolute_number'] = value
         
     @property
     def version(self):
-        return self._data.version
+        return self._data_local['version']
 
     @version.setter
     def version(self, value):
-        self._data.version = value
-        self.db_session.flush()
+        self._data_local['version'] = value
         
     @property
     def release_group(self):
-        return self._data.release_group
+        return self._data_local['release_group']
 
     @release_group.setter
     def release_group(self, value):
-        self._data.release_group = value
+        self._data_local['release_group'] = value
         self.db_session.flush()
 
     @property
@@ -287,13 +265,15 @@ class TVEpisode(object):
 
     def rollback(self):
         self.db_session.rollback()
+        self._data_local = self._data_db.as_dict()
 
     def save(self):
+        self._data_db.update(**self._data_local)
         self.db_session.commit()
 
     def delete(self):
-        self.db_session.delete(self._data)
-        self.save()
+        self.db_session.delete(self._data_db)
+        self.db_session.commit()
 
     def load(self):
         sickrage.app.log.debug("{}: Populating info for episode S{:02d}E{:02d}".format(self.showid, self.season, self.episode))
