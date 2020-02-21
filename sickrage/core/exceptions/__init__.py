@@ -26,6 +26,18 @@ class SiCKRAGEException(Exception):
     """
 
 
+class SiCKRAGETVShowException(SiCKRAGEException):
+    """
+    Generic SiCKRAGE TVShow Exception - should never be thrown, only sub-classed
+    """
+
+
+class SiCKRAGETVEpisodeException(SiCKRAGEException):
+    """
+    Generic SiCKRAGE TVEpisode Exception - should never be thrown, only sub-classed
+    """
+
+
 class AuthException(SiCKRAGEException):
     """
     Your authentication information are incorrect
@@ -50,13 +62,13 @@ class CantUpdateShowException(SiCKRAGEException):
     """
 
 
-class EpisodeDeletedException(SiCKRAGEException):
+class EpisodeDeletedException(SiCKRAGETVEpisodeException):
     """
     This episode has been deleted
     """
 
 
-class EpisodeNotFoundException(SiCKRAGEException):
+class EpisodeNotFoundException(SiCKRAGETVEpisodeException):
     """
     The episode wasn't found on the Indexer
     """
@@ -68,7 +80,7 @@ class EpisodePostProcessingFailedException(SiCKRAGEException):
     """
 
 
-class EpisodeDirectoryNotFoundException(SiCKRAGEException):
+class EpisodeDirectoryNotFoundException(SiCKRAGETVEpisodeException):
     """
     The episode directory was not found
     """
@@ -80,19 +92,19 @@ class FailedPostProcessingFailedException(SiCKRAGEException):
     """
 
 
-class MultipleEpisodesInDatabaseException(SiCKRAGEException):
+class MultipleEpisodesInDatabaseException(SiCKRAGETVEpisodeException):
     """
     Multiple episodes were found in the database! The database must be fixed first
     """
 
 
-class MultipleShowsInDatabaseException(SiCKRAGEException):
+class MultipleShowsInDatabaseException(SiCKRAGETVShowException):
     """
     Multiple shows were found in the database! The database must be fixed first
     """
 
 
-class MultipleShowObjectsException(SiCKRAGEException):
+class MultipleShowObjectsException(SiCKRAGETVShowException):
     """
     Multiple objects for the same show were found! Something is very wrong
     """
@@ -104,7 +116,7 @@ class NoNFOException(SiCKRAGEException):
     """
 
 
-class ShowNotFoundException(SiCKRAGEException):
+class ShowNotFoundException(SiCKRAGETVShowException):
     """
     The show wasn't found
     """

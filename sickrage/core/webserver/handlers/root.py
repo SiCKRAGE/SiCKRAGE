@@ -29,9 +29,8 @@ from tornado.httputil import url_concat
 from tornado.web import authenticated
 
 import sickrage
-from sickrage.core.helpers import remove_article
 from sickrage.core.databases.main import MainDB
-from sickrage.core.tv.episode import TVEpisode
+from sickrage.core.helpers import remove_article
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
 from sickrage.core.tv.show.helpers import get_show_list
 from sickrage.core.webserver import ApiHandler

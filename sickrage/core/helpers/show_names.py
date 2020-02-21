@@ -173,14 +173,12 @@ def make_scene_season_search_string(show_id, season, episode, extraSearchType=No
         # the search string for air by date shows is just
         seasonStrings = [str(episode_object.airdate).split('-')[0]]
     elif show_object.is_anime:
-        seasonEps = show_object.get_all_episodes(episode_object.season)
-
         # get show qualities
         anyQualities, bestQualities = common.Quality.split_quality(show_object.quality)
 
         # compile a list of all the episode numbers we need in this 'season'
         seasonStrings = []
-        for episode in seasonEps:
+        for episode in (x for x in show_object.episodes if x.season == episode_object.season):
 
             # get quality of the episode
             curCompositeStatus = episode.status

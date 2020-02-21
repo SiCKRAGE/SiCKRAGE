@@ -33,7 +33,6 @@ from sickrage.core.common import (
     SNATCHED,
     MULTI_EP_RESULT
 )
-from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import show_names
 from sickrage.core.nzbSplitter import split_nzb_result
@@ -153,8 +152,6 @@ def pick_best_result(results, season_pack=False):
     :return: best result object
     """
 
-    session = sickrage.app.main_db.session()
-
     results = results if isinstance(results, list) else [results]
 
     sickrage.app.log.debug("Picking the best result out of " + str([x.name for x in results]))
@@ -214,7 +211,7 @@ def pick_best_result(results, season_pack=False):
                     quality_size = sickrage.app.config.quality_sizes[cur_result.quality]
 
                     if season_pack and not len(cur_result.episodes):
-                        episode_count = session.query(MainDB.TVEpisode).filter_by(showid=show_obj.indexer_id, season=cur_result.season).count()
+                        episode_count = len([x for x in show_obj.episodes if x.season == cur_result.season])
                         file_size = float(cur_result.size / episode_count / 1000000)
                     else:
                         file_size = float(cur_result.size / len(cur_result.episodes) / 1000000)
@@ -326,8 +323,6 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
 
     orig_thread_name = threading.currentThread().getName()
 
-    session = sickrage.app.main_db.session()
-
     show_object = find_show(show_id)
 
     # build name cache for show
@@ -431,8 +426,7 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
             season_qual = best_season_result.quality
             sickrage.app.log.debug("The quality of the season " + best_season_result.provider.type + " is " + Quality.qualityStrings[season_qual])
 
-            all_episodes = set(
-                [x.episode for x in session.query(MainDB.TVEpisode).filter_by(showid=best_season_result.show_id, season=best_season_result.season)])
+            all_episodes = set([x.episode for x in show_object.episodes if x.season == best_season_result.season])
 
             sickrage.app.log.debug("Episodes list: {}".format(','.join(map(str, all_episodes))))
 

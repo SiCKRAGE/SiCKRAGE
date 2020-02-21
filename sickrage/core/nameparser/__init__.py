@@ -48,7 +48,7 @@ class NameParser(object):
 
     def __init__(self, file_name=True, show_id=None, naming_pattern=False, validate_show=True):
         self.file_name = file_name
-        self.show_obj = find_show(show_id)
+        self.show_obj = find_show(show_id) if show_id else None
         self.naming_pattern = naming_pattern
         self.validate_show = validate_show
 
@@ -256,7 +256,7 @@ class NameParser(object):
             if not self.naming_pattern:
                 # try and create a show object for this result
                 best_result.indexer_id = self.get_show(best_result.series_name)
-                show_obj = find_show(best_result.indexer_id)
+                show_obj = find_show(best_result.indexer_id) if best_result.indexer_id else None
 
             # if this is a naming pattern test or result doesn't have a show object then return best result
             if not show_obj or self.naming_pattern:

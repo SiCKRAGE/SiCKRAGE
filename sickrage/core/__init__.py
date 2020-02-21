@@ -65,6 +65,7 @@ from sickrage.core.searchers.failed_snatch_searcher import FailedSnatchSearcher
 from sickrage.core.searchers.proper_searcher import ProperSearcher
 from sickrage.core.searchers.subtitle_searcher import SubtitleSearcher
 from sickrage.core.searchers.trakt_searcher import TraktSearcher
+from sickrage.core.tv.show import TVShow
 from sickrage.core.tv.show.helpers import get_show_list
 from sickrage.core.ui import Notifications
 from sickrage.core.updaters.rsscache_updater import RSSCacheUpdater
@@ -89,6 +90,8 @@ class Core(object):
             self.tz = tz.tzwinlocal() if tz.tzwinlocal else tz.tzlocal()
         except Exception:
             self.tz = tz.tzlocal()
+
+        self.shows = {}
 
         self.private_key = None
         self.public_key = None
@@ -530,8 +533,8 @@ class Core(object):
 
         # launch browser window
         if all([not sickrage.app.no_launch, sickrage.app.config.launch_browser]):
-            self.io_loop.run_in_executor(None, functools.partial(launch_browser, ('http', 'https')[sickrage.app.config.enable_https],
-                                                                 sickrage.app.config.web_host, sickrage.app.config.web_port))
+            self.io_loop.add_callback(functools.partial(launch_browser, ('http', 'https')[sickrage.app.config.enable_https],
+                                                        sickrage.app.config.web_host, sickrage.app.config.web_port))
 
         def started():
             self.log.info("SiCKRAGE :: STARTED")
@@ -543,8 +546,22 @@ class Core(object):
                                                                   self.config.web_host, self.config.web_port, self.config.web_root))
 
         # start io_loop
+        self.io_loop.add_callback(self.load_shows)
         self.io_loop.add_callback(started)
         self.io_loop.start()
+
+    def load_shows(self):
+        session = self.main_db.session()
+
+        self.log.info('Loading initial shows list')
+
+        self.shows = {}
+        for show in session.query(MainDB.TVShow).with_entities(MainDB.TVShow.indexer_id, MainDB.TVShow.indexer, MainDB.TVShow.name):
+            try:
+                self.log.info('Loading show {}'.format(show.name))
+                self.shows.update({(show.indexer_id, show.indexer): TVShow(show.indexer_id, show.indexer)})
+            except Exception:
+                self.log.debug('There was an error loading show: {}'.format(show.name))
 
     def shutdown(self, restart=False):
         if self.started:

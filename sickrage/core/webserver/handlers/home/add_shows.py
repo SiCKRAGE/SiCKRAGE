@@ -118,8 +118,6 @@ class MassAddTableHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         root_dir = self.get_arguments('rootDir')
 
-        session = sickrage.app.main_db.session()
-
         root_dirs = [unquote_plus(x) for x in root_dir]
 
         if sickrage.app.config.root_dirs:
@@ -165,7 +163,7 @@ class MassAddTableHandler(BaseHandler, ABC):
                         if all([showid, show_name, indexer]):
                             continue
 
-                        (showid, show_name, indexer) = cur_provider.retrieveShowMetadata(cur_path)
+                        (showid, show_name, indexer) = cur_provider.retrieve_show_metadata(cur_path)
 
                         # default to TVDB if indexer was not detected
                         if show_name and not (indexer or showid):

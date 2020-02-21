@@ -86,7 +86,7 @@ class TIVOMetadata(GenericMetadata):
         self.eg_season_all_banner = "<i>not supported</i>"
 
     # Override with empty methods for unsupported features
-    def retrieveShowMetadata(self, folder):
+    def retrieve_show_metadata(self, folder) ->(int, str, int):
         # no show metadata generated, we abort this lookup function
         return None, None, None
 
@@ -187,7 +187,6 @@ class TIVOMetadata(GenericMetadata):
             return False
 
         for curEpToWrite in eps_to_write:
-
             try:
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (indexer_episodenotfound, indexer_seasonnotfound):

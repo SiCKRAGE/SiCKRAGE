@@ -74,7 +74,7 @@ class QuicksearchCache(object):
             qsData = {
                 'category': 'shows',
                 'showid': indexer_id,
-                'seasons': len(set([e.season for e in show.episodes if e.season != 0])),
+                'seasons': len(show.episodes),
                 'name': show.name,
                 'img': sickrage.app.config.web_root + showImage(indexer_id, 'poster_thumb').url
             }

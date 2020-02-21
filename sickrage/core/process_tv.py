@@ -37,7 +37,6 @@ from sickrage.core.helpers import is_media_file, is_rar_file, is_hidden_folder, 
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
 from sickrage.core.processors import failed_processor, post_processor
-from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import get_show_list
 
 
@@ -311,9 +310,7 @@ class ProcessResult(object):
         for show in get_show_list():
             if process_path.lower().startswith(os.path.realpath(show.location).lower() + os.sep) or \
                     process_path.lower() == os.path.realpath(show.location).lower():
-                self.log(
-                    "Cannot process an episode that's already been moved to its show dir, skipping " + process_path,
-                    sickrage.app.log.WARNING)
+                self.log("Cannot process an episode that's already been moved to its show dir, skipping " + process_path, sickrage.app.log.WARNING)
                 return False
 
         for current_directory, directory_names, file_names in os.walk(process_path, topdown=False,

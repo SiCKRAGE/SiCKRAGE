@@ -39,6 +39,7 @@ from sickrage.core.helpers import file_size
 from sickrage.core.helpers import is_media_file, try_int, safe_getattr
 from sickrage.core.helpers import replace_extension, modify_file_timestamp, sanitize_scene_name, remove_non_release_groups, \
     remove_extension, sanitize_file_name, make_dirs, move_file, delete_empty_folders
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_seasonnotfound, indexer_error, indexer_episodenotfound
 from sickrage.notifiers import Notifiers
@@ -46,14 +47,28 @@ from sickrage.subtitles import Subtitles
 
 
 class TVEpisode(object):
-    def __init__(self, indexer_id, indexer, season, episode):
+    def __init__(self, showid, indexer, season, episode, location=''):
         self.db_session = sickrage.app.main_db.session()
 
         try:
-            self._data_db = self.db_session.query(MainDB.TVEpisode).filter_by(showid=indexer_id, indexer=indexer, season=season, episode=episode).one()
-            self._data_local = self._data_db.as_dict()
+            query = self.db_session.query(MainDB.TVEpisode).filter_by(showid=showid, indexer=indexer, season=season, episode=episode).one()
+            self._data_local = query.as_dict()
         except orm.exc.NoResultFound:
-            raise EpisodeNotFoundException
+            self.db_session.add(MainDB.TVEpisode(**{
+                'showid': showid,
+                'indexer': indexer,
+                'season': season,
+                'episode': episode,
+                'location': location
+            }))
+
+            self.db_session.commit()
+
+            query = self.db_session.query(MainDB.TVEpisode).filter_by(showid=showid, indexer=indexer, season=season, episode=episode).one()
+            self._data_local = query.as_dict()
+            self.populate_episode(season, episode)
+
+        self.checkForMetaFiles()
 
     @property
     def showid(self):
@@ -62,7 +77,7 @@ class TVEpisode(object):
     @showid.setter
     def showid(self, value):
         self._data_local['showid'] = value
-        
+
     @property
     def indexer_id(self):
         return self._data_local['indexer_id']
@@ -78,7 +93,7 @@ class TVEpisode(object):
     @indexer.setter
     def indexer(self, value):
         self._data_local['indexer'] = value
-        
+
     @property
     def season(self):
         return self._data_local['season']
@@ -86,7 +101,7 @@ class TVEpisode(object):
     @season.setter
     def season(self, value):
         self._data_local['season'] = value
-        
+
     @property
     def episode(self):
         return self._data_local['episode']
@@ -94,7 +109,7 @@ class TVEpisode(object):
     @episode.setter
     def episode(self, value):
         self._data_local['episode'] = value
-        
+
     @property
     def scene_season(self):
         return self._data_local['scene_season']
@@ -102,7 +117,7 @@ class TVEpisode(object):
     @scene_season.setter
     def scene_season(self, value):
         self._data_local['scene_season'] = value
-        
+
     @property
     def scene_episode(self):
         return self._data_local['scene_episode']
@@ -110,7 +125,7 @@ class TVEpisode(object):
     @scene_episode.setter
     def scene_episode(self, value):
         self._data_local['scene_episode'] = value
-        
+
     @property
     def name(self):
         return self._data_local['name']
@@ -118,7 +133,7 @@ class TVEpisode(object):
     @name.setter
     def name(self, value):
         self._data_local['name'] = value
-        
+
     @property
     def description(self):
         return self._data_local['description']
@@ -126,7 +141,7 @@ class TVEpisode(object):
     @description.setter
     def description(self, value):
         self._data_local['description'] = value
-        
+
     @property
     def subtitles(self):
         return self._data_local['subtitles']
@@ -134,7 +149,7 @@ class TVEpisode(object):
     @subtitles.setter
     def subtitles(self, value):
         self._data_local['subtitles'] = value
-        
+
     @property
     def subtitles_searchcount(self):
         return self._data_local['subtitles_searchcount']
@@ -142,7 +157,7 @@ class TVEpisode(object):
     @subtitles_searchcount.setter
     def subtitles_searchcount(self, value):
         self._data_local['subtitles_searchcount'] = value
-        
+
     @property
     def subtitles_lastsearch(self):
         return self._data_local['subtitles_lastsearch']
@@ -150,7 +165,7 @@ class TVEpisode(object):
     @subtitles_lastsearch.setter
     def subtitles_lastsearch(self, value):
         self._data_local['subtitles_lastsearch'] = value
-        
+
     @property
     def airdate(self):
         return self._data_local['airdate']
@@ -158,7 +173,7 @@ class TVEpisode(object):
     @airdate.setter
     def airdate(self, value):
         self._data_local['airdate'] = value
-        
+
     @property
     def hasnfo(self):
         return self._data_local['hasnfo']
@@ -166,7 +181,7 @@ class TVEpisode(object):
     @hasnfo.setter
     def hasnfo(self, value):
         self._data_local['hasnfo'] = value
-        
+
     @property
     def hastbn(self):
         return self._data_local['hastbn']
@@ -174,7 +189,7 @@ class TVEpisode(object):
     @hastbn.setter
     def hastbn(self, value):
         self._data_local['hastbn'] = value
-        
+
     @property
     def status(self):
         return self._data_local['status']
@@ -182,7 +197,7 @@ class TVEpisode(object):
     @status.setter
     def status(self, value):
         self._data_local['status'] = value
-        
+
     @property
     def location(self):
         return self._data_local['location']
@@ -192,7 +207,7 @@ class TVEpisode(object):
         if os.path.exists(value):
             self.file_size = file_size(value)
         self._data_local['location'] = value
-        
+
     @property
     def file_size(self):
         return self._data_local['file_size']
@@ -200,7 +215,7 @@ class TVEpisode(object):
     @file_size.setter
     def file_size(self, value):
         self._data_local['file_size'] = value
-        
+
     @property
     def release_name(self):
         return self._data_local['release_name']
@@ -208,7 +223,7 @@ class TVEpisode(object):
     @release_name.setter
     def release_name(self, value):
         self._data_local['release_name'] = value
-        
+
     @property
     def is_proper(self):
         return self._data_local['is_proper']
@@ -216,7 +231,7 @@ class TVEpisode(object):
     @is_proper.setter
     def is_proper(self, value):
         self._data_local['is_proper'] = value
-        
+
     @property
     def absolute_number(self):
         return self._data_local['absolute_number']
@@ -224,7 +239,7 @@ class TVEpisode(object):
     @absolute_number.setter
     def absolute_number(self, value):
         self._data_local['absolute_number'] = value
-        
+
     @property
     def scene_absolute_number(self):
         return self._data_local['scene_absolute_number']
@@ -232,7 +247,7 @@ class TVEpisode(object):
     @scene_absolute_number.setter
     def scene_absolute_number(self, value):
         self._data_local['scene_absolute_number'] = value
-        
+
     @property
     def version(self):
         return self._data_local['version']
@@ -240,7 +255,7 @@ class TVEpisode(object):
     @version.setter
     def version(self, value):
         self._data_local['version'] = value
-        
+
     @property
     def release_group(self):
         return self._data_local['release_group']
@@ -252,30 +267,29 @@ class TVEpisode(object):
 
     @property
     def show(self):
-        from sickrage.core.tv.show import TVShow
-        return TVShow(self.showid, self.indexer)
+        return find_show(self.showid, self.indexer)
 
     @property
     def related_episodes(self):
-        return getattr(self, '_related_episodes', [])
-
-    @related_episodes.setter
-    def related_episodes(self, value):
-        setattr(self, '_related_episodes', value)
+        return [x for x in self.show.episodes if x.location and x.location == self.location and x.season == self.season and x.episode != self.episode]
 
     def save(self):
-        self._data_db.update(**self._data_local)
+        query = self.db_session.query(MainDB.TVEpisode).filter_by(showid=self.showid,
+                                                                  indexer=self.indexer,
+                                                                  season=self.season,
+                                                                  episode=self.episode).one_or_none()
+        if query:
+            query.update(**self._data_local)
+
         self.db_session.commit()
 
     def delete(self):
-        self.db_session.delete(self._data_db)
+        self.db_session.query(MainDB.TVEpisode).filter_by(showid=self.showid,
+                                                          indexer=self.indexer,
+                                                          season=self.season,
+                                                          episode=self.episode).delete()
         self.db_session.commit()
 
-    def load(self):
-        sickrage.app.log.debug("{}: Populating info for episode S{:02d}E{:02d}".format(self.showid, self.season, self.episode))
-        self.populate_episode(self.season, self.episode)
-        self.checkForMetaFiles()
-        
     def refresh_subtitles(self):
         """Look for subtitles files and refresh the subtitles property"""
         subtitles, save_subtitles = Subtitles().refresh_subtitles(self.showid, self.season, self.episode)
@@ -294,14 +308,14 @@ class TVEpisode(object):
 
         sickrage.app.log.debug("%s: Downloading subtitles for S%02dE%02d" % (self.show.indexer_id, self.season or 0, self.episode or 0))
 
-        subtitles, newSubtitles = Subtitles().download_subtitles(self.showid, self.season, self.episode)
+        subtitles, new_subtitles = Subtitles().download_subtitles(self.showid, self.season, self.episode)
 
         self.subtitles = ','.join(subtitles)
         self.subtitles_searchcount += 1 if self.subtitles_searchcount else 1
         self.subtitles_lastsearch = datetime.datetime.now().toordinal()
 
-        if newSubtitles:
-            subtitle_list = ", ".join([Subtitles().name_from_code(newSub) for newSub in newSubtitles])
+        if new_subtitles:
+            subtitle_list = ", ".join([Subtitles().name_from_code(newSub) for newSub in new_subtitles])
             sickrage.app.log.debug("%s: Downloaded %s subtitles for S%02dE%02d" %
                                    (self.show.indexer_id, subtitle_list, self.season or 0, self.episode or 0))
 
@@ -312,7 +326,7 @@ class TVEpisode(object):
 
         self.save()
 
-        return newSubtitles
+        return new_subtitles
 
     def checkForMetaFiles(self):
         oldhasnfo = self.hasnfo
@@ -415,13 +429,13 @@ class TVEpisode(object):
 
             # if I'm no longer on the Indexers but I once was then delete myself from the DB
             if self.indexer_id != -1:
-                self.delete_episode()
+                self.show.delete_episode(season, episode)
             return False
 
         self.indexer_id = try_int(safe_getattr(myEp, 'id'), self.indexer_id)
         if not self.indexer_id:
             sickrage.app.log.warning("Failed to retrieve ID from " + IndexerApi(self.indexer).name)
-            self.delete_episode()
+            self.show.delete_episode(season, episode)
             return False
 
         self.name = safe_getattr(myEp, 'episodename', self.name)
@@ -464,7 +478,7 @@ class TVEpisode(object):
                 firstaired, indexer_name, self.show.name, season or 0, episode or 0))
 
             # if I'm incomplete on the indexer but I once was complete then just delete myself from the DB for now
-            self.delete_episode()
+            self.show.delete_episode(season, episode)
             return False
 
         # don't update show status if show dir is missing, unless it's missing on purpose
@@ -634,8 +648,6 @@ class TVEpisode(object):
         return result
 
     def delete_episode(self, full=False):
-        sickrage.app.log.debug("Deleting %s S%02dE%02d from the DB" % (self.show.name, self.season or 0, self.episode or 0))
-
         data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate([(self.season, self.episode)])
         if sickrage.app.config.use_trakt and sickrage.app.config.trakt_sync_watchlist and data:
             sickrage.app.log.debug("Deleting myself from Trakt")
@@ -649,7 +661,7 @@ class TVEpisode(object):
                 sickrage.app.log.warning('Unable to delete episode file %s: %s / %s' % (self.location, repr(e), str(e)))
 
         # delete myself from the DB
-        sickrage.app.log.debug("Deleting myself from the database")
+        sickrage.app.log.debug("Deleting %s S%02dE%02d from the DB" % (self.show.name, self.season or 0, self.episode or 0))
         self.delete()
 
         raise EpisodeDeletedException()
@@ -793,7 +805,7 @@ class TVEpisode(object):
         for curEp in [self] + self.related_episodes:
             curEp.checkForMetaFiles()
 
-    def airdateModifyStamp(self):
+    def airdate_modify_stamp(self):
         """
         Make the modify date and time of a file reflect the show air date and time.
         Note: Also called from postProcessor

@@ -35,45 +35,34 @@ import sickrage
 from sickrage.clients import get_client_instance
 from sickrage.clients.nzb.sabnzbd import SabNZBd
 from sickrage.core.common import Overview, Quality, cpu_presets, statusStrings
-from sickrage.core.exceptions import AnidbAdbaConnectionException, CantRefreshShowException, CantUpdateShowException, CantRemoveShowException, \
-    EpisodeDeletedException, EpisodeNotFoundException, \
+from sickrage.core.databases.main import MainDB
+from sickrage.core.exceptions import (
+    AnidbAdbaConnectionException,
+    CantRefreshShowException,
+    CantUpdateShowException,
+    CantRemoveShowException,
+    EpisodeDeletedException,
+    EpisodeNotFoundException,
     MultipleEpisodesInDatabaseException
+)
 from sickrage.core.helpers import clean_url, clean_host, clean_hosts, get_disk_space_usage
 from sickrage.core.helpers.anidb import get_release_groups_for_anime
 from sickrage.core.helpers.srdatetime import SRDateTime
 from sickrage.core.queues.search import FailedQueueItem, ManualSearchQueueItem
 from sickrage.core.scene_exceptions import get_scene_exceptions
-from sickrage.core.scene_numbering import get_scene_numbering_for_show, get_xem_numbering_for_show, \
-    get_scene_absolute_numbering_for_show, get_xem_absolute_numbering_for_show, set_scene_numbering, \
-    get_scene_absolute_numbering, get_scene_numbering
+from sickrage.core.scene_numbering import (
+    get_scene_numbering_for_show,
+    get_xem_numbering_for_show,
+    get_scene_absolute_numbering_for_show,
+    get_xem_absolute_numbering_for_show,
+    set_scene_numbering,
+    get_scene_absolute_numbering,
+    get_scene_numbering
+)
 from sickrage.core.traktapi import TraktAPI
-from sickrage.core.tv.episode import TVEpisode
-from sickrage.core.databases.main import MainDB
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
 from sickrage.subtitles import Subtitles
-
-
-def _get_episode(show, season=None, episode=None, absolute=None):
-    if show is None:
-        return _("Invalid show parameters")
-
-    show_obj = find_show(int(show))
-
-    if show_obj is None:
-        return _("Invalid show paramaters")
-
-    try:
-        if absolute:
-            ep_obj = show_obj.get_episode(absolute_number=int(absolute))
-        elif season and episode:
-            ep_obj = show_obj.get_episode(int(season), int(episode))
-        else:
-            return _("Invalid paramaters")
-    except (EpisodeNotFoundException, MultipleEpisodesInDatabaseException):
-        return _("Episode couldn't be retrieved")
-
-    return ep_obj
 
 
 class HomeHandler(BaseHandler, ABC):
@@ -145,7 +134,7 @@ class ShowProgressHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         show_id = self.get_argument('show-id')
 
-        show = find_show(show_id)
+        show = find_show(int(show_id))
         episodes_snatched = show.episodes_snatched
         episodes_downloaded = show.episodes_downloaded
         episodes_total = len(show.episodes) - show.episodes_special - show.episodes_unaired
@@ -1197,20 +1186,16 @@ class DeleteEpisodeHandler(BaseHandler, ABC):
                 sickrage.app.log.debug("Attempting to delete episode " + curEp)
 
                 ep_info = curEp.split('x')
-
-                if not all(ep_info):
-                    sickrage.app.log.debug(
-                        "Something went wrong when trying to deleteEpisode, epInfo[0]: %s, epInfo[1]: %s" % (
-                            ep_info[0], ep_info[1]))
+                if not len(ep_info):
                     continue
 
-                try:
-                    ep_obj = show_obj.get_episode(int(ep_info[0]), int(ep_info[1]))
-                except EpisodeNotFoundException as e:
-                    return self._genericMessage(_("Error"), _("Episode couldn't be retrieved"))
+                season = int(ep_info[0])
+                episode = int(ep_info[1])
 
                 try:
-                    ep_obj.delete_episode(full=True)
+                    show_obj.show.delete_episode(season, episode, full=True)
+                except EpisodeNotFoundException:
+                    return self._genericMessage(_("Error"), _("Episode couldn't be retrieved"))
                 except EpisodeDeletedException:
                     pass
 
@@ -1235,7 +1220,7 @@ class TestRenameHandler(BaseHandler, ABC):
 
         episode_objects = []
 
-        for cur_ep_obj in show_object.get_all_episodes(has_location=True):
+        for cur_ep_obj in (x for x in show_object.episodes if x.location):
             if cur_ep_obj.location:
                 if cur_ep_obj.related_episodes:
                     for cur_related_ep in cur_ep_obj.related_episodes + [cur_ep_obj]:
@@ -1270,15 +1255,12 @@ class DoRenameHandler(BaseHandler, ABC):
         show = self.get_argument('show')
         eps = self.get_argument('eps')
 
-        session = sickrage.app.main_db.session()
-
-        show_obj = find_show(int(show))
-
-        if show_obj is None:
+        tv_show = find_show(int(show))
+        if tv_show is None:
             err_msg = _("Show not in show list")
             return self._genericMessage(_("Error"), err_msg)
 
-        if not os.path.isdir(show_obj.location):
+        if not os.path.isdir(tv_show.location):
             return self._genericMessage(_("Error"), _("Can't rename episodes when the show dir is missing."))
 
         if eps is None:
@@ -1286,20 +1268,14 @@ class DoRenameHandler(BaseHandler, ABC):
 
         for curEp in eps.split('|'):
             ep_info = curEp.split('x')
+            root_ep_season = int(ep_info[0])
+            root_ep_episode = int(ep_info[1])
 
             try:
-                ep_result = session.query(MainDB.TVEpisode).filter_by(showid=int(show), season=int(ep_info[0]), episode=int(ep_info[1])).one()
-            except orm.exc.NoResultFound:
+                root_ep_obj = tv_show.get_episode(season=root_ep_season, episode=root_ep_episode)
+            except EpisodeNotFoundException:
                 sickrage.app.log.warning("Unable to find an episode for " + curEp + ", skipping")
                 continue
-
-            root_ep_obj = show_obj.get_episode(int(ep_info[0]), int(ep_info[1]))
-            root_ep_obj.related_episodes = []
-
-            for cur_related_ep in session.query(MainDB.TVEpisode).filter_by(location=ep_result.location).filter(MainDB.TVEpisode.episode != int(ep_info[1])):
-                related_ep_obj = show_obj.get_episode(int(cur_related_ep.season), int(cur_related_ep.episode))
-                if related_ep_obj not in root_ep_obj.related_episodes:
-                    root_ep_obj.related_episodes.append(related_ep_obj)
 
             root_ep_obj.rename()
 
@@ -1331,7 +1307,7 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
 
         # Queued Searches
         search_status = 'Queued'
-        episodes = self.get_episodes(show, sickrage.app.search_queue.get_all_items_from_queue(show), search_status)
+        episodes = self.get_episodes(int(show), sickrage.app.search_queue.get_all_items_from_queue(show), search_status)
 
         # Running Searches
         search_status = 'Searching'
@@ -1339,7 +1315,7 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
             for search_thread in sickrage.app.search_queue.processing:
                 if search_thread.success:
                     search_status = 'Finished'
-                episodes += self.get_episodes(show, [search_thread], search_status)
+                episodes += self.get_episodes(int(show), [search_thread], search_status)
 
         # Finished Searches
         search_status = 'Finished'
@@ -1350,15 +1326,15 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
 
             if isinstance(search_thread, (ManualSearchQueueItem, FailedQueueItem)):
                 if not [x for x in episodes if x['season'] == search_thread.season and x['episode'] == search_thread.episode]:
-                    episodes += self.get_episodes(show, [search_thread], search_status)
+                    episodes += self.get_episodes(int(show), [search_thread], search_status)
             else:
                 # These are only Failed Downloads/Retry SearchThreadItems.. lets loop through the episodes
                 if not [i for i, j in zip(search_thread, episodes) if i.season == j['season'] and i.episode == j['episode']]:
-                    episodes += self.get_episodes(show, [search_thread], search_status)
+                    episodes += self.get_episodes(int(show), [search_thread], search_status)
 
         return self.write(json_encode({'episodes': episodes}))
 
-    def get_episodes(self, show_id, items, search_status):
+    def get_episodes(self, show_id: int, items: list, search_status: str):
         results = []
 
         if not show_id:
@@ -1401,23 +1377,26 @@ class SearchEpisodeSubtitlesHandler(BaseHandler, ABC):
         season = self.get_argument('season')
         episode = self.get_argument('episode')
 
-        ep_obj = _get_episode(show, season, episode)
-        if isinstance(ep_obj, TVEpisode):
-            try:
-                subs = ep_obj.download_subtitles()
-            except Exception as e:
-                return self.write(json_encode({'result': 'failure'}))
+        tv_show = find_show(int(show))
+        if tv_show is None:
+            return _("Invalid show paramaters")
 
-            if subs:
-                languages = [Subtitles().name_from_code(sub) for sub in subs]
+        try:
+            tv_episode = tv_show.get_episode(int(season), int(episode))
+            subtitles = tv_episode.download_subtitles()
+
+            if subtitles:
+                languages = [Subtitles().name_from_code(subtitle) for subtitle in subtitles]
                 status = _('New subtitles downloaded: %s') % ', '.join([lang for lang in languages])
             else:
                 status = _('No subtitles downloaded')
 
-            sickrage.app.alerts.message(ep_obj.show.name, status)
-            return self.write(json_encode({'result': status, 'subtitles': ','.join(ep_obj.subtitles)}))
-
-        return self.write(json_encode({'result': 'failure'}))
+            sickrage.app.alerts.message(tv_show.name, status)
+            return self.write(json_encode({'result': status, 'subtitles': ','.join(tv_episode.subtitles)}))
+        except (EpisodeNotFoundException, MultipleEpisodesInDatabaseException):
+            return self.write(json_encode({'result': _("Episode couldn't be retrieved")}))
+        except Exception:
+            return self.write(json_encode({'result': 'failure'}))
 
 
 class SetSceneNumberingHandler(BaseHandler, ABC):
@@ -1447,7 +1426,6 @@ class SetSceneNumberingHandler(BaseHandler, ABC):
             scene_absolute = None
 
         show_obj = find_show(int(show))
-
         if show_obj.is_anime:
             result = {
                 'success': True,
@@ -1461,50 +1439,51 @@ class SetSceneNumberingHandler(BaseHandler, ABC):
             }
 
         # retrieve the episode object and fail if we can't get one
-        if show_obj.is_anime:
-            ep_obj = _get_episode(show, absolute=for_absolute)
-        else:
-            ep_obj = _get_episode(show, for_season, for_episode)
+        try:
+            if show_obj.is_anime:
+                show_obj.get_episode(absolute=for_absolute)
+            else:
+                show_obj.get_episode(season=for_season, episode=for_episode)
 
-        if isinstance(ep_obj, str):
+            if show_obj.is_anime:
+                sickrage.app.log.debug("setAbsoluteSceneNumbering for %s from %s to %s" % (show, for_absolute, scene_absolute))
+
+                show = int(show)
+                indexer = int(indexer)
+                for_absolute = int(for_absolute)
+                if scene_absolute is not None:
+                    scene_absolute = int(scene_absolute)
+
+                set_scene_numbering(show, indexer, absolute_number=for_absolute, sceneAbsolute=scene_absolute)
+            else:
+                sickrage.app.log.debug("setEpisodeSceneNumbering for %s from %sx%s to %sx%s" % (show, for_season, for_episode, scene_season, scene_episode))
+
+                show = int(show)
+                indexer = int(indexer)
+                for_season = int(for_season)
+                for_episode = int(for_episode)
+                if scene_season is not None:
+                    scene_season = int(scene_season)
+                if scene_episode is not None:
+                    scene_episode = int(scene_episode)
+
+                set_scene_numbering(show, indexer, season=for_season, episode=for_episode, sceneSeason=scene_season, sceneEpisode=scene_episode)
+
+            if show_obj.is_anime:
+                sn = get_scene_absolute_numbering(show, indexer, for_absolute)
+                if sn:
+                    result['sceneAbsolute'] = sn
+                else:
+                    result['sceneAbsolute'] = None
+            else:
+                sn = get_scene_numbering(show, indexer, for_season, for_episode)
+                if sn:
+                    (result['sceneSeason'], result['sceneEpisode']) = sn
+                else:
+                    (result['sceneSeason'], result['sceneEpisode']) = (None, None)
+        except (EpisodeNotFoundException, MultipleEpisodesInDatabaseException):
+            result['errorMessage'] = _("Episode couldn't be retrieved")
             result['success'] = False
-            result['errorMessage'] = ep_obj
-        elif show_obj.is_anime:
-            sickrage.app.log.debug("setAbsoluteSceneNumbering for %s from %s to %s" % (show, for_absolute, scene_absolute))
-
-            show = int(show)
-            indexer = int(indexer)
-            for_absolute = int(for_absolute)
-            if scene_absolute is not None:
-                scene_absolute = int(scene_absolute)
-
-            set_scene_numbering(show, indexer, absolute_number=for_absolute, sceneAbsolute=scene_absolute)
-        else:
-            sickrage.app.log.debug("setEpisodeSceneNumbering for %s from %sx%s to %sx%s" % (show, for_season, for_episode, scene_season, scene_episode))
-
-            show = int(show)
-            indexer = int(indexer)
-            for_season = int(for_season)
-            for_episode = int(for_episode)
-            if scene_season is not None:
-                scene_season = int(scene_season)
-            if scene_episode is not None:
-                scene_episode = int(scene_episode)
-
-            set_scene_numbering(show, indexer, season=for_season, episode=for_episode, sceneSeason=scene_season, sceneEpisode=scene_episode)
-
-        if show_obj.is_anime:
-            sn = get_scene_absolute_numbering(show, indexer, for_absolute)
-            if sn:
-                result['sceneAbsolute'] = sn
-            else:
-                result['sceneAbsolute'] = None
-        else:
-            sn = get_scene_numbering(show, indexer, for_season, for_episode)
-            if sn:
-                (result['sceneSeason'], result['sceneEpisode']) = sn
-            else:
-                (result['sceneSeason'], result['sceneEpisode']) = (None, None)
 
         return self.write(json_encode(result))
 

@@ -72,14 +72,14 @@ class Announcements(object):
         threading.currentThread().setName(self.name)
 
         try:
-            resp = sickrage.app.api.get_announcements()
+            resp = sickrage.app.api.announcement.get_announcements()
             if resp and 'data' in resp:
                 for announcement in resp['data']:
                     if announcement['enabled']:
                         self.add(announcement['hash'], announcement['title'], announcement['description'], announcement['image'], announcement['date'])
                     else:
                         self.clear(announcement['hash'])
-        except APIError:
+        except APIError as e:
             pass
 
     def add(self, ahash, title, description, image, date):

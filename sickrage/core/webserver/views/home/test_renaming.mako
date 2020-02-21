@@ -108,7 +108,7 @@
                                                     <%
                                                         odd = not odd
                                                         epStr = str(episode_object.season) + "x" + str(episode_object.episode)
-                                                        epList = sorted([episode_object.episode] + [x.episode for x in episode_object.related_episodes])
+                                                        epList = sorted([x.episode for x in [episode_object] + episode_object.related_episodes])
                                                         if len(epList) > 1:
                                                             epList = [min(epList), max(epList)]
                                                     %>

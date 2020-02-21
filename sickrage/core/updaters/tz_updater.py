@@ -18,9 +18,9 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import datetime
 import re
 import threading
-import datetime
 
 from dateutil import tz
 from sqlalchemy import orm
@@ -34,8 +34,7 @@ from sickrage.core.websession import WebSession
 class TimeZoneUpdater(object):
     def __init__(self):
         self.name = "TZUPDATER"
-        self.time_regex = re.compile(r'(?P<hour>\d{1,2})(?:[:.]?(?P<minute>\d{2})?)? ?(?P<meridiem>[PA]\.? ?M?)?\b',
-                                     re.I)
+        self.time_regex = re.compile(r'(?P<hour>\d{1,2})(?:[:.]?(?P<minute>\d{2})?)? ?(?P<meridiem>[PA]\.? ?M?)?\b', re.I)
 
     def run(self):
         # set thread name

@@ -34,7 +34,6 @@ from sickrage.core.helpers.anidb import get_release_groups_for_anime, short_grou
 from sickrage.core.queues.search import BacklogQueueItem, FailedQueueItem
 from sickrage.core.scene_exceptions import get_scene_exceptions, update_scene_exceptions
 from sickrage.core.scene_numbering import xem_refresh
-from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
 from sickrage.indexers import IndexerApi

@@ -34,7 +34,6 @@ from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import remove_non_release_groups
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
 from sickrage.core.search import pick_best_result, snatch_episode
-from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.providers import NZBProvider, NewznabProvider, TorrentProvider, TorrentRssProvider
 
@@ -178,7 +177,8 @@ class ProperSearcher(object):
                     continue
 
             # check if we actually want this proper (if it's the right quality)            
-            dbData = session.query(MainDB.TVEpisode).filter_by(showid=best_result.indexer_id, season=best_result.season, episode=best_result.episode).one_or_none()
+            dbData = session.query(MainDB.TVEpisode).filter_by(showid=best_result.indexer_id, season=best_result.season,
+                                                               episode=best_result.episode).one_or_none()
             if not dbData:
                 continue
 
@@ -189,8 +189,6 @@ class ProperSearcher(object):
 
             # check if we actually want this proper (if it's the right release group and a higher version)
             if show.is_anime:
-                dbData = session.query(MainDB.TVEpisode).filter_by(showid=best_result.indexer_id, season=best_result.season, episode=best_result.episode).one()
-
                 old_version = int(dbData.version)
                 old_release_group = dbData.release_group
                 if not -1 < old_version < best_result.version:
@@ -217,9 +215,11 @@ class ProperSearcher(object):
 
         wanted = []
 
-        for episode_object in session.query(MainDB.TVEpisode).filter_by(showid=show.indexer_id).filter(
-                MainDB.TVEpisode.airdate >= search_date, MainDB.TVEpisode.status.in_(Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST)):
-            wanted += [(episode_object.season, episode_object.episode)]
+        for result in session.query(MainDB.TVEpisode).filter_by(showid=show.indexer_id).filter(MainDB.TVEpisode.airdate >= search_date,
+                                                                                               MainDB.TVEpisode.status.in_(Quality.DOWNLOADED +
+                                                                                                                           Quality.SNATCHED +
+                                                                                                                           Quality.SNATCHED_BEST)):
+            wanted += [(result.season, result.episode)]
 
         return wanted
 

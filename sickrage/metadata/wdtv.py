@@ -92,7 +92,7 @@ class WDTVMetadata(GenericMetadata):
         self.eg_season_all_banner = "<i>not supported</i>"
 
     # Override with empty methods for unsupported features
-    def retrieveShowMetadata(self, folder):
+    def retrieve_show_metadata(self, folder):
         # no show metadata generated, we abort this lookup function
         return None, None, None
 

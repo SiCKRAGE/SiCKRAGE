@@ -708,7 +708,7 @@ class GenericMetadata(object):
         except (KeyError, IndexError):
             pass
 
-    def retrieveShowMetadata(self, folder):
+    def retrieve_show_metadata(self, folder) -> (int, str, int):
         """
         :param folder:
         :return:
@@ -743,7 +743,7 @@ class GenericMetadata(object):
             indexer_id_text = showXML.findtext('tvdbid') or showXML.findtext('id')
             if indexer_id_text:
                 indexer_id = try_int(indexer_id_text, None)
-                if indexer_id is None or indexer_id < 1:
+                if not indexer_id:
                     sickrage.app.log.debug("Invalid Indexer ID (" + str(indexer_id) + "), not using metadata file")
                     return empty_return
             else:

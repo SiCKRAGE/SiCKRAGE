@@ -240,8 +240,6 @@ class QueueItemAdd(ShowQueueItem):
             return True
 
     def run(self):
-        session = sickrage.app.main_db.session()
-
         start_time = time.time()
 
         sickrage.app.log.info("Started adding show {} from show dir: {}".format(self.show_name, self.showDir))
@@ -312,16 +310,12 @@ class QueueItemAdd(ShowQueueItem):
             return self._finish_early()
 
         # add show to database
-        session.add(MainDB.TVShow(**{'indexer_id': self.indexer_id, 'indexer': self.indexer, 'lang': self.lang, 'location': self.showDir}))
-        session.commit()
-
-        show_obj = find_show(self.indexer_id)
+        sickrage.app.shows.update({(self.indexer_id, self.indexer): TVShow(self.indexer_id, self.indexer, lang=self.lang, location=self.showDir)})
+        show_obj = find_show(self.indexer_id, self.indexer)
         if not show_obj:
             return self._finish_early()
 
         try:
-            show_obj.load_from_indexer()
-
             # set up initial values
             show_obj.subtitles = self.subtitles or sickrage.app.config.subtitles_default
             show_obj.sub_use_sr_metadata = self.sub_use_sr_metadata
@@ -472,8 +466,7 @@ class QueueItemRename(ShowQueueItem):
 
         ep_obj_rename_list = []
 
-        ep_obj_list = show_obj.get_all_episodes(has_location=True)
-        for cur_ep_obj in ep_obj_list:
+        for cur_ep_obj in (x for x in show_obj.episodes if x.location):
             # Only want to rename if we have a location
             if cur_ep_obj.location:
                 if cur_ep_obj.related_episodes:
@@ -485,7 +478,6 @@ class QueueItemRename(ShowQueueItem):
                             break
                     if not have_already:
                         ep_obj_rename_list.append(cur_ep_obj)
-
                 else:
                     ep_obj_rename_list.append(cur_ep_obj)
 
@@ -567,7 +559,7 @@ class QueueItemUpdate(ShowQueueItem):
                 for curEpisode in db_episodes[curSeason]:
                     sickrage.app.log.info("Permanently deleting episode " + str(curSeason) + "x" + str(curEpisode) + " from the database")
                     try:
-                        show_obj.get_episode(curSeason, curEpisode).delete_episode()
+                        show_obj.delete_episode(curSeason, curEpisode)
                     except EpisodeDeletedException:
                         continue
 
@@ -615,7 +607,6 @@ class QueueItemRemove(ShowQueueItem):
             try:
                 sickrage.app.trakt_searcher.remove_show_from_trakt_library(show_obj)
             except Exception as e:
-                sickrage.app.log.warning(
-                    "Unable to delete show from Trakt: %s. Error: %s" % (show_obj.name, e))
+                sickrage.app.log.warning("Unable to delete show from Trakt: %s. Error: %s" % (show_obj.name, e))
 
         sickrage.app.log.info("Finished removing show: {}".format(show_obj.name))

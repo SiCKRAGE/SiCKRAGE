@@ -96,7 +96,7 @@ class MediaBrowserMetadata(GenericMetadata):
         self.eg_season_all_banner = "<i>not supported</i>"
 
     # Override with empty methods for unsupported features
-    def retrieveShowMetadata(self, folder):
+    def retrieve_show_metadata(self, folder):
         # while show metadata is generated, it is not supported for our lookup
         return None, None, None
 

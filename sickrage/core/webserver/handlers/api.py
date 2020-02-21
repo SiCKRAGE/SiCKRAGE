@@ -50,7 +50,6 @@ from sickrage.core.media.fanart import FanArt
 from sickrage.core.media.network import Network
 from sickrage.core.media.poster import Poster
 from sickrage.core.queues.search import BacklogQueueItem, ManualSearchQueueItem
-from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.tv.show.history import History
@@ -868,8 +867,8 @@ class CMD_EpisodeSetStatus(ApiCall):
             except EpisodeNotFoundException as e:
                 return await _responds(RESULT_FAILURE, msg="Episode not found")
         else:
-            # get all episode numbers frome self,season
-            ep_list = show_obj.get_all_episodes(season=self.s)
+            # get all episode numbers in specified season
+            ep_list = [x for x in show_obj.episodes if x.season == self.s]
 
         def _epResult(result_code, ep, msg=""):
             return {'season': ep.season, 'episode': ep.episode, 'status': _get_status_strings(ep.status),
