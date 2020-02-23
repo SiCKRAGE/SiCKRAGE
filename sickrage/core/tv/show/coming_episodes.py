@@ -24,7 +24,6 @@ import sickrage
 from sickrage.core.common import Quality, get_quality_string, WANTED, UNAIRED, timeFormat, dateFormat
 from sickrage.core.helpers.srdatetime import SRDateTime
 from sickrage.core.tv.show.helpers import get_show_list
-from sickrage.core.databases.main import MainDB
 
 
 class ComingEpisodes:
@@ -103,8 +102,7 @@ class ComingEpisodes:
                 if today <= e.airdate < next_week and e.status not in qualities_list:
                     results += result(s, e)
 
-                if e.showid not in [int(r['showid']) for r in results] \
-                        and e.airdate >= next_week and e.status \
+                if e.showid not in [int(r['showid']) for r in results] and e.airdate >= next_week and e.status \
                         not in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER:
                     results += result(s, e)
 

@@ -34,7 +34,7 @@ from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.indexers import IndexerApi
 
 
-def set_episode_to_wanted(show, s: int, e: int):
+def set_episode_to_wanted(show, s, e):
     """
     Sets an episode to wanted, only if it is currently skipped
     """

@@ -287,6 +287,9 @@ class Core(object):
             self.log.info("Performing cleanup on {} database".format(db.name))
             db.cleanup()
 
+        # load shows
+        self.load_shows()
+
         # user agent
         if self.config.random_user_agent:
             self.user_agent = UserAgent().random
@@ -546,7 +549,6 @@ class Core(object):
                                                                   self.config.web_host, self.config.web_port, self.config.web_root))
 
         # start io_loop
-        self.io_loop.add_callback(self.load_shows)
         self.io_loop.add_callback(started)
         self.io_loop.start()
 

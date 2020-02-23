@@ -22,17 +22,17 @@
 import sickrage
 
 
-def find_show(indexer_id: int, indexer: int = 1):
+def find_show(indexer_id, indexer=1):
     return sickrage.app.shows.get((int(indexer_id), int(indexer)), None)
 
 
-def find_show_by_name(term: str):
+def find_show_by_name(term):
     for show in get_show_list():
         if term in show.name:
             return show
 
 
-def find_show_by_location(location: str):
+def find_show_by_location(location):
     for show in get_show_list():
         if show.location == location:
             return show

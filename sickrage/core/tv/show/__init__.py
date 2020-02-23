@@ -345,7 +345,7 @@ class TVShow(object):
     def episodes(self):
         if not self._episodes:
             query = self.db_session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one()
-            [self._episodes.update({(x.season, x.episode): TVEpisode(x.showid, x.indexer, x.season, x.episode)}) for x in query.episodes]
+            [self._episodes.update({(x.season, x.episode): self.get_episode(x.season, x.episode)}) for x in query.episodes]
         return self._episodes.values()
 
     @property

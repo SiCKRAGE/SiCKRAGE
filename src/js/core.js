@@ -775,31 +775,34 @@ $(document).ready(function ($) {
             },
 
             checkManualSearches: function () {
-                var pollInterval = 5000;
-                var showId = $('#showID').val();
-                var url = showId !== undefined ? SICKRAGE.ajax_search.searchStatusUrl + '?show=' + showId : SICKRAGE.ajax_search.searchStatusUrl;
-                $.ajax({
-                    url: url,
-                    success: function (data) {
-                        if (data.episodes) {
-                            pollInterval = 5000;
-                        } else {
-                            pollInterval = 15000;
-                        }
+                const showId = $('#showID').val();
 
-                        SICKRAGE.ajax_search.updateImages(data);
-                        //cleanupManualSearches(data);
-                    },
-                    error: function () {
-                        pollInterval = 30000;
-                    },
-                    type: "GET",
-                    dataType: "json",
-                    complete: function () {
-                        setTimeout(SICKRAGE.ajax_search.checkManualSearches, pollInterval);
-                    },
-                    timeout: 15000 // timeout every 15 secs
-                });
+                if (showId !== undefined) {
+                    let pollInterval = 5000;
+
+                    $.ajax({
+                        url: SICKRAGE.ajax_search.searchStatusUrl + `?show=${showId}`,
+                        success: function (data) {
+                            if (data.episodes) {
+                                pollInterval = 5000;
+                            } else {
+                                pollInterval = 15000;
+                            }
+
+                            SICKRAGE.ajax_search.updateImages(data);
+                            //cleanupManualSearches(data);
+                        },
+                        error: function () {
+                            pollInterval = 30000;
+                        },
+                        type: "GET",
+                        dataType: "json",
+                        complete: function () {
+                            setTimeout(SICKRAGE.ajax_search.checkManualSearches, pollInterval);
+                        },
+                        timeout: 15000 // timeout every 15 secs
+                    });
+                }
             },
 
             ajaxEpSearch: function (options) {

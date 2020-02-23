@@ -1303,7 +1303,7 @@ class SearchEpisodeHandler(BaseHandler, ABC):
 class GetManualSearchStatusHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        show = self.get_argument('show', None)
+        show = self.get_argument('show')
 
         # Queued Searches
         search_status = 'Queued'
@@ -1334,7 +1334,7 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
 
         return self.write(json_encode({'episodes': episodes}))
 
-    def get_episodes(self, show_id: int, items: list, search_status: str):
+    def get_episodes(self, show_id, items, search_status):
         results = []
 
         if not show_id:
