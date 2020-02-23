@@ -576,6 +576,11 @@ class Core(object):
                 self.log.debug("Shutting down ANIDB connection")
                 self.adba_connection.stop()
 
+            # save shows
+            self.log.info('Saving all shows to the database')
+            for show in self.shows:
+                show.save()
+
             # save settings
             self.config.save()
 
