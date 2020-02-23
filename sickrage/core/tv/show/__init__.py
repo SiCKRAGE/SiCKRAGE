@@ -491,6 +491,7 @@ class TVShow(object):
             return BlackAndWhiteList(self.indexer_id)
 
     def save(self):
+        sickrage.app.log.debug("{0:d}: Saving to database: {1}".format(self.indexer_id, self.name))
         query = self.db_session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one_or_none()
         if query:
             query.update(**self._data_local)
