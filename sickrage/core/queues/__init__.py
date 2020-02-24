@@ -16,13 +16,14 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
+
 import ctypes
 import datetime
+import multiprocessing
 import threading
+import time
 import traceback
-
-from tornado import gen
-from tornado.queues import Queue, PriorityQueue
+import queue
 
 import sickrage
 
@@ -39,18 +40,19 @@ class SRQueuePriorities(object):
     PAUSED = 99
 
 
-class SRQueue(object):
+class SRQueue(threading.Thread):
     def __init__(self, name="QUEUE"):
         super(SRQueue, self).__init__()
         self.name = name
-        self.queue = PriorityQueue()
-        self._result_queue = Queue()
+        self.queue = queue.PriorityQueue()
+        self._result_queue = queue.Queue()
+        self._queue_items = []
         self.processing = []
         self.min_priority = SRQueuePriorities.EXTREME
         self.amActive = False
         self.stop = False
 
-    async def watch(self):
+    def run(self):
         """
         Process items in this queue
         """
@@ -59,9 +61,11 @@ class SRQueue(object):
 
         while not (self.stop and self.queue.empty()):
             if not self.is_paused and not len(self.processing) >= int(sickrage.app.config.max_queue_workers):
-                sickrage.app.io_loop.run_in_executor(None, self.worker, await self.get())
+                sickrage.app.scheduler.add_job(self.worker, args=(self.queue.get(),))
+                # threading.Thread(target=self.worker, args=(self.queue.get(),)).start()
+                # sickrage.app.io_loop.run_in_executor(None, self.worker, self.get())
 
-            await gen.sleep(1)
+            time.sleep(1)
 
         self.amActive = False
 
@@ -78,13 +82,14 @@ class SRQueue(object):
         except Exception:
             sickrage.app.log.debug(traceback.format_exc())
         finally:
+            self._queue_items.remove(item)
             self.processing.remove(item)
             self.queue.task_done()
 
-    async def get(self):
-        return await self.queue.get()
+    def get(self):
+        return self.queue.get()
 
-    async def put(self, item, *args, **kwargs):
+    def put(self, item, *args, **kwargs):
         """
         Adds an item to this queue
 
@@ -97,13 +102,14 @@ class SRQueue(object):
         item.added = datetime.datetime.now()
         item.name = "{}-{}".format(self.name, item.name)
         item.result_queue = self._result_queue
-        await self.queue.put(item)
+        self._queue_items.append(item)
+        self.queue.put(item)
 
         return item
 
     @property
     def queue_items(self):
-        return self.queue._queue + self.processing
+        return self._queue_items + self.processing
 
     @property
     def is_busy(self):
@@ -124,9 +130,9 @@ class SRQueue(object):
         self.min_priority = SRQueuePriorities.EXTREME
 
     def remove(self, item):
-        if item in self.queue._queue:
-            self.queue._queue.remove(item)
-        elif item in self.processing:
+        if item in self._queue_items:
+            self._queue_items.remove(item)
+        if item in self.processing:
             self.processing.remove(item)
 
     def stop_item(self, item):

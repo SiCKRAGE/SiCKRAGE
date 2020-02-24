@@ -25,7 +25,6 @@ from abc import ABC
 from collections import OrderedDict
 from urllib.parse import unquote_plus, quote_plus
 
-from sqlalchemy import orm
 from tornado import gen
 from tornado.escape import json_encode
 from tornado.httputil import url_concat
@@ -35,7 +34,6 @@ import sickrage
 from sickrage.clients import get_client_instance
 from sickrage.clients.nzb.sabnzbd import SabNZBd
 from sickrage.core.common import Overview, Quality, cpu_presets, statusStrings
-from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import (
     AnidbAdbaConnectionException,
     CantRefreshShowException,
@@ -773,7 +771,6 @@ class DisplayShowHandler(BaseHandler, ABC):
 
         submenu = []
 
-        session = sickrage.app.main_db.session()
         show_obj = find_show(int(show))
         if not show_obj:
             return self._genericMessage(_("Error"), _("Show not in show list"))

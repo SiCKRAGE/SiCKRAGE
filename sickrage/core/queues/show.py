@@ -27,7 +27,6 @@ import traceback
 
 import sickrage
 from sickrage.core.common import WANTED
-from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import CantRefreshShowException, CantRemoveShowException, CantUpdateShowException, EpisodeDeletedException, \
     MultipleShowObjectsException
 from sickrage.core.queues import SRQueue, SRQueueItem, SRQueuePriorities
@@ -81,9 +80,9 @@ class ShowQueue(SRQueue):
             raise CantUpdateShowException("{} is already being updated, can't update again until it's done.".format(show_obj.name))
 
         if force:
-            sickrage.app.io_loop.add_callback(self.put, QueueItemForceUpdate(indexer_id, indexer_update_only))
+            self.put(QueueItemForceUpdate(indexer_id, indexer_update_only))
         else:
-            sickrage.app.io_loop.add_callback(self.put, QueueItemUpdate(indexer_id, indexer_update_only))
+            self.put(QueueItemUpdate(indexer_id, indexer_update_only))
 
     def refresh_show(self, indexer_id, force=False):
         show_obj = find_show(indexer_id)
@@ -97,13 +96,13 @@ class ShowQueue(SRQueue):
 
         sickrage.app.log.debug("Queueing show refresh for {}".format(show_obj.name))
 
-        sickrage.app.io_loop.add_callback(self.put, QueueItemRefresh(indexer_id, force=force))
+        self.put(QueueItemRefresh(indexer_id, force=force))
 
     def rename_show_episodes(self, indexer_id):
-        sickrage.app.io_loop.add_callback(self.put, QueueItemRename(indexer_id))
+        self.put(QueueItemRename(indexer_id))
 
     def download_subtitles(self, indexer_id):
-        sickrage.app.io_loop.add_callback(self.put, QueueItemSubtitle(indexer_id))
+        self.put(QueueItemSubtitle(indexer_id))
 
     def add_show(self, indexer, indexer_id, showDir, default_status=None, quality=None, flatten_folders=None,
                  lang=None, subtitles=None, sub_use_sr_metadata=None, anime=None, scene=None, paused=None,
@@ -112,22 +111,22 @@ class ShowQueue(SRQueue):
         if lang is None:
             lang = sickrage.app.config.indexer_default_language
 
-        sickrage.app.io_loop.add_callback(self.put, QueueItemAdd(indexer=indexer,
-                                                                 indexer_id=indexer_id,
-                                                                 showDir=showDir,
-                                                                 default_status=default_status,
-                                                                 quality=quality,
-                                                                 flatten_folders=flatten_folders,
-                                                                 lang=lang,
-                                                                 subtitles=subtitles,
-                                                                 sub_use_sr_metadata=sub_use_sr_metadata,
-                                                                 anime=anime,
-                                                                 scene=scene,
-                                                                 paused=paused,
-                                                                 blacklist=blacklist,
-                                                                 whitelist=whitelist,
-                                                                 default_status_after=default_status_after,
-                                                                 skip_downloaded=skip_downloaded))
+        self.put(QueueItemAdd(indexer=indexer,
+                              indexer_id=indexer_id,
+                              showDir=showDir,
+                              default_status=default_status,
+                              quality=quality,
+                              flatten_folders=flatten_folders,
+                              lang=lang,
+                              subtitles=subtitles,
+                              sub_use_sr_metadata=sub_use_sr_metadata,
+                              anime=anime,
+                              scene=scene,
+                              paused=paused,
+                              blacklist=blacklist,
+                              whitelist=whitelist,
+                              default_status_after=default_status_after,
+                              skip_downloaded=skip_downloaded))
 
     def remove_show(self, indexer_id, full=False):
         show_obj = find_show(indexer_id)
@@ -141,8 +140,7 @@ class ShowQueue(SRQueue):
 
         # remove other queued actions for this show.
         [self.remove(x) for x in self.queue_items if indexer_id == x.indexer_id]
-
-        sickrage.app.io_loop.add_callback(self.put, QueueItemRemove(indexer_id=indexer_id, full=full))
+        self.put(QueueItemRemove(indexer_id=indexer_id, full=full))
 
 
 class ShowQueueActions(object):

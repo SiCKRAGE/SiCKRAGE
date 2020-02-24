@@ -520,9 +520,9 @@ class Core(object):
         self.scheduler.start()
 
         # start queue's
-        self.io_loop.add_callback(self.search_queue.watch)
-        self.io_loop.add_callback(self.show_queue.watch)
-        self.io_loop.add_callback(self.postprocessor_queue.watch)
+        self.io_loop.add_callback(self.search_queue.start)
+        self.io_loop.add_callback(self.show_queue.start)
+        self.io_loop.add_callback(self.postprocessor_queue.start)
 
         # fire off startup events
         self.io_loop.run_in_executor(None, self.quicksearch_cache.run)
