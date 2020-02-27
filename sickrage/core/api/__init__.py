@@ -145,6 +145,9 @@ class API(object):
     def request(self, method, url, timeout=30, **kwargs):
         latest_exception = None
 
+        if not self.token:
+            return
+
         for i in range(3):
             try:
                 if not self.health:
