@@ -24,6 +24,7 @@ import os
 import re
 import traceback
 from collections import OrderedDict
+from threading import Lock
 from xml.etree.ElementTree import ElementTree
 
 from mutagen.mp4 import MP4, MP4StreamInfoError
@@ -48,26 +49,27 @@ from sickrage.subtitles import Subtitles
 
 class TVEpisode(object):
     def __init__(self, showid, indexer, season, episode, location=''):
-        self.db_session = sickrage.app.main_db.session()
+        self.lock = Lock
 
-        try:
-            query = self.db_session.query(MainDB.TVEpisode).filter_by(showid=showid, indexer=indexer, season=season, episode=episode).one()
-            self._data_local = query.as_dict()
-        except orm.exc.NoResultFound:
-            self.db_session.add(MainDB.TVEpisode(**{
-                'showid': showid,
-                'indexer': indexer,
-                'season': season,
-                'episode': episode,
-                'location': location
-            }))
+        with sickrage.app.main_db.session() as session:
+            try:
+                query = session.query(MainDB.TVEpisode).filter_by(showid=showid, indexer=indexer, season=season, episode=episode).one()
+                self._data_local = query.as_dict()
+            except orm.exc.NoResultFound:
+                session.add(MainDB.TVEpisode(**{
+                    'showid': showid,
+                    'indexer': indexer,
+                    'season': season,
+                    'episode': episode,
+                    'location': location
+                }))
 
-            self.db_session.commit()
+                session.commit()
 
-            query = self.db_session.query(MainDB.TVEpisode).filter_by(showid=showid, indexer=indexer, season=season, episode=episode).one()
-            self._data_local = query.as_dict()
-            self.populate_episode(season, episode)
-            # self.checkForMetaFiles()
+                query = session.query(MainDB.TVEpisode).filter_by(showid=showid, indexer=indexer, season=season, episode=episode).one()
+                self._data_local = query.as_dict()
+                self.populate_episode(season, episode)
+                # self.checkForMetaFiles()
 
     @property
     def showid(self):
@@ -262,7 +264,9 @@ class TVEpisode(object):
     @release_group.setter
     def release_group(self, value):
         self._data_local['release_group'] = value
-        self.db_session.flush()
+
+        with sickrage.app.main_db.session() as session:
+            session.flush()
 
     @property
     def show(self):
@@ -273,21 +277,23 @@ class TVEpisode(object):
         return [x for x in self.show.episodes if x.location and x.location == self.location and x.season == self.season and x.episode != self.episode]
 
     def save(self):
-        query = self.db_session.query(MainDB.TVEpisode).filter_by(showid=self.showid,
-                                                                  indexer=self.indexer,
-                                                                  season=self.season,
-                                                                  episode=self.episode).one_or_none()
-        if query:
-            query.update(**self._data_local)
+        with sickrage.app.main_db.session() as session:
+            query = session.query(MainDB.TVEpisode).filter_by(showid=self.showid,
+                                                              indexer=self.indexer,
+                                                              season=self.season,
+                                                              episode=self.episode).one_or_none()
+            if query:
+                query.update(**self._data_local)
 
-        self.db_session.commit()
+            session.commit()
 
     def delete(self):
-        self.db_session.query(MainDB.TVEpisode).filter_by(showid=self.showid,
-                                                          indexer=self.indexer,
-                                                          season=self.season,
-                                                          episode=self.episode).delete()
-        self.db_session.commit()
+        with sickrage.app.main_db.session() as session:
+            session.query(MainDB.TVEpisode).filter_by(showid=self.showid,
+                                                      indexer=self.indexer,
+                                                      season=self.season,
+                                                      episode=self.episode).delete()
+            session.commit()
 
     def refresh_subtitles(self):
         """Look for subtitles files and refresh the subtitles property"""
@@ -1039,12 +1045,12 @@ class TVEpisode(object):
             if not hasattr(self, '_release_group'):
                 sickrage.app.log.debug("Episode has no release group, replacing it with '" + replace_map['%RG'] + "'")
                 self.release_group = replace_map['%RG']  # if release_group is not in the db, put it there
-                if getattr(self, 'db_session', None):
+                if getattr(self, 'save', None):
                     self.save()
             elif not self.release_group:
                 sickrage.app.log.debug("Episode has no release group, replacing it with '" + replace_map['%RG'] + "'")
                 self.release_group = replace_map['%RG']  # if release_group is not in the db, put it there
-                if getattr(self, 'db_session', None):
+                if getattr(self, 'save', None):
                     self.save()
 
         # if there's no release name then replace it with a reasonable facsimile
