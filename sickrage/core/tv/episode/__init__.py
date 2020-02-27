@@ -67,8 +67,7 @@ class TVEpisode(object):
             query = self.db_session.query(MainDB.TVEpisode).filter_by(showid=showid, indexer=indexer, season=season, episode=episode).one()
             self._data_local = query.as_dict()
             self.populate_episode(season, episode)
-
-        self.checkForMetaFiles()
+            # self.checkForMetaFiles()
 
     @property
     def showid(self):
