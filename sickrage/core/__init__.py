@@ -608,7 +608,7 @@ class Core(object):
 
             # save shows
             self.log.info('Saving all shows to the database')
-            for show in self.shows:
+            for show in self.shows.values():
                 show.save()
 
             # save settings
