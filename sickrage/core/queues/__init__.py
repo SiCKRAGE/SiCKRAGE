@@ -40,7 +40,7 @@ class SRQueuePriorities(object):
     PAUSED = 99
 
 
-class SRQueue(threading.Thread):
+class SRQueue(object):
     def __init__(self, name="QUEUE"):
         super(SRQueue, self).__init__()
         self.name = name
@@ -59,13 +59,11 @@ class SRQueue(threading.Thread):
 
         self.amActive = True
 
-        while not (self.stop and self.queue.empty()):
+        if not (self.stop and self.queue.empty()):
             if not self.is_paused and not len(self.processing) >= int(sickrage.app.config.max_queue_workers):
                 sickrage.app.scheduler.add_job(self.worker, args=(self.queue.get(),))
                 # threading.Thread(target=self.worker, args=(self.queue.get(),)).start()
                 # sickrage.app.io_loop.run_in_executor(None, self.worker, self.get())
-
-            time.sleep(1)
 
         self.amActive = False
 
