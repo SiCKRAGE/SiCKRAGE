@@ -46,7 +46,7 @@ class HomeProcessEpisodeHandler(BaseHandler, ABC):
         return self.write("Please use our API instead for post-processing")
 
     @authenticated
-    async def post(self, *args, **kwargs):
+    def post(self, *args, **kwargs):
         pp_options = {
             'proc_dir': self.get_argument('proc_dir'),
             'nzbname': self.get_argument('nzbname', ''),
@@ -66,7 +66,7 @@ class HomeProcessEpisodeHandler(BaseHandler, ABC):
         if not proc_dir:
             return self.redirect("/home/postprocess/")
 
-        result = await sickrage.app.postprocessor_queue.put(proc_dir, **pp_options)
+        result = sickrage.app.postprocessor_queue.put(proc_dir, **pp_options)
 
         if quiet:
             return self.write(result)

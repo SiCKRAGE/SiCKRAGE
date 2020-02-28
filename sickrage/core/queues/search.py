@@ -22,6 +22,8 @@
 
 import traceback
 
+from apscheduler.triggers.interval import IntervalTrigger
+
 import sickrage
 from sickrage.core.databases.main import MainDB
 from sickrage.core.queues import SRQueue, SRQueueItem, SRQueuePriorities
@@ -42,6 +44,16 @@ class SearchQueue(SRQueue):
         self.SNATCH_HISTORY_SIZE = 100
         self.MANUAL_SEARCH_HISTORY = []
         self.MANUAL_SEARCH_HISTORY_SIZE = 100
+
+        self.scheduler.add_job(
+            self.run,
+            IntervalTrigger(
+                seconds=1,
+                timezone='utc'
+            ),
+            name=self.name,
+            id=self.name
+        )
 
     def fifo(self, my_list, item, max_size=100):
         if len(my_list) >= max_size:

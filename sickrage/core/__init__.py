@@ -516,38 +516,10 @@ class Core(object):
             id=self.announcements.name
         )
 
-        # search queue
-        self.scheduler.add_job(
-            self.search_queue.run,
-            IntervalTrigger(
-                seconds=1,
-                timezone='utc'
-            ),
-            name=self.search_queue.name,
-            id=self.search_queue.name
-        )
-
-        # show queue
-        self.scheduler.add_job(
-            self.show_queue.run,
-            IntervalTrigger(
-                seconds=1,
-                timezone='utc'
-            ),
-            name=self.show_queue.name,
-            id=self.show_queue.name
-        )
-
-        # post-processor queue
-        self.scheduler.add_job(
-            self.postprocessor_queue.run,
-            IntervalTrigger(
-                seconds=1,
-                timezone='utc'
-            ),
-            name=self.postprocessor_queue.name,
-            id=self.postprocessor_queue.name
-        )
+        # start queues
+        self.search_queue.start()
+        self.show_queue.start()
+        self.postprocessor_queue.start()
 
         # start scheduler service
         self.scheduler.start()

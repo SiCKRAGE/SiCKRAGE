@@ -25,6 +25,8 @@ import threading
 import traceback
 from time import sleep
 
+from apscheduler.triggers.interval import IntervalTrigger
+
 import sickrage
 from sickrage.core.common import cpu_presets
 from sickrage.core.process_tv import ProcessResult
@@ -48,6 +50,16 @@ class PostProcessorQueue(SRQueue):
     def __init__(self):
         SRQueue.__init__(self, "POSTPROCESSORQUEUE")
         self._output = []
+
+        self.scheduler.add_job(
+            self.run,
+            IntervalTrigger(
+                seconds=1,
+                timezone='utc'
+            ),
+            name=self.name,
+            id=self.name
+        )
 
     @property
     def output(self):
@@ -97,7 +109,7 @@ class PostProcessorQueue(SRQueue):
 
         return length
 
-    async def put(self, dirName, nzbName=None, process_method=None, force=False, is_priority=None, delete_on=False,
+    def put(self, dirName, nzbName=None, process_method=None, force=False, is_priority=None, delete_on=False,
                   failed=False, proc_type="auto", force_next=False, **kwargs):
         """
         Adds an item to post-processing queue
@@ -127,8 +139,7 @@ class PostProcessorQueue(SRQueue):
             return self.output
 
         if not delete_on:
-            delete_on = (False, (not sickrage.app.config.no_delete, True)[process_method == "move"])[
-                proc_type == "auto"]
+            delete_on = (False, (not sickrage.app.config.no_delete, True)[process_method == "move"])[proc_type == "auto"]
 
         if self.find_in_queue(dirName, proc_type):
             self.log("An item with directory {} is already being processed in the queue".format(dirName))
@@ -138,7 +149,7 @@ class PostProcessorQueue(SRQueue):
                                               PostProcessorItem(dirName, nzbName, process_method, force, is_priority, delete_on, failed, proc_type))
 
             if force_next:
-                result = await self._result_queue.get()
+                result = self._result_queue.get()
                 return result
 
             self.log("{} post-processing job for {} has been added to the queue".format(proc_type.title(), dirName))

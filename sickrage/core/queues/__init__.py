@@ -25,6 +25,8 @@ import time
 import traceback
 import queue
 
+from apscheduler.schedulers.tornado import TornadoScheduler
+
 import sickrage
 
 
@@ -44,6 +46,7 @@ class SRQueue(object):
     def __init__(self, name="QUEUE"):
         super(SRQueue, self).__init__()
         self.name = name
+        self.scheduler = TornadoScheduler({'apscheduler.timezone': 'UTC'})
         self.queue = queue.PriorityQueue()
         self._result_queue = queue.Queue()
         self._queue_items = []
@@ -51,6 +54,9 @@ class SRQueue(object):
         self.min_priority = SRQueuePriorities.EXTREME
         self.amActive = False
         self.stop = False
+
+    def start(self):
+        self.scheduler.start()
 
     def run(self):
         """
@@ -61,7 +67,7 @@ class SRQueue(object):
 
         if not (self.stop and self.queue.empty()):
             if not self.is_paused and not len(self.processing) >= int(sickrage.app.config.max_queue_workers):
-                sickrage.app.scheduler.add_job(self.worker, args=(self.queue.get(),))
+                self.scheduler.add_job(self.worker, args=(self.queue.get(),))
                 # threading.Thread(target=self.worker, args=(self.queue.get(),)).start()
                 # sickrage.app.io_loop.run_in_executor(None, self.worker, self.get())
 
