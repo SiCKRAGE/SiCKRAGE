@@ -23,6 +23,9 @@ import sickrage
 
 
 def find_show(indexer_id, indexer=1):
+    if not indexer_id:
+        return None
+
     return sickrage.app.shows.get((int(indexer_id), int(indexer)), None)
 
 
