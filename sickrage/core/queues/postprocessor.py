@@ -109,7 +109,7 @@ class PostProcessorQueue(SRQueue):
 
         return length
 
-    def put(self, dirName, nzbName=None, process_method=None, force=False, is_priority=None, delete_on=False,
+    async def put(self, dirName, nzbName=None, process_method=None, force=False, is_priority=None, delete_on=False,
                   failed=False, proc_type="auto", force_next=False, **kwargs):
         """
         Adds an item to post-processing queue
@@ -149,7 +149,7 @@ class PostProcessorQueue(SRQueue):
                                               PostProcessorItem(dirName, nzbName, process_method, force, is_priority, delete_on, failed, proc_type))
 
             if force_next:
-                result = self._result_queue.get()
+                result = await self._result_queue.get()
                 return result
 
             self.log("{} post-processing job for {} has been added to the queue".format(proc_type.title(), dirName))

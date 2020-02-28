@@ -19,13 +19,11 @@
 
 import ctypes
 import datetime
-import multiprocessing
 import threading
-import time
 import traceback
-import queue
 
 from apscheduler.schedulers.tornado import TornadoScheduler
+from tornado.queues import Queue, PriorityQueue
 
 import sickrage
 
@@ -47,8 +45,8 @@ class SRQueue(object):
         super(SRQueue, self).__init__()
         self.name = name
         self.scheduler = TornadoScheduler({'apscheduler.timezone': 'UTC'})
-        self.queue = queue.PriorityQueue()
-        self._result_queue = queue.Queue()
+        self.queue = PriorityQueue()
+        self._result_queue = Queue()
         self._queue_items = []
         self.processing = []
         self.min_priority = SRQueuePriorities.EXTREME
@@ -58,16 +56,16 @@ class SRQueue(object):
     def start(self):
         self.scheduler.start()
 
-    def run(self):
+    async def run(self):
         """
         Process items in this queue
         """
 
         self.amActive = True
 
-        if not (self.stop and self.queue.empty()):
+        if not self.stop and not self.queue.empty():
             if not self.is_paused and not len(self.processing) >= int(sickrage.app.config.max_queue_workers):
-                self.scheduler.add_job(self.worker, args=(self.queue.get(),))
+                self.scheduler.add_job(self.worker, args=(await self.queue.get(),))
                 # threading.Thread(target=self.worker, args=(self.queue.get(),)).start()
                 # sickrage.app.io_loop.run_in_executor(None, self.worker, self.get())
 
@@ -90,10 +88,10 @@ class SRQueue(object):
             self.processing.remove(item)
             self.queue.task_done()
 
-    def get(self):
-        return self.queue.get()
+    async def get(self):
+        return await self.queue.get()
 
-    def put(self, item, *args, **kwargs):
+    async def put(self, item, *args, **kwargs):
         """
         Adds an item to this queue
 
@@ -107,7 +105,7 @@ class SRQueue(object):
         item.name = "{}-{}".format(self.name, item.name)
         item.result_queue = self._result_queue
         self._queue_items.append(item)
-        self.queue.put(item)
+        await self.queue.put(item)
 
         return item
 
