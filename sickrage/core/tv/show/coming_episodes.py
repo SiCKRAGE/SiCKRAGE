@@ -22,6 +22,7 @@ from functools import cmp_to_key
 
 import sickrage
 from sickrage.core.common import Quality, get_quality_string, WANTED, UNAIRED, timeFormat, dateFormat
+from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers.srdatetime import SRDateTime
 from sickrage.core.tv.show.helpers import get_show_list
 
@@ -54,7 +55,7 @@ class ComingEpisodes:
         """
 
         def result(show, episode):
-            return [{
+            return {
                 'airdate': episode.airdate,
                 'airs': show.airs,
                 'description': episode.description,
@@ -71,7 +72,7 @@ class ComingEpisodes:
                 'show_name': show.name,
                 'showid': episode.showid,
                 'status': show.status
-            }]
+            }
 
         paused = sickrage.app.config.coming_eps_display_paused or paused
 
@@ -94,24 +95,47 @@ class ComingEpisodes:
                          Quality.IGNORED
 
         results = []
-        for s in get_show_list():
-            for e in s.episodes:
-                if e.season == 0:
-                    continue
+        for show in get_show_list():
+            with sickrage.app.main_db.session() as session:
+                results += [result(show, episode) for episode in session.query(
+                    MainDB.TVEpisode
+                ).filter_by(
+                    showid=show.indexer_id,
+                    indexer=show.indexer
+                ).filter(
+                    MainDB.TVEpisode.airdate < next_week,
+                    MainDB.TVEpisode.airdate >= today,
+                    MainDB.TVEpisode.season != 0,
+                    ~MainDB.TVEpisode.status.in_(qualities_list)
+                )]
 
-                if today <= e.airdate < next_week and e.status not in qualities_list:
-                    results += result(s, e)
+                if show.indexer_id not in [int(r['showid']) for r in results]:
+                    results += [result(show, episode) for episode in session.query(
+                        MainDB.TVEpisode
+                    ).filter_by(
+                        showid=show.indexer_id,
+                        indexer=show.indexer
+                    ).filter(
+                        MainDB.TVEpisode.airdate >= next_week,
+                        MainDB.TVEpisode.season != 0,
+                        ~MainDB.TVEpisode.status.in_(Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER)
+                    )]
 
-                if e.showid not in [int(r['showid']) for r in results] and e.airdate >= next_week and e.status \
-                        not in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER:
-                    results += result(s, e)
-
-                if today > e.airdate >= recently and e.status in [WANTED, UNAIRED] and e.status not in qualities_list:
-                    results += result(s, e)
+                results += [result(show, episode) for episode in session.query(
+                    MainDB.TVEpisode
+                ).filter_by(
+                    showid=show.indexer_id,
+                    indexer=show.indexer
+                ).filter(
+                    MainDB.TVEpisode.airdate >= recently,
+                    MainDB.TVEpisode.airdate < today,
+                    MainDB.TVEpisode.season != 0,
+                    MainDB.TVEpisode.status.in_([WANTED, UNAIRED]),
+                    ~MainDB.TVEpisode.status.in_(qualities_list)
+                )]
 
         for index, item in enumerate(results):
-            results[index]['localtime'] = SRDateTime(
-                sickrage.app.tz_updater.parse_date_time(item['airdate'], item['airs'], item['network']), convert=True).dt
+            results[index]['localtime'] = SRDateTime(sickrage.app.tz_updater.parse_date_time(item['airdate'], item['airs'], item['network']), convert=True).dt
 
         results.sort(key=ComingEpisodes.sorts[sort])
 
