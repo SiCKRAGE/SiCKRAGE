@@ -68,7 +68,7 @@ class TVEpisode(object):
 
                 episodes = self.show.episodes()
                 episodes.append(self)
-                self.show.episodes.set(episodes)
+                self.show.refresh_episodes()
 
                 self.populate_episode(season, episode)
                 # self.checkForMetaFiles()
@@ -289,11 +289,15 @@ class TVEpisode(object):
 
             session.commit()
 
-        episodes = self.show.episodes()
-        index = next((i for i, x in enumerate(episodes) if
-                      x.showid == self.showid and x.indexer == self.indexer and x.season == self.season and x.episode == self.episode))
-        episodes[index] = self
-        self.show.episodes.set(episodes)
+        try:
+            episodes = self.show.episodes()
+            index = next((i for i, x in enumerate(episodes) if
+                          x.showid == self.showid and x.indexer == self.indexer and x.season == self.season and x.episode == self.episode))
+            episodes[index] = self
+            self.show.episodes.set(episodes)
+            self.show.refresh_episodes()
+        except StopIteration:
+            pass
 
     def delete(self):
         with sickrage.app.main_db.session() as session:
@@ -305,6 +309,7 @@ class TVEpisode(object):
 
         self.show.episodes.set([x for x in self.show.episodes() if
                                 x.showid != self.showid and x.indexer != self.indexer and x.season != self.season and x.episode != self.episode])
+        self.show.refresh_episodes()
 
     def refresh_subtitles(self):
         """Look for subtitles files and refresh the subtitles property"""

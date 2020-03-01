@@ -531,8 +531,13 @@ class TVShow(object):
             session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).delete()
             session.commit()
 
-    def flush_episodes(self):
+    def refresh_episodes(self):
+        self.episodes.refresh(self)
+
+    def flush_episodes(self, refresh=True):
         self.episodes.set([x for x in self.episodes() if x.showid != self.indexer_id and x.indexer != self.indexer])
+        if refresh:
+            self.refresh_episodes()
 
     def load_from_indexer(self, cache=True, tvapi=None):
         if self.indexer is not INDEXER_TVRAGE:
@@ -648,6 +653,8 @@ class TVShow(object):
                 tv_episode = TVEpisode(showid=self.indexer_id, indexer=self.indexer, season=season, episode=episode)
                 episodes.append(tv_episode)
                 self.episodes.set(episodes)
+            finally:
+                self.refresh_episodes()
 
             return tv_episode
         except orm.exc.MultipleResultsFound:
@@ -975,7 +982,7 @@ class TVShow(object):
             self.save()
 
         # remove episodes from show episode cache
-        self.flush_episodes()
+        self.flush_episodes(refresh=False)
 
         # remove from show cache
         del sickrage.app.shows[(self.indexer_id, self.indexer)]
