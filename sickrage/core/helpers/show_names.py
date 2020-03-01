@@ -198,7 +198,7 @@ def make_scene_season_search_string(show_id, season, episode, extraSearchType=No
                     seasonStrings.append("%02d" % ab_number)
 
     else:
-        numseasons = len({x.season for x in show_object.episodes if x.season > 0})
+        numseasons = len(set([s.season for s in show_object.episodes() if s.season > 0]))
         seasonStrings = ["S%02d" % int(episode_object.scene_season)]
 
     showNames = set(make_scene_show_search_strings(show_id, episode_object.scene_season))
@@ -232,7 +232,7 @@ def make_scene_search_string(show_id, season, episode):
     show_object = find_show(show_id)
     show_object = show_object.get_episode(season, episode)
 
-    numseasons = len({x.season for x in show_object.episodes if x.season > 0})
+    numseasons = len(set([s.season for s in show_object.episodes() if s.season > 0]))
 
     # see if we should use dates instead of episodes
     if (show_object.air_by_date or show_object.sports) and show_object.airdate > datetime.date.min:

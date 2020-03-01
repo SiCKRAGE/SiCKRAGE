@@ -24,7 +24,6 @@ import os
 import re
 import traceback
 from collections import OrderedDict
-from threading import Lock
 from xml.etree.ElementTree import ElementTree
 
 from mutagen.mp4 import MP4, MP4StreamInfoError
@@ -49,8 +48,6 @@ from sickrage.subtitles import Subtitles
 
 class TVEpisode(object):
     def __init__(self, showid, indexer, season, episode, location=''):
-        self.lock = Lock
-
         with sickrage.app.main_db.session() as session:
             try:
                 query = session.query(MainDB.TVEpisode).filter_by(showid=showid, indexer=indexer, season=season, episode=episode).one()
@@ -68,6 +65,11 @@ class TVEpisode(object):
 
                 query = session.query(MainDB.TVEpisode).filter_by(showid=showid, indexer=indexer, season=season, episode=episode).one()
                 self._data_local = query.as_dict()
+
+                episodes = self.show.episodes()
+                episodes.append(self)
+                self.show.episodes.set(episodes)
+
                 self.populate_episode(season, episode)
                 # self.checkForMetaFiles()
 
@@ -274,7 +276,7 @@ class TVEpisode(object):
 
     @property
     def related_episodes(self):
-        return [x for x in self.show.episodes if x.location and x.location == self.location and x.season == self.season and x.episode != self.episode]
+        return [x for x in self.show.episodes() if x.location and x.location == self.location and x.season == self.season and x.episode != self.episode]
 
     def save(self):
         with sickrage.app.main_db.session() as session:
@@ -287,6 +289,12 @@ class TVEpisode(object):
 
             session.commit()
 
+        episodes = self.show.episodes()
+        index = next((i for i, x in enumerate(episodes) if
+                      x.showid == self.showid and x.indexer == self.indexer and x.season == self.season and x.episode == self.episode))
+        episodes[index] = self
+        self.show.episodes.set(episodes)
+
     def delete(self):
         with sickrage.app.main_db.session() as session:
             session.query(MainDB.TVEpisode).filter_by(showid=self.showid,
@@ -294,6 +302,9 @@ class TVEpisode(object):
                                                       season=self.season,
                                                       episode=self.episode).delete()
             session.commit()
+
+        self.show.episodes.set([x for x in self.show.episodes() if
+                                x.showid != self.showid and x.indexer != self.indexer and x.season != self.season and x.episode != self.episode])
 
     def refresh_subtitles(self):
         """Look for subtitles files and refresh the subtitles property"""
@@ -434,13 +445,13 @@ class TVEpisode(object):
 
             # if I'm no longer on the Indexers but I once was then delete myself from the DB
             if self.indexer_id != -1:
-                self.show.delete_episode(season, episode)
+                self.show.get_episode(season, episode).delete_episode()
             return False
 
         self.indexer_id = try_int(safe_getattr(myEp, 'id'), self.indexer_id)
         if not self.indexer_id:
             sickrage.app.log.warning("Failed to retrieve ID from " + IndexerApi(self.indexer).name)
-            self.show.delete_episode(season, episode)
+            self.show.get_episode(season, episode).delete_episode()
             return False
 
         self.name = safe_getattr(myEp, 'episodename', self.name)
@@ -483,7 +494,7 @@ class TVEpisode(object):
                 firstaired, indexer_name, self.show.name, season or 0, episode or 0))
 
             # if I'm incomplete on the indexer but I once was complete then just delete myself from the DB for now
-            self.show.delete_episode(season, episode)
+            self.show.get_episode(season, episode).delete_episode()
             return False
 
         # don't update show status if show dir is missing, unless it's missing on purpose
@@ -665,7 +676,7 @@ class TVEpisode(object):
             except OSError as e:
                 sickrage.app.log.warning('Unable to delete episode file %s: %s / %s' % (self.location, repr(e), str(e)))
 
-        # delete myself from the DB
+        # delete myself from the database and show episode cache
         sickrage.app.log.debug("Deleting %s S%02dE%02d from the DB" % (self.show.name, self.season or 0, self.episode or 0))
         self.delete()
 

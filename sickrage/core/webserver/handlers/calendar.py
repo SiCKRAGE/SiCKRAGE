@@ -66,7 +66,7 @@ class CalendarHandler(BaseHandler, ABC):
             if show.status.lower() not in ['continuing', 'returning series'] or show.paused:
                 continue
 
-            for episode in show.episodes:
+            for episode in show.episodes():
                 if not past_date <= episode.airdate < future_date:
                     continue
 

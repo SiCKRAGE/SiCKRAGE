@@ -44,6 +44,7 @@ from tornado.ioloop import IOLoop
 import sickrage
 from sickrage.core.announcements import Announcements
 from sickrage.core.api import API
+from sickrage.core.caches import tv_episodes_cache, MutexLock
 from sickrage.core.caches.name_cache import NameCache
 from sickrage.core.caches.quicksearch_cache import QuicksearchCache
 from sickrage.core.common import SD, SKIPPED, WANTED
@@ -82,6 +83,7 @@ from sickrage.providers import SearchProviders
 class Core(object):
     def __init__(self):
         self.started = False
+        self.loading_shows = False
         self.daemon = None
         self.io_loop = None
         self.pid = os.getpid()
@@ -176,10 +178,14 @@ class Core(object):
 
     def start(self):
         self.started = True
+
         self.io_loop = IOLoop.current()
 
         # thread name
         threading.currentThread().setName('CORE')
+
+        tv_episodes_cache.configure('dogpile.cache.dbm', replace_existing_backend=False,
+                                    arguments={'filename': os.path.join(self.cache_dir, 'tv_episodes.dbm'), 'lock_factory': MutexLock})
 
         # init core classes
         self.api = API()
@@ -287,9 +293,6 @@ class Core(object):
             self.log.info("Performing cleanup on {} database".format(db.name))
             db.cleanup()
 
-        # load shows
-        self.load_shows()
-
         # user agent
         if self.config.random_user_agent:
             self.user_agent = UserAgent().random
@@ -309,7 +312,7 @@ class Core(object):
         # cleanup cache folder
         for folder in ['mako', 'sessions', 'indexers']:
             try:
-                shutil.rmtree(os.path.join(sickrage.app.cache_dir, folder), ignore_errors=True)
+                shutil.rmtree(os.path.join(self.cache_dir, folder), ignore_errors=True)
             except Exception:
                 continue
 
@@ -521,15 +524,16 @@ class Core(object):
         self.show_queue.start()
         self.postprocessor_queue.start()
 
+        # fire off startup events
+        self.scheduler.add_job(self.load_shows)
+        self.scheduler.add_job(self.quicksearch_cache.run)
+        self.scheduler.add_job(self.name_cache.run)
+        self.scheduler.add_job(self.version_updater.run)
+        self.scheduler.add_job(self.tz_updater.run)
+        self.scheduler.add_job(self.announcements.run)
+
         # start scheduler service
         self.scheduler.start()
-
-        # fire off startup events
-        self.io_loop.run_in_executor(None, self.quicksearch_cache.run)
-        self.io_loop.run_in_executor(None, self.name_cache.run)
-        self.io_loop.run_in_executor(None, self.version_updater.run)
-        self.io_loop.run_in_executor(None, self.tz_updater.run)
-        self.io_loop.run_in_executor(None, self.announcements.run)
 
         # start web server
         self.wserver.start()
@@ -553,17 +557,25 @@ class Core(object):
         self.io_loop.start()
 
     def load_shows(self):
+        threading.currentThread().setName('CORE')
+
         session = self.main_db.session()
 
         self.log.info('Loading initial shows list')
 
+        self.loading_shows = True
+
         self.shows = {}
         for show in session.query(MainDB.TVShow).with_entities(MainDB.TVShow.indexer_id, MainDB.TVShow.indexer, MainDB.TVShow.name):
             try:
-                self.log.info('Loading show {}'.format(show.name))
-                self.shows.update({(show.indexer_id, show.indexer): TVShow(show.indexer_id, show.indexer)})
+                self.log.info('Loading show {} and populating episode cache'.format(show.name))
+                show = TVShow(show.indexer_id, show.indexer)
+                self.shows.update({(show.indexer_id, show.indexer): show})
+                show.episodes()
             except Exception:
                 self.log.debug('There was an error loading show: {}'.format(show.name))
+
+        self.loading_shows = False
 
     def shutdown(self, restart=False):
         if self.started:

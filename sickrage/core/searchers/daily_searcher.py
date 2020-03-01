@@ -92,7 +92,7 @@ class DailySearcher(object):
         sickrage.app.log.debug("Seeing if we need anything for today from {}".format(show.name))
 
         # check through the list of statuses to see if we want any
-        for episode_object in show.episodes:
+        for episode_object in show.episodes():
             if not episode_object.season > 0 or not episode_object.airdate >= from_date:
                 continue
 

@@ -102,6 +102,8 @@ def set_episode_status(show, eps, status, direct=None):
 
             episode_object.status = int(status)
 
+            episode_object.save()
+
             trakt_data += [(episode_object.season, episode_object.episode)]
 
         data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate(trakt_data)
@@ -366,7 +368,7 @@ class EpisodeStatusesHandler(BaseHandler, ABC):
         # if we have no status then this is as far as we need to go
         if len(status_list):
             for show in sorted(get_show_list(), key=lambda d: d.name):
-                for episode in show.episodes:
+                for episode in show.episodes():
                     if episode.season != 0 and episode.status in status_list:
                         if show.indexer_id not in ep_counts:
                             ep_counts[show.indexer_id] = 1
@@ -490,7 +492,7 @@ class SubtitleMissedHandler(BaseHandler, ABC):
                 if not s.subtitles == 1:
                     continue
 
-                for e in s.episodes:
+                for e in s.episodes():
                     if e.season != 0 and (str(e.status).endswith('4') or str(e.status).endswith('6')):
                         status_results += [{
                             'show_name': s.name,
@@ -596,7 +598,7 @@ class BacklogOverviewHandler(BaseHandler, ABC):
 
             show_results[curShow.indexer_id] = []
 
-            for curResult in sorted(curShow.episodes, key=lambda x: (x.season, x.episode), reverse=True):
+            for curResult in sorted(curShow.episodes(), key=lambda x: (x.season, x.episode), reverse=True):
                 cur_ep_cat = curShow.get_overview(int(curResult.status or -1))
                 if cur_ep_cat:
                     ep_cats["{}x{}".format(curResult.season, curResult.episode)] = cur_ep_cat

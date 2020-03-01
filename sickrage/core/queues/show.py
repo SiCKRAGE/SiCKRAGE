@@ -319,13 +319,10 @@ class QueueItemAdd(ShowQueueItem):
 
             return self._finish_early()
 
-        # add show to database
-        sickrage.app.shows.update({(self.indexer_id, self.indexer): TVShow(self.indexer_id, self.indexer, lang=self.lang, location=self.showDir)})
-        show_obj = find_show(self.indexer_id, self.indexer)
-        if not show_obj:
-            return self._finish_early()
-
         try:
+            # add show to database
+            show_obj = TVShow(self.indexer_id, self.indexer, lang=self.lang, location=self.showDir)
+
             # set up initial values
             show_obj.subtitles = self.subtitles or sickrage.app.config.subtitles_default
             show_obj.sub_use_sr_metadata = self.sub_use_sr_metadata
@@ -351,18 +348,13 @@ class QueueItemAdd(ShowQueueItem):
                     show_obj.release_groups.set_white_keywords(self.whitelist)
         except indexer_exception as e:
             sickrage.app.log.warning(_("Unable to add show due to an error with ") + IndexerApi(self.indexer).name + ": {}".format(e))
-            if show_obj:
-                sickrage.app.alerts.error(_("Unable to add ") + str(show_obj.name) + _(" due to an error with ") + IndexerApi(self.indexer).name + "")
-            else:
-                sickrage.app.alerts.error(_("Unable to add show due to an error with ") + IndexerApi(self.indexer).name + "")
+            sickrage.app.alerts.error(_("Unable to add show due to an error with ") + IndexerApi(self.indexer).name + "")
             return self._finish_early()
-
         except MultipleShowObjectsException:
             sickrage.app.log.warning(_("The show in ") + self.showDir + _(" is already in your show list, skipping"))
             sickrage.app.alerts.error(_('Show skipped'),
                                       _("The show in ") + self.showDir + _(" is already in your show list"))
             return self._finish_early()
-
         except Exception as e:
             sickrage.app.log.error(_("Error trying to add show: {}").format(e))
             sickrage.app.log.debug(traceback.format_exc())
@@ -476,7 +468,7 @@ class QueueItemRename(ShowQueueItem):
 
         ep_obj_rename_list = []
 
-        for cur_ep_obj in (x for x in show_obj.episodes if x.location):
+        for cur_ep_obj in (x for x in show_obj.episodes() if x.location):
             # Only want to rename if we have a location
             if cur_ep_obj.location:
                 if cur_ep_obj.related_episodes:
@@ -543,7 +535,7 @@ class QueueItemUpdate(ShowQueueItem):
 
         # get episodes from database
         db_episodes = {}
-        for data in show_obj.episodes:
+        for data in show_obj.episodes():
             if data.season not in db_episodes:
                 db_episodes[data.season] = {}
             db_episodes[data.season].update({data.episode: True})
@@ -569,7 +561,7 @@ class QueueItemUpdate(ShowQueueItem):
                 for curEpisode in db_episodes[curSeason]:
                     sickrage.app.log.info("Permanently deleting episode " + str(curSeason) + "x" + str(curEpisode) + " from the database")
                     try:
-                        show_obj.delete_episode(curSeason, curEpisode)
+                        show_obj.get_episode(curSeason, curEpisode).delete_episode()
                     except EpisodeDeletedException:
                         continue
 

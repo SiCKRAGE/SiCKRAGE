@@ -33,6 +33,7 @@ from sqlalchemy import orm
 from unidecode import unidecode
 
 import sickrage
+from sickrage.core import tv_episodes_cache
 from sickrage.core.api import APIError
 from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.caches.image_cache import ImageCache
@@ -49,9 +50,6 @@ from sickrage.indexers.exceptions import indexer_attributenotfound
 
 class TVShow(object):
     def __init__(self, indexer_id, indexer, lang='en', location=''):
-        self.lock = Lock()
-        self._episodes = {}
-
         with sickrage.app.main_db.session() as session:
             try:
                 query = session.query(MainDB.TVShow).filter_by(indexer_id=indexer_id, indexer=indexer).one()
@@ -68,6 +66,8 @@ class TVShow(object):
 
                 query = session.query(MainDB.TVShow).filter_by(indexer_id=indexer_id, indexer=indexer).one()
                 self._data_local = query.as_dict()
+
+                sickrage.app.shows.update({(self.indexer_id, self.indexer): self})
 
                 self.load_from_indexer()
 
@@ -343,13 +343,11 @@ class TVShow(object):
     def last_proper_search(self, value):
         self._data_local['last_proper_search'] = value
 
-    @property
+    @tv_episodes_cache.cache_on_arguments(namespace=(__name__, 'episodes'))
     def episodes(self):
-        if not self._episodes:
-            with sickrage.app.main_db.session() as session:
-                query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one()
-                [self._episodes.update({(x.season, x.episode): self.get_episode(x.season, x.episode)}) for x in query.episodes]
-        return self._episodes.values()
+        with sickrage.app.main_db.session() as session:
+            query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one()
+            return [TVEpisode(showid=self.indexer_id, indexer=self.indexer, season=x.season, episode=x.episode) for x in query.episodes]
 
     @property
     def imdb_info(self):
@@ -476,7 +474,7 @@ class TVShow(object):
         cur_time = datetime.datetime.now(sickrage.app.tz)
 
         new_episodes = []
-        for episode_object in self.episodes:
+        for episode_object in self.episodes():
             if episode_object.status != UNAIRED or episode_object.season == 0 or episode_object.airdate < datetime.date.min:
                 continue
 
@@ -505,7 +503,7 @@ class TVShow(object):
     def total_size(self):
         _total_size = 0
         _related_episodes = set()
-        for episode_object in self.episodes:
+        for episode_object in self.episodes():
             [_related_episodes.add(related_episode.indexer_id) for related_episode in episode_object.related_episodes]
             if episode_object.indexer_id not in _related_episodes:
                 _total_size += episode_object.file_size
@@ -534,9 +532,7 @@ class TVShow(object):
             session.commit()
 
     def flush_episodes(self):
-        for item in self._episodes.copy():
-            self._episodes[item] = None
-            del self._episodes[item]
+        self.episodes.set([x for x in self.episodes() if x.showid != self.indexer_id and x.indexer != self.indexer])
 
     def load_from_indexer(self, cache=True, tvapi=None):
         if self.indexer is not INDEXER_TVRAGE:
@@ -641,10 +637,19 @@ class TVShow(object):
                     season = query.season
                     episode = query.episode
 
-            if (season, episode) not in self._episodes:
-                self._episodes.update({(season, episode): TVEpisode(showid=self.indexer_id, indexer=self.indexer, season=season, episode=episode)})
+            episodes = self.episodes()
 
-            return self._episodes[(season, episode)]
+            try:
+                index = next((i for i, x in enumerate(episodes) if
+                              x.showid == self.indexer_id and x.indexer == self.indexer and x.season == season and x.episode == episode))
+
+                tv_episode = episodes[index]
+            except StopIteration:
+                tv_episode = TVEpisode(showid=self.indexer_id, indexer=self.indexer, season=season, episode=episode)
+                episodes.append(tv_episode)
+                self.episodes.set(episodes)
+
+            return tv_episode
         except orm.exc.MultipleResultsFound:
             if absolute_number is not None:
                 sickrage.app.log.debug("Multiple entries for absolute number: " + str(absolute_number) + " in show: " + self.name + " found ")
@@ -653,12 +658,6 @@ class TVShow(object):
             if absolute_number is not None:
                 sickrage.app.log.debug("No entries for absolute number: " + str(absolute_number) + " in show: " + self.name + " found.")
             raise EpisodeNotFoundException
-
-    def delete_episode(self, season, episode, full=False):
-        tv_episode = self.get_episode(season, episode)
-        tv_episode.delete_episode(full)
-        sickrage.app.log.debug("Deleting %s S%02dE%02d from shows episode cache" % (self.name, season, episode))
-        del self._episodes[(season, episode)]
 
     def write_show_nfo(self, force=False):
         result = False
@@ -693,7 +692,7 @@ class TVShow(object):
 
         sickrage.app.log.debug(str(self.indexer_id) + ": Writing NFOs for all episodes")
 
-        for episode_obj in self.episodes:
+        for episode_obj in self.episodes():
             if episode_obj.location == '':
                 continue
 
@@ -708,7 +707,7 @@ class TVShow(object):
 
         sickrage.app.log.debug(str(self.indexer_id) + ": Updating video metadata for all episodes")
 
-        for episode_obj in self.episodes:
+        for episode_obj in self.episodes():
             if episode_obj.location == '':
                 continue
 
@@ -882,15 +881,7 @@ class TVShow(object):
             try:
                 episode_obj = self.get_episode(season, episode)
             except EpisodeNotFoundException:
-                with sickrage.app.main_db.session() as session:
-                    session.add(MainDB.TVEpisode(**{'showid': self.indexer_id,
-                                                    'indexer': self.indexer,
-                                                    'season': season,
-                                                    'episode': episode,
-                                                    'location': filename}))
-                    session.commit()
-
-                episode_obj = self.get_episode(season, episode)
+                episode_obj = TVEpisode(showid=self.indexer_id, indexer=self.indexer, season=season, episode=episode, location=filename)
 
             # if there is a new file associated with this ep then re-check the quality
             if episode_obj.location and os.path.normpath(episode_obj.location) != os.path.normpath(filename):
@@ -983,6 +974,9 @@ class TVShow(object):
             session.query(MainDB.SceneNumbering).filter_by(indexer_id=self.indexer_id).delete()
             self.save()
 
+        # remove episodes from show episode cache
+        self.flush_episodes()
+
         # remove from show cache
         del sickrage.app.shows[(self.indexer_id, self.indexer)]
 
@@ -1049,7 +1043,7 @@ class TVShow(object):
         # run through all locations from DB, check that they exist
         sickrage.app.log.debug(str(self.indexer_id) + ": Loading all episodes with a location from the database")
 
-        for curEp in self.episodes:
+        for curEp in self.episodes():
             if curEp.location == '':
                 continue
 
@@ -1105,7 +1099,7 @@ class TVShow(object):
         sickrage.app.log.debug("%s: Downloading subtitles" % self.indexer_id)
 
         try:
-            for episode in self.episodes:
+            for episode in self.episodes():
                 episode.download_subtitles()
         except Exception:
             sickrage.app.log.error("%s: Error occurred when downloading subtitles for %s" % (self.indexer_id, self.name))

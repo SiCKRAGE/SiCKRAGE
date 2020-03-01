@@ -257,7 +257,8 @@
                                 <span id="profile-container" class="d-sm-none d-md-block">
                                     <img class="rounded-circle shadow"
                                          src="https://gravatar.com/avatar/${md5(current_user['email'].encode('utf-8')).hexdigest()}?d=mm&s=40"/>
-                                    <span id="profile-badge" class="badge badge-info" style="float:right;margin-bottom:-10px;"></span>
+                                    <span id="profile-badge" class="badge badge-info"
+                                          style="float:right;margin-bottom:-10px;"></span>
                                 </span>
                             </a>
 
@@ -355,60 +356,66 @@
 </div>
 
 <div class="container-fluid main-container d-none" style="opacity: .90">
+    % if sickrage.app.loading_shows:
+        <div class="text-center">
+            ... LoAdInG ShOwS ...
+        </div>
+    % else:
         <%block name="content" />
+    % endif
 </div>
 
 <div class="container-fluid">
-##     % if current_user:
-##         <footer class="text-center">
-##             <div>
-##                 % if overall_stats:
-##                 <%
-##                     total_size = pretty_file_size(overall_stats['total_size'])
-##                     ep_downloaded = overall_stats['episodes']['downloaded']
-##                     ep_snatched = overall_stats['episodes']['snatched']
-##                     ep_total = overall_stats['episodes']['total']
-##                     ep_percentage = '' if ep_total == 0 else '(<span class="text-primary">%s%%</span>)' % re.sub(r'(\d+)(\.\d)\d+', r'\1\2', str((float(ep_downloaded)/float(ep_total))*100))
-##                 %>
-##                     <span class="text-primary">${overall_stats['shows']['total']}</span> ${_('Shows')}
-##                     (<span class="text-primary">${overall_stats['shows']['active']}</span> ${_('Active')})
-##                     | <span class="text-primary">${ep_downloaded}</span>
-##                 % if ep_snatched:
-##                     <span class="text-primary">
-##                         <a href="${srWebRoot}/manage/episodeStatuses?whichStatus=2">+${ep_snatched}</a>
-##                     </span>
-##                 ${_('Snatched')}
-##                 % endif
-##                     /&nbsp;<span class="text-primary">${ep_total}</span> ${_('Episodes Downloaded')} ${ep_percentage}
-##                     /&nbsp;<span class="text-primary">${total_size}</span> ${_('Overall Downloaded')}
-##                 % endif
-##             </div>
-##
-##             <div>
-##                 ${_('Daily Search:')} <span
-##                     class="text-primary">${str(sickrage.app.scheduler.get_job('DAILYSEARCHER').next_run_time).split('.')[0]}</span>
-##                 |
-##                 ${_('Backlog Search:')} <span
-##                     class="text-primary">${str(sickrage.app.scheduler.get_job('BACKLOG').next_run_time).split('.')[0]}</span>
-##                 |
-##                 ${_('Memory used:')}
-##                 <span class="text-primary">
-##                     ${memory_usage()}
-##                 </span> |
-##                 ${_('Load time:')}
-##                 <span class="text-primary">
-##                         ${"{:10.4f}".format(time() - srStartTime)}s
-##                 </span> / Mako:
-##                 <span class="text-primary">
-##                         ${"{:10.4f}".format(time() - makoStartTime)}s
-##                 </span> |
-##                 ${_('Now:')}
-##                 <span class="text-primary">
-##                     ${str(datetime.datetime.now(sickrage.app.tz)).split('.')[0]}
-##                 </span>
-##             </div>
-##         </footer>
-##     % endif
+    ##     % if current_user:
+    ##         <footer class="text-center">
+    ##             <div>
+    ##                 % if overall_stats:
+    ##                 <%
+    ##                     total_size = pretty_file_size(overall_stats['total_size'])
+    ##                     ep_downloaded = overall_stats['episodes']['downloaded']
+    ##                     ep_snatched = overall_stats['episodes']['snatched']
+    ##                     ep_total = overall_stats['episodes']['total']
+    ##                     ep_percentage = '' if ep_total == 0 else '(<span class="text-primary">%s%%</span>)' % re.sub(r'(\d+)(\.\d)\d+', r'\1\2', str((float(ep_downloaded)/float(ep_total))*100))
+    ##                 %>
+    ##                     <span class="text-primary">${overall_stats['shows']['total']}</span> ${_('Shows')}
+    ##                     (<span class="text-primary">${overall_stats['shows']['active']}</span> ${_('Active')})
+    ##                     | <span class="text-primary">${ep_downloaded}</span>
+    ##                 % if ep_snatched:
+    ##                     <span class="text-primary">
+    ##                         <a href="${srWebRoot}/manage/episodeStatuses?whichStatus=2">+${ep_snatched}</a>
+    ##                     </span>
+    ##                 ${_('Snatched')}
+    ##                 % endif
+    ##                     /&nbsp;<span class="text-primary">${ep_total}</span> ${_('Episodes Downloaded')} ${ep_percentage}
+    ##                     /&nbsp;<span class="text-primary">${total_size}</span> ${_('Overall Downloaded')}
+    ##                 % endif
+    ##             </div>
+    ##
+    ##             <div>
+    ##                 ${_('Daily Search:')} <span
+    ##                     class="text-primary">${str(sickrage.app.scheduler.get_job('DAILYSEARCHER').next_run_time).split('.')[0]}</span>
+    ##                 |
+    ##                 ${_('Backlog Search:')} <span
+    ##                     class="text-primary">${str(sickrage.app.scheduler.get_job('BACKLOG').next_run_time).split('.')[0]}</span>
+    ##                 |
+    ##                 ${_('Memory used:')}
+    ##                 <span class="text-primary">
+    ##                     ${memory_usage()}
+    ##                 </span> |
+    ##                 ${_('Load time:')}
+    ##                 <span class="text-primary">
+    ##                         ${"{:10.4f}".format(time() - srStartTime)}s
+    ##                 </span> / Mako:
+    ##                 <span class="text-primary">
+    ##                         ${"{:10.4f}".format(time() - makoStartTime)}s
+    ##                 </span> |
+    ##                 ${_('Now:')}
+    ##                 <span class="text-primary">
+    ##                     ${str(datetime.datetime.now(sickrage.app.tz)).split('.')[0]}
+    ##                 </span>
+    ##             </div>
+    ##         </footer>
+    ##     % endif
 
     <script src="${srWebRoot}/js/core.min.js"></script>
     <%block name="scripts" />

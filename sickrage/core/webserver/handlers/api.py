@@ -868,7 +868,7 @@ class CMD_EpisodeSetStatus(ApiCall):
                 return await _responds(RESULT_FAILURE, msg="Episode not found")
         else:
             # get all episode numbers in specified season
-            ep_list = [x for x in show_obj.episodes if x.season == self.s]
+            ep_list = [x for x in show_obj.episodes() if x.season == self.s]
 
         def _epResult(result_code, ep, msg=""):
             return {'season': ep.season, 'episode': ep.episode, 'status': _get_status_strings(ep.status),
@@ -1128,7 +1128,7 @@ class CMD_Backlog(ApiCall):
             if s.paused:
                 continue
 
-            for e in sorted(s.episodes, key=lambda x: (x.season, x.episode), reverse=True):
+            for e in sorted(s.episodes(), key=lambda x: (x.season, x.episode), reverse=True):
                 curEpCat = s.get_overview(int(e.status or -1))
                 if curEpCat and curEpCat in (Overview.WANTED, Overview.QUAL):
                     showEps += [e]
@@ -2678,7 +2678,7 @@ class CMD_ShowsStats(ApiCall):
 
             overall_stats['episodes']['snatched'] += show.episodes_snatched or 0
             overall_stats['episodes']['downloaded'] += show.episodes_downloaded or 0
-            overall_stats['episodes']['total'] += show.episodes.count() or 0
+            overall_stats['episodes']['total'] += len(show.episodes()) or 0
             overall_stats['total_size'] += show.total_size or 0
 
         return await _responds(RESULT_SUCCESS, {
