@@ -571,7 +571,7 @@ class Core(object):
                 self.log.info('Loading show {} and populating episode cache'.format(show.name))
                 show = TVShow(show.indexer_id, show.indexer)
                 self.shows.update({(show.indexer_id, show.indexer): show})
-                show.episodes()
+                show.episodes
             except Exception as e:
                 self.log.debug('There was an error loading show: {}'.format(show.name))
 

@@ -468,7 +468,7 @@ class QueueItemRename(ShowQueueItem):
 
         ep_obj_rename_list = []
 
-        for cur_ep_obj in (x for x in show_obj.episodes() if x.location):
+        for cur_ep_obj in (x for x in show_obj.episodes if x.location):
             # Only want to rename if we have a location
             if cur_ep_obj.location:
                 if cur_ep_obj.related_episodes:
@@ -535,7 +535,7 @@ class QueueItemUpdate(ShowQueueItem):
 
         # get episodes from database
         db_episodes = {}
-        for data in show_obj.episodes():
+        for data in show_obj.episodes:
             if data.season not in db_episodes:
                 db_episodes[data.season] = {}
             db_episodes[data.season].update({data.episode: True})

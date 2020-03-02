@@ -74,7 +74,7 @@ class QuicksearchCache(object):
             qsData = {
                 'category': 'shows',
                 'showid': indexer_id,
-                'seasons': len(set([s.season for s in show.episodes()])),
+                'seasons': len(set([s.season for s in show.episodes])),
                 'name': show.name,
                 'img': sickrage.app.config.web_root + showImage(indexer_id, 'poster_thumb').url
             }
@@ -84,7 +84,7 @@ class QuicksearchCache(object):
             session.commit()
 
             sql_t = []
-            for e in show.episodes():
+            for e in show.episodes:
                 qsData = {
                     'category': 'episodes',
                     'showid': e.showid,

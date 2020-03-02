@@ -211,7 +211,7 @@ def pick_best_result(results, season_pack=False):
                     quality_size = sickrage.app.config.quality_sizes[cur_result.quality]
 
                     if season_pack and not len(cur_result.episodes):
-                        episode_count = len([x for x in show_obj.episodes() if x.season == cur_result.season])
+                        episode_count = len([x for x in show_obj.episodes if x.season == cur_result.season])
                         file_size = float(cur_result.size / episode_count / 1000000)
                     else:
                         file_size = float(cur_result.size / len(cur_result.episodes) / 1000000)
@@ -426,7 +426,7 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
             season_qual = best_season_result.quality
             sickrage.app.log.debug("The quality of the season " + best_season_result.provider.type + " is " + Quality.qualityStrings[season_qual])
 
-            all_episodes = set([x.episode for x in show_object.episodes() if x.season == best_season_result.season])
+            all_episodes = set([x.episode for x in show_object.episodes if x.season == best_season_result.season])
 
             sickrage.app.log.debug("Episodes list: {}".format(','.join(map(str, all_episodes))))
 

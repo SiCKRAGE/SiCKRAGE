@@ -189,7 +189,7 @@ class TraktSearcher(object):
         sickrage.app.log.debug("COLLECTION::SYNC::START - Look for Episodes to Add to Trakt Collection")
 
         for s in get_show_list():
-            for e in s.episodes():
+            for e in s.episodes:
                 trakt_id = IndexerApi(s.indexer).trakt_id
                 if not self._check_in_list(trakt_id, str(e.showid), e.season, e.episode, 'Collection'):
                     sickrage.app.log.debug("Adding Episode %s S%02dE%02d to collection" % (s.name, e.season, e.episode))
@@ -211,7 +211,7 @@ class TraktSearcher(object):
             "COLLECTION::REMOVE::START - Look for Episodes to Remove From Trakt Collection")
 
         for s in get_show_list():
-            for e in s.episodes():
+            for e in s.episodes:
                 if e.location:
                     continue
 
@@ -238,7 +238,7 @@ class TraktSearcher(object):
             "WATCHLIST::REMOVE::START - Look for Episodes to Remove from Trakt Watchlist")
 
         for s in get_show_list():
-            for e in s.episodes():
+            for e in s.episodes:
                 trakt_id = IndexerApi(s.indexer).trakt_id
                 if self._check_in_list(trakt_id, str(e.showid), e.season, e.episode):
                     sickrage.app.log.debug(

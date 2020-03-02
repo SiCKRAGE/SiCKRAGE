@@ -109,7 +109,7 @@ class BacklogSearcher(object):
 
         # check through the list of statuses to see if we want any
         wanted = []
-        for episode_object in show.episodes():
+        for episode_object in show.episodes:
             if not episode_object.season > 0 or not datetime.date.today() > episode_object.airdate > from_date:
                 continue
 

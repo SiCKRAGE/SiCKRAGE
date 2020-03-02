@@ -30,6 +30,7 @@ from mutagen.mp4 import MP4, MP4StreamInfoError
 from sqlalchemy import orm
 
 import sickrage
+from sickrage.core import tv_episodes_cache
 from sickrage.core.common import NAMING_EXTEND, NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
 from sickrage.core.common import Quality, SKIPPED, UNKNOWN, UNAIRED, statusStrings
 from sickrage.core.databases.main import MainDB
@@ -66,9 +67,9 @@ class TVEpisode(object):
                 query = session.query(MainDB.TVEpisode).filter_by(showid=showid, indexer=indexer, season=season, episode=episode).one()
                 self._data_local = query.as_dict()
 
-                episodes = self.show.episodes()
+                episodes = self.show.episodes
                 episodes.append(self)
-                self.show.refresh_episodes()
+                tv_episodes_cache.set(str(self.showid), episodes)
 
                 self.populate_episode(season, episode)
                 # self.checkForMetaFiles()
@@ -276,7 +277,7 @@ class TVEpisode(object):
 
     @property
     def related_episodes(self):
-        return [x for x in self.show.episodes() if x.location and x.location == self.location and x.season == self.season and x.episode != self.episode]
+        return [x for x in self.show.episodes if x.location and x.location == self.location and x.season == self.season and x.episode != self.episode]
 
     def save(self):
         with sickrage.app.main_db.session() as session:
@@ -290,12 +291,11 @@ class TVEpisode(object):
             session.commit()
 
         try:
-            episodes = self.show.episodes()
+            episodes = self.show.episodes
             index = next((i for i, x in enumerate(episodes) if
                           x.showid == self.showid and x.indexer == self.indexer and x.season == self.season and x.episode == self.episode))
             episodes[index] = self
-            self.show.episodes.set(episodes)
-            self.show.refresh_episodes()
+            tv_episodes_cache.set(str(self.showid), episodes)
         except StopIteration:
             pass
 
@@ -307,9 +307,8 @@ class TVEpisode(object):
                                                       episode=self.episode).delete()
             session.commit()
 
-        self.show.episodes.set([x for x in self.show.episodes() if
-                                x.showid != self.showid and x.indexer != self.indexer and x.season != self.season and x.episode != self.episode])
-        self.show.refresh_episodes()
+        tv_episodes_cache.set(str(self.showid), [x for x in self.show.episodes if
+                                                 x.showid != self.showid and x.indexer != self.indexer and x.season != self.season and x.episode != self.episode])
 
     def refresh_subtitles(self):
         """Look for subtitles files and refresh the subtitles property"""
