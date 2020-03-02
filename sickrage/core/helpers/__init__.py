@@ -924,7 +924,7 @@ def restore_config_zip(archive, targetDir, restore_database=True, restore_config
                 if not restore_database and member.split('/')[0] in ['main.db', 'main.db-shm', 'main.db-wal', 'cache.db', 'cache.db-shm', 'cache.db-wal']:
                     continue
 
-                if not restore_config and member.split('/')[0] == 'config.ini':
+                if not restore_config and member.split('/')[0] in ['config.ini', 'privatekey.pem']:
                     continue
 
                 if not restore_cache and member.split('/')[0] == 'cache':
