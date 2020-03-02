@@ -356,13 +356,7 @@
 </div>
 
 <div class="container-fluid main-container d-none" style="opacity: .90">
-    % if sickrage.app.loading_shows:
-        <div class="text-center">
-            ... LoAdInG ShOwS ...
-        </div>
-    % else:
         <%block name="content" />
-    % endif
 </div>
 
 <div class="container-fluid">
