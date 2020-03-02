@@ -1,3 +1,5 @@
+import os
+
 from dogpile.cache import make_region
 from dogpile.cache.backends.file import AbstractFileLock
 from dogpile.util import ReadWriteMutex
@@ -41,6 +43,11 @@ def region_key_generator(namespace, fn):
         return "{namespace}:{identity}".format(namespace=namespace, identity=':'.join(str(x) for x in arg))
 
     return generate_keys
+
+
+def configure_regions(cache_dir, replace_existing_backend=False):
+    tv_episodes_cache.configure('dogpile.cache.dbm', replace_existing_backend=replace_existing_backend,
+                                arguments={'filename': os.path.join(cache_dir, 'tv_episodes.dbm'), 'lock_factory': MutexLock})
 
 
 tv_episodes_cache = make_region(function_key_generator=region_key_generator)

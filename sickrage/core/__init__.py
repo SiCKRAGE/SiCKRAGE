@@ -44,7 +44,7 @@ from tornado.ioloop import IOLoop
 import sickrage
 from sickrage.core.announcements import Announcements
 from sickrage.core.api import API
-from sickrage.core.caches import tv_episodes_cache, MutexLock
+from sickrage.core.caches import tv_episodes_cache, MutexLock, configure_regions
 from sickrage.core.caches.name_cache import NameCache
 from sickrage.core.caches.quicksearch_cache import QuicksearchCache
 from sickrage.core.common import SD, SKIPPED, WANTED
@@ -184,9 +184,6 @@ class Core(object):
         # thread name
         threading.currentThread().setName('CORE')
 
-        tv_episodes_cache.configure('dogpile.cache.dbm', replace_existing_backend=False,
-                                    arguments={'filename': os.path.join(self.cache_dir, 'tv_episodes.dbm'), 'lock_factory': MutexLock})
-
         # init core classes
         self.api = API()
         self.main_db = MainDB(self.db_type, self.db_prefix, self.db_host, self.db_port, self.db_username, self.db_password)
@@ -239,7 +236,10 @@ class Core(object):
             if success:
                 self.main_db = MainDB(self.db_type, self.db_prefix, self.db_host, self.db_port, self.db_username, self.db_password)
                 self.cache_db = CacheDB(self.db_type, self.db_prefix, self.db_host, self.db_port, self.db_username, self.db_password)
+                configure_regions(self.cache_dir, replace_existing_backend=True)
                 shutil.rmtree(os.path.abspath(os.path.join(self.data_dir, 'restore')), ignore_errors=True)
+        else:
+            configure_regions(self.cache_dir)
 
         # migrate old database file names to new ones
         if os.path.isfile(os.path.abspath(os.path.join(self.data_dir, 'sickbeard.db'))):
@@ -572,10 +572,12 @@ class Core(object):
                 show = TVShow(show.indexer_id, show.indexer)
                 self.shows.update({(show.indexer_id, show.indexer): show})
                 show.episodes()
-            except Exception:
+            except Exception as e:
                 self.log.debug('There was an error loading show: {}'.format(show.name))
 
         self.loading_shows = False
+
+        self.log.info('Loading initial shows list finished')
 
     def shutdown(self, restart=False):
         if self.started:
