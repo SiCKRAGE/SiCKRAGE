@@ -780,8 +780,7 @@ class DisplayShowHandler(BaseHandler, ABC):
             return await self._genericMessage(_("Error"), _("Show not in show list"))
 
         episode_objects = sorted(show_obj.episodes, key=lambda x: (x.season, x.episode), reverse=True)
-
-        season_results = list({x.season for x in episode_objects})
+        season_results = set()
 
         submenu.append({
             'title': _('Edit'),
@@ -891,6 +890,8 @@ class DisplayShowHandler(BaseHandler, ABC):
         }
 
         for episode_object in episode_objects:
+            season_results.add(episode_object.season)
+
             cur_ep_cat = show_obj.get_overview(int(episode_object.status or -1))
 
             if episode_object.airdate > datetime.date.min:
@@ -954,7 +955,7 @@ class DisplayShowHandler(BaseHandler, ABC):
             show_message=show_message,
             show=show_obj,
             episode_objects=episode_objects,
-            seasonResults=season_results,
+            seasonResults=list(season_results),
             sortedShowLists=sorted_show_lists,
             bwl=bwl,
             epCounts=ep_counts,

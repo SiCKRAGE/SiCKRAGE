@@ -30,7 +30,6 @@ from mutagen.mp4 import MP4, MP4StreamInfoError
 from sqlalchemy import orm
 
 import sickrage
-from sickrage.core import tv_episodes_cache
 from sickrage.core.common import NAMING_EXTEND, NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
 from sickrage.core.common import Quality, SKIPPED, UNKNOWN, UNAIRED, statusStrings
 from sickrage.core.databases.main import MainDB
@@ -66,10 +65,6 @@ class TVEpisode(object):
 
                 query = session.query(MainDB.TVEpisode).filter_by(showid=showid, indexer=indexer, season=season, episode=episode).one()
                 self._data_local = query.as_dict()
-
-                episodes = self.show.episodes
-                episodes.append(self)
-                tv_episodes_cache.set(str(self.showid), episodes)
 
                 self.populate_episode(season, episode)
                 # self.checkForMetaFiles()
@@ -290,15 +285,6 @@ class TVEpisode(object):
 
             session.commit()
 
-        try:
-            episodes = self.show.episodes
-            index = next((i for i, x in enumerate(episodes) if
-                          x.showid == self.showid and x.indexer == self.indexer and x.season == self.season and x.episode == self.episode))
-            episodes[index] = self
-            tv_episodes_cache.set(str(self.showid), episodes)
-        except StopIteration:
-            pass
-
     def delete(self):
         with sickrage.app.main_db.session() as session:
             session.query(MainDB.TVEpisode).filter_by(showid=self.showid,
@@ -306,9 +292,6 @@ class TVEpisode(object):
                                                       season=self.season,
                                                       episode=self.episode).delete()
             session.commit()
-
-        tv_episodes_cache.set(str(self.showid), [x for x in self.show.episodes if
-                                                 x.showid != self.showid and x.indexer != self.indexer and x.season != self.season and x.episode != self.episode])
 
     def refresh_subtitles(self):
         """Look for subtitles files and refresh the subtitles property"""
@@ -680,7 +663,9 @@ class TVEpisode(object):
             except OSError as e:
                 sickrage.app.log.warning('Unable to delete episode file %s: %s / %s' % (self.location, repr(e), str(e)))
 
-        # delete myself from the database and show episode cache
+        # delete myself from show episode cache
+
+        # delete myself from the database
         sickrage.app.log.debug("Deleting %s S%02dE%02d from the DB" % (self.show.name, self.season or 0, self.episode or 0))
         self.delete()
 

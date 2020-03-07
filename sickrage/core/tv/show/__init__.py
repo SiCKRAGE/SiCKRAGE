@@ -28,12 +28,10 @@ import stat
 import traceback
 
 import send2trash
-from dogpile.cache.api import NO_VALUE
 from sqlalchemy import orm
 from unidecode import unidecode
 
 import sickrage
-from sickrage.core import tv_episodes_cache
 from sickrage.core.api import APIError
 from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.caches.image_cache import ImageCache
@@ -50,6 +48,8 @@ from sickrage.indexers.exceptions import indexer_attributenotfound
 
 class TVShow(object):
     def __init__(self, indexer_id, indexer, lang='en', location=''):
+        self._episodes = []
+
         with sickrage.app.main_db.session() as session:
             try:
                 query = session.query(MainDB.TVShow).filter_by(indexer_id=indexer_id, indexer=indexer).one()
@@ -345,12 +345,11 @@ class TVShow(object):
 
     @property
     def episodes(self):
-        if tv_episodes_cache.get(str(self.indexer_id)) == NO_VALUE:
+        if not self._episodes:
             with sickrage.app.main_db.session() as session:
                 query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one()
-                tv_episodes_cache.set(str(self.indexer_id),
-                                      [TVEpisode(showid=self.indexer_id, indexer=self.indexer, season=x.season, episode=x.episode) for x in query.episodes])
-        return tv_episodes_cache.get(str(self.indexer_id))
+                self._episodes = [TVEpisode(showid=self.indexer_id, indexer=self.indexer, season=x.season, episode=x.episode) for x in query.episodes]
+        return self._episodes
 
     @property
     def imdb_info(self):
@@ -535,7 +534,7 @@ class TVShow(object):
             session.commit()
 
     def flush_episodes(self):
-        tv_episodes_cache.set(str(self.indexer_id), [])
+        self._episodes.clear()
 
     def load_from_indexer(self, cache=True, tvapi=None):
         if self.indexer is not INDEXER_TVRAGE:
@@ -640,19 +639,13 @@ class TVShow(object):
                     season = query.season
                     episode = query.episode
 
-            episodes = self.episodes
-
-            try:
-                index = next((i for i, x in enumerate(episodes) if
-                              x.showid == self.indexer_id and x.indexer == self.indexer and x.season == season and x.episode == episode))
-
-                tv_episode = episodes[index]
-            except StopIteration:
+            for tv_episode in self._episodes:
+                if tv_episode.season == season and tv_episode.episode == episode:
+                    return tv_episode
+            else:
                 tv_episode = TVEpisode(showid=self.indexer_id, indexer=self.indexer, season=season, episode=episode)
-                episodes.append(tv_episode)
-                tv_episodes_cache.set(str(self.indexer_id), episodes)
-
-            return tv_episode
+                self._episodes.append(tv_episode)
+                return tv_episode
         except orm.exc.MultipleResultsFound:
             if absolute_number is not None:
                 sickrage.app.log.debug("Multiple entries for absolute number: " + str(absolute_number) + " in show: " + self.name + " found ")
@@ -884,7 +877,8 @@ class TVShow(object):
             try:
                 episode_obj = self.get_episode(season, episode)
             except EpisodeNotFoundException:
-                episode_obj = TVEpisode(showid=self.indexer_id, indexer=self.indexer, season=season, episode=episode, location=filename)
+                sickrage.app.log.warning("{}: Unable to figure out what this file is, skipping {}".format(self.indexer_id, filename))
+                continue
 
             # if there is a new file associated with this ep then re-check the quality
             if episode_obj.location and os.path.normpath(episode_obj.location) != os.path.normpath(filename):
@@ -927,8 +921,7 @@ class TVShow(object):
                 # if it was snatched and now exists then set the status correctly
                 if old_status == SNATCHED and old_quality <= new_quality:
                     sickrage.app.log.debug(
-                        "STATUS: this ep used to be snatched with quality " + Quality.qualityStrings[
-                            old_quality] +
+                        "STATUS: this ep used to be snatched with quality " + Quality.qualityStrings[old_quality] +
                         " but a file exists with quality " + Quality.qualityStrings[new_quality] +
                         " so I'm setting the status to DOWNLOADED")
                     new_status = DOWNLOADED
@@ -936,8 +929,7 @@ class TVShow(object):
                 # if it was snatched proper and we found a higher quality one then allow the status change
                 elif old_status == SNATCHED_PROPER and old_quality < new_quality:
                     sickrage.app.log.debug(
-                        "STATUS: this ep used to be snatched proper with quality " + Quality.qualityStrings[
-                            old_quality] +
+                        "STATUS: this ep used to be snatched proper with quality " + Quality.qualityStrings[old_quality] +
                         " but a file exists with quality " + Quality.qualityStrings[new_quality] +
                         " so I'm setting the status to DOWNLOADED")
                     new_status = DOWNLOADED
@@ -948,8 +940,7 @@ class TVShow(object):
                 if new_status is not None:
                     sickrage.app.log.debug(
                         "STATUS: we have an associated file, so setting the status from " + str(
-                            episode_obj.status) + " to DOWNLOADED/" + str(
-                            Quality.status_from_name(filename, anime=self.is_anime)))
+                            episode_obj.status) + " to DOWNLOADED/" + str(Quality.status_from_name(filename, anime=self.is_anime)))
                     episode_obj.status = Quality.composite_status(new_status, new_quality)
 
             # save episode data to database
