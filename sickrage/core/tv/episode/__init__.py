@@ -664,6 +664,12 @@ class TVEpisode(object):
                 sickrage.app.log.warning('Unable to delete episode file %s: %s / %s' % (self.location, repr(e), str(e)))
 
         # delete myself from show episode cache
+        try:
+            ep_index = self.show.episodes.index(self)
+            sickrage.app.log.debug("Deleting %s S%02dE%02d from the shows episode cache" % (self.show.name, self.season or 0, self.episode or 0))
+            del self.show.episodes[ep_index]
+        except ValueError:
+            pass
 
         # delete myself from the database
         sickrage.app.log.debug("Deleting %s S%02dE%02d from the DB" % (self.show.name, self.season or 0, self.episode or 0))

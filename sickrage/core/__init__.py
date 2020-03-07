@@ -570,9 +570,9 @@ class Core(object):
             try:
                 self.log.info('Loading show {} and building caches'.format(show.name))
                 show = TVShow(show.indexer_id, show.indexer)
+                self.shows.update({(show.indexer_id, show.indexer): show})
                 self.name_cache.build(show)
                 self.quicksearch_cache.add_show(show.indexer_id)
-                self.shows.update({(show.indexer_id, show.indexer): show})
             except Exception as e:
                 self.log.debug('There was an error loading show: {}'.format(show.name))
 
