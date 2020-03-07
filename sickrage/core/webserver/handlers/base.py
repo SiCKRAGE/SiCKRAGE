@@ -175,8 +175,8 @@ class BaseHandler(RequestHandler, ABC):
         url = urlparse(self.request.headers.get("referer", "/{}/".format(sickrage.app.config.default_page)))
         return url._replace(scheme="", netloc="").geturl()
 
-    def _genericMessage(self, subject, message):
-        return self.render(
+    async def _genericMessage(self, subject, message):
+        return await self.render(
             "/generic_message.mako",
             message=message,
             subject=subject,

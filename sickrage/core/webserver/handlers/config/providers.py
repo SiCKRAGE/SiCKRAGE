@@ -32,8 +32,8 @@ from sickrage.providers import NewznabProvider, TorrentRssProvider
 
 class ConfigProvidersHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
-        return self.render(
+    async def get(self, *args, **kwargs):
+        return await self.render(
             "/config/providers.mako",
             submenu=ConfigHandler.menu,
             title=_('Config - Search Providers'),

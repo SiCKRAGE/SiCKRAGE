@@ -82,8 +82,8 @@ def is_rar_supported():
 
 class ConfigPostProcessingHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
-        return self.render(
+    async def get(self, *args, **kwargs):
+        return await self.render(
             "/config/postprocessing.mako",
             submenu=ConfigHandler.menu,
             title=_('Config - Post Processing'),

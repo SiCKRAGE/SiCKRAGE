@@ -43,8 +43,8 @@ class ConfigHandler(BaseHandler, ABC):
     ]
 
     @authenticated
-    def get(self, *args, **kwargs):
-        return self.render(
+    async def get(self, *args, **kwargs):
+        return await self.render(
             "/config/index.mako",
             submenu=self.menu,
             title=_('Configuration'),

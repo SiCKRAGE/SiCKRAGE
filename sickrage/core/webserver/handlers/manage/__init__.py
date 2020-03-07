@@ -352,7 +352,7 @@ class ShowEpisodeStatusesHandler(BaseHandler, ABC):
 
 class EpisodeStatusesHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
         which_status = self.get_argument('whichStatus', None)
 
         ep_counts = {}
@@ -379,7 +379,7 @@ class EpisodeStatusesHandler(BaseHandler, ABC):
                         if show.indexer_id not in sorted_show_ids:
                             sorted_show_ids.append(show.indexer_id)
 
-        return self.render(
+        return await self.render(
             "/manage/episode_statuses.mako",
             title="Episode Overview",
             header="Episode Overview",
@@ -479,7 +479,7 @@ class ShowSubtitleMissedHandler(BaseHandler, ABC):
 
 class SubtitleMissedHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
         which_subs = self.get_argument('whichSubs', None)
 
         ep_counts = {}
@@ -518,7 +518,7 @@ class SubtitleMissedHandler(BaseHandler, ABC):
                 if cur_indexer_id not in sorted_show_ids:
                     sorted_show_ids.append(cur_indexer_id)
 
-        return self.render(
+        return await self.render(
             "/manage/subtitles_missed.mako",
             whichSubs=which_subs,
             show_names=show_names,
@@ -574,7 +574,7 @@ class BacklogShowHandler(BaseHandler, ABC):
 
 class BacklogOverviewHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
         show_counts = {}
         show_cats = {}
         show_results = {}
@@ -609,7 +609,7 @@ class BacklogOverviewHandler(BaseHandler, ABC):
             show_counts[curShow.indexer_id] = ep_counts
             show_cats[curShow.indexer_id] = ep_cats
 
-        return self.render(
+        return await self.render(
             "/manage/backlog_overview.mako",
             showCounts=show_counts,
             showCats=show_cats,
@@ -624,7 +624,7 @@ class BacklogOverviewHandler(BaseHandler, ABC):
 
 class EditShowHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
         show = self.get_argument('show')
 
         groups = []
@@ -646,7 +646,7 @@ class EditShowHandler(BaseHandler, ABC):
             except AnidbAdbaConnectionException as e:
                 sickrage.app.log.debug('Unable to get ReleaseGroups: {}'.format(e))
 
-            return self.render(
+            return await self.render(
                 "/home/edit_show.mako",
                 show=show_obj,
                 quality=show_obj.quality,
@@ -660,7 +660,7 @@ class EditShowHandler(BaseHandler, ABC):
                 action="edit_show"
             )
         else:
-            return self.render(
+            return await self.render(
                 "/home/edit_show.mako",
                 show=show_obj,
                 quality=show_obj.quality,
@@ -713,7 +713,7 @@ class EditShowHandler(BaseHandler, ABC):
 
 class MassEditHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
         to_edit = self.get_argument('toEdit')
 
         show_ids = list(map(int, to_edit.split("|")))
@@ -837,7 +837,7 @@ class MassEditHandler(BaseHandler, ABC):
         sports_value = last_sports if sports_all_same else None
         air_by_date_value = last_air_by_date if air_by_date_all_same else None
 
-        return self.render(
+        return await self.render(
             "/manage/mass_edit.mako",
             showList=to_edit,
             showNames=show_names,
@@ -999,8 +999,8 @@ class MassEditHandler(BaseHandler, ABC):
 
 class MassUpdateHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
-        return self.render(
+    async def get(self, *args, **kwargs):
+        return await self.render(
             '/manage/mass_update.mako',
             title=_('Mass Update'),
             header=_('Mass Update'),
@@ -1107,7 +1107,7 @@ class MassUpdateHandler(BaseHandler, ABC):
 
 class FailedDownloadsHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
         limit = self.get_argument('limit', None) or 100
 
         session = sickrage.app.main_db.session()
@@ -1116,7 +1116,7 @@ class FailedDownloadsHandler(BaseHandler, ABC):
         if int(limit):
             query = session.query(MainDB.FailedSnatch).limit(int(limit))
 
-        return self.render(
+        return await self.render(
             "/manage/failed_downloads.mako",
             limit=int(limit),
             failedResults=query.all(),

@@ -65,7 +65,7 @@ from sickrage.subtitles import Subtitles
 
 class HomeHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
         show_list = get_show_list()
         if not len(show_list):
             return self.redirect('/home/addShows/')
@@ -75,7 +75,7 @@ class HomeHandler(BaseHandler, ABC):
             'Anime': [x for x in show_list if x.anime is True]
         })
 
-        return self.render(
+        return await self.render(
             "/home/index.mako",
             title="Home",
             header="Show List",
@@ -623,7 +623,7 @@ class GetPushbulletDevicesHandler(BaseHandler, ABC):
 
 class ServerStatusHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
         tvdir_free = get_disk_space_usage(sickrage.app.config.tv_download_dir)
         root_dir = {}
         if sickrage.app.config.root_dirs:
@@ -636,7 +636,7 @@ class ServerStatusHandler(BaseHandler, ABC):
             for subject in backend_dirs:
                 root_dir[subject] = get_disk_space_usage(subject)
 
-        return self.render(
+        return await self.render(
             "/home/server_status.mako",
             title=_('Server Status'),
             header=_('Server Status'),
@@ -650,8 +650,8 @@ class ServerStatusHandler(BaseHandler, ABC):
 
 class ProviderStatusHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
-        return self.render(
+    async def get(self, *args, **kwargs):
+        return await self.render(
             "/home/provider_status.mako",
             title=_('Provider Status'),
             header=_('Provider Status'),
@@ -663,19 +663,19 @@ class ProviderStatusHandler(BaseHandler, ABC):
 
 class ShutdownHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
         pid = self.get_argument('pid')
 
         if str(pid) != str(sickrage.app.pid):
             return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
-        self._genericMessage(_("Shutting down"), _("SiCKRAGE is shutting down"))
+        await self._genericMessage(_("Shutting down"), _("SiCKRAGE is shutting down"))
         sickrage.app.shutdown()
 
 
 class RestartHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
         pid = self.get_argument('pid')
         force = self.get_argument('force', None)
 
@@ -687,7 +687,7 @@ class RestartHandler(BaseHandler, ABC):
 
         sickrage.app.io_loop.add_timeout(datetime.timedelta(seconds=5), sickrage.app.shutdown, restart=True)
 
-        return self.render(
+        return await self.render(
             "/home/restart.mako",
             title="Home",
             header="Restarting SiCKRAGE",
@@ -777,7 +777,7 @@ class DisplayShowHandler(BaseHandler, ABC):
 
         show_obj = find_show(int(show))
         if not show_obj:
-            return self._genericMessage(_("Error"), _("Show not in show list"))
+            return await self._genericMessage(_("Error"), _("Show not in show list"))
 
         episode_objects = sorted(show_obj.episodes, key=lambda x: (x.season, x.episode), reverse=True)
 
@@ -947,7 +947,7 @@ class DisplayShowHandler(BaseHandler, ABC):
             'name': show_obj.name,
         })
 
-        return self.render(
+        return await self.render(
             "/home/display_show.mako",
             submenu=submenu,
             showLoc=show_loc,
@@ -981,14 +981,14 @@ class DisplayShowHandler(BaseHandler, ABC):
 
 class TogglePauseHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
         show = self.get_argument('show')
 
         session = sickrage.app.main_db.session()
         show_obj = find_show(int(show))
 
         if show_obj is None:
-            return self._genericMessage(_("Error"), _("Unable to find the specified show"))
+            return await self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         show_obj.paused = not show_obj.paused
         show_obj.save()
@@ -1008,7 +1008,7 @@ class DeleteShowHandler(BaseHandler, ABC):
         show_obj = find_show(int(show))
 
         if show_obj is None:
-            return self._genericMessage(_("Error"), _("Unable to find the specified show"))
+            return await self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         try:
             sickrage.app.show_queue.remove_show(show_obj.indexer_id, bool(full))
@@ -1037,7 +1037,7 @@ class RefreshShowHandler(BaseHandler, ABC):
         show_obj = find_show(int(show))
 
         if show_obj is None:
-            return self._genericMessage(_("Error"), _("Unable to find the specified show"))
+            return await self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         try:
             sickrage.app.show_queue.refresh_show(show_obj.indexer_id, True)
@@ -1058,7 +1058,7 @@ class UpdateShowHandler(BaseHandler, ABC):
         show_obj = find_show(int(show))
 
         if show_obj is None:
-            return self._genericMessage(_("Error"), _("Unable to find the specified show"))
+            return await self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         # force the update
         try:
@@ -1080,7 +1080,7 @@ class SubtitleShowHandler(BaseHandler, ABC):
         show_obj = find_show(int(show))
 
         if show_obj is None:
-            return self._genericMessage(_("Error"), _("Unable to find the specified show"))
+            return await self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         # search and download subtitles
         sickrage.app.show_queue.download_subtitles(show_obj.indexer_id)
@@ -1164,7 +1164,7 @@ class SyncTraktHandler(BaseHandler, ABC):
 
 class DeleteEpisodeHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
         show = self.get_argument('show')
         eps = self.get_argument('eps')
         direct = self.get_argument('direct', None)
@@ -1177,7 +1177,7 @@ class DeleteEpisodeHandler(BaseHandler, ABC):
                 sickrage.app.alerts.error(_('Error'), err_msg)
                 return self.write(json_encode({'result': 'error'}))
             else:
-                return self._genericMessage(_("Error"), err_msg)
+                return await self._genericMessage(_("Error"), err_msg)
 
         if eps:
             for curEp in eps.split('|'):
@@ -1197,7 +1197,7 @@ class DeleteEpisodeHandler(BaseHandler, ABC):
                     tv_episode = show_obj.get_episode(season, episode)
                     tv_episode.delete_episode(full=True)
                 except EpisodeNotFoundException:
-                    return self._genericMessage(_("Error"), _("Episode couldn't be retrieved"))
+                    return await self._genericMessage(_("Error"), _("Episode couldn't be retrieved"))
                 except EpisodeDeletedException:
                     pass
 
@@ -1209,16 +1209,16 @@ class DeleteEpisodeHandler(BaseHandler, ABC):
 
 class TestRenameHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
         show = self.get_argument('show')
 
         show_object = find_show(int(show))
 
         if show_object is None:
-            return self._genericMessage(_("Error"), _("Show not in show list"))
+            return await self._genericMessage(_("Error"), _("Show not in show list"))
 
         if not os.path.isdir(show_object.location):
-            return self._genericMessage(_("Error"), _("Can't rename episodes when the show dir is missing."))
+            return await self._genericMessage(_("Error"), _("Can't rename episodes when the show dir is missing."))
 
         episode_objects = []
 
@@ -1239,7 +1239,7 @@ class TestRenameHandler(BaseHandler, ABC):
             {'title': _('Edit'), 'path': '/manage/editShow?show=%d' % show_object.indexer_id,
              'icon': 'fas fa-edit'}]
 
-        return self.render(
+        return await self.render(
             "/home/test_renaming.mako",
             submenu=submenu,
             episode_objects=episode_objects,
@@ -1253,17 +1253,17 @@ class TestRenameHandler(BaseHandler, ABC):
 
 class DoRenameHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
         show = self.get_argument('show')
         eps = self.get_argument('eps')
 
         tv_show = find_show(int(show))
         if tv_show is None:
             err_msg = _("Show not in show list")
-            return self._genericMessage(_("Error"), err_msg)
+            return await self._genericMessage(_("Error"), err_msg)
 
         if not os.path.isdir(tv_show.location):
-            return self._genericMessage(_("Error"), _("Can't rename episodes when the show dir is missing."))
+            return await self._genericMessage(_("Error"), _("Can't rename episodes when the show dir is missing."))
 
         if eps is None:
             return self.redirect("/home/displayShow?show=" + show)

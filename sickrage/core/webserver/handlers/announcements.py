@@ -29,7 +29,7 @@ from sickrage.libs.trakt.interfaces.base import authenticated
 class AnnouncementsHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
-        return self.render(
+        return await self.render(
             'announcements.mako',
             announcements=sickrage.app.announcements.get_all(),
             title=_('Announcements'),

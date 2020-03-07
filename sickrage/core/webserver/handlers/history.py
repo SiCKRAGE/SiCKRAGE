@@ -29,7 +29,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 class HistoryHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
         limit = self.get_argument('limit', None)
 
         if limit is None:
@@ -90,7 +90,7 @@ class HistoryHandler(BaseHandler, ABC):
              'class': 'trimhistory', 'confirm': True},
         ]
 
-        return self.render(
+        return await self.render(
             "/history.mako",
             historyResults=History().get(limit),
             compactResults=compact,

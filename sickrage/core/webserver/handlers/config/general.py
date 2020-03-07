@@ -34,8 +34,8 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 class ConfigGeneralHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
-        return self.render(
+    async def get(self, *args, **kwargs):
+        return await self.render(
             "/config/general.mako",
             title=_('Config - General'),
             header=_('General Configuration'),

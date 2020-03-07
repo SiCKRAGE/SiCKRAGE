@@ -29,8 +29,8 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 class HomePostProcessHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
-        return self.render(
+    async def get(self, *args, **kwargs):
+        return await self.render(
             "/home/postprocess.mako",
             title=_('Post Processing'),
             header=_('Post Processing'),
@@ -70,4 +70,4 @@ class HomeProcessEpisodeHandler(BaseHandler, ABC):
         if quiet:
             return self.write(result)
 
-        return self._genericMessage(_("Postprocessing results"), result.replace("\n", "<br>\n"))
+        return await self._genericMessage(_("Postprocessing results"), result.replace("\n", "<br>\n"))

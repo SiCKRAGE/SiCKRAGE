@@ -28,8 +28,8 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 class ManageQueuesHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
-        return self.render(
+    async def get(self, *args, **kwargs):
+        return await self.render(
             "/manage/queues.mako",
             backlogSearchPaused=sickrage.app.search_queue.is_backlog_searcher_paused(),
             dailySearchPaused=sickrage.app.search_queue.is_daily_searcher_paused(),

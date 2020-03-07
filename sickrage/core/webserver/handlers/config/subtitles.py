@@ -33,8 +33,8 @@ from sickrage.subtitles import Subtitles
 
 class ConfigSubtitlesHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
-        return self.render(
+    async def get(self, *args, **kwargs):
+        return await self.render(
             "/config/subtitles.mako",
             submenu=ConfigHandler.menu,
             title=_('Config - Subtitles Settings'),

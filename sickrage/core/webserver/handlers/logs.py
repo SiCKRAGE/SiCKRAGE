@@ -42,10 +42,10 @@ class LogsHandler(BaseHandler, ABC):
         ]
 
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
         level = self.get_argument('level', sickrage.app.log.ERROR)
 
-        return self.render(
+        return await self.render(
             "/logs/errors.mako",
             header="Logs &amp; Errors",
             title="Logs &amp; Errors",
@@ -89,7 +89,7 @@ class LogsClearAllHanlder(BaseHandler, ABC):
 
 class LogsViewHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
         min_level = self.get_argument('minLevel', None) or sickrage.app.log.INFO
         log_filter = self.get_argument('logFilter', '')
         log_search = self.get_argument('logSearch', '')
@@ -140,7 +140,7 @@ class LogsViewHandler(BaseHandler, ABC):
         except StopIteration:
             pass
 
-        return self.render(
+        return await self.render(
             "/logs/view.mako",
             header="Log File",
             title="Logs",

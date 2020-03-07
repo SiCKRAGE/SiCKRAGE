@@ -30,8 +30,8 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 class ConfigNotificationsHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
-        return self.render(
+    async def get(self, *args, **kwargs):
+        return await self.render(
             "/config/notifications.mako",
             submenu=ConfigHandler.menu,
             title=_('Config - Notifications'),

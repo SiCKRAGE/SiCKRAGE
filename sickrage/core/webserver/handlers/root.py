@@ -87,7 +87,7 @@ class APIBulderHandler(BaseHandler, ABC):
         for command, api_call in ApiHandler(self.application, self.request).api_calls.items():
             api_commands[command] = await api_call(self.application, self.request, **{'help': 1}).run()
 
-        return self.render(
+        return await self.render(
             'api_builder.mako',
             title=_('API Builder'),
             header=_('API Builder'),
@@ -208,7 +208,7 @@ class ScheduleHandler(BaseHandler, ABC):
 
         results = await self.run_task(ComingEpisodes.get_coming_episodes, ComingEpisodes.categories, sickrage.app.config.coming_eps_sort, False)
 
-        return self.render(
+        return await self.render(
             'schedule.mako',
             next_week=next_week,
             today=today,
