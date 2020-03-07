@@ -105,7 +105,7 @@ class SetHomeLayoutHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         layout = self.get_argument('layout', 'poster')
 
-        if layout not in ('poster', 'small', 'banner', 'simple', 'coverflow'):
+        if layout not in ('poster', 'small', 'banner', 'simple', 'detailed'):
             layout = 'poster'
 
         sickrage.app.config.home_layout = layout

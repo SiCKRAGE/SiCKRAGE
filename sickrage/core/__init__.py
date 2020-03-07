@@ -306,6 +306,9 @@ class Core(object):
         # load name cache
         self.name_cache.load()
 
+        # load quicksearch cache
+        self.quicksearch_cache.load()
+
         if self.config.default_page not in ('schedule', 'history', 'IRC'):
             self.config.default_page = 'home'
 
@@ -526,8 +529,6 @@ class Core(object):
 
         # fire off startup events
         self.scheduler.add_job(self.load_shows)
-        self.scheduler.add_job(self.quicksearch_cache.run)
-        self.scheduler.add_job(self.name_cache.run)
         self.scheduler.add_job(self.version_updater.run)
         self.scheduler.add_job(self.tz_updater.run)
         self.scheduler.add_job(self.announcements.run)
@@ -568,10 +569,11 @@ class Core(object):
         self.shows = {}
         for show in session.query(MainDB.TVShow).with_entities(MainDB.TVShow.indexer_id, MainDB.TVShow.indexer, MainDB.TVShow.name):
             try:
-                self.log.info('Loading show {} and populating episode cache'.format(show.name))
+                self.log.info('Loading show {} and building caches'.format(show.name))
                 show = TVShow(show.indexer_id, show.indexer)
+                self.name_cache.build(show)
+                self.quicksearch_cache.add_show(show.indexer_id)
                 self.shows.update({(show.indexer_id, show.indexer): show})
-                show.episodes
             except Exception as e:
                 self.log.debug('There was an error loading show: {}'.format(show.name))
 

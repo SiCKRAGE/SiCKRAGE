@@ -64,14 +64,17 @@
                             <i class="fas fa-2x fa-th"></i>
                         % elif sickrage.app.config.home_layout == 'banner':
                             <i class="fas fa-2x fa-image"></i>
+                        % elif sickrage.app.config.home_layout == 'detailed':
+                            <i class="fas fa-2x fa-list"></i>
                         % elif sickrage.app.config.home_layout == 'simple':
-                            <i class="fas fa-2x fa-th-list"></i>
+                            <i class="fas fa-2x fa-list"></i>
                         % endif
                     </button>
                     <div class="dropdown-menu dropdown-menu-right">
                         <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=poster">Poster</a>
                         <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=small">Small Poster</a>
                         <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=banner">Banner</a>
+                        <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=detailed">Detailed</a>
                         <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=simple">Simple</a>
                     </div>
                 </div>
@@ -135,60 +138,70 @@
                             <table class="table" id="showListTable${curListType}">
                                 <thead class="thead-dark">
                                 <tr>
-                                    <th>${_('Next Ep')}</th>
-                                    <th>${_('Prev Ep')}</th>
+                                    % if sickrage.app.config.home_layout != 'simple':
+                                        <th>${_('Next Ep')}</th>
+                                        <th>${_('Prev Ep')}</th>
+                                    % endif
                                     <th>${_('Show')}</th>
-                                    <th>${_('Network')}</th>
-                                    <th>${_('Quality')}</th>
-                                    <th>${_('Downloads')}</th>
-                                    <th>${_('Size')}</th>
-                                    <th>${_('Active')}</th>
+                                    % if sickrage.app.config.home_layout != 'simple':
+                                        <th>${_('Network')}</th>
+                                        <th>${_('Quality')}</th>
+                                        <th>${_('Downloads')}</th>
+                                        <th>${_('Size')}</th>
+                                        <th>${_('Active')}</th>
+                                    % endif
                                     <th>${_('Status')}</th>
                                 </tr>
                                 </thead>
 
                                 <tbody class="">
                                     % for curShow in curShowlist:
-                                        <%
-                                            cur_airs_next = curShow.airs_next
-                                            cur_airs_prev = curShow.airs_prev
-                                            show_size = curShow.total_size
+                                        % if sickrage.app.config.home_layout != 'simple':
+                                            <%
+                                                cur_airs_next = curShow.airs_next
+                                                cur_airs_prev = curShow.airs_prev
+                                                show_size = curShow.total_size
 
-                                            network_class_name = None
-                                            if curShow.network:
-                                                network_class_name = re.sub(r'(?!\w|\s).', '', unidecode.unidecode(curShow.network))
-                                                network_class_name = re.sub(r'\s+', '-', network_class_name)
-                                                network_class_name = re.sub(r'^(\s*)([\W\w]*)(\b\s*$)', '\\2', network_class_name)
-                                                network_class_name = network_class_name.lower()
-                                        %>
+                                                network_class_name = None
+                                                if curShow.network:
+                                                    network_class_name = re.sub(r'(?!\w|\s).', '', unidecode.unidecode(curShow.network))
+                                                    network_class_name = re.sub(r'\s+', '-', network_class_name)
+                                                    network_class_name = re.sub(r'^(\s*)([\W\w]*)(\b\s*$)', '\\2', network_class_name)
+                                                    network_class_name = network_class_name.lower()
+                                            %>
+                                        % endif
                                         <tr>
-                                            % if cur_airs_next > datetime.date.min:
-                                            <% airDate = srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
-                                            % try:
-                                                <td class="table-fit align-middle">
-                                                    <time datetime="${airDate.isoformat()}"
-                                                          class="date">${srdatetime.SRDateTime(airDate).srfdate()}</time>
-                                                </td>
-                                            % except ValueError:
-                                                <td class="table-fit"></td>
-                                            % endtry
-                                            % else:
-                                                <td class="table-fit"></td>
+                                            % if sickrage.app.config.home_layout != 'simple':
+                                                % if cur_airs_next > datetime.date.min:
+                                                <% airDate = srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
+                                                % try:
+                                                    <td class="table-fit align-middle">
+                                                        <time datetime="${airDate.isoformat()}"
+                                                              class="date">${srdatetime.SRDateTime(airDate).srfdate()}</time>
+                                                    </td>
+                                                % except ValueError:
+                                                    <td class="table-fit"></td>
+                                                % endtry
+                                                % else:
+                                                    <td class="table-fit"></td>
+                                                % endif
                                             % endif
 
-                                            % if cur_airs_prev > datetime.date.min:
-                                            <% airDate = srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_prev, curShow.airs, curShow.network), convert=True).dt %>
-                                            % try:
-                                                <td class="table-fit align-middle">
-                                                    <time datetime="${airDate.isoformat()}" class="date">
-                                                        ${srdatetime.SRDateTime(airDate).srfdate()}
-                                                    </time>
-                                                </td>
-                                            % except ValueError:
-                                                <td class="table-fit"></td>
-                                            % endtry
-                                            % else:
-                                                <td class="table-fit"></td>
+                                            % if sickrage.app.config.home_layout != 'simple':
+                                                % if cur_airs_prev > datetime.date.min:
+                                                <% airDate = srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_prev, curShow.airs, curShow.network), convert=True).dt %>
+                                                % try:
+                                                    <td class="table-fit align-middle">
+                                                        <time datetime="${airDate.isoformat()}" class="date">
+                                                            ${srdatetime.SRDateTime(airDate).srfdate()}
+                                                        </time>
+                                                    </td>
+                                                % except ValueError:
+                                                    <td class="table-fit"></td>
+                                                % endtry
+                                                % else:
+                                                    <td class="table-fit"></td>
+                                                % endif
                                             % endif
 
                                             % if sickrage.app.config.home_layout == 'small':
@@ -206,11 +219,12 @@
                                                     <span class="d-none">${curShow.name}</span>
                                                     <a href="${srWebRoot}/home/displayShow?show=${curShow.indexer_id}">
                                                         <img src="${srWebRoot}${showImage(curShow.indexer_id, 'banner').url}"
-                                                             class="img-banner rounded shadow" alt="${curShow.indexer_id}"
+                                                             class="img-banner rounded shadow"
+                                                             alt="${curShow.indexer_id}"
                                                              title="${curShow.name}"/>
                                                     </a>
                                                 </td>
-                                            % elif sickrage.app.config.home_layout == 'simple':
+                                            % elif sickrage.app.config.home_layout in ['detailed', 'simple']:
                                                 <td class="tvShow">
                                                     <a href="${srWebRoot}/home/displayShow?show=${curShow.indexer_id}">
                                                         ${curShow.name}
@@ -218,7 +232,7 @@
                                                 </td>
                                             % endif
 
-                                            % if sickrage.app.config.home_layout != 'simple':
+                                            % if sickrage.app.config.home_layout not in ['detailed', 'simple']:
                                                 <td class="table-fit align-middle">
                                                     % if curShow.network:
                                                         <span title="${curShow.network}">
@@ -232,34 +246,42 @@
                                                         <span class="d-none d-print-inline">No Network</span>
                                                     % endif
                                                 </td>
-                                            % else:
+                                            % elif sickrage.app.config.home_layout == 'detailed':
                                                 <td class="table-fit">
                                                     <span title="${curShow.network}">${curShow.network}</span>
                                                 </td>
                                             % endif
 
-                                            <td class="table-fit align-middle">${renderQualityPill(curShow.quality, showTitle=True)}</td>
+                                            % if sickrage.app.config.home_layout != 'simple':
+                                                <td class="table-fit align-middle">${renderQualityPill(curShow.quality, showTitle=True)}</td>
+                                            % endif
 
-                                            <td class="align-middle">
-                                                % if curShow.indexer_id in sickrage.app.show_queue.loading_show_list:
-                                                    <div class="bg-dark progress shadow"></div>
-                                                % else:
-                                                    <div class="bg-dark progress shadow">
-                                                        <div class="progress-bar d-print-none"
-                                                             data-show-id="${curShow.indexer_id}">
+                                            % if sickrage.app.config.home_layout != 'simple':
+                                                <td class="align-middle">
+                                                    % if curShow.indexer_id in sickrage.app.show_queue.loading_show_list:
+                                                        <div class="bg-dark progress shadow"></div>
+                                                    % else:
+                                                        <div class="bg-dark progress shadow">
+                                                            <div class="progress-bar d-print-none"
+                                                                 data-show-id="${curShow.indexer_id}">
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                % endif
-                                            </td>
+                                                    % endif
+                                                </td>
+                                            % endif
 
-                                            <td class="table-fit align-middle" data-show-size="${show_size}">
-                                                ${pretty_file_size(show_size)}
-                                            </td>
+                                            % if sickrage.app.config.home_layout != 'simple':
+                                                <td class="table-fit align-middle" data-show-size="${show_size}">
+                                                    ${pretty_file_size(show_size)}
+                                                </td>
+                                            % endif
 
-                                            <td class="table-fit align-middle">
-                                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[not bool(curShow.paused)]}"></i>
-                                                <span class="d-none d-print-inline">${('No', 'Yes')[not bool(curShow.paused)]}</span>
-                                            </td>
+                                            % if sickrage.app.config.home_layout != 'simple':
+                                                <td class="table-fit align-middle">
+                                                    <i class="fa ${("fa-times text-danger", "fa-check text-success")[not bool(curShow.paused)]}"></i>
+                                                    <span class="d-none d-print-inline">${('No', 'Yes')[not bool(curShow.paused)]}</span>
+                                                </td>
+                                            % endif
 
                                             <td class="table-fit align-middle">
                                                 % if curShow.status and re.search(r'(?i)(?:new|returning)\s*series', curShow.status):

@@ -65,13 +65,14 @@ from sickrage.subtitles import Subtitles
 
 class HomeHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        if not len(get_show_list()):
+    def get(self, *args, **kwargs):
+        show_list = get_show_list()
+        if not len(show_list):
             return self.redirect('/home/addShows/')
 
         show_lists = OrderedDict({
-            'Shows': [x for x in get_show_list() if x.anime is False],
-            'Anime': [x for x in get_show_list() if x.anime is True]
+            'Shows': [x for x in show_list if x.anime is False],
+            'Anime': [x for x in show_list if x.anime is True]
         })
 
         return self.render(
