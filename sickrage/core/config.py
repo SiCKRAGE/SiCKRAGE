@@ -1368,9 +1368,11 @@ class Config(object):
 
         if not os.access(config_file, os.W_OK):
             if os.path.isfile(config_file):
-                raise SystemExit("Config file '{}' must be writeable.".format(config_file))
+                sickrage.app.log.warning("Config file '{}' must be writeable.".format(config_file))
+                raise SystemExit
             elif not os.access(os.path.dirname(config_file), os.W_OK):
-                raise SystemExit("Config file root dir '{}' must be writeable.".format(os.path.dirname(config_file)))
+                sickrage.app.log.warning("Config file root dir '{}' must be writeable.".format(os.path.dirname(config_file)))
+                raise SystemExit
 
         # decrypt config
         self.config_obj = ConfigObj(encoding='utf8')
@@ -1378,7 +1380,8 @@ class Config(object):
             try:
                 self.config_obj = self.decrypt_config(config_file)
             except Exception:
-                raise SystemExit("Unable to decrypt config file {}, config is most likely corrupted and needs to be deleted.".format(config_file))
+                sickrage.app.log.error("Unable to decrypt config file {}, config is most likely corrupted and needs to be deleted.".format(config_file))
+                raise SystemExit
 
         # use defaults
         if defaults:
@@ -2389,8 +2392,8 @@ class Config(object):
             # old encryption from python 2
             config_obj = ConfigObj(config_file, encoding='utf8')
             config_obj.walk(self.legacy_decrypt,
-                            encryption_version=int(config_obj.get('General').get('encryption_version')),
-                            encryption_secret=config_obj.get('General').get('encryption_secret'),
+                            encryption_version=int(config_obj.get('General').get('encryption_version', 0)),
+                            encryption_secret=config_obj.get('General').get('encryption_secret', ''),
                             raise_errors=False)
 
         return config_obj

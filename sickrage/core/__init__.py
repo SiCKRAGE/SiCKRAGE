@@ -235,10 +235,7 @@ class Core(object):
             if success:
                 self.main_db = MainDB(self.db_type, self.db_prefix, self.db_host, self.db_port, self.db_username, self.db_password)
                 self.cache_db = CacheDB(self.db_type, self.db_prefix, self.db_host, self.db_port, self.db_username, self.db_password)
-                # configure_regions(self.cache_dir, replace_existing_backend=True)
                 shutil.rmtree(os.path.abspath(os.path.join(self.data_dir, 'restore')), ignore_errors=True)
-        # else:
-        #     configure_regions(self.cache_dir)
 
         # migrate old database file names to new ones
         if os.path.isfile(os.path.abspath(os.path.join(self.data_dir, 'sickbeard.db'))):

@@ -23,7 +23,6 @@
 import base64
 import ctypes
 import datetime
-import errno
 import glob
 import hashlib
 import os
@@ -37,6 +36,7 @@ import string
 import tempfile
 import time
 import traceback
+import unicodedata
 import uuid
 import webbrowser
 import zipfile
@@ -44,9 +44,9 @@ from collections import OrderedDict
 from contextlib import contextmanager
 from urllib.parse import uses_netloc, urlsplit, urlunsplit, urljoin
 
+import errno
 import rarfile
 import requests
-import unicodedata
 from bs4 import BeautifulSoup
 
 import sickrage
@@ -1013,10 +1013,7 @@ def restore_app_data(srcDir, dstDir):
         # cache
         if os.path.exists(os.path.join(srcDir, 'cache')):
             if os.path.exists(os.path.join(dstDir, 'cache')):
-                move_file(os.path.join(dstDir, 'cache'), os.path.join(dstDir, '{}_{}.bak'
-                                                                      .format('cache',
-                                                                              datetime.datetime.now().strftime(
-                                                                                  '%Y%m%d_%H%M%S'))))
+                move_file(os.path.join(dstDir, 'cache'), os.path.join(dstDir, '{}_{}.bak'.format('cache', datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))))
             move_file(os.path.join(srcDir, 'cache'), dstDir)
 
         return True

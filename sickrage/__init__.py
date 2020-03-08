@@ -357,9 +357,8 @@ def main():
     except (SystemExit, KeyboardInterrupt):
         if app:
             app.shutdown()
-    except Exception as e:
+    except Exception:
         traceback.print_exc()
-
 
 if __name__ == '__main__':
     main()
