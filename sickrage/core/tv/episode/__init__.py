@@ -22,6 +22,7 @@
 import datetime
 import os
 import re
+import threading
 import traceback
 from collections import OrderedDict
 from xml.etree.ElementTree import ElementTree
@@ -48,6 +49,8 @@ from sickrage.subtitles import Subtitles
 
 class TVEpisode(object):
     def __init__(self, showid, indexer, season, episode, location=''):
+        self.lock = threading.Lock()
+
         with sickrage.app.main_db.session() as session:
             try:
                 query = session.query(MainDB.TVEpisode).filter_by(showid=showid, indexer=indexer, season=season, episode=episode).one()
@@ -61,7 +64,10 @@ class TVEpisode(object):
                     'location': location
                 }))
 
-                session.commit()
+                try:
+                    session.commit()
+                except Exception as e:
+                    pass
 
                 query = session.query(MainDB.TVEpisode).filter_by(showid=showid, indexer=indexer, season=season, episode=episode).one()
                 self._data_local = query.as_dict()
@@ -665,10 +671,9 @@ class TVEpisode(object):
 
         # delete myself from show episode cache
         try:
-            ep_index = self.show.episodes.index(self)
             sickrage.app.log.debug("Deleting %s S%02dE%02d from the shows episode cache" % (self.show.name, self.season or 0, self.episode or 0))
-            del self.show.episodes[ep_index]
-        except ValueError:
+            del self.show.episodes[self.show.episodes.index(self)]
+        except (IndexError, ValueError) as e:
             pass
 
         # delete myself from the database

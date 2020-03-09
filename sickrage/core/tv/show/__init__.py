@@ -25,6 +25,7 @@ import os
 import re
 import shutil
 import stat
+import threading
 import traceback
 
 import send2trash
@@ -48,6 +49,7 @@ from sickrage.indexers.exceptions import indexer_attributenotfound
 
 class TVShow(object):
     def __init__(self, indexer_id, indexer, lang='en', location=''):
+        self.lock = threading.Lock()
         self._episodes = []
 
         with sickrage.app.main_db.session() as session:
@@ -630,7 +632,7 @@ class TVShow(object):
 
         return scanned_eps
 
-    def get_episode(self, season=None, episode=None, absolute_number=None):
+    def get_episode(self, season=None, episode=None, absolute_number=None, no_create=False):
         try:
             if season is None and episode is None and absolute_number is not None:
                 with sickrage.app.main_db.session() as session:
@@ -643,6 +645,8 @@ class TVShow(object):
                 if tv_episode.season == season and tv_episode.episode == episode:
                     return tv_episode
             else:
+                if no_create:
+                    raise EpisodeNotFoundException
                 tv_episode = TVEpisode(showid=self.indexer_id, indexer=self.indexer, season=season, episode=episode)
                 self._episodes.append(tv_episode)
                 return tv_episode
@@ -1118,7 +1122,7 @@ class TVShow(object):
 
     def want_episode(self, season, episode, quality, manualSearch=False, downCurQuality=False):
         try:
-            episode_object = self.get_episode(season, episode)
+            episode_object = self.get_episode(season, episode, no_create=True)
         except EpisodeNotFoundException:
             sickrage.app.log.debug("Unable to find a matching episode in database, ignoring found episode")
             return False

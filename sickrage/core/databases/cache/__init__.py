@@ -49,7 +49,20 @@ class CacheDB(SRDatabase):
                 else:
                     found.append(x.provider)
 
+        def remove_duplicates_from_scene_name_table():
+            found = []
+
+            session = self.session()
+
+            for x in session.query(CacheDB.SceneName).all():
+                if (x.indexer_id, x.name) in found:
+                    x.delete()
+                    session.commit()
+                else:
+                    found.append((x.indexer_id, x.name))
+
         remove_duplicates_from_last_search_table()
+        remove_duplicates_from_scene_name_table()
 
     class LastUpdate(CacheDBBase):
         __tablename__ = 'last_update'
