@@ -563,15 +563,14 @@ class Core(object):
         self.loading_shows = True
 
         self.shows = {}
-        for show in session.query(MainDB.TVShow).with_entities(MainDB.TVShow.indexer_id, MainDB.TVShow.indexer, MainDB.TVShow.name):
+        for query in session.query(MainDB.TVShow).with_entities(MainDB.TVShow.indexer_id, MainDB.TVShow.indexer, MainDB.TVShow.name):
             try:
-                self.log.info('Loading show {} and building caches'.format(show.name))
-                show = TVShow(show.indexer_id, show.indexer)
-                self.shows.update({(show.indexer_id, show.indexer): show})
-                self.name_cache.build(show)
-                self.quicksearch_cache.add_show(show.indexer_id)
+                self.log.info('Loading show {} and building caches'.format(query.name))
+                self.shows.update({(query.indexer_id, query.indexer): TVShow(query.indexer_id, query.indexer)})
+                self.name_cache.build(self.shows[(query.indexer_id, query.indexer)])
+                self.quicksearch_cache.add_show(query.indexer_id)
             except Exception as e:
-                self.log.debug('There was an error loading show: {}'.format(show.name))
+                self.log.debug('There was an error loading show: {}'.format(query.name))
 
         self.loading_shows = False
 
