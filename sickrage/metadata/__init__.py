@@ -340,7 +340,6 @@ class GenericMetadata(object):
         """
 
         data = self._show_data(show_obj)
-
         if not data:
             return False
 

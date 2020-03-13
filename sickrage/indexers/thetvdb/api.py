@@ -458,6 +458,8 @@ class Tvdb:
 
                 if status_code == 401:
                     raise tvdb_unauthorized(error_message)
+                elif status_code == 504:
+                    error_message = "Unable to connect to TheTVDB"
             except Exception as e:
                 error_message = "{!r}".format(e)
 

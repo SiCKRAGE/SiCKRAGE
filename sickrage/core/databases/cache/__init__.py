@@ -62,7 +62,7 @@ class CacheDB(SRDatabase):
                     found.append((x.indexer_id, x.name))
 
         remove_duplicates_from_last_search_table()
-        remove_duplicates_from_scene_name_table()
+        # remove_duplicates_from_scene_name_table()
 
     class LastUpdate(CacheDBBase):
         __tablename__ = 'last_update'

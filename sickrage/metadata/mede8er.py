@@ -118,13 +118,11 @@ class Mede8erMetadata(MediaBrowserMetadata):
         try:
             myShow = t[int(show_obj.indexer_id)]
         except indexer_shownotfound:
-            sickrage.app.log.error(
-                "Unable to find show with id " + str(show_obj.indexer_id) + " on tvdb, skipping it")
-            raise
-
+            sickrage.app.log.error("Unable to find show with id " + str(show_obj.indexer_id) + " on " + IndexerApi(show_obj.indexer).name + ", skipping it")
+            return
         except indexer_error:
-            sickrage.app.log.error("TVDB is down, can't use its data to make the NFO")
-            raise
+            sickrage.app.log.error("" + IndexerApi(show_obj.indexer).name + " is down, can't use its data to add this show")
+            return
 
         # check for title and id
         if not (getattr(myShow, 'seriesname', None) and getattr(myShow, 'id', None)):
@@ -359,7 +357,6 @@ class Mede8erMetadata(MediaBrowserMetadata):
         """
 
         data = self._show_data(show_obj)
-
         if not data:
             return False
 

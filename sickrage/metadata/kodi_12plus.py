@@ -115,19 +115,15 @@ class KODI_12PlusMetadata(GenericMetadata):
         try:
             myShow = t[int(show_ID)]
         except indexer_shownotfound:
-            sickrage.app.log.error("Unable to find show with id " + str(show_ID) + " on " + IndexerApi(
-                show_obj.indexer).name + ", skipping it")
-            raise
-
+            sickrage.app.log.error("Unable to find show with id " + str(show_ID) + " on " + IndexerApi(show_obj.indexer).name + ", skipping it")
+            return
         except indexer_error:
-            sickrage.app.log.error(
-                "" + IndexerApi(show_obj.indexer).name + " is down, can't use its data to add this show")
-            raise
+            sickrage.app.log.error("" + IndexerApi(show_obj.indexer).name + " is down, can't use its data to add this show")
+            return
 
         # check for title and id
         if not (getattr(myShow, 'seriesname', None) and getattr(myShow, 'id', None)):
-            sickrage.app.log.info("Incomplete info for show with id " + str(show_ID) + " on " + IndexerApi(
-                show_obj.indexer).name + ", skipping it")
+            sickrage.app.log.info("Incomplete info for show with id " + str(show_ID) + " on " + IndexerApi(show_obj.indexer).name + ", skipping it")
             return False
 
         title = SubElement(tv_node, "title")
@@ -143,7 +139,7 @@ class KODI_12PlusMetadata(GenericMetadata):
                 if year_text:
                     year = SubElement(tv_node, "year")
                     year.text = year_text
-            except:
+            except Exception:
                 pass
 
         if getattr(myShow, 'overview', None):
