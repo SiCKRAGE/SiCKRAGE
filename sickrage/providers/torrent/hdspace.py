@@ -48,10 +48,10 @@ class HDSpaceProvider(TorrentProvider):
 
         self.categories = [15, 21, 22, 24, 25, 40]  # HDTV/DOC 1080/720, bluray, remux
         for cat in self.categories:
-            self.urls['search'] += str(cat) + '%%3B'
-            self.urls['rss'] += '&cat[]=' + str(cat)
+            self._urls['search'] += str(cat) + '%%3B'
+            self._urls['rss'] += '&cat[]=' + str(cat)
 
-        self.urls['search'] = self.urls['search'][:-4]  # remove extra %%3B
+        self._urls['search'] = self._urls['search'][:-4]  # remove extra %%3B
 
         self.cache = TVCache(self)
 

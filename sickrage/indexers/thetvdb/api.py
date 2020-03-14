@@ -662,10 +662,15 @@ class Tvdb:
     def image_key_types(self, sid, season=None, language='en'):
         key_types = {}
 
-        for data in self._request('get', self.config['api']['images']['params'].format(id=sid), language)['data']:
-            key_type = data['keytype']
-            resolution = data['resolution']
-            subkey = data['subkey']
+        try:
+            data = self._request('get', self.config['api']['images']['params'].format(id=sid), language)['data']
+        except tvdb_error:
+            return key_types
+
+        for item in data:
+            key_type = item['keytype']
+            resolution = item['resolution']
+            subkey = item['subkey']
 
             has_image = False
             if season and "season" in key_type:
@@ -688,10 +693,10 @@ class Tvdb:
 
         images = []
         for language in [self.config['api']['lang'], self.config['language']]:
-            if not self.image_key_types(sid, season, language).get(key_type):
-                continue
-
             try:
+                if not self.image_key_types(sid, season, language).get(key_type):
+                    continue
+
                 if not season:
                     images = self._request('get', self.config['api']['images'][key_type].format(id=sid), language)['data']
                 else:

@@ -44,7 +44,6 @@ from tornado.ioloop import IOLoop
 import sickrage
 from sickrage.core.announcements import Announcements
 from sickrage.core.api import API
-from sickrage.core.caches.name_cache import NameCache
 from sickrage.core.caches.quicksearch_cache import QuicksearchCache
 from sickrage.core.common import SD, SKIPPED, WANTED
 from sickrage.core.config import Config
@@ -59,6 +58,7 @@ from sickrage.core.processors.auto_postprocessor import AutoPostProcessor
 from sickrage.core.queues.postprocessor import PostProcessorQueue
 from sickrage.core.queues.search import SearchQueue
 from sickrage.core.queues.show import ShowQueue
+from sickrage.core.scene_exceptions import load_scene_exceptions, retrieve_scene_exceptions
 from sickrage.core.searchers.backlog_searcher import BacklogSearcher
 from sickrage.core.searchers.daily_searcher import DailySearcher
 from sickrage.core.searchers.failed_snatch_searcher import FailedSnatchSearcher
@@ -154,7 +154,6 @@ class Core(object):
         self.scheduler = None
         self.wserver = None
         self.google_auth = None
-        self.name_cache = None
         self.show_queue = None
         self.search_queue = None
         self.postprocessor_queue = None
@@ -195,7 +194,6 @@ class Core(object):
         self.alerts = Notifications()
         self.scheduler = TornadoScheduler({'apscheduler.timezone': 'UTC'})
         self.wserver = WebServer()
-        self.name_cache = NameCache()
         self.show_queue = ShowQueue()
         self.search_queue = SearchQueue()
         self.postprocessor_queue = PostProcessorQueue()
@@ -299,8 +297,8 @@ class Core(object):
         # set torrent client web url
         torrent_webui_url(True)
 
-        # load name cache
-        self.name_cache.load()
+        # load scene exceptions
+        load_scene_exceptions()
 
         # load quicksearch cache
         self.quicksearch_cache.load()
@@ -496,15 +494,15 @@ class Core(object):
             id=self.upnp_client.name
         )
 
-        # add namecache update job
+        # add scene exceptions update job
         self.scheduler.add_job(
-            self.name_cache.run,
+            retrieve_scene_exceptions,
             IntervalTrigger(
                 days=1,
                 timezone='utc'
             ),
-            name=self.name_cache.name,
-            id=self.name_cache.name
+            name="SCENE-EXCEPTIONS",
+            id="SCENE-EXCEPTIONS"
         )
 
         # add announcements job
@@ -567,7 +565,6 @@ class Core(object):
             try:
                 self.log.info('Loading show {} and building caches'.format(query.name))
                 self.shows.update({(query.indexer_id, query.indexer): TVShow(query.indexer_id, query.indexer)})
-                self.name_cache.build(self.shows[(query.indexer_id, query.indexer)])
                 self.quicksearch_cache.add_show(query.indexer_id)
             except Exception as e:
                 self.log.debug('There was an error loading show: {}'.format(query.name))

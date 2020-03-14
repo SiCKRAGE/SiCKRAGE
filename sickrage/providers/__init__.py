@@ -104,12 +104,12 @@ class GenericProvider(object):
 
     @property
     def urls(self):
-        # try:
-        #     resp = sickrage.app.api.provider.get_urls(self.id)
-        #     if resp and 'data' in resp:
-        #         return json.loads(resp['data']['urls'])
-        # except (JSONDecodeError, APIError) as e:
-        #     pass
+        try:
+            resp = sickrage.app.api.provider.get_urls(self.id)
+            if resp and 'data' in resp:
+                return json.loads(resp['data']['urls'])
+        except (JSONDecodeError, APIError) as e:
+            pass
 
         return self._urls
 

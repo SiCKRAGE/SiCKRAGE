@@ -618,7 +618,6 @@ class GenericMetadata(object):
                 lINDEXER_API_PARMS['dvdorder'] = True
 
             t = IndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
-
         except (indexer_error, IOError) as e:
             sickrage.app.log.warning("{}: Unable to look up show on ".format(show_obj.indexer_id) + IndexerApi(
                 show_obj.indexer).name + ", not downloading images: {}".format(e))

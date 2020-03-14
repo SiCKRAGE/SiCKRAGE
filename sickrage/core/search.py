@@ -325,9 +325,6 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
 
     show_object = find_show(show_id)
 
-    # build name cache for show
-    sickrage.app.name_cache.build(show_object)
-
     final_results = []
 
     for providerID, providerObj in sickrage.app.search_providers.sort(randomize=sickrage.app.config.randomize_providers).items():

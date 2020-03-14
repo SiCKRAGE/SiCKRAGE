@@ -360,9 +360,6 @@ class QueueItemAdd(ShowQueueItem):
             sickrage.app.log.debug(traceback.format_exc())
             raise self._finish_early()
 
-        # add show to name cache
-        sickrage.app.name_cache.build(show_obj)
-
         try:
             sickrage.app.log.debug(_("Attempting to retrieve show info from IMDb"))
             show_obj.load_imdb_info()

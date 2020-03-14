@@ -58,8 +58,7 @@ class TVEpisodeTests(tests.SiCKRAGETestDBCase):
         show = TVShow(0o001, 1)
         ep = TVEpisode(show, 1, 1, 1)
         ep.name = "asdasdasdajkaj"
-        ep.save_to_db()
-        ep.load_from_db(1, 1)
+        ep.save()
         self.assertEqual(ep.name, "asdasdasdajkaj")
 
 

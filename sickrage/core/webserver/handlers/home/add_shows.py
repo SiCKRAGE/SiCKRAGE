@@ -164,17 +164,14 @@ class MassAddTableHandler(BaseHandler, ABC):
                             continue
 
                         (showid, show_name, indexer) = cur_provider.retrieve_show_metadata(cur_path)
-
-                        # default to TVDB if indexer was not detected
-                        if show_name and not (indexer or showid):
-                            (sn, idxr, i) = IndexerApi(indexer).searchForShowID(show_name, showid)
-
-                            # set indexer and indexer_id from found info
-                            if not indexer and idxr:
-                                indexer = idxr
-
-                            if not showid and i:
-                                showid = i
+                        if show_name:
+                            if not indexer and showid:
+                                for idxr in IndexerApi().indexers:
+                                    result = IndexerApi(idxr).search_for_show_id(show_name)
+                                    if result == showid:
+                                        indexer = idxr
+                            elif not showid and indexer:
+                                showid = IndexerApi(indexer).search_for_show_id(show_name)
 
                     cur_dir['existing_info'] = (showid, show_name, indexer)
                     if showid and find_show(showid):

@@ -76,7 +76,6 @@ class SiCKRAGETestCase(unittest.TestCase):
 
         sickrage.app = Core()
         sickrage.app.search_providers = SearchProviders()
-        sickrage.app.name_cache = NameCache()
         sickrage.app.log = Logger()
         sickrage.app.config = Config()
 

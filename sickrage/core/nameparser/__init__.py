@@ -30,9 +30,8 @@ from dateutil import parser
 from sqlalchemy import orm
 
 import sickrage
-from sickrage.core.databases.main import MainDB
 from sickrage.core import scene_exceptions, common
-from sickrage.core.exceptions import MultipleShowObjectsException
+from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import remove_extension, strip_accents
 from sickrage.core.nameparser import regexes
 from sickrage.core.scene_numbering import get_absolute_number_from_season_and_episode, get_indexer_absolute_numbering, get_indexer_numbering
@@ -61,52 +60,39 @@ class NameParser(object):
 
     def get_show(self, name):
         show_id = None
-        show_names = [name]
-
         if not name:
             return show_id
 
-        def cache_lookup(term):
-            return sickrage.app.name_cache.get(term)
+        def indexer_lookup(term):
+            for indexer in IndexerApi().indexers:
+                result = IndexerApi(indexer).search_for_show_id(term)
+                if result:
+                    return result
 
         def scene_exception_lookup(term):
-            return scene_exceptions.get_scene_exception_by_name(term)[0]
+            scene_result = scene_exceptions.get_scene_exception_by_name(term)
+            if scene_result:
+                return scene_result[0]
 
-        def showlist_lookup(term):
-            try:
-                return find_show_by_name(term).indexer_id
-            except MultipleShowObjectsException:
-                return None
+        def show_cache_lookup(term):
+            tv_show = find_show_by_name(term)
+            if tv_show:
+                return tv_show.indexer_id
 
-        show_names.append(strip_accents(name))
-        show_names.append(strip_accents(name).replace("'", " "))
-
-        for show_name in set(show_names):
-            lookup_list = [
-                lambda: cache_lookup(show_name),
-                lambda: scene_exception_lookup(show_name),
-                lambda: showlist_lookup(show_name),
-            ]
-
-            # lookup show id
-            for lookup in lookup_list:
+        for lookup in [show_cache_lookup, scene_exception_lookup, indexer_lookup]:
+            for show_name in list({name, strip_accents(name), strip_accents(name).replace("'", " ")}):
                 try:
-                    show_id = int(lookup())
-                    if show_id == 0:
+                    show_id = lookup(show_name)
+                    if not show_id:
                         continue
-
-                    sickrage.app.name_cache.put(show_name, show_id)
 
                     if self.validate_show and not find_show(show_id):
                         continue
+
+                    if show_id:
+                        return show_id
                 except Exception:
                     pass
-
-            if show_id is None:
-                # ignore show name by caching it with a indexer_id of 0
-                sickrage.app.name_cache.put(show_name, 0)
-
-        return show_id or 0
 
     @staticmethod
     def clean_series_name(series_name):
@@ -272,7 +258,8 @@ class NameParser(object):
             # if we have an air-by-date show then get the real season/episode numbers
             if best_result.is_air_by_date:
                 try:
-                    dbData = session.query(MainDB.TVEpisode).filter_by(showid=show_obj.indexer_id, indexer=show_obj.indexer, airdate=best_result.air_date).one()
+                    dbData = session.query(MainDB.TVEpisode).filter_by(showid=show_obj.indexer_id, indexer=show_obj.indexer,
+                                                                       airdate=best_result.air_date).one()
                     season_number = int(dbData.season)
                     episode_numbers = [int(dbData.episode)]
                 except (orm.exc.NoResultFound, orm.exc.MultipleResultsFound):
@@ -317,10 +304,11 @@ class NameParser(object):
                     a = epAbsNo
 
                     if show_obj.is_scene:
-                        scene_season = scene_exceptions.get_scene_exception_by_name(best_result.series_name)[1]
-                        a = get_indexer_absolute_numbering(show_obj.indexer_id,
-                                                           show_obj.indexer, epAbsNo,
-                                                           True, scene_season)
+                        scene_result = scene_exceptions.get_scene_exception_by_name(best_result.series_name)
+                        if scene_result:
+                            a = get_indexer_absolute_numbering(show_obj.indexer_id,
+                                                               show_obj.indexer, epAbsNo,
+                                                               True, scene_result[1])
 
                     (s, e) = show_obj.get_all_episodes_from_absolute_number([a])
 

@@ -49,7 +49,7 @@ class NcoreProvider(TorrentProvider):
             'login': '{base_url}/login.php'.format(**self._urls),
             'search': ('{base_url}/torrents.php?{cats}&mire=%s&miben=name'
                        '&tipus=kivalasztottak_kozott&submit.x=0&submit.y=0&submit=Ok'
-                       '&tags=&searchedfrompotato=true&jsons=true').format(cats=categories, **self.urls),
+                       '&tags=&searchedfrompotato=true&jsons=true').format(cats=categories, **self._urls),
         })
 
         self.cache = TVCache(self)

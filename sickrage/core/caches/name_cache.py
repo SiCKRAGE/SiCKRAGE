@@ -25,7 +25,7 @@ from sqlalchemy import orm
 import sickrage
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.helpers import full_sanitize_scene_name, strip_accents
-from sickrage.core.scene_exceptions import retrieve_exceptions, get_scene_seasons, get_scene_exceptions
+from sickrage.core.scene_exceptions import retrieve_scene_exceptions, get_scene_seasons, get_scene_exceptions
 from sickrage.core.tv.show.helpers import get_show_list
 
 
@@ -36,17 +36,6 @@ class NameCache(object):
         self.min_time = 10
         self.last_update = {}
         self.cache = {}
-
-    def run(self, force=False):
-        if self.amActive and not force:
-            return
-
-        self.amActive = True
-
-        threading.currentThread().setName(self.name)
-        self.build_all()
-
-        self.amActive = False
 
     def should_update(self, show):
         # if we've updated recently then skip the update
@@ -70,7 +59,7 @@ class NameCache(object):
         self.cache[name] = int(indexer_id)
 
         try:
-            session.query(CacheDB.SceneName).filter_by(name=name, indexer_id=indexer_id).one()
+            session.query(CacheDB.SceneName).filter_by(name=name, indexer_id=int(indexer_id)).one()
         except orm.exc.NoResultFound:
             session.add(CacheDB.SceneName(**{
                 'indexer_id': indexer_id,
@@ -133,30 +122,3 @@ class NameCache(object):
 
         session.bulk_insert_mappings(CacheDB.SceneName, sql_t)
         session.commit()
-
-    def build(self, show):
-        """Build internal name cache
-
-        :param show: Specify show to build name cache for, if None, just do all shows
-        """
-
-        if self.should_update(show):
-            self.last_update[show.name] = datetime.fromtimestamp(int(time.mktime(datetime.today().timetuple())))
-
-            self.clear(indexer_id=show.indexer_id)
-
-            show_names = []
-            for curSeason in [-1] + get_scene_seasons(show.indexer_id):
-                for name in list(set(get_scene_exceptions(show.indexer_id, season=curSeason) + [show.name])):
-                    show_names.append(name)
-                    show_names.append(strip_accents(name))
-                    show_names.append(strip_accents(name).replace("'", " "))
-
-            for show_name in set(show_names):
-                self.clear(name=show_name)
-                self.put(show_name, show.indexer_id)
-
-    def build_all(self):
-        retrieve_exceptions(force=True)
-        for show in get_show_list():
-            self.build(show)

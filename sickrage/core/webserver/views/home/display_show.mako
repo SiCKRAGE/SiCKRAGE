@@ -35,33 +35,35 @@
                 % endif
 
                 <div class="col-lg-10 mx-auto">
-                    <div class="input-group mx-auto" style="width: 30%">
-                        <div class="input-group-prepend">
-                            <button id="prevShow" class="btn fas fa-arrow-left"></button>
-                        </div>
-                        <select class="form-control" id="pickShow" title="Change Show">
-                            % for show_list_name, show_list in sortedShowLists.items():
-                                % if len(show_list) > 1:
-                                    <optgroup label="${show_list_name}">
-                                % endif
-                                % for cur_show in show_list:
-                                    <option value="${cur_show.indexer_id}" ${('', 'selected')[cur_show.indexer_id == show.indexer_id]}>${cur_show.name}</option>
-                                % endfor
-                                % if len(sortedShowLists) > 1:
-                                    </optgroup>
-                                % endif
-                            % endfor
-                        </select>
-                        <div class="input-group-append">
-                            <button id="nextShow" class="btn fas fa-arrow-right"></button>
-                        </div>
-                    </div>
-                    <br/>
                     <div class="row" id="showtitle" data-showname="${show.name}">
                         <div class="col">
-                            <h1>
+                            <h1 class="m-0">
                                 ${show.name}
                             </h1>
+                        </div>
+                        <div class="col">
+                            <div class="input-group mx-auto" style="width: 30%">
+                                <div class="input-group-prepend">
+                                    <button id="prevShow" class="btn fas fa-arrow-left"></button>
+                                </div>
+                                <select class="form-control" id="pickShow" title="Change Show">
+                                    % for show_list_name, show_list in sortedShowLists.items():
+                                        % if len(show_list) > 1:
+                                            <optgroup label="${show_list_name}">
+                                        % endif
+                                        % for cur_show in show_list:
+                                            <option value="${cur_show.indexer_id}" ${('', 'selected')[cur_show.indexer_id == show.indexer_id]}>${cur_show.name}</option>
+                                        % endfor
+                                        % if len(sortedShowLists) > 1:
+                                            </optgroup>
+                                        % endif
+                                    % endfor
+                                </select>
+                                <div class="input-group-append">
+                                    <button id="nextShow" class="btn fas fa-arrow-right"></button>
+                                </div>
+                            </div>
+
                         </div>
                         <div class="col">
                             % if seasonResults:
@@ -108,7 +110,7 @@
                             % endif
                         </div>
                     </div>
-                    <hr class="bg-light mt-0"/>
+                    <hr class="bg-light m-0"/>
                 </div>
             </div>
 
@@ -117,16 +119,14 @@
                     <div class="row mb-1">
                         <div class="col my-auto">
                             <div class="row">
-                                % if show.imdb_info:
-                                    <div class="col-auto">
-                                        <% rating_tip = str(show.imdb_info.rating) + " / 10" + " Stars and " + str(show.imdb_info.votes) + " Votes" %>
+                                <div class="col-auto">
+                                    % if show.imdb_info:
+                                    <% rating_tip = str(show.imdb_info.rating) + " / 10" + " Stars and " + str(show.imdb_info.votes) + " Votes" %>
                                         <span id="imdbstars"
                                               data-imdb-rating="${show.imdb_info.rating}"
                                               title="${rating_tip}"></span>
-                                    </div>
-                                % endif
+                                    % endif
 
-                                <div class="col-auto">
                                     (<span>${show.startyear}</span>) -
 
                                     <span>

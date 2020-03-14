@@ -63,33 +63,26 @@ class IndexerApi(object):
     def indexersByTraktID(self):
         return dict((x['trakt_id'], int(x['id'])) for x in indexerConfig.values())
 
-    def searchForShowID(self, regShowName, showid=None, ui=ShowListUI):
+    def search_for_show_id(self, show_name, custom_ui=None):
         """
         Contacts indexer to check for information on shows by showid
 
-        :param regShowName: Name of show
-        :param showid: Which indexer ID to look for
-        :param ui: Custom UI for indexer use
+        :param show_name: Name of show
+        :param custom_ui: Custom UI for indexer use
         :return:
         """
 
-        showNames = [re.sub('[. -]', ' ', regShowName)]
+        show_name = re.sub('[. -]', ' ', show_name)
 
         # Query Indexers for each search term and build the list of results
         lINDEXER_API_PARMS = self.api_params.copy()
-        lINDEXER_API_PARMS['custom_ui'] = ui
+        lINDEXER_API_PARMS['custom_ui'] = custom_ui or ShowListUI
         t = self.indexer(**lINDEXER_API_PARMS)
 
-        for name in showNames:
-            sickrage.app.log.debug("Trying to find show {} on indexer {}".format(name, self.name))
+        sickrage.app.log.debug("Trying to find show ID for show {} on indexer {}".format(show_name, self.name))
 
-            try:
-                search = t[showid] if showid else t[name]
-                seriesname = search['seriesname']
-                series_id = search['id']
-            except Exception:
-                continue
-
-            return seriesname, self.indexerID, int(series_id)
-
-        return None, None, None
+        try:
+            search = t[show_name]
+            return search['id']
+        except Exception:
+            pass

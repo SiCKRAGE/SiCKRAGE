@@ -29,8 +29,7 @@ from sickrage.core import scene_exceptions
 from sickrage.core.common import countryList
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.helpers import show_names
-from sickrage.core.scene_exceptions import exceptionsCache, get_scene_exceptions, \
-    get_scene_exception_by_name
+from sickrage.core.scene_exceptions import exceptionsCache, get_scene_exceptions, get_scene_exception_by_name
 from sickrage.core.tv.show import TVShow
 
 
@@ -107,7 +106,7 @@ class SceneTests(tests.SiCKRAGETestDBCase):
 class SceneExceptionTestCase(tests.SiCKRAGETestDBCase):
     def setUp(self):
         super(SceneExceptionTestCase, self).setUp()
-        scene_exceptions.retrieve_exceptions()
+        scene_exceptions.retrieve_scene_exceptions()
 
     def test_sceneExceptionsEmpty(self):
         self.assertEqual(get_scene_exceptions(0), [])
@@ -121,21 +120,7 @@ class SceneExceptionTestCase(tests.SiCKRAGETestDBCase):
         self.assertEqual(get_scene_exception_by_name('Carlos 2010'), (164451, -1))
 
     def test_sceneExceptionByNameEmpty(self):
-        self.assertEqual(get_scene_exception_by_name('nothing useful'), (None, None))
-
-    def test_sceneExceptionsResetNameCache(self):
-        # create database session
-        session = sickrage.app.cache_db.session()
-
-        # clear the exceptions
-        session.query(CacheDB.SceneException).delete()
-        session.commit()
-
-        # put something in the cache
-        sickrage.app.name_cache.put('Cached Name', 0)
-
-        # updating should not clear the cache this time since our exceptions didn't change
-        self.assertEqual(sickrage.app.name_cache.get('Cached Name'), 0)
+        self.assertEqual(get_scene_exception_by_name('nothing useful'), None)
 
 
 if __name__ == '__main__':

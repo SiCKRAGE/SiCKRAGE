@@ -31,7 +31,7 @@ def find_show(indexer_id, indexer=1):
 
 def find_show_by_name(term):
     for show in get_show_list():
-        if term in show.name:
+        if term == show.name:
             return show
 
 
