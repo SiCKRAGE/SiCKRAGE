@@ -49,7 +49,6 @@ from sickrage.core.helpers import chmod_as_parent, sanitize_file_name, clean_url
     validate_url, try_int, convert_size
 from sickrage.core.helpers.show_names import all_possible_show_names
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
-from sickrage.core.scene_exceptions import get_scene_exceptions
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.websession import WebSession
 
@@ -205,7 +204,7 @@ class GenericProvider(object):
                 episode_string += episode_object.airdate.strftime('%b')
             elif show_object.anime:
                 # If the show name is a season scene exception, we want to use the indexer episode number.
-                if episode_object.scene_season > 1 and show_name in get_scene_exceptions(show_object.indexer_id, episode_object.scene_season):
+                if episode_object.scene_season > 0 and show_name in show_object.get_scene_exceptions_by_season(episode_object.scene_season):
                     # This is apparently a season exception, let's use the scene_episode instead of absolute
                     ep = episode_object.scene_episode
                 else:

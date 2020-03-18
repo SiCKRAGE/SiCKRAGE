@@ -51,6 +51,10 @@ class API(object):
         return self.ProviderCacheAPI(self)
 
     @property
+    def scene_exceptions(self):
+        return self.SceneExceptions(self)
+
+    @property
     def session(self):
         extra = {
             'client_id': self.client_id,
@@ -131,7 +135,6 @@ class API(object):
     def exchange_token(self, token, scope='offline_access'):
         exchange = {'scope': scope, 'subject_token': token['access_token']}
         self.token = sickrage.app.oidc_client.token_exchange(**exchange)
-
 
     def allowed_usernames(self):
         return self.request('GET', 'allowed-usernames')
@@ -276,8 +279,8 @@ class API(object):
             query = 'imdb/search-by-title/{}'.format(title)
             return self.api.request('GET', query)
 
-        def search_by_imdb_id(self, id):
-            query = 'imdb/search-by-id/{}'.format(id)
+        def search_by_imdb_id(self, imdb_id):
+            query = 'imdb/search-by-id/{}'.format(imdb_id)
             return self.api.request('GET', query)
 
     class GoogleDriveAPI:
@@ -310,4 +313,16 @@ class API(object):
 
         def clear_folder(self, id):
             query = 'google-drive/clear-folder/{id}'.format(id=id)
+            return self.api.request('GET', query)
+
+    class SceneExceptions:
+        def __init__(self, api):
+            self.api = api
+
+        def get(self):
+            query = 'scene-exceptions'
+            return self.api.request('GET', query)
+
+        def search_by_id(self, indexer_id):
+            query = 'scene-exceptions/search-by-id/{}'.format(indexer_id)
             return self.api.request('GET', query)

@@ -24,9 +24,7 @@ from sqlalchemy import orm
 
 import sickrage
 from sickrage.core.databases.cache import CacheDB
-from sickrage.core.helpers import full_sanitize_scene_name, strip_accents
-from sickrage.core.scene_exceptions import retrieve_scene_exceptions, get_scene_seasons, get_scene_exceptions
-from sickrage.core.tv.show.helpers import get_show_list
+from sickrage.core.helpers import full_sanitize_scene_name
 
 
 class NameCache(object):

@@ -29,7 +29,7 @@ from sickrage.core import scene_exceptions
 from sickrage.core.common import countryList
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.helpers import show_names
-from sickrage.core.scene_exceptions import exceptionsCache, get_scene_exceptions, get_scene_exception_by_name
+from sickrage.core.scene_exceptions import exceptionsCache, get_scene_exceptions
 from sickrage.core.tv.show import TVShow
 
 

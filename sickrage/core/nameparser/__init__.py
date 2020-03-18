@@ -30,12 +30,12 @@ from dateutil import parser
 from sqlalchemy import orm
 
 import sickrage
-from sickrage.core import scene_exceptions, common
+from sickrage.core import common
 from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import remove_extension, strip_accents
 from sickrage.core.nameparser import regexes
 from sickrage.core.scene_numbering import get_absolute_number_from_season_and_episode, get_indexer_absolute_numbering, get_indexer_numbering
-from sickrage.core.tv.show.helpers import find_show_by_name, find_show
+from sickrage.core.tv.show.helpers import find_show_by_name, find_show, find_show_by_scene_exception
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_episodenotfound, indexer_error
 
@@ -70,9 +70,9 @@ class NameParser(object):
                     return result
 
         def scene_exception_lookup(term):
-            scene_result = scene_exceptions.get_scene_exception_by_name(term)
-            if scene_result:
-                return scene_result[0]
+            tv_show = find_show_by_scene_exception(term)
+            if tv_show:
+                return tv_show.indexer_id
 
         def show_cache_lookup(term):
             tv_show = find_show_by_name(term)
@@ -304,7 +304,7 @@ class NameParser(object):
                     a = epAbsNo
 
                     if show_obj.is_scene:
-                        scene_result = scene_exceptions.get_scene_exception_by_name(best_result.series_name)
+                        scene_result = show_obj.get_scene_exception_by_name(best_result.series_name)
                         if scene_result:
                             a = get_indexer_absolute_numbering(show_obj.indexer_id,
                                                                show_obj.indexer, epAbsNo,

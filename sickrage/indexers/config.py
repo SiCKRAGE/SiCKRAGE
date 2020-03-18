@@ -35,7 +35,6 @@ indexerConfig = {
         'trakt_id': 'tvdb',
         'xem_origin': 'tvdb',
         'icon': 'thetvdb16.png',
-        'scene_loc': 'https://cdn.sickrage.ca/scene_exceptions/',
         'show_url': 'http://thetvdb.com/?tab=series&id=',
         'base_url': 'http://thetvdb.com/api/F9C450E78D99172E/series/',
     }

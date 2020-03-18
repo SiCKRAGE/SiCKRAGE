@@ -31,7 +31,7 @@ class MainDBBase(SRDatabaseBase):
 
 class MainDB(SRDatabase):
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
-        super(MainDB, self).__init__('main', 10, db_type, db_prefix, db_host, db_port, db_username, db_password)
+        super(MainDB, self).__init__('main', 11, db_type, db_prefix, db_host, db_port, db_username, db_password)
         MainDBBase.metadata.create_all(self.engine)
         for model in MainDBBase._decl_class_registry.values():
             if hasattr(model, '__tablename__'):
@@ -70,10 +70,12 @@ class MainDB(SRDatabase):
         sub_use_sr_metadata = Column(Boolean, default=0)
         notify_list = Column(Text, default='')
         search_delay = Column(Integer, default=0)
+        scene_exceptions = Column(Text, default='')
+        last_scene_exceptions_refresh = Column(Integer, default=0)
         last_update = Column(Integer, default=datetime.datetime.now().toordinal())
         last_refresh = Column(Integer, default=datetime.datetime.now().toordinal())
-        last_backlog_search = Column(Integer, default=datetime.datetime.now().toordinal())
-        last_proper_search = Column(Integer, default=datetime.datetime.now().toordinal())
+        last_backlog_search = Column(Integer, default=0)
+        last_proper_search = Column(Integer, default=0)
 
         episodes = relationship('TVEpisode', uselist=True, backref='tv_shows', lazy='dynamic')
         imdb_info = relationship('IMDbInfo', uselist=False, backref='tv_shows')

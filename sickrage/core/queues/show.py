@@ -394,6 +394,9 @@ class QueueItemAdd(ShowQueueItem):
                 sickrage.app.log.info("update watchlist")
                 sickrage.app.notifier_providers['trakt'].update_watchlist(show_obj)
 
+        # Retrieve scene exceptions
+        show_obj.retrieve_scene_exceptions()
+
         # Load XEM data to DB for show
         xem_refresh(show_obj.indexer_id, show_obj.indexer, force=True)
 

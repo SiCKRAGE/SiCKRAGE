@@ -26,9 +26,11 @@ import re
 import shutil
 import stat
 import threading
+import time
 import traceback
 
 import send2trash
+from adba.aniDBAbstracter import Anime
 from sqlalchemy import orm
 from unidecode import unidecode
 
@@ -314,6 +316,14 @@ class TVShow(object):
         self._data_local['search_delay'] = value
 
     @property
+    def scene_exceptions(self):
+        return list(filter(None, self._data_local['scene_exceptions'].split(',')))
+
+    @scene_exceptions.setter
+    def scene_exceptions(self, value):
+        self._data_local['scene_exceptions'] = ','.join(value)
+
+    @property
     def last_update(self):
         return self._data_local['last_update']
 
@@ -344,6 +354,14 @@ class TVShow(object):
     @last_proper_search.setter
     def last_proper_search(self, value):
         self._data_local['last_proper_search'] = value
+
+    @property
+    def last_scene_exceptions_refresh(self):
+        return self._data_local['last_scene_exceptions_refresh']
+
+    @last_scene_exceptions_refresh.setter
+    def last_scene_exceptions_refresh(self, value):
+        self._data_local['last_scene_exceptions_refresh'] = value
 
     @property
     def episodes(self):
@@ -1242,6 +1260,54 @@ class TVShow(object):
                     continue
 
         return season, episodes
+
+    def retrieve_scene_exceptions(self, get_anidb=True, force=False):
+        """
+        Looks up the exceptions on SR API.
+        """
+
+        max_refresh_age_secs = 86400  # 1 day
+        if not int(time.mktime(datetime.datetime.today().timetuple())) > self.last_scene_exceptions_refresh + max_refresh_age_secs and not force:
+            return
+
+        try:
+            sickrage.app.log.debug("Retrieving scene exceptions from SiCKRAGE API for show: {}".format(self.name))
+            scene_exceptions = sickrage.app.api.scene_exceptions.search_by_id(self.indexer_id)['data']['exceptions'].split(',')
+            self.scene_exceptions = set(self.scene_exceptions + scene_exceptions)
+
+            if get_anidb and self.is_anime and self.indexer == 1:
+                try:
+                    sickrage.app.log.info("Retrieving AniDB scene exceptions for show: {}".format(self.name))
+                    anime = Anime(None, name=self.name, tvdbid=self.indexer_id, autoCorrectName=True)
+                    if anime and anime.name != self.name:
+                        anidb_scene_exceptions = ['{}|-1'.format(anime.name)]
+                        self.scene_exceptions = set(self.scene_exceptions + anidb_scene_exceptions)
+                except Exception:
+                    pass
+
+            self.last_scene_exceptions_refresh = int(time.mktime(datetime.datetime.today().timetuple()))
+            self.save()
+        except APIError:
+            sickrage.app.log.debug("No scene exceptions found from SiCKRAGE API for show: {}".format(self.name))
+        except Exception:
+            sickrage.app.log.debug("Check scene exceptions update failed from SiCKRAGE API for show: {}".format(self.name))
+
+    def get_scene_exception_by_name(self, exception_name):
+        for x in self.scene_exceptions:
+            if exception_name in x:
+                return x.split('|')
+
+    def get_scene_exceptions_by_season(self, season=-1):
+        scene_exceptions = []
+        for scene_exception in self.scene_exceptions:
+            scene_name, scene_season = scene_exception.split('|')
+            if season == scene_season:
+                scene_exceptions.append(scene_name)
+        return scene_exceptions
+
+    def update_scene_exceptions(self, scene_exceptions, season=-1):
+        self.scene_exceptions = set([x + '|{}'.format(season) for x in scene_exceptions])
+        self.save()
 
     def __unicode__(self):
         to_return = ""

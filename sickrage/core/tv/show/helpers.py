@@ -35,6 +35,12 @@ def find_show_by_name(term):
             return show
 
 
+def find_show_by_scene_exception(term):
+    for show in get_show_list():
+        if term in [x.split('|')[0] for x in show.show.scene_exceptions]:
+            return show
+
+
 def find_show_by_location(location):
     for show in get_show_list():
         if show.location == location:

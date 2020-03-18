@@ -47,7 +47,6 @@ from sickrage.core.helpers import clean_url, clean_host, clean_hosts, get_disk_s
 from sickrage.core.helpers.anidb import get_release_groups_for_anime
 from sickrage.core.helpers.srdatetime import SRDateTime
 from sickrage.core.queues.search import FailedQueueItem, ManualSearchQueueItem
-from sickrage.core.scene_exceptions import get_scene_exceptions
 from sickrage.core.scene_numbering import (
     get_scene_numbering_for_show,
     get_xem_numbering_for_show,
@@ -928,13 +927,10 @@ class DisplayShowHandler(BaseHandler, ABC):
         if show_obj.is_anime:
             bwl = show_obj.release_groups
 
-        show_obj.exceptions = await self.run_task(get_scene_exceptions, show_obj.indexer_id)
-        show_obj.save()
-
         indexer_id = int(show_obj.indexer_id)
         indexer = int(show_obj.indexer)
 
-        # Delete any previous occurrances
+        # Delete any previous occurrences
         for index, recentShow in enumerate(sickrage.app.config.shows_recent):
             if recentShow['indexer_id'] == indexer_id:
                 del sickrage.app.config.shows_recent[index]
@@ -960,7 +956,6 @@ class DisplayShowHandler(BaseHandler, ABC):
             bwl=bwl,
             epCounts=ep_counts,
             epCats=ep_cats,
-            all_scene_exceptions=show_obj.exceptions,
             scene_numbering=get_scene_numbering_for_show(indexer_id, indexer),
             xem_numbering=get_xem_numbering_for_show(indexer_id, indexer),
             scene_absolute_numbering=get_scene_absolute_numbering_for_show(indexer_id, indexer),

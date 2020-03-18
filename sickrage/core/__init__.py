@@ -58,7 +58,6 @@ from sickrage.core.processors.auto_postprocessor import AutoPostProcessor
 from sickrage.core.queues.postprocessor import PostProcessorQueue
 from sickrage.core.queues.search import SearchQueue
 from sickrage.core.queues.show import ShowQueue
-from sickrage.core.scene_exceptions import load_scene_exceptions, retrieve_scene_exceptions
 from sickrage.core.searchers.backlog_searcher import BacklogSearcher
 from sickrage.core.searchers.daily_searcher import DailySearcher
 from sickrage.core.searchers.failed_snatch_searcher import FailedSnatchSearcher
@@ -297,9 +296,6 @@ class Core(object):
         # set torrent client web url
         torrent_webui_url(True)
 
-        # load scene exceptions
-        load_scene_exceptions()
-
         # load quicksearch cache
         self.quicksearch_cache.load()
 
@@ -496,7 +492,7 @@ class Core(object):
 
         # add scene exceptions update job
         self.scheduler.add_job(
-            retrieve_scene_exceptions,
+            lambda: [x.retrieve_scene_exceptions() for x in self.shows],
             IntervalTrigger(
                 days=1,
                 timezone='utc'
@@ -564,7 +560,9 @@ class Core(object):
         for query in session.query(MainDB.TVShow).with_entities(MainDB.TVShow.indexer_id, MainDB.TVShow.indexer, MainDB.TVShow.name):
             try:
                 self.log.info('Loading show {} and building caches'.format(query.name))
-                self.shows.update({(query.indexer_id, query.indexer): TVShow(query.indexer_id, query.indexer)})
+                show = TVShow(query.indexer_id, query.indexer)
+                show.retrieve_scene_exceptions()
+                self.shows.update({(query.indexer_id, query.indexer): show})
                 self.quicksearch_cache.add_show(query.indexer_id)
             except Exception as e:
                 self.log.debug('There was an error loading show: {}'.format(query.name))

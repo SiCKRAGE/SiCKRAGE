@@ -216,8 +216,7 @@ class Subtitles(object):
             subliminal.refine(video, episode_refiners=self.episode_refiners, embedded_subtitles=embedded_subtitles, release_name=episode_object.name,
                               tv_episode=episode_object)
 
-            from sickrage.core.scene_exceptions import get_scene_exceptions
-            video.alternative_series = list(get_scene_exceptions(episode_object.show.indexer_id))
+            video.alternative_series = [x.split('|')[0] for x in episode_object.show.scene_exceptions]
 
             # remove format metadata
             video.format = ""

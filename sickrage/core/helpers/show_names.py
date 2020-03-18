@@ -277,14 +277,12 @@ def all_possible_show_names(show_id, season=-1):
     :rtype: list[unicode]
     """
 
-    from sickrage.core.scene_exceptions import get_scene_exceptions
-
     show = find_show(show_id)
 
-    show_names = get_scene_exceptions(show_id, season=season)[:]
+    show_names = show.get_scene_exceptions_by_season(season=season)[:]
     if not show_names:  # if we dont have any season specific exceptions fallback to generic exceptions
         season = -1
-        show_names = get_scene_exceptions(show_id, season=season)[:]
+        show_names = show.get_scene_exceptions_by_season(season=season)[:]
 
     if season in [-1, 1]:
         show_names.append(show.name)

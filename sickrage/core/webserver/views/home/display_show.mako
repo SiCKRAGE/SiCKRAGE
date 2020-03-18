@@ -273,7 +273,7 @@
 
                                 <tr>
                                     <td class="show-legend">${_('Scene Name:')}</td>
-                                    <td>${(show.name, " | ".join(show.exceptions))[show.exceptions != 0]}</td>
+                                    <td>${" | ".join([x.split('|')[0] for x in show.scene_exceptions])}</td>
                                 </tr>
 
                                 <tr>

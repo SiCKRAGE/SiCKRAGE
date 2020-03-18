@@ -18,7 +18,6 @@
 import uuid
 
 import sickrage
-from sickrage.core import scene_exceptions
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import sanitize_scene_name, episode_num, try_int
 from sickrage.core.tv.show.helpers import find_show
@@ -179,9 +178,9 @@ class BTNProvider(TorrentProvider):
             params['series'] = show_object.name
             searches.append(params)
 
-        for name in list(set(scene_exceptions.get_scene_exceptions(show_object.indexer_id))):
+        for scene_exception in [x.split('|')[0] for x in show_object.scene_exceptions]:
             series_params = params.copy()
-            series_params['series'] = sanitize_scene_name(name)
+            series_params['series'] = sanitize_scene_name(scene_exception)
             searches.append(series_params)
 
         # extend air by date searches to include season numbering

@@ -32,7 +32,6 @@ from sickrage.core.exceptions import CantUpdateShowException, CantRefreshShowExc
 from sickrage.core.helpers import try_int, checkbox_to_value
 from sickrage.core.helpers.anidb import get_release_groups_for_anime, short_group_names
 from sickrage.core.queues.search import BacklogQueueItem, FailedQueueItem
-from sickrage.core.scene_exceptions import get_scene_exceptions, update_scene_exceptions
 from sickrage.core.scene_numbering import xem_refresh
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
@@ -170,8 +169,6 @@ def edit_show(show, any_qualities, best_qualities, exceptions_list, location=Non
             sickrage.app.alerts.error(_('Error'), err_msg)
         return False, err_msg
 
-    show_obj.exceptions = get_scene_exceptions(show_obj.indexer_id)
-
     flatten_folders = not checkbox_to_value(flatten_folders)  # UI inverts this value
     dvdorder = checkbox_to_value(dvdorder)
     skip_downloaded = checkbox_to_value(skip_downloaded)
@@ -213,7 +210,7 @@ def edit_show(show, any_qualities, best_qualities, exceptions_list, location=Non
     if direct_call:
         do_update_exceptions = False
     else:
-        if set(exceptions_list) == set(show_obj.exceptions):
+        if set(exceptions_list) == set(show_obj.scene_exceptions):
             do_update_exceptions = False
         else:
             do_update_exceptions = True
@@ -286,7 +283,7 @@ def edit_show(show, any_qualities, best_qualities, exceptions_list, location=Non
 
     if do_update_exceptions:
         try:
-            update_scene_exceptions(show_obj.indexer_id, exceptions_list)
+            show_obj.update_scene_exceptions(exceptions_list)
         except CantUpdateShowException:
             warnings.append(_("Unable to force an update on scene exceptions of the show."))
 
@@ -635,8 +632,6 @@ class EditShowHandler(BaseHandler, ABC):
             err_string = _("Unable to find the specified show: ") + str(show)
             return self._genericMessage(_("Error"), err_string)
 
-        scene_exceptions = get_scene_exceptions(show_obj.indexer_id)
-
         if show_obj.is_anime:
             whitelist = show_obj.release_groups.whitelist
             blacklist = show_obj.release_groups.blacklist
@@ -650,7 +645,7 @@ class EditShowHandler(BaseHandler, ABC):
                 "/home/edit_show.mako",
                 show=show_obj,
                 quality=show_obj.quality,
-                scene_exceptions=scene_exceptions,
+                scene_exceptions=[x.split('|')[0] for x in show_obj.scene_exceptions],
                 groups=groups,
                 whitelist=whitelist,
                 blacklist=blacklist,
@@ -664,7 +659,7 @@ class EditShowHandler(BaseHandler, ABC):
                 "/home/edit_show.mako",
                 show=show_obj,
                 quality=show_obj.quality,
-                scene_exceptions=scene_exceptions,
+                scene_exceptions=[x.split('|')[0] for x in show_obj.scene_exceptions],
                 title=_('Edit Show'),
                 header=_('Edit Show'),
                 controller='home',
