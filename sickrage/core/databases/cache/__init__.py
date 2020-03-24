@@ -76,14 +76,6 @@ class CacheDB(SRDatabase):
         provider = Column(String(32), primary_key=True)
         time = Column(Integer)
 
-    class SceneException(CacheDBBase):
-        __tablename__ = 'scene_exceptions'
-
-        id = Column(Integer, primary_key=True)
-        indexer_id = Column(Integer)
-        show_name = Column(Text)
-        season = Column(Integer)
-
     class SceneName(CacheDBBase):
         __tablename__ = 'scene_names'
 
@@ -96,12 +88,6 @@ class CacheDB(SRDatabase):
 
         network_name = Column(String(256), primary_key=True)
         timezone = Column(Text)
-
-    class SceneExceptionRefresh(CacheDBBase):
-        __tablename__ = 'scene_exceptions_refresh'
-
-        exception_list = Column(String(32), primary_key=True)
-        last_refreshed = Column(Integer)
 
     class Provider(CacheDBBase):
         __tablename__ = 'providers'

@@ -989,23 +989,19 @@ class CMD_Exceptions(ApiCall):
 
     async def run(self):
         """ Get the scene exceptions for all or a given show """
-        session = sickrage.app.cache_db.session()
-
         if self.indexerid is None:
             scene_exceptions = {}
-            for dbData in session.query(CacheDB.SceneException):
-                indexer_id = dbData.indexer_id
+            for show in get_show_list():
+                indexer_id = show.indexer_id
                 if indexer_id not in scene_exceptions:
                     scene_exceptions[indexer_id] = []
-                scene_exceptions[indexer_id].append(dbData.show_name)
+                scene_exceptions[indexer_id].append(show.name)
         else:
-            showObj = find_show(int(self.indexerid))
-            if not showObj:
+            show = find_show(int(self.indexerid))
+            if not show:
                 return await _responds(RESULT_FAILURE, msg="Show not found")
 
-            scene_exceptions = []
-            for dbData in session.query(CacheDB.SceneException).filter_by(indexer_id=self.indexerid):
-                scene_exceptions.append(dbData.show_name)
+            scene_exceptions = show.scene_exceptions
 
         return await _responds(RESULT_SUCCESS, scene_exceptions)
 
