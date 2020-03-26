@@ -490,17 +490,6 @@ class Core(object):
             id=self.upnp_client.name
         )
 
-        # add scene exceptions update job
-        self.scheduler.add_job(
-            lambda: [x.retrieve_scene_exceptions() for x in self.shows],
-            IntervalTrigger(
-                days=1,
-                timezone='utc'
-            ),
-            name="SCENE-EXCEPTIONS",
-            id="SCENE-EXCEPTIONS"
-        )
-
         # add announcements job
         self.scheduler.add_job(
             self.announcements.run,
