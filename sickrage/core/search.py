@@ -225,10 +225,7 @@ def pick_best_result(results, season_pack=False):
         # verify result content
         if not cur_result.provider.private:
             if cur_result.type in ["nzb", "torrent"] and not cur_result.provider.get_content(cur_result.url):
-                if sickrage.app.config.download_unverified_magnet_link and cur_result.url.startswith('magnet'):
-                    # Attempt downloading unverified torrent magnet link
-                    pass
-                else:
+                if not sickrage.app.config.download_unverified_magnet_link and cur_result.url.startswith('magnet'):
                     sickrage.app.log.info("Ignoring {} because we are unable to verify the download url".format(cur_result.name))
                     continue
 

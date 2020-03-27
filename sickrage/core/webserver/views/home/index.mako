@@ -111,7 +111,7 @@
                                              src="${srWebRoot}${showImage(curShow.indexer_id, 'poster').url}"/>
                                     </a>
                                     <div class="card-header bg-dark py-0 px-0">
-                                        % if curShow.indexer_id in sickrage.app.show_queue.loading_show_list:
+                                        % if sickrage.app.show_queue.is_being_added(curShow.indexer_id):
                                             <div class="bg-dark progress shadow"></div>
                                         % else:
                                             <div class="bg-dark progress shadow">
@@ -258,7 +258,7 @@
 
                                             % if sickrage.app.config.home_layout != 'simple':
                                                 <td class="align-middle">
-                                                    % if curShow.indexer_id in sickrage.app.show_queue.loading_show_list:
+                                                    % if sickrage.app.show_queue.is_being_added(curShow.indexer_id):
                                                         <div class="bg-dark progress shadow"></div>
                                                     % else:
                                                         <div class="bg-dark progress shadow">

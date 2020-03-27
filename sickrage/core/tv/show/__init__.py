@@ -30,6 +30,7 @@ import time
 import traceback
 
 import send2trash
+import sqlalchemy
 from adba.aniDBAbstracter import Anime
 from sqlalchemy import orm
 from unidecode import unidecode
@@ -419,7 +420,7 @@ class TVShow(object):
                 MainDB.TVEpisode.airdate < datetime.date.today(),
                 MainDB.TVEpisode.status != UNAIRED
             ).order_by(
-                MainDB.TVEpisode.airdate
+                sqlalchemy.desc(MainDB.TVEpisode.airdate)
             ).first()
 
             if query:
@@ -790,7 +791,7 @@ class TVShow(object):
             'imdbid': 'imdb_id'
         }
 
-        if not self.imdb_id:
+        if not re.search(r'tt\d+', self.imdb_id):
             try:
                 resp = sickrage.app.api.imdb.search_by_imdb_title(self.name)
             except APIError as e:
@@ -800,13 +801,14 @@ class TVShow(object):
             for x in resp.get('Search', []):
                 try:
                     if int(x.get('Year'), 0) == self.startyear and x.get('Title') in self.name:
-                        self.imdb_id = x.get('imdbID')
-                        self.save()
-                        break
+                        if re.search(r'tt\d+', x.get('imdbID', '')):
+                            self.imdb_id = x.get('imdbID')
+                            self.save()
+                            break
                 except:
                     continue
 
-        if self.imdb_id:
+        if re.search(r'tt\d+', self.imdb_id):
             sickrage.app.log.debug(str(self.indexer_id) + ": Obtaining IMDb info")
 
             try:

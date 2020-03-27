@@ -1254,13 +1254,13 @@ class TorrentRssCache(TVCache):
         self.min_time = 15
 
     def _get_rss_data(self):
-        sickrage.app.log.debug("Cache update URL: %s" % self.provider.url)
+        sickrage.app.log.debug("Cache update URL: %s" % self.provider.urls['base_url'])
 
         if self.provider.cookies:
             add_dict_to_cookiejar(self.provider.session.cookies,
                                   dict(x.rsplit('=', 1) for x in self.provider.cookies.split(';')))
 
-        return self.get_rss_feed(self.provider.url)
+        return self.get_rss_feed(self.provider.urls['base_url'])
 
 
 class SearchProviders(dict):

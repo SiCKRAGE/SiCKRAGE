@@ -65,7 +65,7 @@ from sickrage.subtitles import Subtitles
 class HomeHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
-        show_list = get_show_list()
+        show_list = [x for x in get_show_list() if not sickrage.app.show_queue.is_being_removed(x.indexer_id)]
         if not len(show_list):
             return self.redirect('/home/addShows/')
 

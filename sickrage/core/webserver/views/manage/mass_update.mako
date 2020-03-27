@@ -80,7 +80,7 @@
                             </thead>
 
                             <tbody>
-                                % for curShow in sorted(get_show_list(), key=cmp_to_key(lambda x, y: x.name < y.name)):
+                                % for curShow in shows_list:
                                     <% curEp = curShow.airs_next %>
 
                                     <tr class="${curShow.status}" id="${curShow.indexer_id}">

@@ -21,6 +21,7 @@
 
 import os
 from abc import ABC
+from functools import cmp_to_key
 
 from tornado.escape import json_encode, json_decode
 from tornado.web import authenticated
@@ -450,7 +451,7 @@ class ShowSubtitleMissedHandler(BaseHandler, ABC):
 
         result = {}
 
-        for dbData in session.query(MainDB.TVEpisode).filter_by(showid=int(indexer_id)).\
+        for dbData in session.query(MainDB.TVEpisode).filter_by(showid=int(indexer_id)). \
                 filter(MainDB.TVEpisode.status.endswith(4), MainDB.TVEpisode.season != 0):
             if which_subs == 'all':
                 if not frozenset(Subtitles().wanted_languages()).difference(dbData.subtitles.split(',')):
@@ -995,8 +996,12 @@ class MassEditHandler(BaseHandler, ABC):
 class MassUpdateHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
+        shows_list = sorted([x for x in get_show_list() if not sickrage.app.show_queue.is_being_removed(x.indexer_id)],
+                            key=cmp_to_key(lambda x, y: x.name < y.name))
+
         return await self.render(
             '/manage/mass_update.mako',
+            shows_list=shows_list,
             title=_('Mass Update'),
             header=_('Mass Update'),
             topmenu='manage',
