@@ -390,7 +390,7 @@
                                            placeholder="${_('ex. http://localhost:8080')}"
                                            class="form-control" autocapitalize="off"
                                            type="url"
-                                           pattern="https?://.+:[0-9]+/?">
+                                           pattern="https?:\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?">
                                     <div class="invalid-tooltip">
                                         Please fill in a valid URL.
                                     </div>
@@ -574,12 +574,12 @@
                                     </div>
                                     <input name="nzbget_host" id="nzbget_host"
                                            value="${sickrage.app.config.nzbget_host}"
-                                           placeholder="${_('ex. localhost:6789')}"
+                                           placeholder="${_('ex. http://localhost:6789')}"
                                            title="NZBget RPC host name and port number (not NZBgetweb!"
                                            class="form-control"
                                            autocapitalize="off"
                                            type="url"
-                                           pattern="[a-zA-Z]+:[0-9]+">
+                                           pattern="https?:\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?">
                                     <div class="invalid-tooltip">
                                         Please fill in a valid host:port
                                     </div>
@@ -841,7 +841,7 @@
                                            class="form-control"
                                            autocapitalize="off"
                                            type="url"
-                                           pattern="(scgi|https?)://.+:[0-9]+/?">
+                                           pattern="(sgi|https?):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?">
                                     <div class="invalid-tooltip">
                                         Please fill in a valid URL.
                                     </div>
