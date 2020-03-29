@@ -201,8 +201,8 @@
                 <div class="col-lg-10 mx-auto">
                     <div class="row">
                         <div class="col-auto d-none d-lg-block">
-                            <img class="shadow-lg rounded"
-                                 src="${srWebRoot}${showImage(show.indexer_id, 'poster_thumb').url}"/>
+                            <img class="shadow-lg rounded img-poster"
+                                 src="${srWebRoot}${showImage(show.indexer_id, 'poster').url}"/>
                         </div>
 
                         <div class="col">
