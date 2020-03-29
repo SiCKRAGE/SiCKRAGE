@@ -1362,7 +1362,6 @@ def backup_versioned_file(old_file, version):
         try:
             sickrage.app.log.debug("Trying to back up %s to %s" % (old_file, new_file))
             shutil.copyfile(old_file, new_file)
-            encryption.encrypt_file(new_file, sickrage.app.public_key)
             sickrage.app.log.debug("Backup completed: {}".format(new_file))
             break
         except Exception as e:

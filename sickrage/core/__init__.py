@@ -549,9 +549,7 @@ class Core(object):
         for query in session.query(MainDB.TVShow).with_entities(MainDB.TVShow.indexer_id, MainDB.TVShow.indexer, MainDB.TVShow.name):
             try:
                 self.log.info('Loading show {} and building caches'.format(query.name))
-                show = TVShow(query.indexer_id, query.indexer)
-                show.retrieve_scene_exceptions()
-                self.shows.update({(query.indexer_id, query.indexer): show})
+                self.shows.update({(query.indexer_id, query.indexer): TVShow(query.indexer_id, query.indexer)})
                 self.quicksearch_cache.add_show(query.indexer_id)
             except Exception as e:
                 self.log.debug('There was an error loading show: {}'.format(query.name))

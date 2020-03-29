@@ -1291,7 +1291,7 @@ class TVShow(object):
             self.save()
         except APIError:
             sickrage.app.log.debug("No scene exceptions found from SiCKRAGE API for show: {}".format(self.name))
-        except Exception:
+        except Exception as e:
             sickrage.app.log.debug("Check scene exceptions update failed from SiCKRAGE API for show: {}".format(self.name))
 
     def get_scene_exception_by_name(self, exception_name):

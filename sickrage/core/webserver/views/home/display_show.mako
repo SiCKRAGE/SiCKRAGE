@@ -42,7 +42,7 @@
                             </h1>
                         </div>
                         <div class="col">
-                            <div class="input-group mx-auto" style="width: 30%">
+                            <div class="input-group mx-auto">
                                 <div class="input-group-prepend">
                                     <button id="prevShow" class="btn fas fa-arrow-left"></button>
                                 </div>
