@@ -41,9 +41,6 @@ class ComingEpisodes:
         'show': cmp_to_key(lambda a, b: (a['show_name'], a['localtime'].date()) < (b['show_name'], b['localtime'].date())),
     }
 
-    def __init__(self):
-        pass
-
     @staticmethod
     def get_coming_episodes(categories, sort, group, paused=False):
         """
@@ -54,8 +51,8 @@ class ComingEpisodes:
         :return: The list of coming episodes
         """
 
-        def result(show, episode):
-            return {
+        def add_result(show, episode, grouped=False):
+            to_return = {
                 'airdate': episode.airdate,
                 'airs': show.airs,
                 'description': episode.description,
@@ -71,8 +68,38 @@ class ComingEpisodes:
                 'season': episode.season,
                 'show_name': show.name,
                 'showid': episode.showid,
-                'status': show.status
+                'status': show.status,
+                'localtime': SRDateTime(sickrage.app.tz_updater.parse_date_time(episode.airdate, show.airs, show.network), convert=True).dt
             }
+
+            if grouped:
+                to_return['airs'] = str(to_return['airs']).replace('am', ' AM').replace('pm', ' PM').replace('  ', ' ')
+                to_return['airdate'] = to_return['localtime'].date()
+                to_return['quality'] = get_quality_string(to_return['quality'])
+                to_return['airs'] = SRDateTime(to_return['localtime']).srftime(t_preset=timeFormat).lstrip('0').replace(' 0', ' ')
+                to_return['weekday'] = 1 + to_return['airdate'].weekday()
+                to_return['tvdbid'] = to_return['indexer_id']
+                to_return['airdate'] = SRDateTime(to_return['localtime']).srfdate(d_preset=dateFormat)
+
+            if grouped:
+                if to_return['paused'] and not paused:
+                    return
+
+                if to_return['airdate'] < today:
+                    category = 'missed'
+                elif to_return['airdate'] >= next_week:
+                    category = 'later'
+                elif to_return['airdate'] == today:
+                    category = 'today'
+                else:
+                    category = 'soon'
+
+                if len(categories) > 0 and category not in categories:
+                    return
+
+                grouped_results[category].append(to_return)
+            else:
+                results.append(to_return)
 
         paused = sickrage.app.config.coming_eps_display_paused or paused
 
@@ -81,6 +108,9 @@ class ComingEpisodes:
 
         if sort not in ComingEpisodes.sorts.keys():
             sort = 'date'
+
+        results = []
+        grouped_results = {category: [] for category in categories}
 
         today = datetime.date.today()
         next_week = datetime.date.today() + datetime.timedelta(days=7)
@@ -94,10 +124,9 @@ class ComingEpisodes:
                          Quality.ARCHIVED + \
                          Quality.IGNORED
 
-        results = []
         for show in get_show_list():
             with sickrage.app.main_db.session() as session:
-                results += [result(show, episode) for episode in session.query(
+                [add_result(show, episode, grouped=group) for episode in session.query(
                     MainDB.TVEpisode
                 ).filter_by(
                     showid=show.indexer_id,
@@ -110,7 +139,7 @@ class ComingEpisodes:
                 )]
 
                 if show.indexer_id not in [int(r['showid']) for r in results]:
-                    results += [result(show, episode) for episode in session.query(
+                    [add_result(show, episode, grouped=group) for episode in session.query(
                         MainDB.TVEpisode
                     ).filter_by(
                         showid=show.indexer_id,
@@ -121,7 +150,7 @@ class ComingEpisodes:
                         ~MainDB.TVEpisode.status.in_(Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER)
                     )]
 
-                results += [result(show, episode) for episode in session.query(
+                [add_result(show, episode, grouped=group) for episode in session.query(
                     MainDB.TVEpisode
                 ).filter_by(
                     showid=show.indexer_id,
@@ -134,45 +163,10 @@ class ComingEpisodes:
                     ~MainDB.TVEpisode.status.in_(qualities_list)
                 )]
 
-        for index, item in enumerate(results):
-            results[index]['localtime'] = SRDateTime(sickrage.app.tz_updater.parse_date_time(item['airdate'], item['airs'], item['network']), convert=True).dt
-
-        results.sort(key=ComingEpisodes.sorts[sort])
-
-        if not group:
+        if group:
+            for category in categories:
+                grouped_results[category].sort(key=ComingEpisodes.sorts[sort])
+            return grouped_results
+        else:
+            results.sort(key=ComingEpisodes.sorts[sort])
             return results
-
-        grouped_results = {category: [] for category in categories}
-
-        for result in results:
-            if result['paused'] and not paused:
-                continue
-
-            result['airs'] = str(result['airs']).replace('am', ' AM').replace('pm', ' PM').replace('  ', ' ')
-            result['airdate'] = result['localtime'].date()
-
-            if result['airdate'] < today:
-                category = 'missed'
-            elif result['airdate'] >= next_week:
-                category = 'later'
-            elif result['airdate'] == today:
-                category = 'today'
-            else:
-                category = 'soon'
-
-            if len(categories) > 0 and category not in categories:
-                continue
-
-            if not result['network']:
-                result['network'] = ''
-
-            result['quality'] = get_quality_string(result['quality'])
-            result['airs'] = SRDateTime(result['localtime']).srftime(t_preset=timeFormat).lstrip('0').replace(' 0', ' ')
-            result['weekday'] = 1 + result['airdate'].weekday()
-            result['tvdbid'] = result['indexer_id']
-            result['airdate'] = SRDateTime(result['localtime']).srfdate(d_preset=dateFormat)
-            result['localtime'] = result['localtime']
-
-            grouped_results[category].append(result)
-
-        return grouped_results
