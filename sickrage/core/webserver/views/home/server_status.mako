@@ -12,7 +12,6 @@
             _('Daily Search'): 'daily_searcher',
             _('Backlog'): 'backlog_searcher',
             _('Show Update'): 'show_updater',
-            _('Scene Exceptions'): 'name_cache',
         }
 
         if sickrage.app.config.version_notify:
