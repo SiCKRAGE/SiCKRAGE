@@ -108,7 +108,7 @@ class GenericProvider(object):
                 resp = sickrage.app.api.provider.get_urls(self.id)
                 if resp and 'data' in resp:
                     return json.loads(resp['data']['urls'])
-            except (JSONDecodeError, APIError) as e:
+            except Exception:
                 pass
 
         return self._urls

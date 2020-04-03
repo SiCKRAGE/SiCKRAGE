@@ -498,7 +498,7 @@ class TVShow(object):
 
         new_episodes = []
         for episode_object in self.episodes:
-            if episode_object.status != UNAIRED or episode_object.season == 0 or episode_object.airdate < datetime.date.min:
+            if episode_object.status != UNAIRED or episode_object.season == 0 or not episode_object.airdate > datetime.date.min:
                 continue
 
             air_date = episode_object.airdate
