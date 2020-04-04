@@ -507,10 +507,10 @@ class Core(object):
         self.postprocessor_queue.start()
 
         # fire off startup events
-        self.scheduler.add_job(self.load_shows)
-        self.scheduler.add_job(self.version_updater.run)
-        self.scheduler.add_job(self.tz_updater.run)
-        self.scheduler.add_job(self.announcements.run)
+        self.io_loop.add_callback(self.load_shows)
+        self.io_loop.add_callback(self.version_updater.run)
+        self.io_loop.add_callback(self.tz_updater.run)
+        self.io_loop.add_callback(self.announcements.run)
 
         # start scheduler service
         self.scheduler.start()
@@ -524,6 +524,7 @@ class Core(object):
                                                         sickrage.app.config.web_host, sickrage.app.config.web_port))
 
         def started():
+            threading.currentThread().setName('CORE')
             self.log.info("SiCKRAGE :: STARTED")
             self.log.info("SiCKRAGE :: APP VERSION:[{}]".format(sickrage.version()))
             self.log.info("SiCKRAGE :: CONFIG VERSION:[v{}]".format(self.config.config_version))
