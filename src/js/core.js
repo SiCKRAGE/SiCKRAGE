@@ -3426,7 +3426,7 @@ $(document).ready(function ($) {
                         } else if (selectedProvider.toLowerCase() === 'rtorrent') {
                             client = 'rTorrent';
                             $('#torrent_paused_option').hide();
-                            $('#torrent_host').attr('placeholder', gt('URL to your rTorrent client (e.g. scgi://localhost:5000') + '<br>' + gt(' or https://localhost/rutorrent/plugins/httprpc/action.php)'));
+                            $('#torrent_host').attr('placeholder', gt('URL to your rTorrent client (e.g. scgi://localhost:5000 or https://localhost/rutorrent/plugins/httprpc/action.php)'));
                             $('#torrent_verify_cert_option').show();
                             $('#torrent_verify_deluge').hide();
                             $('#torrent_verify_rtorrent').show();
