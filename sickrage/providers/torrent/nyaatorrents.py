@@ -100,7 +100,7 @@ class NyaaProvider(TorrentProvider):
                 seeders = try_int(item['nyaa_seeders'])
                 leechers = try_int(item['nyaa_leechers'])
 
-                size = convert_size(item['nyaa_size'], -1, units=['B', 'KIB', 'MIB', 'GIB', 'TIB', 'PIB'])
+                size = convert_size(item.get('nyaa_size', -1), -1, units=['B', 'KIB', 'MIB', 'GIB', 'TIB', 'PIB'])
 
                 results += [
                     {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
