@@ -622,16 +622,15 @@ class TorrentProvider(GenericProvider):
                     # add torrent to external API
                     sickrage.app.api.torrent_cache.add(url)
 
-                    # get content from other torrent hash search engines
-                    for torrent_url in [x.format(info_hash=info_hash) for x in self.bt_cache_urls]:
-                        if result:
-                            continue
-
-                        result = verify_torrent(super(TorrentProvider, self).get_content(torrent_url))
+                    # # get content from other torrent hash search engines
+                    # for torrent_url in [x.format(info_hash=info_hash) for x in self.bt_cache_urls]:
+                    #     if result:
+                    #         continue
+                    #
+                    #     result = verify_torrent(super(TorrentProvider, self).get_content(torrent_url))
                 except Exception as e:
                     result = None
-
-        if not result:
+        else:
             result = verify_torrent(super(TorrentProvider, self).get_content(url))
 
         return result
