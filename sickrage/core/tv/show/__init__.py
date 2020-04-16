@@ -53,7 +53,7 @@ from sickrage.indexers.exceptions import indexer_attributenotfound
 class TVShow(object):
     def __init__(self, indexer_id, indexer, lang='en', location=''):
         self.lock = threading.Lock()
-        self._episodes = []
+        self._episodes = set()
 
         with sickrage.app.main_db.session() as session:
             try:
@@ -369,7 +369,8 @@ class TVShow(object):
         if not self._episodes:
             with sickrage.app.main_db.session() as session:
                 query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one()
-                self._episodes = [TVEpisode(showid=self.indexer_id, indexer=self.indexer, season=x.season, episode=x.episode) for x in query.episodes]
+                for x in query.episodes:
+                    self._episodes.add(TVEpisode(showid=self.indexer_id, indexer=self.indexer, season=x.season, episode=x.episode))
         return self._episodes
 
     @property
@@ -667,7 +668,7 @@ class TVShow(object):
                 if no_create:
                     raise EpisodeNotFoundException
                 tv_episode = TVEpisode(showid=self.indexer_id, indexer=self.indexer, season=season, episode=episode)
-                self._episodes.append(tv_episode)
+                self._episodes.add(tv_episode)
                 return tv_episode
         except orm.exc.MultipleResultsFound:
             if absolute_number is not None:
