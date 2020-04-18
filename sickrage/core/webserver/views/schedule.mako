@@ -144,8 +144,10 @@
                                                 ${'S{:02d}E{:02d}'.format(int(cur_result['season']), int(cur_result['episode']))}
                                             </td>
 
-                                            <td class="tvShow" class="text-nowrap"><a
-                                                    href="${srWebRoot}/home/displayShow?show=${cur_result['showid']}">${cur_result['show_name']}</a>
+                                            <td class="tvShow" class="text-nowrap">
+                                                <a href="${srWebRoot}/home/displayShow?show=${cur_result['showid']}">
+                                                    ${cur_result['show_name']}
+                                                </a>
                                                 % if int(cur_result['paused']):
                                                     <span class="pause">[paused]</span>
                                                 % endif

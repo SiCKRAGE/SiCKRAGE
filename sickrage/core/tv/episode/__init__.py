@@ -402,7 +402,7 @@ class TVEpisode(object):
         episode = (self.episode, episode)[episode is not None]
 
         sickrage.app.log.debug("{}: Loading episode details from {} for episode S{:02d}E{:02d}".format(
-            self.show.indexer_id, indexer_name, season or 0, episode or 0)
+            self.show.indexer_id, indexer_name, int(season) or 0, int(episode) or 0)
         )
 
         indexer_lang = self.show.lang or sickrage.app.config.indexer_default_language
@@ -450,14 +450,14 @@ class TVEpisode(object):
         self.name = safe_getattr(myEp, 'episodename', self.name)
         if not myEp.get('episodename'):
             sickrage.app.log.info("This episode {} - S{:02d}E{:02d} has no name on {}. "
-                                  "Setting to an empty string".format(self.show.name, season or 0, episode or 0, indexer_name))
+                                  "Setting to an empty string".format(self.show.name, int(season) or 0, int(episode) or 0, indexer_name))
 
         if not myEp.get('absolutenumber'):
             sickrage.app.log.debug(
-                "This episode {} - S{:02d}E{:02d} has no absolute number on {}".format(self.show.name, season or 0, episode or 0, indexer_name))
+                "This episode {} - S{:02d}E{:02d} has no absolute number on {}".format(self.show.name, int(season) or 0, int(episode) or 0, indexer_name))
         else:
             sickrage.app.log.debug(
-                "{}: The absolute_number for S{:02d}E{:02d} is: {}".format(self.show.indexer_id, season or 0, episode or 0, myEp["absolutenumber"]))
+                "{}: The absolute_number for S{:02d}E{:02d} is: {}".format(self.show.indexer_id, int(season) or 0, int(episode) or 0, myEp["absolutenumber"]))
             self.absolute_number = try_int(safe_getattr(myEp, 'absolutenumber'), self.absolute_number)
 
         self.season = season
@@ -484,7 +484,7 @@ class TVEpisode(object):
             self.airdate = datetime.date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
         except (ValueError, IndexError, TypeError):
             sickrage.app.log.warning("Malformed air date of {} retrieved from {} for ({} - S{:02d}E{:02d})".format(
-                firstaired, indexer_name, self.show.name, season or 0, episode or 0))
+                firstaired, indexer_name, self.show.name, int(season) or 0, int(episode) or 0))
 
             # if I'm incomplete on the indexer but I once was complete then just delete myself from the DB for now
             self.show.get_episode(season, episode).delete_episode()
