@@ -2392,8 +2392,8 @@ class Config(object):
             # old encryption from python 2
             config_obj = ConfigObj(config_file, encoding='utf8')
             config_obj.walk(self.legacy_decrypt,
-                            encryption_version=int(config_obj.get('General').get('encryption_version', 0)),
-                            encryption_secret=config_obj.get('General').get('encryption_secret', ''),
+                            encryption_version=int(config_obj.get('General', {}).get('encryption_version', 0)),
+                            encryption_secret=config_obj.get('General', {}).get('encryption_secret', ''),
                             raise_errors=False)
 
         return config_obj
