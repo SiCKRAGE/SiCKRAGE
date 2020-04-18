@@ -20,6 +20,7 @@
 
 import datetime
 import sys
+from collections import deque
 
 from sickrage.core.common import Quality, dateTimeFormat
 
@@ -167,13 +168,14 @@ class ErrorViewer(object):
     the list to be cleared.
     """
 
-    errors = []
+    def __init__(self):
+        self.errors = deque(maxlen=100)
 
     def add(self, error, ui=False):
         self.errors += [(error, UIError(error))[ui]]
 
     def clear(self):
-        self.errors = []
+        self.errors.clear()
 
     def get(self):
         return self.errors
@@ -188,13 +190,14 @@ class WarningViewer(object):
     the list to be cleared.
     """
 
-    warnings = []
+    def __init__(self):
+        self.warnings = deque(maxlen=100)
 
     def add(self, warning, ui=False):
         self.warnings += [(warning, UIWarning(warning))[ui]]
 
     def clear(self):
-        self.warnings = []
+        self.warnings.clear()
 
     def get(self):
         return self.warnings

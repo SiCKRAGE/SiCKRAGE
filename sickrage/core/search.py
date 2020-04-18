@@ -292,8 +292,7 @@ def is_first_best_match(result):
     Checks if the given result is a best quality match and if we want to archive the episode on first match.
     """
 
-    sickrage.app.log.debug(
-        "Checking if we should archive our first best quality match for episode " + result.name)
+    sickrage.app.log.debug("Checking if we should archive our first best quality match for episode " + result.name)
 
     show_obj = find_show(result.show_id)
 
