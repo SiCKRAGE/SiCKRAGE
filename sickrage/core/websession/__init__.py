@@ -19,13 +19,14 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 import os
+import re
 import ssl
 from urllib.parse import urlparse
 
 import certifi
-import cfscrape
 import requests
 from cachecontrol import CacheControlAdapter
+from cloudscraper import CloudScraper
 from fake_useragent import UserAgent
 from requests import Session
 from requests.utils import dict_from_cookiejar
@@ -171,25 +172,27 @@ class WebHelpers(object):
                 if k in ('stream', 'timeout', 'verify', 'cert', 'proxies', 'allow_redirects')
             }
 
-        def is_cloudflare_challenge(resp):
-            """Check if the response is a Cloudflare challange.
-            Source: goo.gl/v8FvnD
-            """
-            return (
-                    resp.status_code == 503
-                    and resp.headers.get('Server', '').startswith('cloudflare')
-                    and b'jschl_vc' in resp.content
-                    and b'jschl_answer' in resp.content
-            )
+        # def is_cloudflare_challenge(resp):
+        #     """Check if the response is a Cloudflare challange.
+        #     Source: goo.gl/v8FvnD
+        #     """
+        #     try:
+        #         return (resp.headers.get('Server', '').startswith('cloudflare')
+        #                 and resp.status_code in [429, 503]
+        #                 and re.search(r'action="/.*?__cf_chl_jschl_tk__=\S+".*?name="jschl_vc"\svalue=.*?', resp.text, re.M | re.DOTALL))
+        #     except AttributeError:
+        #         pass
+        #
+        #     return False
 
-        if is_cloudflare_challenge(resp):
+        if CloudScraper.is_IUAM_Challenge(resp):
             sickrage.app.log.debug('CloudFlare protection detected, trying to bypass it')
 
             # Get the original request
             original_request = resp.request
 
             # Get the CloudFlare tokens and original user-agent
-            tokens, user_agent = cfscrape.get_tokens(original_request.url)
+            tokens, user_agent = CloudScraper.get_tokens(original_request.url)
 
             # Add CloudFlare tokens to the session cookies
             session.cookies.update(tokens)
@@ -222,4 +225,7 @@ class WebHelpers(object):
 
             return cf_resp
         else:
+            if CloudScraper.is_reCaptcha_Challenge(resp) or CloudScraper.is_Firewall_Blocked(resp):
+                sickrage.app.log.warning("Cloudflare captcha challenge or firewall detected, it can't be bypassed.")
+
             return resp
