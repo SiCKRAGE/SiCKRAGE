@@ -269,7 +269,7 @@
                                 <a class="dropdown-item" href="#" id="changelog">
                                     <i class="fas fa-fw fa-globe"></i>&nbsp;${_('Changelog')}
                                 </a>
-                                <a class="dropdown-item" href="https://www.paypal.me/sickrage" rel="noreferrer"
+                                <a class="dropdown-item" href="https://opencollective.com/sickrage" rel="noreferrer"
                                    onclick="window.open('${sickrage.app.config.anon_redirect}' + this.href); return false;">
                                     <i class="fas fa-fw fa-donate"></i>&nbsp;${_('Donate')}
                                 </a>
