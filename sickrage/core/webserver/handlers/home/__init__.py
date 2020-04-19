@@ -894,7 +894,7 @@ class DisplayShowHandler(BaseHandler, ABC):
             cur_ep_cat = show_obj.get_overview(int(episode_object.status or -1))
 
             if episode_object.airdate > datetime.date.min:
-                today = datetime.datetime.now().replace(tzinfo=sickrage.app.tz)
+                today = datetime.datetime.now().replace(tzinfo=sickrage.app.tz).date()
                 air_date = episode_object.airdate
                 if air_date.year >= 1970 or show_obj.network:
                     air_date = SRDateTime(sickrage.app.tz_updater.parse_date_time(episode_object.airdate, show_obj.airs, show_obj.network), convert=True).dt
