@@ -115,6 +115,7 @@ release:build:master:
     - yarn install --pure-lockfile --cache-folder .yarn-cache
     - pip install bumpversion
     - pip install -r requirements-dev.txt
+    - git-changelog -t $(cat sickrage/version.txt)
     - bumpversion --allow-dirty release package.json sickrage/version.txt
     - git checkout -b release-$(cat sickrage/version.txt)
     - yarn run build
@@ -156,6 +157,7 @@ release:build:develop:
     - yarn install --pure-lockfile --cache-folder .yarn-cache
     - pip install bumpversion
     - pip install -r requirements-dev.txt
+    - git-changelog -t $(cat sickrage/version.txt)
     - bumpversion --allow-dirty dev package.json sickrage/version.txt
     - yarn run build
     #    - python setup.py extract_messages

@@ -1,0 +1,52 @@
+{
+    "app_name": "",
+    "logo": "https://sickrage.ca/img/logo-stacked.png",
+    "intro": "",
+    "branch" : "",
+    "repo_url": "",
+    "version_name" : "",
+    "file": "CHANGELOG.md",
+    "template": "",
+    "sections": [
+        {
+            "title": "Bug Fixes",
+            "grep": "^Fix"
+        },
+        {
+            "title": "Features",
+            "grep": "^Feat"
+        },
+        {
+            "title": "Documentation",
+            "grep": "^Docs"
+        },
+        {
+            "title": "Breaking changes",
+            "grep": "BREAKING"
+        },
+        {
+            "title": "Refactor",
+            "grep": "^Refactor"
+        },
+        {
+            "title": "Style",
+            "grep": "^Style"
+        },
+        {
+            "title": "Test",
+            "grep": "^Test"
+        },
+        {
+            "title": "Chore",
+            "grep": "^Chore"
+        },
+        {
+            "title": "Branchs merged",
+            "grep": "^Merge branch"
+        },
+        {
+            "title" : "Pull requests merged",
+            "grep": "^Merge pull request"
+        }
+    ]
+}
