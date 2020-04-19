@@ -792,7 +792,7 @@ class TVShow(object):
             'imdbid': 'imdb_id'
         }
 
-        if not re.search(r'tt\d+', self.imdb_id):
+        if not re.search(r'^tt\d+$', self.imdb_id):
             try:
                 resp = sickrage.app.api.imdb.search_by_imdb_title(self.name)
             except APIError as e:
@@ -802,14 +802,14 @@ class TVShow(object):
             for x in resp.get('Search', []):
                 try:
                     if int(x.get('Year'), 0) == self.startyear and x.get('Title') in self.name:
-                        if re.search(r'tt\d+', x.get('imdbID', '')):
+                        if re.search(r'^tt\d+$', x.get('imdbID', '')):
                             self.imdb_id = x.get('imdbID')
                             self.save()
                             break
                 except:
                     continue
 
-        if re.search(r'tt\d+', self.imdb_id):
+        if re.search(r'^tt\d+$', self.imdb_id):
             sickrage.app.log.debug(str(self.indexer_id) + ": Obtaining IMDb info")
 
             try:
