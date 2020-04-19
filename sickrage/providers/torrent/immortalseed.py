@@ -151,12 +151,17 @@ class ImmortalseedProvider(TorrentProvider):
             # Skip column headers
             for result in torrent_rows[1:]:
                 try:
-                    title = result.find('div', class_='tooltip-target').get_text(strip=True)
+                    tooltip = result.find('div', class_='tooltip-target')
+                    if not tooltip:
+                        continue
+
+                    title = title.get_text(strip=True)
+
                     # skip if torrent has been nuked due to poor quality
                     if title.startswith('Nuked.'):
                         continue
-                    download_url = result.find(
-                        'img', title='Click to Download this Torrent in SSL!').parent['href']
+
+                    download_url = result.find('img', title='Click to Download this Torrent in SSL!').parent['href']
                     if not all([title, download_url]):
                         continue
 
