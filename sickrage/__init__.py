@@ -39,7 +39,7 @@ PROG_DIR = os.path.abspath(os.path.realpath(os.path.expanduser(os.path.dirname(_
 LOCALE_DIR = os.path.join(PROG_DIR, 'locale')
 LIBS_DIR = os.path.join(PROG_DIR, 'libs')
 VERSION_FILE = os.path.join(PROG_DIR, 'version.txt')
-CHANGELOG_FILE = os.path.join(MAIN_DIR, 'changelog.md')
+CHANGELOG_FILE = os.path.join(MAIN_DIR, 'CHANGELOG.md')
 REQS_FILE = os.path.join(MAIN_DIR, 'requirements.txt')
 
 

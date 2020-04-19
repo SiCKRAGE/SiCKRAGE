@@ -35,7 +35,7 @@ Automatic Video Library Manager for TV Shows. It watches for new episodes of you
 - [FAQ](https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/Frequently-Asked-Questions)
 - [Wiki](https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/home)
 - [Supported providers](https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/SickRage-Search-Providers)
-- [Changes](https://git.sickrage.ca/SiCKRAGE/sickrage/raw/master/changelog.md)
+- [Changes](https://git.sickrage.ca/SiCKRAGE/sickrage/raw/master/CHANGELOG.md)
 
 #### Important
 Before using this with your existing database sickrage.db please make a backup copy of it and delete any other database files such as cache.db and failed.db if present, We HIGHLY recommend starting out with no database files at all to make this a fresh start but the choice is at your own risk
