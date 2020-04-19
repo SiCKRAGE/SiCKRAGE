@@ -215,8 +215,8 @@ class GenericProvider(object):
                 episode_string_fallback = episode_string + '{episode:0>3}'.format(episode=ep)
             else:
                 episode_string += sickrage.app.naming_ep_type[2] % {
-                    'seasonnumber': episode_object.scene_season,
-                    'episodenumber': episode_object.scene_episode,
+                    'seasonnumber': int(episode_object.scene_season),
+                    'episodenumber': int(episode_object.scene_episode),
                 }
 
             if add_string:
