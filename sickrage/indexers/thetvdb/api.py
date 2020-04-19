@@ -587,25 +587,19 @@ class Tvdb:
             if page > pages:
                 break
 
-            r = self._request('get', self.config['api']['episodes'].format(id=sid),
-                              lang=self.config['api']['lang'],
-                              params={'page': page})
+            episode_info = self._request('get', self.config['api']['episodes'].format(id=sid), lang=self.config['api']['lang'], params={'page': page})
 
-            pages = r['links']['last']
+            pages = episode_info['links']['last']
 
             try:
-                episode_info = r['data']
-
                 # translate if required to provided language
                 if not self.config['language'] == self.config['api']['lang']:
-                    intl_episode_info = self._request('get', self.config['api']['episodes'].format(id=sid),
-                                                      params={'page': page})
-
-                    for i, x in enumerate(episode_info):
-                        x.update((k, v) for k, v in intl_episode_info['data'][i].items() if v)
-                        episode_info[i] = x
-
-                episodes += episode_info
+                    intl_episode_info = self._request('get', self.config['api']['episodes'].format(id=sid), params={'page': page})
+                    for d1, d2 in zip(episode_info['data'], intl_episode_info['data']):
+                        d1.update((k, v) for k, v in d2.items() if v)
+                        episodes.append(d1)
+                else:
+                    episodes += episode_info['data']
 
                 page += 1
             except tvdb_error:
