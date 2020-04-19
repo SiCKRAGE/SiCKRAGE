@@ -713,8 +713,7 @@ class PipUpdateManager(UpdateManager):
         try:
             pypi_version = self.get_newest_version
             if self.version != pypi_version:
-                sickrage.app.log.debug(
-                    "Version upgrade: " + self._find_installed_version() + " -> " + pypi_version)
+                sickrage.app.log.debug("Version upgrade: " + self._find_installed_version() + " -> " + pypi_version)
                 return True
         except Exception as e:
             sickrage.app.log.warning("Unable to contact PyPi, can't check for update: " + repr(e))

@@ -20,12 +20,12 @@
 # ##############################################################################
 
 
-
 import argparse
 import atexit
 import gettext
 import os
 import site
+import subprocess
 import sys
 import threading
 import time
@@ -219,7 +219,12 @@ def main():
     gettext.install('messages', LOCALE_DIR, codeset='UTF-8', names=["ngettext"])
 
     try:
-        from sickrage.core import Core
+        try:
+            from sickrage.core import Core
+        except ModuleNotFoundError:
+            print('Attempting to install SiCKRAGE missing requirements using pip')
+            subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
+            from sickrage.core import Core
 
         # main app instance
         app = Core()
@@ -359,6 +364,7 @@ def main():
             app.shutdown()
     except Exception:
         traceback.print_exc()
+
 
 if __name__ == '__main__':
     main()
