@@ -1,5 +1,5 @@
 <%!
-    import cgi
+    import html
     import sickrage
     from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings
 %>
@@ -20,7 +20,7 @@
                     title += "  " + Quality.qualityStrings[curQual] + "\n"
             else:
                 title += "  None\n"
-            title = ' title="' + cgi.escape(title.rstrip(), True) + '"'
+            title = ' title="' + html.escape(title.rstrip(), True) + '"'
         else:
             title = ""
 
