@@ -6,7 +6,7 @@
     "repo_url": "",
     "version_name" : "",
     "file": "CHANGELOG.md",
-    "template": "",
+    "template": "changelog-template.md",
     "sections": [
         {
             "title": "Bug Fixes",
