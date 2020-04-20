@@ -115,7 +115,6 @@ release:build:master:
     - yarn install --pure-lockfile --cache-folder .yarn-cache
     - pip install bumpversion
     - pip install -r requirements-dev.txt
-    - npx git-changelog -t $(git describe --abbrev=0)
     - bumpversion --allow-dirty release package.json sickrage/version.txt
     - git checkout -b release-$(cat sickrage/version.txt)
     - yarn run build
