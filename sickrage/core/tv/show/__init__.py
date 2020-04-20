@@ -1303,6 +1303,8 @@ class TVShow(object):
     def get_scene_exceptions_by_season(self, season=-1):
         scene_exceptions = []
         for scene_exception in self.scene_exceptions:
+            if not len(scene_exception) == 2:
+                continue
             scene_name, scene_season = scene_exception.split('|')
             if season == scene_season:
                 scene_exceptions.append(scene_name)
