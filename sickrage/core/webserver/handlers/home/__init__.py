@@ -897,7 +897,8 @@ class DisplayShowHandler(BaseHandler, ABC):
                 today = datetime.datetime.now().replace(tzinfo=sickrage.app.tz).date()
                 air_date = episode_object.airdate
                 if air_date.year >= 1970 or show_obj.network:
-                    air_date = SRDateTime(sickrage.app.tz_updater.parse_date_time(episode_object.airdate, show_obj.airs, show_obj.network), convert=True).dt
+                    air_date = SRDateTime(sickrage.app.tz_updater.parse_date_time(episode_object.airdate, show_obj.airs, show_obj.network),
+                                          convert=True).dt.date()
 
                 if cur_ep_cat == Overview.WANTED and air_date < today:
                     cur_ep_cat = Overview.MISSED
