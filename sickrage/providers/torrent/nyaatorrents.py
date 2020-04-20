@@ -93,12 +93,12 @@ class NyaaProvider(TorrentProvider):
         for item in data:
             try:
                 title = item.get('title')
-                download_url = item('link')
+                download_url = item.get('link')
                 if not all([title, download_url]):
                     continue
 
-                seeders = try_int(item('nyaa_seeders', 0))
-                leechers = try_int(item('nyaa_leechers', 0))
+                seeders = try_int(item.get('nyaa_seeders', 0))
+                leechers = try_int(item.get('nyaa_leechers', 0))
 
                 size = convert_size(item.get('nyaa_size', -1), -1, units=['B', 'KIB', 'MIB', 'GIB', 'TIB', 'PIB'])
 
