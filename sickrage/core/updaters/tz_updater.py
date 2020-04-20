@@ -68,18 +68,28 @@ class TimeZoneUpdater(object):
                 session.query(CacheDB.NetworkTimezone).filter_by(network_name=x.network_name).delete()
                 session.commit()
 
+        sql_to_add = []
+        sql_to_update = []
+
         for network, timezone in network_timezones.items():
             try:
                 dbData = session.query(CacheDB.NetworkTimezone).filter_by(network_name=network).one()
                 if dbData.timezone != timezone:
                     dbData.timezone = timezone
+                    sql_to_update.append(dbData.as_dict())
             except orm.exc.NoResultFound:
-                session.add(CacheDB.NetworkTimezone(**{
+                sql_to_add.append({
                     'network_name': network,
                     'timezone': timezone
-                }))
-            finally:
-                session.commit()
+                })
+
+        if len(sql_to_add):
+            session.bulk_insert_mappings(CacheDB.NetworkTimezone, sql_to_add)
+            session.commit()
+
+        if len(sql_to_update):
+            session.bulk_update_mappings(CacheDB.NetworkTimezone, sql_to_update)
+            session.commit()
 
         # cleanup
         del network_timezones
