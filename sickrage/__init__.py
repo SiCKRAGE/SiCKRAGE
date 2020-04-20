@@ -221,7 +221,7 @@ def main():
     try:
         try:
             from sickrage.core import Core
-        except ModuleNotFoundError:
+        except ImportError:
             print('Attempting to install SiCKRAGE missing requirements using pip')
             subprocess.check_call([sys.executable, "-m", "pip", "install", "--no-cache-dir", "-r", REQS_FILE])
             from sickrage.core import Core
