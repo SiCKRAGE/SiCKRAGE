@@ -672,7 +672,7 @@ class TVEpisode(object):
         # delete myself from show episode cache
         try:
             sickrage.app.log.debug("Deleting %s S%02dE%02d from the shows episode cache" % (self.show.name, self.season or 0, self.episode or 0))
-            del self.show.episodes[list(self.show.episodes).index(self)]
+            del self.show.episodes[self.show.episodes.index(self)]
         except (IndexError, ValueError) as e:
             pass
 
