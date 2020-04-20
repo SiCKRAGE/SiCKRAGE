@@ -71,9 +71,9 @@ class NyaaProvider(TorrentProvider):
                 if not data:
                     sickrage.app.log.debug('No data returned from provider')
                     continue
+
                 if not data.get('entries'):
-                    sickrage.app.log.debug('Data returned from provider does not contain any {}torrents'.format(
-                        'confirmed ' if self.confirmed else ''))
+                    sickrage.app.log.debug('Data returned from provider does not contain any {}torrents'.format('confirmed ' if self.confirmed else ''))
                     continue
 
                 results += self.parse(data['entries'], mode)
@@ -92,13 +92,13 @@ class NyaaProvider(TorrentProvider):
 
         for item in data:
             try:
-                title = item['title']
-                download_url = item['link']
+                title = item.get('title')
+                download_url = item('link')
                 if not all([title, download_url]):
                     continue
 
-                seeders = try_int(item['nyaa_seeders'])
-                leechers = try_int(item['nyaa_leechers'])
+                seeders = try_int(item('nyaa_seeders', 0))
+                leechers = try_int(item('nyaa_leechers', 0))
 
                 size = convert_size(item.get('nyaa_size', -1), -1, units=['B', 'KIB', 'MIB', 'GIB', 'TIB', 'PIB'])
 

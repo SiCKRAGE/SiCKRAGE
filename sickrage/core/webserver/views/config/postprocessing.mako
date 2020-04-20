@@ -203,7 +203,7 @@
                         <label for="move_associated_files">
                             <input type="checkbox" class="toggle color-primary is-material" name="move_associated_files"
                                    id="move_associated_files" ${('', 'checked')[bool(sickrage.app.config.move_associated_files)]}/>
-                            ${_('Move srr/srt/sfv/etc files with the episode when processed?')}
+                            ${_('Move associated files with the episode when processed?')}
                         </label>
                     </div>
                 </div>
