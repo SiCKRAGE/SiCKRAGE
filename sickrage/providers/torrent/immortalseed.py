@@ -155,7 +155,7 @@ class ImmortalseedProvider(TorrentProvider):
                     if not tooltip:
                         continue
 
-                    title = title.get_text(strip=True)
+                    title = tooltip.get_text(strip=True)
 
                     # skip if torrent has been nuked due to poor quality
                     if title.startswith('Nuked.'):
