@@ -933,7 +933,7 @@ class TVShow(object):
         for curEpNum in parse_result.episode_numbers:
             episode = int(curEpNum)
 
-            sickrage.app.log.debug("%s: %s parsed to %s S%02dE%02d" % (self.indexer_id, filename, self.name, season or 0, episode or 0))
+            sickrage.app.log.debug("%s: %s parsed to %s S%02dE%02d" % (self.indexer_id, filename, self.name, int(season or 0), int(episode or 0)))
 
             check_quality_again = False
 
