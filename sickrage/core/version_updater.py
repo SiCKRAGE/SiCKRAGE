@@ -649,7 +649,7 @@ class SourceUpdateManager(UpdateManager):
                         tar = tarfile.open(fileobj=update_tarfile, mode='r:gz')
                         tar.extractall(unpack_dir)
                         tar.close()
-                    except tarfile.ReadError:
+                    except tarfile.TarError:
                         sickrage.app.log.warning("Invalid update data, update failed: not a gzip file")
                         return False
 
