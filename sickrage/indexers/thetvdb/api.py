@@ -688,7 +688,8 @@ class Tvdb:
         images = []
         for language in [self.config['api']['lang'], self.config['language']]:
             try:
-                if not self.image_key_types(sid, season, language).get(key_type):
+                key_types = self.image_key_types(sid, season, language)
+                if not key_types or key_type not in key_types:
                     continue
 
                 if not season:
