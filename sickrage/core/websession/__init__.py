@@ -73,7 +73,7 @@ class WebSession(Session):
         """
         return certifi.where() if all([sickrage.app.config.ssl_verify, verify]) else False
 
-    def request(self, method, url, verify=False, random_ua=False, allow_post_redirects=False, *args, **kwargs):
+    def request(self, method, url, verify=False, random_ua=False, allow_post_redirects=False, retry=3, *args, **kwargs):
         self.headers.update({'Accept-Encoding': 'gzip, deflate',
                              'User-Agent': (sickrage.app.user_agent, UserAgent().random)[random_ua]})
 
@@ -85,27 +85,33 @@ class WebSession(Session):
             response = super(WebSession, self).request(method, url, allow_redirects=False)
             url = self.get_redirect_target(response) or url
 
-        try:
-            response = super(WebSession, self).request(method, url, verify=self._get_ssl_cert(verify), *args, **kwargs)
+        retry_count = 0
 
-            # check of cloudflare handling is required
-            if self.cloudflare:
-                response = WebHelpers.cloudflare(self, response, **kwargs)
+        while retry_count < retry:
+            try:
+                response = super(WebSession, self).request(method, url, verify=self._get_ssl_cert(verify), *args, **kwargs)
 
-            # check web response for errors
-            response.raise_for_status()
+                # check of cloudflare handling is required
+                if self.cloudflare:
+                    response = WebHelpers.cloudflare(self, response, **kwargs)
 
-            return response
-        except requests.exceptions.SSLError as e:
-            if ssl.OPENSSL_VERSION_INFO < (1, 0, 1, 5):
-                sickrage.app.log.info(
-                    "SSL Error requesting url: '{}' You have {}, try upgrading OpenSSL to 1.0.1e+".format(e.request.url, ssl.OPENSSL_VERSION)
-                )
+                # check web response for errors
+                response.raise_for_status()
 
-            if sickrage.app.config.ssl_verify:
-                sickrage.app.log.info(
-                    "SSL Error requesting url: '{}', try disabling cert verification in advanced settings".format(e.request.url)
-                )
+                return response
+            except requests.exceptions.SSLError as e:
+                if ssl.OPENSSL_VERSION_INFO < (1, 0, 1, 5):
+                    sickrage.app.log.info(
+                        "SSL Error requesting url: '{}' You have {}, try upgrading OpenSSL to 1.0.1e+".format(e.request.url, ssl.OPENSSL_VERSION)
+                    )
+
+                if sickrage.app.config.ssl_verify:
+                    sickrage.app.log.info(
+                        "SSL Error requesting url: '{}', try disabling cert verification in advanced settings".format(e.request.url)
+                    )
+                return
+            except ConnectionError:
+                retry_count += 1
 
     def download(self, url, filename, **kwargs):
         try:
