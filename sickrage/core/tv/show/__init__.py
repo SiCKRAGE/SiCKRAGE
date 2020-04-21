@@ -830,7 +830,7 @@ class TVShow(object):
             'imdbid': 'imdb_id'
         }
 
-        if not re.search(r'^tt\d+$', self.imdb_id):
+        if not re.search(r'^tt\d+$', self.imdb_id) and self.name:
             try:
                 resp = sickrage.app.api.imdb.search_by_imdb_title(self.name)
             except APIError as e:
