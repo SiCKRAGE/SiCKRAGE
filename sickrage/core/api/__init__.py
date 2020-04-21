@@ -159,6 +159,7 @@ class API(object):
 
                 resp = self.session.request(method, urljoin(self.api_base, "/".join([self.api_version, url])), timeout=timeout,
                                             hooks={'response': self.throttle_hook}, **kwargs)
+
                 resp.raise_for_status()
                 if resp.status_code == 204:
                     return
@@ -180,6 +181,10 @@ class API(object):
                 if status_code == 403 and "login-pf-page" in error_message:
                     self.refresh_token()
                     continue
+                elif 500 >= status_code < 600:
+                    latest_exception = error_message
+                    continue
+
                 if 'application/json' in e.response.headers.get('content-type', ''):
                     json_data = e.response.json().get('error', {})
                     status_code = json_data.get('status', status_code)
