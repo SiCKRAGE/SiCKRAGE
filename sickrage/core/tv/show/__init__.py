@@ -396,17 +396,18 @@ class TVShow(object):
         _airs_next = datetime.date.min
 
         with sickrage.app.main_db.session() as session:
-            show_query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one()
-            query = show_query.episodes.filter(
-                MainDB.TVEpisode.season != 0,
-                MainDB.TVEpisode.airdate >= datetime.date.today(),
-                MainDB.TVEpisode.status.in_([UNAIRED, WANTED])
-            ).order_by(
-                MainDB.TVEpisode.airdate
-            ).first()
+            show_query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one_or_none()
+            if show_query:
+                query = show_query.episodes.filter(
+                    MainDB.TVEpisode.season != 0,
+                    MainDB.TVEpisode.airdate >= datetime.date.today(),
+                    MainDB.TVEpisode.status.in_([UNAIRED, WANTED])
+                ).order_by(
+                    MainDB.TVEpisode.airdate
+                ).first()
 
-            if query:
-                _airs_next = query.airdate
+                if query:
+                    _airs_next = query.airdate
 
         return _airs_next
 
@@ -415,81 +416,117 @@ class TVShow(object):
         _airs_prev = datetime.date.min
 
         with sickrage.app.main_db.session() as session:
-            show_query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one()
-            query = show_query.episodes.filter(
-                MainDB.TVEpisode.season != 0,
-                MainDB.TVEpisode.airdate < datetime.date.today(),
-                MainDB.TVEpisode.status != UNAIRED
-            ).order_by(
-                sqlalchemy.desc(MainDB.TVEpisode.airdate)
-            ).first()
+            show_query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one_or_none()
+            if show_query:
+                query = show_query.episodes.filter(
+                    MainDB.TVEpisode.season != 0,
+                    MainDB.TVEpisode.airdate < datetime.date.today(),
+                    MainDB.TVEpisode.status != UNAIRED
+                ).order_by(
+                    sqlalchemy.desc(MainDB.TVEpisode.airdate)
+                ).first()
 
-            if query:
-                _airs_prev = query.airdate
+                if query:
+                    _airs_prev = query.airdate
 
         return _airs_prev
 
     @property
     def episodes_unaired(self):
+        _episodes_unaired = 0
+
         with sickrage.app.main_db.session() as session:
-            show_query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one()
-            return show_query.episodes.filter(
-                MainDB.TVEpisode.season != 0,
-                MainDB.TVEpisode.status == UNAIRED
-            ).count()
+            show_query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one_or_none()
+            if show_query:
+                _episodes_unaired = show_query.episodes.filter(
+                    MainDB.TVEpisode.season != 0,
+                    MainDB.TVEpisode.status == UNAIRED
+                ).count()
+
+        return _episodes_unaired
 
     @property
     def episodes_snatched(self):
+        _episodes_snatched = 0
+
         with sickrage.app.main_db.session() as session:
-            show_query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one()
-            return show_query.episodes.filter(
-                MainDB.TVEpisode.season != 0,
-                MainDB.TVEpisode.status.in_(Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER)
-            ).count()
+            show_query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one_or_none()
+            if show_query:
+                _episodes_snatched = show_query.episodes.filter(
+                    MainDB.TVEpisode.season != 0,
+                    MainDB.TVEpisode.status.in_(Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER)
+                ).count()
+
+        return _episodes_snatched
 
     @property
     def episodes_downloaded(self):
+        _episodes_downloaded = 0
+
         with sickrage.app.main_db.session() as session:
-            show_query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one()
-            return show_query.episodes.filter(
-                MainDB.TVEpisode.season != 0,
-                MainDB.TVEpisode.status.in_(Quality.DOWNLOADED + Quality.ARCHIVED)
-            ).count()
+            show_query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one_or_none()
+            if show_query:
+                _episodes_downloaded = show_query.episodes.filter(
+                    MainDB.TVEpisode.season != 0,
+                    MainDB.TVEpisode.status.in_(Quality.DOWNLOADED + Quality.ARCHIVED)
+                ).count()
+
+        return _episodes_downloaded
 
     @property
     def episodes_special(self):
+        _episodes_special = 0
+
         with sickrage.app.main_db.session() as session:
-            show_query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one()
-            return show_query.episodes.filter(
-                MainDB.TVEpisode.season == 0
-            ).count()
+            show_query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one_or_none()
+            if show_query:
+                _episodes_special = show_query.episodes.filter(
+                    MainDB.TVEpisode.season == 0
+                ).count()
+
+        return _episodes_special
 
     @property
     def episodes_special_unaired(self):
+        _episodes_special_unaired = 0
+
         with sickrage.app.main_db.session() as session:
-            show_query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one()
-            return show_query.episodes.filter(
-                MainDB.TVEpisode.season == 0,
-                MainDB.TVEpisode.status == UNAIRED
-            ).count()
+            show_query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one_or_none()
+            if show_query:
+                _episodes_special_unaired = show_query.episodes.filter(
+                    MainDB.TVEpisode.season == 0,
+                    MainDB.TVEpisode.status == UNAIRED
+                ).count()
+
+        return _episodes_special_unaired
 
     @property
     def episodes_special_downloaded(self):
+        _episodes_special_downloaded = 0
+
         with sickrage.app.main_db.session() as session:
-            show_query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one()
-            return show_query.episodes.filter(
-                MainDB.TVEpisode.season == 0,
-                MainDB.TVEpisode.status.in_(Quality.DOWNLOADED + Quality.ARCHIVED)
-            ).count()
+            show_query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one_or_none()
+            if show_query:
+                _episodes_special_downloaded = show_query.episodes.filter(
+                    MainDB.TVEpisode.season == 0,
+                    MainDB.TVEpisode.status.in_(Quality.DOWNLOADED + Quality.ARCHIVED)
+                ).count()
+
+        return _episodes_special_downloaded
 
     @property
     def episodes_special_snatched(self):
+        _episodes_special_snatched = 0
+
         with sickrage.app.main_db.session() as session:
-            show_query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one()
-            return show_query.episodes.filter(
-                MainDB.TVEpisode.season == 0,
-                MainDB.TVEpisode.status.in_(Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER)
-            ).count()
+            show_query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one_or_none()
+            if show_query:
+                _episodes_special_snatched = show_query.episodes.filter(
+                    MainDB.TVEpisode.season == 0,
+                    MainDB.TVEpisode.status.in_(Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER)
+                ).count()
+
+        return _episodes_special_snatched
 
     @property
     def new_episodes(self):
