@@ -42,18 +42,12 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
     if not isinstance(dbapi_connection, sqlite3.Connection):
         return
 
+    old_isolation = dbapi_connection.isolation_level
+    dbapi_connection.isolation_level = None
     cursor = dbapi_connection.cursor()
-
-    try:
-        # cursor.execute('PRAGMA foreign_keys=ON;')
-        cursor.execute('PRAGMA page_size=4096;')
-        cursor.execute("PRAGMA journal_mode=WAL")
-        cursor.execute('PRAGMA synchronous=NORMAL;')
-        cursor.execute('PRAGMA busy_timeout=%i;' % 15000)
-    except OperationalError:
-        pass
-
+    cursor.execute("PRAGMA journal_mode=WAL")
     cursor.close()
+    dbapi_connection.isolation_level = old_isolation
 
 
 @event.listens_for(mapper, "init")

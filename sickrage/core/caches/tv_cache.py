@@ -275,8 +275,10 @@ class TVCache(object):
 
         # get data from internal database
         session = sickrage.app.cache_db.session()
-        dbData += [x.as_dict() for x in session.query(CacheDB.Provider).filter_by(provider=self.providerID, series_id=show_id, season=season).filter(
-            CacheDB.Provider.episodes.contains("|{}|".format(episode)))]
+        dbData += [x.as_dict() for x in
+                   session.query(CacheDB.Provider).filter_by(provider=self.providerID,
+                                                             series_id=show_id,
+                                                             season=season).filter(CacheDB.Provider.episodes.contains("|{}|".format(episode)))]
 
         for curResult in dbData:
             show_object = find_show(int(curResult["series_id"]))
