@@ -73,23 +73,21 @@ class ComingEpisodes:
             }
 
             if grouped:
-                to_return['airs'] = str(to_return['airs']).replace('am', ' AM').replace('pm', ' PM').replace('  ', ' ')
-                to_return['airdate'] = to_return['localtime'].date()
-                to_return['quality'] = get_quality_string(to_return['quality'])
                 to_return['airs'] = SRDateTime(to_return['localtime']).srftime(t_preset=timeFormat).lstrip('0').replace(' 0', ' ')
-                to_return['weekday'] = 1 + to_return['airdate'].weekday()
-                to_return['tvdbid'] = to_return['indexer_id']
                 to_return['airdate'] = SRDateTime(to_return['localtime']).srfdate(d_preset=dateFormat)
+                to_return['quality'] = get_quality_string(to_return['quality'])
+                to_return['weekday'] = 1 + to_return['localtime'].date().weekday()
+                to_return['tvdbid'] = to_return['indexer_id']
 
             if grouped:
                 if to_return['paused'] and not paused:
                     return
 
-                if to_return['airdate'] < today:
+                if to_return['localtime'].date() < today:
                     category = 'missed'
-                elif to_return['airdate'] >= next_week:
+                elif to_return['localtime'].date() >= next_week:
                     category = 'later'
-                elif to_return['airdate'] == today:
+                elif to_return['localtime'].date() == today:
                     category = 'today'
                 else:
                     category = 'soon'
