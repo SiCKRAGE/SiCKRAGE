@@ -19,7 +19,6 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 import os
-import re
 import ssl
 from urllib.parse import urlparse
 
@@ -73,7 +72,7 @@ class WebSession(Session):
         """
         return certifi.where() if all([sickrage.app.config.ssl_verify, verify]) else False
 
-    def request(self, method, url, verify=False, random_ua=False, allow_post_redirects=False, retry=3, *args, **kwargs):
+    def request(self, method, url, verify=False, random_ua=False, allow_post_redirects=False, *args, **kwargs):
         self.headers.update({'Accept-Encoding': 'gzip, deflate',
                              'User-Agent': (sickrage.app.user_agent, UserAgent().random)[random_ua]})
 
@@ -85,9 +84,7 @@ class WebSession(Session):
             response = super(WebSession, self).request(method, url, allow_redirects=False)
             url = self.get_redirect_target(response) or url
 
-        retry_count = 0
-
-        while retry_count < retry:
+        for i in range(3):
             try:
                 response = super(WebSession, self).request(method, url, verify=self._get_ssl_cert(verify), *args, **kwargs)
 
@@ -111,7 +108,7 @@ class WebSession(Session):
                     )
                 return
             except ConnectionError:
-                retry_count += 1
+                continue
 
     def download(self, url, filename, **kwargs):
         try:
