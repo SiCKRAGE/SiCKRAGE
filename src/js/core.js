@@ -5743,6 +5743,13 @@ $(document).ready(function ($) {
                         document.body.style.cursor = 'default';
                     });
                 }, 500));
+
+                setInterval(function () {
+                    $.getJSON(SICKRAGE.srWebRoot + '/logs/view/?minLevel=' + $('select[name=minLevel]').val() + '&logFilter=' + $('select[name=logFilter]').val() + '&logSearch=' + $('#logSearch').val() + '&toJson=1', function (data) {
+                        $('#loglines').html(data['logs']);
+                    });
+
+                }, 5000);
             }
         }
     };

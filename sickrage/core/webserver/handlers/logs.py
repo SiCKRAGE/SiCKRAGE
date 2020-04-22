@@ -30,6 +30,26 @@ from sickrage.core.helpers import read_file_buffered
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
+def get_logs(log_search, log_filter, min_level, max_lines):
+    log_files = [sickrage.app.log.logFile] + ["{}.{}".format(sickrage.app.log.logFile, x) for x in range(int(sickrage.app.log.logNr))]
+    levels_filtered = '|'.join([x for x in sickrage.app.log.logLevels.keys() if sickrage.app.log.logLevels[x] >= int(min_level)])
+    log_regex = re.compile(r"(?P<entry>^\d+\-\d+\-\d+\s+\d+\:\d+\:\d+\s+(?:{})[\s\S]+?(?:{})[\s\S]+?$)".format(levels_filtered, log_filter), re.S + re.M)
+
+    data = []
+
+    try:
+        for logFile in [x for x in log_files if os.path.isfile(x)]:
+            data += list(reversed(re.findall("((?:^.+?{}.+?$))".format(log_search),
+                                             "\n".join(next(read_file_buffered(logFile, reverse=True)).splitlines()), re.M + re.I)))
+            max_lines -= len(data)
+            if len(data) == max_lines:
+                raise StopIteration
+    except StopIteration:
+        pass
+
+    return "\n".join(log_regex.findall("\n".join(data)))
+
+
 class LogsHandler(BaseHandler, ABC):
     def initialize(self):
         self.logs_menu = [
@@ -94,6 +114,7 @@ class LogsViewHandler(BaseHandler, ABC):
         log_filter = self.get_argument('logFilter', '')
         log_search = self.get_argument('logSearch', '')
         max_lines = self.get_argument('maxLines', None) or 500
+        to_json = self.get_argument('toJson', None) or False
 
         log_name_filters = {
             '': 'No Filter',
@@ -114,38 +135,15 @@ class LogsViewHandler(BaseHandler, ABC):
             'MAIN': _('Main'),
         }
 
-        log_files = [sickrage.app.log.logFile] + \
-                    ["{}.{}".format(sickrage.app.log.logFile, x) for x in
-                     range(int(sickrage.app.log.logNr))]
-
-        levels_filtered = '|'.join(
-            [x for x in sickrage.app.log.logLevels.keys() if
-             sickrage.app.log.logLevels[x] >= int(min_level)])
-
-        log_regex = re.compile(
-            r"(?P<entry>^\d+\-\d+\-\d+\s+\d+\:\d+\:\d+\s+(?:{})[\s\S]+?(?:{})[\s\S]+?$)".format(levels_filtered,
-                                                                                                log_filter),
-            re.S + re.M)
-
-        data = []
-
-        try:
-            for logFile in [x for x in log_files if os.path.isfile(x)]:
-                data += list(reversed(re.findall("((?:^.+?{}.+?$))".format(log_search),
-                                                 "\n".join(next(read_file_buffered(logFile, reverse=True)).splitlines()),
-                                                 re.M + re.I)))
-                max_lines -= len(data)
-                if len(data) == max_lines:
-                    raise StopIteration
-        except StopIteration:
-            pass
+        if to_json:
+            return self.write(json.dumps({'logs': get_logs(log_search, log_filter, min_level, max_lines)}))
 
         return await self.render(
             "/logs/view.mako",
             header="Log File",
             title="Logs",
             topmenu="system",
-            logLines="\n".join(log_regex.findall("\n".join(data))),
+            logLines=get_logs(log_search, log_filter, min_level, max_lines),
             minLevel=int(min_level),
             logNameFilters=log_name_filters,
             logFilter=log_filter,
