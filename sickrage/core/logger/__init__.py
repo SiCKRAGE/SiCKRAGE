@@ -75,6 +75,7 @@ class Logger(logging.getLoggerClass()):
         self.loggers = {'sickrage': self,
                         'tornado.general': logging.getLogger('tornado.general'),
                         'tornado.application': logging.getLogger('tornado.application'),
+                        'apscheduler.executors': logging.getLogger('apscheduler.executors'),
                         'apscheduler.jobstores': logging.getLogger('apscheduler.jobstores'),
                         'apscheduler.scheduler': logging.getLogger('apscheduler.scheduler')}
 

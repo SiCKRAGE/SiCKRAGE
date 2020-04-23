@@ -178,24 +178,27 @@ class API(object):
             except requests.exceptions.HTTPError as e:
                 status_code = e.response.status_code
                 error_message = e.response.text
+
                 if status_code == 403 and "login-pf-page" in error_message:
                     self.refresh_token()
-                    continue
-                elif 500 <= status_code < 600:
-                    latest_exception = error_message
                     continue
 
                 if 'application/json' in e.response.headers.get('content-type', ''):
                     json_data = e.response.json().get('error', {})
                     status_code = json_data.get('status', status_code)
                     error_message = json_data.get('message', error_message)
-                raise APIError(status=status_code, message=error_message)
+                latest_exception = APIError(status=status_code, message=error_message)
+
+                if 400 <= status_code < 500:
+                    break
             except requests.exceptions.RequestException as e:
                 latest_exception = e
 
             time.sleep(1)
 
         if latest_exception:
+            if isinstance(latest_exception, APIError):
+                raise latest_exception
             sickrage.app.log.warning('{!r}'.format(latest_exception))
 
     @staticmethod

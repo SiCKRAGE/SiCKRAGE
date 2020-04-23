@@ -41,8 +41,7 @@ def get_logs(log_search, log_filter, min_level, max_lines):
         for logFile in [x for x in log_files if os.path.isfile(x)]:
             data += list(reversed(re.findall("((?:^.+?{}.+?$))".format(log_search),
                                              "\n".join(next(read_file_buffered(logFile, reverse=True)).splitlines()), re.M + re.I)))
-            max_lines -= len(data)
-            if len(data) == max_lines:
+            if len(log_regex.findall("\n".join(data))) >= max_lines:
                 raise StopIteration
     except StopIteration:
         pass

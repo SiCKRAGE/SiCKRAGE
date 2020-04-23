@@ -11,6 +11,15 @@
                     <h3 class="float-md-left">${title}</h3>
                     <div class="form-inline float-md-right">
                         <label class="m-1">
+                            <select name="refreshInterval" id="refreshInterval"
+                                    class="form-control form-control-inline">
+                                <option value="5" selected>5s</option>
+                                <option value="10">10s</option>
+                                <option value="15">15s</option>
+                            </select>
+                        </label>
+
+                        <label class="m-1">
                             <select name="minLevel" id="minLevel"
                                     class="form-control form-control-inline">
                                 <% levels = [x for x in sickrage.app.log.logLevels.keys() if any([sickrage.app.config.debug and x in ['DEBUG','DB'], x not in ['DEBUG','DB']])]%>

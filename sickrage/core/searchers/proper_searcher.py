@@ -43,12 +43,12 @@ class ProperSearcher(object):
         self.name = "PROPERSEARCHER"
         self.amActive = False
 
-    def run(self, force=False):
+    def run(self):
         """
         Start looking for new propers
         :param force: Start even if already running (currently not used, defaults to False)
         """
-        if self.amActive or not sickrage.app.config.download_propers and not force:
+        if self.amActive or not sickrage.app.config.download_propers:
             return
 
         self.amActive = True

@@ -18,6 +18,8 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
+import datetime
+import random
 from abc import ABC
 
 from tornado.web import authenticated
@@ -52,10 +54,11 @@ class ForceBacklogSearchHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
         # force it to run the next time it looks
-        if sickrage.app.scheduler.get_job(sickrage.app.backlog_searcher.name).func(True):
-            sickrage.app.log.info("Backlog search forced")
-            sickrage.app.alerts.message(_('Backlog search started'))
+        sickrage.app.log.info("Backlog search forced")
+        sickrage.app.alerts.message(_('Backlog search started'))
 
+        job = sickrage.app.scheduler.get_job(sickrage.app.backlog_searcher.name)
+        job.modify(next_run_time=datetime.datetime.utcnow())
         return self.redirect("/manage/manageQueues/")
 
 
@@ -63,21 +66,23 @@ class ForceDailySearchHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
         # force it to run the next time it looks
-        if sickrage.app.scheduler.get_job(sickrage.app.daily_searcher.name).func(True):
-            sickrage.app.log.info("Daily search forced")
-            sickrage.app.alerts.message(_('Daily search started'))
+        sickrage.app.log.info("Daily search forced")
+        sickrage.app.alerts.message(_('Daily search started'))
 
-        self.redirect("/manage/manageQueues/")
+        job = sickrage.app.scheduler.get_job(sickrage.app.daily_searcher.name)
+        job.modify(next_run_time=datetime.datetime.utcnow())
+        return self.redirect("/manage/manageQueues/")
 
 
 class ForceFindPropersHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
         # force it to run the next time it looks
-        if sickrage.app.scheduler.get_job(sickrage.app.proper_searcher.name).func(True):
-            sickrage.app.log.info("Find propers search forced")
-            sickrage.app.alerts.message(_('Find propers search started'))
+        sickrage.app.log.info("Find propers search forced")
+        sickrage.app.alerts.message(_('Find propers search started'))
 
+        job = sickrage.app.scheduler.get_job(sickrage.app.proper_searcher.name)
+        job.modify(next_run_time=datetime.datetime.utcnow())
         return self.redirect("/manage/manageQueues/")
 
 

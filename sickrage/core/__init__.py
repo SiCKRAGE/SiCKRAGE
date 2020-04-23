@@ -350,99 +350,109 @@ class Core(object):
 
         # add version checker job
         self.scheduler.add_job(
-            self.version_updater.run,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 hours=self.config.version_updater_freq,
                 timezone='utc'
             ),
+            next_run_time=datetime.datetime.utcnow(),
             name=self.version_updater.name,
-            id=self.version_updater.name
+            id=self.version_updater.name,
+            args=[self.version_updater.run]
         )
 
         # add network timezones updater job
         self.scheduler.add_job(
-            self.tz_updater.run,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 days=1,
                 timezone='utc'
             ),
+            next_run_time=datetime.datetime.utcnow(),
             name=self.tz_updater.name,
-            id=self.tz_updater.name
+            id=self.tz_updater.name,
+            args=[self.tz_updater.run]
         )
 
         # add show updater job
         self.scheduler.add_job(
-            self.show_updater.run,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 days=1,
                 start_date=datetime.datetime.now().replace(hour=self.config.showupdate_hour),
                 timezone='utc'
             ),
             name=self.show_updater.name,
-            id=self.show_updater.name
+            id=self.show_updater.name,
+            args=[self.show_updater.run]
         )
 
         # add rss cache updater job
         self.scheduler.add_job(
-            self.rsscache_updater.run,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 minutes=15,
                 timezone='utc'
             ),
             name=self.rsscache_updater.name,
-            id=self.rsscache_updater.name
+            id=self.rsscache_updater.name,
+            args=[self.rsscache_updater.run]
         )
 
         # add daily search job
         self.scheduler.add_job(
-            self.daily_searcher.run,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 minutes=self.config.daily_searcher_freq,
                 start_date=datetime.datetime.now() + datetime.timedelta(minutes=4),
                 timezone='utc'
             ),
             name=self.daily_searcher.name,
-            id=self.daily_searcher.name
+            id=self.daily_searcher.name,
+            args=[self.daily_searcher.run]
         )
 
         # add failed snatch search job
         self.scheduler.add_job(
-            self.failed_snatch_searcher.run,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 hours=1,
                 start_date=datetime.datetime.now() + datetime.timedelta(minutes=4),
                 timezone='utc'
             ),
             name=self.failed_snatch_searcher.name,
-            id=self.failed_snatch_searcher.name
+            id=self.failed_snatch_searcher.name,
+            args=[self.failed_snatch_searcher.run]
         )
 
         # add backlog search job
         self.scheduler.add_job(
-            self.backlog_searcher.run,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 minutes=self.config.backlog_searcher_freq,
                 start_date=datetime.datetime.now() + datetime.timedelta(minutes=30),
                 timezone='utc'
             ),
             name=self.backlog_searcher.name,
-            id=self.backlog_searcher.name
+            id=self.backlog_searcher.name,
+            args=[self.backlog_searcher.run]
         )
 
         # add auto-postprocessing job
         self.scheduler.add_job(
-            self.auto_postprocessor.run,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 minutes=self.config.autopostprocessor_freq,
                 timezone='utc'
             ),
             name=self.auto_postprocessor.name,
-            id=self.auto_postprocessor.name
+            id=self.auto_postprocessor.name,
+            args=[self.auto_postprocessor.run]
         )
 
         # add find proper job
         self.scheduler.add_job(
-            self.proper_searcher.run,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 minutes={
                     '15m': 15,
@@ -454,51 +464,57 @@ class Core(object):
                 timezone='utc'
             ),
             name=self.proper_searcher.name,
-            id=self.proper_searcher.name
+            id=self.proper_searcher.name,
+            args=[self.proper_searcher.run]
         )
 
         # add trakt.tv checker job
         self.scheduler.add_job(
-            self.trakt_searcher.run,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 hours=1,
                 timezone='utc'
             ),
             name=self.trakt_searcher.name,
-            id=self.trakt_searcher.name
+            id=self.trakt_searcher.name,
+            args=[self.trakt_searcher.run]
         )
 
         # add subtitles finder job
         self.scheduler.add_job(
-            self.subtitle_searcher.run,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 hours=self.config.subtitle_searcher_freq,
                 timezone='utc'
             ),
             name=self.subtitle_searcher.name,
-            id=self.subtitle_searcher.name
+            id=self.subtitle_searcher.name,
+            args=[self.subtitle_searcher.run]
         )
 
         # add upnp client job
         self.scheduler.add_job(
-            self.upnp_client.run,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 seconds=self.upnp_client._nat_portmap_lifetime,
                 timezone='utc'
             ),
             name=self.upnp_client.name,
-            id=self.upnp_client.name
+            id=self.upnp_client.name,
+            args=[self.upnp_client.run]
         )
 
         # add announcements job
         self.scheduler.add_job(
-            self.announcements.run,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 minutes=15,
                 timezone='utc'
             ),
+            next_run_time=datetime.datetime.utcnow(),
             name=self.announcements.name,
-            id=self.announcements.name
+            id=self.announcements.name,
+            args=[self.announcements.run]
         )
 
         # start queues
@@ -508,9 +524,9 @@ class Core(object):
 
         # fire off startup events
         self.io_loop.add_callback(self.load_shows)
-        self.io_loop.add_callback(self.version_updater.run)
-        self.io_loop.add_callback(self.tz_updater.run)
-        self.io_loop.add_callback(self.announcements.run)
+        # self.io_loop.add_callback(self.version_updater.run)
+        # self.io_loop.add_callback(self.tz_updater.run)
+        # self.io_loop.add_callback(self.announcements.run)
 
         # start scheduler service
         self.scheduler.start()

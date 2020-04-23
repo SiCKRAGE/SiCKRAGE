@@ -1152,10 +1152,11 @@ class UpdateEMBYHandler(BaseHandler, ABC):
 class SyncTraktHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        if sickrage.app.scheduler.get_job('TRAKTSEARCHER').func():
-            sickrage.app.log.info("Syncing Trakt with SiCKRAGE")
-            sickrage.app.alerts.message(_('Syncing Trakt with SiCKRAGE'))
+        sickrage.app.log.info("Syncing Trakt with SiCKRAGE")
+        sickrage.app.alerts.message(_('Syncing Trakt with SiCKRAGE'))
 
+        job = sickrage.app.scheduler.get_job('TRAKTSEARCHER')
+        job.modify(next_run_time=datetime.datetime.utcnow())
         return self.redirect("/home/")
 
 

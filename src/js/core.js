@@ -5749,7 +5749,7 @@ $(document).ready(function ($) {
                         $('#loglines').html(data['logs']);
                     });
 
-                }, 5000);
+                }, parseInt($('select[name=refreshInterval]').val()) * 1000);
             }
         }
     };

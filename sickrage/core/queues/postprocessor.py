@@ -52,13 +52,14 @@ class PostProcessorQueue(SRQueue):
         self._output = []
 
         self.scheduler.add_job(
-            self.run,
+            sickrage.app.io_loop.add_callback,
             IntervalTrigger(
                 seconds=1,
                 timezone='utc'
             ),
             name=self.name,
-            id=self.name
+            id=self.name,
+            args=[self.run]
         )
 
     @property

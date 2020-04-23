@@ -21,6 +21,7 @@
 
 
 import traceback
+from collections import deque
 
 from apscheduler.triggers.interval import IntervalTrigger
 
@@ -39,25 +40,19 @@ MANUAL_SEARCH = 40
 class SearchQueue(SRQueue):
     def __init__(self):
         SRQueue.__init__(self, "SEARCHQUEUE")
-        self.SNATCH_HISTORY = []
-        self.SNATCH_HISTORY_SIZE = 100
-        self.MANUAL_SEARCH_HISTORY = []
-        self.MANUAL_SEARCH_HISTORY_SIZE = 100
+        self.SNATCH_HISTORY = deque(maxlen=100)
+        self.MANUAL_SEARCH_HISTORY = deque(maxlen=100)
 
         self.scheduler.add_job(
-            self.run,
+            sickrage.app.io_loop.add_callback,
             IntervalTrigger(
                 seconds=1,
                 timezone='utc'
             ),
             name=self.name,
-            id=self.name
+            id=self.name,
+            args=[self.run]
         )
-
-    def fifo(self, my_list, item, max_size=100):
-        if len(my_list) >= max_size:
-            my_list.pop(0)
-        my_list.append(item)
 
     def is_in_queue(self, show_id, season, episode):
         for cur_item in self.queue_items:
@@ -185,9 +180,8 @@ class DailySearchQueueItem(SRQueueItem):
                               not in sickrage.app.search_queue.SNATCH_HISTORY for episode in search_result.episodes])
 
                 if snatch:
-                    [sickrage.app.search_queue.fifo(sickrage.app.search_queue.SNATCH_HISTORY,
-                                                    (search_result.show_id, search_result.season, episode),
-                                                    sickrage.app.search_queue.SNATCH_HISTORY_SIZE) for episode in search_result.episodes]
+                    [sickrage.app.search_queue.SNATCH_HISTORY.append((search_result.show_id, search_result.season, episode)) for episode in
+                     search_result.episodes]
 
                     sickrage.app.log.info("Downloading " + search_result.name + " from " + search_result.provider.name)
                     snatch_episode(search_result)
@@ -222,9 +216,8 @@ class ManualSearchQueueItem(SRQueueItem):
 
             search_result = search_providers(self.show_id, self.season, self.episode, manualSearch=True, downCurQuality=self.downCurQuality)
             if search_result:
-                [sickrage.app.search_queue.fifo(sickrage.app.search_queue.SNATCH_HISTORY,
-                                                (search_result.show_id, search_result.season, episode),
-                                                sickrage.app.search_queue.SNATCH_HISTORY_SIZE) for episode in search_result.episodes]
+                [sickrage.app.search_queue.SNATCH_HISTORY.append((search_result.show_id, search_result.season, episode)) for episode in
+                 search_result.episodes]
 
                 sickrage.app.log.info("Downloading " + search_result.name + " from " + search_result.provider.name)
                 self.success = snatch_episode(search_result)
@@ -239,7 +232,7 @@ class ManualSearchQueueItem(SRQueueItem):
             sickrage.app.log.debug(traceback.format_exc())
         finally:
             sickrage.app.log.info("Finished manual search for: [" + episode_object.pretty_name() + "]")
-            sickrage.app.search_queue.fifo(sickrage.app.search_queue.MANUAL_SEARCH_HISTORY, self, sickrage.app.search_queue.MANUAL_SEARCH_HISTORY_SIZE)
+            sickrage.app.search_queue.MANUAL_SEARCH_HISTORY.append(self)
 
 
 class BacklogQueueItem(SRQueueItem):
@@ -267,9 +260,8 @@ class BacklogQueueItem(SRQueueItem):
                               not in sickrage.app.search_queue.SNATCH_HISTORY for episode in search_result.episodes])
 
                 if snatch:
-                    [sickrage.app.search_queue.fifo(sickrage.app.search_queue.SNATCH_HISTORY,
-                                                    (search_result.show_id, search_result.season, episode),
-                                                    sickrage.app.search_queue.SNATCH_HISTORY_SIZE) for episode in search_result.episodes]
+                    [sickrage.app.search_queue.SNATCH_HISTORY.append((search_result.show_id, search_result.season, episode)) for episode in
+                     search_result.episodes]
 
                     sickrage.app.log.info("Downloading " + search_result.name + " from " + search_result.provider.name)
                     snatch_episode(search_result)
@@ -319,9 +311,8 @@ class FailedQueueItem(SRQueueItem):
                               not in sickrage.app.search_queue.SNATCH_HISTORY for episode in search_result.episodes])
 
                 if snatch:
-                    [sickrage.app.search_queue.fifo(sickrage.app.search_queue.SNATCH_HISTORY,
-                                                    (search_result.show_id, search_result.season, episode),
-                                                    sickrage.app.search_queue.SNATCH_HISTORY_SIZE) for episode in search_result.episodes]
+                    [sickrage.app.search_queue.SNATCH_HISTORY.append((search_result.show_id, search_result.season, episode)) for episode in
+                     search_result.episodes]
 
                     sickrage.app.log.info("Downloading " + search_result.name + " from " + search_result.provider.name)
                     snatch_episode(search_result)
@@ -329,4 +320,4 @@ class FailedQueueItem(SRQueueItem):
             sickrage.app.log.debug(traceback.format_exc())
         finally:
             sickrage.app.log.info("Finished failed download search for: [" + show_object.name + "]")
-            sickrage.app.search_queue.fifo(sickrage.app.search_queue.MANUAL_SEARCH_HISTORY, self, sickrage.app.search_queue.MANUAL_SEARCH_HISTORY_SIZE)
+            sickrage.app.search_queue.MANUAL_SEARCH_HISTORY.append(self)
