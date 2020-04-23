@@ -181,7 +181,7 @@ class API(object):
                 if status_code == 403 and "login-pf-page" in error_message:
                     self.refresh_token()
                     continue
-                elif 500 >= status_code < 600:
+                elif 500 <= status_code < 600:
                     latest_exception = error_message
                     continue
 
