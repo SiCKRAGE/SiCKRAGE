@@ -1604,7 +1604,7 @@ $(document).ready(function ($) {
                         select.find('option:gt(0)').remove();
 
                         for (var episode in episodes[show][season]) {
-                            if (episodes[show][season].hasOwnProperty(episode)) {
+                            if (Object.prototype.hasOwnProperty.call(episodes[show][season], episode)) {
                                 select.append($('<option>', {
                                     value: episode,
                                     label: 'Episode ' + episode
@@ -1626,7 +1626,7 @@ $(document).ready(function ($) {
                         select.find('option:gt(0)').remove();
 
                         for (var season in episodes[show]) {
-                            if (episodes[show].hasOwnProperty(season)) {
+                            if (Object.prototype.hasOwnProperty.call(episodes[show], season)) {
                                 select.append($('<option>', {
                                     value: season,
                                     label: (season === 0) ? 'Specials' : 'Season ' + season
@@ -4652,7 +4652,7 @@ $(document).ready(function ($) {
                         // Convert the 'list' object to a js array of objects so that we can sort it
                         var _list = [];
                         for (s in list) {
-                            if (list.hasOwnProperty(s) && s.charAt(0) !== '_') {
+                            if (Object.prototype.hasOwnProperty.call(list, s) && s.charAt(0) !== '_') {
                                 _list.push(list[s]);
                             }
                         }
@@ -4667,7 +4667,7 @@ $(document).ready(function ($) {
                         });
                         html = '<option value="-1">-- Select --</option>';
                         for (s in sortedList) {
-                            if (sortedList.hasOwnProperty(s) && sortedList[s].id && sortedList[s].name) {
+                            if (Object.prototype.hasOwnProperty.call(sortedList, s) && sortedList[s].id && sortedList[s].name) {
                                 html += '<option value="' + sortedList[s].id + '">' + $('<div/>').text(sortedList[s].name).html() + '</option>';
                             }
                         }
@@ -5210,7 +5210,7 @@ $(document).ready(function ($) {
                     });
 
                     for (var newznab_id in SICKRAGE.config.providers.newznabProviders) {
-                        if (SICKRAGE.config.providers.newznabProviders.hasOwnProperty(newznab_id)) {
+                        if (Object.prototype.hasOwnProperty.call(SICKRAGE.config.providers.newznabProviders, newznab_id)) {
                             provStrings.push(
                                 "newznab|" + SICKRAGE.config.providers.newznabProviders[newznab_id][1].join('|')
                             );
@@ -5218,7 +5218,7 @@ $(document).ready(function ($) {
                     }
 
                     for (var torrentrss_id in SICKRAGE.config.providers.torrentRssProviders) {
-                        if (SICKRAGE.config.providers.torrentRssProviders.hasOwnProperty(torrentrss_id)) {
+                        if (Object.prototype.hasOwnProperty.call(SICKRAGE.config.providers.torrentRssProviders, torrentrss_id)) {
                             provStrings.push(
                                 "torrentrss|" + SICKRAGE.config.providers.torrentRssProviders[torrentrss_id].join('|')
                             );

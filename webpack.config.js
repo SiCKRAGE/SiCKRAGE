@@ -3,7 +3,7 @@ const fs = require('fs');
 const packageJson = fs.readFileSync('./package.json');
 const version = JSON.parse(packageJson).version;
 const webpack = require('webpack');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const SpritesmithPlugin = require('webpack-spritesmith');
@@ -137,10 +137,12 @@ module.exports = {
             jQuery: 'jquery',
             'window.jQuery': 'jquery'
         }),
-        new CleanWebpackPlugin([
-            'sickrage/core/webserver/static/css/*.*',
-            'sickrage/core/webserver/static/js/*.*'
-        ]),
+        new CleanWebpackPlugin({
+            cleanOnceBeforeBuildPatterns: [
+                'sickrage/core/webserver/static/css/*.*',
+                'sickrage/core/webserver/static/js/*.*'
+            ]
+        }),
         new MiniCssExtractPlugin({
             filename: "../css/core.min.css",
             chunkFilename: "[id].css"
