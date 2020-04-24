@@ -2,12 +2,18 @@
 
 # 
 
-##Fri Apr 24 2020 03:33:04 GMT+0000 (Coordinated Universal Time)
+##Fri Apr 24 2020 15:34:41 GMT+0000 (Coordinated Universal Time)
 
 
 ## Refactor
-  - Refactored rss cache updater to fire task in ioloop executor Refactored timezone updater to fire task in ioloop executor Refactored server status view to allow forcing rss cache updater to run
-  ([5c616de5](https://gitlab-ci-token:QyuaEtEiUH68yaBxC2_x@git.sickrage.ca/SiCKRAGE/sickrage/commit/5c616de51cf41f10667f5b7ee8e32c6068a4ac73))
+  - Refactored provider URLs to not be pulled from API, currently the code for this needs to be reworked as its causing performance issues.
+  ([73a6fd85](https://gitlab-ci-token:B19KDp47GV5LeFiHeDkP@git.sickrage.ca/SiCKRAGE/sickrage/commit/73a6fd85de971acf0173c1716de370bf74d8c4c7))
+  - Refactored scheduled jobs to be async and execute on ioloop in their own thread
+  ([64ecdbeb](https://gitlab-ci-token:B19KDp47GV5LeFiHeDkP@git.sickrage.ca/SiCKRAGE/sickrage/commit/64ecdbeb0e988d7a6aae6a17ad539d0a8181cae8))
+  - Refactored auto-postprocessing task to be async
+  ([f4958915](https://gitlab-ci-token:B19KDp47GV5LeFiHeDkP@git.sickrage.ca/SiCKRAGE/sickrage/commit/f49589158c79cb2ddbc30d7927e07d64dcb21dc4))
+  - Refactored name of function in auto_postprocessor.py from run to task
+  ([6ef74b10](https://gitlab-ci-token:B19KDp47GV5LeFiHeDkP@git.sickrage.ca/SiCKRAGE/sickrage/commit/6ef74b10569dd25046d57f18827e4a33671b5a80))
 
 
 
