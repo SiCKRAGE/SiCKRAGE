@@ -31,7 +31,7 @@ class AutoPostProcessor(object):
         self.lock = threading.Lock()
         self.amActive = False
 
-    def task(self, force=False):
+    async def task(self, force=False):
         """
         Runs the postprocessor
         :param force: Forces postprocessing run (reserved for future use)
