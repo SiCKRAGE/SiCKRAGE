@@ -371,7 +371,7 @@ class Core(object):
             next_run_time=datetime.datetime.utcnow(),
             name=self.tz_updater.name,
             id=self.tz_updater.name,
-            args=[self.tz_updater.run]
+            args=[self.tz_updater.task]
         )
 
         # add show updater job
@@ -396,7 +396,7 @@ class Core(object):
             ),
             name=self.rsscache_updater.name,
             id=self.rsscache_updater.name,
-            args=[self.rsscache_updater.run]
+            args=[self.rsscache_updater.task]
         )
 
         # add daily search job

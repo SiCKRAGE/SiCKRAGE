@@ -1,3 +1,4 @@
+import functools
 import threading
 
 import sickrage
@@ -5,11 +6,12 @@ import sickrage
 
 class RSSCacheUpdater(object):
     def __init__(self):
+        super(RSSCacheUpdater, self).__init__()
         self.name = "RSSCACHE-UPDATER"
         self.lock = threading.Lock()
         self.amActive = False
 
-    def run(self, force=False):
+    async def task(self, force=False):
         if self.amActive or not sickrage.app.config.enable_rss_cache and not force:
             return
 
@@ -20,12 +22,12 @@ class RSSCacheUpdater(object):
 
         for providerID, providerObj in sickrage.app.search_providers.sort().items():
             if providerObj.is_enabled:
-                sickrage.app.log.debug("Updating RSS cache for provider: [{}]".format(providerObj.name))
-
-                thread = threading.Thread(target=providerObj.cache.update, name=self.name, args=(force,))
-                thread.start()
-                # thread.join()
-
-                # sickrage.app.log.debug("Updated RSS cache for provider: [{}]".format(providerObj.name))
+                sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, providerObj, force))
 
         self.amActive = False
+
+    def worker(self, provider, force):
+        threading.currentThread().setName('{}::{}'.format(self.name, provider.name.upper()))
+        sickrage.app.log.debug("Updating RSS cache")
+        provider.cache.update(force)
+        sickrage.app.log.debug("Updated RSS cache")

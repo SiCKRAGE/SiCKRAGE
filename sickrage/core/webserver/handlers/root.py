@@ -268,4 +268,5 @@ class ForceSchedulerJobHandler(BaseHandler, ABC):
         service = getattr(sickrage.app, name, None)
         if service:
             job = sickrage.app.scheduler.get_job(service.name)
-            job.modify(next_run_time=datetime.datetime.utcnow())
+            job.modify(next_run_time=datetime.datetime.utcnow(), args=job.args + tuple([True]))
+            job.modify(args=job.args)

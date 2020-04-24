@@ -36,10 +36,13 @@ class TimeZoneUpdater(object):
         self.name = "TZUPDATER"
         self.time_regex = re.compile(r'(?P<hour>\d{1,2})(?:[:.]?(?P<minute>\d{2})?)? ?(?P<meridiem>[PA]\.? ?M?)?\b', re.I)
 
-    def run(self):
+    async def task(self, force=False):
         # set thread name
         threading.currentThread().setName(self.name)
+        sickrage.app.io_loop.run_in_executor(None, self.worker)
 
+    def worker(self):
+        threading.currentThread().setName(self.name)
         self.update_network_timezones()
 
     def update_network_timezones(self):

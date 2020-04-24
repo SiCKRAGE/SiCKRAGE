@@ -43,7 +43,7 @@ class ProperSearcher(object):
         self.name = "PROPERSEARCHER"
         self.amActive = False
 
-    def run(self):
+    def run(self, force=False):
         """
         Start looking for new propers
         :param force: Start even if already running (currently not used, defaults to False)

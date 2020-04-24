@@ -11,7 +11,8 @@
         schedulers = {
             _('Daily Search'): 'daily_searcher',
             _('Backlog'): 'backlog_searcher',
-            _('Show Update'): 'show_updater',
+            _('Show Updater'): 'show_updater',
+            _('RSS Cache Updater'): 'rsscache_updater',
         }
 
         if sickrage.app.config.version_notify:
@@ -95,7 +96,7 @@
                                         <td align="center">
                                             <button class="btn forceSchedulerJob"
                                                     data-target="${srWebRoot}/forceSchedulerJob?name=${scheduler}">
-                                                <i class="fa fa-exclamation-triangle"></i> ${_('Force')}
+                                                <i class="fa fa-exclamation-triangle"></i> ${_('Force Run')}
                                             </button>
                                         </td>
                                     </tr>

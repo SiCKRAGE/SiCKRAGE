@@ -67,8 +67,8 @@ class SRQueue(object):
             if not self.is_paused and not len(self.processing) >= int(sickrage.app.config.max_queue_workers):
                 # self.worker(await self.queue.get())
                 # self.scheduler.add_job(sickrage.app.io_look.add_callback, args=[self.worker, await self.queue.get()])
-                threading.Thread(target=self.worker, args=(await self.queue.get(),)).start()
-                # sickrage.app.io_loop.run_in_executor(None, self.worker, self.get())
+                # threading.Thread(target=self.worker, args=(await self.queue.get(),)).start()
+                sickrage.app.io_loop.run_in_executor(None, self.worker, await self.get())
 
         self.amActive = False
 
