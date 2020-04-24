@@ -2,12 +2,12 @@
 
 # 
 
-##Thu Apr 23 2020 17:07:43 GMT+0000 (Coordinated Universal Time)
+##Fri Apr 24 2020 03:33:04 GMT+0000 (Coordinated Universal Time)
 
 
 ## Refactor
-  - Refactored RSSCACHE updated to be threaded
-  ([faa8baf6](https://gitlab-ci-token:nQk6n4tafhr78bM-3Em-@git.sickrage.ca/SiCKRAGE/sickrage/commit/faa8baf693a1b79c7f24ab9522a65b925cb4e984))
+  - Refactored rss cache updater to fire task in ioloop executor Refactored timezone updater to fire task in ioloop executor Refactored server status view to allow forcing rss cache updater to run
+  ([5c616de5](https://gitlab-ci-token:QyuaEtEiUH68yaBxC2_x@git.sickrage.ca/SiCKRAGE/sickrage/commit/5c616de51cf41f10667f5b7ee8e32c6068a4ac73))
 
 
 
