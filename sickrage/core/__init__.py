@@ -447,7 +447,7 @@ class Core(object):
             ),
             name=self.auto_postprocessor.name,
             id=self.auto_postprocessor.name,
-            args=[self.auto_postprocessor.run]
+            args=[self.auto_postprocessor.task]
         )
 
         # add find proper job
