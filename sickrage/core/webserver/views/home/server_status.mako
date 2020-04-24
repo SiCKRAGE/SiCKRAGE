@@ -20,7 +20,7 @@
         if sickrage.app.config.download_propers:
             schedulers.update({_('Proper Finder'): 'proper_searcher'})
         if sickrage.app.config.process_automatically:
-            schedulers.update({_('Post Process'): 'auto_postprocessor'})
+            schedulers.update({_('Post Processor'): 'auto_postprocessor'})
         if sickrage.app.config.use_subtitles:
             schedulers.update({_('Subtitles Finder'): 'subtitle_searcher'})
         if sickrage.app.config.use_trakt:

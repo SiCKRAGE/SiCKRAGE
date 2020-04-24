@@ -18,15 +18,14 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-
-
-
+import functools
 import ipaddress
 import time
 from urllib.parse import urlparse
 
-import sickrage
 import upnpclient
+
+import sickrage
 from sickrage.core.helpers import get_lan_ip
 
 
@@ -36,9 +35,12 @@ class UPNPClient(object):
     def __init__(self, *args, **kwargs):
         self.name = "UPNP"
 
-    def run(self):
+    async def task(self, force=False):
         if sickrage.app.config.enable_upnp:
-            self.add_nat_portmap()
+            sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, force))
+
+    def worker(self, force):
+        self.add_nat_portmap()
 
     def refresh_nat_portmap(self):
         """Run an infinite loop refreshing our NAT port mapping.

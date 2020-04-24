@@ -17,8 +17,8 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import datetime
+import functools
 import threading
 import time
 
@@ -38,13 +38,20 @@ class ShowUpdater(object):
         self.lock = threading.Lock()
         self.amActive = False
 
-    def run(self, force=False):
+    async def task(self, force=False):
         if self.amActive:
             return
 
         self.amActive = True
 
         # set thread name
+        threading.currentThread().setName(self.name)
+
+        sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, force))
+
+        self.amActive = False
+
+    def worker(self, force):
         threading.currentThread().setName(self.name)
 
         session = sickrage.app.cache_db.session()
@@ -96,5 +103,3 @@ class ShowUpdater(object):
 
         dbData.time = update_timestamp
         session.commit()
-
-        self.amActive = False

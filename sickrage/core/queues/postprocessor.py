@@ -129,8 +129,7 @@ class PostProcessorQueue(SRQueue):
         self.clear_log()
 
         if not dirName:
-            self.log("{} post-processing attempted but directory is not set: {}".format(proc_type.title(), dirName),
-                     sickrage.app.log.WARNING)
+            self.log("{} post-processing attempted but directory is not set".format(proc_type.title()), sickrage.app.log.WARNING)
             return self.output
 
         if not os.path.isabs(dirName):

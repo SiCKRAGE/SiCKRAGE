@@ -19,6 +19,7 @@
 
 
 import datetime
+import functools
 import re
 import threading
 
@@ -39,9 +40,9 @@ class TimeZoneUpdater(object):
     async def task(self, force=False):
         # set thread name
         threading.currentThread().setName(self.name)
-        sickrage.app.io_loop.run_in_executor(None, self.worker)
+        sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, force))
 
-    def worker(self):
+    def worker(self, force):
         threading.currentThread().setName(self.name)
         self.update_network_timezones()
 

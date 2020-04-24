@@ -18,8 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-
-
+import functools
 import os
 import platform
 import re
@@ -27,8 +26,8 @@ import shutil
 import subprocess
 import sys
 import tarfile
-import threading
 import tempfile
+import threading
 from time import sleep
 
 import sickrage
@@ -47,7 +46,7 @@ class VersionUpdater(object):
     def updater(self):
         return self.find_install_type()
 
-    def run(self, force=False):
+    async def task(self, force=False):
         if self.amActive or sickrage.app.disable_updates or sickrage.app.developer:
             return
 
@@ -56,24 +55,28 @@ class VersionUpdater(object):
         # set thread name
         threading.currentThread().setName(self.name)
 
-        try:
-            if self.check_for_new_version(force):
-                if sickrage.app.config.auto_update:
-                    if sickrage.app.show_updater.amActive:
-                        sickrage.app.log.debug("We can't proceed with auto-updating. Shows are being updated")
-                        return
+        sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, force))
 
-                    sickrage.app.log.info("New update found for SiCKRAGE, starting auto-updater ...")
-                    sickrage.app.alerts.message(_('Updater'), _('New update found for SiCKRAGE, starting auto-updater'))
-                    if self.update():
-                        sickrage.app.log.info("Update was successful!")
-                        sickrage.app.alerts.message(_('Updater'), _('Update was successful'))
-                        sickrage.app.shutdown(restart=True)
-                    else:
-                        sickrage.app.log.info("Update failed!")
-                        sickrage.app.alerts.error(_('Updater'), _('Update failed!'))
-        finally:
-            self.amActive = False
+        self.amActive = False
+
+    def worker(self, force):
+        threading.currentThread().setName(self.name)
+
+        if self.check_for_new_version(force):
+            if sickrage.app.config.auto_update:
+                if sickrage.app.show_updater.amActive:
+                    sickrage.app.log.debug("We can't proceed with auto-updating. Shows are being updated")
+                    return
+
+                sickrage.app.log.info("New update found for SiCKRAGE, starting auto-updater ...")
+                sickrage.app.alerts.message(_('Updater'), _('New update found for SiCKRAGE, starting auto-updater'))
+                if self.update():
+                    sickrage.app.log.info("Update was successful!")
+                    sickrage.app.alerts.message(_('Updater'), _('Update was successful'))
+                    sickrage.app.shutdown(restart=True)
+                else:
+                    sickrage.app.log.info("Update failed!")
+                    sickrage.app.alerts.error(_('Updater'), _('Update failed!'))
 
     def backup(self):
         # Do a system backup before update

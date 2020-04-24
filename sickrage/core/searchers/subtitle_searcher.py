@@ -18,6 +18,7 @@
 
 
 import datetime
+import functools
 import os
 import threading
 
@@ -39,7 +40,7 @@ class SubtitleSearcher(object):
         self.name = "SUBTITLESEARCHER"
         self.amActive = False
 
-    def run(self, force=False):
+    async def task(self, force=False):
         if self.amActive or not sickrage.app.config.use_subtitles and not force:
             return
 
@@ -110,19 +111,24 @@ class SubtitleSearcher(object):
 
                 existing_subtitles = episode_object.subtitles
 
-                try:
-                    episode_object.download_subtitles()
-                except Exception as e:
-                    sickrage.app.log.debug('Unable to find subtitles')
-                    sickrage.app.log.debug(str(e))
-                    return
-
-                new_subtitles = frozenset(episode_object.subtitles).difference(existing_subtitles)
-                if new_subtitles:
-                    sickrage.app.log.info('Downloaded subtitles '
-                                          'for S%02dE%02d in %s' % (episode_object.season, episode_object.episode, ', '.join(new_subtitles)))
+                sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, episode_object, existing_subtitles, force))
 
         self.amActive = False
+
+    def worker(self, episode_object, existing_subtitles, force):
+        threading.currentThread().setName(self.name)
+
+        try:
+            episode_object.download_subtitles()
+        except Exception as e:
+            sickrage.app.log.debug('Unable to find subtitles')
+            sickrage.app.log.debug(str(e))
+            return
+
+        new_subtitles = frozenset(episode_object.subtitles).difference(existing_subtitles)
+        if new_subtitles:
+            sickrage.app.log.info('Downloaded subtitles '
+                                  'for S%02dE%02d in %s' % (episode_object.season, episode_object.episode, ', '.join(new_subtitles)))
 
     @staticmethod
     def _get_rules():

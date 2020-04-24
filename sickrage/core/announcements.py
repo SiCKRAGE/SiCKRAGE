@@ -18,6 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
+import functools
 import threading
 
 from sqlalchemy import orm
@@ -68,7 +69,11 @@ class Announcements(object):
         self.name = "ANNOUNCEMENTS"
         self._announcements = {}
 
-    def run(self):
+    async def task(self, force=False):
+        threading.currentThread().setName(self.name)
+        sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, force))
+
+    def worker(self, force):
         threading.currentThread().setName(self.name)
 
         try:

@@ -358,7 +358,7 @@ class Core(object):
             next_run_time=datetime.datetime.utcnow(),
             name=self.version_updater.name,
             id=self.version_updater.name,
-            args=[self.version_updater.run]
+            args=[self.version_updater.task]
         )
 
         # add network timezones updater job
@@ -384,7 +384,7 @@ class Core(object):
             ),
             name=self.show_updater.name,
             id=self.show_updater.name,
-            args=[self.show_updater.run]
+            args=[self.show_updater.task]
         )
 
         # add rss cache updater job
@@ -409,7 +409,7 @@ class Core(object):
             ),
             name=self.daily_searcher.name,
             id=self.daily_searcher.name,
-            args=[self.daily_searcher.run]
+            args=[self.daily_searcher.task]
         )
 
         # add failed snatch search job
@@ -422,7 +422,7 @@ class Core(object):
             ),
             name=self.failed_snatch_searcher.name,
             id=self.failed_snatch_searcher.name,
-            args=[self.failed_snatch_searcher.run]
+            args=[self.failed_snatch_searcher.task]
         )
 
         # add backlog search job
@@ -435,7 +435,7 @@ class Core(object):
             ),
             name=self.backlog_searcher.name,
             id=self.backlog_searcher.name,
-            args=[self.backlog_searcher.run]
+            args=[self.backlog_searcher.task]
         )
 
         # add auto-postprocessing job
@@ -465,7 +465,7 @@ class Core(object):
             ),
             name=self.proper_searcher.name,
             id=self.proper_searcher.name,
-            args=[self.proper_searcher.run]
+            args=[self.proper_searcher.task]
         )
 
         # add trakt.tv checker job
@@ -477,7 +477,7 @@ class Core(object):
             ),
             name=self.trakt_searcher.name,
             id=self.trakt_searcher.name,
-            args=[self.trakt_searcher.run]
+            args=[self.trakt_searcher.task]
         )
 
         # add subtitles finder job
@@ -489,7 +489,7 @@ class Core(object):
             ),
             name=self.subtitle_searcher.name,
             id=self.subtitle_searcher.name,
-            args=[self.subtitle_searcher.run]
+            args=[self.subtitle_searcher.task]
         )
 
         # add upnp client job
@@ -501,7 +501,7 @@ class Core(object):
             ),
             name=self.upnp_client.name,
             id=self.upnp_client.name,
-            args=[self.upnp_client.run]
+            args=[self.upnp_client.task]
         )
 
         # add announcements job
@@ -514,7 +514,7 @@ class Core(object):
             next_run_time=datetime.datetime.utcnow(),
             name=self.announcements.name,
             id=self.announcements.name,
-            args=[self.announcements.run]
+            args=[self.announcements.task]
         )
 
         # start queues

@@ -19,6 +19,7 @@
 
 
 import datetime
+import functools
 import threading
 
 import sickrage
@@ -34,7 +35,7 @@ class DailySearcher(object):
         self.lock = threading.Lock()
         self.amActive = False
 
-    def run(self, force=False):
+    async def task(self, force=False):
         """
         Runs the daily searcher, queuing selected episodes for search
         :param force: Force search
@@ -45,6 +46,13 @@ class DailySearcher(object):
         self.amActive = True
 
         # set thread name
+        threading.currentThread().setName(self.name)
+
+        sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, force))
+
+        self.amActive = False
+
+    def worker(self, force):
         threading.currentThread().setName(self.name)
 
         # find new released episodes and update their statuses
@@ -72,8 +80,6 @@ class DailySearcher(object):
                     sickrage.app.search_queue.SNATCH_HISTORY.remove((curShow.indexer_id, season, episode))
 
                 sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, DailySearchQueueItem(curShow.indexer_id, season, episode))
-
-        self.amActive = False
 
     @staticmethod
     def _get_wanted(show, from_date):

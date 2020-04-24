@@ -21,6 +21,7 @@
 
 
 import datetime
+import functools
 import threading
 
 import sickrage
@@ -39,7 +40,7 @@ class BacklogSearcher(object):
         self.amWaiting = False
         self.forced = False
 
-    def run(self, force=False):
+    async def task(self, force=False):
         if self.amActive and not force:
             return
 
@@ -49,11 +50,15 @@ class BacklogSearcher(object):
         # set cycle time
         self.cycleTime = sickrage.app.config.backlog_searcher_freq / 60 / 24
 
-        try:
-            self.forced = force
-            self.search_backlog()
-        finally:
-            self.amActive = False
+        self.forced = force
+
+        sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, force))
+
+        self.amActive = False
+
+    def worker(self, force):
+        threading.currentThread().setName(self.name)
+        self.search_backlog()
 
     def am_running(self):
         sickrage.app.log.debug("amWaiting: " + str(self.amWaiting) + ", amActive: " + str(self.amActive))

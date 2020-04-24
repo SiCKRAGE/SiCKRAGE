@@ -43,6 +43,9 @@ class AutoPostProcessor(object):
 
         self.amActive = True
 
+        # set thread name
+        threading.currentThread().setName(self.name)
+
         sickrage.app.io_loop.add_callback(sickrage.app.postprocessor_queue.put, sickrage.app.config.tv_download_dir, force=force)
 
         self.amActive = False

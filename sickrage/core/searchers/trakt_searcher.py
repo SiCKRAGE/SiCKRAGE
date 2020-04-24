@@ -18,6 +18,7 @@
 
 
 import datetime
+import functools
 import os
 import threading
 import traceback
@@ -25,11 +26,11 @@ import traceback
 import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.common import SKIPPED, WANTED, UNKNOWN
+from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import EpisodeNotFoundException
 from sickrage.core.helpers import sanitize_file_name, make_dir, chmod_as_parent
 from sickrage.core.queues.search import BacklogQueueItem
 from sickrage.core.traktapi import TraktAPI
-from sickrage.core.databases.main import MainDB
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.indexers import IndexerApi
 
@@ -65,13 +66,20 @@ class TraktSearcher(object):
         self.Collectionlist = {}
         self.amActive = False
 
-    def run(self, force=False):
+    async def task(self, force=False):
         if self.amActive or not sickrage.app.config.use_trakt and not force:
             return
 
         self.amActive = True
 
         # set thread name
+        threading.currentThread().setName(self.name)
+
+        sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, force))
+
+        self.amActive = False
+
+    def worker(self, force):
         threading.currentThread().setName(self.name)
 
         self.todoWanted = []  # its about to all get re-added
@@ -92,8 +100,6 @@ class TraktSearcher(object):
                 self.sync_collection()
             except Exception:
                 sickrage.app.log.debug(traceback.format_exc())
-
-        self.amActive = False
 
     def sync_watchlist(self):
         sickrage.app.log.debug("Syncing SiCKRAGE with Trakt Watchlist")

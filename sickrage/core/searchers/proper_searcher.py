@@ -19,6 +19,7 @@
 
 
 import datetime
+import functools
 import operator
 import re
 import threading
@@ -43,7 +44,7 @@ class ProperSearcher(object):
         self.name = "PROPERSEARCHER"
         self.amActive = False
 
-    def run(self, force=False):
+    async def task(self, force=False):
         """
         Start looking for new propers
         :param force: Start even if already running (currently not used, defaults to False)
@@ -56,17 +57,22 @@ class ProperSearcher(object):
         # set thread name
         threading.currentThread().setName(self.name)
 
-        sickrage.app.log.info("Beginning the search for new propers")
-        propers = self._get_proper_list()
+        sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, force))
 
+        self.amActive = False
+
+    def worker(self, force):
+        threading.currentThread().setName(self.name)
+
+        sickrage.app.log.info("Beginning the search for new propers")
+
+        propers = self._get_proper_list()
         if propers:
             self._download_propers(propers)
         else:
             sickrage.app.log.info('No recently aired episodes, no propers to search for')
 
         sickrage.app.log.info("Completed the search for new propers")
-
-        self.amActive = False
 
     def _get_proper_list(self):
         """

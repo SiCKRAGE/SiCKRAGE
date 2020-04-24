@@ -25,6 +25,7 @@ import os
 from abc import ABC
 from functools import cmp_to_key
 
+from tornado.gen import sleep
 from tornado.httputil import url_concat
 from tornado.web import authenticated
 
@@ -268,5 +269,6 @@ class ForceSchedulerJobHandler(BaseHandler, ABC):
         service = getattr(sickrage.app, name, None)
         if service:
             job = sickrage.app.scheduler.get_job(service.name)
-            job.modify(next_run_time=datetime.datetime.utcnow(), args=job.args + tuple([True]))
-            job.modify(args=job.args)
+            original_job_args = job.args
+            job.modify(next_run_time=datetime.datetime.utcnow(), kwargs={'force': True})
+            # job.modify(kwargs={})
