@@ -2,18 +2,14 @@
 
 # 
 
-##Fri Apr 24 2020 15:34:41 GMT+0000 (Coordinated Universal Time)
+##Sat Apr 25 2020 20:08:45 GMT+0000 (Coordinated Universal Time)
 
 
 ## Refactor
-  - Refactored provider URLs to not be pulled from API, currently the code for this needs to be reworked as its causing performance issues.
-  ([73a6fd85](https://gitlab-ci-token:B19KDp47GV5LeFiHeDkP@git.sickrage.ca/SiCKRAGE/sickrage/commit/73a6fd85de971acf0173c1716de370bf74d8c4c7))
-  - Refactored scheduled jobs to be async and execute on ioloop in their own thread
-  ([64ecdbeb](https://gitlab-ci-token:B19KDp47GV5LeFiHeDkP@git.sickrage.ca/SiCKRAGE/sickrage/commit/64ecdbeb0e988d7a6aae6a17ad539d0a8181cae8))
-  - Refactored auto-postprocessing task to be async
-  ([f4958915](https://gitlab-ci-token:B19KDp47GV5LeFiHeDkP@git.sickrage.ca/SiCKRAGE/sickrage/commit/f49589158c79cb2ddbc30d7927e07d64dcb21dc4))
-  - Refactored name of function in auto_postprocessor.py from run to task
-  ([6ef74b10](https://gitlab-ci-token:B19KDp47GV5LeFiHeDkP@git.sickrage.ca/SiCKRAGE/sickrage/commit/6ef74b10569dd25046d57f18827e4a33671b5a80))
+  - Refactored gitlab-ci script to use develop branch for Synology builds when building on SR develop branch
+  ([8d62dfad](https://gitlab-ci-token:xTV3aZVDwCUcPE2oh_xz@git.sickrage.ca/SiCKRAGE/sickrage/commit/8d62dfad83aa1a3086f1114ff8771502912fd61a))
+  - Refactored SR API certification verification to use certifi CA bundle Refactored gitlab-ci script to build Synology develop package
+  ([f98310b7](https://gitlab-ci-token:xTV3aZVDwCUcPE2oh_xz@git.sickrage.ca/SiCKRAGE/sickrage/commit/f98310b767aef6d5529f43ffc18e031c1a140721))
 
 
 
