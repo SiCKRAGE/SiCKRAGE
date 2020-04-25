@@ -277,7 +277,7 @@ deploy:synology:develop:
     UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
   trigger:
     project: sickrage/sickrage-synology
-    branch: master
+    branch: develop
   only:
     - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage
   except:
