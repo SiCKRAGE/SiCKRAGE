@@ -270,6 +270,20 @@ deploy:synology:master:
     - branches
     - triggers
 
+deploy:synology:develop:
+  stage: release_deploy
+  variables:
+    UPSTREAM_BRANCH: develop
+    UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
+  trigger:
+    project: sickrage/sickrage-synology
+    branch: master
+  only:
+    - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage
+  except:
+    - branches
+    - triggers
+
 deploy:readynas:master:
   stage: release_deploy
   variables:

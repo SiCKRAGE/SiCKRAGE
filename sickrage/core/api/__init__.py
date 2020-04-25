@@ -1,6 +1,7 @@
 import time
 from urllib.parse import urljoin
 
+import certifi
 import requests
 import requests.exceptions
 from keycloak.exceptions import KeycloakClientError
@@ -158,7 +159,7 @@ class API(object):
                     continue
 
                 resp = self.session.request(method, urljoin(self.api_base, "/".join([self.api_version, url])), timeout=timeout,
-                                            hooks={'response': self.throttle_hook}, **kwargs)
+                                            verify=certifi.where(), hooks={'response': self.throttle_hook}, **kwargs)
 
                 resp.raise_for_status()
                 if resp.status_code == 204:
