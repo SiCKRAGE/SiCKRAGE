@@ -1,6 +1,8 @@
 import functools
 import threading
 
+from tornado.ioloop import IOLoop
+
 import sickrage
 
 
@@ -22,7 +24,7 @@ class RSSCacheUpdater(object):
 
         for providerID, providerObj in sickrage.app.search_providers.sort().items():
             if providerObj.is_enabled:
-                sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, providerObj, force))
+                await IOLoop.current().run_in_executor(None, functools.partial(self.worker, providerObj, force))
 
         self.amActive = False
 

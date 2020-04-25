@@ -24,6 +24,7 @@ import time
 from urllib.parse import urlparse
 
 import upnpclient
+from tornado.ioloop import IOLoop
 
 import sickrage
 from sickrage.core.helpers import get_lan_ip
@@ -37,7 +38,7 @@ class UPNPClient(object):
 
     async def task(self, force=False):
         if sickrage.app.config.enable_upnp:
-            sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, force))
+            await IOLoop.current().run_in_executor(None, functools.partial(self.worker, force))
 
     def worker(self, force):
         self.add_nat_portmap()

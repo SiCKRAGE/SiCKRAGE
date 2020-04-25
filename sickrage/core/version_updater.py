@@ -30,6 +30,8 @@ import tempfile
 import threading
 from time import sleep
 
+from tornado.ioloop import IOLoop
+
 import sickrage
 from sickrage.core.helpers import backup_app_data
 from sickrage.core.websession import WebSession
@@ -55,7 +57,7 @@ class VersionUpdater(object):
         # set thread name
         threading.currentThread().setName(self.name)
 
-        sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, force))
+        await IOLoop.current().run_in_executor(None, functools.partial(self.worker, force))
 
         self.amActive = False
 

@@ -27,6 +27,7 @@ import time
 import feedparser
 from sqlalchemy import orm
 from sqlalchemy.exc import IntegrityError
+from tornado.ioloop import IOLoop
 
 import sickrage
 from sickrage.core.common import Quality
@@ -256,7 +257,7 @@ class TVCache(object):
                     # add to external provider cache database
                     if sickrage.app.config.enable_api_providers_cache and not self.provider.private:
                         try:
-                            sickrage.app.io_loop.run_in_executor(None, functools.partial(sickrage.app.api.provider_cache.add, data=dbData))
+                            IOLoop.current().run_in_executor(None, functools.partial(sickrage.app.api.provider_cache.add, data=dbData))
                         except Exception as e:
                             pass
         except (InvalidShowException, InvalidNameException):

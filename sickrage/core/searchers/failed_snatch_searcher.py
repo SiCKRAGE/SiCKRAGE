@@ -22,6 +22,8 @@ import datetime
 import functools
 import threading
 
+from tornado.ioloop import IOLoop
+
 import sickrage
 from sickrage.core.common import Quality, SNATCHED, SNATCHED_BEST, SNATCHED_PROPER
 from sickrage.core.databases.main import MainDB
@@ -49,7 +51,7 @@ class FailedSnatchSearcher(object):
         # set thread name
         threading.currentThread().setName(self.name)
 
-        sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, force))
+        await IOLoop.current().run_in_executor(None, functools.partial(self.worker, force))
 
         self.amActive = False
 
@@ -74,7 +76,7 @@ class FailedSnatchSearcher(object):
             if cur_status not in {SNATCHED, SNATCHED_BEST, SNATCHED_PROPER}:
                 continue
 
-            sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put,
+            IOLoop.current().add_callback(sickrage.app.search_queue.put,
                                               FailedQueueItem(episode_object.showid, episode_object.season, episode_object.episode, True))
 
             failed_snatches = True

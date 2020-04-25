@@ -23,12 +23,11 @@
 import os
 import threading
 import traceback
-from time import sleep
 
 from apscheduler.triggers.interval import IntervalTrigger
+from tornado.ioloop import IOLoop
 
 import sickrage
-from sickrage.core.common import cpu_presets
 from sickrage.core.process_tv import ProcessResult
 from sickrage.core.queues import SRQueue, SRQueueItem, SRQueuePriorities
 
@@ -52,7 +51,7 @@ class PostProcessorQueue(SRQueue):
         self._output = []
 
         self.scheduler.add_job(
-            sickrage.app.io_loop.add_callback,
+            IOLoop.current().add_callback,
             IntervalTrigger(
                 seconds=1,
                 timezone='utc'
@@ -145,8 +144,8 @@ class PostProcessorQueue(SRQueue):
             self.log("An item with directory {} is already being processed in the queue".format(dirName))
             return self.output
         else:
-            sickrage.app.io_loop.add_callback(super(PostProcessorQueue, self).put,
-                                              PostProcessorItem(dirName, nzbName, process_method, force, is_priority, delete_on, failed, proc_type))
+            IOLoop.current().add_callback(super(PostProcessorQueue, self).put,
+                                          PostProcessorItem(dirName, nzbName, process_method, force, is_priority, delete_on, failed, proc_type))
 
             if force_next:
                 result = await self._result_queue.get()
@@ -196,4 +195,4 @@ class PostProcessorItem(SRQueueItem):
             self.result = '{}'.format(traceback.format_exc())
             self.result += 'Processing Failed'
 
-        sickrage.app.io_loop.add_callback(self.result_queue.put, self.result)
+        IOLoop.current().add_callback(self.result_queue.put, self.result)

@@ -23,6 +23,7 @@ import os
 import threading
 
 from sqlalchemy import or_, and_
+from tornado.ioloop import IOLoop
 
 import sickrage
 from sickrage.core.databases.main import MainDB
@@ -111,7 +112,7 @@ class SubtitleSearcher(object):
 
                 existing_subtitles = episode_object.subtitles
 
-                sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, episode_object, existing_subtitles, force))
+                await IOLoop.current().run_in_executor(None, functools.partial(self.worker, episode_object, existing_subtitles, force))
 
         self.amActive = False
 

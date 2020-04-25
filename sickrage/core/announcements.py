@@ -22,6 +22,7 @@ import functools
 import threading
 
 from sqlalchemy import orm
+from tornado.ioloop import IOLoop
 
 import sickrage
 from sickrage.core.api import APIError
@@ -71,7 +72,7 @@ class Announcements(object):
 
     async def task(self, force=False):
         threading.currentThread().setName(self.name)
-        sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, force))
+        await IOLoop.current().run_in_executor(None, functools.partial(self.worker, force))
 
     def worker(self, force):
         threading.currentThread().setName(self.name)

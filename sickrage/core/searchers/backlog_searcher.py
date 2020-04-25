@@ -24,6 +24,8 @@ import datetime
 import functools
 import threading
 
+from tornado.ioloop import IOLoop
+
 import sickrage
 from sickrage.core.common import Quality, DOWNLOADED, SNATCHED, SNATCHED_PROPER, WANTED
 from sickrage.core.queues.search import BacklogQueueItem
@@ -52,7 +54,7 @@ class BacklogSearcher(object):
 
         self.forced = force
 
-        sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, force))
+        await IOLoop.current().run_in_executor(None, functools.partial(self.worker, force))
 
         self.amActive = False
 
@@ -98,7 +100,7 @@ class BacklogSearcher(object):
                 if (curShow.indexer_id, season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
                     sickrage.app.search_queue.SNATCH_HISTORY.remove((curShow.indexer_id, season, episode))
 
-                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(curShow.indexer_id, season, episode))
+                IOLoop.current().add_callback(sickrage.app.search_queue.put, BacklogQueueItem(curShow.indexer_id, season, episode))
 
             if from_date == datetime.date.min and not show_id:
                 self._set_last_backlog_search(curShow, cur_date)

@@ -25,6 +25,7 @@ import threading
 
 from dateutil import tz
 from sqlalchemy import orm
+from tornado.ioloop import IOLoop
 
 import sickrage
 from sickrage.core.databases.cache import CacheDB
@@ -40,7 +41,7 @@ class TimeZoneUpdater(object):
     async def task(self, force=False):
         # set thread name
         threading.currentThread().setName(self.name)
-        sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, force))
+        await IOLoop.current().run_in_executor(None, functools.partial(self.worker, force))
 
     def worker(self, force):
         threading.currentThread().setName(self.name)

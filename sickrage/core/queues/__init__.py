@@ -23,6 +23,7 @@ import threading
 import traceback
 
 from apscheduler.schedulers.tornado import TornadoScheduler
+from tornado.ioloop import IOLoop
 from tornado.queues import Queue, PriorityQueue
 
 import sickrage
@@ -68,7 +69,7 @@ class SRQueue(object):
                 # self.worker(await self.queue.get())
                 # self.scheduler.add_job(sickrage.app.io_look.add_callback, args=[self.worker, await self.queue.get()])
                 # threading.Thread(target=self.worker, args=(await self.queue.get(),)).start()
-                sickrage.app.io_loop.run_in_executor(None, self.worker, await self.get())
+                await IOLoop.current().run_in_executor(None, self.worker, await self.get())
 
         self.amActive = False
 

@@ -23,6 +23,8 @@ import os
 import threading
 import traceback
 
+from tornado.ioloop import IOLoop
+
 import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.common import SKIPPED, WANTED, UNKNOWN
@@ -48,7 +50,7 @@ def set_episode_to_wanted(show, s, e):
 
         epObj.status = WANTED
 
-        sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(show.indexer_id, epObj.season, epObj.episode))
+        IOLoop.current().add_callback(sickrage.app.search_queue.put, BacklogQueueItem(show.indexer_id, epObj.season, epObj.episode))
 
         sickrage.app.log.info("Starting backlog search for %s S%02dE%02d because some episodes were set to wanted" % (show.name, s, e))
     except EpisodeNotFoundException as e:
@@ -75,7 +77,7 @@ class TraktSearcher(object):
         # set thread name
         threading.currentThread().setName(self.name)
 
-        sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, force))
+        await IOLoop.current().run_in_executor(None, functools.partial(self.worker, force))
 
         self.amActive = False
 

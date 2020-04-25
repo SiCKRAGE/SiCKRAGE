@@ -22,6 +22,8 @@
 
 import threading
 
+from tornado.ioloop import IOLoop
+
 import sickrage
 
 
@@ -46,6 +48,6 @@ class AutoPostProcessor(object):
         # set thread name
         threading.currentThread().setName(self.name)
 
-        sickrage.app.io_loop.add_callback(sickrage.app.postprocessor_queue.put, sickrage.app.config.tv_download_dir, force=force)
+        IOLoop.current().add_callback(sickrage.app.postprocessor_queue.put, sickrage.app.config.tv_download_dir, force=force)
 
         self.amActive = False

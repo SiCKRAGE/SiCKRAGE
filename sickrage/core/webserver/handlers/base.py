@@ -31,6 +31,7 @@ from keycloak.exceptions import KeycloakClientError
 from mako.exceptions import RichTraceback
 from mako.lookup import TemplateLookup
 from tornado import locale
+from tornado.ioloop import IOLoop
 from tornado.web import RequestHandler
 
 import sickrage
@@ -197,4 +198,4 @@ class BaseHandler(RequestHandler, ABC):
             threading.currentThread().setName('TORNADO')
             return f(*args, **kwargs)
 
-        return sickrage.app.io_loop.run_in_executor(None, functools.partial(wrapper, *args, **kwargs))
+        return IOLoop.current().run_in_executor(None, functools.partial(wrapper, *args, **kwargs))

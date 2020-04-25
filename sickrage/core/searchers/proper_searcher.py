@@ -27,6 +27,7 @@ import time
 import traceback
 
 from sqlalchemy import orm
+from tornado.ioloop import IOLoop
 
 import sickrage
 from sickrage.core.common import DOWNLOADED, Quality, SNATCHED, SNATCHED_PROPER, cpu_presets
@@ -57,7 +58,7 @@ class ProperSearcher(object):
         # set thread name
         threading.currentThread().setName(self.name)
 
-        sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, force))
+        await IOLoop.current().run_in_executor(None, functools.partial(self.worker, force))
 
         self.amActive = False
 
