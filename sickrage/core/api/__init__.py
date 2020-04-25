@@ -113,7 +113,7 @@ class API(object):
 
     @property
     def health(self):
-        return requests.get(urljoin(self.api_base, "oauth/health")).ok
+        return requests.get(urljoin(self.api_base, "oauth/health"), verify=False).ok
 
     @property
     def userinfo(self):
@@ -158,8 +158,8 @@ class API(object):
                     latest_exception = "SiCKRAGE backend API is currently unreachable ..."
                     continue
 
-                resp = self.session.request(method, urljoin(self.api_base, "/".join([self.api_version, url])), timeout=timeout,
-                                            verify=certifi.where(), hooks={'response': self.throttle_hook}, **kwargs)
+                resp = self.session.request(method, urljoin(self.api_base, "/".join([self.api_version, url])), timeout=timeout, verify=False,
+                                            hooks={'response': self.throttle_hook}, **kwargs)
 
                 resp.raise_for_status()
                 if resp.status_code == 204:
