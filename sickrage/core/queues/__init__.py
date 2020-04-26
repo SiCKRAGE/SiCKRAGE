@@ -17,6 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
+
 import ctypes
 import datetime
 import threading
@@ -45,6 +46,7 @@ class SRQueue(object):
     def __init__(self, name="QUEUE"):
         super(SRQueue, self).__init__()
         self.name = name
+        self.lock = threading.Lock()
         self.scheduler = TornadoScheduler({'apscheduler.timezone': 'UTC'})
         self.queue = PriorityQueue()
         self._result_queue = Queue()
@@ -66,29 +68,28 @@ class SRQueue(object):
 
         if not self.stop and not self.queue.empty():
             if not self.is_paused and not len(self.processing) >= int(sickrage.app.config.max_queue_workers):
-                # self.worker(await self.queue.get())
-                # self.scheduler.add_job(sickrage.app.io_look.add_callback, args=[self.worker, await self.queue.get()])
-                # threading.Thread(target=self.worker, args=(await self.queue.get(),)).start()
                 await IOLoop.current().run_in_executor(None, self.worker, await self.get())
 
         self.amActive = False
 
     def worker(self, item):
-        threading.currentThread().setName(item.name)
-        item.thread_id = threading.currentThread().ident
+        with self.lock:
+            threading.currentThread().setName(item.name)
+            item.thread_id = threading.currentThread().ident
 
-        try:
-            item.is_alive = True
-            self.processing.append(item)
-            item.run()
-        except QueueItemStopException:
-            pass
-        except Exception:
-            sickrage.app.log.debug(traceback.format_exc())
-        finally:
-            self._queue_items.remove(item)
-            self.processing.remove(item)
-            self.queue.task_done()
+            try:
+                item.is_alive = True
+                self.processing.append(item)
+                result = item.run()
+                if result:
+                    self._result_queue.put(result)
+            except QueueItemStopException:
+                pass
+            except Exception:
+                sickrage.app.log.debug(traceback.format_exc())
+            finally:
+                self.remove(item)
+                self.queue.task_done()
 
     async def get(self):
         return await self.queue.get()
@@ -105,7 +106,6 @@ class SRQueue(object):
 
         item.added = datetime.datetime.now()
         item.name = "{}-{}".format(self.name, item.name)
-        item.result_queue = self._result_queue
         self._queue_items.append(item)
         await self.queue.put(item)
 
@@ -154,7 +154,6 @@ class SRQueueItem(object):
         self.action_id = action_id
         self.added = None
         self.result = None
-        self.result_queue = None
         self.priority = SRQueuePriorities.NORMAL
         self.is_alive = False
         self.thread_id = None

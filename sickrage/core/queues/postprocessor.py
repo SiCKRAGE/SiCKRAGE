@@ -18,8 +18,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-
-
 import os
 import threading
 import traceback
@@ -195,4 +193,4 @@ class PostProcessorItem(SRQueueItem):
             self.result = '{}'.format(traceback.format_exc())
             self.result += 'Processing Failed'
 
-        IOLoop.current().add_callback(self.result_queue.put, self.result)
+        return self.result

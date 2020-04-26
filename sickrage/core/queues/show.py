@@ -98,6 +98,12 @@ class ShowQueue(SRQueue):
         else:
             IOLoop.current().add_callback(self.put, QueueItemUpdate(indexer_id, indexer_update_only))
 
+        while self.is_being_updated(indexer_id):
+            time.sleep(1)
+
+        if not indexer_update_only:
+            sickrage.app.show_queue.refresh_show(show_obj.indexer_id, force)
+
     def refresh_show(self, indexer_id, force=False):
         show_obj = find_show(indexer_id)
 
@@ -572,10 +578,6 @@ class QueueItemUpdate(ShowQueueItem):
         sickrage.app.quicksearch_cache.update_show(show_obj.indexer_id)
 
         sickrage.app.log.info("Finished updates in {}s for show: {}".format(round(time.time() - start_time, 2), show_obj.name))
-
-        # refresh show
-        if not self.indexer_update_only:
-            sickrage.app.show_queue.refresh_show(show_obj.indexer_id, self.force)
 
 
 class QueueItemForceUpdate(QueueItemUpdate):

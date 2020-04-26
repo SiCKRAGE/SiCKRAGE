@@ -18,8 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-
-
+import asyncio
 import datetime
 import functools
 import os
@@ -40,6 +39,7 @@ from dateutil import tz
 from fake_useragent import UserAgent
 from keycloak.realm import KeycloakRealm
 from tornado.ioloop import IOLoop
+from tornado.platform.asyncio import AnyThreadEventLoopPolicy
 
 import sickrage
 from sickrage.core.announcements import Announcements
@@ -177,6 +177,9 @@ class Core(object):
 
         # thread name
         threading.currentThread().setName('CORE')
+
+        # event loop policy that allows loop creation on any thread.
+        asyncio.set_event_loop_policy(AnyThreadEventLoopPolicy())
 
         # init core classes
         self.api = API()
@@ -546,7 +549,6 @@ class Core(object):
             self.log.info("SiCKRAGE :: URL:[{}://{}:{}{}]".format(('http', 'https')[self.config.enable_https],
                                                                   self.config.web_host, self.config.web_port, self.config.web_root))
 
-        # start ioloop
         IOLoop.current().add_callback(started)
         IOLoop.current().start()
 
