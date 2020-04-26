@@ -81,6 +81,7 @@ from sickrage.providers import SearchProviders
 class Core(object):
     def __init__(self):
         self.started = False
+        self.io_loop = None
         self.loading_shows = False
         self.daemon = None
         self.pid = os.getpid()
@@ -180,6 +181,9 @@ class Core(object):
 
         # event loop policy that allows loop creation on any thread.
         asyncio.set_event_loop_policy(AnyThreadEventLoopPolicy())
+
+        # create io loop
+        self.io_loop = IOLoop.current()
 
         # init core classes
         self.api = API()
@@ -350,7 +354,7 @@ class Core(object):
 
         # add version checker job
         self.scheduler.add_job(
-            IOLoop.current().add_callback,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 hours=self.config.version_updater_freq,
                 timezone='utc'
@@ -363,7 +367,7 @@ class Core(object):
 
         # add network timezones updater job
         self.scheduler.add_job(
-            IOLoop.current().add_callback,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 days=1,
                 timezone='utc'
@@ -376,7 +380,7 @@ class Core(object):
 
         # add show updater job
         self.scheduler.add_job(
-            IOLoop.current().add_callback,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 days=1,
                 start_date=datetime.datetime.now().replace(hour=self.config.showupdate_hour),
@@ -389,7 +393,7 @@ class Core(object):
 
         # add rss cache updater job
         self.scheduler.add_job(
-            IOLoop.current().add_callback,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 minutes=15,
                 timezone='utc'
@@ -401,7 +405,7 @@ class Core(object):
 
         # add daily search job
         self.scheduler.add_job(
-            IOLoop.current().add_callback,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 minutes=self.config.daily_searcher_freq,
                 start_date=datetime.datetime.now() + datetime.timedelta(minutes=4),
@@ -414,7 +418,7 @@ class Core(object):
 
         # add failed snatch search job
         self.scheduler.add_job(
-            IOLoop.current().add_callback,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 hours=1,
                 start_date=datetime.datetime.now() + datetime.timedelta(minutes=4),
@@ -427,7 +431,7 @@ class Core(object):
 
         # add backlog search job
         self.scheduler.add_job(
-            IOLoop.current().add_callback,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 minutes=self.config.backlog_searcher_freq,
                 start_date=datetime.datetime.now() + datetime.timedelta(minutes=30),
@@ -440,7 +444,7 @@ class Core(object):
 
         # add auto-postprocessing job
         self.scheduler.add_job(
-            IOLoop.current().add_callback,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 minutes=self.config.autopostprocessor_freq,
                 timezone='utc'
@@ -452,7 +456,7 @@ class Core(object):
 
         # add find proper job
         self.scheduler.add_job(
-            IOLoop.current().add_callback,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 minutes={
                     '15m': 15,
@@ -470,7 +474,7 @@ class Core(object):
 
         # add trakt.tv checker job
         self.scheduler.add_job(
-            IOLoop.current().add_callback,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 hours=1,
                 timezone='utc'
@@ -482,7 +486,7 @@ class Core(object):
 
         # add subtitles finder job
         self.scheduler.add_job(
-            IOLoop.current().add_callback,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 hours=self.config.subtitle_searcher_freq,
                 timezone='utc'
@@ -494,7 +498,7 @@ class Core(object):
 
         # add upnp client job
         self.scheduler.add_job(
-            IOLoop.current().add_callback,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 seconds=self.upnp_client._nat_portmap_lifetime,
                 timezone='utc'
@@ -506,7 +510,7 @@ class Core(object):
 
         # add announcements job
         self.scheduler.add_job(
-            IOLoop.current().add_callback,
+            self.io_loop.add_callback,
             IntervalTrigger(
                 minutes=15,
                 timezone='utc'
@@ -523,10 +527,10 @@ class Core(object):
         self.postprocessor_queue.start()
 
         # fire off startup events
-        IOLoop.current().add_callback(self.load_shows)
-        # IOLoop.current().add_callback(self.version_updater.run)
-        # IOLoop.current().add_callback(self.tz_updater.run)
-        # IOLoop.current().add_callback(self.announcements.run)
+        self.io_loop.add_callback(self.load_shows)
+        # self.io_loop.add_callback(self.version_updater.run)
+        # self.io_loop.add_callback(self.tz_updater.run)
+        # self.io_loop.add_callback(self.announcements.run)
 
         # start scheduler service
         self.scheduler.start()
@@ -536,7 +540,7 @@ class Core(object):
 
         # launch browser window
         if all([not sickrage.app.no_launch, sickrage.app.config.launch_browser]):
-            IOLoop.current().add_callback(functools.partial(launch_browser, ('http', 'https')[sickrage.app.config.enable_https],
+            self.io_loop.add_callback(functools.partial(launch_browser, ('http', 'https')[sickrage.app.config.enable_https],
                                                         sickrage.app.config.web_host, sickrage.app.config.web_port))
 
         def started():
@@ -549,8 +553,8 @@ class Core(object):
             self.log.info("SiCKRAGE :: URL:[{}://{}:{}{}]".format(('http', 'https')[self.config.enable_https],
                                                                   self.config.web_host, self.config.web_port, self.config.web_root))
 
-        IOLoop.current().add_callback(started)
-        IOLoop.current().start()
+        self.io_loop.add_callback(started)
+        self.io_loop.start()
 
     def load_shows(self):
         threading.currentThread().setName('CORE')
@@ -608,4 +612,5 @@ class Core(object):
         self.started = False
 
         # stop ioloop
-        IOLoop.current().stop()
+        if self.io_loop:
+            self.io_loop.stop()

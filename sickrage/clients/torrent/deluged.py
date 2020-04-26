@@ -19,16 +19,17 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 
+
 from base64 import b64encode
 
 from deluge_client import DelugeRPCClient
 
 import sickrage
-from sickrage.clients.torrent import GenericClient
+from sickrage.clients import TorrentClient
 from sickrage.core.tv.show.helpers import find_show
 
 
-class DelugeDAPI(GenericClient):
+class DelugeDAPI(TorrentClient):
     drpc = None
 
     def __init__(self, host=None, username=None, password=None):

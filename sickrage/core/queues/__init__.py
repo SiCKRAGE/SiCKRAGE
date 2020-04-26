@@ -24,7 +24,6 @@ import threading
 import traceback
 
 from apscheduler.schedulers.tornado import TornadoScheduler
-from tornado.ioloop import IOLoop
 from tornado.queues import Queue, PriorityQueue
 
 import sickrage
@@ -68,7 +67,7 @@ class SRQueue(object):
 
         if not self.stop and not self.queue.empty():
             if not self.is_paused and not len(self.processing) >= int(sickrage.app.config.max_queue_workers):
-                await IOLoop.current().run_in_executor(None, self.worker, await self.get())
+                await sickrage.app.io_loop.run_in_executor(None, self.worker, await self.get())
 
         self.amActive = False
 

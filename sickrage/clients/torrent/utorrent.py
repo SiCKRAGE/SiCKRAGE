@@ -22,11 +22,11 @@
 import re
 
 import sickrage
-from sickrage.clients.torrent import GenericClient
+from sickrage.clients import TorrentClient
 from sickrage.core.tv.show.helpers import find_show
 
 
-class uTorrentAPI(GenericClient):
+class uTorrentAPI(TorrentClient):
     def __init__(self, host=None, username=None, password=None):
         super(uTorrentAPI, self).__init__('uTorrent', host, username, password)
         self.url = self.host + 'gui/'

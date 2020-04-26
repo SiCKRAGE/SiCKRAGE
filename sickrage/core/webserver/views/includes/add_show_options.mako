@@ -13,18 +13,33 @@
             <label>
                 <input type="checkbox" class="toggle color-primary is-material" name="subtitles"
                        id="subtitles" ${('', 'checked')[bool(sickrage.app.config.subtitles_default)]} />
+                ${_('enables searching for episode subtitles')}
+            </label>
+        </div>
+    </div>
+
+    <div class="row field-pair">
+        <div class="col-lg-3 col-md-4 col-sm-5">
+            <label class="component-title">${_('Subtitles Metadata')}</label>
+        </div>
+        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+            <label>
+                <input type="checkbox" class="toggle color-primary is-material" name="sub_use_sr_metadata"
+                       id="sub_use_sr_metadata"/>
+                ${_('use SiCKRAGE metadata when searching for subtitle, this will override the auto-discovered metadata')}
             </label>
         </div>
     </div>
 % endif
 <div class="row field-pair">
     <div class="col-lg-3 col-md-4 col-sm-5">
-        <label class="component-title">${_('Flatten Folders')}</label>
+        <label class="component-title">${_('Season folders')}</label>
     </div>
     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
         <label>
             <input type="checkbox" class="toggle color-primary is-material" name="flatten_folders"
                    id="flatten_folders" ${('', 'checked')[bool(sickrage.app.config.flatten_folders_default)]}/>
+            ${_('group episodes by season folder (uncheck to store in a single folder)')}
         </label>
     </div>
 </div>
@@ -37,6 +52,7 @@
             <label>
                 <input type="checkbox" class="toggle color-primary is-material" name="anime"
                        id="anime" ${('', 'checked')[bool(sickrage.app.config.anime_default)]} />
+                ${_('search by absolute numbering and enables searching with anime providers')}
             </label>
         </div>
     </div>
@@ -49,6 +65,43 @@
         <label>
             <input type="checkbox" class="toggle color-primary is-material" name="scene"
                    id="scene" ${('', 'checked')[bool(sickrage.app.config.scene_default)]} />
+            ${_('search by scene numbering (uncheck to search by indexer numbering)')}
+        </label>
+    </div>
+</div>
+<div class="row field-pair">
+    <div class="col-lg-3 col-md-4 col-sm-5">
+        <label class="component-title">${_('Air By Date')}</label>
+    </div>
+    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+        <label>
+            <input type="checkbox" class="toggle color-primary is-material" id="air_by_date"
+                   name="air_by_date"/>
+            ${_('check if the show is released as Show.03.02.2010 rather than Show.S02E03')}
+        </label>
+    </div>
+</div>
+<div class="row field-pair">
+    <div class="col-lg-3 col-md-4 col-sm-5">
+        <label class="component-title">${_('Sports')}</label>
+    </div>
+    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+        <label>
+            <input type="checkbox" class="toggle color-primary is-material" id="sports"
+                   name="sports"/>
+            ${_('check if the show is a sporting or MMA event released as Show.03.02.2010 rather than Show.S02E03')}
+        </label>
+    </div>
+</div>
+<div class="row field-pair">
+    <div class="col-lg-3 col-md-4 col-sm-5">
+        <label class="component-title">${_('DVD Order')}</label>
+    </div>
+    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+        <label>
+            <input type="checkbox" class="toggle color-primary is-material" id="dvdorder"
+                   name="dvdorder"/>
+            ${_('use the DVD order instead of the air order')}
         </label>
     </div>
 </div>
@@ -60,6 +113,7 @@
         <label>
             <input type="checkbox" class="toggle color-primary is-material" name="skip_downloaded"
                    id="skip_downloaded" ${('', 'checked')[bool(sickrage.app.config.skip_downloaded_default)]} />
+            ${_('skips updating quality of old/new downloaded episodes')}
         </label>
     </div>
 </div>
@@ -71,6 +125,7 @@
         <label>
             <input type="checkbox" class="toggle color-primary is-material" name="add_show_year"
                    id="add_show_year" ${('', 'checked')[bool(sickrage.app.config.add_show_year_default)]} />
+            ${_('include year of show in show folder name during initial show folder creation')}
         </label>
     </div>
 </div>

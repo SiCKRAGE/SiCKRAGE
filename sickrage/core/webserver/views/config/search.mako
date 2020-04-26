@@ -346,8 +346,8 @@
                                     <span class="input-group-text"><span class="fas fa-cloud-upload-alt"></span></span>
                                 </div>
                                 <select name="nzb_method" id="nzb_method" class="form-control" title="NZB Clients">
-                                    <% nzb_method_text = {'blackhole': "Black hole", 'sabnzbd': "SABnzbd", 'nzbget': "NZBget"} %>
-                                    % for curAction in ('sabnzbd', 'blackhole', 'nzbget'):
+                                    <% nzb_method_text = {'blackhole': "Black hole", 'sabnzbd': "SABnzbd", 'nzbget': "NZBget", 'download_station': "Synology DS"} %>
+                                    % for curAction in ('sabnzbd', 'blackhole', 'nzbget', 'download_station'):
                                         <option value="${curAction}" ${('', 'selected')[sickrage.app.config.nzb_method == curAction]}>${nzb_method_text[curAction]}</option>
                                     % endfor
                                 </select>
@@ -596,7 +596,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><span class="fas fa-user"></span></span>
                                     </div>
-                                    <input name="nzbget_username"
+                                    <input name="nzbget_username" id="nzbget_username"
                                            value="${sickrage.app.config.nzbget_username}"
                                            placeholder="${_('default = nzbget')}"
                                            title="locate in nzbget.conf"
@@ -734,9 +734,91 @@
                         </div>
                     </div>
 
+                    <div id="download_station_settings">
+                        <div class="form-row form-group">
+                            <div class="col-lg-3 col-md-4 col-sm-5">
+                                <label class="component-title">${_('Synology DSM host:port')}</label>
+                            </div>
+                            <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><span class="fas fa-globe"></span></span>
+                                    </div>
+                                    <input name="syno_dsm_host" id="syno_dsm_host"
+                                           value="${sickrage.app.config.syno_dsm_host}"
+                                           placeholder="${_('ex. http://localhost:5000/')}"
+                                           title="URL to your Synology DSM"
+                                           class="form-control"
+                                           autocapitalize="off"
+                                           type="url"
+                                           pattern="https?:\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?">
+                                    <div class="invalid-tooltip">
+                                        Please fill in a valid host:port
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row form-group">
+                            <div class="col-lg-3 col-md-4 col-sm-5">
+                                <label class="component-title">${_('Synology DSM username')}</label>
+                            </div>
+                            <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><span class="fas fa-user"></span></span>
+                                    </div>
+                                    <input name="syno_dsm_username" id="syno_dsm_username"
+                                           value="${sickrage.app.config.syno_dsm_username}"
+                                           placeholder="${_('blank for none')}"
+                                           title="Synology DSM username"
+                                           class="form-control" autocapitalize="off"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row form-group">
+                            <div class="col-lg-3 col-md-4 col-sm-5">
+                                <label class="component-title">${_('Synology DSM password')}</label>
+                            </div>
+                            <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><span class="fas fa-lock"></span></span>
+                                    </div>
+                                    <input type="password" name="syno_dsm_password" id="syno_dsm_password"
+                                           value="${sickrage.app.config.syno_dsm_password}"
+                                           placeholder="${_('blank for none')}"
+                                           title="Synology DSM password"
+                                           class="form-control" autocapitalize="off"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row form-group" id="torrent_path_option">
+                            <div class="col-lg-3 col-md-4 col-sm-5">
+                                <label class="component-title">${_('Downloaded files location')}</label>
+                            </div>
+                            <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                                <div class="input-group">
+                                    <input name="syno_dsm_path" id="syno_dsm_path"
+                                           value="${sickrage.app.config.syno_dsm_path}"
+                                           class="form-control"
+                                           autocapitalize="off"/>
+                                </div>
+                                <label for="syno_dsm_path">
+                                    ${_('where Synology Download Station will save downloaded files (blank for client default)')}
+                                    <br/>
+                                    <b>${_('NOTE:')}</b> ${_('the destination has to be a shared folder for Synology DS devices')}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="form-row">
                         <div class="col-md-12">
                             <div class="testNotification" id="testSABnzbd_result">${_('Click below to test')}</div>
+                            <div class="testNotification" id="testSynologyDSM_result">${_('Click below to test')}</div>
                         </div>
                     </div>
 
@@ -744,6 +826,8 @@
                         <div class="col-md-12">
                             <input class="btn test-button" type="button" value="${_('Test SABnzbd')}"
                                    id="testSABnzbd"/>
+                            <input class="btn test-button" type="button" value="${_('Test Synology DSM')}"
+                                   id="testSynologyDSM"/>
                             <input type="submit" class="btn config_submitter"
                                    value="${_('Save Changes')}"/><br>
                         </div>

@@ -31,7 +31,6 @@ from urllib.parse import unquote_plus
 
 from sqlalchemy import orm
 from tornado.escape import json_encode, recursive_unicode
-from tornado.ioloop import IOLoop
 from tornado.web import RequestHandler
 
 import sickrage
@@ -40,7 +39,6 @@ from sickrage.core.common import ARCHIVED, DOWNLOADED, IGNORED, \
     Overview, Quality, SKIPPED, SNATCHED, SNATCHED_PROPER, UNAIRED, UNKNOWN, \
     WANTED, dateFormat, dateTimeFormat, get_quality_string, statusStrings, \
     timeFormat
-from sickrage.core.databases.cache import CacheDB
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import CantUpdateShowException, CantRemoveShowException, CantRefreshShowException, \
     EpisodeNotFoundException
@@ -806,7 +804,7 @@ class CMD_EpisodeSearch(ApiCall):
 
         # make a queue item for it and put it on the queue
         ep_queue_item = ManualSearchQueueItem(showObj, epObj.season, epObj.episode)
-        IOLoop.current().add_callback(sickrage.app.search_queue.put, ep_queue_item)
+        sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, ep_queue_item)
 
         # wait until the queue item tells us whether it worked or not
         while not ep_queue_item.success:
@@ -908,7 +906,7 @@ class CMD_EpisodeSetStatus(ApiCall):
         extra_msg = ""
         if start_backlog:
             for season, episode in wanted:
-                IOLoop.current().add_callback(sickrage.app.search_queue.put, BacklogQueueItem(show_obj, season, episode))
+                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(show_obj, season, episode))
                 sickrage.app.log.info("Starting backlog for " + show_obj.name + " season " + str(season) + " because some episodes were set to WANTED")
 
             extra_msg = " Backlog started"

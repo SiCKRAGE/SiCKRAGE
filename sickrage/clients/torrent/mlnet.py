@@ -20,10 +20,10 @@
 # ##############################################################################
 
 import sickrage
-from sickrage.clients.torrent import GenericClient
+from sickrage.clients import TorrentClient
 
 
-class mlnetAPI(GenericClient):
+class mlnetAPI(TorrentClient):
     def __init__(self, host=None, username=None, password=None):
 
         super(mlnetAPI, self).__init__('mlnet', host, username, password)

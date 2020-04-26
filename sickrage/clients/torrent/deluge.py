@@ -20,15 +20,14 @@
 # ##############################################################################
 
 
-import json
 from base64 import b64encode
 
 import sickrage
-from sickrage.clients.torrent import GenericClient
+from sickrage.clients import TorrentClient
 from sickrage.core.tv.show.helpers import find_show
 
 
-class DelugeAPI(GenericClient):
+class DelugeAPI(TorrentClient):
     def __init__(self, host=None, username=None, password=None):
 
         super(DelugeAPI, self).__init__('Deluge', host, username, password)

@@ -28,7 +28,6 @@ from urllib.parse import unquote_plus, quote_plus
 from tornado import gen
 from tornado.escape import json_encode
 from tornado.httputil import url_concat
-from tornado.ioloop import IOLoop
 from tornado.web import authenticated
 
 import sickrage
@@ -185,6 +184,19 @@ class TestSABnzbdHandler(BaseHandler, ABC):
                 return self.write(_('Success. Connected and authenticated'))
             return self.write(_('Authentication failed. SABnzbd expects {access!r} as authentication method, {auth}'.format(access=acces_msg, auth=auth_msg)))
         return self.write(_('Unable to connect to host'))
+
+
+class TestSynologyDSMHandler(BaseHandler, ABC):
+    @authenticated
+    def get(self, *args, **kwargs):
+        host = clean_url(self.get_argument('host'))
+        nzb_method = self.get_argument('nzb_method')
+        username = self.get_argument('username')
+        password = self.get_argument('password')
+
+        client = get_client_instance(nzb_method, client_type='nzb')
+        __, access_msg = client(host, username, password).test_authentication()
+        return self.write(access_msg)
 
 
 class TestTorrentHandler(BaseHandler, ABC):
@@ -685,7 +697,7 @@ class RestartHandler(BaseHandler, ABC):
         # clear current user to disable header and footer
         self.current_user = None
 
-        IOLoop.current().add_timeout(datetime.timedelta(seconds=5), sickrage.app.shutdown, restart=True)
+        sickrage.app.io_loop.add_timeout(datetime.timedelta(seconds=5), sickrage.app.shutdown, restart=True)
 
         return await self.render(
             "/home/restart.mako",
@@ -1158,7 +1170,7 @@ class SyncTraktHandler(BaseHandler, ABC):
 
         job = sickrage.app.scheduler.get_job(sickrage.app.trakt_searcher.name)
         job.modify(next_run_time=datetime.datetime.utcnow(), kwargs={'force': True})
-        IOLoop.current().add_timeout(datetime.timedelta(seconds=10), job.modify, kwargs={})
+        sickrage.app.io_loop.add_timeout(datetime.timedelta(seconds=10), job.modify, kwargs={})
 
         return self.redirect("/home/")
 
@@ -1296,7 +1308,7 @@ class SearchEpisodeHandler(BaseHandler, ABC):
         # make a queue item for it and put it on the queue
         ep_queue_item = ManualSearchQueueItem(int(show), int(season), int(episode), bool(int(down_cur_quality)))
 
-        IOLoop.current().add_callback(sickrage.app.search_queue.put, ep_queue_item)
+        sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, ep_queue_item)
         if not all([ep_queue_item.started, ep_queue_item.success]):
             return self.write(json_encode({'result': 'success'}))
 
@@ -1503,7 +1515,7 @@ class RetryEpisodeHandler(BaseHandler, ABC):
         # make a queue item for it and put it on the queue
         ep_queue_item = FailedQueueItem(show, season, episode, bool(int(down_cur_quality)))
 
-        IOLoop.current().add_callback(sickrage.app.search_queue.put, ep_queue_item)
+        sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, ep_queue_item)
         if not all([ep_queue_item.started, ep_queue_item.success]):
             return self.write(json_encode({'result': 'success'}))
 

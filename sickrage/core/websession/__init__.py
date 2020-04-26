@@ -20,6 +20,7 @@
 # ##############################################################################
 import os
 import ssl
+from time import sleep
 from urllib.parse import urlparse
 
 import certifi
@@ -108,7 +109,7 @@ class WebSession(Session):
                     )
                 return
             except ConnectionError:
-                continue
+                sleep(1)
 
     def download(self, url, filename, **kwargs):
         try:

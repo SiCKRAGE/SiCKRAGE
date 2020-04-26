@@ -22,8 +22,6 @@ import datetime
 import functools
 import threading
 
-from tornado.ioloop import IOLoop
-
 import sickrage
 from sickrage.core import common
 from sickrage.core.common import Quality, WANTED, DOWNLOADED, SNATCHED, SNATCHED_PROPER
@@ -50,7 +48,7 @@ class DailySearcher(object):
         # set thread name
         threading.currentThread().setName(self.name)
 
-        await IOLoop.current().run_in_executor(None, functools.partial(self.worker, force))
+        await sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, force))
 
         self.amActive = False
 
@@ -81,7 +79,7 @@ class DailySearcher(object):
                 if (curShow.indexer_id, season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
                     sickrage.app.search_queue.SNATCH_HISTORY.remove((curShow.indexer_id, season, episode))
 
-                IOLoop.current().add_callback(sickrage.app.search_queue.put, DailySearchQueueItem(curShow.indexer_id, season, episode))
+                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, DailySearchQueueItem(curShow.indexer_id, season, episode))
 
     @staticmethod
     def _get_wanted(show, from_date):

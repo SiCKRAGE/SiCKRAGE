@@ -1,7 +1,6 @@
 import json
 from queue import Queue
 
-from tornado.ioloop import IOLoop
 from tornado.websocket import WebSocketHandler
 
 import sickrage
@@ -68,4 +67,4 @@ class WebSocketMessage(object):
         """Push the message to all connected WebSocket clients."""
         message_queue.put(self.json())
         for client in clients:
-            IOLoop.current().add_callback(client.write_message, message_queue.get())
+            sickrage.app.io_loop.add_callback(client.write_message, message_queue.get())

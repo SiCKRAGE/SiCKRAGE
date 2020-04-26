@@ -63,7 +63,7 @@ from sickrage.core.webserver.handlers.home import HomeHandler, IsAliveHandler, T
     DeleteShowHandler, RefreshShowHandler, UpdateShowHandler, SubtitleShowHandler, UpdateKODIHandler, UpdatePLEXHandler, \
     UpdateEMBYHandler, SyncTraktHandler, DeleteEpisodeHandler, TestRenameHandler, DoRenameHandler, \
     SearchEpisodeHandler, GetManualSearchStatusHandler, SearchEpisodeSubtitlesHandler, \
-    SetSceneNumberingHandler, ProviderStatusHandler, ServerStatusHandler, ShowProgressHandler
+    SetSceneNumberingHandler, ProviderStatusHandler, ServerStatusHandler, ShowProgressHandler, TestSynologyDSMHandler
 from sickrage.core.webserver.handlers.home.add_shows import HomeAddShowsHandler, SearchIndexersForShowNameHandler, \
     MassAddTableHandler, NewShowHandler, TraktShowsHandler, PopularShowsHandler, AddShowToBlacklistHandler, \
     ExistingShowsHandler, AddShowByIDHandler, AddNewShowHandler, AddExistingShowsHandler
@@ -252,6 +252,7 @@ class WebServer(object):
             (r'%s/home/showProgress(/?)' % sickrage.app.config.web_root, ShowProgressHandler),
             (r'%s/home/is_alive(/?)' % sickrage.app.config.web_root, IsAliveHandler),
             (r'%s/home/testSABnzbd(/?)' % sickrage.app.config.web_root, TestSABnzbdHandler),
+            (r'%s/home/testSynologyDSM(/?)' % sickrage.app.config.web_root, TestSynologyDSMHandler),
             (r'%s/home/testTorrent(/?)' % sickrage.app.config.web_root, TestTorrentHandler),
             (r'%s/home/testFreeMobile(/?)' % sickrage.app.config.web_root, TestFreeMobileHandler),
             (r'%s/home/testTelegram(/?)' % sickrage.app.config.web_root, TestTelegramHandler),

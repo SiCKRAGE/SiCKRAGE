@@ -24,7 +24,6 @@ from abc import ABC
 from functools import cmp_to_key
 
 from tornado.escape import json_encode, json_decode
-from tornado.ioloop import IOLoop
 from tornado.web import authenticated
 
 import sickrage
@@ -126,7 +125,7 @@ def set_episode_status(show, eps, status, direct=None):
             if (show_obj.indexer_id, season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
                 sickrage.app.search_queue.SNATCH_HISTORY.remove((show_obj.indexer_id, season, episode))
 
-            IOLoop.current().add_callback(sickrage.app.search_queue.put, BacklogQueueItem(show_obj.indexer_id, season, episode))
+            sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(show_obj.indexer_id, season, episode))
             msg += "<li>" + _("Season ") + str(season) + "</li>"
             sickrage.app.log.info("Sending backlog for " + show_obj.name + " season " + str(season) + " because some eps were set to wanted")
 
@@ -147,7 +146,7 @@ def set_episode_status(show, eps, status, direct=None):
             if (show_obj.indexer_id, season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
                 sickrage.app.search_queue.SNATCH_HISTORY.remove((show_obj.indexer_id, season, episode))
 
-            IOLoop.current().add_callback(sickrage.app.search_queue.put, FailedQueueItem(show_obj.indexer_id, season, episode))
+            sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, FailedQueueItem(show_obj.indexer_id, season, episode))
 
             msg += "<li>" + _("Season ") + str(season) + "</li>"
             sickrage.app.log.info("Retrying Search for {} season {} because some eps were set to failed".format(show_obj.name, season))

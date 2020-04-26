@@ -66,6 +66,10 @@ class SaveSearchHandler(BaseHandler, ABC):
         nzbget_category_anime_backlog = self.get_argument('nzbget_category_anime_backlog', None)
         nzbget_priority = self.get_argument('nzbget_priority', None)
         nzbget_host = self.get_argument('nzbget_host', None)
+        syno_dsm_host = self.get_argument('syno_dsm_host', None)
+        syno_dsm_username = self.get_argument('syno_dsm_username', None)
+        syno_dsm_password = self.get_argument('syno_dsm_password', None)
+        syno_dsm_path = self.get_argument('syno_dsm_path', None)
         nzbget_use_https = self.get_argument('nzbget_use_https', None)
         backlog_frequency = self.get_argument('backlog_frequency', None)
         dailysearch_frequency = self.get_argument('dailysearch_frequency', None)
@@ -144,6 +148,10 @@ class SaveSearchHandler(BaseHandler, ABC):
         sickrage.app.config.nzbget_host = clean_host(nzbget_host)
         sickrage.app.config.nzbget_use_https = checkbox_to_value(nzbget_use_https)
         sickrage.app.config.nzbget_priority = try_int(nzbget_priority, 100)
+        sickrage.app.config.syno_dsm_host = clean_host(syno_dsm_host)
+        sickrage.app.config.syno_dsm_username = syno_dsm_username
+        sickrage.app.config.syno_dsm_password = syno_dsm_password
+        sickrage.app.config.syno_dsm_path = syno_dsm_path.rstrip('/\\')
         sickrage.app.config.torrent_username = torrent_username
         sickrage.app.config.torrent_password = torrent_password
         sickrage.app.config.torrent_label = torrent_label
@@ -157,7 +165,7 @@ class SaveSearchHandler(BaseHandler, ABC):
         sickrage.app.config.torrent_rpcurl = torrent_rpcurl
         sickrage.app.config.torrent_auth_type = torrent_auth_type
 
-        torrent_webui_url(True)
+        torrent_webui_url(reset=True)
 
         sickrage.app.config.save()
 

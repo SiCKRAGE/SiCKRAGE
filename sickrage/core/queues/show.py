@@ -26,7 +26,6 @@ import time
 import traceback
 
 from apscheduler.triggers.interval import IntervalTrigger
-from tornado.ioloop import IOLoop
 
 import sickrage
 from sickrage.core.common import WANTED
@@ -46,7 +45,7 @@ class ShowQueue(SRQueue):
         SRQueue.__init__(self, "SHOWQUEUE")
 
         self.scheduler.add_job(
-            IOLoop.current().add_callback,
+            sickrage.app.io_loop.add_callback,
             IntervalTrigger(
                 seconds=1,
                 timezone='utc'
@@ -94,9 +93,9 @@ class ShowQueue(SRQueue):
             raise CantUpdateShowException("{} is already being updated, can't update again until it's done.".format(show_obj.name))
 
         if force:
-            IOLoop.current().add_callback(self.put, QueueItemForceUpdate(indexer_id, indexer_update_only))
+            sickrage.app.io_loop.add_callback(self.put, QueueItemForceUpdate(indexer_id, indexer_update_only))
         else:
-            IOLoop.current().add_callback(self.put, QueueItemUpdate(indexer_id, indexer_update_only))
+            sickrage.app.io_loop.add_callback(self.put, QueueItemUpdate(indexer_id, indexer_update_only))
 
         while self.is_being_updated(indexer_id):
             time.sleep(1)
@@ -116,37 +115,40 @@ class ShowQueue(SRQueue):
 
         sickrage.app.log.debug("Queueing show refresh for {}".format(show_obj.name))
 
-        IOLoop.current().add_callback(self.put, QueueItemRefresh(indexer_id, force=force))
+        sickrage.app.io_loop.add_callback(self.put, QueueItemRefresh(indexer_id, force=force))
 
     def rename_show_episodes(self, indexer_id):
-        IOLoop.current().add_callback(self.put, QueueItemRename(indexer_id))
+        sickrage.app.io_loop.add_callback(self.put, QueueItemRename(indexer_id))
 
     def download_subtitles(self, indexer_id):
-        IOLoop.current().add_callback(self.put, QueueItemSubtitle(indexer_id))
+        sickrage.app.io_loop.add_callback(self.put, QueueItemSubtitle(indexer_id))
 
-    def add_show(self, indexer, indexer_id, showDir, default_status=None, quality=None, flatten_folders=None,
-                 lang=None, subtitles=None, sub_use_sr_metadata=None, anime=None, scene=None, paused=None,
-                 blacklist=None, whitelist=None, default_status_after=None, skip_downloaded=None):
+    def add_show(self, indexer, indexer_id, showDir, default_status=None, quality=None, flatten_folders=None, lang=None, subtitles=None,
+                 sub_use_sr_metadata=None, anime=None, scene=None, sports=None, air_by_date=None, dvdorder=None, paused=None, blacklist=None, whitelist=None,
+                 default_status_after=None, skip_downloaded=None):
 
         if lang is None:
             lang = sickrage.app.config.indexer_default_language
 
-        IOLoop.current().add_callback(self.put, QueueItemAdd(indexer=indexer,
-                                                             indexer_id=indexer_id,
-                                                             showDir=showDir,
-                                                             default_status=default_status,
-                                                             quality=quality,
-                                                             flatten_folders=flatten_folders,
-                                                             lang=lang,
-                                                             subtitles=subtitles,
-                                                             sub_use_sr_metadata=sub_use_sr_metadata,
-                                                             anime=anime,
-                                                             scene=scene,
-                                                             paused=paused,
-                                                             blacklist=blacklist,
-                                                             whitelist=whitelist,
-                                                             default_status_after=default_status_after,
-                                                             skip_downloaded=skip_downloaded))
+        sickrage.app.io_loop.add_callback(self.put, QueueItemAdd(indexer=indexer,
+                                                                 indexer_id=indexer_id,
+                                                                 showDir=showDir,
+                                                                 default_status=default_status,
+                                                                 quality=quality,
+                                                                 flatten_folders=flatten_folders,
+                                                                 lang=lang,
+                                                                 subtitles=subtitles,
+                                                                 sub_use_sr_metadata=sub_use_sr_metadata,
+                                                                 anime=anime,
+                                                                 scene=scene,
+                                                                 sports=sports,
+                                                                 dvdorder=dvdorder,
+                                                                 air_by_date=air_by_date,
+                                                                 paused=paused,
+                                                                 blacklist=blacklist,
+                                                                 whitelist=whitelist,
+                                                                 default_status_after=default_status_after,
+                                                                 skip_downloaded=skip_downloaded))
 
     def remove_show(self, indexer_id, full=False):
         show_obj = find_show(indexer_id)
@@ -160,7 +162,7 @@ class ShowQueue(SRQueue):
 
         # remove other queued actions for this show.
         [self.remove(x) for x in self.queue_items if indexer_id == x.indexer_id]
-        IOLoop.current().add_callback(self.put, QueueItemRemove(indexer_id=indexer_id, full=full))
+        sickrage.app.io_loop.add_callback(self.put, QueueItemRemove(indexer_id=indexer_id, full=full))
 
 
 class ShowQueueActions(object):
@@ -216,8 +218,8 @@ class ShowQueueItem(SRQueueItem):
 
 
 class QueueItemAdd(ShowQueueItem):
-    def __init__(self, indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang, subtitles, sub_use_sr_metadata, anime, scene, paused,
-                 blacklist, whitelist, default_status_after, skip_downloaded):
+    def __init__(self, indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang, subtitles, sub_use_sr_metadata, anime, scene, sports,
+                 dvdorder, air_by_date, paused, blacklist, whitelist, default_status_after, skip_downloaded):
         super(QueueItemAdd, self).__init__(None, ShowQueueActions.ADD)
 
         self.indexer = indexer
@@ -231,6 +233,9 @@ class QueueItemAdd(ShowQueueItem):
         self.sub_use_sr_metadata = sub_use_sr_metadata
         self.anime = anime
         self.scene = scene
+        self.sports = sports
+        self.dvdorder = dvdorder
+        self.air_by_date = air_by_date
         self.paused = paused
         self.blacklist = blacklist
         self.whitelist = whitelist
@@ -338,8 +343,11 @@ class QueueItemAdd(ShowQueueItem):
             show_obj.flatten_folders = self.flatten_folders or sickrage.app.config.flatten_folders_default
             show_obj.anime = self.anime or sickrage.app.config.anime_default
             show_obj.scene = self.scene or sickrage.app.config.scene_default
+            show_obj.sports = self.sports
+            show_obj.dvdorder = self.dvdorder
+            show_obj.air_by_date = self.air_by_date
             show_obj.skip_downloaded = self.skip_downloaded or sickrage.app.config.skip_downloaded_default
-            show_obj.paused = self.paused or False
+            show_obj.paused = self.paused
 
             # set up default new/missing episode status
             sickrage.app.log.info("Setting all current episodes to the specified default status: " + str(self.default_status))
@@ -387,8 +395,8 @@ class QueueItemAdd(ShowQueueItem):
             sickrage.app.log.debug("Error searching dir for episodes: {}".format(e))
             sickrage.app.log.debug(traceback.format_exc())
 
-        IOLoop.current().add_callback(show_obj.write_metadata, force=True)
-        IOLoop.current().add_callback(show_obj.populate_cache)
+        sickrage.app.io_loop.add_callback(show_obj.write_metadata, force=True)
+        sickrage.app.io_loop.add_callback(show_obj.populate_cache)
 
         if sickrage.app.config.use_trakt:
             # if there are specific episodes that need to be added by trakt
@@ -416,7 +424,7 @@ class QueueItemAdd(ShowQueueItem):
         # if they set default ep status to WANTED then run the backlog to search for episodes
         if show_obj.default_ep_status == WANTED:
             sickrage.app.log.info(_("Launching backlog for this show since it has episodes that are WANTED"))
-            IOLoop.current().add_callback(sickrage.app.backlog_searcher.search_backlog, show_obj.indexer_id)
+            sickrage.app.io_loop.add_callback(sickrage.app.backlog_searcher.search_backlog, show_obj.indexer_id)
 
         show_obj.default_ep_status = self.default_status_after
 

@@ -23,10 +23,10 @@ import re
 from urllib.parse import urlencode
 
 import sickrage
-from sickrage.clients.torrent import GenericClient
+from sickrage.clients import TorrentClient
 
 
-class PutioAPI(GenericClient):
+class PutioAPI(TorrentClient):
     def __init__(self, host=None, username=None, password=None):
         super(PutioAPI, self).__init__('putio', host, username, password)
 

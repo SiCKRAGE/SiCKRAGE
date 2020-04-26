@@ -24,11 +24,11 @@ from urllib.parse import urljoin
 from requests import HTTPError
 
 import sickrage
-from sickrage.clients.torrent import GenericClient
+from sickrage.clients import TorrentClient
 from sickrage.core.tv.show.helpers import find_show
 
 
-class QBittorrentAPI(GenericClient):
+class QBittorrentAPI(TorrentClient):
     def __init__(self, host=None, username=None, password=None):
         super(QBittorrentAPI, self).__init__('qbittorrent', host, username, password)
         self.api_version = None

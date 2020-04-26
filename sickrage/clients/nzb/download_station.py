@@ -20,7 +20,6 @@
 # ##############################################################################
 
 
-
 import os
 import re
 from urllib.parse import urljoin
@@ -28,12 +27,11 @@ from urllib.parse import urljoin
 from requests import RequestException
 
 import sickrage
-from sickrage.clients import TorrentClient
+from sickrage.clients import NZBClient
 
 
-class DownloadStationAPI(TorrentClient):
+class DownloadStationAPI(NZBClient):
     def __init__(self, host=None, username=None, password=None):
-
         super(DownloadStationAPI, self).__init__('DownloadStation', host, username, password)
 
         self.urls = {
@@ -45,7 +43,7 @@ class DownloadStationAPI(TorrentClient):
         self.url = self.urls['task']
 
         self.checked_destination = False
-        self.destination = sickrage.app.config.torrent_path
+        self.destination = sickrage.app.config.syno_dsm_path
 
         self.post_task = {
             'method': 'create',
@@ -125,8 +123,7 @@ class DownloadStationAPI(TorrentClient):
 
         try:
             # login to API
-            self.response = self.session.get(self.urls['auth'], params=params,
-                                             verify=bool(sickrage.app.config.torrent_verify_cert))
+            self.response = self.session.get(self.urls['auth'], params=params, verify=False)
 
             # get sid
             self.auth = self.response
@@ -137,26 +134,26 @@ class DownloadStationAPI(TorrentClient):
 
         return self._check_response()
 
-    def _add_torrent_uri(self, result):
+    def _add_nzb_uri(self, result):
         data = self.post_task
         data['uri'] = result.url
 
         return self._send_dsm_request(method='post', data=data)
 
-    def _add_torrent_file(self, result):
+    def _add_nzb_file(self, result):
         data = self.post_task
-        files = {'file': ('{}.torrent'.format(result.name), result.content)}
+        files = {'file': ('{}.nzb'.format(result.name), result.content)}
 
         return self._send_dsm_request(method='post', data=data, files=files)
 
     def _check_destination(self):
-        """Validate and set torrent destination."""
-        torrent_path = sickrage.app.config.torrent_path
+        """Validate and set nzb destination."""
+        nzb_path = sickrage.app.config.syno_dsm_path
 
         if not (self.auth or self._get_auth()):
             return False
 
-        if self.checked_destination and self.destination == torrent_path:
+        if self.checked_destination and self.destination == nzb_path:
             return True
 
         params = {
@@ -182,8 +179,8 @@ class DownloadStationAPI(TorrentClient):
                 return False
 
             #  This is DSM6, lets make sure the location is relative
-            if torrent_path and os.path.isabs(torrent_path):
-                torrent_path = re.sub(r'^/volume\d/', '', torrent_path).lstrip('/')
+            if nzb_path and os.path.isabs(nzb_path):
+                nzb_path = re.sub(r'^/volume\d/', '', nzb_path).lstrip('/')
             else:
                 #  Since they didn't specify the location in the settings,
                 #  lets make sure the default is relative,
@@ -207,13 +204,13 @@ class DownloadStationAPI(TorrentClient):
                         sickrage.app.log.info('Default destination could not be determined for DSM6: {}'.format(jdata))
                         return False
                     elif os.path.isabs(destination):
-                        torrent_path = re.sub(r'^/volume\d/', '', destination).lstrip('/')
+                        nzb_path = re.sub(r'^/volume\d/', '', destination).lstrip('/')
 
-        if destination or torrent_path:
-            sickrage.app.log.info('Destination is now {}'.format(torrent_path or destination))
+        if destination or nzb_path:
+            sickrage.app.log.info('Destination is now {}'.format(nzb_path or destination))
 
         self.checked_destination = True
-        self.destination = torrent_path
+        self.destination = nzb_path
         return True
 
     def _send_dsm_request(self, method, data, **kwargs):
@@ -224,4 +221,3 @@ class DownloadStationAPI(TorrentClient):
 
         self._request(method=method, data=data, **kwargs)
         return self._check_response()
-

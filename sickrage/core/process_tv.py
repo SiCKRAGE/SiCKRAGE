@@ -341,7 +341,7 @@ class ProcessResult(object):
                 else:
                     return True
 
-        self.log("{0} : No processable items found in folder".format(process_path),
+        self.log("Folder {} : No processable items found in folder".format(process_path),
                  sickrage.app.log.DEBUG)
         return False
 

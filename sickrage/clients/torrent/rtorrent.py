@@ -24,11 +24,11 @@ import traceback
 from rtorrentlib import RTorrent
 
 import sickrage
-from sickrage.clients.torrent import GenericClient
+from sickrage.clients import TorrentClient
 from sickrage.core.tv.show.helpers import find_show
 
 
-class rTorrentAPI(GenericClient):
+class rTorrentAPI(TorrentClient):
     def __init__(self, host=None, username=None, password=None):
         super(rTorrentAPI, self).__init__('rTorrent', host, username, password)
 

@@ -25,9 +25,7 @@ import os
 from abc import ABC
 from functools import cmp_to_key
 
-from tornado.gen import sleep
 from tornado.httputil import url_concat
-from tornado.ioloop import IOLoop
 from tornado.web import authenticated
 
 import sickrage
@@ -271,4 +269,4 @@ class ForceSchedulerJobHandler(BaseHandler, ABC):
         if service:
             job = sickrage.app.scheduler.get_job(service.name)
             job.modify(next_run_time=datetime.datetime.utcnow(), kwargs={'force': True})
-            IOLoop.current().add_timeout(datetime.timedelta(seconds=10), job.modify, kwargs={})
+            sickrage.app.io_loop.add_timeout(datetime.timedelta(seconds=10), job.modify, kwargs={})

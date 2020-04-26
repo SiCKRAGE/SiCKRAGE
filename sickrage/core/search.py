@@ -87,6 +87,9 @@ def snatch_episode(result, end_status=SNATCHED):
         elif sickrage.app.config.nzb_method == "nzbget":
             is_proper = True if end_status == SNATCHED_PROPER else False
             dlResult = NZBGet.sendNZB(result, is_proper)
+        elif sickrage.app.config.nzb_method == "download_station":
+            client = get_client_instance(sickrage.app.config.nzb_method, client_type='nzb')()
+            dlResult = client.sendNZB(result)
         else:
             sickrage.app.log.error("Unknown NZB action specified in config: " + sickrage.app.config.nzb_method)
     elif result.type in ("torrent", "torznab"):

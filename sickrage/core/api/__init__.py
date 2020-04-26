@@ -194,6 +194,8 @@ class API(object):
                     break
             except requests.exceptions.RequestException as e:
                 latest_exception = e
+            except ConnectionError:
+                pass
 
             time.sleep(1)
 

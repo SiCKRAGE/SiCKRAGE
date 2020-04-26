@@ -3278,6 +3278,24 @@ $(document).ready(function ($) {
                             });
                     });
 
+                    $('#testSynologyDSM').click(function () {
+                        $('#testSynologyDSM_result').html(SICKRAGE.loadingHTML);
+                        var nzb_method = $('#nzb_method').val();
+                        var syno_dsm_host = $('#syno_dsm_host').val();
+                        var syno_dsm_username = $('#syno_dsm_username').val();
+                        var syno_dsm_password = $('#syno_dsm_password').val();
+
+                        $.get(SICKRAGE.srWebRoot + '/home/testSynologyDSM', {
+                                'nzb_method': nzb_method,
+                                'host': syno_dsm_host,
+                                'username': syno_dsm_username,
+                                'password': syno_dsm_password
+                            },
+                            function (data) {
+                                $('#testSynologyDSM_result').html(data);
+                            });
+                    });
+
                     $('#use_torrents').click(function () {
                         SICKRAGE.config.search.toggleTorrentTitle();
                     });
@@ -3319,11 +3337,15 @@ $(document).ready(function ($) {
                 nzbMethodHandler: function () {
                     $('#blackhole_settings').hide();
                     $('#sabnzbd_settings').hide();
-                    $('#testSABnzbd').hide();
-                    $('#testSABnzbd_result').hide();
                     $('#nzbget_settings').hide();
+                    $('#download_station_settings').hide();
                     $('#nzbget_host').prop('required', false);
                     $('#sab_host').prop('required', false);
+                    $('#syno_dsm_host').prop('required', false);
+                    $('#testSABnzbd').hide();
+                    $('#testSABnzbd_result').hide();
+                    $('#testSynologyDSM').hide();
+                    $('#testSynologyDSM_result').hide();
 
                     var selectedProvider = $('#nzb_method').val();
 
@@ -3336,6 +3358,11 @@ $(document).ready(function ($) {
                             $('#testSABnzbd').show();
                             $('#testSABnzbd_result').show();
                             $('#sab_host').prop('required', true);
+                        } else if (selectedProvider.toLowerCase() === 'download_station') {
+                            $('#download_station_settings').show();
+                            $('#testSynologyDSM').show();
+                            $('#testSynologyDSM_result').show();
+                            $('#syno_dsm_host').prop('required', true);
                         }
                     } else {
                         $('#blackhole_settings').show();

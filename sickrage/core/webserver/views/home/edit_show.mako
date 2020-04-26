@@ -138,7 +138,7 @@
                                             <label for="skip_downloaded">
                                                 <input type="checkbox" class="toggle color-primary is-material" id="skip_downloaded"
                                                        name="skip_downloaded" ${('', 'checked')[show.skip_downloaded == 1]} />
-                                                ${_('Skips updating quality of old/new downloaded episodes')}
+                                                ${_('skips updating quality of old/new downloaded episodes')}
                                             </label>
                                         </div>
                                     </div>
@@ -158,7 +158,7 @@
 
                                     <div class="form-row form-group">
                                         <div class="col-lg-3 col-md-4 col-sm-5">
-                                            <label class="component-title">${_('Subtitle metdata')}</label>
+                                            <label class="component-title">${_('Subtitle Metdata')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                             <label for="sub_use_sr_metadata">
@@ -195,7 +195,7 @@
                                 <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                                     <div class="form-row form-group">
                                         <div class="col-lg-3 col-md-4 col-sm-5">
-                                            <label class="component-title">${_('Air by date')}</label>
+                                            <label class="component-title">${_('Air By Date')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                             <label class="mb-0" for="airbydate">

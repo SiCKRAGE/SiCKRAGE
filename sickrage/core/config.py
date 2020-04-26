@@ -194,6 +194,10 @@ class Config(object):
         self.nzbget_host = ""
         self.nzbget_use_https = False
         self.nzbget_priority = 100
+        self.syno_dsm_host = ""
+        self.syno_dsm_username = ""
+        self.syno_dsm_password = ""
+        self.syno_dsm_path = ""
         self.torrent_username = ""
         self.torrent_password = ""
         self.torrent_host = ""
@@ -843,6 +847,12 @@ class Config(object):
                 'nzbget_category_anime_backlog': 'anime',
                 'nzbget_username': 'nzbget',
                 'nzbget_category_backlog': 'tv'
+            },
+            'SynologyDSM': {
+              'syno_dsm_host': '',
+              'syno_dsm_username': '',
+              'syno_dsm_password': '',
+              'syno_dsm_path': '',
             },
             'Emby': {
                 'use_emby': False,
@@ -1578,6 +1588,12 @@ class Config(object):
         self.nzbget_use_https = self.check_setting_bool('NZBget', 'nzbget_use_https')
         self.nzbget_priority = self.check_setting_int('NZBget', 'nzbget_priority')
 
+        # SYNOLOGY DSM SETTINGS
+        self.syno_dsm_host = self.check_setting_str('SynologyDSM', 'syno_dsm_host')
+        self.syno_dsm_username = self.check_setting_str('SynologyDSM', 'syno_dsm_username', censor=True)
+        self.syno_dsm_password = self.check_setting_str('SynologyDSM', 'syno_dsm_password', censor=True)
+        self.syno_dsm_path = self.check_setting_str('SynologyDSM', 'syno_dsm_path')
+
         # TORRENT SETTINGS
         self.torrent_username = self.check_setting_str('TORRENT', 'torrent_username', censor=True)
         self.torrent_password = self.check_setting_str('TORRENT', 'torrent_password', censor=True)
@@ -2074,6 +2090,12 @@ class Config(object):
                 'nzbget_host': self.nzbget_host,
                 'nzbget_use_https': int(self.nzbget_use_https),
                 'nzbget_priority': self.nzbget_priority,
+            },
+            'SynologyDSM': {
+              'syno_dsm_host': self.syno_dsm_host,
+              'syno_dsm_username': self.syno_dsm_username,
+              'syno_dsm_password': self.syno_dsm_password,
+              'syno_dsm_path': self.syno_dsm_path,
             },
             'TORRENT': {
                 'torrent_username': self.torrent_username,

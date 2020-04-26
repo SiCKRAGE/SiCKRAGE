@@ -379,6 +379,9 @@ class AddNewShowHandler(BaseHandler, ABC):
         providedIndexer = self.get_argument('providedIndexer', None)
         anime = self.get_argument('anime', None)
         scene = self.get_argument('scene', None)
+        sports = self.get_argument('sports', None)
+        air_by_date = self.get_argument('air_by_date', None)
+        dvdorder = self.get_argument('dvdorder', None)
         blacklist = self.get_argument('blacklist', None)
         whitelist = self.get_argument('whitelist', None)
         defaultStatusAfter = self.get_argument('defaultStatusAfter', None)
@@ -445,6 +448,9 @@ class AddNewShowHandler(BaseHandler, ABC):
 
         # prepare the inputs for passing along
         scene = checkbox_to_value(scene)
+        sports = checkbox_to_value(sports)
+        air_by_date = checkbox_to_value(air_by_date)
+        dvdorder = checkbox_to_value(dvdorder)
         anime = checkbox_to_value(anime)
         flatten_folders = checkbox_to_value(flatten_folders)
         subtitles = checkbox_to_value(subtitles)
@@ -472,7 +478,10 @@ class AddNewShowHandler(BaseHandler, ABC):
                                          sub_use_sr_metadata=sub_use_sr_metadata,
                                          anime=anime,
                                          scene=scene,
-                                         paused=None,
+                                         sports=sports,
+                                         dvdorder=dvdorder,
+                                         air_by_date=air_by_date,
+                                         paused=False,
                                          blacklist=blacklist,
                                          whitelist=whitelist,
                                          default_status_after=int(defaultStatusAfter),
