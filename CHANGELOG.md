@@ -2,14 +2,14 @@
 
 # 
 
-##Sat Apr 25 2020 20:08:45 GMT+0000 (Coordinated Universal Time)
+##Sun Apr 26 2020 01:27:58 GMT+0000 (Coordinated Universal Time)
 
 
 ## Refactor
-  - Refactored gitlab-ci script to use develop branch for Synology builds when building on SR develop branch
-  ([8d62dfad](https://gitlab-ci-token:xTV3aZVDwCUcPE2oh_xz@git.sickrage.ca/SiCKRAGE/sickrage/commit/8d62dfad83aa1a3086f1114ff8771502912fd61a))
-  - Refactored SR API certification verification to use certifi CA bundle Refactored gitlab-ci script to build Synology develop package
-  ([f98310b7](https://gitlab-ci-token:xTV3aZVDwCUcPE2oh_xz@git.sickrage.ca/SiCKRAGE/sickrage/commit/f98310b767aef6d5529f43ffc18e031c1a140721))
+  - Refactored how scheduled jobs are forced to run
+  ([fbcb4b0a](https://gitlab-ci-token:m7mS5ky9jRUQrzLp6AyP@git.sickrage.ca/SiCKRAGE/sickrage/commit/fbcb4b0a8ad145d4b409a964dc240154f93fdd69))
+  - Refactored usage of IOLoop by removing const io_loop from core and using IOLoop.current() calls instead
+  ([60463343](https://gitlab-ci-token:m7mS5ky9jRUQrzLp6AyP@git.sickrage.ca/SiCKRAGE/sickrage/commit/6046334370568652a611ef7b62cbfb8820b632b3))
 
 
 
