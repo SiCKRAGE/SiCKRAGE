@@ -23,6 +23,7 @@ import datetime
 from abc import ABC
 
 import dateutil
+from tornado.concurrent import run_on_executor
 from tornado.web import authenticated
 
 import sickrage
@@ -32,7 +33,10 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 
 class CalendarHandler(BaseHandler, ABC):
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         if sickrage.app.config.calendar_unprotected:
             self.write(self.calendar())
         else:

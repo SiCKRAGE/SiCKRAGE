@@ -21,6 +21,7 @@
 
 from abc import ABC
 
+from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode
 from tornado.web import authenticated
 
@@ -34,7 +35,10 @@ from sickrage.subtitles import Subtitles
 class ConfigSubtitlesHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
-        return await self.render(
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
+        return self.render(
             "/config/subtitles.mako",
             submenu=ConfigHandler.menu,
             title=_('Config - Subtitles Settings'),
@@ -47,7 +51,10 @@ class ConfigSubtitlesHandler(BaseHandler, ABC):
 
 class ConfigSubtitleGetCodeHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         q = self.get_argument('q')
 
         codes = [{"id": code, "name": Subtitles().name_from_code(code)} for code in Subtitles().subtitle_code_filter()]
@@ -58,7 +65,10 @@ class ConfigSubtitleGetCodeHandler(BaseHandler, ABC):
 
 class ConfigSubtitlesWantedLanguagesHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         codes = [{"id": code, "name": Subtitles().name_from_code(code)} for code in Subtitles().subtitle_code_filter()]
         codes = list(filter(lambda code: code['id'] in Subtitles().wanted_languages(), codes))
 
@@ -67,7 +77,10 @@ class ConfigSubtitlesWantedLanguagesHandler(BaseHandler, ABC):
 
 class SaveSubtitlesHandler(BaseHandler, ABC):
     @authenticated
-    def post(self, *args, **kwargs):
+    async def post(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_post)
+
+    def handle_post(self):
         use_subtitles = self.get_argument('use_subtitles', None)
         subtitles_dir = self.get_argument('subtitles_dir', None)
         service_order = self.get_argument('service_order', None)

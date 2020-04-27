@@ -22,12 +22,17 @@ import json
 import re
 from abc import ABC
 
+from tornado.concurrent import run_on_executor
+
 import sickrage
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
 class LoginHandler(BaseHandler, ABC):
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         code = self.get_argument('code', None)
 
         redirect_uri = "{}://{}{}/login".format(self.request.protocol, self.request.host, sickrage.app.config.web_root)

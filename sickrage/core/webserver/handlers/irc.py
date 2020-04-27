@@ -20,6 +20,7 @@
 # ##############################################################################
 from abc import ABC
 
+from tornado.concurrent import run_on_executor
 from tornado.web import authenticated
 
 from sickrage.core.webserver.handlers.base import BaseHandler
@@ -28,7 +29,10 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 class IRCHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
-        return await self.render(
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
+        return self.render(
             "/irc.mako",
             topmenu="system",
             header="IRC",

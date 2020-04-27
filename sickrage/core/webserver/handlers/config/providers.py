@@ -20,6 +20,7 @@
 # ##############################################################################
 from abc import ABC
 
+from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode
 from tornado.web import authenticated
 
@@ -33,7 +34,10 @@ from sickrage.providers import NewznabProvider, TorrentRssProvider
 class ConfigProvidersHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
-        return await self.render(
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
+        return self.render(
             "/config/providers.mako",
             submenu=ConfigHandler.menu,
             title=_('Config - Search Providers'),
@@ -46,7 +50,10 @@ class ConfigProvidersHandler(BaseHandler, ABC):
 
 class CanAddNewznabProviderHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         name = self.get_argument('name')
 
         provider_obj = NewznabProvider(name, '')
@@ -57,7 +64,10 @@ class CanAddNewznabProviderHandler(BaseHandler, ABC):
 
 class CanAddTorrentRssProviderHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         name = self.get_argument('name')
         url = self.get_argument('url')
         cookies = self.get_argument('cookies')
@@ -74,7 +84,10 @@ class CanAddTorrentRssProviderHandler(BaseHandler, ABC):
 
 class GetNewznabCategoriesHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         """
         Retrieves a list of possible categories with category id's
         Using the default url/api?cat
@@ -92,7 +105,10 @@ class GetNewznabCategoriesHandler(BaseHandler, ABC):
 
 class SaveProvidersHandler(BaseHandler, ABC):
     @authenticated
-    def post(self, *args, **kwargs):
+    async def post(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_post)
+
+    def handle_post(self):
         results = []
 
         # custom providers

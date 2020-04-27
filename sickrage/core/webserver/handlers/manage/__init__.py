@@ -23,6 +23,7 @@ import os
 from abc import ABC
 from functools import cmp_to_key
 
+from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, json_decode
 from tornado.web import authenticated
 
@@ -318,13 +319,19 @@ def edit_show(show, any_qualities, best_qualities, exceptions_list, location=Non
 
 class ManageHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         return self.redirect('/manage/massUpdate')
 
 
 class ShowEpisodeStatusesHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         indexer_id = self.get_argument('indexer_id')
         which_status = self.get_argument('whichStatus')
 
@@ -351,6 +358,9 @@ class ShowEpisodeStatusesHandler(BaseHandler, ABC):
 class EpisodeStatusesHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         which_status = self.get_argument('whichStatus', None)
 
         ep_counts = {}
@@ -377,7 +387,7 @@ class EpisodeStatusesHandler(BaseHandler, ABC):
                         if show.indexer_id not in sorted_show_ids:
                             sorted_show_ids.append(show.indexer_id)
 
-        return await self.render(
+        return self.render(
             "/manage/episode_statuses.mako",
             title="Episode Overview",
             header="Episode Overview",
@@ -427,7 +437,10 @@ class ChangeEpisodeStatusesHandler(BaseHandler, ABC):
 
 class SetEpisodeStatusHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         show = self.get_argument('show')
         eps = self.get_argument('eps')
         status = self.get_argument('status')
@@ -443,7 +456,10 @@ class SetEpisodeStatusHandler(BaseHandler, ABC):
 
 class ShowSubtitleMissedHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         indexer_id = self.get_argument('indexer_id')
         which_subs = self.get_argument('whichSubs')
 
@@ -478,6 +494,9 @@ class ShowSubtitleMissedHandler(BaseHandler, ABC):
 class SubtitleMissedHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         which_subs = self.get_argument('whichSubs', None)
 
         ep_counts = {}
@@ -516,7 +535,7 @@ class SubtitleMissedHandler(BaseHandler, ABC):
                 if cur_indexer_id not in sorted_show_ids:
                     sorted_show_ids.append(cur_indexer_id)
 
-        return await self.render(
+        return self.render(
             "/manage/subtitles_missed.mako",
             whichSubs=which_subs,
             show_names=show_names,
@@ -532,7 +551,10 @@ class SubtitleMissedHandler(BaseHandler, ABC):
 
 class DownloadSubtitleMissedHandler(BaseHandler, ABC):
     @authenticated
-    def post(self, *args, **kwargs):
+    async def post(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_post)
+
+    def handle_post(self):
         session = sickrage.app.main_db.session()
 
         # make a list of all shows and their associated args
@@ -562,7 +584,10 @@ class DownloadSubtitleMissedHandler(BaseHandler, ABC):
 
 class BacklogShowHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         indexer_id = self.get_argument('indexer_id')
 
         sickrage.app.backlog_searcher.search_backlog(int(indexer_id))
@@ -573,6 +598,9 @@ class BacklogShowHandler(BaseHandler, ABC):
 class BacklogOverviewHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         show_counts = {}
         show_cats = {}
         show_results = {}
@@ -607,7 +635,7 @@ class BacklogOverviewHandler(BaseHandler, ABC):
             show_counts[curShow.indexer_id] = ep_counts
             show_cats[curShow.indexer_id] = ep_cats
 
-        return await self.render(
+        return self.render(
             "/manage/backlog_overview.mako",
             showCounts=show_counts,
             showCats=show_cats,
@@ -623,6 +651,9 @@ class BacklogOverviewHandler(BaseHandler, ABC):
 class EditShowHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         show = self.get_argument('show')
 
         groups = []
@@ -642,7 +673,7 @@ class EditShowHandler(BaseHandler, ABC):
             except AnidbAdbaConnectionException as e:
                 sickrage.app.log.debug('Unable to get ReleaseGroups: {}'.format(e))
 
-            return await self.render(
+            return self.render(
                 "/home/edit_show.mako",
                 show=show_obj,
                 quality=show_obj.quality,
@@ -656,7 +687,7 @@ class EditShowHandler(BaseHandler, ABC):
                 action="edit_show"
             )
         else:
-            return await self.render(
+            return self.render(
                 "/home/edit_show.mako",
                 show=show_obj,
                 quality=show_obj.quality,
@@ -710,6 +741,9 @@ class EditShowHandler(BaseHandler, ABC):
 class MassEditHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         to_edit = self.get_argument('toEdit')
 
         show_ids = list(map(int, to_edit.split("|")))
@@ -833,7 +867,7 @@ class MassEditHandler(BaseHandler, ABC):
         sports_value = last_sports if sports_all_same else None
         air_by_date_value = last_air_by_date if air_by_date_all_same else None
 
-        return await self.render(
+        return self.render(
             "/manage/mass_edit.mako",
             showList=to_edit,
             showNames=show_names,
@@ -996,10 +1030,13 @@ class MassEditHandler(BaseHandler, ABC):
 class MassUpdateHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         shows_list = sorted([x for x in get_show_list() if not sickrage.app.show_queue.is_being_removed(x.indexer_id)],
                             key=cmp_to_key(lambda x, y: x.name < y.name))
 
-        return await self.render(
+        return self.render(
             '/manage/mass_update.mako',
             shows_list=shows_list,
             title=_('Mass Update'),
@@ -1010,7 +1047,10 @@ class MassUpdateHandler(BaseHandler, ABC):
         )
 
     @authenticated
-    def post(self, *args, **kwargs):
+    async def post(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_post)
+
+    def handle_post(self):
         to_update = self.get_argument('toUpdate', '')
         to_refresh = self.get_argument('toRefresh', '')
         to_rename = self.get_argument('toRename', '')
@@ -1108,6 +1148,9 @@ class MassUpdateHandler(BaseHandler, ABC):
 class FailedDownloadsHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         limit = self.get_argument('limit', None) or 100
 
         session = sickrage.app.main_db.session()
@@ -1116,7 +1159,7 @@ class FailedDownloadsHandler(BaseHandler, ABC):
         if int(limit):
             query = session.query(MainDB.FailedSnatch).limit(int(limit))
 
-        return await self.render(
+        return self.render(
             "/manage/failed_downloads.mako",
             limit=int(limit),
             failedResults=query.all(),
@@ -1128,7 +1171,10 @@ class FailedDownloadsHandler(BaseHandler, ABC):
         )
 
     @authenticated
-    def post(self, *args, **kwargs):
+    async def post(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_post)
+
+    def handle_post(self):
         to_remove = self.get_argument('toRemove', None)
 
         session = sickrage.app.main_db.session()

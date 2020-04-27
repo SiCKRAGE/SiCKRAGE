@@ -20,6 +20,7 @@
 # ##############################################################################
 from abc import ABC
 
+from tornado.concurrent import run_on_executor
 from tornado.web import authenticated
 
 import sickrage
@@ -30,7 +31,10 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 class HomePostProcessHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
-        return await self.render(
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
+        return self.render(
             "/home/postprocess.mako",
             title=_('Post Processing'),
             header=_('Post Processing'),
@@ -43,6 +47,9 @@ class HomePostProcessHandler(BaseHandler, ABC):
 class HomeProcessEpisodeHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         return self.write("Please use our API instead for post-processing")
 
     @authenticated
@@ -70,4 +77,4 @@ class HomeProcessEpisodeHandler(BaseHandler, ABC):
         if quiet:
             return self.write(result)
 
-        return await self._genericMessage(_("Postprocessing results"), result.replace("\n", "<br>\n"))
+        return self._genericMessage(_("Postprocessing results"), result.replace("\n", "<br>\n"))

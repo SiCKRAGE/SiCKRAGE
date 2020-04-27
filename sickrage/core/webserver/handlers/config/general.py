@@ -22,6 +22,7 @@
 import os
 from abc import ABC
 
+from tornado.concurrent import run_on_executor
 from tornado.web import authenticated
 
 import sickrage
@@ -35,7 +36,10 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 class ConfigGeneralHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
-        return await self.render(
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
+        return self.render(
             "/config/general.mako",
             title=_('Config - General'),
             header=_('General Configuration'),
@@ -48,20 +52,29 @@ class ConfigGeneralHandler(BaseHandler, ABC):
 
 class GenerateApiKeyHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         return self.write(generate_api_key())
 
 
 class SaveRootDirsHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         sickrage.app.config.root_dirs = self.get_argument('rootDirString', '')
         sickrage.app.config.save()
 
 
 class SaveAddShowDefaultsHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         default_status = self.get_argument('defaultStatus', '5')
         any_qualities = self.get_argument('anyQualities', '')
         best_qualities = self.get_argument('bestQualities', '')
@@ -95,7 +108,10 @@ class SaveAddShowDefaultsHandler(BaseHandler, ABC):
 
 class SaveGeneralHandler(BaseHandler, ABC):
     @authenticated
-    def post(self, *args, **kwargs):
+    async def post(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_post)
+
+    def handle_post(self):
         log_nr = self.get_argument('log_nr', '5')
         log_size = self.get_argument('log_size', '1048576')
         web_port = self.get_argument('web_port', None)

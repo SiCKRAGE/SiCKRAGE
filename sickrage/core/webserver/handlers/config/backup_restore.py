@@ -22,6 +22,7 @@
 import os
 from abc import ABC
 
+from tornado.concurrent import run_on_executor
 from tornado.web import authenticated
 
 import sickrage
@@ -33,7 +34,10 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 class ConfigBackupRestoreHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
-        return await self.render(
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
+        return self.render(
             "/config/backup_restore.mako",
             submenu=ConfigHandler.menu,
             title=_('Config - Backup/Restore'),
@@ -46,7 +50,10 @@ class ConfigBackupRestoreHandler(BaseHandler, ABC):
 
 class ConfigBackupHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         backup_dir = self.get_argument('backupDir')
 
         final_result = ''
@@ -66,7 +73,10 @@ class ConfigBackupHandler(BaseHandler, ABC):
 
 class ConfigRestoreHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         backup_file = self.get_argument('backupFile')
         restore_database = self.get_argument('restore_database')
         restore_config = self.get_argument('restore_config')
@@ -97,5 +107,8 @@ class ConfigRestoreHandler(BaseHandler, ABC):
 
 class SaveBackupRestoreHandler(BaseHandler, ABC):
     @authenticated
-    def post(self, *args, **kwargs):
+    async def post(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_post)
+
+    def handle_post(self):
         return self.redirect("/config/backuprestore/")

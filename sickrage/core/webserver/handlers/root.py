@@ -25,6 +25,7 @@ import os
 from abc import ABC
 from functools import cmp_to_key
 
+from tornado.concurrent import run_on_executor
 from tornado.httputil import url_concat
 from tornado.web import authenticated
 
@@ -41,7 +42,10 @@ class RobotsDotTxtHandler(BaseHandler, ABC):
     def initialize(self):
         self.set_header('Content-Type', 'text/plain')
 
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         """ Keep web crawlers out """
         return self.write("User-agent: *\nDisallow: /")
 
@@ -51,7 +55,10 @@ class MessagesDotPoHandler(BaseHandler, ABC):
         self.set_header('Content-Type', 'text/plain')
 
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         """ Get /sickrage/locale/{lang_code}/LC_MESSAGES/messages.po """
         if sickrage.app.config.gui_lang:
             locale_file = os.path.join(sickrage.LOCALE_DIR, sickrage.app.config.gui_lang, 'LC_MESSAGES/messages.po')
@@ -63,6 +70,9 @@ class MessagesDotPoHandler(BaseHandler, ABC):
 class APIBulderHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         def titler(x):
             return (remove_article(x), x)[not x or sickrage.app.config.sort_article]
 
@@ -85,9 +95,9 @@ class APIBulderHandler(BaseHandler, ABC):
 
         api_commands = {}
         for command, api_call in ApiHandler(self.application, self.request).api_calls.items():
-            api_commands[command] = await api_call(self.application, self.request, **{'help': 1}).run()
+            api_commands[command] = api_call(self.application, self.request, **{'help': 1}).run()
 
-        return await self.render(
+        return self.render(
             'api_builder.mako',
             title=_('API Builder'),
             header=_('API Builder'),
@@ -102,7 +112,10 @@ class APIBulderHandler(BaseHandler, ABC):
 
 class SetHomeLayoutHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         layout = self.get_argument('layout', 'poster')
 
         if layout not in ('poster', 'small', 'banner', 'simple', 'detailed'):
@@ -116,7 +129,10 @@ class SetHomeLayoutHandler(BaseHandler, ABC):
 
 class SetPosterSortByHandler(BaseHandler, ABC):
     @authenticated
-    def post(self, *args, **kwargs):
+    async def post(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_post)
+
+    def handle_post(self):
         sort = self.get_argument('sort')
 
         if sort not in ('name', 'date', 'network', 'progress'):
@@ -128,7 +144,10 @@ class SetPosterSortByHandler(BaseHandler, ABC):
 
 class SetPosterSortDirHandler(BaseHandler, ABC):
     @authenticated
-    def post(self, *args, **kwargs):
+    async def post(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_post)
+
+    def handle_post(self):
         direction = self.get_argument('direction')
 
         sickrage.app.config.poster_sortdir = int(direction)
@@ -137,7 +156,10 @@ class SetPosterSortDirHandler(BaseHandler, ABC):
 
 class SetHistoryLayoutHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         layout = self.get_argument('layout', 'detailed')
 
         if layout not in ('compact', 'detailed'):
@@ -150,7 +172,10 @@ class SetHistoryLayoutHandler(BaseHandler, ABC):
 
 class ToggleDisplayShowSpecialsHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         show = self.get_argument('show')
 
         sickrage.app.config.display_show_specials = not sickrage.app.config.display_show_specials
@@ -159,7 +184,10 @@ class ToggleDisplayShowSpecialsHandler(BaseHandler, ABC):
 
 class SetScheduleLayoutHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         layout = self.get_argument('layout', 'banner')
 
         if layout not in ('poster', 'banner', 'list', 'calendar'):
@@ -175,14 +203,20 @@ class SetScheduleLayoutHandler(BaseHandler, ABC):
 
 class ToggleScheduleDisplayPausedHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         sickrage.app.config.coming_eps_display_paused = not sickrage.app.config.coming_eps_display_paused
         self.redirect("/schedule/")
 
 
 class SetScheduleSortHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         sort = self.get_argument('sort', 'date')
 
         if sort not in ('date', 'network', 'show'):
@@ -199,6 +233,9 @@ class SetScheduleSortHandler(BaseHandler, ABC):
 class ScheduleHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         layout = self.get_argument('layout', sickrage.app.config.coming_eps_layout)
 
         next_week = datetime.datetime.combine(datetime.date.today() + datetime.timedelta(days=7),
@@ -206,9 +243,9 @@ class ScheduleHandler(BaseHandler, ABC):
 
         today = datetime.datetime.now().replace(tzinfo=sickrage.app.tz)
 
-        results = await self.run_task(ComingEpisodes.get_coming_episodes, ComingEpisodes.categories, sickrage.app.config.coming_eps_sort, False)
+        results = ComingEpisodes.get_coming_episodes(ComingEpisodes.categories, sickrage.app.config.coming_eps_sort, False)
 
-        return await self.render(
+        return self.render(
             'schedule.mako',
             next_week=next_week,
             today=today,
@@ -224,7 +261,10 @@ class ScheduleHandler(BaseHandler, ABC):
 
 class UnlinkHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         if not sickrage.app.config.sub_id == self.get_current_user().get('sub'):
             return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
@@ -242,7 +282,10 @@ class UnlinkHandler(BaseHandler, ABC):
 
 class QuicksearchDotJsonHandler(BaseHandler, ABC):
     @authenticated
-    def post(self, *args, **kwargs):
+    async def post(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_post)
+
+    def handle_post(self):
         term = self.get_argument('term')
 
         shows = sickrage.app.quicksearch_cache.get_shows(term)
@@ -262,7 +305,10 @@ class QuicksearchDotJsonHandler(BaseHandler, ABC):
 
 class ForceSchedulerJobHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         name = self.get_argument('name')
 
         service = getattr(sickrage.app, name, None)

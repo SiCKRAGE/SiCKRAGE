@@ -23,6 +23,7 @@ import os
 import re
 from abc import ABC
 
+from tornado.concurrent import run_on_executor
 from tornado.web import authenticated
 
 import sickrage
@@ -62,9 +63,12 @@ class LogsHandler(BaseHandler, ABC):
 
     @authenticated
     async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         level = self.get_argument('level', sickrage.app.log.ERROR)
 
-        return await self.render(
+        return self.render(
             "/logs/errors.mako",
             header="Logs &amp; Errors",
             title="Logs &amp; Errors",
@@ -86,21 +90,30 @@ class LogsHandler(BaseHandler, ABC):
 
 class LogsClearWarningsHanlder(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         sickrage.app.log.warning_viewer.clear()
         self.redirect("/logs/view/")
 
 
 class LogsClearErrorsHanlder(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         sickrage.app.log.error_viewer.clear()
         self.redirect("/logs/view/")
 
 
 class LogsClearAllHanlder(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         sickrage.app.log.warning_viewer.clear()
         sickrage.app.log.error_viewer.clear()
         self.redirect("/logs/view/")
@@ -109,6 +122,9 @@ class LogsClearAllHanlder(BaseHandler, ABC):
 class LogsViewHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         min_level = self.get_argument('minLevel', None) or sickrage.app.log.INFO
         log_filter = self.get_argument('logFilter', '')
         log_search = self.get_argument('logSearch', '')
@@ -137,7 +153,7 @@ class LogsViewHandler(BaseHandler, ABC):
         if to_json:
             return self.write(json.dumps({'logs': get_logs(log_search, log_filter, min_level, max_lines)}))
 
-        return await self.render(
+        return self.render(
             "/logs/view.mako",
             header="Log File",
             title="Logs",
@@ -155,10 +171,16 @@ class LogsViewHandler(BaseHandler, ABC):
 class ErrorCountHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         return self.write(json.dumps({'count': sickrage.app.log.error_viewer.count()}))
 
 
 class WarningCountHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         return self.write(json.dumps({'count': sickrage.app.log.warning_viewer.count()}))

@@ -22,6 +22,7 @@
 import os
 from abc import ABC
 
+from tornado.concurrent import run_on_executor
 from tornado.web import authenticated
 
 import sickrage
@@ -83,7 +84,10 @@ def is_rar_supported():
 class ConfigPostProcessingHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
-        return await self.render(
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
+        return self.render(
             "/config/postprocessing.mako",
             submenu=ConfigHandler.menu,
             title=_('Config - Post Processing'),
@@ -225,7 +229,10 @@ class SavePostProcessingHandler(BaseHandler, ABC):
 
 class TestNamingHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         pattern = self.get_argument('pattern', None)
         multi = self.get_argument('multi', None)
         abd = self.get_argument('abd', None)
@@ -247,7 +254,10 @@ class TestNamingHandler(BaseHandler, ABC):
 
 class IsNamingPatternValidHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         pattern = self.get_argument('pattern', None)
         multi = self.get_argument('multi', None)
         abd = self.get_argument('abd', None)
@@ -259,5 +269,8 @@ class IsNamingPatternValidHandler(BaseHandler, ABC):
 
 class IsRarSupportedHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         return self.write(is_rar_supported())

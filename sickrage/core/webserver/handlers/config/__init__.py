@@ -22,6 +22,7 @@
 import os
 from abc import ABC
 
+from tornado.concurrent import run_on_executor
 from tornado.web import authenticated
 
 import sickrage
@@ -44,7 +45,10 @@ class ConfigHandler(BaseHandler, ABC):
 
     @authenticated
     async def get(self, *args, **kwargs):
-        return await self.render(
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
+        return self.render(
             "/config/index.mako",
             submenu=self.menu,
             title=_('Configuration'),
@@ -57,7 +61,10 @@ class ConfigHandler(BaseHandler, ABC):
 
 class ConfigResetHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         sickrage.app.config.load(defaults=True)
         sickrage.app.alerts.message(_('Configuration Reset to Defaults'), os.path.join(sickrage.app.config_file))
         return self.redirect("/config/general")

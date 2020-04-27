@@ -21,6 +21,7 @@
 import datetime
 from abc import ABC
 
+from tornado.concurrent import run_on_executor
 from tornado.web import authenticated
 
 import sickrage
@@ -30,7 +31,10 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 class ManageQueuesHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
-        return await self.render(
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
+        return self.render(
             "/manage/queues.mako",
             backlogSearchPaused=sickrage.app.search_queue.is_backlog_searcher_paused(),
             dailySearchPaused=sickrage.app.search_queue.is_daily_searcher_paused(),
@@ -51,7 +55,10 @@ class ManageQueuesHandler(BaseHandler, ABC):
 
 class ForceBacklogSearchHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         # force it to run the next time it looks
         sickrage.app.log.info("Backlog search forced")
         sickrage.app.alerts.message(_('Backlog search started'))
@@ -65,7 +72,10 @@ class ForceBacklogSearchHandler(BaseHandler, ABC):
 
 class ForceDailySearchHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         # force it to run the next time it looks
         sickrage.app.log.info("Daily search forced")
         sickrage.app.alerts.message(_('Daily search started'))
@@ -79,7 +89,10 @@ class ForceDailySearchHandler(BaseHandler, ABC):
 
 class ForceFindPropersHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         # force it to run the next time it looks
         sickrage.app.log.info("Find propers search forced")
         sickrage.app.alerts.message(_('Find propers search started'))
@@ -92,7 +105,10 @@ class ForceFindPropersHandler(BaseHandler, ABC):
 
 class PauseDailySearcherHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         paused = self.get_argument('paused')
 
         if paused == "1":
@@ -105,7 +121,10 @@ class PauseDailySearcherHandler(BaseHandler, ABC):
 
 class PauseBacklogSearcherHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         paused = self.get_argument('paused')
 
         if paused == "1":
@@ -118,7 +137,10 @@ class PauseBacklogSearcherHandler(BaseHandler, ABC):
 
 class PausePostProcessorHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         paused = self.get_argument('paused')
 
         if paused == "1":

@@ -20,6 +20,7 @@
 # ##############################################################################
 from abc import ABC
 
+from tornado.concurrent import run_on_executor
 from tornado.web import authenticated
 
 import sickrage
@@ -30,6 +31,9 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 class HistoryHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         limit = self.get_argument('limit', None)
 
         if limit is None:
@@ -90,7 +94,7 @@ class HistoryHandler(BaseHandler, ABC):
              'class': 'trimhistory', 'confirm': True},
         ]
 
-        return await self.render(
+        return self.render(
             "/history.mako",
             historyResults=History().get(limit),
             compactResults=compact,
@@ -107,7 +111,10 @@ class HistoryHandler(BaseHandler, ABC):
 class HistoryClearHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
-        await self.run_task(History().clear)
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
+        History().clear()
         sickrage.app.alerts.message(_('History cleared'))
         return self.redirect("/history/")
 
@@ -115,6 +122,9 @@ class HistoryClearHandler(BaseHandler, ABC):
 class HistoryTrimHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
-        await self.run_task(History().trim)
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
+        History().trim()
         sickrage.app.alerts.message(_('Removed history entries older than 30 days'))
         return self.redirect("/history/")

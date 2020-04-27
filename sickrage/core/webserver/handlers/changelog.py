@@ -21,6 +21,7 @@
 from abc import ABC
 
 import markdown2
+from tornado.concurrent import run_on_executor
 from tornado.web import authenticated
 
 import sickrage
@@ -29,7 +30,10 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 class ChangelogHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         try:
             data = markdown2.markdown(sickrage.changelog(), extras=['header-ids'])
         except Exception:

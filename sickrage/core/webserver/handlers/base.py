@@ -24,6 +24,7 @@ import threading
 import time
 import traceback
 from abc import ABC
+from concurrent.futures.thread import ThreadPoolExecutor
 from urllib.parse import urlparse, urljoin
 
 from jose import ExpiredSignatureError
@@ -157,8 +158,8 @@ class BaseHandler(RequestHandler, ABC):
 
             return self.mako_lookup.get_template('/errors/500.mako').render_unicode(**template_kwargs)
 
-    async def render(self, template_name, **kwargs):
-        return self.finish(await self.run_task(lambda: self.render_string(template_name, **kwargs)))
+    def render(self, template_name, **kwargs):
+        return self.finish(self.render_string(template_name, **kwargs))
         # return self.finish(self.render_string(template_name, **kwargs))
         # self.write(self.render_string(template_name, **kwargs))
 
@@ -177,8 +178,8 @@ class BaseHandler(RequestHandler, ABC):
         url = urlparse(self.request.headers.get("referer", "/{}/".format(sickrage.app.config.default_page)))
         return url._replace(scheme="", netloc="").geturl()
 
-    async def _genericMessage(self, subject, message):
-        return await self.render(
+    def _genericMessage(self, subject, message):
+        return self.render(
             "/generic_message.mako",
             message=message,
             subject=subject,
@@ -193,7 +194,7 @@ class BaseHandler(RequestHandler, ABC):
         url = urljoin("{}://{}".format(self.request.protocol, self.request.host), url)
         return url
 
-    def run_task(self, f, *args, **kwargs):
+    def run_in_executor(self, f, *args, **kwargs):
         @functools.wraps(f)
         def wrapper(*args, **kwargs):
             threading.currentThread().setName('TORNADO')

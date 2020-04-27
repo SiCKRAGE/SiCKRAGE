@@ -24,6 +24,7 @@ import re
 from abc import ABC
 from urllib.parse import unquote_plus, urlencode
 
+from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode
 from tornado.httputil import url_concat
 from tornado.web import authenticated
@@ -60,7 +61,10 @@ def split_extra_show(extra_show):
 class HomeAddShowsHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
-        return await self.render(
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
+        return self.render(
             "/home/add_shows.mako",
             title=_('Add Shows'),
             header=_('Add Shows'),
@@ -73,6 +77,9 @@ class HomeAddShowsHandler(BaseHandler, ABC):
 class SearchIndexersForShowNameHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         search_term = self.get_argument('search_term')
         indexer = self.get_argument('indexer')
         lang = self.get_argument('lang', None)
@@ -94,7 +101,7 @@ class SearchIndexersForShowNameHandler(BaseHandler, ABC):
 
             try:
                 # search via series name
-                result = await self.run_task(lambda: t[search_term])
+                result = t[search_term]
                 if isinstance(result, dict):
                     result = [result]
 
@@ -116,6 +123,9 @@ class SearchIndexersForShowNameHandler(BaseHandler, ABC):
 class MassAddTableHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         root_dir = self.get_arguments('rootDir')
 
         root_dirs = [unquote_plus(x) for x in root_dir]
@@ -179,7 +189,7 @@ class MassAddTableHandler(BaseHandler, ABC):
                 except Exception:
                     pass
 
-        return await self.render(
+        return self.render(
             "/home/mass_add_table.mako",
             dirList=dir_list,
             controller='home',
@@ -190,6 +200,9 @@ class MassAddTableHandler(BaseHandler, ABC):
 class NewShowHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         """
         Display the new show page which collects a tvdb id, folder, and extra options and
         posts them to addNewShow
@@ -216,7 +229,7 @@ class NewShowHandler(BaseHandler, ABC):
         provided_indexer_name = show_name or ''
         provided_indexer = int(indexer or sickrage.app.config.indexer_default)
 
-        return await self.render(
+        return self.render(
             "/home/new_show.mako",
             enable_anime_options=True,
             use_provided_info=use_provided_info,
@@ -242,6 +255,9 @@ class NewShowHandler(BaseHandler, ABC):
 class TraktShowsHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         """
         Display the new show page which collects a tvdb id, folder, and extra options and
         posts them to addNewShow
@@ -257,7 +273,7 @@ class TraktShowsHandler(BaseHandler, ABC):
         while len(trakt_shows) < int(limit):
             trakt_shows += [x for x in shows if 'tvdb' in x.ids and not find_show(int(x.ids['tvdb']))]
 
-        return await self.render("/home/trakt_shows.mako",
+        return self.render("/home/trakt_shows.mako",
                                  title="Trakt {} Shows".format(show_list.capitalize()),
                                  header="Trakt {} Shows".format(show_list.capitalize()),
                                  enable_anime_options=False,
@@ -272,18 +288,21 @@ class TraktShowsHandler(BaseHandler, ABC):
 class PopularShowsHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         """
         Fetches data from IMDB to show a list of popular shows.
         """
         imdb_exception = None
 
         try:
-            popular_shows = await self.run_task(imdbPopular().fetch_popular_shows)
+            popular_shows = imdbPopular().fetch_popular_shows()
         except Exception as e:
             popular_shows = None
             imdb_exception = e
 
-        return await self.render("/home/imdb_shows.mako",
+        return self.render("/home/imdb_shows.mako",
                                  title="IMDB Popular Shows",
                                  header="IMDB Popular Shows",
                                  popular_shows=popular_shows,
@@ -295,7 +314,10 @@ class PopularShowsHandler(BaseHandler, ABC):
 
 class AddShowToBlacklistHandler(BaseHandler, ABC):
     @authenticated
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         indexer_id = self.get_argument('indexer_id')
 
         data = {'shows': [{'ids': {'tvdb': indexer_id}}]}
@@ -306,10 +328,13 @@ class AddShowToBlacklistHandler(BaseHandler, ABC):
 class ExistingShowsHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         """
         Prints out the page to add existing shows from a root dir
         """
-        return await self.render("/home/add_existing_shows.mako",
+        return self.render("/home/add_existing_shows.mako",
                                  enable_anime_options=False,
                                  quality=sickrage.app.config.quality_default,
                                  title=_('Existing Show'),
@@ -322,6 +347,9 @@ class ExistingShowsHandler(BaseHandler, ABC):
 class AddShowByIDHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         indexer_id = self.get_argument('indexer_id')
         show_name = self.get_argument('showName')
 
@@ -353,6 +381,9 @@ class AddShowByIDHandler(BaseHandler, ABC):
 class AddNewShowHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
         return self.redirect("/home/")
 
     @authenticated
