@@ -834,10 +834,8 @@ c<%inherit file="../layouts/config.mako"/>
                                            value="${sickrage.app.config.api_key}"
                                            class="form-control"/>
                                     <div class="input-group-append">
-                                        <span class="input-group-text">
-                                            <span class="btn" id="generate_new_apikey">
-                                                ${_('Generate')}
-                                            </span>
+                                        <span class="btn" id="generate_new_apikey">
+                                            ${_('Generate')}
                                         </span>
                                     </div>
                                 </div>
