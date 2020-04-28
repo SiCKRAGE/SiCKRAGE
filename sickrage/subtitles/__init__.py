@@ -259,13 +259,13 @@ class Subtitles(object):
             if not isinstance(p, bytes) and p.startswith(os.path.splitext(filename)[0]) and p.endswith(
                     subliminal.SUBTITLE_EXTENSIONS):
                 if os.path.splitext(p)[0].endswith(language_extensions) and len(
-                        os.path.splitext(p)[0].rsplit('.', 1)[1]) is 2:
+                        os.path.splitext(p)[0].rsplit('.', 1)[1]) == 2:
                     subtitles.add(Language.fromopensubtitles(os.path.splitext(p)[0][-2:]))
                 elif os.path.splitext(p)[0].endswith(language_extensions) and len(
-                        os.path.splitext(p)[0].rsplit('.', 1)[1]) is 3:
+                        os.path.splitext(p)[0].rsplit('.', 1)[1]) == 3:
                     subtitles.add(Language.fromopensubtitles(os.path.splitext(p)[0][-3:]))
                 elif os.path.splitext(p)[0].endswith('pt-BR') and len(
-                        os.path.splitext(p)[0].rsplit('.', 1)[1]) is 5:
+                        os.path.splitext(p)[0].rsplit('.', 1)[1]) == 5:
                     subtitles.add(Language.fromopensubtitles('pob'))
                 else:
                     subtitles.add(Language('und'))
