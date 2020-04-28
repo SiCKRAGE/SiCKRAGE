@@ -127,9 +127,9 @@
                                 <a class="dropdown-item" href="${srWebRoot}/home/postprocess/">
                                     <i class="fas fa-fw fa-folder-open"></i>&nbsp;${_('Manual Post-Processing')}
                                 </a>
-                                % if sickrage.app.config.shows_recent:
+                                % if sickrage.app.shows_recent:
                                     <div class="dropdown-divider"></div>
-                                % for recentShow in sickrage.app.config.shows_recent:
+                                % for recentShow in sickrage.app.shows_recent:
                                     <a class="dropdown-item"
                                        href="${srWebRoot}/home/displayShow/?show=${recentShow['indexer_id']}">
                                         <i class="fas fa-fw fa-tv"></i>&nbsp;${recentShow['name']|trim,h}

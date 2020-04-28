@@ -443,7 +443,6 @@ class Config(object):
         self.trakt_oauth_url = 'https://trakt.tv/'
         self.trakt_api_url = 'https://api.trakt.tv/'
         self.fanart_api_key = '9b3afaf26f6241bdb57d6cc6bd798da7'
-        self.shows_recent = []
 
         self.autopostprocessor_freq = None
         self.daily_searcher_freq = None

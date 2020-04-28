@@ -1090,19 +1090,15 @@ class DisplayShowHandler(BaseHandler, ABC):
         indexer_id = int(show_obj.indexer_id)
         indexer = int(show_obj.indexer)
 
-        # Delete any previous occurrences
-        for index, recentShow in enumerate(sickrage.app.config.shows_recent):
-            if recentShow['indexer_id'] == indexer_id:
-                del sickrage.app.config.shows_recent[index]
-
-        # Only track 5 most recent shows
-        del sickrage.app.config.shows_recent[4:]
-
         # Insert most recent show
-        sickrage.app.config.shows_recent.insert(0, {
-            'indexer_id': indexer_id,
-            'name': show_obj.name,
-        })
+        for index, recentShow in enumerate(sickrage.app.shows_recent):
+            if recentShow['indexer_id'] == indexer_id:
+                break
+        else:
+            sickrage.app.shows_recent.append({
+                'indexer_id': indexer_id,
+                'name': show_obj.name,
+            })
 
         return self.render(
             "/home/display_show.mako",

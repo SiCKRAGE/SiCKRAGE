@@ -30,6 +30,7 @@ import sys
 import threading
 import traceback
 import uuid
+from collections import deque
 from urllib.parse import uses_netloc
 from urllib.request import FancyURLopener
 
@@ -92,6 +93,7 @@ class Core(object):
             self.tz = tz.tzlocal()
 
         self.shows = {}
+        self.shows_recent = deque(maxlen=5)
 
         self.private_key = None
         self.public_key = None
