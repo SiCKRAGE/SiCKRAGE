@@ -159,9 +159,7 @@ class BaseHandler(RequestHandler, ABC):
             return self.mako_lookup.get_template('/errors/500.mako').render_unicode(**template_kwargs)
 
     def render(self, template_name, **kwargs):
-        return self.finish(self.render_string(template_name, **kwargs))
-        # return self.finish(self.render_string(template_name, **kwargs))
-        # self.write(self.render_string(template_name, **kwargs))
+        self.write(self.render_string(template_name, **kwargs))
 
     def set_default_headers(self):
         self.set_header("Access-Control-Allow-Origin", "*")
