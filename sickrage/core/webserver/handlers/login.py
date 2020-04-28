@@ -55,8 +55,8 @@ class LoginHandler(BaseHandler, ABC):
                 if sickrage.app.config.sub_id != decoded_token.get('sub'):
                     if sickrage.app.api.token:
                         allowed_usernames = sickrage.app.api.allowed_usernames()['data']
-                        if not decoded_token['preferred_username'] in allowed_usernames:
-                            sickrage.app.log.debug("USERNAME:{} IP:{} - WEB-UI ACCESS DENIED".format(decoded_token['preferred_username'], self.request.remote_ip))
+                        if not decoded_token.get('preferred_username') in allowed_usernames:
+                            sickrage.app.log.debug("USERNAME:{} IP:{} - WEB-UI ACCESS DENIED".format(decoded_token.get('preferred_username'), self.request.remote_ip))
                             return self.redirect('/logout')
                     else:
                         return self.redirect('/logout')

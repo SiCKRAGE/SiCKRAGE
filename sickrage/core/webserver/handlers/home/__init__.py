@@ -889,12 +889,17 @@ class InstallRequirementsHandler(BaseHandler, ABC):
         await self.run_in_executor(self.handle_get)
 
     def handle_get(self):
-        sickrage.app.alerts.message(_('Installing SiCKRAGE requirements'))
-        if not sickrage.app.version_updater.updater.install_requirements(
-                sickrage.app.version_updater.updater.current_branch):
-            sickrage.app.alerts.message(_('Failed to install SiCKRAGE requirements'))
+        sickrage.app.alerts.message(_('Upgrading PIP'))
+        if sickrage.app.version_updater.updater.upgrade_pip():
+            sickrage.app.alerts.message(_('Upgraded PIP successfully!'))
+
+            sickrage.app.alerts.message(_('Installing SiCKRAGE requirements'))
+            if sickrage.app.version_updater.updater.install_requirements(sickrage.app.version_updater.updater.current_branch):
+                sickrage.app.alerts.message(_('Installed SiCKRAGE requirements successfully!'))
+            else:
+                sickrage.app.alerts.message(_('Failed to install SiCKRAGE requirements'))
         else:
-            sickrage.app.alerts.message(_('Installed SiCKRAGE requirements successfully!'))
+            sickrage.app.alerts.message(_('Failed to upgrade PIP'))
 
         return self.redirect(self.previous_url())
 
