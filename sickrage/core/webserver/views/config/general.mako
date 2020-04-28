@@ -808,7 +808,8 @@ c<%inherit file="../layouts/config.mako"/>
                         <div class="form-row">
                             <div class="col-md-12">
                                 <label class="text-info" for="web_root">
-                                    ${_('used in URL to access SiCKRAGE WebUI, DO NOT include a trailing slash at end.')}<br>
+                                    ${_('used in URL to access SiCKRAGE WebUI, DO NOT include a trailing slash at end.')}
+                                    <br>
                                     <b>${_('this option require a manual restart to take effect.')}</b>
                                 </label>
                             </div>
@@ -1282,60 +1283,60 @@ c<%inherit file="../layouts/config.mako"/>
 
         <hr/>
 
-        <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
-                <h3>${_('PIP Settings')}</h3>
-            </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
-                <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5">
-                        <label class="component-title">${_('PIP3 executable path')}</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                        <div class="form-row">
-                            <div class="col-md-12">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">
-                                            <span class="fas fa-file"></span>
-                                        </span>
-                                    </div>
-                                    <input id="pip3_path" name="pip3_path"
-                                           value="${sickrage.app.config.pip3_path}"
-                                           placeholder="${_('ex: /path/to/pip3')}"
-                                           title="only needed if OS is unable to locate pip3 from env"
-                                           class="form-control" autocapitalize="off"/>
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">
-                                            <span class="btn" id="verifyPipPath">
-                                                ${_('Verify Path')}
-                                            </span>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <p></p>
-                        <div class="form-row">
-                            <div class="col-md-12">
-                                <div class="testNotification" id="testPIP-result">
-                                    ${_('Click verify path to test.')}
-                                </div>
-                                <input class="btn btn-inline" type="button" id="installRequirements"
-                                       value="Install Requirements">
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="col-md-12">
-                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
-                    </div>
-                </div>
-            </fieldset>
-        </div>
+        ##         <div class="form-row">
+        ##             <div class="col-lg-3 col-md-4 col-sm-4 card-title">
+        ##                 <h3>${_('PIP Settings')}</h3>
+        ##             </div>
+        ##             <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
+        ##                 <div class="form-row form-group">
+        ##                     <div class="col-lg-3 col-md-4 col-sm-5">
+        ##                         <label class="component-title">${_('PIP3 executable path')}</label>
+        ##                     </div>
+        ##                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+        ##                         <div class="form-row">
+        ##                             <div class="col-md-12">
+        ##                                 <div class="input-group">
+        ##                                     <div class="input-group-prepend">
+        ##                                         <span class="input-group-text">
+        ##                                             <span class="fas fa-file"></span>
+        ##                                         </span>
+        ##                                     </div>
+        ##                                     <input id="pip3_path" name="pip3_path"
+        ##                                            value="${sickrage.app.config.pip3_path}"
+        ##                                            placeholder="${_('ex: /path/to/pip3')}"
+        ##                                            title="only needed if OS is unable to locate pip3 from env"
+        ##                                            class="form-control" autocapitalize="off"/>
+        ##                                     <div class="input-group-append">
+        ##                                         <span class="input-group-text">
+        ##                                             <span class="btn" id="verifyPipPath">
+        ##                                                 ${_('Verify Path')}
+        ##                                             </span>
+        ##                                         </span>
+        ##                                     </div>
+        ##                                 </div>
+        ##                             </div>
+        ##                         </div>
+        ##                         <p></p>
+        ##                         <div class="form-row">
+        ##                             <div class="col-md-12">
+        ##                                 <div class="testNotification" id="testPIP-result">
+        ##                                     ${_('Click verify path to test.')}
+        ##                                 </div>
+        ##                                 <input class="btn btn-inline" type="button" id="installRequirements"
+        ##                                        value="Install Requirements">
+        ##                             </div>
+        ##                         </div>
+        ##
+        ##                     </div>
+        ##                 </div>
+        ##
+        ##                 <div class="form-row">
+        ##                     <div class="col-md-12">
+        ##                         <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
+        ##                     </div>
+        ##                 </div>
+        ##             </fieldset>
+        ##         </div>
 
         % if sickrage.app.version_updater.updater.type == "git":
         <%
@@ -1375,17 +1376,12 @@ c<%inherit file="../layouts/config.mako"/>
                                                 % endfor
                                             % endif
                                         </select>
+                                        <div class="input-group-append">
+                                            <span class="btn" id="branchCheckout" ${('', 'disabled')[not git_branches]}>
+                                                ${_('Checkout Branch')}
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <p></p>
-                            <div class="form-row">
-                                <div class="col-md-12">
-                                    <input class="btn btn-inline" type="button" id="branchCheckout"
-                                           value="Checkout Branch" ${('', 'disabled')[not git_branches]}>
-                                    <label for="branchCheckout">
-                                        ${(_('select branch to use (restart required)'), _('Error: No branches found.'))[not git_branches]}
-                                    </label>
                                 </div>
                             </div>
                         </div>
@@ -1410,10 +1406,8 @@ c<%inherit file="../layouts/config.mako"/>
                                                title="only needed if OS is unable to locate git from env"
                                                class="form-control" autocapitalize="off"/>
                                         <div class="input-group-append">
-                                            <span class="input-group-text">
-                                                <span class="btn" id="verifyGitPath">
-                                                    ${_('Verify Path')}
-                                                </span>
+                                            <span class="btn" id="verifyGitPath">
+                                                ${_('Verify Path')}
                                             </span>
                                         </div>
                                     </div>
