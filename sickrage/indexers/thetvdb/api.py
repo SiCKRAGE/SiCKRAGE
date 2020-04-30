@@ -64,13 +64,13 @@ def login_required(f):
 
 def to_lowercase(iterable):
     if type(iterable) is dict:
-        for key in iterable.keys():
+        for key in iterable.copy().keys():
             iterable[key.lower()] = iterable.pop(key)
             if type(iterable[key.lower()]) is dict or type(iterable[key.lower()]) is list:
                 iterable[key.lower()] = to_lowercase(iterable[key.lower()])
     elif type(iterable) is list:
-        for item in iterable:
-            item = to_lowercase(item)
+        for i, item in enumerate(iterable.copy()):
+            iterable[i] = to_lowercase(item)
 
     return iterable
 
@@ -607,7 +607,7 @@ class Tvdb:
 
         if not len(episodes):
             sickrage.app.log.debug('Series results incomplete')
-            return
+            raise tvdb_attributenotfound("[{}]: Series results incomplete".format(sid))
 
         episode_incomplete = False
         for cur_ep in episodes:
