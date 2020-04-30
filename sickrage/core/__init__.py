@@ -187,6 +187,9 @@ class Core(object):
         # create io loop
         self.io_loop = IOLoop.current()
 
+        # scheduler
+        self.scheduler = TornadoScheduler({'apscheduler.timezone': 'UTC'})
+
         # init core classes
         self.api = API()
         self.main_db = MainDB(self.db_type, self.db_prefix, self.db_host, self.db_port, self.db_username, self.db_password)
@@ -197,7 +200,6 @@ class Core(object):
         self.log = Logger()
         self.config = Config()
         self.alerts = Notifications()
-        self.scheduler = TornadoScheduler({'apscheduler.timezone': 'UTC'})
         self.wserver = WebServer()
         self.show_queue = ShowQueue()
         self.search_queue = SearchQueue()
@@ -361,7 +363,6 @@ class Core(object):
                 hours=self.config.version_updater_freq,
                 timezone='utc'
             ),
-            next_run_time=datetime.datetime.utcnow(),
             name=self.version_updater.name,
             id=self.version_updater.name,
             args=[self.version_updater.task]
@@ -374,7 +375,6 @@ class Core(object):
                 days=1,
                 timezone='utc'
             ),
-            next_run_time=datetime.datetime.utcnow(),
             name=self.tz_updater.name,
             id=self.tz_updater.name,
             args=[self.tz_updater.task]
@@ -517,7 +517,6 @@ class Core(object):
                 minutes=15,
                 timezone='utc'
             ),
-            next_run_time=datetime.datetime.utcnow(),
             name=self.announcements.name,
             id=self.announcements.name,
             args=[self.announcements.task]
@@ -530,9 +529,11 @@ class Core(object):
 
         # fire off startup events
         self.io_loop.add_callback(self.load_shows)
-        # self.io_loop.add_callback(self.version_updater.run)
-        # self.io_loop.add_callback(self.tz_updater.run)
-        # self.io_loop.add_callback(self.announcements.run)
+
+        # fire off jobs now
+        sickrage.app.scheduler.get_job(self.version_updater.name).modify(next_run_time=datetime.datetime.utcnow())
+        sickrage.app.scheduler.get_job(self.tz_updater.name).modify(next_run_time=datetime.datetime.utcnow())
+        sickrage.app.scheduler.get_job(self.announcements.name).modify(next_run_time=datetime.datetime.utcnow())
 
         # start scheduler service
         self.scheduler.start()

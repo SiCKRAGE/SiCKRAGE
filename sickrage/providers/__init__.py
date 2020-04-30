@@ -29,13 +29,14 @@ import os
 import pkgutil
 import random
 import re
+import threading
 from base64 import b16encode, b32decode
 from collections import OrderedDict, defaultdict
-from json import JSONDecodeError
 from time import sleep
 from urllib.parse import urljoin
 from xml.sax import SAXParseException
 
+from apscheduler.triggers.interval import IntervalTrigger
 from bencode3 import bdecode, bencode
 from feedparser import FeedParserDict
 from requests.utils import add_dict_to_cookiejar, dict_from_cookiejar
@@ -54,6 +55,8 @@ from sickrage.core.websession import WebSession
 
 
 class GenericProvider(object):
+    type = 'generic'
+
     def __init__(self, name, url, private):
         self.name = name
 
@@ -103,14 +106,6 @@ class GenericProvider(object):
 
     @property
     def urls(self):
-        # if not isinstance(self, (TorrentRssProvider, NewznabProvider)) and self.is_enabled:
-        #     try:
-        #         resp = sickrage.app.api.provider.get_urls(self.id)
-        #         if resp and 'data' in resp:
-        #             return json.loads(resp['data']['urls'])
-        #     except Exception:
-        #         pass
-
         return self._urls
 
     def _check_auth(self):
@@ -1269,6 +1264,7 @@ class TorrentRssCache(TVCache):
 class SearchProviders(dict):
     def __init__(self):
         super(SearchProviders, self).__init__()
+        self.name = "SEARCH-PROVIDERS"
 
         self.provider_order = []
 
@@ -1277,11 +1273,26 @@ class SearchProviders(dict):
         self[NewznabProvider.type] = {}
         self[TorrentRssProvider.type] = {}
 
+        # scheduled URL updates
+        sickrage.app.scheduler.add_job(
+            sickrage.app.io_loop.run_in_executor,
+            IntervalTrigger(
+                hours=1,
+                timezone='utc'
+            ),
+            name=self.name,
+            id=self.name,
+            args=[None, self._update_urls]
+        )
+
     def load(self):
         self[NZBProvider.type] = dict([(p.id, p) for p in NZBProvider.get_providers()])
         self[TorrentProvider.type] = dict([(p.id, p) for p in TorrentProvider.get_providers()])
         self[NewznabProvider.type] = dict([(p.id, p) for p in NewznabProvider.get_providers()])
         self[TorrentRssProvider.type] = dict([(p.id, p) for p in TorrentRssProvider.get_providers()])
+
+        # run scheduled job to update urls now
+        sickrage.app.scheduler.get_job(self.name).modify(next_run_time=datetime.datetime.utcnow())
 
     def sort(self, key=None, randomize=False):
         sorted_providers = []
@@ -1329,3 +1340,20 @@ class SearchProviders(dict):
 
     def torrentrss(self):
         return self[TorrentRssProvider.type]
+
+    def _update_urls(self):
+        threading.currentThread().setName(self.name)
+
+        sickrage.app.log.debug('Updating provider URLs')
+
+        for pID, pObj in self.all().items():
+            if pObj.type not in ['torrentrss', 'newznab']:
+                try:
+                    resp = sickrage.app.api.provider.get_urls(pObj.id)
+                    if resp and 'data' in resp:
+                        sickrage.app.log.debug('Updated {} URLs'.format(pObj.name))
+                        pObj._urls = json.loads(resp['data']['urls'])
+                except Exception:
+                    pass
+
+        sickrage.app.log.debug('Updating provider URLs finished')
