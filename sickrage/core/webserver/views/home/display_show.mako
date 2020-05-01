@@ -660,9 +660,9 @@
                         <% airDate = srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(episode_object.airdate, show.airs, show.network), convert=True).dt %>
                     % endif
 
-                    <time datetime="${airDate.isoformat()}" class="date text-nowrap">
+                    <div class="date text-nowrap">
                         ${srdatetime.SRDateTime(airDate).srfdatetime()}
-                    </time>
+                    </div>
                 </td>
 
                 <td class="table-fit">
