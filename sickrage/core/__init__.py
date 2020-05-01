@@ -531,9 +531,9 @@ class Core(object):
         self.io_loop.add_callback(self.load_shows)
 
         # fire off jobs now
-        sickrage.app.scheduler.get_job(self.version_updater.name).modify(next_run_time=datetime.datetime.utcnow())
-        sickrage.app.scheduler.get_job(self.tz_updater.name).modify(next_run_time=datetime.datetime.utcnow())
-        sickrage.app.scheduler.get_job(self.announcements.name).modify(next_run_time=datetime.datetime.utcnow())
+        self.scheduler.get_job(self.version_updater.name).modify(next_run_time=datetime.datetime.utcnow())
+        self.scheduler.get_job(self.tz_updater.name).modify(next_run_time=datetime.datetime.utcnow())
+        self.scheduler.get_job(self.announcements.name).modify(next_run_time=datetime.datetime.utcnow())
 
         # start scheduler service
         self.scheduler.start()
