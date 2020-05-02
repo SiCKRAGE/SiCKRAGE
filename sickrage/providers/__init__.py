@@ -42,10 +42,9 @@ from feedparser import FeedParserDict
 from requests.utils import add_dict_to_cookiejar, dict_from_cookiejar
 
 import sickrage
-from sickrage.core.api import APIError
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.classes import NZBSearchResult, SearchResult, TorrentSearchResult
-from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT, cpu_presets
+from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT, cpu_presets, SearchFormats
 from sickrage.core.helpers import chmod_as_parent, sanitize_file_name, clean_url, bs4_parser, \
     validate_url, try_int, convert_size
 from sickrage.core.helpers.show_names import all_possible_show_names
@@ -165,10 +164,12 @@ class GenericProvider(object):
         for show_name in all_possible_show_names(show_id, episode_object.scene_season):
             episode_string = "{}{}".format(show_name, self.search_separator)
 
-            if show_object.air_by_date or show_object.sports:
+            if show_object.search_format in [SearchFormats.AIR_BY_DATE, SearchFormats.SPORTS]:
                 episode_string += str(episode_object.airdate).split('-')[0]
-            elif show_object.anime:
+            elif show_object.search_format == SearchFormats.ANIME:
                 episode_string += 'Season'
+            elif show_object.search_format == SearchFormats.COLLECTION:
+                episode_string += 'Series {season}'.format(season=int(episode_object.scene_season))
             else:
                 episode_string += 'S{season:0>2}'.format(season=episode_object.scene_season)
 
@@ -195,13 +196,13 @@ class GenericProvider(object):
             episode_string = "{}{}".format(show_name, self.search_separator)
             episode_string_fallback = None
 
-            if show_object.air_by_date:
+            if show_object.search_format == SearchFormats.AIR_BY_DATE:
                 episode_string += str(episode_object.airdate).replace('-', ' ')
-            elif show_object.sports:
+            elif show_object.search_format == SearchFormats.SPORTS:
                 episode_string += str(episode_object.airdate).replace('-', ' ')
                 episode_string += ('|', ' ')[len(self.proper_strings) > 1]
                 episode_string += episode_object.airdate.strftime('%b')
-            elif show_object.anime:
+            elif show_object.search_format == SearchFormats.ANIME:
                 # If the show name is a season scene exception, we want to use the indexer episode number.
                 if episode_object.scene_season > 0 and show_name in show_object.get_scene_exceptions_by_season(episode_object.scene_season):
                     # This is apparently a season exception, let's use the scene_episode instead of absolute
@@ -211,6 +212,12 @@ class GenericProvider(object):
 
                 episode_string += '{episode:0>2}'.format(episode=ep)
                 episode_string_fallback = episode_string + '{episode:0>3}'.format(episode=ep)
+            elif show_object.search_format == SearchFormats.COLLECTION:
+                episode_string += 'Series {season} {episode}of{episodes}'.format(season=int(episode_object.scene_season),
+                                                                                 episode=int(episode_object.scene_episode),
+                                                                                 episodes=len([x for x in show_object.episodes if x.scene_season == season]))
+                episode_string_fallback = 'Series {season} Part {episode}'.format(season=int(episode_object.scene_season),
+                                                                                  episode=int(episode_object.scene_episode))
             else:
                 episode_string += sickrage.app.naming_ep_type[2] % {
                     'seasonnumber': int(episode_object.scene_season),
@@ -339,7 +346,7 @@ class GenericProvider(object):
             if not provider_result_show_obj:
                 continue
 
-            if not parse_result.is_air_by_date and (provider_result_show_obj.air_by_date or provider_result_show_obj.sports):
+            if not parse_result.is_air_by_date and provider_result_show_obj.search_format in [SearchFormats.AIR_BY_DATE, SearchFormats.SPORTS]:
                 sickrage.app.log.debug("This is supposed to be a date search but the result {} didn't parse as one, skipping it".format(provider_result.name))
                 continue
 
@@ -348,13 +355,15 @@ class GenericProvider(object):
                     sickrage.app.log.debug("This is supposed to be a season pack search but the result {} is not "
                                            "a valid season pack, skipping it".format(provider_result.name))
                     continue
-                elif parse_result.season_number != (episode_object.season, episode_object.scene_season)[show_object.is_scene]:
+                elif parse_result.season_number != (episode_object.season, episode_object.scene_season)[show_object.search_format == SearchFormats.SCENE]:
                     sickrage.app.log.debug("This season result {} is for a season we are not searching for, skipping it".format(provider_result.name))
                     continue
             else:
                 if not all([parse_result.season_number is not None, parse_result.episode_numbers,
-                            parse_result.season_number == (episode_object.season, episode_object.scene_season)[show_object.is_scene],
-                            (episode_object.episode, episode_object.scene_episode)[show_object.is_scene] in parse_result.episode_numbers]):
+                            parse_result.season_number == (episode_object.season, episode_object.scene_season)[
+                                show_object.search_format == SearchFormats.SCENE],
+                            (episode_object.episode, episode_object.scene_episode)[
+                                show_object.search_format == SearchFormats.SCENE] in parse_result.episode_numbers]):
                     sickrage.app.log.debug("The result {} doesn't seem to be a valid episode "
                                            "that we are trying to snatch, ignoring".format(provider_result.name))
                     continue
@@ -615,18 +624,19 @@ class TorrentProvider(GenericProvider):
             if info_hash:
                 try:
                     # get content from external API
-                    result = verify_torrent(sickrage.app.api.torrent_cache.get(info_hash))
-                except APIError as e:
-                    # add torrent to external API
-                    sickrage.app.api.torrent_cache.add(url)
+                    resp = sickrage.app.api.torrent_cache.get(info_hash)
+                    if resp:
+                        result = verify_torrent(resp)
+                    else:
+                        sickrage.app.api.torrent_cache.add(url)
 
-                    # # get content from other torrent hash search engines
-                    # for torrent_url in [x.format(info_hash=info_hash) for x in self.bt_cache_urls]:
-                    #     if result:
-                    #         continue
-                    #
-                    #     result = verify_torrent(super(TorrentProvider, self).get_content(torrent_url))
-                except Exception as e:
+                        # # get content from other torrent hash search engines
+                        # for torrent_url in [x.format(info_hash=info_hash) for x in self.bt_cache_urls]:
+                        #     if result:
+                        #         continue
+                        #
+                        #     result = verify_torrent(super(TorrentProvider, self).get_content(torrent_url))
+                except Exception:
                     result = None
         else:
             result = verify_torrent(super(TorrentProvider, self).get_content(url))
@@ -1087,7 +1097,7 @@ class NewznabProvider(NZBProvider):
                     search_params.update({'tvdbid': show_id})
 
                 if search_params['t'] == 'tvsearch':
-                    if show_object.air_by_date or show_object.sports:
+                    if show_object.search_format in [SearchFormats.AIR_BY_DATE, SearchFormats.SPORTS]:
                         date_str = str(episode_object.airdate)
                         search_params['season'] = date_str.partition('-')[0]
                         search_params['ep'] = date_str.partition('-')[2].replace('-', '/')
@@ -1347,7 +1357,7 @@ class SearchProviders(dict):
         sickrage.app.log.debug('Updating provider URLs')
 
         for pID, pObj in self.all().items():
-            if pObj.type not in ['torrentrss', 'newznab']:
+            if pObj.type not in ['torrentrss', 'newznab'] and pObj.id not in ['bitcannon']:
                 try:
                     resp = sickrage.app.api.provider.get_urls(pObj.id)
                     if resp and 'data' in resp:

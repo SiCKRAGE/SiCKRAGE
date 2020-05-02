@@ -78,11 +78,18 @@ class NorbitsProvider(TorrentProvider):
 
                 self._check_auth()
 
-                try:
-                    data = self.session.post(self.urls['search'], data=post_data).json()
-                    results += self.parse(data, mode)
-                except Exception:
+                resp = self.session.post(self.urls['search'], data=post_data)
+                if not resp or not resp.content:
                     sickrage.app.log.debug("No data returned from provider")
+                    continue
+
+                try:
+                    data = resp.json()
+                except ValueError:
+                    sickrage.app.log.debug("No data returned from provider")
+                    continue
+
+                results += self.parse(data, mode)
 
         return results
 

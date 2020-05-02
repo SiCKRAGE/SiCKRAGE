@@ -5,7 +5,7 @@ CacheControl == 0.12.6
 cloudscraper == 1.2.34
 configobj == 5.0.6
 feedparser == 6.0.0b3
-guessit == 3.1.0
+guessit == 3.1.1
 hachoir == 3.1.1
 Mako == 1.1.2
 markdown2 == 2.3.8
@@ -13,7 +13,7 @@ oauth2 == 1.9.0.post1
 profilehooks == 1.11.2
 Send2Trash == 1.5.0
 six == 1.14.0
-subliminal == 2.0.5
+subliminal == 2.1.0
 tornado == 6.0.4
 xmltodict == 0.12.0
 MultipartPostHandler == 0.1.0
@@ -30,11 +30,11 @@ lockfile == 0.12.2
 requests == 2.23.0
 fake-useragent == 0.1.11
 html5lib == 1.0.1
-arrow == 0.15.5
+arrow == 0.15.6
 unidecode == 1.1.1
-twilio == 6.38.1
+twilio == 6.39.0
 chardet == 3.0.4
-pytz == 2019.3
+pytz == 2020.1
 tzlocal == 2.1b1
 raven == 6.10.0
 python-keycloak-client == 0.2.3

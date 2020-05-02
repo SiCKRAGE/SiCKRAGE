@@ -121,11 +121,12 @@ class NewpctProvider(TorrentProvider):
                     sickrage.app.log.debug('Search string: {}'.format(search_string))
 
                 for search_url in self.urls['search']:
-                    try:
-                        data = self.session.get(search_url % search_string).text
-                        results += self.parse(data, mode)
-                    except Exception:
-                        sickrage.app.log.debug('No data returned from provider')
+                    resp = self.session.get(search_url % search_string)
+                    if not resp or not resp.text:
+                        sickrage.app.log.debug("No data returned from provider")
+                        continue
+
+                    results += self.parse(resp.text, mode)
 
         return results
 

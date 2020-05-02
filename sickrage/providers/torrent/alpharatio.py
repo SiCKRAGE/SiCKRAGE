@@ -66,10 +66,8 @@ class AlphaRatioProvider(TorrentProvider):
             sickrage.app.log.warning('Unable to connect to provider')
             return False
 
-        if re.search('Invalid Username/password', response) \
-                or re.search('<title>Login :: AlphaRatio.cc</title>', response):
-            sickrage.app.log.warning(
-                "Invalid username or password. Check your settings")
+        if re.search('Invalid Username/password', response) or re.search('<title>Login :: AlphaRatio.cc</title>', response):
+            sickrage.app.log.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -86,13 +84,14 @@ class AlphaRatioProvider(TorrentProvider):
                 if mode != 'RSS':
                     sickrage.app.log.debug("Search string: %s " % search_string)
 
-                searchURL = self.urls['search'] % (search_string, self.catagories)
+                search_url = self.urls['search'] % (search_string, self.catagories)
 
-                try:
-                    data = self.session.get(searchURL).text
-                    results += self.parse(data, mode)
-                except Exception:
+                resp = self.session.get(search_url)
+                if not resp or not resp.text:
                     sickrage.app.log.debug("No data returned from provider")
+                    continue
+
+                results += self.parse(resp.text, mode)
 
         return results
 

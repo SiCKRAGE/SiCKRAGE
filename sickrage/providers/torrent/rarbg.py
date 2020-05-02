@@ -120,13 +120,38 @@ class RarbgProvider(TorrentProvider):
                     continue
 
                 # sleep 5 secs per request
-                sleep(2)
+                sleep(5)
+
+                resp = self.session.get(self.urls['api'], params=search_params, random_ua=True)
+                if not resp or not resp.content:
+                    sickrage.app.log.debug("No data returned from provider")
+                    continue
 
                 try:
-                    data = self.session.get(self.urls['api'], params=search_params, random_ua=True).json()
-                    results += self.parse(data, mode)
-                except Exception:
+                    data = resp.json()
+                except ValueError:
                     sickrage.app.log.debug("No data returned from provider")
+                    continue
+
+                error = data.get('error')
+                error_code = data.get('error_code')
+                if error:
+                    # List of errors: https://github.com/rarbg/torrentapi/issues/1#issuecomment-114763312
+                    if error_code == 5:
+                        # 5 = Too many requests per second
+                        log_level = sickrage.app.log.INFO
+                    elif error_code not in (4, 8, 10, 12, 14, 20):
+                        # 4 = Invalid token. Use get_token for a new one!
+                        # 8, 10, 12, 14 = Cant find * in database. Are you sure this * exists?
+                        # 20 = No results found
+                        log_level = sickrage.app.log.WARNING
+                    else:
+                        log_level = sickrage.app.log.DEBUG
+
+                    sickrage.app.log.log(log_level, '{msg} Code: {code}', {'msg': error, 'code': error_code})
+                    continue
+
+                results += self.parse(data, mode)
 
         return results
 

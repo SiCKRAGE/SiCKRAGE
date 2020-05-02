@@ -23,12 +23,11 @@ import os
 from abc import ABC
 from functools import cmp_to_key
 
-from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, json_decode
 from tornado.web import authenticated
 
 import sickrage
-from sickrage.core.common import SNATCHED, Quality, Overview, statusStrings, WANTED, FAILED, UNAIRED, IGNORED, SKIPPED
+from sickrage.core.common import SNATCHED, Quality, Overview, statusStrings, WANTED, FAILED, UNAIRED, IGNORED, SKIPPED, SearchFormats
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import CantUpdateShowException, CantRefreshShowException, EpisodeNotFoundException, AnidbAdbaConnectionException, NoNFOException
 from sickrage.core.helpers import try_int, checkbox_to_value
@@ -160,11 +159,10 @@ def set_episode_status(show, eps, status, direct=None):
     return True, ""
 
 
-def edit_show(show, any_qualities, best_qualities, exceptions_list, location=None, flatten_folders=None, paused=None, direct_call=None, air_by_date=None,
-              sports=None, dvdorder=None, indexer_lang=None, subtitles=None, sub_use_sr_metadata=None, skip_downloaded=None, rls_ignore_words=None,
+def edit_show(show, any_qualities, best_qualities, exceptions_list, location=None, flatten_folders=None, paused=None, direct_call=None,
+              dvdorder=None, indexer_lang=None, subtitles=None, sub_use_sr_metadata=None, skip_downloaded=None, rls_ignore_words=None, search_format=None,
               rls_require_words=None, anime=None, blacklist=None, whitelist=None, scene=None, default_ep_status=None, quality_preset=None, search_delay=None):
     show_obj = find_show(int(show))
-
     if not show_obj:
         err_msg = _("Unable to find the specified show: ") + str(show)
         if direct_call:
@@ -175,10 +173,8 @@ def edit_show(show, any_qualities, best_qualities, exceptions_list, location=Non
     dvdorder = checkbox_to_value(dvdorder)
     skip_downloaded = checkbox_to_value(skip_downloaded)
     paused = checkbox_to_value(paused)
-    air_by_date = checkbox_to_value(air_by_date)
-    scene = checkbox_to_value(scene)
-    sports = checkbox_to_value(sports)
     anime = checkbox_to_value(anime)
+    search_format = int(search_format)
     subtitles = checkbox_to_value(subtitles)
     sub_use_sr_metadata = checkbox_to_value(sub_use_sr_metadata)
 
@@ -193,18 +189,16 @@ def edit_show(show, any_qualities, best_qualities, exceptions_list, location=Non
     else:
         do_update = True
 
-    if scene == show_obj.scene or anime == show_obj.anime:
+    if show_obj.search_format in [SearchFormats.SCENE, SearchFormats.ANIME]:
         do_update_scene_numbering = False
     else:
         do_update_scene_numbering = True
 
     show_obj.paused = paused
-    show_obj.scene = scene
     show_obj.anime = anime
-    show_obj.sports = sports
+    show_obj.search_format = search_format
     show_obj.subtitles = subtitles
     show_obj.sub_use_sr_metadata = sub_use_sr_metadata
-    show_obj.air_by_date = air_by_date
     show_obj.default_ep_status = int(default_ep_status)
     show_obj.skip_downloaded = skip_downloaded
 
@@ -708,8 +702,7 @@ class EditShowHandler(BaseHandler, ABC):
         flatten_folders = self.get_argument('flatten_folders', None)
         paused = self.get_argument('paused', None)
         direct_call = bool(self.get_argument('directCall', None))
-        air_by_date = self.get_argument('air_by_date', None)
-        sports = self.get_argument('sports', None)
+        search_format = self.get_argument('search_format', None)
         dvdorder = self.get_argument('dvdorder', None)
         indexer_lang = self.get_argument('indexerLang', None)
         subtitles = self.get_argument('subtitles', None)
@@ -720,16 +713,15 @@ class EditShowHandler(BaseHandler, ABC):
         anime = self.get_argument('anime', None)
         blacklist = self.get_argument('blacklist', None)
         whitelist = self.get_argument('whitelist', None)
-        scene = self.get_argument('scene', None)
         default_ep_status = self.get_argument('defaultEpStatus', None)
         quality_preset = self.get_argument('quality_preset', None)
         search_delay = self.get_argument('search_delay', None)
 
         status, message = edit_show(show=show, location=location, any_qualities=any_qualities, best_qualities=best_qualities, exceptions_list=exceptions_list,
-                                    flatten_folders=flatten_folders, paused=paused, direct_call=direct_call, air_by_date=air_by_date, sports=sports,
+                                    flatten_folders=flatten_folders, paused=paused, direct_call=direct_call, search_format=search_format,
                                     dvdorder=dvdorder, indexer_lang=indexer_lang, subtitles=subtitles, sub_use_sr_metadata=sub_use_sr_metadata,
                                     skip_downloaded=skip_downloaded, rls_ignore_words=rls_ignore_words, rls_require_words=rls_require_words, anime=anime,
-                                    blacklist=blacklist, whitelist=whitelist, scene=scene, default_ep_status=default_ep_status, quality_preset=quality_preset,
+                                    blacklist=blacklist, whitelist=whitelist, default_ep_status=default_ep_status, quality_preset=quality_preset,
                                     search_delay=search_delay)
 
         if direct_call:
@@ -770,20 +762,14 @@ class MassEditHandler(BaseHandler, ABC):
         anime_all_same = True
         last_anime = None
 
-        sports_all_same = True
-        last_sports = None
-
         quality_all_same = True
         last_quality = None
 
         subtitles_all_same = True
         last_subtitles = None
 
-        scene_all_same = True
-        last_scene = None
-
-        air_by_date_all_same = True
-        last_air_by_date = None
+        search_format_all_same = True
+        last_search_format = None
 
         root_dir_list = []
 
@@ -838,23 +824,11 @@ class MassEditHandler(BaseHandler, ABC):
                 else:
                     last_subtitles = curShow.subtitles
 
-            if scene_all_same:
-                if last_scene not in (None, curShow.scene):
-                    scene_all_same = False
+            if search_format_all_same:
+                if last_search_format not in (None, curShow.search_format):
+                    search_format_all_same = False
                 else:
-                    last_scene = curShow.scene
-
-            if sports_all_same:
-                if last_sports not in (None, curShow.sports):
-                    sports_all_same = False
-                else:
-                    last_sports = curShow.sports
-
-            if air_by_date_all_same:
-                if last_air_by_date not in (None, curShow.air_by_date):
-                    air_by_date_all_same = False
-                else:
-                    last_air_by_date = curShow.air_by_date
+                    last_search_format = curShow.search_format
 
         skip_downloaded_value = last_skip_downloaded if skip_downloaded_all_same else None
         default_ep_status_value = last_default_ep_status if default_ep_status_all_same else None
@@ -863,9 +837,7 @@ class MassEditHandler(BaseHandler, ABC):
         flatten_folders_value = last_flatten_folders if flatten_folders_all_same else None
         quality_value = last_quality if quality_all_same else None
         subtitles_value = last_subtitles if subtitles_all_same else None
-        scene_value = last_scene if scene_all_same else None
-        sports_value = last_sports if sports_all_same else None
-        air_by_date_value = last_air_by_date if air_by_date_all_same else None
+        search_format_value = last_search_format if search_format_all_same else None
 
         return self.render(
             "/manage/mass_edit.mako",
@@ -878,9 +850,7 @@ class MassEditHandler(BaseHandler, ABC):
             flatten_folders_value=flatten_folders_value,
             quality_value=quality_value,
             subtitles_value=subtitles_value,
-            scene_value=scene_value,
-            sports_value=sports_value,
-            air_by_date_value=air_by_date_value,
+            search_format_value=search_format_value,
             root_dir_list=root_dir_list,
             title=_('Mass Edit'),
             header=_('Mass Edit'),
@@ -895,12 +865,10 @@ class MassEditHandler(BaseHandler, ABC):
         paused = self.get_argument('paused', None)
         default_ep_status = self.get_argument('default_ep_status', None)
         anime = self.get_argument('anime', None)
-        sports = self.get_argument('sports', None)
-        scene = self.get_argument('scene', None)
         flatten_folders = self.get_argument('flatten_folders', None)
         quality_preset = self.get_argument('quality_preset', None)
         subtitles = self.get_argument('subtitles', None)
-        air_by_date = self.get_argument('air_by_date', None)
+        search_format = self.get_argument('search_format', None)
         any_qualities = self.get_arguments('anyQualities')
         best_qualities = self.get_arguments('bestQualities')
         to_edit = self.get_argument('toEdit', None)
@@ -959,23 +927,11 @@ class MassEditHandler(BaseHandler, ABC):
                 new_anime = True if anime == 'enable' else False
             new_anime = 'on' if new_anime else 'off'
 
-            if sports == 'keep':
-                new_sports = show_obj.sports
+            if search_format == 'keep':
+                new_search_format = show_obj.search_format
             else:
-                new_sports = True if sports == 'enable' else False
-            new_sports = 'on' if new_sports else 'off'
-
-            if scene == 'keep':
-                new_scene = show_obj.is_scene
-            else:
-                new_scene = True if scene == 'enable' else False
-            new_scene = 'on' if new_scene else 'off'
-
-            if air_by_date == 'keep':
-                new_air_by_date = show_obj.air_by_date
-            else:
-                new_air_by_date = True if air_by_date == 'enable' else False
-            new_air_by_date = 'on' if new_air_by_date else 'off'
+                new_search_format = True if search_format == 'enable' else False
+            new_search_format = 'on' if new_search_format else 'off'
 
             if flatten_folders == 'keep':
                 new_flatten_folders = show_obj.flatten_folders
@@ -997,8 +953,7 @@ class MassEditHandler(BaseHandler, ABC):
 
             status, message = edit_show(show=curShow, location=new_show_dir, any_qualities=any_qualities, best_qualities=best_qualities, exceptions_list=[],
                                         default_ep_status=new_default_ep_status, skip_downloaded=new_skip_downloaded, flatten_folders=new_flatten_folders,
-                                        paused=new_paused, sports=new_sports, subtitles=new_subtitles, anime=new_anime, scene=new_scene,
-                                        air_by_date=new_air_by_date, direct_call=True)
+                                        paused=new_paused, search_format=new_search_format, subtitles=new_subtitles, anime=new_anime, direct_call=True)
 
             if status is False:
                 cur_warnings += json_decode(message)['warnings']

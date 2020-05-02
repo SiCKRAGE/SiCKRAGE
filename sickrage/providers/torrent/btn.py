@@ -19,6 +19,7 @@ import uuid
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
+from sickrage.core.common import SearchFormats
 from sickrage.core.helpers import sanitize_scene_name, episode_num, try_int
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.providers import TorrentProvider
@@ -153,12 +154,12 @@ class BTNProvider(TorrentProvider):
         searches = []
 
         show_object = find_show(show_id)
+        if not show_object:
+            return searches
+
         episode_object = show_object.get_episode(season, episode)
 
-        air_by_date = show_object.air_by_date
-        sports = show_object.sports
-
-        if not season_numbering and (air_by_date or sports):
+        if not season_numbering and show_object.search_format in [SearchFormats.AIR_BY_DATE, SearchFormats.SPORTS]:
             date_fmt = '%Y' if mode == 'Season' else '%Y.%m.%d'
             search_name = episode_object.airdate.strftime(date_fmt)
         else:
@@ -184,7 +185,7 @@ class BTNProvider(TorrentProvider):
             searches.append(series_params)
 
         # extend air by date searches to include season numbering
-        if air_by_date and not season_numbering:
+        if show_object.search_format == SearchFormats.AIR_BY_DATE and not season_numbering:
             searches.extend(self._search_params(show_id, season, episode, mode, season_numbering=True))
 
         return searches
@@ -201,7 +202,7 @@ class BTNProvider(TorrentProvider):
 
         try:
             response = self.session.post(self.urls['api'], json=json_rpc, headers={'Content-Type': 'application/json-rpc'}).json()
-            if 'error' in response:
+            if response and 'error' in response:
                 error = response["error"]
                 message = error["message"]
                 code = error["code"]
@@ -213,7 +214,7 @@ class BTNProvider(TorrentProvider):
                     sickrage.app.log.warning('Provider is currently unavailable. Error: {} {}'.format(code, message))
                 else:
                     sickrage.app.log.error('JSON-RPC protocol error while accessing provider. Error: {error!r}'.format(error=error))
-            elif 'result' in response:
+            elif response and 'result' in response:
                 response = response['result']
         except Exception as e:
             sickrage.app.log.warning("Error while accessing provider. Error: {}".format(e))

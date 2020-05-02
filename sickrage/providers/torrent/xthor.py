@@ -26,10 +26,10 @@ from sickrage.providers import TorrentProvider
 
 class XthorProvider(TorrentProvider):
     def __init__(self):
-        super(XthorProvider, self).__init__("Xthor", "https://xthor.to", True)
+        super(XthorProvider, self).__init__("Xthor", "https://xthor.tk", True)
 
         self._urls.update({
-            'search': "https://api.xthor.to"
+            'search': "https://api.xthor.tk"
         })
 
         self.passkey = None
@@ -73,11 +73,18 @@ class XthorProvider(TorrentProvider):
                     sickrage.app.log.debug("Search string: %s " % search_string)
                     search_params['search'] = search_string
 
-                try:
-                    data = self.session.get(self.urls['search'], params=search_params).json()
-                    results += self.parse(data, mode)
-                except Exception:
+                resp = self.session.get(self.urls['search'], params=search_params)
+                if not resp or not resp.content:
                     sickrage.app.log.debug("No data returned from provider")
+                    continue
+
+                try:
+                    data = resp.json()
+                except ValueError:
+                    sickrage.app.log.debug("No data returned from provider")
+                    continue
+
+                results += self.parse(data, mode)
 
         return results
 

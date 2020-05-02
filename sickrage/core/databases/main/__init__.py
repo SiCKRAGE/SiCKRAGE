@@ -22,6 +22,7 @@ from sqlalchemy.ext.declarative import as_declarative
 from sqlalchemy.orm import relationship
 
 from sickrage.core import common
+from sickrage.core.common import SearchFormats
 from sickrage.core.databases import SRDatabase, SRDatabaseBase
 
 
@@ -31,7 +32,7 @@ class MainDBBase(SRDatabaseBase):
 
 class MainDB(SRDatabase):
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
-        super(MainDB, self).__init__('main', 11, db_type, db_prefix, db_host, db_port, db_username, db_password)
+        super(MainDB, self).__init__('main', 12, db_type, db_prefix, db_host, db_port, db_username, db_password)
         MainDBBase.metadata.create_all(self.engine)
         for model in MainDBBase._decl_class_registry.values():
             if hasattr(model, '__tablename__'):
@@ -54,10 +55,8 @@ class MainDB(SRDatabase):
         status = Column(Text, default='')
         flatten_folders = Column(Boolean, default=0)
         paused = Column(Boolean, default=0)
-        air_by_date = Column(Boolean, default=0)
+        search_format = Column(Integer, default=SearchFormats.STANDARD)
         anime = Column(Boolean, default=0)
-        scene = Column(Boolean, default=0)
-        sports = Column(Boolean, default=0)
         subtitles = Column(Boolean, default=0)
         dvdorder = Column(Boolean, default=0)
         skip_downloaded = Column(Boolean, default=0)

@@ -19,6 +19,7 @@ from urllib.parse import urlencode
 import sickrage
 from sickrage.core import MainDB
 from sickrage.core.caches.tv_cache import TVCache
+from sickrage.core.common import SearchFormats
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import try_int
 from sickrage.core.tv.show.helpers import find_show
@@ -65,12 +66,12 @@ class HDBitsProvider(TorrentProvider):
         show_object = find_show(show_id)
         episode_object = show_object.get_episode(season, episode)
 
-        if show_object.air_by_date or show_object.sports:
+        if show_object.search_format in [SearchFormats.AIR_BY_DATE, SearchFormats.SPORTS]:
             post_data['tvdb'] = {
                 'id': show_id,
                 'season': str(episode_object.airdate)[:7],
             }
-        elif show_object.anime:
+        elif show_object.search_format == SearchFormats.ANIME:
             post_data['tvdb'] = {
                 'id': show_id,
                 'season': "%d" % episode_object.scene_absolute_number,
@@ -94,17 +95,17 @@ class HDBitsProvider(TorrentProvider):
         show_object = find_show(show_id)
         episode_object = show_object.get_episode(season, episode)
 
-        if show_object.air_by_date:
+        if show_object.search_format == SearchFormats.AIR_BY_DATE:
             post_data['tvdb'] = {
                 'id': show_id,
                 'episode': str(episode_object.airdate).replace('-', '|')
             }
-        elif show_object.sports:
+        elif show_object.search_format == SearchFormats.SPORTS:
             post_data['tvdb'] = {
                 'id': show_id,
                 'episode': episode_object.airdate.strftime('%b')
             }
-        elif show_object.anime:
+        elif show_object.search_format == SearchFormats.ANIME:
             post_data['tvdb'] = {
                 'id': show_id,
                 'episode': "%i" % int(episode_object.scene_absolute_number)
@@ -134,17 +135,24 @@ class HDBitsProvider(TorrentProvider):
 
         self._check_auth()
 
+        resp = self.session.post(self.urls['search'], json=search_strings)
+        if not resp or resp.content:
+            sickrage.app.log.warning("Resulting JSON from provider isn't correct, not parsing it")
+            return results
+
         try:
-            parsed_json = self.session.post(self.urls['search'], json=search_strings).json()
-        except Exception:
-            return []
+            parsed_json = resp.json()
+        except ValueError:
+            sickrage.app.log.warning("Resulting JSON from provider isn't correct, not parsing it")
+            return results
 
         if self._check_auth_from_data(parsed_json):
-            if parsed_json and 'data' in parsed_json:
-                for item in parsed_json['data']:
-                    results.append(item)
-            else:
+            if not parsed_json or 'data' not in parsed_json:
                 sickrage.app.log.warning("Resulting JSON from provider isn't correct, not parsing it")
+                return results
+
+            for item in parsed_json['data']:
+                results.append(item)
 
         # sort by number of seeders
         results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
@@ -162,12 +170,16 @@ class HDBitsCache(TVCache):
             'category': [2],
         }
 
-        try:
-            resp = self.provider.session.post(self.provider.urls['rss'], json=post_data).json()
+        resp = self.provider.session.post(self.provider.urls['rss'], json=post_data)
+        if not resp or not resp.content:
+            return results
 
-            if self.provider._check_auth_from_data(resp):
-                results = resp['data']
-        except Exception:
-            pass
+        try:
+            parsed_json = resp.json()
+        except ValueError:
+            return results
+
+        if self.provider._check_auth_from_data(parsed_json):
+            results = parsed_json['data']
 
         return {'entries': results}

@@ -18,6 +18,9 @@ class APIError(Exception):
     def __unicode__(self):
         return self.__class__.__name__ + ': ' + self.message
 
+    def __repr__(self):
+        return self.__unicode__()
+
 
 class APIResourceDoesNotExist(APIError):
     """Custom exception when resource is not found."""

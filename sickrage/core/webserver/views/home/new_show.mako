@@ -39,7 +39,7 @@
                 </div>
 
                 <form class="needs-validation" id="addShowForm" method="post"
-                      action="${srWebRoot}/home/addShows/addNewShow">
+                      action="${srWebRoot}/home/addShows/addNewShow" novalidate>
 
                     % if use_provided_info:
                         <input type="hidden" id="indexerLang" name="indexerLang"

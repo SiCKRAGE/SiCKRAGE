@@ -31,7 +31,8 @@ from mutagen.mp4 import MP4, MP4StreamInfoError
 from sqlalchemy import orm
 
 import sickrage
-from sickrage.core.common import NAMING_EXTEND, NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
+from sickrage.core.common import NAMING_EXTEND, NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT, \
+    SearchFormats
 from sickrage.core.common import Quality, SKIPPED, UNKNOWN, UNAIRED, statusStrings
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import EpisodeNotFoundException, EpisodeDeletedException
@@ -715,9 +716,9 @@ class TVEpisode(object):
         Returns: A string representing the episode's name and season/ep numbers
         """
 
-        if self.show.anime and not self.show.scene:
+        if self.show.search_format == SearchFormats.ANIME:
             return self._format_pattern('%SN - %AB - %EN')
-        elif self.show.air_by_date:
+        elif self.show.search_format == SearchFormats.AIR_BY_DATE:
             return self._format_pattern('%SN - %AD - %EN')
 
         return self._format_pattern('%SN - %Sx%0E - %EN')
@@ -1066,15 +1067,12 @@ class TVEpisode(object):
 
         # if there's no release name then replace it with a reasonable facsimile
         if not replace_map['%RN']:
-
-            if self.show.air_by_date or self.show.sports:
+            if self.show.search_format in [SearchFormats.AIR_BY_DATE, SearchFormats.SPORTS]:
                 result_name = result_name.replace('%RN', '%S.N.%A.D.%E.N-' + replace_map['%RG'])
                 result_name = result_name.replace('%rn', '%s.n.%A.D.%e.n-' + replace_map['%RG'].lower())
-
             elif anime_type != 3:
                 result_name = result_name.replace('%RN', '%S.N.%AB.%E.N-' + replace_map['%RG'])
                 result_name = result_name.replace('%rn', '%s.n.%ab.%e.n-' + replace_map['%RG'].lower())
-
             else:
                 result_name = result_name.replace('%RN', '%S.N.S%0SE%0E.%E.N-' + replace_map['%RG'])
                 result_name = result_name.replace('%rn', '%s.n.s%0se%0e.%e.n-' + replace_map['%RG'].lower())
@@ -1208,11 +1206,11 @@ class TVEpisode(object):
 
         if pattern is None:
             # we only use ABD if it's enabled, this is an ABD show, AND this is not a multi-ep
-            if self.show.air_by_date and sickrage.app.config.naming_custom_abd and not self.related_episodes:
+            if self.show.search_format == SearchFormats.AIR_BY_DATE and sickrage.app.config.naming_custom_abd and not self.related_episodes:
                 pattern = sickrage.app.config.naming_abd_pattern
-            elif self.show.sports and sickrage.app.config.naming_custom_sports and not self.related_episodes:
+            elif self.show.search_format == SearchFormats.SPORTS and sickrage.app.config.naming_custom_sports and not self.related_episodes:
                 pattern = sickrage.app.config.naming_sports_pattern
-            elif self.show.anime and sickrage.app.config.naming_custom_anime:
+            elif self.show.search_format == SearchFormats.ANIME and sickrage.app.config.naming_custom_anime:
                 pattern = sickrage.app.config.naming_anime_pattern
             else:
                 pattern = sickrage.app.config.naming_pattern
@@ -1229,11 +1227,11 @@ class TVEpisode(object):
 
         if pattern is None:
             # we only use ABD if it's enabled, this is an ABD show, AND this is not a multi-ep
-            if self.show.air_by_date and sickrage.app.config.naming_custom_abd and not self.related_episodes:
+            if self.show.search_format == SearchFormats.AIR_BY_DATE and sickrage.app.config.naming_custom_abd and not self.related_episodes:
                 pattern = sickrage.app.config.naming_abd_pattern
-            elif self.show.sports and sickrage.app.config.naming_custom_sports and not self.related_episodes:
+            elif self.show.search_format == SearchFormats.SPORTS and sickrage.app.config.naming_custom_sports and not self.related_episodes:
                 pattern = sickrage.app.config.naming_sports_pattern
-            elif self.show.anime and sickrage.app.config.naming_custom_anime:
+            elif self.show.search_format == SearchFormats.ANIME and sickrage.app.config.naming_custom_anime:
                 pattern = sickrage.app.config.naming_anime_pattern
             else:
                 pattern = sickrage.app.config.naming_pattern

@@ -1,7 +1,7 @@
 <%
     import sickrage
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings, statusStrings
+    from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings, statusStrings, SearchFormats
 %>
 <%namespace file="../includes/quality_chooser.mako" import="QualityChooser"/>
 % if sickrage.app.config.use_subtitles:
@@ -38,7 +38,7 @@
     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
         <label>
             <input type="checkbox" class="toggle color-primary is-material" name="flatten_folders"
-                   id="flatten_folders" ${('', 'checked')[bool(sickrage.app.config.flatten_folders_default)]}/>
+                   id="flatten_folders" ${('', 'checked')[bool(not sickrage.app.config.flatten_folders_default)]}/>
             ${_('group episodes by season folder (uncheck to store in a single folder)')}
         </label>
     </div>
@@ -57,42 +57,6 @@
         </div>
     </div>
 % endif
-<div class="row field-pair">
-    <div class="col-lg-3 col-md-4 col-sm-5">
-        <label class="component-title">${_('Scene Numbering')}</label>
-    </div>
-    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-        <label>
-            <input type="checkbox" class="toggle color-primary is-material" name="scene"
-                   id="scene" ${('', 'checked')[bool(sickrage.app.config.scene_default)]} />
-            ${_('search by scene numbering (uncheck to search by indexer numbering)')}
-        </label>
-    </div>
-</div>
-<div class="row field-pair">
-    <div class="col-lg-3 col-md-4 col-sm-5">
-        <label class="component-title">${_('Air By Date')}</label>
-    </div>
-    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-        <label>
-            <input type="checkbox" class="toggle color-primary is-material" id="air_by_date"
-                   name="air_by_date"/>
-            ${_('check if the show is released as Show.03.02.2010 rather than Show.S02E03')}
-        </label>
-    </div>
-</div>
-<div class="row field-pair">
-    <div class="col-lg-3 col-md-4 col-sm-5">
-        <label class="component-title">${_('Sports')}</label>
-    </div>
-    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-        <label>
-            <input type="checkbox" class="toggle color-primary is-material" id="sports"
-                   name="sports"/>
-            ${_('check if the show is a sporting or MMA event released as Show.03.02.2010 rather than Show.S02E03')}
-        </label>
-    </div>
-</div>
 <div class="row field-pair">
     <div class="col-lg-3 col-md-4 col-sm-5">
         <label class="component-title">${_('DVD Order')}</label>
@@ -129,6 +93,26 @@
         </label>
     </div>
 </div>
+<div class="row field-pair">
+    <div class="col-lg-3 col-md-4 col-sm-5">
+        <label class="component-title">${_('Search Format')}</label>
+    </div>
+    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <span class="fas fa-list"></span>
+                </span>
+            </div>
+            <select id="search_format" name="search_format" class="form-control">
+                % for search_format, search_format_string in SearchFormats.search_format_strings.items():
+                    <option value="${search_format}" ${('', 'selected')[sickrage.app.config.search_format_default == search_format]}>${search_format_string}</option>
+                % endfor
+            </select>
+        </div>
+    </div>
+</div>
+<br/>
 <div class="row field-pair">
     <div class="col-lg-3 col-md-4 col-sm-5">
         <label class="component-title">${_('Status for previously aired episodes')}</label>

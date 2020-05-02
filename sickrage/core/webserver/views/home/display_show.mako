@@ -8,7 +8,7 @@
     import sickrage
     from sickrage.subtitles import Subtitles
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, FAILED, DOWNLOADED
-    from sickrage.core.common import Quality, qualityPresets, statusStrings, Overview
+    from sickrage.core.common import Quality, qualityPresets, statusStrings, Overview, SearchFormats
     from sickrage.core.helpers import anon_url, srdatetime, pretty_file_size, get_size
     from sickrage.core.media.util import showImage
     from sickrage.indexers import IndexerApi
@@ -281,6 +281,11 @@
                                     <td>${show.search_delay} day(s)</td>
                                 </tr>
 
+                                <tr>
+                                    <td class="show-legend">${_('Search Format:')}</td>
+                                    <td>${SearchFormats.search_format_strings[show.search_format]}</td>
+                                </tr>
+
                                 % if show.rls_require_words:
                                     <tr>
                                         <td class="show-legend">${_('Required Words:')}</td>
@@ -331,13 +336,13 @@
                                             <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(show.subtitles)]}"></i>
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td class="show-legend">${_('Subtitles Metadata:')}</td>
+                                        <td>
+                                            <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(show.sub_use_sr_metadata)]}"></i>
+                                        </td>
+                                    </tr>
                                 % endif
-                                <tr>
-                                    <td class="show-legend">${_('Subtitles Metadata:')}</td>
-                                    <td>
-                                        <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(show.sub_use_sr_metadata)]}"></i>
-                                    </td>
-                                </tr>
                                 <tr>
                                     <td class="show-legend">${_('Season Folders:')}</td>
                                     <td>
@@ -351,18 +356,6 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="show-legend">${_('Air-by-Date:')}</td>
-                                    <td>
-                                        <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(show.air_by_date)]}"></i>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="show-legend">${_('Sports:')}</td>
-                                    <td>
-                                        <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(show.is_sports)]}"></i>
-                                    </td>
-                                </tr>
-                                <tr>
                                     <td class="show-legend">${_('Anime:')}</td>
                                     <td>
                                         <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(show.is_anime)]}"></i>
@@ -372,12 +365,6 @@
                                     <td class="show-legend">${_('DVD Order:')}</td>
                                     <td>
                                         <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(show.dvdorder)]}"></i>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="show-legend">${_('Scene Numbering:')}</td>
-                                    <td>
-                                        <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(show.scene)]}"></i>
                                     </td>
                                 </tr>
                                 <tr>
@@ -483,13 +470,6 @@
                 if not sickrage.app.config.display_show_specials and int(episode_object.season) == 0:
                     continue
 
-                scene = False
-                scene_anime = False
-                if not show.air_by_date and not show.is_sports and not show.is_anime and show.is_scene:
-                                scene = True
-                elif not show.air_by_date and not show.is_sports and show.is_anime and show.is_scene:
-                                scene_anime = True
-
                 (dfltSeas, dfltEpis, dfltAbsolute) = (0, 0, 0)
                 if (episode_object.season, episode_object.episode) in xem_numbering:
                                 (dfltSeas, dfltEpis) = xem_numbering[(episode_object.season, episode_object.episode)]
@@ -562,13 +542,13 @@
                     <th data-sorter="false" class="col-metadata">${_('TBN')}</th>
                     <th data-sorter="false" class="col-ep episode">${_('Episode')}</th>
                     <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(show.is_anime)]}>${_('Absolute')}</th>
-                    <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(scene)]}>${_('Scene')}</th>
-                    <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(scene_anime)]}>${_('Scene Absolute')}</th>
                     <th data-sorter="false" class="col-name">${_('Name')}</th>
                     <th data-sorter="false" class="col-ep columnSelector-false size">${_('Size')}</th>
                     <th data-sorter="false" class="col-airdate">${_('Airdate')}</th>
                     <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(sickrage.app.config.download_url)]}>${_('Download')}</th>
-                    <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(sickrage.app.config.use_subtitles)]}>${_('Subtitles')}</th>
+                    % if sickrage.app.config.use_subtitles:
+                        <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(sickrage.app.config.use_subtitles)]}>${_('Subtitles')}</th>
+                    % endif
                     <th data-sorter="false" class="col-status">${_('Status')}</th>
                     % if len(sickrage.app.search_providers.enabled()):
                         <th data-sorter="false" class="col-search">${_('Search')}</th>

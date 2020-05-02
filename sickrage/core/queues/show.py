@@ -124,7 +124,7 @@ class ShowQueue(SRQueue):
         sickrage.app.io_loop.add_callback(self.put, QueueItemSubtitle(indexer_id))
 
     def add_show(self, indexer, indexer_id, showDir, default_status=None, quality=None, flatten_folders=None, lang=None, subtitles=None,
-                 sub_use_sr_metadata=None, anime=None, scene=None, sports=None, air_by_date=None, dvdorder=None, paused=None, blacklist=None, whitelist=None,
+                 sub_use_sr_metadata=None, anime=None, search_format=None, dvdorder=None, paused=None, blacklist=None, whitelist=None,
                  default_status_after=None, skip_downloaded=None):
 
         if lang is None:
@@ -135,15 +135,13 @@ class ShowQueue(SRQueue):
                                                                  showDir=showDir,
                                                                  default_status=default_status,
                                                                  quality=quality,
-                                                                 flatten_folders=flatten_folders,
+                                                                 flatten_folders=not flatten_folders,
                                                                  lang=lang,
                                                                  subtitles=subtitles,
                                                                  sub_use_sr_metadata=sub_use_sr_metadata,
                                                                  anime=anime,
-                                                                 scene=scene,
-                                                                 sports=sports,
                                                                  dvdorder=dvdorder,
-                                                                 air_by_date=air_by_date,
+                                                                 search_format=search_format,
                                                                  paused=paused,
                                                                  blacklist=blacklist,
                                                                  whitelist=whitelist,
@@ -218,8 +216,8 @@ class ShowQueueItem(SRQueueItem):
 
 
 class QueueItemAdd(ShowQueueItem):
-    def __init__(self, indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang, subtitles, sub_use_sr_metadata, anime, scene, sports,
-                 dvdorder, air_by_date, paused, blacklist, whitelist, default_status_after, skip_downloaded):
+    def __init__(self, indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang, subtitles, sub_use_sr_metadata, anime,
+                 dvdorder, search_format, paused, blacklist, whitelist, default_status_after, skip_downloaded):
         super(QueueItemAdd, self).__init__(None, ShowQueueActions.ADD)
 
         self.indexer = indexer
@@ -232,10 +230,8 @@ class QueueItemAdd(ShowQueueItem):
         self.subtitles = subtitles
         self.sub_use_sr_metadata = sub_use_sr_metadata
         self.anime = anime
-        self.scene = scene
-        self.sports = sports
+        self.search_format = search_format
         self.dvdorder = dvdorder
-        self.air_by_date = air_by_date
         self.paused = paused
         self.blacklist = blacklist
         self.whitelist = whitelist
@@ -342,10 +338,8 @@ class QueueItemAdd(ShowQueueItem):
             show_obj.quality = self.quality or sickrage.app.config.quality_default
             show_obj.flatten_folders = self.flatten_folders or sickrage.app.config.flatten_folders_default
             show_obj.anime = self.anime or sickrage.app.config.anime_default
-            show_obj.scene = self.scene or sickrage.app.config.scene_default
-            show_obj.sports = self.sports
             show_obj.dvdorder = self.dvdorder
-            show_obj.air_by_date = self.air_by_date
+            show_obj.search_format = self.search_format or sickrage.app.config.search_format_default
             show_obj.skip_downloaded = self.skip_downloaded or sickrage.app.config.skip_downloaded_default
             show_obj.paused = self.paused
 

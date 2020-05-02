@@ -18,12 +18,14 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
+import collections
 import os
-import ssl
+import traceback
 from time import sleep
 from urllib.parse import urlparse
 
 import certifi
+import errno
 import requests
 from cachecontrol import CacheControlAdapter
 from cloudscraper import CloudScraper
@@ -85,31 +87,41 @@ class WebSession(Session):
             response = super(WebSession, self).request(method, url, allow_redirects=False)
             url = self.get_redirect_target(response) or url
 
-        for i in range(3):
+        for i in range(5):
+            resp = None
+
             try:
-                response = super(WebSession, self).request(method, url, verify=self._get_ssl_cert(verify), *args, **kwargs)
+                resp = super(WebSession, self).request(method, url, verify=self._get_ssl_cert(verify), *args, **kwargs)
 
                 # check of cloudflare handling is required
                 if self.cloudflare:
-                    response = WebHelpers.cloudflare(self, response, **kwargs)
+                    resp = WebHelpers.cloudflare(self, resp, **kwargs)
 
-                # check web response for errors
-                response.raise_for_status()
+                # check web response for exceptions
+                resp.raise_for_status()
 
-                return response
-            except requests.exceptions.SSLError as e:
-                if ssl.OPENSSL_VERSION_INFO < (1, 0, 1, 5):
-                    sickrage.app.log.info(
-                        "SSL Error requesting url: '{}' You have {}, try upgrading OpenSSL to 1.0.1e+".format(e.request.url, ssl.OPENSSL_VERSION)
-                    )
+                return resp
+            except requests.exceptions.HTTPError as e:
+                sickrage.app.log.debug('The response returned a non-200 response while requesting url {url} Error: {err_msg!r}'.format(url=url, err_msg=e))
+                return resp or e.response
+            except requests.exceptions.ConnectionError as e:
+                if i > 3:
+                    sickrage.app.log.debug('Error connecting to url {url} Error: {err_msg}'.format(url=url, err_msg=e))
+                    return resp or e.response
 
-                if sickrage.app.config.ssl_verify:
-                    sickrage.app.log.info(
-                        "SSL Error requesting url: '{}', try disabling cert verification in advanced settings".format(e.request.url)
-                    )
-                return
-            except ConnectionError:
+                # sleep 1s before retrying request
                 sleep(1)
+            except requests.exceptions.RequestException as e:
+                sickrage.app.log.debug('Error requesting url {url} Error: {err_msg}'.format(url=url, err_msg=e))
+                return resp or e.response
+            except Exception as e:
+                if (isinstance(e, collections.Iterable) and 'ECONNRESET' in e) or (getattr(e, 'errno', None) == errno.ECONNRESET):
+                    sickrage.app.log.warning('Connection reset by peer accessing url {url} Error: {err_msg}'.format(url=url, err_msg=e))
+                else:
+                    sickrage.app.log.info('Unknown exception in url {url} Error: {err_msg}'.format(url=url, err_msg=e))
+                    sickrage.app.log.debug(traceback.format_exc())
+
+                return None
 
     def download(self, url, filename, **kwargs):
         try:

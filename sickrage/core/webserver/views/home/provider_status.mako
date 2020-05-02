@@ -2,6 +2,8 @@
 <%!
     import requests
     import sickrage
+
+    from sickrage.core.helpers import anon_url
 %>
 <%block name="content">
     <div class="row">
@@ -22,24 +24,32 @@
                             </thead>
                             <tbody>
                                 % for providerID, providerObj in sickrage.app.search_providers.sort().items():
-                                    <% providerURL = providerObj.urls['base_url'] %>
-                                    <%
-                                        try:
+                                    % if providerObj.type not in ['torrentrss', 'newznab'] and providerObj.id not in ['bitcannon']:
+                                        <% providerURL = providerObj.urls['base_url'] %>
+                                        <%
                                             online = True
-                                            if 'localhost' not in providerURL:
-                                                online = bool(sickrage.app.api.provider.get_status(providerID)['data']['status'])
-                                        except Exception:
-                                            online = False
-                                    %>
-                                    <tr>
-                                        <td>${providerObj.name}</td>
-                                        <td>${providerURL}</td>
-                                        % if online:
-                                            <td align="center" style="background-color:green">${_('ONLINE')}</td>
-                                        % else:
-                                            <td align="center" style="background-color:red">${_('OFFLINE')}</td>
-                                        % endif
-                                    </tr>
+                                            resp = sickrage.app.api.provider.get_status(providerID)
+                                            if resp and 'data' in resp:
+                                                online = bool(resp['data']['status'])
+                                            else:
+                                                online = False
+                                        %>
+
+                                        <tr>
+                                            <td>${providerObj.name}</td>
+                                            <td>
+                                                <a href="${anon_url(providerURL)}" rel="noreferrer"
+                                                   onclick="window.open(this.href, '_blank'); return false;">
+                                                    ${providerURL}
+                                                </a>
+                                            </td>
+                                            % if online:
+                                                <td align="center" style="background-color:green">${_('ONLINE')}</td>
+                                            % else:
+                                                <td align="center" style="background-color:red">${_('OFFLINE')}</td>
+                                            % endif
+                                        </tr>
+                                    % endif
                                 % endfor
                             </tbody>
                         </table>

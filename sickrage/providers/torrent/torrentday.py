@@ -85,14 +85,20 @@ class TorrentDayProvider(TorrentProvider):
                     sickrage.app.log.debug("Search string: %s " % search_string)
 
                 search_string = '+'.join(search_string.split())
+                search_params = dict({'q': search_string}, **self.categories[mode])
 
-                params = dict({'q': search_string}, **self.categories[mode])
+                resp = self.session.get(self.urls['search'], params=search_params)
+                if not resp or not resp.content:
+                    sickrage.app.log.debug("No data returned from provider")
+                    continue
 
                 try:
-                    data = self.session.get(self.urls['search'], params=params).json()
-                    results += self.parse(data, mode)
-                except Exception:
+                    data = resp.json()
+                except ValueError:
                     sickrage.app.log.debug("No data returned from provider")
+                    continue
+
+                results += self.parse(data, mode)
 
         return results
 

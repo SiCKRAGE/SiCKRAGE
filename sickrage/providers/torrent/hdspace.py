@@ -97,16 +97,16 @@ class HDSpaceProvider(TorrentProvider):
 
                 if mode != 'RSS':
                     sickrage.app.log.debug("Search string: %s" % search_string)
-                    searchURL = self.urls['search'] % (quote_plus(search_string.replace('.', ' ')),)
+                    search_url = self.urls['search'] % (quote_plus(search_string.replace('.', ' ')),)
                 else:
-                    searchURL = self.urls['search'] % ''
+                    search_url = self.urls['search'] % ''
 
-                try:
-                    data = self.session.get(searchURL).text
-                    results += self.parse(data, mode)
-                except Exception:
+                resp = self.session.get(search_url)
+                if not resp or not resp.text:
                     sickrage.app.log.debug("No data returned from provider")
                     continue
+
+                results += self.parse(resp.text, mode)
 
         return results
 

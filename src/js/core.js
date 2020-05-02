@@ -612,18 +612,6 @@ $(document).ready(function ($) {
                 });
 
                 SICKRAGE.text_viewer();
-
-                // Custom form validation with Bootstrap 4
-                let forms = document.getElementsByClassName('needs-validation');
-                SICKRAGE.forms_validation = Array.prototype.filter.call(forms, function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (form.checkValidity() === false) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                        }
-                        form.classList.add('was-validated');
-                    }, false);
-                });
             }
         },
 
@@ -2689,9 +2677,19 @@ $(document).ready(function ($) {
 
             new_show: {
                 init: function () {
-                    var navListItems = $('div.setup-panel div a'),
+                    const navListItems = $('div.setup-panel div a'),
                         allWells = $('.setup-content'),
                         allNextBtn = $('.nextBtn');
+
+                    // add new show form validation
+                    const form = document.getElementById('addShowForm');
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
 
                     allWells.hide();
 
@@ -2890,7 +2888,7 @@ $(document).ready(function ($) {
                         defaultFlattenFolders: $('#flatten_folders').prop('checked'),
                         subtitles: $('#subtitles').prop('checked'),
                         anime: $('#anime').prop('checked'),
-                        scene: $('#scene').prop('checked'),
+                        search_format: $('#search_format').val(),
                         defaultStatusAfter: $('#statusSelectAfter').val(),
                         skip_downloaded: $('#skip_downloaded').prop('checked'),
                         add_show_year: $('#add_show_year').prop('checked')
@@ -2901,7 +2899,7 @@ $(document).ready(function ($) {
                     SICKRAGE.notify('info', gt('Saved Defaults'), gt('Your "add show" defaults have been set to your current selections.'));
                 });
 
-                $('#statusSelect, #qualityPreset, #flatten_folders, #anyQualities, #bestQualities, #subtitles, #scene, #anime, #statusSelectAfter, #skip_downloaded, #add_show_year').change(function () {
+                $('#statusSelect, #qualityPreset, #flatten_folders, #anyQualities, #bestQualities, #subtitles, #search_format, #anime, #statusSelectAfter, #skip_downloaded, #add_show_year').change(function () {
                     $('#saveDefaultsButton').attr('disabled', false);
                 });
             },
@@ -2971,11 +2969,21 @@ $(document).ready(function ($) {
                 $.backstretch(SICKRAGE.srWebRoot + '/images/backdrops/config.jpg');
                 $('.backstretch').css("opacity", SICKRAGE.getMeta('sickrage.FANART_BACKGROUND_OPACITY')).fadeIn("500");
 
+                // Config form validation
+                const form = document.getElementById('configForm');
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+
                 $('#configForm').ajaxForm({
                     beforeSubmit: function () {
-                        if (SICKRAGE.forms_validation === false) {
-                            return false
-                        }
+                        // if (SICKRAGE.forms_validation === false) {
+                        //     return false
+                        // }
 
                         $('.config_submitter .config_submitter_refresh').each(function () {
                             $(this).attr("disabled", "disabled");
@@ -3339,13 +3347,14 @@ $(document).ready(function ($) {
                     $('#sabnzbd_settings').hide();
                     $('#nzbget_settings').hide();
                     $('#download_station_settings').hide();
-                    $('#nzbget_host').prop('required', false);
-                    $('#sab_host').prop('required', false);
-                    $('#syno_dsm_host').prop('required', false);
                     $('#testSABnzbd').hide();
                     $('#testSABnzbd_result').hide();
                     $('#testSynologyDSM').hide();
                     $('#testSynologyDSM_result').hide();
+
+                    $('#nzbget_host').prop('required', false);
+                    $('#sab_host').prop('required', false);
+                    $('#syno_dsm_host').prop('required', false);
 
                     var selectedProvider = $('#nzb_method').val();
 
@@ -3366,12 +3375,16 @@ $(document).ready(function ($) {
                         }
                     } else {
                         $('#blackhole_settings').show();
+                        $('#nzbget_host').prop('required', false);
+                        $('#sab_host').prop('required', false);
+                        $('#syno_dsm_host').prop('required', false);
                     }
                 },
 
                 torrentMethodHandler: function () {
                     $('#options_torrent_clients').hide();
                     $('#options_torrent_blackhole').hide();
+                    $('#torrent_host').prop('required', false);
 
                     var selectedProvider = $('#torrent_method').val(),
                         host = ' host:port',
@@ -3498,8 +3511,6 @@ $(document).ready(function ($) {
                         $('#rpcurl_title').text(client + rpcurl);
 
                         optionPanel = '#options_torrent_clients';
-                    } else {
-                        $('#torrent_host').prop('required', false);
                     }
 
                     $(optionPanel).show();

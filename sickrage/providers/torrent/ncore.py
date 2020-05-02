@@ -90,11 +90,18 @@ class NcoreProvider(TorrentProvider):
                 if mode != "RSS":
                     sickrage.app.log.debug("Search string: {0}".format(search_string))
 
-                try:
-                    data = self.session.get(self.urls['search'] % search_string).json()
-                    results += self.parse(data, mode)
-                except Exception:
+                resp = self.session.get(self.urls['search'] % search_string)
+                if not resp or not resp.content:
                     sickrage.app.log.debug("No data returned from provider")
+                    continue
+
+                try:
+                    data = resp.json()
+                except ValueError:
+                    sickrage.app.log.debug("No data returned from provider")
+                    continue
+
+                results += self.parse(data, mode)
 
         return results
 

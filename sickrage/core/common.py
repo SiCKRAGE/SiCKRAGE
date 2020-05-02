@@ -19,15 +19,14 @@
 
 
 import operator
+import pathlib
 import re
 from collections import UserDict
 from functools import reduce
 
-import pathlib
-
 from sickrage.core.helpers.metadata import get_file_metadata, get_resolution
 
-### CPU Presets for sleep timers
+# CPU Presets for sleep timers
 cpu_presets = {
     'HIGH': 0.05,
     'NORMAL': 0.02,
@@ -42,11 +41,11 @@ dateFormat = '%Y-%m-%d'
 dateTimeFormat = '%Y-%m-%d %H:%M:%S'
 timeFormat = '%A %I:%M %p'
 
-### Other constants
+# Other constants
 MULTI_EP_RESULT = -1
 SEASON_RESULT = -2
 
-### Episode statuses
+# Episode statuses
 UNKNOWN = -1  # should never happen
 UNAIRED = 1  # episodes that haven't aired yet
 SNATCHED = 2  # qualified with quality
@@ -76,7 +75,24 @@ multiEpStrings = {NAMING_REPEAT: _("Repeat"),
                   NAMING_LIMITED_EXTEND_E_PREFIXED: _("Extend (Limited, E-prefixed)")}
 
 
-# pylint: disable=W0232
+class SearchFormats(object):
+    STANDARD = 1
+    AIR_BY_DATE = 2
+    ANIME = 3
+    SPORTS = 4
+    SCENE = 5
+    COLLECTION = 6
+
+    search_format_strings = {
+        STANDARD: 'Standard (Show.S01E01)',
+        AIR_BY_DATE: 'Air By Date (Show.2010.03.02)',
+        ANIME: 'Anime (Show.265)',
+        SPORTS: 'Sports (Show.03.02.2010)',
+        SCENE: 'Scene Numbering (Show.S01E01)',
+        COLLECTION: 'Collection (Show.Series.1.1of10)'
+    }
+
+
 class Quality(object):
     NONE = 0  # 0
     SDTV = 1  # 1

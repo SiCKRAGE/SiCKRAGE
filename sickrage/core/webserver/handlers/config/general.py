@@ -81,7 +81,7 @@ class SaveAddShowDefaultsHandler(BaseHandler, ABC):
         default_flatten_folders = self.get_argument('defaultFlattenFolders', None)
         subtitles = self.get_argument('subtitles', None)
         anime = self.get_argument('anime', None)
-        scene = self.get_argument('scene', None)
+        search_format = self.get_argument('search_format', None)
         default_status_after = self.get_argument('defaultStatusAfter', common.WANTED)
         skip_downloaded = self.get_argument('skip_downloaded', None)
         add_show_year = self.get_argument('add_show_year', None)
@@ -95,11 +95,11 @@ class SaveAddShowDefaultsHandler(BaseHandler, ABC):
         sickrage.app.config.status_default_after = int(default_status_after)
         sickrage.app.config.quality_default = int(new_quality)
 
-        sickrage.app.config.flatten_folders_default = checkbox_to_value(default_flatten_folders)
+        sickrage.app.config.flatten_folders_default = not checkbox_to_value(default_flatten_folders)
         sickrage.app.config.subtitles_default = checkbox_to_value(subtitles)
 
         sickrage.app.config.anime_default = checkbox_to_value(anime)
-        sickrage.app.config.scene_default = checkbox_to_value(scene)
+        sickrage.app.config.search_format_default = int(search_format)
         sickrage.app.config.skip_downloaded_default = checkbox_to_value(skip_downloaded)
         sickrage.app.config.add_show_year_default = checkbox_to_value(add_show_year)
 

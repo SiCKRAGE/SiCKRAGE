@@ -37,7 +37,7 @@ import rarfile
 from configobj import ConfigObj
 
 import sickrage
-from sickrage.core.common import SD, WANTED, SKIPPED, Quality
+from sickrage.core.common import SD, WANTED, SKIPPED, Quality, SearchFormats
 from sickrage.core.helpers import make_dir, generate_secret, auto_type, get_lan_ip, extract_zipfile, try_int, checkbox_to_value, generate_api_key, \
     backup_versioned_file, encryption, move_file
 from sickrage.core.websession import WebSession
@@ -113,7 +113,7 @@ class Config(object):
         self.subtitles_default = False
         self.indexer_default = 0
         self.indexer_timeout = 120
-        self.scene_default = False
+        self.search_format_default = 0
         self.anime_default = False
         self.skip_downloaded_default = False
         self.add_show_year_default = False
@@ -823,7 +823,7 @@ class Config(object):
                 'log_nr': 5,
                 'git_newver': False,
                 'git_reset': True,
-                'scene_default': False,
+                'search_format_default': SearchFormats.STANDARD,
                 'skip_removed_files': False,
                 'status_default_after': WANTED,
                 'last_db_compact': 0,
@@ -1459,7 +1459,7 @@ class Config(object):
         self.indexer_default = self.check_setting_int('General', 'indexer_default')
         self.indexer_timeout = self.check_setting_int('General', 'indexer_timeout')
         self.anime_default = self.check_setting_bool('General', 'anime_default')
-        self.scene_default = self.check_setting_bool('General', 'scene_default')
+        self.search_format_default = self.check_setting_int('General', 'search_format_default')
         self.skip_downloaded_default = self.check_setting_bool('General', 'skip_downloaded_default')
         self.add_show_year_default = self.check_setting_bool('General', 'add_show_year_default')
         self.naming_pattern = self.check_setting_str('General', 'naming_pattern')
@@ -1967,7 +1967,7 @@ class Config(object):
                 'indexer_default': int(self.indexer_default),
                 'indexer_timeout': int(self.indexer_timeout),
                 'anime_default': int(self.anime_default),
-                'scene_default': int(self.scene_default),
+                'search_format_default': int(self.search_format_default),
                 'skip_downloaded_default': int(self.skip_downloaded_default),
                 'add_show_year_default': int(self.add_show_year_default),
                 'enable_upnp': int(self.enable_upnp),

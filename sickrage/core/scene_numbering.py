@@ -25,6 +25,7 @@ import traceback
 from sqlalchemy import orm
 
 import sickrage
+from sickrage.core.common import SearchFormats
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import SiCKRAGETVEpisodeException
 from sickrage.core.tv.show.helpers import find_show
@@ -49,7 +50,7 @@ def get_scene_numbering(indexer_id, indexer, season, episode, fallback_to_xem=Tr
         return season, episode
 
     show_obj = find_show(int(indexer_id))
-    if show_obj and not show_obj.is_scene:
+    if show_obj and not show_obj.search_format == SearchFormats.SCENE:
         return season, episode
 
     result = find_scene_numbering(int(indexer_id), int(indexer), season, episode)
@@ -102,7 +103,7 @@ def get_scene_absolute_numbering(indexer_id, indexer, absolute_number, fallback_
     indexer = int(indexer)
 
     show_obj = find_show(indexer_id)
-    if show_obj and not show_obj.is_scene:
+    if show_obj and not show_obj.search_format == SearchFormats.SCENE:
         return absolute_number
 
     result = find_scene_absolute_numbering(indexer_id, indexer, absolute_number)

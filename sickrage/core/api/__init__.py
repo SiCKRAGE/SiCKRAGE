@@ -1,11 +1,13 @@
+import collections
 import time
+import traceback
 from urllib.parse import urljoin
 
-import certifi
+import errno
+import oauthlib.oauth2
 import requests
 import requests.exceptions
 from keycloak.exceptions import KeycloakClientError
-from oauthlib.oauth2 import MissingTokenError, InvalidClientIdError, TokenExpiredError, InvalidGrantError, OAuth2Token
 from requests_oauthlib import OAuth2Session
 from sqlalchemy import orm
 
@@ -83,7 +85,7 @@ class API(object):
             'refresh_token': value.get('refresh_token'),
             'expires_in': value.get('expires_in'),
             'expires_at': value.get('expires_at', int(time.time() + value.get('expires_in'))),
-            'scope': value.scope if isinstance(value, OAuth2Token) else value.get('scope')
+            'scope': value.scope if isinstance(value, oauthlib.oauth2.OAuth2Token) else value.get('scope')
         }
 
         session = sickrage.app.cache_db.session()
@@ -147,19 +149,22 @@ class API(object):
         return self.request('POST', 'account/private-key', data=dict({'privatekey': privatekey}))
 
     def request(self, method, url, timeout=30, **kwargs):
-        latest_exception = None
-
         if not self.token:
             return
 
-        for i in range(3):
+        url = urljoin(self.api_base, "/".join([self.api_version, url]))
+
+        for i in range(5):
+            resp = None
+
             try:
                 if not self.health:
-                    latest_exception = "SiCKRAGE backend API is currently unreachable ..."
+                    if i > 3:
+                        sickrage.app.log.debug('SiCKRAGE backend API is currently unreachable')
+                        return None
                     continue
 
-                resp = self.session.request(method, urljoin(self.api_base, "/".join([self.api_version, url])), timeout=timeout, verify=False,
-                                            hooks={'response': self.throttle_hook}, **kwargs)
+                resp = self.session.request(method, url, timeout=timeout, verify=False, hooks={'response': self.throttle_hook}, **kwargs)
 
                 resp.raise_for_status()
                 if resp.status_code == 204:
@@ -169,40 +174,53 @@ class API(object):
                     return resp.json()
                 except ValueError:
                     return resp.content
-            except TokenExpiredError:
+            except oauthlib.oauth2.TokenExpiredError:
                 self.refresh_token()
-            except (InvalidClientIdError, MissingTokenError, InvalidGrantError) as e:
-                latest_exception = "Invalid token error, please re-authenticate by logging out then logging back in from web-ui"
-                break
-            except requests.exceptions.ReadTimeout:
+                time.sleep(1)
+            except (oauthlib.oauth2.InvalidClientIdError, oauthlib.oauth2.MissingTokenError, oauthlib.oauth2.InvalidGrantError) as e:
+                sickrage.app.log.warning("Invalid token error, please re-authenticate by logging out then logging back in from web-ui")
+                return resp or e.response
+            except requests.exceptions.ReadTimeout as e:
+                if i > 3:
+                    sickrage.app.log.debug('Error connecting to url {url} Error: {err_msg}'.format(url=url, err_msg=e))
+                    return resp or e.response
+
                 timeout += timeout
+                time.sleep(1)
             except requests.exceptions.HTTPError as e:
                 status_code = e.response.status_code
                 error_message = e.response.text
 
                 if status_code == 403 and "login-pf-page" in error_message:
                     self.refresh_token()
+                    time.sleep(1)
                     continue
 
                 if 'application/json' in e.response.headers.get('content-type', ''):
                     json_data = e.response.json().get('error', {})
                     status_code = json_data.get('status', status_code)
                     error_message = json_data.get('message', error_message)
-                latest_exception = APIError(status=status_code, message=error_message)
+                    e = APIError(status=status_code, message=error_message)
 
-                if 400 <= status_code < 500:
-                    break
+                sickrage.app.log.debug('The response returned a non-200 response while requesting url {url} Error: {err_msg!r}'.format(url=url, err_msg=e))
+                return resp or e.response
+            except requests.exceptions.ConnectionError as e:
+                if i > 3:
+                    sickrage.app.log.debug('Error connecting to url {url} Error: {err_msg}'.format(url=url, err_msg=e))
+                    return resp or e.response
+
+                time.sleep(1)
             except requests.exceptions.RequestException as e:
-                latest_exception = e
-            except ConnectionError:
-                pass
+                sickrage.app.log.debug('Error requesting url {url} Error: {err_msg}'.format(url=url, err_msg=e))
+                return resp or e.response
+            except Exception as e:
+                if (isinstance(e, collections.Iterable) and 'ECONNRESET' in e) or (getattr(e, 'errno', None) == errno.ECONNRESET):
+                    sickrage.app.log.warning('Connection reset by peer accessing url {url} Error: {err_msg}'.format(url=url, err_msg=e))
+                else:
+                    sickrage.app.log.info('Unknown exception in url {url} Error: {err_msg}'.format(url=url, err_msg=e))
+                    sickrage.app.log.debug(traceback.format_exc())
 
-            time.sleep(1)
-
-        if latest_exception:
-            if isinstance(latest_exception, APIError):
-                raise latest_exception
-            sickrage.app.log.warning('{!r}'.format(latest_exception))
+                return None
 
     @staticmethod
     def throttle_hook(response, **kwargs):

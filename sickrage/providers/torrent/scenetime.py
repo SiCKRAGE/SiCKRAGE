@@ -65,11 +65,12 @@ class SceneTimeProvider(TorrentProvider):
                 query = {'sec': 'jax', 'cata': 'yes', 'search': search_string}
                 query.update({"c%s" % i: 1 for i in self.categories})
 
-                try:
-                    data = self.session.post(self.urls['search'], data=query).text
-                    results += self.parse(data, mode)
-                except Exception:
+                resp = self.session.post(self.urls['search'], data=query)
+                if not resp or not resp.text:
                     sickrage.app.log.debug("No data returned from provider")
+                    continue
+
+                results += self.parse(resp.text, mode)
 
         return results
 

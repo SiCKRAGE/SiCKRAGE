@@ -75,11 +75,18 @@ class HD4FreeProvider(TorrentProvider):
                 else:
                     search_params.pop('search', '')
 
-                try:
-                    data = self.session.get(self.urls['search'], params=search_params).json()
-                    results += self.parse(data, mode)
-                except Exception:
+                resp = self.session.get(self.urls['search'], params=search_params)
+                if not resp or not resp.content:
                     sickrage.app.log.debug("No data returned from provider")
+                    continue
+
+                try:
+                    data = resp.json()
+                except ValueError:
+                    sickrage.app.log.debug("No data returned from provider")
+                    continue
+
+                results += self.parse(data, mode)
 
         return results
 

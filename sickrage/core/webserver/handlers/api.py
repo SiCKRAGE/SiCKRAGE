@@ -1770,9 +1770,8 @@ class CMD_Show(ApiCall):
         showDict["show_name"] = showObj.name
         showDict["paused"] = (0, 1)[showObj.paused]
         showDict["subtitles"] = (0, 1)[showObj.subtitles]
-        showDict["air_by_date"] = (0, 1)[showObj.air_by_date]
+        showDict["search_format"] = showObj.search_format
         showDict["flatten_folders"] = (0, 1)[showObj.flatten_folders]
-        showDict["sports"] = (0, 1)[showObj.sports]
         showDict["anime"] = (0, 1)[showObj.anime]
         showDict["airs"] = str(showObj.airs).replace('am', ' AM').replace('pm', ' PM').replace('  ', ' ')
         showDict["dvdorder"] = (0, 1)[showObj.dvdorder]
@@ -1787,7 +1786,6 @@ class CMD_Show(ApiCall):
         else:
             showDict["rls_ignore_words"] = []
 
-        showDict["scene"] = (0, 1)[showObj.scene]
         showDict["skip_downloaded"] = (0, 1)[showObj.skip_downloaded]
 
         showDict["indexerid"] = showObj.indexer_id
@@ -1801,8 +1799,7 @@ class CMD_Show(ApiCall):
 
         if try_int(showObj.airs_next, 1) > 693595:
             dtEpisodeAirs = srdatetime.SRDateTime(
-                sickrage.app.tz_updater.parse_date_time(showObj.airs_next, showDict['airs'], showDict['network']),
-                convert=True).dt
+                sickrage.app.tz_updater.parse_date_time(showObj.airs_next, showDict['airs'], showDict['network']), convert=True).dt
             showDict['airs'] = srdatetime.SRDateTime(dtEpisodeAirs).srftime(t_preset=timeFormat).lstrip('0').replace(
                 ' 0', ' ')
             showDict['next_ep_airdate'] = srdatetime.SRDateTime(dtEpisodeAirs).srfdate(d_preset=dateFormat)
@@ -1907,7 +1904,7 @@ class CMD_ShowAddNew(ApiCall):
             "lang": {"desc": "The 2-letter language code of the desired show"},
             "subtitles": {"desc": "True to search for subtitles, False otherwise"},
             "anime": {"desc": "True to mark the show as an anime, False otherwise"},
-            "scene": {"desc": "True if episodes search should be made by scene numbering, False otherwise"},
+            "search_format": {"desc": "The search format used when searching for episodes"},
             "future_status": {"desc": "The status of future episodes"},
             "skip_downloaded": {
                 "desc": "True if episodes should be archived when first match is downloaded, False otherwise"
@@ -1936,8 +1933,8 @@ class CMD_ShowAddNew(ApiCall):
                                                  "bool", [], *args, **kwargs)
         self.anime, args = self.check_params("anime", bool(sickrage.app.config.anime_default), False, "bool", [],
                                              *args, **kwargs)
-        self.scene, args = self.check_params("scene", bool(sickrage.app.config.scene_default), False, "bool", [],
-                                             *args, **kwargs)
+        self.search_format, args = self.check_params("search_format", int(sickrage.app.config.search_format_default), False, "int", [],
+                                                     *args, **kwargs)
         self.future_status, args = self.check_params("future_status", None, False, "string",
                                                      ["wanted", "skipped", "ignored"], *args, **kwargs)
         self.skip_downloaded, args = self.check_params("skip_downloaded",
@@ -2051,7 +2048,7 @@ class CMD_ShowAddNew(ApiCall):
         sickrage.app.show_queue.add_show(
             int(indexer), int(self.indexerid), show_path, default_status=new_status, quality=new_quality,
             flatten_folders=int(self.flatten_folders), lang=self.lang, subtitles=self.subtitles, anime=self.anime,
-            scene=self.scene, default_status_after=default_ep_status_after, skip_downloaded=self.skip_downloaded
+            search_format=self.search_format, default_status_after=default_ep_status_after, skip_downloaded=self.skip_downloaded
         )
 
         return await _responds(RESULT_SUCCESS, {"name": indexer_name}, indexer_name + " has been queued to be added")
@@ -2615,8 +2612,7 @@ class CMD_Shows(ApiCall):
                 "paused": (0, 1)[curShow.paused],
                 "quality": get_quality_string(curShow.quality),
                 "language": curShow.lang,
-                "air_by_date": (0, 1)[curShow.air_by_date],
-                "sports": (0, 1)[curShow.sports],
+                "search_format": curShow.search_format,
                 "anime": (0, 1)[curShow.anime],
                 "indexerid": curShow.indexer_id,
                 "tvdbid": indexerShow[1],

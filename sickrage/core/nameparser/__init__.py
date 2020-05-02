@@ -31,6 +31,7 @@ from sqlalchemy import orm
 
 import sickrage
 from sickrage.core import common
+from sickrage.core.common import SearchFormats
 from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import remove_extension, strip_accents
 from sickrage.core.nameparser import regexes
@@ -160,10 +161,6 @@ class NameParser(object):
                 result.series_name = match.group('series_name')
                 if result.series_name:
                     result.series_name = self.clean_series_name(result.series_name)
-                    result.score += 1
-
-            if 'series_num' in named_groups and match.group('series_num'):
-                result.score += 1
 
             if 'season_num' in named_groups:
                 tmp_season = int(match.group('season_num'))
@@ -173,7 +170,6 @@ class NameParser(object):
                     continue
 
                 result.season_number = tmp_season
-                result.score += 1
 
             if 'ep_num' in named_groups:
                 ep_num = self._convert_number(match.group('ep_num'))
@@ -185,16 +181,12 @@ class NameParser(object):
                     tmp_episodes = [ep_num]
 
                 result.episode_numbers = tmp_episodes
-                result.score += 3
 
             if 'ep_ab_num' in named_groups:
                 ep_ab_num = self._convert_number(match.group('ep_ab_num'))
-                result.score += 1
 
                 if 'extra_ab_ep_num' in named_groups and match.group('extra_ab_ep_num'):
-                    result.ab_episode_numbers = list(range(ep_ab_num,
-                                                           self._convert_number(match.group('extra_ab_ep_num')) + 1))
-                    result.score += 1
+                    result.ab_episode_numbers = list(range(ep_ab_num, self._convert_number(match.group('extra_ab_ep_num')) + 1))
                 else:
                     result.ab_episode_numbers = [ep_ab_num]
 
@@ -202,7 +194,6 @@ class NameParser(object):
                 air_date = match.group('air_date')
                 try:
                     result.air_date = parser.parse(air_date, fuzzy=True).date()
-                    result.score += 1
                 except Exception:
                     continue
 
@@ -214,11 +205,9 @@ class NameParser(object):
                         r'([. _-]|^)(special|extra)s?\w*([. _-]|$)', tmp_extra_info, re.I):
                     continue
                 result.extra_info = tmp_extra_info
-                result.score += 1
 
             if 'release_group' in named_groups:
                 result.release_group = match.group('release_group')
-                result.score += 1
 
             if 'version' in named_groups:
                 # assigns version to anime file if detected using anime regex. Non-anime regex receives -1
@@ -230,6 +219,7 @@ class NameParser(object):
             else:
                 result.version = -1
 
+            result.score += len([x for x in result.__dict__ if getattr(result, x, None) is not None])
             matches.append(result)
 
         if len(matches):
@@ -291,7 +281,7 @@ class NameParser(object):
                     s = season_number
                     e = epNo
 
-                    if show_obj.is_scene and not skip_scene_detection:
+                    if show_obj.search_format == SearchFormats.SCENE and not skip_scene_detection:
                         (s, e) = get_indexer_numbering(show_obj.indexer_id,
                                                        show_obj.indexer,
                                                        season_number,
@@ -303,7 +293,7 @@ class NameParser(object):
                 for epAbsNo in best_result.ab_episode_numbers:
                     a = epAbsNo
 
-                    if show_obj.is_scene:
+                    if show_obj.search_format == SearchFormats.SCENE:
                         scene_result = show_obj.get_scene_exception_by_name(best_result.series_name)
                         if scene_result:
                             a = get_indexer_absolute_numbering(show_obj.indexer_id,
@@ -321,7 +311,7 @@ class NameParser(object):
                     s = best_result.season_number
                     e = epNo
 
-                    if show_obj.is_scene and not skip_scene_detection:
+                    if show_obj.search_format == SearchFormats.SCENE and not skip_scene_detection:
                         (s, e) = get_indexer_numbering(show_obj.indexer_id,
                                                        show_obj.indexer,
                                                        best_result.season_number,
@@ -360,7 +350,7 @@ class NameParser(object):
                 best_result.episode_numbers = new_episode_numbers
                 best_result.season_number = new_season_numbers[0]
 
-            if show_obj.is_scene and not skip_scene_detection:
+            if show_obj.search_format == SearchFormats.SCENE and not skip_scene_detection:
                 sickrage.app.log.debug("Scene converted parsed result {} into {}".format(best_result.original_name, best_result))
 
         # CPU sleep

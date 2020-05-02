@@ -59,17 +59,16 @@ class Anizb(NZBProvider):
 
                     search_url = (self.urls['rss'], self.urls['api'] + search_string)[mode != 'RSS']
 
-                    try:
-                        response = self.session.get(search_url).text
-                    except Exception:
+                    resp = self.session.get(search_url)
+                    if not resp or resp.text:
                         sickrage.app.log.debug('No data returned from provider')
                         continue
 
-                    if not response.startswith('<?xml'):
+                    if not resp.startswith('<?xml'):
                         sickrage.app.log.info('Expected xml but got something else, is your mirror failing?')
                         continue
 
-                    with bs4_parser(response) as html:
+                    with bs4_parser(resp) as html:
                         entries = html('item')
                         if not entries:
                             sickrage.app.log.info('Returned xml contained no results')

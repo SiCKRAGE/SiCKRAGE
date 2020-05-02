@@ -103,11 +103,12 @@ class HDTorrentsProvider(TorrentProvider):
                     search_params['search'] = search_string
                     sickrage.app.log.debug("Search string: %s" % search_string)
 
-                try:
-                    data = self.session.get(self.urls['search'], params=search_params).text
-                    results += self.parse(data, mode)
-                except Exception:
+                resp = self.session.get(self.urls['search'], params=search_params)
+                if not resp or not resp.text:
                     sickrage.app.log.debug("No data returned from provider")
+                    continue
+
+                results += self.parse(resp.text, mode)
 
         return results
 

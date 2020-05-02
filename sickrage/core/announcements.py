@@ -24,7 +24,6 @@ import threading
 from sqlalchemy import orm
 
 import sickrage
-from sickrage.core.api import APIError
 from sickrage.core.databases.cache import CacheDB
 
 
@@ -76,16 +75,13 @@ class Announcements(object):
     def worker(self, force):
         threading.currentThread().setName(self.name)
 
-        try:
-            resp = sickrage.app.api.announcement.get_announcements()
-            if resp and 'data' in resp:
-                for announcement in resp['data']:
-                    if announcement['enabled']:
-                        self.add(announcement['hash'], announcement['title'], announcement['description'], announcement['image'], announcement['date'])
-                    else:
-                        self.clear(announcement['hash'])
-        except APIError as e:
-            pass
+        resp = sickrage.app.api.announcement.get_announcements()
+        if resp and 'data' in resp:
+            for announcement in resp['data']:
+                if announcement['enabled']:
+                    self.add(announcement['hash'], announcement['title'], announcement['description'], announcement['image'], announcement['date'])
+                else:
+                    self.clear(announcement['hash'])
 
     def add(self, ahash, title, description, image, date):
         session = sickrage.app.cache_db.session()

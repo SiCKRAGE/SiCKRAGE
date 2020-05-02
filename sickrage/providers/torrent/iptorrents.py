@@ -74,13 +74,15 @@ class IPTorrentsProvider(TorrentProvider):
                     if not validate_url(self.custom_url):
                         sickrage.app.log.warning("Invalid custom url: {}".format(self.custom_url))
                         return results
+
                     search_url = urljoin(self.custom_url, search_url.split(self.urls['base_url'])[1])
 
-                try:
-                    data = self.session.get(search_url).text
-                    results += self.parse(data, mode)
-                except Exception:
+                resp = self.session.get(search_url)
+                if not resp or not resp.text:
                     sickrage.app.log.debug("No data returned from provider")
+                    continue
+
+                results += self.parse(resp.text, mode)
 
         return results
 

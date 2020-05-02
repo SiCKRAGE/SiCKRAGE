@@ -409,9 +409,7 @@ class AddNewShowHandler(BaseHandler, ABC):
         skipShow = self.get_argument('skipShow', None)
         providedIndexer = self.get_argument('providedIndexer', None)
         anime = self.get_argument('anime', None)
-        scene = self.get_argument('scene', None)
-        sports = self.get_argument('sports', None)
-        air_by_date = self.get_argument('air_by_date', None)
+        search_format = self.get_argument('search_format', None)
         dvdorder = self.get_argument('dvdorder', None)
         blacklist = self.get_argument('blacklist', None)
         whitelist = self.get_argument('whitelist', None)
@@ -478,9 +476,7 @@ class AddNewShowHandler(BaseHandler, ABC):
                 chmod_as_parent(show_dir)
 
         # prepare the inputs for passing along
-        scene = checkbox_to_value(scene)
-        sports = checkbox_to_value(sports)
-        air_by_date = checkbox_to_value(air_by_date)
+        search_format = int(search_format)
         dvdorder = checkbox_to_value(dvdorder)
         anime = checkbox_to_value(anime)
         flatten_folders = checkbox_to_value(flatten_folders)
@@ -508,10 +504,8 @@ class AddNewShowHandler(BaseHandler, ABC):
                                          subtitles=subtitles,
                                          sub_use_sr_metadata=sub_use_sr_metadata,
                                          anime=anime,
-                                         scene=scene,
-                                         sports=sports,
                                          dvdorder=dvdorder,
-                                         air_by_date=air_by_date,
+                                         search_format=search_format,
                                          paused=False,
                                          blacklist=blacklist,
                                          whitelist=whitelist,

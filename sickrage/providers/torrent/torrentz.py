@@ -53,15 +53,18 @@ class TORRENTZProvider(TorrentProvider):
         for mode in search_strings:
             sickrage.app.log.debug('Search Mode: {}'.format(mode))
             for search_string in search_strings[mode]:
+                search_params = {'f': search_string}
                 search_url = self.urls['feed']
+
                 if mode != 'RSS':
                     sickrage.app.log.debug('Search string: {}'.format(search_string))
 
-                try:
-                    data = self.session.get(search_url, params={'f': search_string}).text
-                    results += self.parse(data, mode)
-                except Exception:
-                    sickrage.app.log.debug('No data returned from provider')
+                resp = self.session.get(self.urls['search'], params=search_params)
+                if not resp or not resp.text:
+                    sickrage.app.log.debug("No data returned from provider")
+                    continue
+
+                results += self.parse(resp.text, mode)
 
         return results
 

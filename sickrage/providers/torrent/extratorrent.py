@@ -62,13 +62,14 @@ class ExtraTorrentProvider(TorrentProvider):
                 else:
                     search_url = self.urls['rss']
 
-                try:
-                    while search_params['page'] < 11:
-                        data = self.session.get(search_url, params=search_params).text
-                        results += self.parse(data, mode)
-                        search_params['page'] += 1
-                except Exception:
-                    sickrage.app.log.debug("No data returned from provider")
+                while search_params['page'] < 11:
+                    resp = self.session.get(search_url, params=search_params)
+                    if not resp or not resp.text:
+                        sickrage.app.log.debug("No data returned from provider")
+                        continue
+
+                    results += self.parse(resp.text, mode)
+                    search_params['page'] += 1
 
         return results
 

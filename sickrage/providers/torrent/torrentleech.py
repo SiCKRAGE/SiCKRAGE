@@ -122,7 +122,18 @@ class TorrentLeechProvider(TorrentProvider):
                     for page in range(2, pages + 1):
                         if num_found and num_found > per_page and pages > 1:
                             page_url = urljoin(search_url, 'page/{}/'.format(page))
-                            data = self.session.get(page_url).json()
+
+                            resp = self.session.get(page_url)
+                            if not resp or not resp.content:
+                                sickrage.app.log.debug("No data returned from provider")
+                                continue
+
+                            try:
+                                data = resp.json()
+                            except ValueError:
+                                sickrage.app.log.debug("No data returned from provider")
+                                continue
+
                             results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")

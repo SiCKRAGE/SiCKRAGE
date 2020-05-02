@@ -21,6 +21,7 @@ from requests.utils import dict_from_cookiejar
 import sickrage
 from sickrage.core import MainDB
 from sickrage.core.caches.tv_cache import TVCache
+from sickrage.core.common import SearchFormats
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import sanitize_scene_name, show_names, bs4_parser, try_int, convert_size
 from sickrage.core.tv.show.helpers import find_show
@@ -61,9 +62,9 @@ class TVChaosUKProvider(TorrentProvider):
         for show_name in set(show_names.all_possible_show_names(show_id)):
             for sep in ' ', ' - ':
                 season_string = show_name + sep + 'Series '
-                if show_object.air_by_date or show_object.sports:
+                if show_object.search_format in [SearchFormats.AIR_BY_DATE, SearchFormats.SPORTS]:
                     season_string += str(episode_object.airdate).split('-')[0]
-                elif show_object.anime:
+                elif show_object.search_format == SearchFormats.ANIME:
                     season_string += '%d' % episode_object.scene_absolute_number
                 else:
                     season_string += '%d' % int(episode_object.scene_season)
@@ -82,11 +83,11 @@ class TVChaosUKProvider(TorrentProvider):
         for show_name in set(show_names.all_possible_show_names(show_id)):
             for sep in ' ', ' - ':
                 ep_string = sanitize_scene_name(show_name) + sep
-                if show_object.air_by_date:
+                if show_object.search_format == SearchFormats.AIR_BY_DATE:
                     ep_string += str(episode_object.airdate).replace('-', '|')
-                elif show_object.sports:
+                elif show_object.search_format == SearchFormats.SPORTS:
                     ep_string += str(episode_object.airdate).replace('-', '|') + '|' + episode_object.airdate.strftime('%b')
-                elif show_object.anime:
+                elif show_object.search_format == SearchFormats.ANIME:
                     ep_string += '%i' % int(episode_object.scene_absolute_number)
                 else:
                     ep_string += sickrage.app.naming_ep_type[2] % {'seasonnumber': episode_object.scene_season,
@@ -141,12 +142,12 @@ class TVChaosUKProvider(TorrentProvider):
 
                 search_params['keywords'] = search_string.strip()
 
-                try:
-                    data = self.session.get(self.urls['search'], params=search_params).text
-                    results += self.parse(data, mode, keywords=search_string)
-                except Exception:
+                resp = self.session.get(self.urls['search'], params=search_params)
+                if not resp or not resp.text:
                     sickrage.app.log.debug("No data returned from provider")
                     continue
+
+                results += self.parse(resp.text, mode, keywords=search_string)
 
         return results
 

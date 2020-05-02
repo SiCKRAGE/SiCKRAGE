@@ -86,13 +86,14 @@ class NebulanceProvider(TorrentProvider):
                 if mode != 'RSS':
                     sickrage.app.log.debug("Search string: %s " % search_string)
 
-                searchURL = self.urls['base_url'] + "?" + urlencode(search_params)
+                search_url = self.urls['base_url'] + "?" + urlencode(search_params)
 
-                try:
-                    data = self.session.get(searchURL).text
-                    results += self.parse(data, mode)
-                except Exception:
+                resp = self.session.get(search_url)
+                if not resp or not resp.text:
                     sickrage.app.log.debug("No data returned from provider")
+                    continue
+
+                results += self.parse(resp.text, mode)
 
         return results
 

@@ -36,10 +36,10 @@ from sqlalchemy import orm
 from unidecode import unidecode
 
 import sickrage
-from sickrage.core.api import APIError
 from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.caches.image_cache import ImageCache
-from sickrage.core.common import Quality, SKIPPED, WANTED, UNKNOWN, DOWNLOADED, IGNORED, SNATCHED, SNATCHED_PROPER, UNAIRED, ARCHIVED, statusStrings, Overview
+from sickrage.core.common import Quality, SKIPPED, WANTED, UNKNOWN, DOWNLOADED, IGNORED, SNATCHED, SNATCHED_PROPER, UNAIRED, ARCHIVED, statusStrings, \
+    Overview, SearchFormats
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import ShowNotFoundException, EpisodeNotFoundException, EpisodeDeletedException, MultipleEpisodesInDatabaseException
 from sickrage.core.helpers import list_media_files, is_media_file, try_int, safe_getattr
@@ -189,14 +189,6 @@ class TVShow(object):
         self._data_local['paused'] = value
 
     @property
-    def air_by_date(self):
-        return self._data_local['air_by_date']
-
-    @air_by_date.setter
-    def air_by_date(self, value):
-        self._data_local['air_by_date'] = value
-
-    @property
     def anime(self):
         return self._data_local['anime']
 
@@ -205,20 +197,12 @@ class TVShow(object):
         self._data_local['anime'] = value
 
     @property
-    def scene(self):
-        return self._data_local['scene']
+    def search_format(self):
+        return self._data_local['search_format']
 
-    @scene.setter
-    def scene(self, value):
-        self._data_local['scene'] = value
-
-    @property
-    def sports(self):
-        return self._data_local['sports']
-
-    @sports.setter
-    def sports(self, value):
-        self._data_local['sports'] = value
+    @search_format.setter
+    def search_format(self, value):
+        self._data_local['search_format'] = value
 
     @property
     def subtitles(self):
@@ -382,14 +366,6 @@ class TVShow(object):
     @property
     def is_anime(self):
         return int(self.anime) > 0
-
-    @property
-    def is_sports(self):
-        return int(self.sports) > 0
-
-    @property
-    def is_scene(self):
-        return int(self.scene) > 0
 
     @property
     def airs_next(self):
@@ -831,10 +807,8 @@ class TVShow(object):
         }
 
         if not re.search(r'^tt\d+$', self.imdb_id) and self.name:
-            try:
-                resp = sickrage.app.api.imdb.search_by_imdb_title(self.name)
-            except APIError as e:
-                sickrage.app.log.error('{!r}'.format(e))
+            resp = sickrage.app.api.imdb.search_by_imdb_title(self.name)
+            if not resp:
                 resp = {}
 
             for x in resp.get('Search', []):
@@ -844,18 +818,13 @@ class TVShow(object):
                             self.imdb_id = x.get('imdbID')
                             self.save()
                             break
-                except:
+                except Exception:
                     continue
 
         if re.search(r'^tt\d+$', self.imdb_id):
             sickrage.app.log.debug(str(self.indexer_id) + ": Obtaining IMDb info")
 
-            try:
-                imdb_info = sickrage.app.api.imdb.search_by_imdb_id(self.imdb_id)
-            except APIError as e:
-                sickrage.app.log.error('{!r}'.format(e))
-                imdb_info = None
-
+            imdb_info = sickrage.app.api.imdb.search_by_imdb_id(self.imdb_id)
             if not imdb_info:
                 sickrage.app.log.debug(str(self.indexer_id) + ': Unable to obtain IMDb info')
                 return
@@ -1313,8 +1282,12 @@ class TVShow(object):
 
         try:
             sickrage.app.log.debug("Retrieving scene exceptions from SiCKRAGE API for show: {}".format(self.name))
-            scene_exceptions = sickrage.app.api.scene_exceptions.search_by_id(self.indexer_id)['data']['exceptions'].split(',')
-            self.scene_exceptions = set(self.scene_exceptions + scene_exceptions)
+
+            scene_exceptions = sickrage.app.api.scene_exceptions.search_by_id(self.indexer_id)
+            if not scene_exceptions or 'data' not in scene_exceptions:
+                sickrage.app.log.debug("No scene exceptions found from SiCKRAGE API for show: {}".format(self.name))
+            else:
+                self.scene_exceptions = set(self.scene_exceptions + scene_exceptions['data']['exceptions'].split(','))
 
             if get_anidb and self.is_anime and self.indexer == 1:
                 try:
@@ -1328,8 +1301,6 @@ class TVShow(object):
 
             self.last_scene_exceptions_refresh = int(time.mktime(datetime.datetime.today().timetuple()))
             self.save()
-        except APIError:
-            sickrage.app.log.debug("No scene exceptions found from SiCKRAGE API for show: {}".format(self.name))
         except Exception as e:
             sickrage.app.log.debug("Check scene exceptions update failed from SiCKRAGE API for show: {}".format(self.name))
 
@@ -1370,7 +1341,6 @@ class TVShow(object):
         to_return += "classification: {}\n".format(self.classification)
         to_return += "runtime: {}\n".format(self.runtime)
         to_return += "quality: {}\n".format(self.quality)
-        to_return += "scene: {}\n".format(self.is_scene)
-        to_return += "sports: {}\n".format(self.is_sports)
+        to_return += "search format: {}\n".format(SearchFormats.search_format_strings[self.search_format])
         to_return += "anime: {}\n".format(self.is_anime)
         return to_return

@@ -22,7 +22,7 @@ import os
 from datetime import date
 
 import sickrage
-from sickrage.core.common import DOWNLOADED, Quality
+from sickrage.core.common import DOWNLOADED, Quality, SearchFormats
 from sickrage.core.nameparser import NameParser
 from sickrage.core.tv.episode import TVEpisode
 
@@ -93,35 +93,9 @@ class FakeShow(object):
         self.name = "Show Name"
         self.genre = "Comedy"
         self.indexer_id = 0o00001
-        self.air_by_date = 0
+        self.search_format = SearchFormats.STANDARD
         self.startyear = 2011
-        self.sports = 0
         self.anime = 0
-        self.scene = 0
-
-    @property
-    def is_anime(self):
-        """
-        Find out if show is anime
-        :return: True if show is anime, False if not
-        """
-        return self.anime > 0
-
-    @property
-    def is_sports(self):
-        """
-        Find out if show is sports
-        :return: True if show is sports, False if not
-        """
-        return self.sports > 0
-
-    @property
-    def is_scene(self):
-        """
-        Find out if show is scene numbering
-        :return: True if show is scene numbering, False if not
-        """
-        return self.scene > 0
 
 
 def check_force_season_folders(pattern=None, multi=None, anime_type=None):
@@ -258,13 +232,13 @@ def generate_sample_ep(multi=None, abd=False, sports=False, anime_type=None):
 
     if abd:
         ep.release_name = 'Show.Name.2011.03.09.HDTV.XviD-RLSGROUP'
-        ep.show.air_by_date = 1
+        ep.show.search_format = SearchFormats.AIR_BY_DATE
     elif sports:
         ep.release_name = 'Show.Name.2011.03.09.HDTV.XviD-RLSGROUP'
-        ep.show.sports = 1
+        ep.show.search_format = SearchFormats.SPORTS
     else:
         if anime_type != 3:
-            ep.show.anime = 1
+            ep.show.search_format = SearchFormats.ANIME
             ep.release_name = 'Show.Name.003.HDTV.XviD-RLSGROUP'
         else:
             ep.release_name = 'Show.Name.S02E03.HDTV.XviD-RLSGROUP'
@@ -273,7 +247,7 @@ def generate_sample_ep(multi=None, abd=False, sports=False, anime_type=None):
         ep.name = "Ep Name (1)"
 
         if anime_type != 3:
-            ep.show.anime = 1
+            ep.show.search_format = SearchFormats.ANIME
 
             ep.release_name = 'Show.Name.003-004.HDTV.XviD-RLSGROUP'
 

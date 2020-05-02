@@ -28,6 +28,7 @@ from functools import partial
 
 import sickrage
 from sickrage.core import common
+from sickrage.core.common import SearchFormats
 from sickrage.core.helpers import sanitize_scene_name, strip_accents
 from sickrage.core.tv.show.helpers import find_show
 
@@ -169,10 +170,10 @@ def make_scene_season_search_string(show_id, season, episode, extraSearchType=No
     show_object = find_show(show_id)
     episode_object = show_object.get_episode(season, episode)
 
-    if show_object.air_by_date or show_object.sports:
+    if show_object.search_format in [SearchFormats.AIR_BY_DATE, SearchFormats.SPORTS]:
         # the search string for air by date shows is just
         seasonStrings = [str(episode_object.airdate).split('-')[0]]
-    elif show_object.is_anime:
+    elif show_object.search_format == SearchFormats.ANIME:
         # get show qualities
         anyQualities, bestQualities = common.Quality.split_quality(show_object.quality)
 
@@ -196,7 +197,6 @@ def make_scene_season_search_string(show_id, season, episode, extraSearchType=No
                 ab_number = episode.scene_absolute_number
                 if ab_number > 0:
                     seasonStrings.append("%02d" % ab_number)
-
     else:
         numseasons = len(set([s.season for s in show_object.episodes if s.season > 0]))
         seasonStrings = ["S%02d" % int(episode_object.scene_season)]
@@ -235,9 +235,9 @@ def make_scene_search_string(show_id, season, episode):
     numseasons = len(set([s.season for s in show_object.episodes if s.season > 0]))
 
     # see if we should use dates instead of episodes
-    if (show_object.air_by_date or show_object.sports) and show_object.airdate > datetime.date.min:
+    if show_object.search_format in [SearchFormats.AIR_BY_DATE, SearchFormats.SPORTS] and show_object.airdate > datetime.date.min:
         epStrings = [str(show_object.airdate)]
-    elif show_object.is_anime:
+    elif show_object.search_format == SearchFormats.ANIME:
         epStrings = ["%02i" % int(show_object.scene_absolute_number if show_object.scene_absolute_number > 0 else show_object.scene_episode)]
     else:
         epStrings = ["S%02iE%02i" % (int(show_object.scene_season), int(show_object.scene_episode)),

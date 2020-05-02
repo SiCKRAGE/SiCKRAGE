@@ -5,7 +5,7 @@
 <%block name="content">
     <div class="row">
         <div class="col-lg-10 mx-auto">
-            <form id="configForm" action="${self.formaction()}" class="needs-validation" method="post" novalidate>
+            <form id="configForm" action="${self.formaction()}" method="post" novalidate>
                 <div class="card">
                     <div class="card-header">
                         <h3 class="float-md-left"><i class="fas fa-wrench"></i> ${title}</h3>

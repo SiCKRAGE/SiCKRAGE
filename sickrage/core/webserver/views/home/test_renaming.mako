@@ -6,7 +6,7 @@
 
     import sickrage
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings
+    from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings, SearchFormats
     from sickrage.core.helpers import srdatetime
 %>
 <%block name="content">
@@ -26,9 +26,9 @@
                                 <div class="card-body">
                                     <h3>${_('Preview of the proposed name changes')}</h3>
                                     <blockquote>
-                                        % if int(show.air_by_date) == 1 and sickrage.app.config.naming_custom_abd:
+                                        % if show.search_format == SearchFormats.AIR_BY_DATE and sickrage.app.config.naming_custom_abd:
                                     ${sickrage.app.config.naming_abd_pattern}
-                                        % elif int(show.sports) == 1 and sickrage.app.config.naming_custom_sports:
+                                        % elif show.search_format == SearchFormats.SPORTS and sickrage.app.config.naming_custom_sports:
                                     ${sickrage.app.config.naming_sports_pattern}
                                         % else:
                                     ${sickrage.app.config.naming_pattern}

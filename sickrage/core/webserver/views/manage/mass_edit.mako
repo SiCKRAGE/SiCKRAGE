@@ -2,7 +2,7 @@
 <%!
     import sickrage
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings, statusStrings
+    from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings, statusStrings, SearchFormats
     from sickrage.core.common import SD
 %>
 
@@ -204,22 +204,6 @@
                             </div>
 
                             <div class="row field-pair">
-                                <label for="edit_scene">
-                                    <span class="component-title">${_('Scene Numbering')}</span>
-                                    <span class="component-desc">
-                                        <select id="edit_scene" name="scene"
-                                                class="form-control form-control-inline input-sm">
-                                            <option value="keep" ${('', 'selected')[scene_value is None]}>&lt; ${_('Keep')}
-                                                &gt;</option>
-                                            <option value="enable" ${('', 'selected')[scene_value == 1]}>${_('Yes')}</option>
-                                            <option value="disable" ${('', 'selected')[scene_value == 0]}>${_('No')}</option>
-                                        </select>
-                                        ${_('Search by scene numbering (set to "No" to search by indexer numbering).')}
-                                    </span>
-                                </label>
-                            </div>
-
-                            <div class="row field-pair">
                                 <label for="edit_anime">
                                     <span class="component-title">${_('Anime')}</span>
                                     <span class="component-desc">
@@ -236,39 +220,23 @@
                             </div>
 
                             <div class="row field-pair">
-                                <label for="edit_sports">
-                                    <span class="component-title">${_('Sports')}</span>
+                                <label for="edit_search_format">
+                                    <span class="component-title">${_('Search Format')}</span>
                                     <span class="component-desc">
-                                        <select id="edit_sports" name="sports"
-                                                class="form-control form-control-inline input-sm">
-                                            <option value="keep" ${('', 'selected')[sports_value is None]}>&lt; ${_('Keep')}
-                                                &gt;</option>
-                                            <option value="enable" ${('', 'selected')[sports_value == 1]}>${_('Yes')}</option>
-                                            <option value="disable" ${('', 'selected')[sports_value == 0]}>${_('No')}</option>
-                                        </select>
-                                        ${_('Set if these shows are sporting or MMA events released as Show.03.02.2010 rather than Show.S02E03.')}
-                                        <br>
-                                    <span style="color:red">${_('In case of an air date conflict between regular and special episodes, the later will be ignored.')}</span>
-                                    </span>
-                                </label>
-                            </div>
-
-                            <div class="row field-pair">
-                                <label for="edit_air_by_date">
-                                    <span class="component-title">${_('Air by date')}</span>
-                                    <span class="component-desc">
-                                        <select id="edit_air_by_date" name="air_by_date"
-                                                class="form-control form-control-inline input-sm">
-                                            <option value="keep" ${('', 'selected')[air_by_date_value is None]}>&lt; ${_('Keep')}
-                                                &gt;</option>
-                                            <option value="enable" ${('', 'selected')[air_by_date_value == 1]}>${_('Yes')}</option>
-                                            <option value="disable" ${('', 'selected')[air_by_date_value == 0]}>${_('No')}</option>
-                                        </select>
-                                        ${_('Set if these shows are released as Show.03.02.2010 rather than Show.S02E03.')}
-                                        <br>
-                                        <span style="color:red">
-                                            ${_('In case of an air date conflict between regular and special episodes, the later will be ignored.')}
-                                        </span>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <span class="fas fa-list"></span>
+                                                </span>
+                                            </div>
+                                            <select id="search_format" name="search_format"
+                                                    class="form-control">
+                                                <option value="keep" ${('', 'selected')[search_format_value is None]}>&lt; ${_('Keep')}</option>
+                                                % for search_format, search_format_string in SearchFormats.search_format_strings.items():
+                                                    <option value="${search_format}" ${('', 'selected')[search_format_value == search_format]}>${search_format_string}</option>
+                                                % endfor
+                                            </select>
+                                        </div>
                                     </span>
                                 </label>
                             </div>

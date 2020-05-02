@@ -5,7 +5,7 @@
     import sickrage
     from sickrage.core.tv.show.helpers import get_show_list
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import statusStrings
+    from sickrage.core.common import statusStrings, SearchFormats
     from sickrage.core.helpers.compat import cmp
 %>
 
@@ -66,9 +66,8 @@
                                 </th>
                                 <th>${_('Show Name')}</th>
                                 <th>${_('Show Directory')}</th>
+                                <th class="col-legend">${_('Search Format')}</th>
                                 <th class="col-quality">${_('Quality')}</th>
-                                <th class="col-legend">${_('Sports')}</th>
-                                <th class="col-legend">${_('Scene')}</th>
                                 <th class="col-legend">${_('Anime')}</th>
                                 <th class="col-legend">${_('Season folders')}</th>
                                 <th class="col-legend">${_('Skip downloaded')}</th>
@@ -105,22 +104,15 @@
                                         <td>
                                             ${curShow.location}
                                         </td>
+                                        <td class="table-fit">${SearchFormats.search_format_strings[curShow.search_format]}</td>
                                         <td class="table-fit">${renderQualityPill(curShow.quality, showTitle=True)}</td>
-                                        <td class="table-fit">
-                                            <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(curShow.is_sports)]}"></i>
-                                            <span class="d-none d-print-inline">${bool(curShow.is_sports)}</span>
-                                        </td>
-                                        <td class="table-fit">
-                                            <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(curShow.is_scene)]}"></i>
-                                            <span class="d-none d-print-inline">${bool(curShow.is_scene)}</span>
-                                        </td>
                                         <td class="table-fit">
                                             <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(curShow.is_anime)]}"></i>
                                             <span class="d-none d-print-inline">${bool(curShow.is_anime)}</span>
                                         </td>
                                         <td class="table-fit">
-                                            <i class="fa ${("fa-times text-danger", "fa-check text-success")[not bool(curShow.flatten_folders)]}"></i>
-                                            <span class="d-none d-print-inline">${bool(curShow.flatten_folders)}</span>
+                                            <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(not curShow.flatten_folders)]}"></i>
+                                            <span class="d-none d-print-inline">${bool(not curShow.flatten_folders)}</span>
                                         </td>
                                         <td class="table-fit">
                                             <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(curShow.skip_downloaded)]}"></i>
