@@ -443,7 +443,7 @@ class Tvdb:
                 timeout=sickrage.app.config.indexer_timeout, verify=False, **kwargs
             )
 
-            if resp is not None and resp.ok and resp.content:
+            if resp and resp.content:
                 try:
                     data = resp.json()
                 except ValueError:
@@ -451,16 +451,16 @@ class Tvdb:
 
                 return to_lowercase(data)
 
+            if resp is not None:
+                if resp.status_code == 401:
+                    raise tvdb_unauthorized(resp.text)
+                elif resp.status_code == 504:
+                    raise tvdb_error("Unable to connect to TheTVDB")
+
+                if 'application/json' in resp.headers.get('content-type', '') and i > 3:
+                    raise tvdb_error(resp.json().get('Error', resp.text))
+
             if i > 3:
-                if resp is not None and resp.text:
-                    if resp.status_code == 401:
-                        raise tvdb_unauthorized(resp.text)
-                    elif resp.status_code == 504:
-                        raise tvdb_error("Unable to connect to TheTVDB")
-
-                    if 'application/json' in resp.headers.get('content-type', ''):
-                        raise tvdb_error(resp.json().get('Error', resp.text))
-
                 raise tvdb_error("Unable to connect to TheTVDB")
 
     def _setItem(self, sid, seas, ep, attrib, value):
