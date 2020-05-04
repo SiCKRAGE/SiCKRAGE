@@ -45,25 +45,24 @@ class TransmissionAPI(TorrentClient):
         self.url = self.host + self.rpcurl + '/rpc'
 
     def _get_auth(self):
-        try:
-            # Triggering HTTP 409 error
-            self.response = self.session.post(self.url,
-                                              timeout=120,
-                                              json={'method': 'session-get'},
-                                              auth=(self.username, self.password),
-                                              verify=bool(sickrage.app.config.torrent_verify_cert))
-        except requests.exceptions.HTTPError as e:
-            if e.response.status_code == 409:
-                # Get X-Transmission-Session-Id auth session header
-                self.auth = e.response.headers.get('x-transmission-session-id')
+        # Triggering HTTP 409 error
+        self.response = self.session.post(self.url,
+                                          timeout=120,
+                                          json={'method': 'session-get'},
+                                          auth=(self.username, self.password),
+                                          verify=bool(sickrage.app.config.torrent_verify_cert))
 
-                # Validating Transmission authorization
-                success = self._request(method='post',
-                                        json={'arguments': {}, 'method': 'session-get'},
-                                        headers={'x-transmission-session-id': self.auth})
+        if self.response.status_code == 409:
+            # Get X-Transmission-Session-Id auth session header
+            self.auth = self.response.headers.get('x-transmission-session-id')
 
-                if not success:
-                    self.auth = None
+            # Validating Transmission authorization
+            success = self._request(method='post',
+                                    json={'arguments': {}, 'method': 'session-get'},
+                                    headers={'x-transmission-session-id': self.auth})
+
+            if not success:
+                self.auth = None
 
         return self.auth
 

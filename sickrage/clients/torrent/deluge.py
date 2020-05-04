@@ -40,57 +40,78 @@ class DelugeAPI(TorrentClient):
                      "params": [self.password],
                      "id": 1}
 
-        try:
-            self.response = self.session.post(self.url, json=post_data, verify=bool(sickrage.app.config.torrent_verify_cert))
-        except Exception:
+        self.response = self.session.post(self.url, json=post_data, verify=bool(sickrage.app.config.torrent_verify_cert))
+        if not self.response or not self.response.content:
             return None
 
-        self.auth = self.response.json()["result"]
-
-        post_data = {"method": "web.connected",
-                     "params": [],
-                     "id": 10}
-
         try:
-            self.response = self.session.post(self.url, json=post_data, verify=bool(sickrage.app.config.torrent_verify_cert))
-        except Exception:
+            data = self.response.json()
+        except ValueError:
             return None
 
-        connected = self.response.json()['result']
-        if not connected:
-            post_data = {"method": "web.get_hosts",
-                         "params": [],
-                         "id": 11}
-            try:
-                self.response = self.session.post(self.url, json=post_data, verify=bool(sickrage.app.config.torrent_verify_cert))
-            except Exception:
+        self.auth = data.get("result")
+
+        post_data = {
+            "method": "web.connected",
+            "params": [],
+            "id": 10
+        }
+
+        self.response = self.session.post(self.url, json=post_data, verify=bool(sickrage.app.config.torrent_verify_cert))
+        if not self.response or not self.response.content:
+            return None
+
+        try:
+            connected = self.response.json()
+        except ValueError:
+            return None
+
+        if not connected.get('result'):
+            post_data = {
+                "method": "web.get_hosts",
+                "params": [],
+                "id": 11
+            }
+
+            self.response = self.session.post(self.url, json=post_data, verify=bool(sickrage.app.config.torrent_verify_cert))
+            if not self.response or not self.response.content:
                 return None
 
-            hosts = self.response.json()['result']
-            if not hosts:
+            try:
+                hosts = self.response.json()
+            except ValueError:
+                return None
+
+            if not hosts.get('result'):
                 sickrage.app.log.warning(self.name + ': WebUI does not contain daemons')
                 return None
 
-            post_data = {"method": "web.connect",
-                         "params": [hosts[0][0]],
-                         "id": 11}
+            post_data = {
+                "method": "web.connect",
+                "params": [hosts[0][0]],
+                "id": 11
+            }
 
-            try:
-                self.response = self.session.post(self.url, json=post_data, verify=bool(sickrage.app.config.torrent_verify_cert))
-            except Exception:
+            self.response = self.session.post(self.url, json=post_data, verify=bool(sickrage.app.config.torrent_verify_cert))
+            if not self.response:
                 return None
 
-            post_data = {"method": "web.connected",
-                         "params": [],
-                         "id": 10}
+            post_data = {
+                "method": "web.connected",
+                "params": [],
+                "id": 10
+            }
 
-            try:
-                self.response = self.session.post(self.url, json=post_data, verify=bool(sickrage.app.config.torrent_verify_cert))
-            except Exception:
+            self.response = self.session.post(self.url, json=post_data, verify=bool(sickrage.app.config.torrent_verify_cert))
+            if not self.response or not self.response.content:
                 return None
 
-            connected = self.response.json()['result']
-            if not connected:
+            try:
+                connected = self.response.json()
+            except ValueError:
+                return None
+
+            if not connected.get('result'):
                 sickrage.app.log.warning(self.name + ': WebUI could not connect to daemon')
                 return None
 
