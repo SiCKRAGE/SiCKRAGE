@@ -78,6 +78,18 @@ normal_regexes = [
      (?P<ep_num>\d{2})                            # Episode Number: 08
      ((_\d{1,2}(?P<extra_ep_num>\d{2})).*\]|.*\]) # Episode number2: 09
      '''),
+    ('mvgroup',
+     # BBC.Great.British.Railway.Journeys.Series4.03of25.Stoke-on-Trent.to.Winsford.720p.HDTV.x264.AAC.MVGroup
+     # BBC.Great.British.Railway.Journeys.Series.4.03of25.Stoke-on-Trent.to.Winsford.720p.HDTV.x264.AAC.MVGroup
+     # Tutankhamun.With.Dan.Snow.Series.1.Part.1.1080p.HDTV.x264.AAC.MVGroup.org.mp4
+     r'''
+     ^(?P<series_name>.+?)[. _-]+                            # Show_Name and separator
+     series(?:[. _-]?)(?P<season_num>\d+)[. _-]+             # Series.4
+     (?:part[. _-]+)?(?P<ep_num>\d{1,2})(?:of\d{1,2})?       # 3of4
+     [. _-]+((?P<extra_info>.+?)                             # Source_Quality_Etc-
+     ((?<![. _-])(?<!WEB)                                    # Make sure this is really the release group
+     -(?P<release_group>[^- ]+))?)?$
+     '''),
     ('fov',
      # Show_Name.1x02.Source_Quality_Etc-Group
      # Show Name - 1x02 - My Ep Name
@@ -191,18 +203,6 @@ normal_regexes = [
      (?P<ep_num>\d{2})                           # 02 and separator
      ([. _-]+(?P<extra_info>(?!\d{3}[. _-]+)[^-]+) # Source_Quality_Etc-
      (-(?P<release_group>[^ -]+([. _-]\[.*\])?))?)?$                # Group
-     '''),
-    ('mvgroup',
-     # BBC.Great.British.Railway.Journeys.Series4.03of25.Stoke-on-Trent.to.Winsford.720p.HDTV.x264.AAC.MVGroup
-     # BBC.Great.British.Railway.Journeys.Series.4.03of25.Stoke-on-Trent.to.Winsford.720p.HDTV.x264.AAC.MVGroup
-     # Tutankhamun.With.Dan.Snow.Series.1.Part.1.1080p.HDTV.x264.AAC.MVGroup.org.mp4
-     r'''
-     ^(?P<series_name>.+?)[. _-]+                            # Show_Name and separator
-     (series|season)(?:[. _-]?)(?P<season_num>\d+)[. _-]+    # Series.4
-     (?:part[. _-]+)?(?P<ep_num>\d{1,2})(?:of\d{1,2})?       # 3of4
-     [. _-]+((?P<extra_info>.+?)                             # Source_Quality_Etc-
-     ((?<![. _-])(?<!WEB)                                    # Make sure this is really the release group
-     -(?P<release_group>[^- ]+))?)?$
      '''),
     ('no_season',
      # Show Name - 01 - Ep Name
