@@ -2683,13 +2683,15 @@ $(document).ready(function ($) {
 
                     // add new show form validation
                     const form = document.getElementById('addShowForm');
-                    form.addEventListener('submit', function (event) {
-                        if (form.checkValidity() === false) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                        }
-                        form.classList.add('was-validated');
-                    }, false);
+                    if (form) {
+                        form.addEventListener('submit', function (event) {
+                            if (form.checkValidity() === false) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                            }
+                            form.classList.add('was-validated');
+                        }, false);
+                    }
 
                     allWells.hide();
 
@@ -2971,13 +2973,15 @@ $(document).ready(function ($) {
 
                 // Config form validation
                 const form = document.getElementById('configForm');
-                form.addEventListener('submit', function (event) {
-                    if (form.checkValidity() === false) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
+                if (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                }
 
                 $('#configForm').ajaxForm({
                     beforeSubmit: function () {
