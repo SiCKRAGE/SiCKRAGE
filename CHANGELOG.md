@@ -2,12 +2,12 @@
 
 # 
 
-##Mon May 04 2020 19:27:08 GMT+0000 (Coordinated Universal Time)
+##Mon May 04 2020 20:50:34 GMT+0000 (Coordinated Universal Time)
 
 
 ## Bug Fixes
-  - Fixed issue `Cannot read property 'addEventListener' of null`
-  ([1463221f](https://gitlab-ci-token:CaghhrWfJsJnFds4pjBe@git.sickrage.ca/SiCKRAGE/sickrage/commit/1463221f811de8e991f27865be96bf7e7b652e8a))
+  - Fixed issue with search clients and urls
+  ([d31d9337](https://gitlab-ci-token:3zYBxSk8cB16nDbJdqsB@git.sickrage.ca/SiCKRAGE/sickrage/commit/d31d933766868119a6dfca5000b1ff81dc72fe2b))
 
 
 
