@@ -42,16 +42,17 @@ class uTorrentAPI(TorrentClient):
         return super(uTorrentAPI, self)._request(method=method, params=ordered_params, data=data, *args, **kwargs)
 
     def _get_auth(self):
-        try:
-            self.response = self.session.get(self.url + 'token.html',
-                                                             timeout=120,
-                                                             auth=(self.username, self.password),
-                                                             verify=bool(sickrage.app.config.torrent_verify_cert))
+        self.auth = None
 
-            self.auth = re.findall("<div.*?>(.*?)</", self.response.text)[0]
-            self.cookies = self.response.cookies
-        except Exception:
-            self.auth = None
+        self.response = self.session.get(self.url + 'token.html',
+                                         timeout=120, auth=(self.username, self.password),
+                                         verify=bool(sickrage.app.config.torrent_verify_cert))
+
+        if self.response and self.response.text:
+            auth_match = re.findall("<div.*?>(.*?)</", self.response.text)
+            if auth_match:
+                self.auth = auth_match[0]
+                self.cookies = self.response.cookies
 
         return self.auth
 
@@ -135,4 +136,3 @@ class uTorrentAPI(TorrentClient):
             params = {'action': 'start', 'hash': result.hash}
 
         return self._request(params=params, cookies=self.cookies)
-

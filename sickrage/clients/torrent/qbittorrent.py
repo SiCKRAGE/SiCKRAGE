@@ -37,20 +37,19 @@ class QBittorrentAPI(TorrentClient):
         """Get API version."""
         version = (1, 0, 0)
 
-        try:
-            url = urljoin(self.host, 'api/v2/app/webapiVersion')
-            response = self.session.get(url, verify=sickrage.app.config.torrent_verify_cert).text
-            version = tuple(map(int, response.split('.')))
+        url = urljoin(self.host, 'api/v2/app/webapiVersion')
+        response = self.session.get(url, verify=sickrage.app.config.torrent_verify_cert)
+        if response and response.text:
+            version = tuple(map(int, response.text.split('.')))
             version + (0,) * (3 - len(version))
-        except HTTPError as e:
-            status_code = e.response.status_code
+        elif response is not None:
+            status_code = response.status_code
             if status_code == 404:
                 url = urljoin(self.host, 'version/api')
-                try:
-                    version = int(self.session.get(url, verify=sickrage.app.config.torrent_verify_cert).text)
+                response = self.session.get(url, verify=sickrage.app.config.torrent_verify_cert)
+                if response.text:
+                    version = int(response.text)
                     version = (1, version % 100, 0)
-                except HTTPError as e:
-                    pass
 
         return version
 
@@ -62,22 +61,19 @@ class QBittorrentAPI(TorrentClient):
             'password': self.password
         }
 
-        try:
-            url = urljoin(self.host, 'api/v2/auth/login')
-            self.response = self.session.post(url, data=data, verify=sickrage.app.config.torrent_verify_cert)
-            if not self.response.text == 'Fails.':
-                self.session.cookies = self.response.cookies
-                self.auth = True
-        except HTTPError as e:
-            status_code = e.response.status_code
+        url = urljoin(self.host, 'api/v2/auth/login')
+        self.response = self.session.post(url, data=data, verify=sickrage.app.config.torrent_verify_cert)
+        if self.response and self.response.text and not self.response.text == 'Fails.':
+            self.session.cookies = self.response.cookies
+            self.auth = True
+        elif self.response is not None:
+            status_code = self.response.status_code
             if status_code == 404:
-                try:
-                    url = urljoin(self.host, 'login')
-                    self.response = self.session.post(url, data=data, verify=sickrage.app.config.torrent_verify_cert)
+                url = urljoin(self.host, 'login')
+                self.response = self.session.post(url, data=data, verify=sickrage.app.config.torrent_verify_cert)
+                if self.response:
                     self.session.cookies = self.response.cookies
                     self.auth = True
-                except HTTPError as e:
-                    pass
 
         if self.auth:
             self.api_version = self.get_api_version()

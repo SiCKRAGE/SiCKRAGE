@@ -52,7 +52,7 @@ class TransmissionAPI(TorrentClient):
                                           auth=(self.username, self.password),
                                           verify=bool(sickrage.app.config.torrent_verify_cert))
 
-        if self.response.status_code == 409:
+        if self.response is not None and self.response.status_code == 409:
             # Get X-Transmission-Session-Id auth session header
             self.auth = self.response.headers.get('x-transmission-session-id')
 
