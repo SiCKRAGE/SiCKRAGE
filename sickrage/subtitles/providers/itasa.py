@@ -29,6 +29,8 @@ import re
 
 from babelfish import Language
 from guessit import guessit
+from subliminal.matches import guess_matches
+from subliminal.utils import sanitize
 
 try:
     from lxml import etree
@@ -44,8 +46,8 @@ from zipfile import ZipFile, is_zipfile
 from subliminal.providers import Provider
 from subliminal import __version__
 from subliminal.cache import EPISODE_EXPIRATION_TIME, SHOW_EXPIRATION_TIME, region
-from subliminal.exceptions import AuthenticationError, ConfigurationError, TooManyRequests
-from subliminal.subtitle import (Subtitle, fix_line_ending, guess_matches, sanitize)
+from subliminal.exceptions import AuthenticationError, ConfigurationError, DownloadLimitExceeded
+from subliminal.subtitle import Subtitle, fix_line_ending
 from subliminal.video import Episode
 
 logger = logging.getLogger(__name__)
@@ -316,7 +318,7 @@ class ItaSAProvider(Provider):
                 content = self._download_zip(int(subtitle.find('id').text))
                 if not is_zipfile(io.BytesIO(content)):  # pragma: no cover
                     if 'limite di download' in content:
-                        raise TooManyRequests()
+                        raise DownloadLimitExceeded()
                     else:
                         raise ConfigurationError('Not a zip file: {!r}'.format(content))
 
@@ -474,7 +476,7 @@ class ItaSAProvider(Provider):
             content = self._download_zip(sub.sub_id)
             if not is_zipfile(io.BytesIO(content)):  # pragma: no cover
                 if 'limite di download' in content:
-                    raise TooManyRequests()
+                    raise DownloadLimitExceeded()
                 else:
                     raise ConfigurationError('Not a zip file: {!r}'.format(content))
 
