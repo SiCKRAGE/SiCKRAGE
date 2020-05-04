@@ -87,9 +87,9 @@ class SearchFormats(object):
         STANDARD: 'Standard (Show.S01E01)',
         AIR_BY_DATE: 'Air By Date (Show.2010.03.02)',
         ANIME: 'Anime (Show.265)',
-        SPORTS: 'Sports (Show.03.02.2010)',
+        SPORTS: 'Sports (Show.2010.03.02)',
         SCENE: 'Scene Numbering (Show.S01E01)',
-        COLLECTION: 'Collection (Show.Series.1.1of10)'
+        COLLECTION: 'Collection (Show.Series.1.1of10) or (Show.Series.1.Part.1)'
     }
 
 
