@@ -123,17 +123,14 @@ class DownloadStationAPI(TorrentClient):
             'format': 'cookie'
         }
 
-        try:
-            # login to API
-            self.response = self.session.get(self.urls['auth'], params=params,
-                                             verify=bool(sickrage.app.config.torrent_verify_cert))
-
-            # get sid
-            self.auth = self.response
-        except Exception:
+        self.response = self.session.get(self.urls['auth'], params=params, verify=bool(sickrage.app.config.torrent_verify_cert))
+        if not self.response:
             self.session.cookies.clear()
             self.auth = False
             return self.auth
+
+        # get sid
+        self.auth = self.response
 
         return self._check_response()
 
@@ -166,9 +163,8 @@ class DownloadStationAPI(TorrentClient):
             'session': 'DownloadStation',
         }
 
-        try:
-            self.response = self.session.get(self.urls['info'], params=params, verify=False, timeout=120)
-        except RequestException:
+        self.response = self.session.get(self.urls['info'], params=params, verify=False, timeout=120)
+        if not self.response or not self.response.content:
             self.session.cookies.clear()
             self.auth = False
             return False
@@ -193,9 +189,8 @@ class DownloadStationAPI(TorrentClient):
                     'version': 2,
                 })
 
-                try:
-                    self.response = self.session.get(self.urls['info'], params=params, verify=False, timeout=120)
-                except RequestException:
+                self.response = self.session.get(self.urls['info'], params=params, verify=False, timeout=120)
+                if not self.response or not self.response.content:
                     self.session.cookies.clear()
                     self.auth = False
                     return False
