@@ -211,6 +211,8 @@
                             </p>
 
                             <table>
+                                <% info_flag = Subtitles().code_from_code(show.lang) if show.lang else '' %>
+
                                 <tr>
                                     <td class="show-legend">${_('Quality:')}</td>
                                     <td>
@@ -317,12 +319,7 @@
                                         <td>${', '.join(bwl.blacklist)}</td>
                                     </tr>
                                 % endif
-                            </table>
-                        </div>
 
-                        <div class="col-auto">
-                            <table>
-                                <% info_flag = Subtitles().code_from_code(show.lang) if show.lang else '' %>
                                 <tr>
                                     <td class="show-legend">${_('Info Language:')}</td>
                                     <td>
