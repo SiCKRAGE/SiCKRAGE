@@ -47,18 +47,21 @@ class PutioAPI(TorrentClient):
             'next': '/v2/oauth2/authenticate?' + urlencode(next_params)
         }
 
-        try:
-            response = self.session.post(self.url, data=post_data,
-                                         verify=bool(sickrage.app.config.torrent_verify_cert))
+        self.auth = None
 
-            response = self.session.get(response.headers['location'],
-                                        verify=bool(sickrage.app.config.torrent_verify_cert))
+        response = self.session.post(self.url, data=post_data, verify=bool(sickrage.app.config.torrent_verify_cert))
+        if not response:
+            return None
 
-            resulting_uri = '{redirect_uri}#access_token=(.*)'.format(redirect_uri=re.escape(self.redirect_uri))
+        response = self.session.get(response.headers['location'], verify=bool(sickrage.app.config.torrent_verify_cert))
+        if not response:
+            return None
 
-            self.auth = re.search(resulting_uri, response.headers['location']).group(1)
-        except Exception:
-            self.auth = None
+        resulting_uri = '{redirect_uri}#access_token=(.*)'.format(redirect_uri=re.escape(self.redirect_uri))
+
+        auth_match = re.search(resulting_uri, response.headers.get('location'))
+        if auth_match:
+            self.auth = auth_match.group(1)
 
         return self.auth
 
@@ -70,13 +73,16 @@ class PutioAPI(TorrentClient):
             'oauth_token': self.auth
         }
 
-        try:
-            self.response = self.session.post('https://api.put.io/v2/transfers/add',
-                                              data=post_data).json()
-        except Exception:
+        self.response = self.session.post('https://api.put.io/v2/transfers/add', data=post_data)
+        if not self.response or not self.response.content:
             return False
 
-        return self.response.get("transfer", {}).get('save_parent_id', None) == 0
+        try:
+            data = self.response.json()
+        except ValueError:
+            return False
+
+        return data.get("transfer", {}).get('save_parent_id', None) == 0
 
     def _add_torrent_file(self, result):
         post_data = {
@@ -85,11 +91,14 @@ class PutioAPI(TorrentClient):
             'oauth_token': self.auth
         }
 
-        try:
-            self.session.post('https://api.put.io/v2/files/upload',
-                              data=post_data, files=('putio_torrent', result.content))
-        except Exception:
+        self.session.post('https://api.put.io/v2/files/upload', data=post_data, files=('putio_torrent', result.content))
+        if not self.response or not self.response.content:
             return False
 
-        return self.response.json()['status'] == "OK"
+        try:
+            data = self.response.json()
+        except ValueError:
+            return False
+
+        return data.get('status') == "OK"
 
