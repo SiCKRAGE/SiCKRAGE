@@ -200,7 +200,7 @@ class API(object):
                     json_data = e.response.json().get('error', {})
                     status_code = json_data.get('status', status_code)
                     error_message = json_data.get('message', error_message)
-                    e = APIError(status=status_code, message=error_message)
+                    e = APIError(status=status_code, message=error_message, response=e.response)
 
                 sickrage.app.log.debug('The response returned a non-200 response while requesting url {url} Error: {err_msg!r}'.format(url=url, err_msg=e))
                 return resp or e.response

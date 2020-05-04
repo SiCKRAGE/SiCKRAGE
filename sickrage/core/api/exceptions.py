@@ -3,9 +3,10 @@ class APIError(Exception):
     API Error
     """
 
-    def __init__(self, status, message):
+    def __init__(self, status, message, response):
         self._status = status
         self._message = message
+        self._response = response
 
     @property
     def status(self):
@@ -14,6 +15,10 @@ class APIError(Exception):
     @property
     def message(self):
         return self._message
+
+    @property
+    def response(self):
+        return self._response
 
     def __unicode__(self):
         return self.__class__.__name__ + ': ' + self.message
