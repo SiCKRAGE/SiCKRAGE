@@ -48,6 +48,7 @@ class GenericClient(object):
         self.host = sickrage.app.config.torrent_host if not host else host
         self.rpcurl = sickrage.app.config.torrent_rpcurl
 
+        self.url = None
         self.auth = None
         self.last_time = time.time()
 
@@ -73,7 +74,7 @@ class GenericClient(object):
             ' params: {params} Data: {data}'.format(
                 name=self.name,
                 method=method.upper(),
-                url=self.host,
+                url=self.url,
                 params=params,
                 data=str(data)[0:99] + '...' if len(str(data)) > 102 else str(data)
             )
@@ -83,7 +84,7 @@ class GenericClient(object):
             sickrage.app.log.warning(self.name + ': Authentication Failed')
             return False
 
-        self.response = self.session.request(method.upper(), self.host,
+        self.response = self.session.request(method.upper(), self.url,
                                              params=params, data=data, auth=(self.username, self.password), timeout=120, verify=False, *args, **kwargs)
 
         if not self.response or not self.response.text:
@@ -105,7 +106,7 @@ class GenericClient(object):
 
     def test_authentication(self):
         # verify valid url
-        self.response = self.session.get(self.host, timeout=120, verify=False)
+        self.response = self.session.get(self.url or self.host, timeout=120, verify=False)
         if self.response is None:
             return False, 'Error: Unable to connect to ' + self.name
 

@@ -21,6 +21,7 @@
 
 
 import os
+import re
 from base64 import b64encode
 
 import requests
@@ -45,16 +46,15 @@ class TransmissionAPI(TorrentClient):
         self.url = self.host + self.rpcurl + '/rpc'
 
     def _get_auth(self):
-        # Triggering HTTP 409 error
         self.response = self.session.post(self.url,
                                           timeout=120,
                                           json={'method': 'session-get'},
                                           auth=(self.username, self.password),
                                           verify=bool(sickrage.app.config.torrent_verify_cert))
 
-        if self.response is not None and self.response.status_code == 409:
-            # Get X-Transmission-Session-Id auth session header
-            self.auth = self.response.headers.get('x-transmission-session-id')
+        if self.response is not None and self.response.text:
+            self.auth = re.search(r'X-Transmission-Session-Id:\s*(\w+)', self.response.text).group(1)
+            self.session.headers.update({'x-transmission-session-id': self.auth})
 
             # Validating Transmission authorization
             success = self._request(method='post',
@@ -65,10 +65,6 @@ class TransmissionAPI(TorrentClient):
                 self.auth = None
 
         return self.auth
-
-    def _request(self, *args, **kwargs):
-        kwargs.setdefault('headers', {}).update({'x-transmission-session-id': self.auth})
-        return super(TransmissionAPI, self)._request(*args, **kwargs)
 
     def _add_torrent_uri(self, result):
         arguments = {
