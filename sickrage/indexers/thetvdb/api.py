@@ -431,40 +431,37 @@ class Tvdb:
         finally:
             return result
 
-    def _request(self, method, url, lang=None, retries=3, **kwargs):
+    def _request(self, method, url, lang=None, **kwargs):
         self.config['headers'].update({'Authorization': 'Bearer {}'.format(self.jwt_token)})
         self.config['headers'].update({'Content-type': 'application/json'})
         self.config['headers'].update({'Accept-Language': lang or self.config['language']})
         self.config['headers'].update({'Accept': 'application/vnd.thetvdb.v{}'.format(self.config['api']['version'])})
 
-        error_message = None
-        for i in range(retries):
-            try:
-                # get response from theTVDB
-                resp = WebSession(cache=self.config['cache_enabled']).request(
-                    method, urljoin(self.config['api']['base'], url), headers=self.config['headers'],
-                    timeout=sickrage.app.config.indexer_timeout, verify=False, **kwargs
-                )
+        for i in range(5):
+            resp = WebSession(cache=self.config['cache_enabled']).request(
+                method, urljoin(self.config['api']['base'], url), headers=self.config['headers'],
+                timeout=sickrage.app.config.indexer_timeout, verify=False, **kwargs
+            )
 
-                resp.raise_for_status()
+            if resp is not None and resp.ok and resp.content:
+                try:
+                    data = resp.json()
+                except ValueError:
+                    raise tvdb_error("Unable to parse data from TheTVDB")
 
-                return to_lowercase(resp.json())
-            except requests.exceptions.HTTPError as e:
-                status_code = e.response.status_code
-                error_message = e.response.text
+                return to_lowercase(data)
 
-                if 'application/json' in e.response.headers.get('content-type', ''):
-                    error_message = e.response.json().get('Error', error_message)
+            if i > 3:
+                if resp is not None and resp.text:
+                    if resp.status_code == 401:
+                        raise tvdb_unauthorized(resp.text)
+                    elif resp.status_code == 504:
+                        raise tvdb_error("Unable to connect to TheTVDB")
 
-                if status_code == 401:
-                    raise tvdb_unauthorized(error_message)
-                elif status_code == 504:
-                    error_message = "Unable to connect to TheTVDB"
-            except Exception as e:
-                error_message = "{!r}".format(e)
+                    if 'application/json' in resp.headers.get('content-type', ''):
+                        raise tvdb_error(resp.json().get('Error', resp.text))
 
-        if error_message:
-            raise tvdb_error(error_message)
+                raise tvdb_error("Unable to connect to TheTVDB")
 
     def _setItem(self, sid, seas, ep, attrib, value):
         """Creates a new episode, creating Show(), Season() and
