@@ -148,7 +148,7 @@ class RarbgProvider(TorrentProvider):
                     else:
                         log_level = sickrage.app.log.DEBUG
 
-                    sickrage.app.log.log(log_level, '{msg} Code: {code}', {'msg': error, 'code': error_code})
+                    sickrage.app.log.log(log_level, '{msg} Code: {code}'.format(msg=error, code=error_code))
                     continue
 
                 results += self.parse(data, mode)
