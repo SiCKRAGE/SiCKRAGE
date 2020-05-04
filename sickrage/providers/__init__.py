@@ -216,8 +216,10 @@ class GenericProvider(object):
                 episode_string += 'Series {season} {episode}of{episodes}'.format(season=int(episode_object.scene_season),
                                                                                  episode=int(episode_object.scene_episode),
                                                                                  episodes=len([x for x in show_object.episodes if x.scene_season == season]))
-                episode_string_fallback = 'Series {season} Part {episode}'.format(season=int(episode_object.scene_season),
-                                                                                  episode=int(episode_object.scene_episode))
+                episode_string_fallback = '{show_name}{search_separator}Series {season} Part {episode}'.format(show_name=show_name,
+                                                                                                               search_separator=self.search_separator,
+                                                                                                               season=int(episode_object.scene_season),
+                                                                                                               episode=int(episode_object.scene_episode))
             else:
                 episode_string += sickrage.app.naming_ep_type[2] % {
                     'seasonnumber': int(episode_object.scene_season),
