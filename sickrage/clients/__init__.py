@@ -22,7 +22,6 @@ import time
 from base64 import b16encode, b32decode
 from hashlib import sha1
 
-import requests
 from bencode3 import bdecode, BencodeError, bencode
 
 import sickrage
@@ -49,7 +48,6 @@ class GenericClient(object):
         self.host = sickrage.app.config.torrent_host if not host else host
         self.rpcurl = sickrage.app.config.torrent_rpcurl
 
-        self.url = None
         self.auth = None
         self.last_time = time.time()
 
@@ -75,7 +73,7 @@ class GenericClient(object):
             ' params: {params} Data: {data}'.format(
                 name=self.name,
                 method=method.upper(),
-                url=self.url,
+                url=self.host,
                 params=params,
                 data=str(data)[0:99] + '...' if len(str(data)) > 102 else str(data)
             )
@@ -85,17 +83,17 @@ class GenericClient(object):
             sickrage.app.log.warning(self.name + ': Authentication Failed')
             return False
 
-        try:
-            self.response = self.session.request(method.upper(), self.url,
-                                                 params=params, data=data, auth=(self.username, self.password), timeout=120, verify=False, *args, **kwargs)
+        self.response = self.session.request(method.upper(), self.host,
+                                             params=params, data=data, auth=(self.username, self.password), timeout=120, verify=False, *args, **kwargs)
 
-            sickrage.app.log.debug('{name}: Response to {method} request is {response}'.format(
-                name=self.name,
-                method=method.upper(),
-                response=self.response.text
-            ))
-        except requests.exceptions.HTTPError as e:
+        if not self.response or not self.response.text:
             return False
+
+        sickrage.app.log.debug('{name}: Response to {method} request is {response}'.format(
+            name=self.name,
+            method=method.upper(),
+            response=self.response.text
+        ))
 
         return True
 
@@ -106,16 +104,16 @@ class GenericClient(object):
         return None
 
     def test_authentication(self):
-        try:
-            # verify valid url
-            # self.response = self.session.get(self.url, timeout=120, verify=False)
-
-            # verify auth
-            if self._get_auth():
-                return True, 'Success: Connected and Authenticated'
-            return False, 'Error: Unable to get ' + self.name + ' Authentication, check your config!'
-        except Exception:
+        # verify valid url
+        self.response = self.session.get(self.host, timeout=120, verify=False)
+        if self.response is None:
             return False, 'Error: Unable to connect to ' + self.name
+
+        # verify auth
+        if self._get_auth():
+            return True, 'Success: Connected and Authenticated'
+        return False, 'Error: Unable to get ' + self.name + ' Authentication, check your config!'
+
 
 class TorrentClient(GenericClient):
     def _add_torrent_uri(self, result):
