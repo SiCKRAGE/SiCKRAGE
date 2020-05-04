@@ -193,13 +193,12 @@ normal_regexes = [
      (-(?P<release_group>[^ -]+([. _-]\[.*\])?))?)?$                # Group
      '''),
     ('mvgroup',
-     # BBC Lost Kingdoms of South America 3of4 Lands of Gold PDTV x264 AC3mp4-MVGroup
      # BBC.Great.British.Railway.Journeys.Series4.03of25.Stoke-on-Trent.to.Winsford.720p.HDTV.x264.AAC.MVGroup
      # BBC.Great.British.Railway.Journeys.Series.4.03of25.Stoke-on-Trent.to.Winsford.720p.HDTV.x264.AAC.MVGroup
      # Tutankhamun.With.Dan.Snow.Series.1.Part.1.1080p.HDTV.x264.AAC.MVGroup.org.mp4
      r'''
      ^(?P<series_name>.+?)[. _-]+                            # Show_Name and separator
-     ((series|season)(?:[. _-]?)(?P<season_num>\d+)[. _-]+)? # Series.4
+     (series|season)(?:[. _-]?)(?P<season_num>\d+)[. _-]+    # Series.4
      (?:part[. _-]+)?(?P<ep_num>\d{1,2})(?:of\d{1,2})?       # 3of4
      [. _-]+((?P<extra_info>.+?)                             # Source_Quality_Etc-
      ((?<![. _-])(?<!WEB)                                    # Make sure this is really the release group
