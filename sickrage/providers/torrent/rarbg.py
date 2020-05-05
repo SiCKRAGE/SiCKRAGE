@@ -26,7 +26,9 @@ from time import sleep
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
+from sickrage.core.common import SearchFormats
 from sickrage.core.helpers import convert_size, try_int
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.providers import TorrentProvider
 
 
@@ -82,6 +84,10 @@ class RarbgProvider(TorrentProvider):
         if not self.login():
             return results
 
+        show_object = find_show(show_id)
+        if not show_object:
+            return results
+
         # Search Params
         search_params = {
             'app_id': self.app_id,
@@ -105,7 +111,7 @@ class RarbgProvider(TorrentProvider):
             else:
                 search_params['sort'] = self.sorting if self.sorting else 'seeders'
                 search_params['mode'] = 'search'
-                search_params['search_tvdb'] = show_id
+                search_params['search_tvdb'] = show_id if not show_object.search_format == SearchFormats.COLLECTION else None
 
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
