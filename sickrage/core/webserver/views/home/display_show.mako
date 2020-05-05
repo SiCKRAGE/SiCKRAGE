@@ -539,6 +539,8 @@
                     <th data-sorter="false" class="col-metadata">${_('TBN')}</th>
                     <th data-sorter="false" class="col-ep episode">${_('Episode')}</th>
                     <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(show.is_anime)]}>${_('Absolute')}</th>
+                    <th data-sorter="false" class="col-name">${_('Scene Numbering')}</th>
+                    <th data-sorter="false" class="col-name">${_('Scene Absolute')}</th>
                     <th data-sorter="false" class="col-name">${_('Name')}</th>
                     <th data-sorter="false" class="col-ep columnSelector-false size">${_('Size')}</th>
                     <th data-sorter="false" class="col-airdate">${_('Airdate')}</th>
