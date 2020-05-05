@@ -1706,7 +1706,7 @@ class RetryEpisodeHandler(BaseHandler, ABC):
 
         # retrieve the episode object and fail if we can't get one
         # make a queue item for it and put it on the queue
-        ep_queue_item = FailedQueueItem(show, season, episode, bool(int(down_cur_quality)))
+        ep_queue_item = FailedQueueItem(int(show), int(season), int(episode), bool(int(down_cur_quality)))
 
         sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, ep_queue_item)
         if not all([ep_queue_item.started, ep_queue_item.success]):
