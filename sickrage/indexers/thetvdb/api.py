@@ -149,7 +149,8 @@ class Show(dict):
     def airedOn(self, date):
         ret = self.search(str(date), 'firstaired')
         if len(ret) == 0:
-            raise tvdb_episodenotfound("Could not find any episodes that aired on {}".format(date))
+            sickrage.app.log.debug("Could not find any episodes on TheTVDB that aired on {}".format(date))
+            return None
         return ret
 
     def search(self, term=None, key=None):
@@ -379,20 +380,23 @@ class Tvdb:
         self.jwt_token = None
 
     def _refresh(self):
-        self.jwt_token = self._request('get', self.config['api']['refresh'])['token']
+        resp = self._request('get', self.config['api']['refresh'])
+        if resp and 'token' in resp:
+            self.jwt_token = resp['token']
 
     def _login(self):
-        self.jwt_token = self._request('post', self.config['api']['login'], json={'apikey': self.config['apikey']})['token']
+        resp = self._request('post', self.config['api']['login'], json={'apikey': self.config['apikey']})
+        if resp and 'token' in resp:
+            self.jwt_token = resp['token']
 
     def authenticate(self):
-        for i in range(0, 3):
-            try:
-                if not self.jwt_token or self.jwt_is_expired:
-                    return self._login()
-                elif self.jwt_time_remaining < 7200:
-                    return self._refresh()
-            except Exception as e:
-                self.logout()
+        try:
+            if not self.jwt_token or self.jwt_is_expired:
+                return self._login()
+            elif self.jwt_time_remaining < 7200:
+                return self._refresh()
+        except Exception as e:
+            self.logout()
 
     def jwt_decode(self, data):
         # make sure data is binary
@@ -447,21 +451,27 @@ class Tvdb:
                 try:
                     data = resp.json()
                 except ValueError:
-                    raise tvdb_error("Unable to parse data from TheTVDB")
+                    sickrage.app.log.debug("Unable to parse data from TheTVDB")
+                    return None
 
                 return to_lowercase(data)
 
             if resp is not None:
                 if resp.status_code == 401:
+                    if i > 3:
+                        sickrage.app.log.debug("Unable to authenticate to TheTVDB")
+                        return None
                     raise tvdb_unauthorized(resp.text)
                 elif resp.status_code == 504:
-                    raise tvdb_error("Unable to connect to TheTVDB")
+                    sickrage.app.log.debug("Unable to connect to TheTVDB")
+                    return None
 
                 if 'application/json' in resp.headers.get('content-type', '') and i > 3:
-                    raise tvdb_error(resp.json().get('Error', resp.text))
+                    sickrage.app.log.debug(resp.json().get('Error', resp.text))
+                    return None
 
             if i > 3:
-                raise tvdb_error("Unable to connect to TheTVDB")
+                return None
 
     def _setItem(self, sid, seas, ep, attrib, value):
         """Creates a new episode, creating Show(), Season() and
@@ -514,10 +524,14 @@ class Tvdb:
 
         if not re.search(r'tt\d+', series):
             sickrage.app.log.debug("Searching for show by name: {}".format(series))
-            return self._request('get', self.config['api']['getSeries'].format(name=series))['data']
+            resp = self._request('get', self.config['api']['getSeries'].format(name=series))
+            if resp and 'data' in resp:
+                return resp['data']
         else:
             sickrage.app.log.debug("Searching for show by imdbId: {}".format(series))
-            return self._request('get', self.config['api']['getSeriesIMDB'].format(id=series))['data']
+            resp = self._request('get', self.config['api']['getSeriesIMDB'].format(id=series))
+            if resp and 'data' in resp:
+                return resp['data']
             # elif zap2itid:
             #    sickrage.app.log.debug("Searching for show by zap2itId: {}".format(zap2itid))
             #    return self._request('get', self.config['api']['getSeriesZap2It'].format(id=zap2itid))['data']
@@ -530,8 +544,8 @@ class Tvdb:
         """
         allSeries = self.search(series)
         if not allSeries:
-            sickrage.app.log.debug('Series result returned zero')
-            raise tvdb_shownotfound("Show search returned zero results (cannot find show on theTVDB)")
+            sickrage.app.log.debug('Show search returned zero results (cannot find show on TheTVDB')
+            return None
 
         ui = BaseUI(config=self.config)
         if self.config['custom_ui'] is not None:
@@ -547,20 +561,21 @@ class Tvdb:
         """
 
         # Parse show information
-        sickrage.app.log.debug('Getting all series data for {}'.format(sid))
+        sickrage.app.log.debug('[{}]: Getting all series data from TheTVDB'.format(sid))
 
-        try:
-            # get series info in english
-            series_info = self._request('get', self.config['api']['series'].format(id=sid), lang=self.config['api']['lang'])['data']
+        # get series info in english
+        resp = self._request('get', self.config['api']['series'].format(id=sid), lang=self.config['api']['lang'])
+        if not resp or 'data' not in resp:
+            sickrage.app.log.debug("[{}]: Unable to locate show on TheTVDB".format(sid))
+            return None
 
-            # translate if required to provided language
-            if not self.config['language'] == self.config['api']['lang']:
-                series_info.update((k, v) for k, v in self._request('get', self.config['api']['series'].format(id=sid))['data'].items() if v)
-        except tvdb_unauthorized:
-            raise tvdb_unauthorized
-        except Exception as e:
-            sickrage.app.log.debug("[{}]: Series result returned zero, ERROR: {}".format(sid, e))
-            raise tvdb_error("[{}]: Series result returned zero, ERROR: {}".format(sid, e))
+        series_info = resp['data']
+
+        # translate if required to provided language
+        if not self.config['language'] == self.config['api']['lang']:
+            resp = self._request('get', self.config['api']['series'].format(id=sid))
+            if resp and 'data' in resp:
+                series_info.update((k, v) for k, v in resp['data'].items() if v)
 
         # get series data
         for k, v in series_info.items():
@@ -575,7 +590,7 @@ class Tvdb:
             self._setShowData(sid, k, v)
 
         # Parse episode data
-        sickrage.app.log.debug('Getting all episode data for {}'.format(sid))
+        sickrage.app.log.debug('[{}]: Getting episode data from TheTVDB'.format(sid))
 
         episodes = []
         page = pages = 1
@@ -585,42 +600,42 @@ class Tvdb:
                 break
 
             episode_info = self._request('get', self.config['api']['episodes'].format(id=sid), lang=self.config['api']['lang'], params={'page': page})
+            if not episode_info or 'links' not in episode_info or 'data' not in episode_info:
+                break
 
             pages = episode_info['links']['last']
 
-            try:
-                # translate if required to provided language
-                if not self.config['language'] == self.config['api']['lang']:
-                    intl_episode_info = self._request('get', self.config['api']['episodes'].format(id=sid), params={'page': page})
-                    for d1, d2 in zip(episode_info['data'], intl_episode_info['data']):
-                        d1.update((k, v) for k, v in d2.items() if v)
-                        episodes.append(d1)
-                else:
-                    episodes += episode_info['data']
+            # translate if required to provided language
+            if not self.config['language'] == self.config['api']['lang']:
+                intl_episode_info = self._request('get', self.config['api']['episodes'].format(id=sid), params={'page': page})
+                if not intl_episode_info or 'data' not in intl_episode_info:
+                    break
 
-                page += 1
-            except tvdb_error:
-                break
+                for d1, d2 in zip(episode_info['data'], intl_episode_info['data']):
+                    d1.update((k, v) for k, v in d2.items() if v)
+                    episodes.append(d1)
+            else:
+                episodes += episode_info['data']
+
+            page += 1
 
         if not len(episodes):
-            sickrage.app.log.debug('Series results incomplete')
-            raise tvdb_attributenotfound("[{}]: Series results incomplete".format(sid))
+            sickrage.app.log.debug('Series {} results incomplete on TheTVDB'.format(sid))
+            return None
 
         episode_incomplete = False
         for cur_ep in episodes:
-            try:
-                use_dvd = False
-                if self.config['dvdorder']:
-                    sickrage.app.log.debug('Using DVD ordering.')
-                    use_dvd = all([cur_ep.get('dvdseason'), cur_ep.get('dvdepisodenumber')])
+            use_dvd = False
 
-                seasnum, epno = cur_ep.get('airedseason'), cur_ep.get('airedepisodenumber')
-                if use_dvd:
-                    seasnum, epno = cur_ep.get('dvdseason'), cur_ep.get('dvdepisodenumber')
+            if self.config['dvdorder']:
+                sickrage.app.log.debug('Using DVD ordering.')
+                use_dvd = all([cur_ep.get('dvdseason'), cur_ep.get('dvdepisodenumber')])
 
-                if seasnum is None or epno is None:
-                    raise Exception
-            except Exception as e:
+            seasnum, epno = cur_ep.get('airedseason'), cur_ep.get('airedepisodenumber')
+            if use_dvd:
+                seasnum, epno = cur_ep.get('dvdseason'), cur_ep.get('dvdepisodenumber')
+
+            if seasnum is None or epno is None:
                 episode_incomplete = True
                 continue
 
@@ -653,12 +668,11 @@ class Tvdb:
     def image_key_types(self, sid, season=None, language='en'):
         key_types = {}
 
-        try:
-            data = self._request('get', self.config['api']['images']['params'].format(id=sid), language)['data']
-        except tvdb_error:
+        resp = self._request('get', self.config['api']['images']['params'].format(id=sid), language)
+        if not resp or 'data' not in resp:
             return key_types
 
-        for item in data:
+        for item in resp['data']:
             key_type = item['keytype']
             resolution = item['resolution']
             subkey = item['subkey']
@@ -683,20 +697,20 @@ class Tvdb:
         sickrage.app.log.debug('Getting {} images for {}'.format(key_type, sid))
 
         images = []
-        for language in [self.config['api']['lang'], self.config['language']]:
-            try:
-                key_types = self.image_key_types(sid, season, language)
-                if not key_types or key_type not in key_types:
-                    continue
 
-                if not season:
-                    images = self._request('get', self.config['api']['images'][key_type].format(id=sid), language)['data']
-                else:
-                    images = self._request('get', self.config['api']['images'][key_type].format(id=sid, season=season), language)['data']
-            except tvdb_unauthorized:
-                raise tvdb_unauthorized
-            except tvdb_error:
+        for language in [self.config['api']['lang'], self.config['language']]:
+            key_types = self.image_key_types(sid, season, language)
+            if not key_types or key_type not in key_types:
                 continue
+
+            if not season:
+                resp = self._request('get', self.config['api']['images'][key_type].format(id=sid), language)
+                if resp and 'data' in resp:
+                    images = resp['data']
+            else:
+                resp = self._request('get', self.config['api']['images'][key_type].format(id=sid, season=season), language)
+                if resp and 'data' in resp:
+                    images = resp['data']
 
         # unable to retrieve images in languages wanted
         if not images:
@@ -720,25 +734,28 @@ class Tvdb:
 
         cur_actors = Actors()
 
-        try:
-            for cur_actor in self._request('get', self.config['api']['actors'].format(id=sid))['data']:
-                curActor = Actor()
-                for k, v in cur_actor.items():
-                    if not all([k, v]): continue
-                    v = (v, self.config['api']['images']['prefix'].format(value=v))[k == 'image']
-                    curActor[k] = v
-
-                cur_actors.append(curActor)
-        except tvdb_unauthorized:
-            raise tvdb_unauthorized
-        except Exception:
+        resp = self._request('get', self.config['api']['actors'].format(id=sid))
+        if not resp or 'data' not in resp:
             sickrage.app.log.debug('Actors result returned zero')
+            return cur_actors
+
+        for cur_actor in resp['data']:
+            cur_actor = Actor()
+            for k, v in cur_actor.items():
+                if not all([k, v]):
+                    continue
+                v = (v, self.config['api']['images']['prefix'].format(value=v))[k == 'image']
+                cur_actor[k] = v
+
+            cur_actors.append(cur_actor)
 
         return cur_actors
 
     @login_required
     def updated(self, fromTime):
-        return self._request('get', self.config['api']['updated'].format(time=fromTime))['data']
+        resp = self._request('get', self.config['api']['updated'].format(time=fromTime))
+        if resp and 'data' in resp:
+            return resp['data']
 
     @property
     def languages(self):

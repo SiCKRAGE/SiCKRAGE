@@ -257,25 +257,23 @@ class NameParser(object):
                     episode_numbers = []
 
                 if not season_number or not episode_numbers:
-                    try:
-                        lINDEXER_API_PARMS = IndexerApi(show_obj.indexer).api_params.copy()
+                    lINDEXER_API_PARMS = IndexerApi(show_obj.indexer).api_params.copy()
 
-                        lINDEXER_API_PARMS['language'] = show_obj.lang or sickrage.app.config.indexer_default_language
+                    lINDEXER_API_PARMS['language'] = show_obj.lang or sickrage.app.config.indexer_default_language
 
-                        t = IndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
+                    t = IndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
 
-                        epObj = t[show_obj.indexer_id].airedOn(best_result.air_date)[0]
-
-                        season_number = int(epObj["airedseason"])
-                        episode_numbers = [int(epObj["airedepisodenumber"])]
-                    except indexer_episodenotfound:
-                        if best_result.in_showlist:
-                            sickrage.app.log.warning("Unable to find episode with date {air_date} for show {show}, "
-                                                     "skipping".format(air_date=best_result.air_date, show=show_obj.name))
-                        episode_numbers = []
-                    except indexer_error as e:
-                        sickrage.app.log.warning("Unable to contact " + IndexerApi(show_obj.indexer).name + ": {}".format(e))
-                        episode_numbers = []
+                    indexer_show = t[show_obj.indexer_id]
+                    if indexer_show:
+                        epObj = indexer_show.airedOn(best_result.air_date)
+                        if not epObj:
+                            if best_result.in_showlist:
+                                sickrage.app.log.warning("Unable to find episode with date {air_date} for show {show}, "
+                                                         "skipping".format(air_date=best_result.air_date, show=show_obj.name))
+                            episode_numbers = []
+                        else:
+                            season_number = int(epObj[0]["airedseason"])
+                            episode_numbers = [int(epObj[0]["airedepisodenumber"])]
 
                 for epNo in episode_numbers:
                     s = season_number

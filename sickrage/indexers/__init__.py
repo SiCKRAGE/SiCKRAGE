@@ -77,12 +77,12 @@ class IndexerApi(object):
         # Query Indexers for each search term and build the list of results
         lINDEXER_API_PARMS = self.api_params.copy()
         lINDEXER_API_PARMS['custom_ui'] = custom_ui or ShowListUI
-        t = self.indexer(**lINDEXER_API_PARMS)
 
         sickrage.app.log.debug("Trying to find show ID for show {} on indexer {}".format(show_name, self.name))
 
-        try:
-            search = t[show_name]
-            return search['id']
-        except Exception:
-            pass
+        t = self.indexer(**lINDEXER_API_PARMS)
+        indexer_data = t[show_name]
+        if not indexer_data:
+            return
+
+        return indexer_data['id']

@@ -266,46 +266,16 @@ class QueueItemAdd(ShowQueueItem):
         index_name = IndexerApi(self.indexer).name
 
         # make sure the Indexer IDs are valid
-        try:
+        lINDEXER_API_PARMS = IndexerApi(self.indexer).api_params.copy()
+        lINDEXER_API_PARMS['cache'] = False
+        lINDEXER_API_PARMS['language'] = self.lang or sickrage.app.config.indexer_default_language
 
-            lINDEXER_API_PARMS = IndexerApi(self.indexer).api_params.copy()
-            lINDEXER_API_PARMS['cache'] = False
-            lINDEXER_API_PARMS['language'] = self.lang or sickrage.app.config.indexer_default_language
+        sickrage.app.log.info("{}: {}".format(index_name, repr(lINDEXER_API_PARMS)))
 
-            sickrage.app.log.info("{}: {}".format(index_name, repr(lINDEXER_API_PARMS)))
+        t = IndexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
 
-            t = IndexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
-
-            try:
-                s = t[self.indexer_id]
-            except indexer_error:
-                s = None
-
-            if not s:
-                return self._finish_early()
-
-            # this usually only happens if they have an NFO in their show dir which gave us a Indexer ID that has no
-            # proper english version of the show
-            try:
-                s.seriesname
-            except AttributeError:
-                sickrage.app.log.warning("Show in {} has no name on {}, probably the wrong language used to search with".format(self.showDir, index_name))
-                sickrage.app.alerts.error(_("Unable to add show"),
-                                          _("Show in {} has no name on {}, probably the wrong language. Delete .nfo "
-                                            "and add manually in the correct language").format(self.showDir, index_name))
-                return self._finish_early()
-
-            # if the show has no episodes/seasons
-            if not len(s):
-                sickrage.app.log.warning(
-                    "Show " + str(s['seriesname']) + " is on " + str(IndexerApi(self.indexer).name) + " but contains no season/episode data.")
-                sickrage.app.alerts.error(_("Unable to add show"),
-                                          _("Show ") + str(s['seriesname']) + _(" is on ") + str(IndexerApi(self.indexer).name) + _(
-                                              " but contains no season/episode data."))
-                return self._finish_early()
-        except Exception as e:
-            sickrage.app.log.error("{}: Error while loading information from indexer {}. Error: {}".format(self.indexer_id, index_name, e))
-
+        s = t[self.indexer_id]
+        if not s:
             sickrage.app.alerts.error(
                 _("Unable to add show"),
                 _("Unable to look up the show in {} on {} using ID {}, not using the NFO. Delete .nfo and try adding "
@@ -326,6 +296,26 @@ class QueueItemAdd(ShowQueueItem):
 
                 TraktAPI()["sync/watchlist"].remove(data)
 
+            return self._finish_early()
+
+        # this usually only happens if they have an NFO in their show dir which gave us a Indexer ID that has no
+        # proper english version of the show
+        try:
+            s.seriesname
+        except AttributeError:
+            sickrage.app.log.warning("Show in {} has no name on {}, probably the wrong language used to search with".format(self.showDir, index_name))
+            sickrage.app.alerts.error(_("Unable to add show"),
+                                      _("Show in {} has no name on {}, probably the wrong language. Delete .nfo "
+                                        "and add manually in the correct language").format(self.showDir, index_name))
+            return self._finish_early()
+
+        # if the show has no episodes/seasons
+        if not len(s):
+            sickrage.app.log.warning("Show " + str(s['seriesname']) + " is on " + str(IndexerApi(self.indexer).name) + "but contains no season/episode "
+                                                                                                                       "data.")
+            sickrage.app.alerts.error(_("Unable to add show"),
+                                      _("Show ") + str(s['seriesname']) + _(" is on ") + str(IndexerApi(self.indexer).name) + _(
+                                          " but contains no season/episode data."))
             return self._finish_early()
 
         try:

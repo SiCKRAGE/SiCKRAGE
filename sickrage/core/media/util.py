@@ -65,17 +65,19 @@ def indexerImage(id=None, which=None):
         if media_format == "thumb":
             image_path = os.path.join(ImageCache()._thumbnails_dir(), image_name)
             if not os.path.exists(image_path):
-                image_url = t.images(int(id), key_type=image_type)[0]['thumbnail']
-                WebSession().download(image_url, image_path)
+                image_data = t.images(int(id), key_type=image_type)
+                if image_data:
+                    image_url = image_data[0]['thumbnail']
+                    WebSession().download(image_url, image_path)
         else:
             image_path = os.path.join(ImageCache()._cache_dir(), image_name)
             if not os.path.exists(image_path):
-                image_url = t.images(int(id), key_type=image_type)[0]['filename']
-                WebSession().download(image_url, image_path)
+                image_data = t.images(int(id), key_type=image_type)
+                if image_data:
+                    image_url = image_data[0]['filename']
+                    WebSession().download(image_url, image_path)
     except (KeyError, IndexError):
         pass
-    except (indexer_error, IOError) as e:
-        sickrage.app.log.warning("{}: Unable to look up show on ".format(id) + IndexerApi(INDEXER_TVDB).name + ", not downloading images: {}".format(e))
 
     if image_type == 'banner':
         return Banner(int(id), media_format)

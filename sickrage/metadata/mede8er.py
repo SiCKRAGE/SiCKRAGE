@@ -99,6 +99,12 @@ class Mede8erMetadata(MediaBrowserMetadata):
         show_obj: a TVShow instance to create the NFO for
         """
 
+        rootNode = Element("details")
+        tv_node = SubElement(rootNode, "movie")
+        tv_node.attrib["isExtra"] = "false"
+        tv_node.attrib["isSet"] = "false"
+        tv_node.attrib["isTV"] = "true"
+
         indexer_lang = show_obj.lang or sickrage.app.config.indexer_default_language
         lINDEXER_API_PARMS = IndexerApi(show_obj.indexer).api_params.copy()
 
@@ -108,21 +114,9 @@ class Mede8erMetadata(MediaBrowserMetadata):
             lINDEXER_API_PARMS['dvdorder'] = True
 
         t = IndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
-
-        rootNode = Element("details")
-        tv_node = SubElement(rootNode, "movie")
-        tv_node.attrib["isExtra"] = "false"
-        tv_node.attrib["isSet"] = "false"
-        tv_node.attrib["isTV"] = "true"
-
-        try:
-            myShow = t[int(show_obj.indexer_id)]
-        except indexer_shownotfound:
-            sickrage.app.log.error("Unable to find show with id " + str(show_obj.indexer_id) + " on " + IndexerApi(show_obj.indexer).name + ", skipping it")
-            return
-        except indexer_error:
-            sickrage.app.log.error("" + IndexerApi(show_obj.indexer).name + " is down, can't use its data to add this show")
-            return
+        myShow = t[int(show_obj.indexer_id)]
+        if not myShow:
+            return False
 
         # check for title and id
         if not (getattr(myShow, 'seriesname', None) and getattr(myShow, 'id', None)):
@@ -212,23 +206,18 @@ class Mede8erMetadata(MediaBrowserMetadata):
 
         indexer_lang = ep_obj.show.lang or sickrage.app.config.indexer_default_language
 
-        try:
-            # There's gotta be a better way of doing this but we don't wanna
-            # change the language value elsewhere
-            lINDEXER_API_PARMS = IndexerApi(ep_obj.show.indexer).api_params.copy()
+        # There's gotta be a better way of doing this but we don't wanna
+        # change the language value elsewhere
+        lINDEXER_API_PARMS = IndexerApi(ep_obj.show.indexer).api_params.copy()
 
-            lINDEXER_API_PARMS['language'] = indexer_lang
+        lINDEXER_API_PARMS['language'] = indexer_lang
 
-            if ep_obj.show.dvdorder != 0:
-                lINDEXER_API_PARMS['dvdorder'] = True
+        if ep_obj.show.dvdorder != 0:
+            lINDEXER_API_PARMS['dvdorder'] = True
 
-            t = IndexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
-            myShow = t[ep_obj.show.indexer_id]
-        except indexer_shownotfound as e:
-            raise ShowNotFoundException(str(e))
-        except indexer_error as e:
-            sickrage.app.log.error(
-                "Unable to connect to TVDB while creating meta files - skipping - {}".format(e))
+        t = IndexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
+        myShow = t[ep_obj.show.indexer_id]
+        if not myShow:
             return False
 
         rootNode = Element("details")

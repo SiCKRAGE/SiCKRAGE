@@ -183,28 +183,21 @@ class WDTVMetadata(GenericMetadata):
 
         indexer_lang = ep_obj.show.lang or sickrage.app.config.indexer_default_language
 
-        try:
-            lINDEXER_API_PARMS = IndexerApi(ep_obj.show.indexer).api_params.copy()
+        lINDEXER_API_PARMS = IndexerApi(ep_obj.show.indexer).api_params.copy()
+        lINDEXER_API_PARMS['language'] = indexer_lang
 
-            lINDEXER_API_PARMS['language'] = indexer_lang
+        if ep_obj.show.dvdorder != 0:
+            lINDEXER_API_PARMS['dvdorder'] = True
 
-            if ep_obj.show.dvdorder != 0:
-                lINDEXER_API_PARMS['dvdorder'] = True
-
-            t = IndexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
-            myShow = t[ep_obj.show.indexer_id]
-        except indexer_shownotfound as e:
-            raise ShowNotFoundException(str(e))
-        except indexer_error as e:
-            sickrage.app.log.error("Unable to connect to " + IndexerApi(
-                ep_obj.show.indexer).name + " while creating meta files - skipping - {}".format(e))
+        t = IndexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
+        myShow = t[ep_obj.show.indexer_id]
+        if not myShow:
             return False
 
         rootNode = Element("details")
 
         # write an WDTV XML containing info for all matching episodes
         for curEpToWrite in eps_to_write:
-
             try:
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (indexer_episodenotfound, indexer_seasonnotfound):

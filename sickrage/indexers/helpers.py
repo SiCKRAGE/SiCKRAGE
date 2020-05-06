@@ -49,13 +49,10 @@ def map_indexers(indexer, indexer_id, name):
 
             indexer_api_parms = IndexerApi(mindexer).api_params.copy()
             indexer_api_parms['custom_ui'] = ShowListUI
-            t = IndexerApi(mindexer).indexer(**indexer_api_parms)
 
-            try:
-                mapped_show = t[name]
-            except Exception:
-                sickrage.app.log.debug(
-                    "Unable to map " + IndexerApi(indexer).name + "->" + IndexerApi(mindexer).name + " for show: " + name + ", skipping it")
+            t = IndexerApi(mindexer).indexer(**indexer_api_parms)
+            mapped_show = t[name]
+            if not mapped_show:
                 continue
 
             if mapped_show and len(mapped_show) == 1:

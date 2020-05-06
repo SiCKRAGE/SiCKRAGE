@@ -99,15 +99,15 @@ class SearchIndexersForShowNameHandler(BaseHandler, ABC):
 
             sickrage.app.log.debug("Searching for Show with term: %s on Indexer: %s" % (search_term, IndexerApi(indexer).name))
 
-            try:
-                # search via series name
-                result = t[search_term]
-                if isinstance(result, dict):
-                    result = [result]
-
-                results.setdefault(indexer, []).extend(result)
-            except Exception:
+            # search via series name
+            result = t[search_term]
+            if not result:
                 continue
+
+            if isinstance(result, dict):
+                result = [result]
+
+            results.setdefault(indexer, []).extend(result)
 
         for i, shows in results.items():
             final_results.extend([

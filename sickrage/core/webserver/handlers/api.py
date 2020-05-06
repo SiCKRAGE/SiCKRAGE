@@ -1552,13 +1552,11 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
 
                 t = IndexerApi(_indexer).indexer(**lINDEXER_API_PARMS)
 
-                try:
-                    apiData = t[self.name]
-                except (indexer_shownotfound, indexer_showincomplete, indexer_error):
-                    sickrage.app.log.warning("Unable to find show with id " + str(self.indexerid))
+                indexer_data = t[self.name]
+                if not indexer_data:
                     continue
 
-                for curSeries in apiData:
+                for curSeries in indexer_data:
                     results.append({indexer_ids[_indexer]: int(curSeries['id']),
                                     "name": curSeries['seriesname'],
                                     "first_aired": curSeries['firstaired'],
@@ -1574,16 +1572,12 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
 
                 t = IndexerApi(_indexer).indexer(**lINDEXER_API_PARMS)
 
-                try:
-                    myShow = t[int(self.indexerid)]
-                except (indexer_shownotfound, indexer_showincomplete, indexer_error):
-                    sickrage.app.log.warning("Unable to find show with id " + str(self.indexerid))
-                    return await _responds(RESULT_SUCCESS, {"results": [], "langid": lang_id})
+                myShow = t[int(self.indexerid)]
+                if not myShow:
+                    continue
 
                 if not myShow.data['seriesname']:
-                    sickrage.app.log.debug(
-                        "Found show with indexer_id: " + str(
-                            self.indexerid) + ", however it contained no show name")
+                    sickrage.app.log.debug("Found show with indexer_id: " + str(self.indexerid) + ", however it contained no show name")
                     return await _responds(RESULT_FAILURE, msg="Show contains no name, invalid result")
 
                 # found show
@@ -1591,6 +1585,8 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
                             "name": myShow.data['seriesname'],
                             "first_aired": myShow.data['firstaired'],
                             "indexer": int(_indexer)}]
+
+                # break from loop, result found!
                 break
 
             return await _responds(RESULT_SUCCESS, {"results": results, "langid": lang_id})

@@ -382,7 +382,6 @@ class GenericMetadata(object):
         """
 
         data = self._ep_data(ep_obj)
-
         if not data:
             return False
 
@@ -668,12 +667,12 @@ class GenericMetadata(object):
             t = IndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
 
             # Give us just the normal poster-style season graphics
-            return t.images(show_obj.indexer_id, key_type='season', season=season)[which]['filename']
-        except (indexer_error, IOError) as e:
+            image_data = t.images(show_obj.indexer_id, key_type='season', season=season)
+            if image_data:
+                return image_data[which]['filename']
+
             sickrage.app.log.warning("{}: Unable to look up show on ".format(show_obj.indexer_id) + IndexerApi(
-                show_obj.indexer).name + ", not downloading images: {}".format(e))
-            sickrage.app.log.debug("Indexer " + IndexerApi(
-                show_obj.indexer).name + " maybe experiencing some problems. Try again later")
+                show_obj.indexer).name + ", not downloading images")
         except (KeyError, IndexError):
             pass
 
@@ -698,11 +697,12 @@ class GenericMetadata(object):
             t = IndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
 
             # Give us just the normal season graphics
-            return t.images(show_obj.indexer_id, key_type='seasonwide', season=season)[which]['filename']
-        except (indexer_error, IOError) as e:
+            image_data = t.images(show_obj.indexer_id, key_type='seasonwide', season=season)
+            if image_data:
+                return image_data[which]['filename']
+
             sickrage.app.log.warning("{}: Unable to look up show on ".format(show_obj.indexer_id) + IndexerApi(
-                show_obj.indexer).name + ", not downloading images: {}".format(e))
-            sickrage.app.log.debug("Indexer " + IndexerApi(show_obj.indexer).name + " maybe experiencing some problems. Try again later")
+                show_obj.indexer).name + ", not downloading images")
         except (KeyError, IndexError):
             pass
 
