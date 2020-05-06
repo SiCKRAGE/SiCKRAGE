@@ -196,7 +196,7 @@ def edit_show(show, any_qualities, best_qualities, exceptions_list, location=Non
 
     show_obj.paused = paused
     show_obj.anime = anime
-    show_obj.search_format = search_format
+    show_obj.search_format = int(search_format)
     show_obj.subtitles = subtitles
     show_obj.sub_use_sr_metadata = sub_use_sr_metadata
     show_obj.default_ep_status = int(default_ep_status)
@@ -919,7 +919,7 @@ class MassEditHandler(BaseHandler, ABC):
             if default_ep_status == 'keep':
                 new_default_ep_status = show_obj.default_ep_status
             else:
-                new_default_ep_status = default_ep_status
+                new_default_ep_status = int(default_ep_status)
 
             if anime == 'keep':
                 new_anime = show_obj.anime
@@ -930,8 +930,7 @@ class MassEditHandler(BaseHandler, ABC):
             if search_format == 'keep':
                 new_search_format = show_obj.search_format
             else:
-                new_search_format = True if search_format == 'enable' else False
-            new_search_format = 'on' if new_search_format else 'off'
+                new_search_format = int(search_format)
 
             if flatten_folders == 'keep':
                 new_flatten_folders = show_obj.flatten_folders
