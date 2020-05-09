@@ -21,4 +21,4 @@ RUN pip install -r /opt/sickrage/requirements.txt
 EXPOSE 8081
 VOLUME /config /downloads /tv /anime
 
-ENTRYPOINT python /opt/sickrage/SiCKRAGE.py --nolaunch --web_root $WEB_ROOT --datadir /config
+ENTRYPOINT python /opt/sickrage/SiCKRAGE.py --nolaunch --web_root ${WEB_ROOT} --datadir /config
