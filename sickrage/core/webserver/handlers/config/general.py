@@ -169,6 +169,10 @@ class SaveGeneralHandler(BaseHandler, ABC):
         strip_special_file_bits = self.get_argument('strip_special_file_bits', None)
         max_queue_workers = self.get_argument('max_queue_workers', None)
         web_root = self.get_argument('web_root', '')
+        ip_whitelist = self.get_argument('ip_whitelist', '')
+        web_auth_method = self.get_argument('web_auth_method', '')
+        web_username = self.get_argument('web_username', '')
+        web_password = self.get_argument('web_password', '')
 
         results = []
 
@@ -233,6 +237,17 @@ class SaveGeneralHandler(BaseHandler, ABC):
         sickrage.app.config.strip_special_file_bits = checkbox_to_value(strip_special_file_bits)
 
         sickrage.app.config.web_root = web_root
+
+        sickrage.app.config.ip_whitelist = ip_whitelist
+
+        if web_auth_method == 'sso_auth':
+            sickrage.app.config.sso_auth_enabled = True
+            sickrage.app.config.local_auth_enabled = False
+        else:
+            sickrage.app.config.sso_auth_enabled = False
+            sickrage.app.config.local_auth_enabled = True
+            sickrage.app.config.web_username = web_username
+            sickrage.app.config.web_password = web_password
 
         # sickrage.app.config.change_web_external_port(web_external_port)
 

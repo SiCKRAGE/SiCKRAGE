@@ -255,8 +255,12 @@
                                     ${_('Tools')}
                                 </span>
                                 <span id="profile-container" class="d-sm-none d-md-block">
-                                    <img class="rounded-circle shadow"
-                                         src="https://gravatar.com/avatar/${md5(current_user['email'].encode('utf-8')).hexdigest()}?d=mm&s=40"/>
+                                    % if isinstance(current_user, dict):
+                                        <img class="rounded-circle shadow"
+                                             src="https://gravatar.com/avatar/${md5(current_user['email'].encode('utf-8')).hexdigest()}?d=mm&s=40"/>
+                                    % else:
+                                        <i class="fa fa-2x fa-user-circle"></i>
+                                    % endif
                                     <span id="profile-badge" class="badge badge-info"
                                           style="float:right;margin-bottom:-10px;"></span>
                                 </span>
@@ -305,7 +309,7 @@
                                    class="confirm shutdown">
                                     <i class="fas fa-fw fa-power-off"></i>&nbsp;${_('Shutdown')}
                                 </a>
-                                % if sickrage.app.config.sub_id == current_user.get('sub'):
+                                % if isinstance(current_user, dict) and sickrage.app.config.sub_id == current_user.get('sub'):
                                     <a class="dropdown-item" href="${srWebRoot}/unlink" class="confirm logout">
                                         <i class="fas fa-fw fa-unlink"></i>&nbsp;${_('Unlink Account')}
                                     </a>

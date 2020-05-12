@@ -271,6 +271,7 @@ def main():
                             help='Disable application updates')
         parser.add_argument('--web_root',
                             default='',
+                            type=str,
                             help='Overrides URL web root')
         parser.add_argument('--db_type',
                             default='sqlite',
@@ -294,8 +295,8 @@ def main():
         # Parse startup args
         args = parser.parse_args()
         app.quiet = args.quiet
+        app.host = args.host
         app.web_port = int(args.port)
-        app.web_host = args.host
         app.web_root = args.web_root.lstrip('/').rstrip('/')
         app.no_launch = args.nolaunch
         app.disable_updates = args.disable_updates

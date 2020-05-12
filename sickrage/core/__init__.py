@@ -45,6 +45,7 @@ from tornado.platform.asyncio import AnyThreadEventLoopPolicy
 import sickrage
 from sickrage.core.announcements import Announcements
 from sickrage.core.api import API
+from sickrage.core.auth import AuthServer
 from sickrage.core.caches.quicksearch_cache import QuicksearchCache
 from sickrage.core.common import SD, SKIPPED, WANTED
 from sickrage.core.config import Config
@@ -120,9 +121,6 @@ class Core(object):
         self.debug = None
         self.newest_version_string = None
 
-        self.oidc_client_id = 'sickrage-app'
-        self.oidc_client_secret = '5d4710b2-ca70-4d39-b5a3-0705e2c5e703'
-
         self.naming_ep_type = ("%(seasonnumber)dx%(episodenumber)02d",
                                "s%(seasonnumber)02de%(episodenumber)02d",
                                "S%(seasonnumber)02dE%(episodenumber)02d",
@@ -170,7 +168,7 @@ class Core(object):
         self.subtitle_searcher = None
         self.auto_postprocessor = None
         self.upnp_client = None
-        self.oidc_client = None
+        self.auth_server = None
         self.quicksearch_cache = None
         self.announcements = None
         self.api = None
@@ -219,9 +217,8 @@ class Core(object):
         self.quicksearch_cache = QuicksearchCache()
         self.announcements = Announcements()
 
-        # setup oidc client
-        realm = KeycloakRealm(server_url='https://auth.sickrage.ca', realm_name='sickrage')
-        self.oidc_client = realm.open_id_connect(client_id=self.oidc_client_id, client_secret=self.oidc_client_secret)
+        # authorization sso client
+        self.auth_server = AuthServer()
 
         # check available space
         try:
