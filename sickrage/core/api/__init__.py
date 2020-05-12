@@ -21,8 +21,6 @@ class API(object):
         self.name = 'SR-API'
         self.api_base = 'https://www.sickrage.ca/api/'
         self.api_version = 'v3'
-        self.client_id = sickrage.app.oidc_client_id
-        self.client_secret = sickrage.app.oidc_client_secret
         self._session = None
 
     @property
@@ -60,11 +58,11 @@ class API(object):
     @property
     def session(self):
         extra = {
-            'client_id': self.client_id,
-            'client_secret': self.client_secret
+            'client_id': sickrage.app.auth_server.client_id,
+            'client_secret': sickrage.app.auth_server.client_secret
         }
 
-        if not self._session:
+        if not self._session and self.token_url:
             self._session = OAuth2Session(token=self.token, auto_refresh_kwargs=extra, auto_refresh_url=self.token_url, token_updater=self.token_updater)
 
         return self._session
@@ -108,14 +106,20 @@ class API(object):
 
     @property
     def token_url(self):
-        try:
-            return sickrage.app.oidc_client.well_known['token_endpoint']
-        except KeycloakClientError:
-            return "https://auth.sickrage.ca/auth/realms/sickrage/protocol/openid-connect/token"
+        return sickrage.app.auth_server.get_url('token_endpoint')
 
     @property
     def health(self):
-        return requests.get(urljoin(self.api_base, "oauth/health"), verify=False).ok
+        try:
+            health = requests.get(urljoin(self.api_base, "oauth/health"), verify=False).ok
+        except requests.exceptions.ConnectionError as e:
+            health = False
+
+        if not health:
+            sickrage.app.log.debug("SiCKRAGE backend API is currently unreachable")
+            return False
+
+        return True
 
     @property
     def userinfo(self):
@@ -125,19 +129,22 @@ class API(object):
         self.token = value
 
     def logout(self):
-        sickrage.app.oidc_client.logout(self.token.get('refresh_token'))
+        sickrage.app.auth_server.logout(self.token.get('refresh_token'))
 
     def refresh_token(self):
         extra = {
-            'client_id': self.client_id,
-            'client_secret': self.client_secret
+            'client_id': sickrage.app.auth_server.client_id,
+            'client_secret': sickrage.app.auth_server.client_secret
         }
 
-        self.token = self.session.refresh_token(self.token_url, **extra)
+        if self.token_url:
+            self.token = self.session.refresh_token(self.token_url, **extra)
 
     def exchange_token(self, token, scope='offline_access'):
         exchange = {'scope': scope, 'subject_token': token['access_token']}
-        self.token = sickrage.app.oidc_client.token_exchange(**exchange)
+        exchanged_token = sickrage.app.auth_server.token_exchange(**exchange)
+        if exchanged_token:
+            self.token = exchanged_token
 
     def allowed_usernames(self):
         return self.request('GET', 'allowed-usernames')
@@ -149,7 +156,7 @@ class API(object):
         return self.request('POST', 'account/private-key', data=dict({'privatekey': privatekey}))
 
     def request(self, method, url, timeout=30, **kwargs):
-        if not self.token:
+        if not self.token or not self.session:
             return
 
         url = urljoin(self.api_base, "/".join([self.api_version, url]))
@@ -160,7 +167,6 @@ class API(object):
             try:
                 if not self.health:
                     if i > 3:
-                        sickrage.app.log.debug('SiCKRAGE backend API is currently unreachable')
                         return None
                     continue
 

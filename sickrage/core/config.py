@@ -76,6 +76,8 @@ class Config(object):
         self.git_newver = False
         self.socket_timeout = 30
         self.web_host = ""
+        self.web_username = ""
+        self.web_password = ""
         self.web_port = 8081
         self.web_external_port = 0
         self.web_log = False
@@ -91,6 +93,9 @@ class Config(object):
         self.https_cert = ""
         self.https_key = ""
         self.api_key = ""
+        self.sso_auth_enabled = False
+        self.local_auth_enabled = False
+        self.ip_whitelist = ""
         self.indexer_default_language = 'en'
         self.ep_default_deleted_status = None
         self.launch_browser = False
@@ -720,6 +725,9 @@ class Config(object):
                 'dailysearch_frequency': 40,
                 'ignore_words': 'german,french,core2hd,dutch,swedish,reenc,MrLss',
                 'api_key': self.api_key or generate_api_key(),
+                'sso_auth_enabled': True,
+                'local_auth_enabled': False,
+                'ip_whitelist': self.ip_whitelist,
                 'check_propers_interval': 'daily',
                 'nzb_method': 'blackhole',
                 'web_cookie_secret': self.web_cookie_secret or generate_secret(),
@@ -775,6 +783,8 @@ class Config(object):
                 'naming_custom_anime': False,
                 'randomize_providers': False,
                 'web_host': get_lan_ip(),
+                'web_username': '',
+                'web_password': '',
                 'config_version': self.config_version,
                 'process_automatically': False,
                 'git_path': 'git',
@@ -1357,7 +1367,7 @@ class Config(object):
         def_val = def_val if def_val is not None else self.defaults[section][key]
 
         try:
-            my_val = self.config_obj.get(section).as_bool(key) or def_val
+            my_val = self.config_obj.get(section).as_bool(key)
         except Exception:
             my_val = def_val
 
@@ -1422,6 +1432,8 @@ class Config(object):
         self.git_reset = self.check_setting_bool('General', 'git_reset')
         self.web_port = sickrage.app.web_port or self.check_setting_int('General', 'web_port')
         self.web_host = sickrage.app.web_host or self.check_setting_str('General', 'web_host')
+        self.web_username = self.check_setting_str('General', 'web_username')
+        self.web_password = self.check_setting_str('General', 'web_password', censor=True)
         self.web_external_port = self.check_setting_int('General', 'web_external_port')
         self.web_ipv6 = self.check_setting_bool('General', 'web_ipv6')
         self.web_root = sickrage.app.web_root or self.check_setting_str('General', 'web_root').lstrip('/').rstrip('/')
@@ -1442,6 +1454,9 @@ class Config(object):
         self.trash_rotate_logs = self.check_setting_bool('General', 'trash_rotate_logs')
         self.sort_article = self.check_setting_bool('General', 'sort_article')
         self.api_key = self.check_setting_str('General', 'api_key', censor=True)
+        self.sso_auth_enabled = self.check_setting_bool('General', 'sso_auth_enabled')
+        self.local_auth_enabled = self.check_setting_bool('General', 'local_auth_enabled')
+        self.ip_whitelist = self.check_setting_str('General', 'ip_whitelist')
         self.enable_https = self.check_setting_bool('General', 'enable_https')
         self.https_cert = self.check_setting_str('General', 'https_cert')
         self.https_key = self.check_setting_str('General', 'https_key')
@@ -1924,6 +1939,8 @@ class Config(object):
                 'web_port': self.web_port,
                 'web_external_port': self.web_external_port,
                 'web_host': self.web_host,
+                'web_username': self.web_username,
+                'web_password': self.web_password,
                 'web_ipv6': int(self.web_ipv6),
                 'web_log': int(self.web_log),
                 'web_root': self.web_root,
@@ -1935,6 +1952,9 @@ class Config(object):
                 'max_queue_workers': self.max_queue_workers,
                 'anon_redirect': self.anon_redirect,
                 'api_key': self.api_key,
+                'sso_auth_enabled': int(self.sso_auth_enabled),
+                'local_auth_enabled': int(self.local_auth_enabled),
+                'ip_whitelist': self.ip_whitelist,
                 'debug': int(self.debug),
                 'default_page': self.default_page,
                 'enable_https': int(self.enable_https),

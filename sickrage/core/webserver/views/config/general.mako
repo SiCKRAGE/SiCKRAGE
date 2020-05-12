@@ -16,10 +16,18 @@ c<%inherit file="../layouts/config.mako"/>
     from sickrage.metadata import GenericMetadata
 %>
 <%block name="menus">
-    <li class="nav-item px-1"><a class="nav-link" data-toggle="tab" href="#misc">${_('Misc')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link" data-toggle="tab" href="#interface">${_('Interface')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link" data-toggle="tab"
-                                 href="#advanced-settings">${_('Advanced Settings')}</a></li>
+    <li class="nav-item px-1">
+        <a class="nav-link" data-toggle="tab" href="#misc">${_('Misc')}</a>
+    </li>
+    <li class="nav-item px-1">
+        <a class="nav-link" data-toggle="tab" href="#interface">${_('Interface')}</a>
+    </li>
+    <li class="nav-item px-1">
+        <a class="nav-link" data-toggle="tab" href="#network-settings">${_('Network')}</a>
+    </li>
+    <li class="nav-item px-1">
+        <a class="nav-link" data-toggle="tab" href="#advanced-settings">${_('Advanced Settings')}</a>
+    </li>
 </%block>
 <%block name="pages">
     <% indexer = 0 %>
@@ -27,63 +35,6 @@ c<%inherit file="../layouts/config.mako"/>
         <% indexer = sickrage.app.config.indexer_default %>
     % endif
     <div id="misc" class="tab-pane active">
-        <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
-                <h3>${_('SiCKRAGE API')}</h3>
-                <small class="form-text text-muted">
-                    ${_('Options for api.sickrage.ca')}
-                </small>
-            </div>
-
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
-                <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5">
-                        <label class="component-title">${_('API Provider Cache')}</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                        <label for="enable_api_providers_cache">
-                            <input type="checkbox" class="enabler toggle color-primary is-material"
-                                   name="enable_api_providers_cache"
-                                   id="enable_api_providers_cache" ${('', 'checked')[bool(sickrage.app.config.enable_api_providers_cache)]}/>
-                            ${_('Enable provider cache ?')}
-                        </label>
-                    </div>
-                </div>
-
-                <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5">
-                        <label class="component-title">${_('Google Drive')}</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                    % try:
-                        % if sickrage.app.api.google.is_connected()['success']:
-                            <div class="form-row">
-                                <div class="col-md-12">
-                                    <span class="badge badge-success">CONNECTED</span>
-                                </div>
-                            </div>
-                            <br/>
-                            <div class="form-row">
-                                <div class="col-md-12">
-                                    <input class="btn" type="button" value="${_('Sync To Google Drive')}"
-                                           id="syncRemote"/>
-                                    <input class="btn" type="button" value="${_('Sync To Local Drive')}"
-                                           id="syncLocal"/>
-                                </div>
-                            </div>
-                        % else:
-                            <span class="badge badge-danger">DISCONNECTED</span>
-                        % endif
-                    % except Exception:
-                        <span class="badge badge-danger">DISCONNECTED</span>
-                    % endtry:
-                    </div>
-                </div>
-            </fieldset>
-        </div>
-
-        <hr/>
-
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>${_('Misc')}</h3>
@@ -418,9 +369,65 @@ c<%inherit file="../layouts/config.mako"/>
                 </div>
 
             </fieldset>
-
         </div>
-    </div><!-- /tab-pane1 //-->
+
+        <hr/>
+
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
+                <h3>${_('SiCKRAGE API')}</h3>
+                <small class="form-text text-muted">
+                    ${_('Options for api.sickrage.ca')}
+                </small>
+            </div>
+
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
+                <div class="form-row form-group">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
+                        <label class="component-title">${_('API Provider Cache')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                        <label for="enable_api_providers_cache">
+                            <input type="checkbox" class="enabler toggle color-primary is-material"
+                                   name="enable_api_providers_cache"
+                                   id="enable_api_providers_cache" ${('', 'checked')[bool(sickrage.app.config.enable_api_providers_cache)]}/>
+                            ${_('Enable provider cache ?')}
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-row form-group">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
+                        <label class="component-title">${_('Google Drive')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                    % try:
+                        % if sickrage.app.api.google.is_connected()['success']:
+                            <div class="form-row">
+                                <div class="col-md-12">
+                                    <span class="badge badge-success">CONNECTED</span>
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="form-row">
+                                <div class="col-md-12">
+                                    <input class="btn" type="button" value="${_('Sync To Google Drive')}"
+                                           id="syncRemote"/>
+                                    <input class="btn" type="button" value="${_('Sync To Local Drive')}"
+                                           id="syncLocal"/>
+                                </div>
+                            </div>
+                        % else:
+                            <span class="badge badge-danger">DISCONNECTED</span>
+                        % endif
+                    % except Exception:
+                        <span class="badge badge-danger">DISCONNECTED</span>
+                    % endtry:
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div><!-- misc.tab-pane1 -->
 
     <div id="interface" class="tab-pane">
         <div class="form-row">
@@ -706,13 +713,13 @@ c<%inherit file="../layouts/config.mako"/>
                     </div>
                 </div>
             </fieldset>
-        </div><!-- /User interface tab-pane -->
+        </div><!-- User interface section -->
+    </div><!-- interface.tab-pane -->
 
-        <hr/>
-
+    <div id="network-settings" class="tab-pane">
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 card-title">
-                <h3>${_('Web Interface')}</h3>
+                <h3>${_('Network')}</h3>
                 <small class="form-text text-muted">
                     ${_('It is recommended that you enable a username and password to secure SiCKRAGE from being tampered with remotely.')}
                     <p><b>${_('These options require a manual restart to take effect.')}</b></p>
@@ -769,7 +776,7 @@ c<%inherit file="../layouts/config.mako"/>
                                     <input name="web_port" id="web_port"
                                            value="${sickrage.app.config.web_port}"
                                            placeholder="${_('8081')}"
-                                           title="web port to browse and access WebUI"
+                                           title="${_('Web port to browse and access WebUI')}"
                                            class="form-control"/>
                                 </div>
                             </div>
@@ -800,7 +807,7 @@ c<%inherit file="../layouts/config.mako"/>
                                     <input name="web_root" id="web_root"
                                            value="${sickrage.app.config.web_root}"
                                            placeholder="${'/'}"
-                                           title="web root used in URL to browse and access WebUI"
+                                           title="${_('Web root used in URL to browse and access WebUI')}"
                                            class="form-control"/>
                                 </div>
                             </div>
@@ -846,6 +853,108 @@ c<%inherit file="../layouts/config.mako"/>
                                 <label class="text-info" for="api_key">
                                     ${_('used to give 3rd party programs limited access to SiCKRAGE you can try all the features of the API')}
                                     <a href="${srWebRoot}/apibuilder/">${_('here')}</a>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row form-group">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
+                        <label class="component-title">${_('Web Authentication Method')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                        <div class="form-row">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <span class="fas fa-cloud"></span>
+                                    </span>
+                                </div>
+                                <select id="web_auth_method" name="web_auth_method" class="form-control">
+                                    <option value="sso_auth" ${('', 'selected="selected"')[sickrage.app.config.sso_auth_enabled]}>
+                                        SSO Authentication
+                                    </option>
+                                    <option value="local_auth" ${('', 'selected="selected"')[sickrage.app.config.local_auth_enabled]}>
+                                        Local Authentication
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-12">
+                                <label class="text-info" for="api_key">
+                                    ${_('using anything other then SSO Authentication will disable SiCKRAGE API access')}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content_use_local_auth">
+                    <div class="form-row form-group">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
+                            <label class="component-title">${_('Web Username')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="fas fa-user"></span>
+                                        </span>
+                                </div>
+                                <input name="web_username" id="web_username"
+                                       value="${sickrage.app.config.web_username}"
+                                       title="${_('Leave blank to disable username/password requirement, not recommended!')}"
+                                       class="form-control"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row form-group">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
+                            <label class="component-title">${_('Web Password')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="fas fa-key"></span>
+                                        </span>
+                                </div>
+                                <input name="web_password" id="web_password"
+                                       value="${sickrage.app.config.web_password}"
+                                       title="${_('Leave blank to disable username/password requirement, not recommended!')}"
+                                       class="form-control"
+                                       type="password"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row form-group">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
+                        <label class="component-title">${_('Whitelisted IP addresses')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                        <div class="form-row">
+                            <div class="col-md-12">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="fas fa-cloud"></span>
+                                        </span>
+                                    </div>
+                                    <input name="ip_whitelist" id="ip_whitelist"
+                                           value="${sickrage.app.config.ip_whitelist}"
+                                           title="${_('List of IP addresses and networks that are allowed without auth')}"
+                                           class="form-control"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-12">
+                                <label class="text-info" for="api_key">
+                                    ${_('comma separated list of IP addresses or IP/netmask entries for networks that are allowed to access SiCKRAGE without logging in. When the server is signed out and this value is set, only localhost and addresses on this list will be allowed.')}
                                 </label>
                             </div>
                         </div>
@@ -985,8 +1094,9 @@ c<%inherit file="../layouts/config.mako"/>
                 </div>
             </fieldset>
 
-        </div><!-- /tab-pane2 //-->
-    </div><!-- /tab-pane2 //-->
+        </div><!-- Network section -->
+    </div><!-- network.tab-pane -->
+
     <div id="advanced-settings" class="tab-pane">
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 card-title">
@@ -1006,7 +1116,7 @@ c<%inherit file="../layouts/config.mako"/>
                                 </span>
                             </div>
                             <select id="cpu_presets" name="cpu_preset" class="form-control"
-                                    title="Normal (default). High is lower and Low is higher CPU use">
+                                    title="${_('Normal (default). High is lower and Low is higher CPU use')}">
                                 % for cur_preset in cpu_presets:
                                     <option value="${cur_preset}" ${('', 'selected')[sickrage.app.config.cpu_preset == cur_preset]}>${cur_preset.capitalize()}</option>
                                 % endfor
@@ -1028,7 +1138,7 @@ c<%inherit file="../layouts/config.mako"/>
                             </div>
                             <input id="max_queue_workers" name="max_queue_workers" type="number"
                                    value="${sickrage.app.config.max_queue_workers}" min="1"
-                                   title="maximum allowed items to be processed from queue at same time"
+                                   title="${_('Maximum allowed items to be processed from queue at same time')}"
                                    class="form-control" autocapitalize="off"/>
                         </div>
                     </div>
@@ -1047,7 +1157,7 @@ c<%inherit file="../layouts/config.mako"/>
                             </div>
                             <input id="anon_redirect" name="anon_redirect"
                                    value="${sickrage.app.config.anon_redirect}"
-                                   title="backlink protection via anonymizer service, must end in ?"
+                                   title="${_('Backlink protection via anonymizer service, must end in ?')}"
                                    class="form-control" autocapitalize="off"/>
                         </div>
                     </div>
@@ -1089,7 +1199,7 @@ c<%inherit file="../layouts/config.mako"/>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="no_restart">
                             <input type="checkbox" class="toggle color-primary is-material" name="no_restart"
-                                   title="Only select this when you have external software restarting SR automatically when it stops (like FireDaemon)"
+                                   title="${_('Only select this when you have external software restarting SR automatically when it stops (like FireDaemon)')}"
                                    id="no_restart" ${('', 'checked')[bool(sickrage.app.config.no_restart)]}/>
                             ${_('Shutdown SiCKRAGE on restarts (external service must restart SiCKRAGE on its own).')}
                         </label>
@@ -1152,7 +1262,7 @@ c<%inherit file="../layouts/config.mako"/>
                             </div>
                             <input id="proxy_setting" name="proxy_setting"
                                    value="${sickrage.app.config.proxy_setting}"
-                                   title="Proxy SiCKRAGE connections"
+                                   title="${_('Proxy SiCKRAGE connections')}"
                                    class="form-control" autocapitalize="off"/>
                         </div>
                     </div>
@@ -1281,61 +1391,6 @@ c<%inherit file="../layouts/config.mako"/>
 
         <hr/>
 
-        ##         <div class="form-row">
-        ##             <div class="col-lg-3 col-md-4 col-sm-4 card-title">
-        ##                 <h3>${_('PIP Settings')}</h3>
-        ##             </div>
-        ##             <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
-        ##                 <div class="form-row form-group">
-        ##                     <div class="col-lg-3 col-md-4 col-sm-5">
-        ##                         <label class="component-title">${_('PIP3 executable path')}</label>
-        ##                     </div>
-        ##                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-        ##                         <div class="form-row">
-        ##                             <div class="col-md-12">
-        ##                                 <div class="input-group">
-        ##                                     <div class="input-group-prepend">
-        ##                                         <span class="input-group-text">
-        ##                                             <span class="fas fa-file"></span>
-        ##                                         </span>
-        ##                                     </div>
-        ##                                     <input id="pip3_path" name="pip3_path"
-        ##                                            value="${sickrage.app.config.pip3_path}"
-        ##                                            placeholder="${_('ex: /path/to/pip3')}"
-        ##                                            title="only needed if OS is unable to locate pip3 from env"
-        ##                                            class="form-control" autocapitalize="off"/>
-        ##                                     <div class="input-group-append">
-        ##                                         <span class="input-group-text">
-        ##                                             <span class="btn" id="verifyPipPath">
-        ##                                                 ${_('Verify Path')}
-        ##                                             </span>
-        ##                                         </span>
-        ##                                     </div>
-        ##                                 </div>
-        ##                             </div>
-        ##                         </div>
-        ##                         <p></p>
-        ##                         <div class="form-row">
-        ##                             <div class="col-md-12">
-        ##                                 <div class="testNotification" id="testPIP-result">
-        ##                                     ${_('Click verify path to test.')}
-        ##                                 </div>
-        ##                                 <input class="btn btn-inline" type="button" id="installRequirements"
-        ##                                        value="Install Requirements">
-        ##                             </div>
-        ##                         </div>
-        ##
-        ##                     </div>
-        ##                 </div>
-        ##
-        ##                 <div class="form-row">
-        ##                     <div class="col-md-12">
-        ##                         <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
-        ##                     </div>
-        ##                 </div>
-        ##             </fieldset>
-        ##         </div>
-
         % if sickrage.app.version_updater.updater.type == "git":
         <%
             git_branches = sickrage.app.version_updater.updater.remote_branches
@@ -1462,5 +1517,5 @@ c<%inherit file="../layouts/config.mako"/>
 
             </div>
         % endif
-    </div><!-- /tab-pane3 //-->
+    </div><!-- advanced-settings.tab-pane -->
 </%block>

@@ -25,6 +25,7 @@ import ctypes
 import datetime
 import glob
 import hashlib
+import ipaddress
 import os
 import platform
 import random
@@ -1488,11 +1489,20 @@ def launch_browser(protocol=None, host=None, startport=None):
 
 
 def is_ip_private(ip):
-    priv_lo = re.compile(r"^127\.\d{1,3}\.\d{1,3}\.\d{1,3}$")
-    priv_24 = re.compile(r"^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$")
-    priv_20 = re.compile(r"^192\.168\.\d{1,3}.\d{1,3}$")
-    priv_16 = re.compile(r"^172.(1[6-9]|2[0-9]|3[0-1]).[0-9]{1,3}.[0-9]{1,3}$")
-    return priv_lo.match(ip) or priv_24.match(ip) or priv_20.match(ip) or priv_16.match(ip)
+    return ipaddress.ip_address(ip.decode()).is_private
+
+
+def is_ip_whitelisted(ip, ip_list):
+    to_return = False
+
+    for x in ip_list.split(',') + ['127.0.0.1', '::1']:
+        try:
+            if x and ipaddress.ip_network(ip).subnet_of(ipaddress.ip_network(x)):
+                to_return = True
+        except TypeError:
+            pass
+
+    return to_return
 
 
 def validate_url(value):
