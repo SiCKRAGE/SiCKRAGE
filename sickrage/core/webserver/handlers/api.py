@@ -53,8 +53,6 @@ from sickrage.core.tv.show.coming_episodes import ComingEpisodes
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.tv.show.history import History
 from sickrage.indexers import IndexerApi
-from sickrage.indexers.exceptions import indexer_error, \
-    indexer_showincomplete, indexer_shownotfound
 from sickrage.indexers.helpers import map_indexers
 from sickrage.indexers.ui import AllShowsUI
 from sickrage.subtitles import Subtitles

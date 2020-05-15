@@ -30,7 +30,7 @@ import sickrage
 from sickrage.core.helpers import chmod_as_parent, replace_extension, try_int
 from sickrage.core.websession import WebSession
 from sickrage.indexers import IndexerApi
-from sickrage.indexers.exceptions import indexer_error, indexer_episodenotfound, indexer_seasonnotfound
+from sickrage.indexers.exceptions import indexer_episodenotfound, indexer_seasonnotfound
 from sickrage.indexers.helpers import map_indexers
 
 
@@ -606,22 +606,16 @@ class GenericMetadata(object):
             sickrage.app.log.warning("Invalid image type " + str(image_type) + ", couldn't find it in the " + IndexerApi(show_obj.indexer).name + " object")
             return
 
-        try:
-            # There's gotta be a better way of doing this but we don't wanna
-            # change the language value elsewhere
-            lINDEXER_API_PARMS = IndexerApi(show_obj.indexer).api_params.copy()
+        # There's gotta be a better way of doing this but we don't wanna
+        # change the language value elsewhere
+        lINDEXER_API_PARMS = IndexerApi(show_obj.indexer).api_params.copy()
 
-            lINDEXER_API_PARMS['language'] = indexer_lang
+        lINDEXER_API_PARMS['language'] = indexer_lang
 
-            if show_obj.dvdorder != 0:
-                lINDEXER_API_PARMS['dvdorder'] = True
+        if show_obj.dvdorder != 0:
+            lINDEXER_API_PARMS['dvdorder'] = True
 
-            t = IndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
-        except (indexer_error, IOError) as e:
-            sickrage.app.log.warning("{}: Unable to look up show on ".format(show_obj.indexer_id) + IndexerApi(
-                show_obj.indexer).name + ", not downloading images: {}".format(e))
-            sickrage.app.log.debug("Indexer " + IndexerApi(show_obj.indexer).name + " maybe experiencing some problems. Try again later")
-            return None
+        t = IndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
 
         is_image_thumb = '_thumb' in image_type
         image_types = {

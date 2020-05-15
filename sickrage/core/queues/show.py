@@ -37,7 +37,7 @@ from sickrage.core.traktapi import TraktAPI
 from sickrage.core.tv.show import TVShow
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.indexers import IndexerApi
-from sickrage.indexers.exceptions import indexer_attributenotfound, indexer_error, indexer_exception
+from sickrage.indexers.exceptions import indexer_attributenotfound, indexer_exception
 
 
 class ShowQueue(SRQueue):
@@ -519,11 +519,11 @@ class QueueItemUpdate(ShowQueueItem):
         try:
             sickrage.app.log.debug("Retrieving show info from " + IndexerApi(show_obj.indexer).name + "")
             show_obj.load_from_indexer(cache=False)
-        except indexer_error as e:
-            sickrage.app.log.warning("Unable to contact " + IndexerApi(show_obj.indexer).name + ", aborting: {}".format(e))
-            return
         except indexer_attributenotfound as e:
             sickrage.app.log.warning("Data retrieved from " + IndexerApi(show_obj.indexer).name + " was incomplete, aborting: {}".format(e))
+            return
+        except indexer_exception as e:
+            sickrage.app.log.warning("Unable to contact " + IndexerApi(show_obj.indexer).name + ", aborting: {}".format(e))
             return
 
         try:

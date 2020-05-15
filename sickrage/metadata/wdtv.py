@@ -28,11 +28,9 @@ from xml.etree.ElementTree import Element, ElementTree, SubElement
 
 import sickrage
 from sickrage.core.common import dateFormat
-from sickrage.core.exceptions import ShowNotFoundException
 from sickrage.core.helpers import replace_extension, indent_xml
 from sickrage.indexers import IndexerApi
-from sickrage.indexers.exceptions import indexer_episodenotfound, \
-    indexer_error, indexer_seasonnotfound, indexer_shownotfound
+from sickrage.indexers.exceptions import indexer_episodenotfound, indexer_seasonnotfound
 from sickrage.metadata import GenericMetadata
 
 

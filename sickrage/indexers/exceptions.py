@@ -20,12 +20,8 @@
 # ##############################################################################
 
 
-
-from sickrage.indexers.thetvdb.exceptions import tvdb_attributenotfound, tvdb_episodenotfound, tvdb_error, tvdb_exception, \
-    tvdb_seasonnotfound, tvdb_showincomplete, tvdb_shownotfound
-
-__author__ = "echel0n"
-__version__ = "1.0"
+from sickrage.indexers.thetvdb.exceptions import tvdb_attributenotfound, tvdb_episodenotfound, tvdb_error, tvdb_exception, tvdb_seasonnotfound, \
+    tvdb_showincomplete, tvdb_shownotfound
 
 indexerExcepts = ["indexer_exception", "indexer_error", "indexer_userabort", "indexer_shownotfound",
                   "indexer_showincomplete", "indexer_seasonnotfound", "indexer_episodenotfound",

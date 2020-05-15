@@ -32,7 +32,6 @@ from sickrage.core.media.poster import Poster
 from sickrage.core.websession import WebSession
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.config import INDEXER_TVDB
-from sickrage.indexers.exceptions import indexer_error
 
 
 def showImage(show=None, which=None):

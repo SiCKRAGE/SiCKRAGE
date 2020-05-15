@@ -43,7 +43,7 @@ from sickrage.core.helpers import replace_extension, modify_file_timestamp, sani
     remove_extension, sanitize_file_name, make_dirs, move_file, delete_empty_folders
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.indexers import IndexerApi
-from sickrage.indexers.exceptions import indexer_seasonnotfound, indexer_error, indexer_episodenotfound
+from sickrage.indexers.exceptions import indexer_seasonnotfound, indexer_episodenotfound
 from sickrage.notifiers import Notifiers
 from sickrage.subtitles import Subtitles
 
@@ -429,22 +429,14 @@ class TVEpisode(object):
                 myEp = indexer_data[season][episode]
             else:
                 myEp = cachedSeason[episode]
-        except (indexer_error, IOError) as e:
-            sickrage.app.log.debug("{} threw up an error: {}".format(indexer_name, e))
-
-            # if the episode is already valid just log it, if not throw it up
-            if self.name:
-                sickrage.app.log.debug("{} timed out but we have enough info from other sources, allowing the error".format(indexer_name))
-                return False
-            else:
-                sickrage.app.log.error("{} timed out, unable to create the episode".format(indexer_name))
-                return False
         except (indexer_episodenotfound, indexer_seasonnotfound):
             sickrage.app.log.debug("Unable to find the episode on {}, has it been removed?".format(indexer_name))
 
             # if I'm no longer on the Indexers but I once was then delete myself from the DB
-            if self.indexer_id != -1:
+            if self.indexer_id != 0:
                 self.show.get_episode(season, episode).delete_episode()
+                raise EpisodeDeletedException
+
             return False
 
         self.indexer_id = try_int(safe_getattr(myEp, 'id'), self.indexer_id)

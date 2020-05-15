@@ -25,11 +25,9 @@ import datetime
 import os
 
 import sickrage
-from sickrage.core.exceptions import ShowNotFoundException
 from sickrage.core.helpers import chmod_as_parent
 from sickrage.indexers import IndexerApi
-from sickrage.indexers.exceptions import indexer_episodenotfound, \
-    indexer_error, indexer_seasonnotfound, indexer_shownotfound
+from sickrage.indexers.exceptions import indexer_episodenotfound, indexer_seasonnotfound
 from sickrage.metadata import GenericMetadata
 
 
