@@ -100,9 +100,7 @@ class BaseHandler(RequestHandler, ABC):
 
     def get_current_user(self):
         if is_ip_whitelisted(self.request.remote_ip, sickrage.app.config.ip_whitelist):
-            cookie = self.get_secure_cookie('_sr').decode() if self.get_secure_cookie('_sr') else None
-            if cookie == sickrage.app.config.api_key:
-                return True
+            return True
         elif sickrage.app.config.sso_auth_enabled:
             try:
                 access_token = self.get_secure_cookie('_sr_access_token')
