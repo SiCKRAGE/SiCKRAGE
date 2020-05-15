@@ -578,7 +578,7 @@ class AddExistingShowsHandler(BaseHandler, ABC):
                                                  flatten_folders=sickrage.app.config.flatten_folders_default,
                                                  subtitles=sickrage.app.config.subtitles_default,
                                                  anime=sickrage.app.config.anime_default,
-                                                 scene=sickrage.app.config.scene_default,
+                                                 search_format=sickrage.app.config.search_format_default,
                                                  default_status_after=sickrage.app.config.status_default_after,
                                                  skip_downloaded=sickrage.app.config.skip_downloaded_default)
                 num_added += 1

@@ -3184,6 +3184,17 @@ $(document).ready(function ($) {
                 $('#branchCheckout').on('click', function () {
                     window.location.href = SICKRAGE.srWebRoot + '/home/branchCheckout?branch=' + $("#branchVersion").val();
                 });
+
+                $("#web_auth_method").change(function () {
+                    $(this).find("option:selected").each(function () {
+                        const optionValue = $(this).val();
+                        if (optionValue === 'local_auth') {
+                            $('#content_use_local_auth').show();
+                        } else {
+                            $('#content_use_local_auth').hide();
+                        }
+                    });
+                }).change();
             },
 
             subtitles: {
