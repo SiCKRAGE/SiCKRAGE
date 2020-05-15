@@ -429,6 +429,10 @@ class GitUpdateManager(UpdateManager):
         commit hash. If there is a newer version it sets _num_commits_behind.
         """
 
+        # check if branch exists on remote
+        if self.current_branch not in self.remote_branches:
+            return
+
         # get all new info from server
         output, __, exit_status = self._git_cmd(self._git_path, 'remote update')
         if not exit_status == 0:
