@@ -864,29 +864,20 @@ c<%inherit file="../layouts/config.mako"/>
                         <label class="component-title">${_('Web Authentication Method')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                        <div class="form-row">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
                                     <span class="input-group-text">
                                         <span class="fas fa-cloud"></span>
                                     </span>
-                                </div>
-                                <select id="web_auth_method" name="web_auth_method" class="form-control">
-                                    <option value="sso_auth" ${('', 'selected="selected"')[sickrage.app.config.sso_auth_enabled]}>
-                                        SSO Authentication
-                                    </option>
-                                    <option value="local_auth" ${('', 'selected="selected"')[sickrage.app.config.local_auth_enabled]}>
-                                        Local Authentication
-                                    </option>
-                                </select>
                             </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="col-md-12">
-                                <label class="text-info" for="api_key">
-                                    ${_('using anything other then SSO Authentication will disable SiCKRAGE API access')}
-                                </label>
-                            </div>
+                            <select id="web_auth_method" name="web_auth_method" class="form-control">
+                                <option value="sso_auth" ${('', 'selected="selected"')[sickrage.app.config.sso_auth_enabled]}>
+                                    SSO Authentication
+                                </option>
+                                <option value="local_auth" ${('', 'selected="selected"')[sickrage.app.config.local_auth_enabled]}>
+                                    Local Authentication
+                                </option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -1011,8 +1002,8 @@ c<%inherit file="../layouts/config.mako"/>
                             ${_('enable access to the web interface using a HTTPS address')}
                         </label>
                     </div>
-
                 </div>
+
                 <div id="content_enable_https">
                     <div class="form-row form-group">
 
@@ -1084,6 +1075,32 @@ c<%inherit file="../layouts/config.mako"/>
                                    id="notify_on_login" ${('', 'checked')[bool(sickrage.app.config.notify_on_login)]}/>
                             ${_('send a message to all enabled notifiers when someone logs into SiCKRAGE from a public IP address')}
                         </label>
+                    </div>
+                </div>
+
+                <div class="form-row form-group">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
+                        <label class="component-title">${_('Enable SiCKRAGE API')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                        <label for="enable_sickrage_api">
+                            <input type="checkbox" class="enabler toggle color-primary is-material"
+                                   name="enable_sickrage_api"
+                                   id="enable_sickrage_api" ${('', 'checked')[bool(sickrage.app.config.enable_sickrage_api)]}/>
+                            ${_('enable SiCKRAGE API integration')}
+                        </label>
+
+                        <br/>
+
+                        % if not sickrage.app.api.token:
+                            <span class="btn" id="sso_auth_login">
+                                ${_('Login')}
+                            </span>
+                        % else:
+                            <span class="btn" id="sso_auth_logout">
+                                ${_('Logout')}
+                            </span>
+                        % endif
                     </div>
                 </div>
 

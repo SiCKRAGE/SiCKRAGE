@@ -30,12 +30,19 @@ class LoginHandler(BaseHandler, ABC):
     async def get(self, *args, **kwargs):
         if is_ip_whitelisted(self.request.remote_ip, sickrage.app.config.ip_whitelist) and sickrage.app.api.token:
             return self.redirect("{}".format(self.get_argument('next', "/{}/".format(sickrage.app.config.default_page))))
-        elif sickrage.app.auth_server.health and (sickrage.app.config.sso_auth_enabled or not sickrage.app.api.token):
+        elif sickrage.app.config.sso_auth_enabled and sickrage.app.auth_server.health:
             await self.run_in_executor(self.handle_sso_auth_get)
         elif sickrage.app.config.local_auth_enabled:
             await self.run_in_executor(self.handle_local_auth_get)
         else:
-            await self.run_in_executor(self.handle_auth_failed_get)
+            return self.render(
+                "/login_failed.mako",
+                topmenu="system",
+                header="SiCKRAGE Login Failed",
+                title="SiCKRAGE Login Failed",
+                controller='root',
+                action='login'
+            )
 
     async def post(self, *args, **kwargs):
         if sickrage.app.config.local_auth_enabled:
@@ -98,9 +105,6 @@ class LoginHandler(BaseHandler, ABC):
             action='login'
         )
 
-    def handle_auth_failed_get(self):
-        pass
-
     def handle_local_auth_post(self):
         username = self.get_argument('username', '')
         password = self.get_argument('password', '')
@@ -109,5 +113,5 @@ class LoginHandler(BaseHandler, ABC):
         if username == sickrage.app.config.web_username and password == sickrage.app.config.web_password:
             self.set_secure_cookie('_sr', sickrage.app.config.api_key, expires_days=30 if remember_me else 1)
             return self.redirect("{}".format(self.get_argument('next', "/{}/".format(sickrage.app.config.default_page))))
-        else:
-            return self.redirect("/login")
+
+        return self.redirect("/login")
