@@ -61,7 +61,6 @@ class Config(object):
         self.log_nr = 5
 
         self.enable_sickrage_api = False
-        self.enable_api_providers_cache = False
 
         self.enable_upnp = False
         self.version_notify = False
@@ -96,11 +95,13 @@ class Config(object):
         self.api_key = ""
         self.sso_auth_enabled = False
         self.local_auth_enabled = False
+        self.ip_whitelist_enabled = False
+        self.ip_whitelist_localhost_enabled = False
         self.ip_whitelist = ""
         self.indexer_default_language = 'en'
         self.ep_default_deleted_status = None
         self.launch_browser = False
-        self.showupdate_stale = True
+        self.showupdate_stale = False
         self.root_dirs = ""
         self.cpu_preset = "NORMAL"
         self.anon_redirect = ""
@@ -108,8 +109,8 @@ class Config(object):
         self.trash_remove_show = False
         self.trash_rotate_logs = False
         self.sort_article = False
-        self.display_all_seasons = True
-        self.default_page = "home"
+        self.display_all_seasons = False
+        self.default_page = ""
         self.use_listview = False
         self.processor_follow_symlinks = False
         self.quality_default = None
@@ -143,7 +144,7 @@ class Config(object):
         self.torrent_method = ""
         self.torrent_dir = ""
         self.download_propers = False
-        self.enable_rss_cache = True
+        self.enable_rss_cache = False
         self.torrent_file_to_magnet = False
         self.download_unverified_magnet_link = False
         self.proper_searcher_interval = ""
@@ -169,8 +170,8 @@ class Config(object):
         self.delrarcontents = False
         self.delete_non_associated_files = False
         self.move_associated_files = False
-        self.postpone_if_sync_files = True
-        self.nfo_rename = True
+        self.postpone_if_sync_files = False
+        self.nfo_rename = False
         self.tv_download_dir = ""
         self.unpack = False
         self.unpack_dir = ""
@@ -715,7 +716,6 @@ class Config(object):
                 'sub_id': self.sub_id,
                 'app_id': self.app_id,
                 'enable_sickrage_api': True,
-                'enable_api_providers_cache': True,
                 'log_size': 1048576,
                 'calendar_unprotected': False,
                 'https_key': os.path.abspath(os.path.join(sickrage.app.data_dir, 'server.key')),
@@ -729,7 +729,9 @@ class Config(object):
                 'api_key': self.api_key or generate_api_key(),
                 'sso_auth_enabled': True,
                 'local_auth_enabled': False,
-                'ip_whitelist': self.ip_whitelist,
+                'ip_whitelist_enabled': False,
+                'ip_whitelist_localhost_enabled': False,
+                'ip_whitelist': '',
                 'check_propers_interval': 'daily',
                 'nzb_method': 'blackhole',
                 'web_cookie_secret': self.web_cookie_secret or generate_secret(),
@@ -1419,7 +1421,6 @@ class Config(object):
         self.app_id = self.check_setting_str('General', 'app_id')
         self.config_version = self.check_setting_int('General', 'config_version')
         self.enable_sickrage_api = self.check_setting_bool('General', 'enable_sickrage_api')
-        self.enable_api_providers_cache = self.check_setting_bool('General', 'enable_api_providers_cache')
         self.debug = sickrage.app.debug or self.check_setting_bool('General', 'debug')
         self.last_db_compact = self.check_setting_int('General', 'last_db_compact')
         self.log_nr = self.check_setting_int('General', 'log_nr')
@@ -1459,6 +1460,8 @@ class Config(object):
         self.api_key = self.check_setting_str('General', 'api_key', censor=True)
         self.sso_auth_enabled = self.check_setting_bool('General', 'sso_auth_enabled')
         self.local_auth_enabled = self.check_setting_bool('General', 'local_auth_enabled')
+        self.ip_whitelist_enabled = self.check_setting_bool('General', 'ip_whitelist_enabled')
+        self.ip_whitelist_localhost_enabled = self.check_setting_bool('General', 'ip_whitelist_localhost_enabled')
         self.ip_whitelist = self.check_setting_str('General', 'ip_whitelist')
         self.enable_https = self.check_setting_bool('General', 'enable_https')
         self.https_cert = self.check_setting_str('General', 'https_cert')
@@ -1931,7 +1934,6 @@ class Config(object):
                 'config_version': self.config_version,
                 'last_db_compact': self.last_db_compact,
                 'enable_sickrage_api': int(self.enable_sickrage_api),
-                'enable_api_providers_cache': int(self.enable_api_providers_cache),
                 'git_autoissues': int(self.git_autoissues),
                 'git_username': self.git_username,
                 'git_password': self.git_password,
@@ -1958,6 +1960,8 @@ class Config(object):
                 'api_key': self.api_key,
                 'sso_auth_enabled': int(self.sso_auth_enabled),
                 'local_auth_enabled': int(self.local_auth_enabled),
+                'ip_whitelist_enabled': self.ip_whitelist_enabled,
+                'ip_whitelist_localhost_enabled': self.ip_whitelist_localhost_enabled,
                 'ip_whitelist': self.ip_whitelist,
                 'debug': int(self.debug),
                 'default_page': self.default_page,

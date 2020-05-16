@@ -164,20 +164,19 @@ class SaveGeneralHandler(BaseHandler, ABC):
         showupdate_stale = self.get_argument('showupdate_stale', None)
         notify_on_login = self.get_argument('notify_on_login', None)
         allowed_video_file_exts = self.get_argument('allowed_video_file_exts', '')
-        enable_api_providers_cache = self.get_argument('enable_api_providers_cache', None)
         enable_upnp = self.get_argument('enable_upnp', None)
         strip_special_file_bits = self.get_argument('strip_special_file_bits', None)
         max_queue_workers = self.get_argument('max_queue_workers', None)
         web_root = self.get_argument('web_root', '')
+        ip_whitelist_localhost_enabled = self.get_argument('ip_whitelist_localhost_enabled', None)
+        ip_whitelist_enabled = self.get_argument('ip_whitelist_enabled', None)
         ip_whitelist = self.get_argument('ip_whitelist', '')
         web_auth_method = self.get_argument('web_auth_method', '')
         web_username = self.get_argument('web_username', '')
         web_password = self.get_argument('web_password', '')
+        enable_sickrage_api = self.get_argument('enable_sickrage_api', None)
 
         results = []
-
-        # API
-        sickrage.app.config.enable_api_providers_cache = checkbox_to_value(enable_api_providers_cache)
 
         # Language
         sickrage.app.config.change_gui_lang(gui_language)
@@ -238,6 +237,8 @@ class SaveGeneralHandler(BaseHandler, ABC):
 
         sickrage.app.config.web_root = web_root
 
+        sickrage.app.config.ip_whitelist_enabled = checkbox_to_value(ip_whitelist_enabled)
+        sickrage.app.config.ip_whitelist_localhost_enabled = checkbox_to_value(ip_whitelist_localhost_enabled)
         sickrage.app.config.ip_whitelist = ip_whitelist
 
         if web_auth_method == 'sso_auth':
@@ -248,6 +249,8 @@ class SaveGeneralHandler(BaseHandler, ABC):
             sickrage.app.config.local_auth_enabled = True
             sickrage.app.config.web_username = web_username
             sickrage.app.config.web_password = web_password
+
+        sickrage.app.config.enable_sickrage_api = checkbox_to_value(enable_sickrage_api)
 
         # sickrage.app.config.change_web_external_port(web_external_port)
 

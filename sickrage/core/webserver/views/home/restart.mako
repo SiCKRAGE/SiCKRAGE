@@ -43,7 +43,7 @@
         $("#dynamic").css("width", current_percent + "%").text(current_percent + "% Complete");
 
         $.ajax({
-            url: srWebRoot + '/home/is_alive/',
+            url: srWebRoot + '/home/is-alive/',
             dataType: 'jsonp',
             jsonp: 'srcallback',
             success: function (data) {

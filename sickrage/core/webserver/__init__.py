@@ -31,6 +31,7 @@ from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 import sickrage
 from sickrage.core.helpers import create_https_certificates
+from sickrage.core.webserver.handlers.account import AccountLinkHandler, AccountUnlinkHandler, AccountIsLinkedHandler
 from sickrage.core.webserver.handlers.announcements import AnnouncementsHandler, MarkAnnouncementSeenHandler, AnnouncementCountHandler
 from sickrage.core.webserver.handlers.api import ApiHandler
 from sickrage.core.webserver.handlers.calendar import CalendarHandler
@@ -82,7 +83,7 @@ from sickrage.core.webserver.handlers.manage.queues import ManageQueuesHandler, 
 from sickrage.core.webserver.handlers.root import RobotsDotTxtHandler, MessagesDotPoHandler, \
     APIBulderHandler, SetHomeLayoutHandler, SetPosterSortByHandler, SetPosterSortDirHandler, \
     ToggleDisplayShowSpecialsHandler, SetScheduleLayoutHandler, ToggleScheduleDisplayPausedHandler, \
-    SetScheduleSortHandler, ScheduleHandler, UnlinkHandler, QuicksearchDotJsonHandler, SetHistoryLayoutHandler, ForceSchedulerJobHandler
+    SetScheduleSortHandler, ScheduleHandler, QuicksearchDotJsonHandler, SetHistoryLayoutHandler, ForceSchedulerJobHandler
 from sickrage.core.webserver.handlers.web_file_browser import WebFileBrowserHandler, WebFileBrowserCompleteHandler
 from sickrage.core.websocket import WebSocketUIHandler
 
@@ -231,10 +232,12 @@ class WebServer(object):
             (r'%s/announcements/announcementCount(/?)' % sickrage.app.config.web_root, AnnouncementCountHandler),
             (r'%s/announcements/mark-seen(/?)' % sickrage.app.config.web_root, MarkAnnouncementSeenHandler),
             (r'%s/schedule(/?)' % sickrage.app.config.web_root, ScheduleHandler),
-            (r'%s/unlink(/?)' % sickrage.app.config.web_root, UnlinkHandler),
             (r'%s/setScheduleLayout(/?)' % sickrage.app.config.web_root, SetScheduleLayoutHandler),
             (r'%s/calendar(/?)' % sickrage.app.config.web_root, CalendarHandler),
             (r'%s/changelog(/?)' % sickrage.app.config.web_root, ChangelogHandler),
+            (r'%s/account/link(/?)' % sickrage.app.config.web_root, AccountLinkHandler),
+            (r'%s/account/unlink(/?)' % sickrage.app.config.web_root, AccountUnlinkHandler),
+            (r'%s/account/is-linked(/?)' % sickrage.app.config.web_root, AccountIsLinkedHandler),
             (r'%s/history(/?)' % sickrage.app.config.web_root, HistoryHandler),
             (r'%s/history/clear(/?)' % sickrage.app.config.web_root, HistoryClearHandler),
             (r'%s/history/trim(/?)' % sickrage.app.config.web_root, HistoryTrimHandler),
@@ -250,7 +253,7 @@ class WebServer(object):
             (r'%s/browser/complete(/?)' % sickrage.app.config.web_root, WebFileBrowserCompleteHandler),
             (r'%s/home(/?)' % sickrage.app.config.web_root, HomeHandler),
             (r'%s/home/showProgress(/?)' % sickrage.app.config.web_root, ShowProgressHandler),
-            (r'%s/home/is_alive(/?)' % sickrage.app.config.web_root, IsAliveHandler),
+            (r'%s/home/is-alive(/?)' % sickrage.app.config.web_root, IsAliveHandler),
             (r'%s/home/testSABnzbd(/?)' % sickrage.app.config.web_root, TestSABnzbdHandler),
             (r'%s/home/testSynologyDSM(/?)' % sickrage.app.config.web_root, TestSynologyDSMHandler),
             (r'%s/home/testTorrent(/?)' % sickrage.app.config.web_root, TestTorrentHandler),

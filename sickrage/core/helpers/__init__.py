@@ -1492,10 +1492,17 @@ def is_ip_private(ip):
     return ipaddress.ip_address(ip.decode()).is_private
 
 
-def is_ip_whitelisted(ip, ip_list):
+def is_ip_whitelisted(ip):
     to_return = False
 
-    for x in ip_list.split(',') + ['127.0.0.1', '::1']:
+    whitelisted_addresses = []
+
+    if sickrage.app.config.ip_whitelist_enabled:
+        whitelisted_addresses += sickrage.app.config.ip_whitelist.split(',')
+    if sickrage.app.config.ip_whitelist_localhost_enabled:
+        whitelisted_addresses += ['127.0.0.1', '::1']
+
+    for x in whitelisted_addresses:
         try:
             if x and ipaddress.ip_network(ip).subnet_of(ipaddress.ip_network(x)):
                 to_return = True

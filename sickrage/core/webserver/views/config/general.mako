@@ -370,63 +370,6 @@ c<%inherit file="../layouts/config.mako"/>
 
             </fieldset>
         </div>
-
-        <hr/>
-
-        <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
-                <h3>${_('SiCKRAGE API')}</h3>
-                <small class="form-text text-muted">
-                    ${_('Options for api.sickrage.ca')}
-                </small>
-            </div>
-
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
-                <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5">
-                        <label class="component-title">${_('API Provider Cache')}</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                        <label for="enable_api_providers_cache">
-                            <input type="checkbox" class="enabler toggle color-primary is-material"
-                                   name="enable_api_providers_cache"
-                                   id="enable_api_providers_cache" ${('', 'checked')[bool(sickrage.app.config.enable_api_providers_cache)]}/>
-                            ${_('Enable provider cache ?')}
-                        </label>
-                    </div>
-                </div>
-
-                <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5">
-                        <label class="component-title">${_('Google Drive')}</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                    % try:
-                        % if sickrage.app.api.google.is_connected()['success']:
-                            <div class="form-row">
-                                <div class="col-md-12">
-                                    <span class="badge badge-success">CONNECTED</span>
-                                </div>
-                            </div>
-                            <br/>
-                            <div class="form-row">
-                                <div class="col-md-12">
-                                    <input class="btn" type="button" value="${_('Sync To Google Drive')}"
-                                           id="syncRemote"/>
-                                    <input class="btn" type="button" value="${_('Sync To Local Drive')}"
-                                           id="syncLocal"/>
-                                </div>
-                            </div>
-                        % else:
-                            <span class="badge badge-danger">DISCONNECTED</span>
-                        % endif
-                    % except Exception:
-                        <span class="badge badge-danger">DISCONNECTED</span>
-                    % endtry:
-                    </div>
-                </div>
-            </fieldset>
-        </div>
     </div><!-- misc.tab-pane1 -->
 
     <div id="interface" class="tab-pane">
@@ -896,7 +839,6 @@ c<%inherit file="../layouts/config.mako"/>
                                 </div>
                                 <input name="web_username" id="web_username"
                                        value="${sickrage.app.config.web_username}"
-                                       title="${_('Leave blank to disable username/password requirement, not recommended!')}"
                                        class="form-control"/>
                             </div>
                         </div>
@@ -914,7 +856,6 @@ c<%inherit file="../layouts/config.mako"/>
                                 </div>
                                 <input name="web_password" id="web_password"
                                        value="${sickrage.app.config.web_password}"
-                                       title="${_('Leave blank to disable username/password requirement, not recommended!')}"
                                        class="form-control"
                                        type="password"/>
                             </div>
@@ -924,11 +865,19 @@ c<%inherit file="../layouts/config.mako"/>
 
                 <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5">
-                        <label class="component-title">${_('Whitelisted IP addresses')}</label>
+                        <label class="component-title">${_('Whitelisted IP Authentication')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="form-row">
                             <div class="col-md-12">
+                                <input type="checkbox" class="toggle color-primary is-material" name="ip_whitelist_localhost_enabled"
+                                       id="ip_whitelist_localhost_enabled" ${('', 'checked')[bool(sickrage.app.config.ip_whitelist_localhost_enabled)]}/>
+                                ${_('bypass web authentication for clients on localhost')}
+                                <br/>
+                                <input type="checkbox" class="toggle color-primary is-material" name="ip_whitelist_enabled"
+                                       id="ip_whitelist_enabled" ${('', 'checked')[bool(sickrage.app.config.ip_whitelist_enabled)]}/>
+                                ${_('bypass web authentication for clients in whitelisted IP list')}
+                                <br/>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">
@@ -938,6 +887,7 @@ c<%inherit file="../layouts/config.mako"/>
                                     <input name="ip_whitelist" id="ip_whitelist"
                                            value="${sickrage.app.config.ip_whitelist}"
                                            title="${_('List of IP addresses and networks that are allowed without auth')}"
+                                           placeholder="ex: 192.168.1.50 or 192.168.1.0/24"
                                            class="form-control"/>
                                 </div>
                             </div>
@@ -945,7 +895,7 @@ c<%inherit file="../layouts/config.mako"/>
                         <div class="form-row">
                             <div class="col-md-12">
                                 <label class="text-info" for="api_key">
-                                    ${_('comma separated list of IP addresses or IP/netmask entries for networks that are allowed to access SiCKRAGE without logging in. When the server is signed out and this value is set, only localhost and addresses on this list will be allowed.')}
+                                    ${_('comma separated list of IP addresses or IP/netmask entries for networks that are allowed to bypass web authorization.')}
                                 </label>
                             </div>
                         </div>
@@ -1075,32 +1025,6 @@ c<%inherit file="../layouts/config.mako"/>
                                    id="notify_on_login" ${('', 'checked')[bool(sickrage.app.config.notify_on_login)]}/>
                             ${_('send a message to all enabled notifiers when someone logs into SiCKRAGE from a public IP address')}
                         </label>
-                    </div>
-                </div>
-
-                <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5">
-                        <label class="component-title">${_('Enable SiCKRAGE API')}</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                        <label for="enable_sickrage_api">
-                            <input type="checkbox" class="enabler toggle color-primary is-material"
-                                   name="enable_sickrage_api"
-                                   id="enable_sickrage_api" ${('', 'checked')[bool(sickrage.app.config.enable_sickrage_api)]}/>
-                            ${_('enable SiCKRAGE API integration')}
-                        </label>
-
-                        <br/>
-
-                        % if not sickrage.app.api.token:
-                            <span class="btn" id="sso_auth_login">
-                                ${_('Link Account')}
-                            </span>
-                        % else:
-                            <span class="btn" id="sso_auth_logout">
-                                ${_('Unlink Account')}
-                            </span>
-                        % endif
                     </div>
                 </div>
 
@@ -1402,11 +1326,42 @@ c<%inherit file="../layouts/config.mako"/>
                         <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
-
             </fieldset>
         </div>
 
         <hr/>
+
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
+                <h3>${_('SiCKRAGE API')}</h3>
+            </div>
+
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
+                <div class="form-row form-group">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
+                        <label class="component-title">${_('Enable SiCKRAGE API')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                        <label for="enable_sickrage_api">
+                            <input type="checkbox" class="enabler toggle color-primary is-material"
+                                   name="enable_sickrage_api"
+                                   id="enable_sickrage_api" ${('', 'checked')[bool(sickrage.app.config.enable_sickrage_api)]}/>
+                            ${_('enable SiCKRAGE API extra features')}
+                        </label>
+
+                        <br/>
+
+                        <span id="link_sickrage_account" class="btn ${('d-none', '')[not sickrage.app.api.token]}">
+                            ${_('Link Account')}
+                        </span>
+
+                        <span id="unlink_sickrage_account" class="btn ${('', 'd-none')[not sickrage.app.api.token]}">
+                            ${_('Unlink Account')}
+                        </span>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
 
         % if sickrage.app.version_updater.updater.type == "git":
         <%

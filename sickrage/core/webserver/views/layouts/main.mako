@@ -309,11 +309,11 @@
                                    class="confirm shutdown">
                                     <i class="fas fa-fw fa-power-off"></i>&nbsp;${_('Shutdown')}
                                 </a>
-                                % if isinstance(current_user, dict) and sickrage.app.config.sub_id == current_user.get('sub'):
-                                    <a class="dropdown-item" href="${srWebRoot}/unlink" class="confirm logout">
-                                        <i class="fas fa-fw fa-unlink"></i>&nbsp;${_('Unlink Account')}
-                                    </a>
-                                % endif
+##                                 % if isinstance(current_user, dict) and sickrage.app.config.sub_id == current_user.get('sub'):
+##                                     <a class="dropdown-item" href="${srWebRoot}/account/unlink" class="confirm logout">
+##                                         <i class="fas fa-fw fa-unlink"></i>&nbsp;${_('Unlink Account')}
+##                                     </a>
+##                                 % endif
                                 <a class="dropdown-item" href="${srWebRoot}/logout" class="confirm logout">
                                     <i class="fas fa-fw fa-sign-out-alt"></i>&nbsp;${_('Logout')}
                                 </a>

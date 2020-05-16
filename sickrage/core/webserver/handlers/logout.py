@@ -31,12 +31,14 @@ class LogoutHandler(BaseHandler, ABC):
         await self.run_in_executor(self.handle_get)
 
     def handle_get(self):
-        logout_uri = sickrage.app.auth_server.get_url('end_session_endpoint')
+        logout_uri = sickrage.app.auth_server.get_url('end_session_endpoint') if sickrage.app.config.sso_auth_enabled else ""
+        redirect_uri = "{}://{}{}/login".format(self.request.protocol, self.request.host, sickrage.app.config.web_root)
+
+        self.clear_cookie('_sr')
+        self.clear_cookie('_sr_access_token')
+        self.clear_cookie('_sr_refresh_token')
+
         if logout_uri:
-            redirect_uri = "{}://{}{}/login".format(self.request.protocol, self.request.host, sickrage.app.config.web_root)
-
-            self.clear_cookie('_sr')
-            self.clear_cookie('_sr_access_token')
-            self.clear_cookie('_sr_refresh_token')
-
             return super(BaseHandler, self).redirect('{}?redirect_uri={}'.format(logout_uri, redirect_uri))
+        else:
+            return super(BaseHandler, self).redirect('{}'.format(redirect_uri))

@@ -7,7 +7,6 @@ import errno
 import oauthlib.oauth2
 import requests
 import requests.exceptions
-from keycloak.exceptions import KeycloakClientError
 from requests_oauthlib import OAuth2Session
 from sqlalchemy import orm
 
@@ -22,6 +21,10 @@ class API(object):
         self.api_base = 'https://www.sickrage.ca/api/'
         self.api_version = 'v3'
         self._session = None
+
+    @property
+    def is_enabled(self):
+        return sickrage.app.config.enable_sickrage_api and self.token
 
     @property
     def imdb(self):
@@ -156,7 +159,7 @@ class API(object):
         return self.request('POST', 'account/private-key', data=dict({'privatekey': privatekey}))
 
     def request(self, method, url, timeout=30, **kwargs):
-        if not self.token or not self.session:
+        if not self.is_enabled or not self.session:
             return
 
         url = urljoin(self.api_base, "/".join([self.api_version, url]))
@@ -208,7 +211,8 @@ class API(object):
                     error_message = json_data.get('message', error_message)
                     sickrage.app.log.debug('SiCKRAGE API response returned for url {url} Response: {err_msg}'.format(url=url, err_msg=error_message))
                 else:
-                    sickrage.app.log.debug('The response returned a non-200 response while requesting url {url} Error: {err_msg!r}'.format(url=url, err_msg=e))
+                    sickrage.app.log.debug(
+                        'The response returned a non-200 response while requesting url {url} Error: {err_msg!r}'.format(url=url, err_msg=e))
 
                 return resp or e.response
             except requests.exceptions.ConnectionError as e:

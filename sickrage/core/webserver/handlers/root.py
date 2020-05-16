@@ -25,7 +25,6 @@ import os
 from abc import ABC
 from functools import cmp_to_key
 
-from tornado.concurrent import run_on_executor
 from tornado.httputil import url_concat
 from tornado.web import authenticated
 
@@ -257,27 +256,6 @@ class ScheduleHandler(BaseHandler, ABC):
             controller='root',
             action='schedule'
         )
-
-
-class UnlinkHandler(BaseHandler, ABC):
-    @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
-        if not sickrage.app.config.sub_id == self.get_current_user().get('sub'):
-            return self.redirect("/{}/".format(sickrage.app.config.default_page))
-
-        sickrage.app.api.account.unregister_app_id(sickrage.app.config.app_id)
-
-        sickrage.app.config.app_id = ""
-        sickrage.app.config.sub_id = ""
-        sickrage.app.config.save()
-
-        sickrage.app.api.logout()
-        del sickrage.app.api.token
-
-        return self.redirect('/logout/')
 
 
 class QuicksearchDotJsonHandler(BaseHandler, ABC):

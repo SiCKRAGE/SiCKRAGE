@@ -99,7 +99,7 @@ class BaseHandler(RequestHandler, ABC):
                                              webroot=sickrage.app.config.web_root))
 
     def get_current_user(self):
-        if is_ip_whitelisted(self.request.remote_ip, sickrage.app.config.ip_whitelist):
+        if is_ip_whitelisted(self.request.remote_ip):
             return True
         elif sickrage.app.config.sso_auth_enabled:
             try:

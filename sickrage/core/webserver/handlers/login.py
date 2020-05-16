@@ -28,7 +28,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 class LoginHandler(BaseHandler, ABC):
     async def get(self, *args, **kwargs):
-        if is_ip_whitelisted(self.request.remote_ip, sickrage.app.config.ip_whitelist) and sickrage.app.api.token:
+        if is_ip_whitelisted(self.request.remote_ip):
             return self.redirect("{}".format(self.get_argument('next', "/{}/".format(sickrage.app.config.default_page))))
         elif sickrage.app.config.sso_auth_enabled and sickrage.app.auth_server.health:
             await self.run_in_executor(self.handle_sso_auth_get)

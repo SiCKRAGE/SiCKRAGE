@@ -139,6 +139,12 @@ $(document).ready(function ($) {
             }
         },
 
+        popupWindow: function (myURL, title, myWidth, myHeight) {
+            const left = (screen.width - myWidth) / 2;
+            const top = (screen.height - myHeight) / 4;
+            return window.open(myURL, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' + myWidth + ', height=' + myHeight + ', top=' + top + ', left=' + left);
+        },
+
         showHideRows: function (whichClass, status) {
             $("tr." + whichClass).each(function () {
                 if (status) {
@@ -3036,165 +3042,209 @@ $(document).ready(function ($) {
                 });
             },
 
-            general: function () {
-                SICKRAGE.root_dirs.init();
+            general: {
+                is_account_linked: '',
 
-                if ($("input[name='proxy_setting']").val().length === 0) {
-                    $("input[id='proxy_indexers']").prop('checked', false);
-                    $("label[for='proxy_indexers']").hide();
-                }
+                init: function () {
+                    SICKRAGE.root_dirs.init();
 
-                $("input[name='proxy_setting']").on('input', function () {
-                    if ($(this).val().length === 0) {
+                    if ($("input[name='proxy_setting']").val().length === 0) {
                         $("input[id='proxy_indexers']").prop('checked', false);
                         $("label[for='proxy_indexers']").hide();
-                    } else {
-                        $("label[for='proxy_indexers']").show();
-                    }
-                });
-
-                $(".viewIf").on('click', function () {
-                    if ($(this).prop('checked')) {
-                        $('.hide_if_' + $(this).attr('id')).css('display', 'none');
-                        $('.show_if_' + $(this).attr('id')).fadeIn("fast", "linear");
-                    } else {
-                        $('.show_if_' + $(this).attr('id')).css('display', 'none');
-                        $('.hide_if_' + $(this).attr('id')).fadeIn("fast", "linear");
-                    }
-                });
-
-                $(".datePresets").on('click', function () {
-                    var def = $('#date_presets').val();
-                    if ($(this).prop('checked') && '%x' === def) {
-                        def = '%a, %b %d, %Y';
-                        $('#date_use_system_default').html('1');
-                    } else if (!$(this).prop('checked') && '1' === $('#date_use_system_default').html()) {
-                        def = '%x';
                     }
 
-                    $('#date_presets').attr('name', 'date_preset_old');
-                    $('#date_presets').attr('id', 'date_presets_old');
+                    $("input[name='proxy_setting']").on('input', function () {
+                        if ($(this).val().length === 0) {
+                            $("input[id='proxy_indexers']").prop('checked', false);
+                            $("label[for='proxy_indexers']").hide();
+                        } else {
+                            $("label[for='proxy_indexers']").show();
+                        }
+                    });
 
-                    $('#date_presets_na').attr('name', 'date_preset');
-                    $('#date_presets_na').attr('id', 'date_presets');
+                    $(".viewIf").on('click', function () {
+                        if ($(this).prop('checked')) {
+                            $('.hide_if_' + $(this).attr('id')).css('display', 'none');
+                            $('.show_if_' + $(this).attr('id')).fadeIn("fast", "linear");
+                        } else {
+                            $('.show_if_' + $(this).attr('id')).css('display', 'none');
+                            $('.hide_if_' + $(this).attr('id')).fadeIn("fast", "linear");
+                        }
+                    });
 
-                    $('#date_presets_old').attr('name', 'date_preset_na');
-                    $('#date_presets_old').attr('id', 'date_presets_na');
+                    $(".datePresets").on('click', function () {
+                        var def = $('#date_presets').val();
+                        if ($(this).prop('checked') && '%x' === def) {
+                            def = '%a, %b %d, %Y';
+                            $('#date_use_system_default').html('1');
+                        } else if (!$(this).prop('checked') && '1' === $('#date_use_system_default').html()) {
+                            def = '%x';
+                        }
 
-                    if (def) {
-                        $('#date_presets').val(def);
-                    }
-                });
+                        $('#date_presets').attr('name', 'date_preset_old');
+                        $('#date_presets').attr('id', 'date_presets_old');
 
-                $('#api_key').on('click', function () {
-                    $('#api_key').select();
-                });
+                        $('#date_presets_na').attr('name', 'date_preset');
+                        $('#date_presets_na').attr('id', 'date_presets');
 
-                $("#generate_new_apikey").on('click', function () {
-                    $.get(SICKRAGE.srWebRoot + '/config/general/generateApiKey',
-                        function (data) {
-                            if (data.error !== undefined) {
-                                alert(data.error);
+                        $('#date_presets_old').attr('name', 'date_preset_na');
+                        $('#date_presets_old').attr('id', 'date_presets_na');
+
+                        if (def) {
+                            $('#date_presets').val(def);
+                        }
+                    });
+
+                    $('#api_key').on('click', function () {
+                        $('#api_key').select();
+                    });
+
+                    $("#generate_new_apikey").on('click', function () {
+                        $.get(SICKRAGE.srWebRoot + '/config/general/generateApiKey',
+                            function (data) {
+                                if (data.error !== undefined) {
+                                    alert(data.error);
+                                    return;
+                                }
+                                $('#api_key').val(data);
+                            });
+                    });
+
+                    $('#syncRemote').click(function () {
+                        function updateProgress() {
+                            $.getJSON(SICKRAGE.srWebRoot + '/googleDrive/getProgress', function (data) {
+                                $('#current_info').html(data.current_info);
+                            }).error(function () {
+                                clearInterval(window.progressInterval);
+                                $('#current_info').html('Uh oh, something went wrong');
+                            });
+                        }
+
+                        $.ajax({
+                            type: "GET",
+                            url: SICKRAGE.srWebRoot + '/googleDrive/syncRemote',
+                            beforeSend: function () {
+                                window.progressInterval = setInterval(updateProgress, 100);
+                                $('#pleaseWaitDialog').modal();
+                            },
+                            success: function () {
+                                clearInterval(window.progressInterval);
+                                $('#pleaseWaitDialog').modal('hide');
+                            }
+                        });
+                    });
+
+                    if ($('#pip3_path').length) {
+                        $('#pip3_path').fileBrowser({
+                            title: gt('Select path to pip3'),
+                            key: 'pip3_path',
+                            includeFiles: 1
+                        });
+
+                        $('#verifyPipPath').click(function () {
+                            var pip3_path = $.trim($('#pip3_path').val());
+                            if (!pip3_path) {
+                                $('#testPIP-result').html(gt('Please fill out the necessary fields above.'));
+                                $('#pip3_path').addClass('warning');
                                 return;
                             }
-                            $('#api_key').val(data);
-                        });
-                });
-
-                $('#syncRemote').click(function () {
-                    function updateProgress() {
-                        $.getJSON(SICKRAGE.srWebRoot + '/googleDrive/getProgress', function (data) {
-                            $('#current_info').html(data.current_info);
-                        }).error(function () {
-                            clearInterval(window.progressInterval);
-                            $('#current_info').html('Uh oh, something went wrong');
+                            $('#pip3_path').removeClass('warning');
+                            $(this).prop('disabled', true);
+                            $('#testPIP-result').html(SICKRAGE.loadingHTML);
+                            $.get(SICKRAGE.srWebRoot + '/home/verifyPath', {
+                                'path': pip3_path
+                            }).done(function (data) {
+                                $('#testPIP-result').html(data);
+                                $('#verifyPipPath').prop('disabled', false);
+                            });
                         });
                     }
 
+                    if ($('#git_path').length) {
+                        $('#git_path').fileBrowser({
+                            title: gt('Select path to git'),
+                            key: 'git_path',
+                            includeFiles: 1
+                        });
+
+                        $('#verifyGitPath').click(function () {
+                            var git_path = $.trim($('#git_path').val());
+                            if (!git_path) {
+                                $('#testGIT-result').html(gt('Please fill out the necessary fields above.'));
+                                $('#git_path').addClass('warning');
+                                return;
+                            }
+                            $('#git_path').removeClass('warning');
+                            $(this).prop('disabled', true);
+                            $('#testGIT-result').html(SICKRAGE.loadingHTML);
+                            $.get(SICKRAGE.srWebRoot + '/home/verifyPath', {
+                                'path': git_path
+                            }).done(function (data) {
+                                $('#testGIT-result').html(data);
+                                $('#verifyGitPath').prop('disabled', false);
+                            });
+                        });
+                    }
+
+                    $('#installRequirements').on('click', function () {
+                        window.location.href = SICKRAGE.srWebRoot + '/home/installRequirements';
+                    });
+
+                    $('#branchCheckout').on('click', function () {
+                        window.location.href = SICKRAGE.srWebRoot + '/home/branchCheckout?branch=' + $("#branchVersion").val();
+                    });
+
+                    $("#web_auth_method").change(function () {
+                        $(this).find("option:selected").each(function () {
+                            const optionValue = $(this).val();
+                            if (optionValue === 'local_auth') {
+                                $('#content_use_local_auth').show();
+                            } else {
+                                $('#content_use_local_auth').hide();
+                            }
+                        });
+                    }).change();
+
+                    $('#link_sickrage_account').on('click', function () {
+                        const pWindow = SICKRAGE.popupWindow(SICKRAGE.srWebRoot + '/account/link', 'Link SiCKRAGE Account', 1200, 650);
+                        const timer = setInterval(function (pWindow) {
+                            SICKRAGE.config.general.checkIsAccountLinked();
+                            if (SICKRAGE.config.general.is_account_linked === 'true') {
+                                pWindow.close();
+                                clearInterval(timer);
+                            }
+                        }, 1000, pWindow);
+                    });
+
+                    $('#unlink_sickrage_account').on('click', function () {
+                        const pWindow = SICKRAGE.popupWindow(SICKRAGE.srWebRoot + '/account/unlink', 'Unlink SiCKRAGE Account', 1200, 650);
+                        const timer = setInterval(function (pWindow) {
+                            SICKRAGE.config.general.checkIsAccountLinked();
+                            if (SICKRAGE.config.general.is_account_linked === 'false') {
+                                pWindow.close();
+                                clearInterval(timer);
+                            }
+                        }, 1000, pWindow);
+                    });
+                },
+
+                checkIsAccountLinked: function () {
                     $.ajax({
-                        type: "GET",
-                        url: SICKRAGE.srWebRoot + '/googleDrive/syncRemote',
-                        beforeSend: function () {
-                            window.progressInterval = setInterval(updateProgress, 100);
-                            $('#pleaseWaitDialog').modal();
-                        },
-                        success: function () {
-                            clearInterval(window.progressInterval);
-                            $('#pleaseWaitDialog').modal('hide');
-                        }
-                    });
-                });
+                        url: SICKRAGE.srWebRoot + '/account/is-linked',
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.linked === 'true') {
+                                $('#link_sickrage_account').addClass('d-none');
+                                $('#unlink_sickrage_account').removeClass('d-none');
+                            } else {
+                                $('#unlink_sickrage_account').addClass('d-none');
+                                $('#link_sickrage_account').removeClass('d-none');
+                            }
 
-                if ($('#pip3_path').length) {
-                    $('#pip3_path').fileBrowser({
-                        title: gt('Select path to pip3'),
-                        key: 'pip3_path',
-                        includeFiles: 1
-                    });
-
-                    $('#verifyPipPath').click(function () {
-                        var pip3_path = $.trim($('#pip3_path').val());
-                        if (!pip3_path) {
-                            $('#testPIP-result').html(gt('Please fill out the necessary fields above.'));
-                            $('#pip3_path').addClass('warning');
-                            return;
+                            SICKRAGE.config.general.is_account_linked = data.linked;
                         }
-                        $('#pip3_path').removeClass('warning');
-                        $(this).prop('disabled', true);
-                        $('#testPIP-result').html(SICKRAGE.loadingHTML);
-                        $.get(SICKRAGE.srWebRoot + '/home/verifyPath', {
-                            'path': pip3_path
-                        }).done(function (data) {
-                            $('#testPIP-result').html(data);
-                            $('#verifyPipPath').prop('disabled', false);
-                        });
                     });
                 }
-
-                if ($('#git_path').length) {
-                    $('#git_path').fileBrowser({
-                        title: gt('Select path to git'),
-                        key: 'git_path',
-                        includeFiles: 1
-                    });
-
-                    $('#verifyGitPath').click(function () {
-                        var git_path = $.trim($('#git_path').val());
-                        if (!git_path) {
-                            $('#testGIT-result').html(gt('Please fill out the necessary fields above.'));
-                            $('#git_path').addClass('warning');
-                            return;
-                        }
-                        $('#git_path').removeClass('warning');
-                        $(this).prop('disabled', true);
-                        $('#testGIT-result').html(SICKRAGE.loadingHTML);
-                        $.get(SICKRAGE.srWebRoot + '/home/verifyPath', {
-                            'path': git_path
-                        }).done(function (data) {
-                            $('#testGIT-result').html(data);
-                            $('#verifyGitPath').prop('disabled', false);
-                        });
-                    });
-                }
-
-                $('#installRequirements').on('click', function () {
-                    window.location.href = SICKRAGE.srWebRoot + '/home/installRequirements';
-                });
-
-                $('#branchCheckout').on('click', function () {
-                    window.location.href = SICKRAGE.srWebRoot + '/home/branchCheckout?branch=' + $("#branchVersion").val();
-                });
-
-                $("#web_auth_method").change(function () {
-                    $(this).find("option:selected").each(function () {
-                        const optionValue = $(this).val();
-                        if (optionValue === 'local_auth') {
-                            $('#content_use_local_auth').show();
-                        } else {
-                            $('#content_use_local_auth').hide();
-                        }
-                    });
-                }).change();
             },
 
             subtitles: {
