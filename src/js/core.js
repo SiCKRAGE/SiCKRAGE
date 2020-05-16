@@ -3199,8 +3199,12 @@ $(document).ready(function ($) {
                             const optionValue = $(this).val();
                             if (optionValue === 'local_auth') {
                                 $('#content_use_local_auth').show();
+                                $('#web_username').prop('required', true);
+                                $('#web_password').prop('required', true);
                             } else {
                                 $('#content_use_local_auth').hide();
+                                $('#web_username').prop('required', false);
+                                $('#web_password').prop('required', false);
                             }
                         });
                     }).change();

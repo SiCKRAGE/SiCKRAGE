@@ -840,6 +840,9 @@ c<%inherit file="../layouts/config.mako"/>
                                 <input name="web_username" id="web_username"
                                        value="${sickrage.app.config.web_username}"
                                        class="form-control"/>
+                                <div class="invalid-tooltip">
+                                    Please fill in a web username.
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -858,6 +861,9 @@ c<%inherit file="../layouts/config.mako"/>
                                        value="${sickrage.app.config.web_password}"
                                        class="form-control"
                                        type="password"/>
+                                <div class="invalid-tooltip">
+                                    Please fill in a web password.
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -870,11 +876,13 @@ c<%inherit file="../layouts/config.mako"/>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="form-row">
                             <div class="col-md-12">
-                                <input type="checkbox" class="toggle color-primary is-material" name="ip_whitelist_localhost_enabled"
+                                <input type="checkbox" class="toggle color-primary is-material"
+                                       name="ip_whitelist_localhost_enabled"
                                        id="ip_whitelist_localhost_enabled" ${('', 'checked')[bool(sickrage.app.config.ip_whitelist_localhost_enabled)]}/>
                                 ${_('bypass web authentication for clients on localhost')}
                                 <br/>
-                                <input type="checkbox" class="toggle color-primary is-material" name="ip_whitelist_enabled"
+                                <input type="checkbox" class="toggle color-primary is-material"
+                                       name="ip_whitelist_enabled"
                                        id="ip_whitelist_enabled" ${('', 'checked')[bool(sickrage.app.config.ip_whitelist_enabled)]}/>
                                 ${_('bypass web authentication for clients in whitelisted IP list')}
                                 <br/>
