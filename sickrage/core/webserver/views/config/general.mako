@@ -1094,11 +1094,11 @@ c<%inherit file="../layouts/config.mako"/>
 
                         % if not sickrage.app.api.token:
                             <span class="btn" id="sso_auth_login">
-                                ${_('Login')}
+                                ${_('Link Account')}
                             </span>
                         % else:
                             <span class="btn" id="sso_auth_logout">
-                                ${_('Logout')}
+                                ${_('Unlink Account')}
                             </span>
                         % endif
                     </div>

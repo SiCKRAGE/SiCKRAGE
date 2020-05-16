@@ -28,11 +28,8 @@ from base64 import urlsafe_b64decode
 from collections import OrderedDict
 from datetime import datetime
 from operator import itemgetter
-from urllib.parse import urljoin
+from urllib.parse import urljoin, quote
 
-import requests
-from requests import RequestException
-from simplejson import JSONDecodeError
 from six import text_type
 
 import sickrage
@@ -43,7 +40,7 @@ try:
 except ImportError:
     gzip = None
 
-from sickrage.indexers.thetvdb.exceptions import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound,
+from sickrage.indexers.thetvdb.exceptions import (tvdb_seasonnotfound,
                                                   tvdb_episodenotfound, tvdb_attributenotfound, tvdb_unauthorized)
 
 
@@ -467,13 +464,14 @@ class Tvdb:
                     return None
 
                 if 'application/json' in resp.headers.get('content-type', '') and i > 3:
-                    sickrage.app.log.debug(resp.json().get('Error', resp.text))
+                    err_msg = resp.json().get('Error', resp.text)
+                    sickrage.app.log.debug("Unable to get data from TheTVDB, Code: {code} Error: {err_msg!r}".format(code=resp.status_code, err_msg=err_msg))
                     return None
 
             if i > 3:
                 return None
 
-    def _setItem(self, sid, seas, ep, attrib, value):
+    def _set_item(self, sid, seas, ep, attrib, value):
         """Creates a new episode, creating Show(), Season() and
         Episode()s as required. Called by _getShowData to populate show
 
@@ -497,7 +495,7 @@ class Tvdb:
             self.shows[sid][seas][ep] = Episode()
         self.shows[sid][seas][ep][attrib] = value
 
-    def _setShowData(self, sid, key, value):
+    def _set_show_data(self, sid, key, value):
         """Sets self.shows[sid] to a new Show instance, or sets the data
         """
 
@@ -506,7 +504,7 @@ class Tvdb:
 
         self.shows[sid].data[key] = value
 
-    def _cleanData(self, data):
+    def _clean_data(self, data):
         """Cleans up strings returned by TheTVDB.com
 
         Issues corrected:
@@ -524,7 +522,7 @@ class Tvdb:
 
         if not re.search(r'tt\d+', series):
             sickrage.app.log.debug("Searching for show by name: {}".format(series))
-            resp = self._request('get', self.config['api']['getSeries'].format(name=series))
+            resp = self._request('get', self.config['api']['getSeries'].format(name=quote(series)))
             if resp and 'data' in resp:
                 return resp['data']
         else:
@@ -536,7 +534,7 @@ class Tvdb:
             #    sickrage.app.log.debug("Searching for show by zap2itId: {}".format(zap2itid))
             #    return self._request('get', self.config['api']['getSeriesZap2It'].format(id=zap2itid))['data']
 
-    def _getSeries(self, series):
+    def _get_series(self, series):
         """This searches TheTVDB.com for the series name,
         If a custom_ui UI is configured, it uses this to select the correct
         series. If not, and interactive == True, ConsoleUI is used, if not
@@ -554,7 +552,7 @@ class Tvdb:
         return ui.selectSeries(allSeries, series)
 
     @login_required
-    def _getShowData(self, sid):
+    def _get_show_data(self, sid):
         """Takes a series ID, gets the episodes URL and parses the TVDB
         XML file into the shows dict in layout:
         shows[series_id][season_number][episode_number]
@@ -585,9 +583,9 @@ class Tvdb:
                 elif isinstance(v, list):
                     v = '|'.join(v)
                 else:
-                    v = self._cleanData(v)
+                    v = self._clean_data(v)
 
-            self._setShowData(sid, k, v)
+            self._set_show_data(sid, k, v)
 
         # Parse episode data
         sickrage.app.log.debug('[{}]: Getting episode data from TheTVDB'.format(sid))
@@ -648,19 +646,19 @@ class Tvdb:
                     if isinstance(v, list):
                         v = '|'.join(v)
                     else:
-                        v = self._cleanData(v)
+                        v = self._clean_data(v)
 
-                self._setItem(sid, seas_no, ep_no, k, v)
+                self._set_item(sid, seas_no, ep_no, k, v)
 
             # add episode image url
             image_url = self.config['api']['images']['prefix'].format(value='episodes/{}/{}.jpg'.format(sid, cur_ep['id']))
-            self._setItem(sid, seas_no, ep_no, 'filename', image_url)
+            self._set_item(sid, seas_no, ep_no, 'filename', image_url)
 
         if episode_incomplete:
             sickrage.app.log.debug("{}: Series has incomplete season/episode numbers".format(sid))
 
         # set last updated
-        self._setShowData(sid, 'last_updated', int(time.mktime(datetime.now().timetuple())))
+        self._set_show_data(sid, 'last_updated', int(time.mktime(datetime.now().timetuple())))
 
         return self.shows[int(sid)]
 
@@ -771,8 +769,8 @@ class Tvdb:
                 if self.config['cache_enabled']:
                     return self.shows[key]
                 del self.shows[key]
-            return self._getShowData(key)
-        return self._getSeries(key)
+            return self._get_show_data(key)
+        return self._get_series(key)
 
     def __repr__(self):
         return repr(self.shows)
