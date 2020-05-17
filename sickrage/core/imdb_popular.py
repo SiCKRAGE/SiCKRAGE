@@ -49,14 +49,12 @@ class imdbPopular(object):
 
         popular_shows = []
 
-        try:
-            data = WebSession().get(self.url,
-                                    headers={'Referer': 'http://www.imdb.com/'},
-                                    params=self.params).text
-        except Exception:
-            return None
+        data = WebSession().get(self.url, headers={'Referer': 'http://www.imdb.com/'}, params=self.params)
+        if not data or not data.text:
+            sickrage.app.log.debug("No data returned from IMDb")
+            return
 
-        with bs4_parser(data) as soup:
+        with bs4_parser(data.text) as soup:
             for row in soup.find_all("div", {"class": "lister-item"}):
                 show = {}
                 image_div = row.find("div", {"class": "lister-item-image"})
