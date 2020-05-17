@@ -60,6 +60,8 @@ class LoginHandler(BaseHandler, ABC):
                     return self.redirect('/logout')
 
                 decoded_token = sickrage.app.auth_server.decode_token(token['access_token'], sickrage.app.auth_server.certs())
+                if not decoded_token:
+                    return self.redirect('/logout')
 
                 self.set_secure_cookie('_sr_access_token', token['access_token'])
                 self.set_secure_cookie('_sr_refresh_token', token['refresh_token'])
@@ -101,7 +103,7 @@ class LoginHandler(BaseHandler, ABC):
             if authorization_url:
                 return super(BaseHandler, self).redirect(authorization_url)
 
-        return self.redirect('/login')
+        return self.redirect('/logout')
 
     def handle_local_auth_get(self):
         return self.render(

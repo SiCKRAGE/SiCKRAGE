@@ -46,6 +46,8 @@ class AccountLinkHandler(BaseHandler, ABC):
                 return
 
             decoded_token = sickrage.app.auth_server.decode_token(token['access_token'], sickrage.app.auth_server.certs())
+            if not decoded_token:
+                return
 
             sickrage.app.api.token = token
 
