@@ -80,7 +80,7 @@ class LoginHandler(BaseHandler, ABC):
                             return self.redirect('/logout')
                     else:
                         return self.redirect('/logout')
-                else:
+                elif sickrage.app.config.enable_sickrage_api:
                     if sickrage.app.api.token:
                         sickrage.app.api.logout()
                     sickrage.app.api.token = token
