@@ -119,7 +119,7 @@ class API(object):
             health = False
 
         if not health:
-            sickrage.app.log.debug("SiCKRAGE backend API is currently unreachable")
+            sickrage.app.log.debug("SiCKRAGE API is currently unreachable")
             return False
 
         return True
