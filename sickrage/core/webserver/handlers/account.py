@@ -40,6 +40,7 @@ class AccountLinkHandler(BaseHandler, ABC):
         if sickrage.app.api.token:
             sickrage.app.config.enable_sickrage_api = True
             sickrage.app.config.save()
+            sickrage.app.alerts.message(_('Linked SiCKRAGE account to SiCKRAGE API'))
             return
 
         if code:
@@ -63,6 +64,8 @@ class AccountLinkHandler(BaseHandler, ABC):
                     sickrage.app.config.app_id = app_id
 
             sickrage.app.config.save()
+
+            sickrage.app.alerts.message(_('Linked SiCKRAGE account to SiCKRAGE API'))
         else:
             authorization_url = sickrage.app.auth_server.authorization_url(redirect_uri=redirect_uri, scope="profile email offline_access")
             if authorization_url:
@@ -89,6 +92,8 @@ class AccountUnlinkHandler(BaseHandler, ABC):
 
             sickrage.app.config.enable_sickrage_api = False
             sickrage.app.config.save()
+
+            sickrage.app.alerts.message(_('Unlinked SiCKRAGE account from SiCKRAGE API'))
 
 
 class AccountIsLinkedHandler(BaseHandler, ABC):
