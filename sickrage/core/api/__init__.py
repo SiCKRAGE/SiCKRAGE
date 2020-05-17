@@ -188,7 +188,7 @@ class API(object):
                 time.sleep(1)
             except (oauthlib.oauth2.InvalidClientIdError, oauthlib.oauth2.MissingTokenError, oauthlib.oauth2.InvalidGrantError) as e:
                 sickrage.app.log.warning("Invalid token error, please re-link your SiCKRAGE account from `settings->general->advanced->sickrage api`")
-                return resp or e.response
+                return
             except requests.exceptions.ReadTimeout as e:
                 if i > 3:
                     sickrage.app.log.debug('Error connecting to url {url} Error: {err_msg}'.format(url=url, err_msg=e))

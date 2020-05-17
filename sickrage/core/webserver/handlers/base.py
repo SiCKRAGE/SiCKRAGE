@@ -20,6 +20,8 @@
 # ##############################################################################
 import functools
 import os
+import shutil
+import tempfile
 import threading
 import time
 import traceback
@@ -44,17 +46,6 @@ class BaseHandler(RequestHandler, ABC):
         threading.currentThread().setName('TORNADO')
 
         self.startTime = time.time()
-
-        # template settings
-        self.mako_lookup = TemplateLookup(
-            directories=[sickrage.app.config.gui_views_dir],
-            module_directory=os.path.join(sickrage.app.cache_dir, 'mako'),
-            filesystem_checks=True,
-            strict_undefined=True,
-            input_encoding='utf-8',
-            output_encoding='utf-8',
-            encoding_errors='replace'
-        )
 
     def get_user_locale(self):
         return locale.get(sickrage.app.config.gui_lang)
@@ -159,8 +150,19 @@ class BaseHandler(RequestHandler, ABC):
         template_kwargs.update(self.get_template_namespace())
         template_kwargs.update(kwargs)
 
+        # template settings
+        mako_lookup = TemplateLookup(
+            directories=[sickrage.app.config.gui_views_dir],
+            # module_directory=os.path.join(sickrage.app.cache_dir, 'mako'),
+            filesystem_checks=True,
+            strict_undefined=True,
+            input_encoding='utf-8',
+            output_encoding='utf-8',
+            encoding_errors='replace'
+        )
+
         try:
-            return self.mako_lookup.get_template(template_name).render_unicode(**template_kwargs)
+            return mako_lookup.get_template(template_name).render_unicode(**template_kwargs)
         except Exception:
             kwargs['title'] = _('HTTP Error 500')
             kwargs['header'] = _('HTTP Error 500')
@@ -169,7 +171,7 @@ class BaseHandler(RequestHandler, ABC):
 
             sickrage.app.log.error("%s: %s" % (str(kwargs['backtrace'].error.__class__.__name__), kwargs['backtrace'].error))
 
-            return self.mako_lookup.get_template('/errors/500.mako').render_unicode(**template_kwargs)
+            return mako_lookup.get_template('/errors/500.mako').render_unicode(**template_kwargs)
 
     def render(self, template_name, **kwargs):
         self.write(self.render_string(template_name, **kwargs))

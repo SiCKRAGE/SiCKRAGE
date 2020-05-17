@@ -103,4 +103,4 @@ class AccountIsLinkedHandler(BaseHandler, ABC):
         await self.run_in_executor(self.handle_get)
 
     def handle_get(self):
-        return self.write(json.dumps({'linked': ('true', 'false')[not sickrage.app.api.token]}))
+        return self.write(json.dumps({'linked': ('true', 'false')[not sickrage.app.api.userinfo]}))
