@@ -37,7 +37,7 @@ def find_show_by_name(term):
 
 def find_show_by_scene_exception(term):
     for show in get_show_list():
-        if term in [x.split('|')[0] for x in show.show.scene_exceptions]:
+        if term in [x.split('|')[0] for x in show.scene_exceptions]:
             return show
 
 

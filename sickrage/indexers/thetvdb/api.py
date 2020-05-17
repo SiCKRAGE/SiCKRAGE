@@ -542,7 +542,7 @@ class Tvdb:
         """
         allSeries = self.search(series)
         if not allSeries:
-            sickrage.app.log.debug('Show search returned zero results (cannot find show on TheTVDB')
+            sickrage.app.log.debug('Show search returned zero results, cannot find show on TheTVDB')
             return None
 
         ui = BaseUI(config=self.config)
