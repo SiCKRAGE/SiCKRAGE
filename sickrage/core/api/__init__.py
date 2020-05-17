@@ -85,8 +85,10 @@ class API(object):
             'access_token': value.get('access_token'),
             'refresh_token': value.get('refresh_token'),
             'expires_in': value.get('expires_in'),
+            'session_state': value.get('session_state'),
+            'token_type': value.get('token_type'),
             'expires_at': value.get('expires_at', int(time.time() + value.get('expires_in'))),
-            'scope': value.scope if isinstance(value, oauthlib.oauth2.OAuth2Token) else value.get('scope')
+            'scope': value.scope if isinstance(value, oauthlib.oauth2.OAuth2Token) else value.get('scope'),
         }
 
         session = sickrage.app.cache_db.session()
@@ -137,11 +139,12 @@ class API(object):
     def refresh_token(self):
         extra = {
             'client_id': sickrage.app.auth_server.client_id,
-            'client_secret': sickrage.app.auth_server.client_secret
+            'client_secret': sickrage.app.auth_server.client_secret,
         }
 
         if self.token_url:
-            self.token = self.session.refresh_token(self.token_url, **extra)
+            client = OAuth2Session(sickrage.app.auth_server.client_id, token=self.token)
+            self.token = client.refresh_token(self.token_url, **extra)
 
     def exchange_token(self, token, scope='offline_access'):
         exchange = {'scope': scope, 'subject_token': token['access_token']}
