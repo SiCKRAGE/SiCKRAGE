@@ -98,7 +98,8 @@ class LoginHandler(BaseHandler, ABC):
             return self.redirect("{}".format(redirect_uri))
         else:
             authorization_url = sickrage.app.auth_server.authorization_url(redirect_uri=redirect_uri, scope="profile email offline_access")
-            return super(BaseHandler, self).redirect(authorization_url)
+            if authorization_url:
+                return super(BaseHandler, self).redirect(authorization_url)
 
     def handle_local_auth_get(self):
         return self.render(

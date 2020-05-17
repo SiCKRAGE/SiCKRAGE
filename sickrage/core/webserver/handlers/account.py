@@ -61,7 +61,8 @@ class AccountLinkHandler(BaseHandler, ABC):
             sickrage.app.config.save()
         else:
             authorization_url = sickrage.app.auth_server.authorization_url(redirect_uri=redirect_uri, scope="profile email offline_access")
-            return super(BaseHandler, self).redirect(authorization_url)
+            if authorization_url:
+                return super(BaseHandler, self).redirect(authorization_url)
 
 
 class AccountUnlinkHandler(BaseHandler, ABC):
