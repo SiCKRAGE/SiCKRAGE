@@ -53,7 +53,10 @@ class AccountLinkHandler(BaseHandler, ABC):
 
             if not sickrage.app.config.sub_id or not sickrage.app.config.app_id:
                 sickrage.app.config.sub_id = decoded_token.get('sub')
-                sickrage.app.config.app_id = sickrage.app.api.account.register_app_id()
+
+                app_id = sickrage.app.api.account.register_app_id()
+                if app_id:
+                    sickrage.app.config.app_id = app_id
 
             sickrage.app.config.save()
         else:

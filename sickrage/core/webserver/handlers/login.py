@@ -89,8 +89,10 @@ class LoginHandler(BaseHandler, ABC):
                 return self.redirect('/logout')
 
             if not re.match(r'[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}', sickrage.app.config.app_id or ""):
-                sickrage.app.config.app_id = sickrage.app.api.account.register_app_id()
-                sickrage.app.config.save()
+                app_id = sickrage.app.api.account.register_app_id()
+                if app_id:
+                    sickrage.app.config.app_id = app_id
+                    sickrage.app.config.save()
 
             redirect_uri = self.get_argument('next', "/{}/".format(sickrage.app.config.default_page))
             return self.redirect("{}".format(redirect_uri))
