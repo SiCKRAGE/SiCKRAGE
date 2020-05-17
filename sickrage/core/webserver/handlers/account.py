@@ -40,11 +40,15 @@ class AccountLinkHandler(BaseHandler, ABC):
         if code:
             token = sickrage.app.auth_server.authorization_code(code, redirect_uri)
             if not token:
-                return
+                return self.redirect('/account/link')
 
-            decoded_token = sickrage.app.auth_server.decode_token(token['access_token'], sickrage.app.auth_server.certs())
+            certs = sickrage.app.auth_server.certs()
+            if not certs:
+                return self.redirect('/account/link')
+
+            decoded_token = sickrage.app.auth_server.decode_token(token['access_token'], certs)
             if not decoded_token:
-                return
+                return self.redirect('/account/link')
 
             if sickrage.app.api.token:
                 sickrage.app.api.logout()

@@ -59,15 +59,19 @@ class LoginHandler(BaseHandler, ABC):
                 if not token:
                     return self.redirect('/logout')
 
-                decoded_token = sickrage.app.auth_server.decode_token(token['access_token'], sickrage.app.auth_server.certs())
+                certs = sickrage.app.auth_server.certs()
+                if not certs:
+                    return self.redirect('/logout')
+
+                decoded_token = sickrage.app.auth_server.decode_token(token['access_token'], certs)
                 if not decoded_token:
+                    return self.redirect('/logout')
+
+                if not decoded_token.get('sub'):
                     return self.redirect('/logout')
 
                 self.set_secure_cookie('_sr_access_token', token['access_token'])
                 self.set_secure_cookie('_sr_refresh_token', token['refresh_token'])
-
-                if not decoded_token.get('sub'):
-                    return self.redirect('/logout')
 
                 if not sickrage.app.config.sub_id:
                     sickrage.app.config.sub_id = decoded_token.get('sub')

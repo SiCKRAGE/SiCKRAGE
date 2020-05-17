@@ -108,8 +108,12 @@ class BaseHandler(RequestHandler, ABC):
                 if not all([access_token, refresh_token]):
                     return
 
+                certs = sickrage.app.auth_server.certs()
+                if not certs:
+                    return
+
                 try:
-                    return sickrage.app.auth_server.decode_token(access_token.decode("utf-8"), sickrage.app.auth_server.certs())
+                    return sickrage.app.auth_server.decode_token(access_token.decode("utf-8"), certs)
                 except (KeycloakClientError, ExpiredSignatureError):
                     token = sickrage.app.auth_server.refresh_token(refresh_token.decode("utf-8"))
                     if not token:
@@ -117,7 +121,7 @@ class BaseHandler(RequestHandler, ABC):
 
                     self.set_secure_cookie('_sr_access_token', token['access_token'])
                     self.set_secure_cookie('_sr_refresh_token', token['refresh_token'])
-                    return sickrage.app.auth_server.decode_token(token['access_token'], sickrage.app.auth_server.certs())
+                    return sickrage.app.auth_server.decode_token(token['access_token'], certs)
             except Exception as e:
                 return
         elif sickrage.app.config.local_auth_enabled:
