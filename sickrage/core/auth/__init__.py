@@ -42,7 +42,7 @@ class AuthServer(object):
     @property
     def health(self):
         try:
-            health = requests.head("{base}/auth/realms/{realm}".format(base=self.server_url, realm=self.server_realm), verify=False, timeout=30).ok
+            health = requests.get("{base}/auth/realms/{realm}".format(base=self.server_url, realm=self.server_realm), verify=False, timeout=30).ok
         except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout) as e:
             health = False
 
