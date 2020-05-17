@@ -1506,7 +1506,7 @@ def is_ip_whitelisted(ip):
         try:
             if x and ipaddress.ip_network(ip).subnet_of(ipaddress.ip_network(x)):
                 to_return = True
-        except TypeError:
+        except (TypeError, AttributeError):
             pass
 
     return to_return
