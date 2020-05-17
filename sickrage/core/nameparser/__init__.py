@@ -91,8 +91,8 @@ class NameParser(object):
 
                     if show_id:
                         return show_id
-                except Exception:
-                    pass
+                except Exception as e:
+                    sickrage.app.log.debug('SiCKRAGE encountered a error when attempting to lookup a show ID by show name, Error: {!r}'.format(e))
 
     @staticmethod
     def clean_series_name(series_name):
