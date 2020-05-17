@@ -114,7 +114,7 @@ class API(object):
     @property
     def health(self):
         try:
-            health = requests.get(urljoin(self.api_base, "oauth/health"), verify=False).ok
+            health = requests.get(urljoin(self.api_base, "oauth/health"), verify=False, timeout=30).ok
         except requests.exceptions.ConnectionError as e:
             health = False
 

@@ -42,7 +42,7 @@ class AuthServer(object):
     @property
     def health(self):
         try:
-            health = requests.head(self.server_url, verify=False).ok
+            health = requests.head(self.server_url, verify=False, timeout=30).ok
         except requests.exceptions.ConnectionError as e:
             health = False
 
