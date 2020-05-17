@@ -1504,9 +1504,11 @@ def is_ip_whitelisted(ip):
 
     for x in whitelisted_addresses:
         try:
-            if x and ipaddress.ip_network(ip).subnet_of(ipaddress.ip_network(x)):
+            if ip in whitelisted_addresses:
                 to_return = True
-        except (TypeError, AttributeError):
+            elif x and ipaddress.ip_network(ip).subnet_of(ipaddress.ip_network(x)):
+                to_return = True
+        except (TypeError, AttributeError, ValueError):
             continue
 
     if whitelisted_addresses and not to_return:
