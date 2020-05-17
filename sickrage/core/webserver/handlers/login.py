@@ -56,6 +56,9 @@ class LoginHandler(BaseHandler, ABC):
         if code:
             try:
                 token = sickrage.app.auth_server.authorization_code(code, redirect_uri)
+                if not token:
+                    return self.redirect('/logout')
+
                 decoded_token = sickrage.app.auth_server.decode_token(token['access_token'], sickrage.app.auth_server.certs())
 
                 self.set_secure_cookie('_sr_access_token', token['access_token'])
