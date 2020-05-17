@@ -115,7 +115,7 @@ class API(object):
     def health(self):
         try:
             health = requests.get(urljoin(self.api_base, "oauth/health"), verify=False, timeout=30).ok
-        except requests.exceptions.ConnectionError as e:
+        except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout):
             health = False
 
         if not health:
@@ -187,7 +187,7 @@ class API(object):
                 self.refresh_token()
                 time.sleep(1)
             except (oauthlib.oauth2.InvalidClientIdError, oauthlib.oauth2.MissingTokenError, oauthlib.oauth2.InvalidGrantError) as e:
-                sickrage.app.log.warning("Invalid token error, please re-authenticate by logging out then logging back in from web-ui")
+                sickrage.app.log.warning("Invalid token error, please re-link your SiCKRAGE account from `settings->general->advanced->sickrage api`")
                 return resp or e.response
             except requests.exceptions.ReadTimeout as e:
                 if i > 3:
