@@ -38,6 +38,8 @@ class AccountLinkHandler(BaseHandler, ABC):
         redirect_uri = "{}://{}{}/account/link".format(self.request.protocol, self.request.host, sickrage.app.config.web_root)
 
         if sickrage.app.api.token:
+            sickrage.app.config.enable_sickrage_api = True
+            sickrage.app.config.save()
             return
 
         if code:
