@@ -101,6 +101,8 @@ class LoginHandler(BaseHandler, ABC):
             if authorization_url:
                 return super(BaseHandler, self).redirect(authorization_url)
 
+        return self.redirect('/login')
+
     def handle_local_auth_get(self):
         return self.render(
             "/login.mako",

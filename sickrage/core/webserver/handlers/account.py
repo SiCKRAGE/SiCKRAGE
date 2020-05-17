@@ -64,6 +64,8 @@ class AccountLinkHandler(BaseHandler, ABC):
             if authorization_url:
                 return super(BaseHandler, self).redirect(authorization_url)
 
+        return self.redirect('/account/link')
+
 
 class AccountUnlinkHandler(BaseHandler, ABC):
     @authenticated
