@@ -12,24 +12,28 @@
             <div class="card">
                 <div class="card-body">
                     <div class="card-text">
-                        <div class="form-row">
-                            <div class="col-lg-3 col-md-3 col-sm-3">
-                                <i class="sickrage-core sickrage-core-keys"></i> ${_('SR Sub ID:')}
+                        % if sickrage.app.config.sub_id:
+                            <div class="form-row">
+                                <div class="col-lg-3 col-md-3 col-sm-3">
+                                    <i class="sickrage-core sickrage-core-keys"></i> ${_('SR Sub ID:')}
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-9">
+                                    ${sickrage.app.config.sub_id}
+                                </div>
                             </div>
-                            <div class="col-lg-9 col-md-9 col-sm-9">
-                                ${sickrage.app.config.sub_id}
+                            <br/>
+                        % endif
+                        % if sickrage.app.config.app_id:
+                            <div class="form-row">
+                                <div class="col-lg-3 col-md-3 col-sm-3">
+                                    <i class="sickrage-core sickrage-core-keys"></i> ${_('SR App ID:')}
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-9">
+                                    ${sickrage.app.config.app_id}
+                                </div>
                             </div>
-                        </div>
-                        <br/>
-                        <div class="form-row">
-                            <div class="col-lg-3 col-md-3 col-sm-3">
-                                <i class="sickrage-core sickrage-core-keys"></i> ${_('SR App ID:')}
-                            </div>
-                            <div class="col-lg-9 col-md-9 col-sm-9">
-                                ${sickrage.app.config.app_id}
-                            </div>
-                        </div>
-                        <br/>
+                            <br/>
+                        % endif
                         <div class="form-row">
                             <div class="col-lg-3 col-md-3 col-sm-3">
                                 <i class="sickrage-core sickrage-core-version"></i> ${_('SR Version:')}
@@ -69,15 +73,17 @@
                             </div>
                             <br/>
                         % endif
-                        <div class="form-row">
-                            <div class="col-lg-3 col-md-3 col-sm-3">
-                                <i class="sickrage-core sickrage-core-user"></i> ${_('SR Username:')}
+                        % if isinstance(current_user, dict):
+                            <div class="form-row">
+                                <div class="col-lg-3 col-md-3 col-sm-3">
+                                    <i class="sickrage-core sickrage-core-user"></i> ${_('SR Username:')}
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-9">
+                                    ${current_user['preferred_username']}
+                                </div>
                             </div>
-                            <div class="col-lg-9 col-md-9 col-sm-9">
-                                ${current_user['preferred_username']}
-                            </div>
-                        </div>
-                        <br/>
+                            <br/>
+                        % endif
                         <div class="form-row">
                             <div class="col-lg-3 col-md-3 col-sm-3">
                                 <i class="sickrage-core sickrage-core-cfg"></i> ${_('SR Config File:')}
