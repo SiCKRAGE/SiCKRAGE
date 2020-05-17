@@ -3209,22 +3209,19 @@ $(document).ready(function ($) {
                         });
                     }).change();
 
-                    $('#link_sickrage_account').on('click', function () {
-                        const pWindow = SICKRAGE.popupWindow(SICKRAGE.srWebRoot + '/account/link', 'Link SiCKRAGE Account', 1200, 650);
-                        const timer = setInterval(function (pWindow) {
-                            SICKRAGE.config.general.checkIsAccountLinked();
-                            if (SICKRAGE.config.general.is_account_linked === 'true') {
-                                pWindow.close();
-                                clearInterval(timer);
-                            }
-                        }, 1000, pWindow);
-                    });
+                    $('#enable_sickrage_api').on('change', function () {
+                        const checked = $(this).prop('checked');
 
-                    $('#unlink_sickrage_account').on('click', function () {
-                        const pWindow = SICKRAGE.popupWindow(SICKRAGE.srWebRoot + '/account/unlink', 'Unlink SiCKRAGE Account', 1200, 650);
+                        let pWindow = null;
+                        if (checked) {
+                            pWindow = SICKRAGE.popupWindow(SICKRAGE.srWebRoot + '/account/link', 'Link SiCKRAGE Account', 1200, 650);
+                        } else {
+                            pWindow = SICKRAGE.popupWindow(SICKRAGE.srWebRoot + '/account/unlink', 'Unlink SiCKRAGE Account', 1200, 650);
+                        }
+
                         const timer = setInterval(function (pWindow) {
                             SICKRAGE.config.general.checkIsAccountLinked();
-                            if (SICKRAGE.config.general.is_account_linked === 'false') {
+                            if (checked && SICKRAGE.config.general.is_account_linked === 'true' || !checked && SICKRAGE.config.general.is_account_linked === 'false') {
                                 pWindow.close();
                                 clearInterval(timer);
                             }

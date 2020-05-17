@@ -249,6 +249,9 @@ class API(object):
             return self.api.request('GET', 'account/app-id')
 
         def unregister_app_id(self, app_id):
+            if not app_id:
+                return
+
             data = {
                 'app-id': app_id
             }

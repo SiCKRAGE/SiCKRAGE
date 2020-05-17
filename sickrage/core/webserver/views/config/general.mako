@@ -670,7 +670,6 @@ c<%inherit file="../layouts/config.mako"/>
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
-
                 <div id="content_enable_upnp">
                     <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5">
@@ -1324,7 +1323,8 @@ c<%inherit file="../layouts/config.mako"/>
                             ${_('Strips special filesystem bits from files, if disabled will leave special bits intact.')}
                             <br/>
                             <div class="text-info">
-                                <b>${_('NOTE:')}</b> ${_('This will strip inherited permissions')}</div>
+                                <b>${_('NOTE:')}</b> ${_('This will strip inherited permissions')}
+                            </div>
                         </label>
                     </div>
                 </div>
@@ -1356,16 +1356,10 @@ c<%inherit file="../layouts/config.mako"/>
                                    id="enable_sickrage_api" ${('', 'checked')[bool(sickrage.app.config.enable_sickrage_api)]}/>
                             ${_('enable SiCKRAGE API extra features')}
                         </label>
-
                         <br/>
-
-                        <span id="link_sickrage_account" class="btn ${('d-none', '')[not sickrage.app.api.token]}">
-                            ${_('Link Account')}
-                        </span>
-
-                        <span id="unlink_sickrage_account" class="btn ${('', 'd-none')[not sickrage.app.api.token]}">
-                            ${_('Unlink Account')}
-                        </span>
+                        <div class="text-info">
+                            <b>${_('NOTE:')}</b> ${_('Toggling this will pop-up a window for you to login/logout of the SiCKRAGE API')}
+                        </div>
                     </div>
                 </div>
             </fieldset>

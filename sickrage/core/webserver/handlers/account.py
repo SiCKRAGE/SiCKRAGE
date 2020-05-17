@@ -49,10 +49,13 @@ class AccountLinkHandler(BaseHandler, ABC):
 
             sickrage.app.api.token = token
 
+            sickrage.app.config.enable_sickrage_api = True
+
             if not sickrage.app.config.sub_id or not sickrage.app.config.app_id:
                 sickrage.app.config.sub_id = decoded_token.get('sub')
                 sickrage.app.config.app_id = sickrage.app.api.account.register_app_id()
-                sickrage.app.config.save()
+
+            sickrage.app.config.save()
         else:
             authorization_url = sickrage.app.auth_server.authorization_url(redirect_uri=redirect_uri, scope="profile email offline_access")
             return super(BaseHandler, self).redirect(authorization_url)
@@ -70,11 +73,12 @@ class AccountUnlinkHandler(BaseHandler, ABC):
         if sickrage.app.api.account.unregister_app_id(sickrage.app.config.app_id):
             sickrage.app.config.app_id = ""
             sickrage.app.config.sub_id = ""
-            sickrage.app.config.save()
-
             sickrage.app.api.logout()
 
             del sickrage.app.api.token
+
+            sickrage.app.config.enable_sickrage_api = False
+            sickrage.app.config.save()
 
 
 class AccountIsLinkedHandler(BaseHandler, ABC):
