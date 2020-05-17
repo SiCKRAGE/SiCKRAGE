@@ -1358,7 +1358,7 @@ c<%inherit file="../layouts/config.mako"/>
                         </label>
                         <br/>
                         <div class="text-info">
-                            <b>${_('NOTE:')}</b> ${_('Toggling this will pop-up a window for you to login/logout of the SiCKRAGE API')}
+                            <b>${_('NOTE:')}</b> ${_('Enabling this will pop-up a window for you to login to the SiCKRAGE API')}
                         </div>
                     </div>
                 </div>

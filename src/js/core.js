@@ -3216,13 +3216,15 @@ $(document).ready(function ($) {
                         if (checked) {
                             pWindow = SICKRAGE.popupWindow(SICKRAGE.srWebRoot + '/account/link', 'Link SiCKRAGE Account', 1200, 650);
                         } else {
-                            pWindow = SICKRAGE.popupWindow(SICKRAGE.srWebRoot + '/account/unlink', 'Unlink SiCKRAGE Account', 1200, 650);
+                            $.get(SICKRAGE.srWebRoot + '/account/unlink');
                         }
 
                         const timer = setInterval(function (pWindow) {
                             SICKRAGE.config.general.checkIsAccountLinked();
-                            if (checked && SICKRAGE.config.general.is_account_linked === 'true' || !checked && SICKRAGE.config.general.is_account_linked === 'false') {
+                            if (checked && SICKRAGE.config.general.is_account_linked === 'true') {
                                 pWindow.close();
+                                clearInterval(timer);
+                            } else if (!checked && SICKRAGE.config.general.is_account_linked === 'false') {
                                 clearInterval(timer);
                             }
                         }, 1000, pWindow);
