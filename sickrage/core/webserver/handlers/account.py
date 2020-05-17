@@ -37,12 +37,6 @@ class AccountLinkHandler(BaseHandler, ABC):
 
         redirect_uri = "{}://{}{}/account/link".format(self.request.protocol, self.request.host, sickrage.app.config.web_root)
 
-        if sickrage.app.api.token:
-            sickrage.app.config.enable_sickrage_api = True
-            sickrage.app.config.save()
-            sickrage.app.alerts.message(_('Linked SiCKRAGE account to SiCKRAGE API'))
-            return
-
         if code:
             token = sickrage.app.auth_server.authorization_code(code, redirect_uri)
             if not token:
@@ -51,6 +45,9 @@ class AccountLinkHandler(BaseHandler, ABC):
             decoded_token = sickrage.app.auth_server.decode_token(token['access_token'], sickrage.app.auth_server.certs())
             if not decoded_token:
                 return
+
+            if sickrage.app.api.token:
+                sickrage.app.api.logout()
 
             sickrage.app.api.token = token
 
