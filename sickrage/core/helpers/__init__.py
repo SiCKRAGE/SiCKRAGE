@@ -1509,7 +1509,7 @@ def is_ip_whitelisted(ip):
         except (TypeError, AttributeError):
             continue
 
-    if not to_return:
+    if whitelisted_addresses and not to_return:
         sickrage.app.log.debug('IP address {} is not allowed to bypass web authentication, not found in whitelists'.format(ip))
 
     return to_return
