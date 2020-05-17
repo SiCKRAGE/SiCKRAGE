@@ -101,7 +101,7 @@ class BaseHandler(RequestHandler, ABC):
     def get_current_user(self):
         if is_ip_whitelisted(self.request.remote_ip):
             return True
-        elif sickrage.app.config.sso_auth_enabled:
+        elif sickrage.app.config.sso_auth_enabled and sickrage.app.auth_server.health:
             try:
                 access_token = self.get_secure_cookie('_sr_access_token')
                 refresh_token = self.get_secure_cookie('_sr_refresh_token')
@@ -119,7 +119,7 @@ class BaseHandler(RequestHandler, ABC):
                     self.set_secure_cookie('_sr_refresh_token', token['refresh_token'])
                     return sickrage.app.auth_server.decode_token(token['access_token'], sickrage.app.auth_server.certs())
             except Exception as e:
-                sickrage.app.log.debug('{!r}'.format(e))
+                return
         elif sickrage.app.config.local_auth_enabled:
             cookie = self.get_secure_cookie('_sr').decode() if self.get_secure_cookie('_sr') else None
             if cookie == sickrage.app.config.api_key:
