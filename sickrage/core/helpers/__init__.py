@@ -1507,7 +1507,10 @@ def is_ip_whitelisted(ip):
             if x and ipaddress.ip_network(ip).subnet_of(ipaddress.ip_network(x)):
                 to_return = True
         except (TypeError, AttributeError):
-            pass
+            continue
+
+    if not to_return:
+        sickrage.app.log.debug('IP address {} is not allowed to bypass web authentication, not found in whitelists'.format(ip))
 
     return to_return
 
