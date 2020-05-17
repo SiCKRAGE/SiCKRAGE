@@ -35,7 +35,7 @@ class imdbPopular(object):
         """Gets a list of most popular TV series from imdb"""
 
         # Use akas.imdb.com, just like the imdb lib.
-        self.url = 'http://akas.imdb.com/search/title'
+        self.url = 'http://www.imdb.com/search/title'
 
         self.params = {
             'at': 0,
@@ -51,7 +51,7 @@ class imdbPopular(object):
 
         try:
             data = WebSession().get(self.url,
-                                    headers={'Referer': 'http://akas.imdb.com/'},
+                                    headers={'Referer': 'http://www.imdb.com/'},
                                     params=self.params).text
         except Exception:
             return None
