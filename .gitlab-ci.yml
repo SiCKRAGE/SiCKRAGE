@@ -173,7 +173,7 @@ release:build:develop:
       - $CI_COMMIT_MESSAGE =~ /\[TASK\] Pre-Releasing/
       - $CI_COMMIT_MESSAGE =~ /\[TASK\] Bump/
 
-release:sentry:master:
+release:sentry:
   stage: release_sentry
   image:
     name: getsentry/sentry-cli
@@ -186,28 +186,9 @@ release:sentry:master:
     - sentry-cli releases new --project $SENTRY_PROJECT $(cat sickrage/version.txt)
     - sentry-cli releases set-commits --auto $(cat sickrage/version.txt)
     - sentry-cli releases finalize $(cat sickrage/version.txt)
-    - sentry-cli releases deploys $(cat sickrage/version.txt) new -e master
+    - sentry-cli releases deploys $(cat sickrage/version.txt) new -e $CI_COMMIT_BRANCH
   only:
     - /^[0-9.]+$/@SiCKRAGE/sickrage
-  except:
-    - branches
-    - triggers
-
-release:sentry:develop:
-  stage: release_sentry
-  image:
-    name: getsentry/sentry-cli
-    entrypoint: [""]
-  script:
-    - export SENTRY_URL=$SENTRY_URL
-    - export SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
-    - export SENTRY_ORG=$SENTRY_ORG
-    - export SENTRY_PROJECT=$SENTRY_PROJECT
-    - sentry-cli releases new --project $SENTRY_PROJECT $(cat sickrage/version.txt)
-    - sentry-cli releases set-commits --auto $(cat sickrage/version.txt)
-    - sentry-cli releases finalize $(cat sickrage/version.txt)
-    - sentry-cli releases deploys $(cat sickrage/version.txt) new -e develop
-  only:
     - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage
   except:
     - branches
@@ -228,63 +209,34 @@ deploy:pypi:
     - branches
     - triggers
 
-deploy:docker:master:
+deploy:docker:
   stage: release_deploy
   variables:
-    UPSTREAM_BRANCH: master
+    UPSTREAM_BRANCH: $CI_COMMIT_BRANCH
     UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
   trigger:
     project: sickrage/sickrage-docker
     branch: master
   only:
     - /^[0-9.]+$/@SiCKRAGE/sickrage
-  except:
-    - branches
-    - triggers
-
-deploy:docker:develop:
-  stage: release_deploy
-  variables:
-    UPSTREAM_BRANCH: develop
-    UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
-  trigger:
-    project: sickrage/sickrage-docker
-    branch: master
-  only:
     - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage
   except:
     - branches
     - triggers
 
-deploy:synology:master:
+deploy:synology:
   stage: release_deploy
-  variables:
-    UPSTREAM_BRANCH: master
-    UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
   trigger:
     project: sickrage/sickrage-synology
-    branch: master
+    branch: $CI_COMMIT_BRANCH
   only:
     - /^[0-9.]+$/@SiCKRAGE/sickrage
-  except:
-    - branches
-    - triggers
-
-deploy:synology:develop:
-  stage: release_deploy
-  variables:
-    UPSTREAM_BRANCH: develop
-    UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
-  trigger:
-    project: sickrage/sickrage-synology
-    branch: develop
-  only:
     - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage
   except:
     - branches
     - triggers
 
-deploy:readynas:master:
+deploy:readynas:
   stage: release_deploy
   variables:
     UPSTREAM_COMMIT_TAG: $CI_COMMIT_TAG
@@ -300,7 +252,7 @@ deploy:readynas:master:
     - branches
     - triggers
 
-deploy:qnap:master:
+deploy:qnap:
   stage: release_deploy
   variables:
     UPSTREAM_COMMIT_TAG: $CI_COMMIT_TAG
