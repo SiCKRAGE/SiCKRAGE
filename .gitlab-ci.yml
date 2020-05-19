@@ -186,7 +186,7 @@ release:sentry:
     - sentry-cli releases new --project $SENTRY_PROJECT $(cat sickrage/version.txt)
     - sentry-cli releases set-commits --auto $(cat sickrage/version.txt)
     - sentry-cli releases finalize $(cat sickrage/version.txt)
-    - sentry-cli releases deploys $(cat sickrage/version.txt) new -e $CI_COMMIT_BRANCH
+    - sentry-cli releases deploys $(cat sickrage/version.txt) new -e $CI_COMMIT_REF_NAME
   only:
     - /^[0-9.]+$/@SiCKRAGE/sickrage
     - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage
@@ -212,7 +212,7 @@ deploy:pypi:
 deploy:docker:
   stage: release_deploy
   variables:
-    UPSTREAM_BRANCH: $CI_COMMIT_BRANCH
+    UPSTREAM_BRANCH: $CI_COMMIT_REF_NAME
     UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
   trigger:
     project: sickrage/sickrage-docker
@@ -228,7 +228,7 @@ deploy:synology:
   stage: release_deploy
   trigger:
     project: sickrage/sickrage-synology
-    branch: $CI_COMMIT_BRANCH
+    branch: $CI_COMMIT_REF_NAME
   only:
     - /^[0-9.]+$/@SiCKRAGE/sickrage
     - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage
