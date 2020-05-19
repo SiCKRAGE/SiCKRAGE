@@ -639,9 +639,15 @@
                         <% airDate = srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(episode_object.airdate, show.airs, show.network), convert=True).dt %>
                     % endif
 
-                    <div class="date text-nowrap">
-                        ${srdatetime.SRDateTime(airDate).srfdatetime()}
-                    </div>
+                    % if airDate.date() > datetime.datetime.min.date():
+                        <time datetime="${airDate.isoformat('T')}" class="date text-nowrap">
+                            ${srdatetime.SRDateTime(airDate).srfdatetime()}
+                        </time>
+                    % else:
+                        <div class="date text-nowrap">
+                            No date/time available
+                        </div>
+                    % endif
                 </td>
 
                 <td class="table-fit">
