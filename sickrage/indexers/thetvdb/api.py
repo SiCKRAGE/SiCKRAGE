@@ -30,6 +30,7 @@ from datetime import datetime
 from operator import itemgetter
 from urllib.parse import urljoin, quote
 
+import requests
 from six import text_type
 
 import sickrage
@@ -438,6 +439,9 @@ class Tvdb:
         self.config['headers'].update({'Accept-Language': lang or self.config['language']})
         self.config['headers'].update({'Accept': 'application/vnd.thetvdb.v{}'.format(self.config['api']['version'])})
 
+        if not self.health:
+            return None
+
         for i in range(5):
             resp = WebSession(cache=self.config['cache_enabled']).request(
                 method, urljoin(self.config['api']['base'], url), headers=self.config['headers'],
@@ -762,6 +766,19 @@ class Tvdb:
                 'ko': 32, 'sv': 8, 'sl': 30}
 
         # return {l['abbreviation']: l['id'] for l in self._request('get', self.config['api']['languages'])}
+
+    @property
+    def health(self):
+        try:
+            health = requests.get(urljoin(self.config['api']['base'], 'health'), verify=False, timeout=30).ok
+        except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout) as e:
+            health = False
+
+        if not health:
+            sickrage.app.log.debug("TheTVDB API server is currently unreachable")
+            return False
+
+        return True
 
     def __getitem__(self, key):
         if isinstance(key, int):
