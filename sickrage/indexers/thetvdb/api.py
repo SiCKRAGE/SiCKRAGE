@@ -467,7 +467,7 @@ class Tvdb:
                     sickrage.app.log.debug("Unable to connect to TheTVDB")
                     return None
 
-                if 'application/json' in resp.headers.get('content-type', '') and i > 3:
+                if 'application/json' in resp.headers.get('content-type', ''):
                     err_msg = resp.json().get('Error', resp.text)
                     sickrage.app.log.debug("Unable to get data from TheTVDB, Code: {code} Error: {err_msg!r}".format(code=resp.status_code, err_msg=err_msg))
                     return None
