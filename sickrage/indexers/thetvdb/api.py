@@ -57,6 +57,8 @@ def login_required(f):
             except tvdb_unauthorized:
                 obj.authenticate()
 
+        sickrage.app.log.debug("Unable to authenticate to TheTVDB")
+
     return wrapper
 
 
@@ -442,37 +444,30 @@ class Tvdb:
         if not self.health:
             return None
 
-        for i in range(5):
-            resp = WebSession(cache=self.config['cache_enabled']).request(
-                method, urljoin(self.config['api']['base'], url), headers=self.config['headers'],
-                timeout=sickrage.app.config.indexer_timeout, verify=False, **kwargs
-            )
+        resp = WebSession(cache=self.config['cache_enabled']).request(
+            method, urljoin(self.config['api']['base'], url), headers=self.config['headers'],
+            timeout=sickrage.app.config.indexer_timeout, verify=False, **kwargs
+        )
 
-            if resp and resp.content:
-                try:
-                    data = resp.json()
-                except ValueError:
-                    sickrage.app.log.debug("Unable to parse data from TheTVDB")
-                    return None
+        if resp and resp.content:
+            try:
+                data = resp.json()
+            except ValueError:
+                sickrage.app.log.debug("Unable to parse data from TheTVDB")
+                return None
 
-                return to_lowercase(data)
+            return to_lowercase(data)
 
-            if resp is not None:
-                if resp.status_code == 401:
-                    if i > 3:
-                        sickrage.app.log.debug("Unable to authenticate to TheTVDB")
-                        return None
-                    raise tvdb_unauthorized(resp.text)
-                elif resp.status_code == 504:
-                    sickrage.app.log.debug("Unable to connect to TheTVDB")
-                    return None
+        if resp is not None:
+            if resp.status_code == 401:
+                raise tvdb_unauthorized(resp.text)
+            elif resp.status_code == 504:
+                sickrage.app.log.debug("Unable to connect to TheTVDB")
+                return None
 
-                if 'application/json' in resp.headers.get('content-type', ''):
-                    err_msg = resp.json().get('Error', resp.text)
-                    sickrage.app.log.debug("Unable to get data from TheTVDB, Code: {code} Error: {err_msg!r}".format(code=resp.status_code, err_msg=err_msg))
-                    return None
-
-            if i > 3:
+            if 'application/json' in resp.headers.get('content-type', ''):
+                err_msg = resp.json().get('Error', resp.text)
+                sickrage.app.log.debug("Unable to get data from TheTVDB, Code: {code} Error: {err_msg!r}".format(code=resp.status_code, err_msg=err_msg))
                 return None
 
     def _set_item(self, sid, seas, ep, attrib, value):
