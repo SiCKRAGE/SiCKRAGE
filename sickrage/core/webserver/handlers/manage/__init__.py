@@ -527,7 +527,7 @@ class SubtitleMissedHandler(BaseHandler, ABC):
                 if cur_indexer_id not in sorted_show_ids:
                     sorted_show_ids.append(cur_indexer_id)
 
-        return self.render('/manage/subtitles_missed.mako',
+        return self.render('manage/subtitles_missed.mako',
                            whichSubs=which_subs,
                            show_names=show_names,
                            ep_counts=ep_counts,
@@ -673,7 +673,7 @@ class EditShowHandler(BaseHandler, ABC):
                                controller='home',
                                action="edit_show")
         else:
-            return self.render('/home/edit_show.mako',
+            return self.render('home/edit_show.mako',
                                show=show_obj,
                                quality=show_obj.quality,
                                scene_exceptions=[x.split('|')[0] for x in show_obj.scene_exceptions],
@@ -978,7 +978,7 @@ class MassUpdateHandler(BaseHandler, ABC):
         shows_list = sorted([x for x in get_show_list() if not sickrage.app.show_queue.is_being_removed(x.indexer_id)],
                             key=cmp_to_key(lambda x, y: x.name < y.name))
 
-        return self.render('/manage/mass_update.mako',
+        return self.render('manage/mass_update.mako',
                            shows_list=shows_list,
                            title=_('Mass Update'),
                            header=_('Mass Update'),
