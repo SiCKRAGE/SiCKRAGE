@@ -307,19 +307,6 @@ class Core(object):
         if self.config.default_page not in ('schedule', 'history', 'IRC'):
             self.config.default_page = 'home'
 
-        # cleanup cache folder
-        for folder in ['mako', 'sessions', 'indexers']:
-            try:
-                shutil.rmtree(os.path.join(self.cache_dir, folder), ignore_errors=True)
-            except Exception:
-                continue
-
-        if self.config.web_port < 21 or self.config.web_port > 65535:
-            self.config.web_port = 8081
-
-        if not self.config.web_cookie_secret:
-            self.config.web_cookie_secret = generate_secret()
-
         # attempt to help prevent users from breaking links by using a bad url
         if not self.config.anon_redirect.endswith('?'):
             self.config.anon_redirect = ''
@@ -338,20 +325,30 @@ class Core(object):
 
         if self.config.autopostprocessor_freq < self.config.min_autopostprocessor_freq:
             self.config.autopostprocessor_freq = self.config.min_autopostprocessor_freq
+
         if self.config.daily_searcher_freq < self.config.min_daily_searcher_freq:
             self.config.daily_searcher_freq = self.config.min_daily_searcher_freq
+
         if self.config.backlog_searcher_freq < self.config.min_backlog_searcher_freq:
             self.config.backlog_searcher_freq = self.config.min_backlog_searcher_freq
+
         if self.config.version_updater_freq < self.config.min_version_updater_freq:
             self.config.version_updater_freq = self.config.min_version_updater_freq
+
         if self.config.subtitle_searcher_freq < self.config.min_subtitle_searcher_freq:
             self.config.subtitle_searcher_freq = self.config.min_subtitle_searcher_freq
+
         if self.config.failed_snatch_age < self.config.min_failed_snatch_age:
             self.config.failed_snatch_age = self.config.min_failed_snatch_age
+
         if self.config.proper_searcher_interval not in ('15m', '45m', '90m', '4h', 'daily'):
             self.config.proper_searcher_interval = 'daily'
+
         if self.config.showupdate_hour < 0 or self.config.showupdate_hour > 23:
             self.config.showupdate_hour = 0
+
+        # start web server
+        self.wserver.start()
 
         # add version checker job
         self.scheduler.add_job(
@@ -534,9 +531,6 @@ class Core(object):
 
         # start scheduler service
         self.scheduler.start()
-
-        # start web server
-        self.wserver.start()
 
         # launch browser window
         if all([not sickrage.app.no_launch, sickrage.app.config.launch_browser]):

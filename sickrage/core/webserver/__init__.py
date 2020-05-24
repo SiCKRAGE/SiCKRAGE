@@ -118,40 +118,20 @@ class WebServer(object):
         self.app = None
         self.server = None
 
-        self.templates = {}
-
-        # Load templates
-        mako_lookup = TemplateLookup(
-            directories=[sickrage.app.config.gui_views_dir],
-            module_directory=os.path.join(sickrage.app.cache_dir, 'mako'),
-            filesystem_checks=True,
-            strict_undefined=True,
-            input_encoding='utf-8',
-            output_encoding='utf-8',
-            encoding_errors='replace'
-        )
-
-        for root, dirs, files in os.walk(sickrage.app.config.gui_views_dir):
-            path = root.split(os.sep)
-
-            for x in sickrage.app.config.gui_views_dir.split(os.sep):
-                if x in path:
-                    del path[path.index(x)]
-
-            for file in files:
-                filename = '{}/{}'.format('/'.join(path), file).lstrip('/')
-                self.templates[filename] = mako_lookup.get_template(filename)
-
     def start(self):
         self.started = True
 
         # load languages
         tornado.locale.load_gettext_translations(sickrage.LOCALE_DIR, 'messages')
 
+        # Check configured web port is correct
+        if sickrage.app.config.web_port < 21 or sickrage.app.config.web_port > 65535:
+            sickrage.app.config.web_port = 8081
+
         # clear mako cache folder
         mako_cache = os.path.join(sickrage.app.cache_dir, 'mako')
         if os.path.isdir(mako_cache):
-            shutil.rmtree(mako_cache)
+            shutil.rmtree(mako_cache, ignore_errors=True)
 
         # video root
         if sickrage.app.config.root_dirs:
@@ -177,6 +157,29 @@ class WebServer(object):
                 sickrage.app.log.warning("Disabled HTTPS because of missing CERT and KEY files")
                 sickrage.app.config.enable_https = False
 
+        # Load templates
+        mako_lookup = TemplateLookup(
+            directories=[sickrage.app.config.gui_views_dir],
+            module_directory=os.path.join(sickrage.app.cache_dir, 'mako'),
+            filesystem_checks=True,
+            strict_undefined=True,
+            input_encoding='utf-8',
+            output_encoding='utf-8',
+            encoding_errors='replace'
+        )
+
+        templates = {}
+        for root, dirs, files in os.walk(sickrage.app.config.gui_views_dir):
+            path = root.split(os.sep)
+
+            for x in sickrage.app.config.gui_views_dir.split(os.sep):
+                if x in path:
+                    del path[path.index(x)]
+
+            for file in files:
+                filename = '{}/{}'.format('/'.join(path), file).lstrip('/')
+                templates[filename] = mako_lookup.get_template(filename)
+
         # Load the app
         self.app = Application(
             debug=True,
@@ -184,7 +187,7 @@ class WebServer(object):
             gzip=sickrage.app.config.web_use_gzip,
             cookie_secret=sickrage.app.config.web_cookie_secret,
             login_url='%s/login/' % sickrage.app.config.web_root,
-            templates=self.templates
+            templates=templates
         )
 
         # Websocket handler
