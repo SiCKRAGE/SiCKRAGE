@@ -20,7 +20,6 @@
 # ##############################################################################
 from abc import ABC
 
-from tornado.concurrent import run_on_executor
 from tornado.web import authenticated
 
 import sickrage
@@ -34,14 +33,12 @@ class HomePostProcessHandler(BaseHandler, ABC):
         await self.run_in_executor(self.handle_get)
 
     def handle_get(self):
-        return self.render(
-            "/home/postprocess.mako",
-            title=_('Post Processing'),
-            header=_('Post Processing'),
-            topmenu='home',
-            controller='home',
-            action='postprocess'
-        )
+        return self.render('home/postprocess.mako',
+                           title=_('Post Processing'),
+                           header=_('Post Processing'),
+                           topmenu='home',
+                           controller='home',
+                           action='postprocess')
 
 
 class HomeProcessEpisodeHandler(BaseHandler, ABC):

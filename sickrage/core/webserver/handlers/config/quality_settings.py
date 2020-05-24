@@ -20,7 +20,6 @@
 # ##############################################################################
 from abc import ABC
 
-from tornado.concurrent import run_on_executor
 from tornado.web import authenticated
 
 import sickrage
@@ -35,15 +34,13 @@ class ConfigQualitySettingsHandler(BaseHandler, ABC):
         await self.run_in_executor(self.handle_get)
 
     def handle_get(self):
-        return self.render(
-            "/config/quality_settings.mako",
-            submenu=ConfigHandler.menu,
-            title=_('Config - Quality Settings'),
-            header=_('Quality Settings'),
-            topmenu='config',
-            controller='config',
-            action='quality_settings'
-        )
+        return self.render('config/quality_settings.mako',
+                           submenu=ConfigHandler.menu,
+                           title=_('Config - Quality Settings'),
+                           header=_('Quality Settings'),
+                           topmenu='config',
+                           controller='config',
+                           action='quality_settings')
 
 
 class SaveQualitiesHandler(BaseHandler, ABC):

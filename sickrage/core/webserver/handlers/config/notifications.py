@@ -20,7 +20,6 @@
 # ##############################################################################
 from abc import ABC
 
-from tornado.concurrent import run_on_executor
 from tornado.web import authenticated
 
 import sickrage
@@ -35,15 +34,14 @@ class ConfigNotificationsHandler(BaseHandler, ABC):
         await self.run_in_executor(self.handle_get)
 
     def handle_get(self):
-        return self.render(
-            "/config/notifications.mako",
-            submenu=ConfigHandler.menu,
-            title=_('Config - Notifications'),
-            header=_('Notifications'),
-            topmenu='config',
-            controller='config',
-            action='notifications'
-        )
+        return self.render('config/notifications.mako',
+                           submenu=ConfigHandler.menu,
+                           title=_('Config - Notifications'),
+                           header=_('Notifications'),
+                           topmenu='config',
+                           controller='config',
+                           action='notifications')
+
 
 class SaveNotificationsHandler(BaseHandler, ABC):
     @authenticated

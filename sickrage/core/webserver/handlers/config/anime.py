@@ -20,7 +20,6 @@
 # ##############################################################################
 from abc import ABC
 
-from tornado.concurrent import run_on_executor
 from tornado.web import authenticated
 
 import sickrage
@@ -35,15 +34,13 @@ class ConfigAnimeHandler(BaseHandler, ABC):
         await self.run_in_executor(self.handle_get)
 
     def handle_get(self):
-        return self.render(
-            "/config/anime.mako",
-            submenu=ConfigHandler.menu,
-            title=_('Config - Anime'),
-            header=_('Anime'),
-            topmenu='config',
-            controller='config',
-            action='anime'
-        )
+        return self.render('config/anime.mako',
+                           submenu=ConfigHandler.menu,
+                           title=_('Config - Anime'),
+                           header=_('Anime'),
+                           topmenu='config',
+                           controller='config',
+                           action='anime')
 
 
 class ConfigSaveAnimeHandler(BaseHandler, ABC):

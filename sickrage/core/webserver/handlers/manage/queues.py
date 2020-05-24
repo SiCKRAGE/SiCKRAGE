@@ -21,7 +21,6 @@
 import datetime
 from abc import ABC
 
-from tornado.concurrent import run_on_executor
 from tornado.web import authenticated
 
 import sickrage
@@ -34,23 +33,21 @@ class ManageQueuesHandler(BaseHandler, ABC):
         await self.run_in_executor(self.handle_get)
 
     def handle_get(self):
-        return self.render(
-            "/manage/queues.mako",
-            backlogSearchPaused=sickrage.app.search_queue.is_backlog_searcher_paused(),
-            dailySearchPaused=sickrage.app.search_queue.is_daily_searcher_paused(),
-            backlogSearchStatus=sickrage.app.search_queue.is_backlog_in_progress(),
-            dailySearchStatus=sickrage.app.search_queue.is_dailysearch_in_progress(),
-            findPropersStatus=sickrage.app.proper_searcher.amActive,
-            searchQueueLength=sickrage.app.search_queue.queue_length(),
-            postProcessorPaused=sickrage.app.postprocessor_queue.is_paused,
-            postProcessorRunning=sickrage.app.postprocessor_queue.is_in_progress,
-            postProcessorQueueLength=sickrage.app.postprocessor_queue.queue_length,
-            title=_('Manage Queues'),
-            header=_('Manage Queues'),
-            topmenu='manage',
-            controller='manage',
-            action='queues'
-        )
+        return self.render('manage/queues.mako',
+                           backlogSearchPaused=sickrage.app.search_queue.is_backlog_searcher_paused(),
+                           dailySearchPaused=sickrage.app.search_queue.is_daily_searcher_paused(),
+                           backlogSearchStatus=sickrage.app.search_queue.is_backlog_in_progress(),
+                           dailySearchStatus=sickrage.app.search_queue.is_dailysearch_in_progress(),
+                           findPropersStatus=sickrage.app.proper_searcher.amActive,
+                           searchQueueLength=sickrage.app.search_queue.queue_length(),
+                           postProcessorPaused=sickrage.app.postprocessor_queue.is_paused,
+                           postProcessorRunning=sickrage.app.postprocessor_queue.is_in_progress,
+                           postProcessorQueueLength=sickrage.app.postprocessor_queue.queue_length,
+                           title=_('Manage Queues'),
+                           header=_('Manage Queues'),
+                           topmenu='manage',
+                           controller='manage',
+                           action='queues')
 
 
 class ForceBacklogSearchHandler(BaseHandler, ABC):

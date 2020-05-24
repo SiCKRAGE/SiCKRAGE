@@ -35,14 +35,12 @@ class LoginHandler(BaseHandler, ABC):
         elif sickrage.app.config.local_auth_enabled:
             await self.run_in_executor(self.handle_local_auth_get)
         else:
-            return self.render(
-                "/login_failed.mako",
-                topmenu="system",
-                header="SiCKRAGE Login Failed",
-                title="SiCKRAGE Login Failed",
-                controller='root',
-                action='login'
-            )
+            return self.render('login_failed.mako',
+                               topmenu="system",
+                               header="SiCKRAGE Login Failed",
+                               title="SiCKRAGE Login Failed",
+                               controller='root',
+                               action='login')
 
     async def post(self, *args, **kwargs):
         if sickrage.app.config.local_auth_enabled:
@@ -110,14 +108,12 @@ class LoginHandler(BaseHandler, ABC):
         return self.redirect('/logout')
 
     def handle_local_auth_get(self):
-        return self.render(
-            "/login.mako",
-            topmenu="system",
-            header="SiCKRAGE Login",
-            title="SiCKRAGE Login",
-            controller='root',
-            action='login'
-        )
+        return self.render('login.mako',
+                           topmenu="system",
+                           header="SiCKRAGE Login",
+                           title="SiCKRAGE Login",
+                           controller='root',
+                           action='login')
 
     def handle_local_auth_post(self):
         username = self.get_argument('username', '')

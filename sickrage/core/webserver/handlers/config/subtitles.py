@@ -21,7 +21,6 @@
 
 from abc import ABC
 
-from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode
 from tornado.web import authenticated
 
@@ -38,15 +37,13 @@ class ConfigSubtitlesHandler(BaseHandler, ABC):
         await self.run_in_executor(self.handle_get)
 
     def handle_get(self):
-        return self.render(
-            "/config/subtitles.mako",
-            submenu=ConfigHandler.menu,
-            title=_('Config - Subtitles Settings'),
-            header=_('Subtitles Settings'),
-            topmenu='config',
-            controller='config',
-            action='subtitles'
-        )
+        return self.render('config/subtitles.mako',
+                           submenu=ConfigHandler.menu,
+                           title=_('Config - Subtitles Settings'),
+                           header=_('Subtitles Settings'),
+                           topmenu='config',
+                           controller='config',
+                           action='subtitles')
 
 
 class ConfigSubtitleGetCodeHandler(BaseHandler, ABC):

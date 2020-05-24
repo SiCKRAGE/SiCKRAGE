@@ -22,7 +22,6 @@
 import os
 from abc import ABC
 
-from tornado.concurrent import run_on_executor
 from tornado.web import authenticated
 
 import sickrage
@@ -87,15 +86,13 @@ class ConfigPostProcessingHandler(BaseHandler, ABC):
         await self.run_in_executor(self.handle_get)
 
     def handle_get(self):
-        return self.render(
-            "/config/postprocessing.mako",
-            submenu=ConfigHandler.menu,
-            title=_('Config - Post Processing'),
-            header=_('Post Processing'),
-            topmenu='config',
-            controller='config',
-            action='postprocessing'
-        )
+        return self.render('config/postprocessing.mako',
+                           submenu=ConfigHandler.menu,
+                           title=_('Config - Post Processing'),
+                           header=_('Post Processing'),
+                           topmenu='config',
+                           controller='config',
+                           action='postprocessing')
 
 
 class SavePostProcessingHandler(BaseHandler, ABC):

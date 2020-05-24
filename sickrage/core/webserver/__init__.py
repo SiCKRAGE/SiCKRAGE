@@ -26,6 +26,7 @@ import socket
 import ssl
 
 import tornado.locale
+from mako.lookup import TemplateLookup
 from tornado.httpserver import HTTPServer
 from tornado.web import Application, RedirectHandler, StaticFileHandler
 
@@ -117,6 +118,30 @@ class WebServer(object):
         self.app = None
         self.server = None
 
+        self.templates = {}
+
+        # Load templates
+        mako_lookup = TemplateLookup(
+            directories=[sickrage.app.config.gui_views_dir],
+            module_directory=os.path.join(sickrage.app.cache_dir, 'mako'),
+            filesystem_checks=True,
+            strict_undefined=True,
+            input_encoding='utf-8',
+            output_encoding='utf-8',
+            encoding_errors='replace'
+        )
+
+        for root, dirs, files in os.walk(sickrage.app.config.gui_views_dir):
+            path = root.split(os.sep)
+
+            for x in sickrage.app.config.gui_views_dir.split(os.sep):
+                if x in path:
+                    del path[path.index(x)]
+
+            for file in files:
+                filename = '{}/{}'.format('/'.join(path), file).lstrip('/')
+                self.templates[filename] = mako_lookup.get_template(filename)
+
     def start(self):
         self.started = True
 
@@ -159,6 +184,7 @@ class WebServer(object):
             gzip=sickrage.app.config.web_use_gzip,
             cookie_secret=sickrage.app.config.web_cookie_secret,
             login_url='%s/login/' % sickrage.app.config.web_root,
+            templates=self.templates
         )
 
         # Websocket handler

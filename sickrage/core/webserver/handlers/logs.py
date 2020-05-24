@@ -23,7 +23,6 @@ import os
 import re
 from abc import ABC
 
-from tornado.concurrent import run_on_executor
 from tornado.web import authenticated
 
 import sickrage
@@ -68,16 +67,14 @@ class LogsHandler(BaseHandler, ABC):
     def handle_get(self):
         level = self.get_argument('level', sickrage.app.log.ERROR)
 
-        return self.render(
-            "/logs/errors.mako",
-            header="Logs &amp; Errors",
-            title="Logs &amp; Errors",
-            topmenu="system",
-            submenu=self.logs_menu,
-            logLevel=level,
-            controller='logs',
-            action='errors'
-        )
+        return self.render('logs/errors.mako',
+                           header="Logs &amp; Errors",
+                           title="Logs &amp; Errors",
+                           topmenu="system",
+                           submenu=self.logs_menu,
+                           logLevel=level,
+                           controller='logs',
+                           action='errors')
 
     def have_errors(self):
         if len(sickrage.app.log.error_viewer.get()) > 0:
@@ -153,19 +150,17 @@ class LogsViewHandler(BaseHandler, ABC):
         if to_json:
             return self.write(json.dumps({'logs': get_logs(log_search, log_filter, min_level, max_lines)}))
 
-        return self.render(
-            "/logs/view.mako",
-            header="Log File",
-            title="Logs",
-            topmenu="system",
-            logLines=get_logs(log_search, log_filter, min_level, max_lines),
-            minLevel=int(min_level),
-            logNameFilters=log_name_filters,
-            logFilter=log_filter,
-            logSearch=log_search,
-            controller='logs',
-            action='view'
-        )
+        return self.render('logs/view.mako',
+                           header="Log File",
+                           title="Logs",
+                           topmenu="system",
+                           logLines=get_logs(log_search, log_filter, min_level, max_lines),
+                           minLevel=int(min_level),
+                           logNameFilters=log_name_filters,
+                           logFilter=log_filter,
+                           logSearch=log_search,
+                           controller='logs',
+                           action='view')
 
 
 class ErrorCountHandler(BaseHandler, ABC):

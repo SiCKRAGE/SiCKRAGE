@@ -20,7 +20,6 @@
 # ##############################################################################
 from abc import ABC
 
-from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode
 from tornado.web import authenticated
 
@@ -37,15 +36,13 @@ class ConfigProvidersHandler(BaseHandler, ABC):
         await self.run_in_executor(self.handle_get)
 
     def handle_get(self):
-        return self.render(
-            "/config/providers.mako",
-            submenu=ConfigHandler.menu,
-            title=_('Config - Search Providers'),
-            header=_('Search Providers'),
-            topmenu='config',
-            controller='config',
-            action='providers'
-        )
+        return self.render('config/providers.mako',
+                           submenu=ConfigHandler.menu,
+                           title=_('Config - Search Providers'),
+                           header=_('Search Providers'),
+                           topmenu='config',
+                           controller='config',
+                           action='providers')
 
 
 class CanAddNewznabProviderHandler(BaseHandler, ABC):

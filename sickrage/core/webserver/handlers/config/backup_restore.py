@@ -22,7 +22,6 @@
 import os
 from abc import ABC
 
-from tornado.concurrent import run_on_executor
 from tornado.web import authenticated
 
 import sickrage
@@ -37,15 +36,13 @@ class ConfigBackupRestoreHandler(BaseHandler, ABC):
         await self.run_in_executor(self.handle_get)
 
     def handle_get(self):
-        return self.render(
-            "/config/backup_restore.mako",
-            submenu=ConfigHandler.menu,
-            title=_('Config - Backup/Restore'),
-            header=_('Backup/Restore'),
-            topmenu='config',
-            controller='config',
-            action='backup_restore'
-        )
+        return self.render('config/backup_restore.mako',
+                           submenu=ConfigHandler.menu,
+                           title=_('Config - Backup/Restore'),
+                           header=_('Backup/Restore'),
+                           topmenu='config',
+                           controller='config',
+                           action='backup_restore')
 
 
 class ConfigBackupHandler(BaseHandler, ABC):

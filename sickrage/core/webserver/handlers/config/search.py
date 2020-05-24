@@ -22,7 +22,6 @@
 import os
 from abc import ABC
 
-from tornado.concurrent import run_on_executor
 from tornado.web import authenticated
 
 import sickrage
@@ -37,15 +36,13 @@ class ConfigSearchHandler(BaseHandler, ABC):
         await self.run_in_executor(self.handle_get)
 
     def handle_get(self):
-        return self.render(
-            "/config/search.mako",
-            submenu=ConfigHandler.menu,
-            title=_('Config - Search Clients'),
-            header=_('Search Clients'),
-            topmenu='config',
-            controller='config',
-            action='search'
-        )
+        return self.render('config/search.mako',
+                           submenu=ConfigHandler.menu,
+                           title=_('Config - Search Clients'),
+                           header=_('Search Clients'),
+                           topmenu='config',
+                           controller='config',
+                           action='search')
 
 
 class SaveSearchHandler(BaseHandler, ABC):

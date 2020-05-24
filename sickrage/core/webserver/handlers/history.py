@@ -20,7 +20,6 @@
 # ##############################################################################
 from abc import ABC
 
-from tornado.concurrent import run_on_executor
 from tornado.web import authenticated
 
 import sickrage
@@ -94,18 +93,16 @@ class HistoryHandler(BaseHandler, ABC):
              'class': 'trimhistory', 'confirm': True},
         ]
 
-        return self.render(
-            "/history.mako",
-            historyResults=History().get(limit),
-            compactResults=compact,
-            limit=limit,
-            submenu=submenu,
-            title=_('History'),
-            header=_('History'),
-            topmenu="history",
-            controller='root',
-            action='history'
-        )
+        return self.render('history.mako',
+                           historyResults=History().get(limit),
+                           compactResults=compact,
+                           limit=limit,
+                           submenu=submenu,
+                           title=_('History'),
+                           header=_('History'),
+                           topmenu="history",
+                           controller='root',
+                           action='history')
 
 
 class HistoryClearHandler(BaseHandler, ABC):

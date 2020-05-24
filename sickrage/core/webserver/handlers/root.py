@@ -96,17 +96,15 @@ class APIBulderHandler(BaseHandler, ABC):
         for command, api_call in ApiHandler(self.application, self.request).api_calls.items():
             api_commands[command] = api_call(self.application, self.request, **{'help': 1}).run()
 
-        return self.render(
-            'api_builder.mako',
-            title=_('API Builder'),
-            header=_('API Builder'),
-            shows=sorted(get_show_list(), key=cmp_to_key(lambda x, y: titler(x.name) < titler(y.name))),
-            episodes=episodes,
-            apikey=apikey,
-            api_commands=api_commands,
-            controller='root',
-            action='api_builder'
-        )
+        return self.render('api_builder.mako',
+                           title=_('API Builder'),
+                           header=_('API Builder'),
+                           shows=sorted(get_show_list(), key=cmp_to_key(lambda x, y: titler(x.name) < titler(y.name))),
+                           episodes=episodes,
+                           apikey=apikey,
+                           api_commands=api_commands,
+                           controller='root',
+                           action='api_builder')
 
 
 class SetHomeLayoutHandler(BaseHandler, ABC):
@@ -244,18 +242,16 @@ class ScheduleHandler(BaseHandler, ABC):
 
         results = ComingEpisodes.get_coming_episodes(ComingEpisodes.categories, sickrage.app.config.coming_eps_sort, False)
 
-        return self.render(
-            'schedule.mako',
-            next_week=next_week,
-            today=today,
-            results=results,
-            layout=layout,
-            title=_('Schedule'),
-            header=_('Schedule'),
-            topmenu='schedule',
-            controller='root',
-            action='schedule'
-        )
+        return self.render('schedule.mako',
+                           next_week=next_week,
+                           today=today,
+                           results=results,
+                           layout=layout,
+                           title=_('Schedule'),
+                           header=_('Schedule'),
+                           topmenu='schedule',
+                           controller='root',
+                           action='schedule')
 
 
 class QuicksearchDotJsonHandler(BaseHandler, ABC):

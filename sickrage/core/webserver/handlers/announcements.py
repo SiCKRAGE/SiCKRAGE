@@ -21,8 +21,6 @@
 import json
 from abc import ABC
 
-from tornado.concurrent import run_on_executor
-
 import sickrage
 from sickrage.core.webserver.handlers.base import BaseHandler
 from sickrage.libs.trakt.interfaces.base import authenticated
@@ -34,15 +32,13 @@ class AnnouncementsHandler(BaseHandler, ABC):
         await self.run_in_executor(self.handle_get)
 
     def handle_get(self):
-        return self.render(
-            'announcements.mako',
-            announcements=sickrage.app.announcements.get_all(),
-            title=_('Announcements'),
-            header=_('Announcements'),
-            topmenu='announcements',
-            controller='root',
-            action='announcements'
-        )
+        return self.render('announcements.mako',
+                           announcements=sickrage.app.announcements.get_all(),
+                           title=_('Announcements'),
+                           header=_('Announcements'),
+                           topmenu='announcements',
+                           controller='root',
+                           action='announcements')
 
 
 class MarkAnnouncementSeenHandler(BaseHandler, ABC):

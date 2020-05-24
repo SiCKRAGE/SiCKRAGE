@@ -22,7 +22,6 @@
 import os
 from abc import ABC
 
-from tornado.concurrent import run_on_executor
 from tornado.web import authenticated
 
 import sickrage
@@ -48,15 +47,13 @@ class ConfigHandler(BaseHandler, ABC):
         await self.run_in_executor(self.handle_get)
 
     def handle_get(self):
-        return self.render(
-            "/config/index.mako",
-            submenu=self.menu,
-            title=_('Configuration'),
-            header=_('Configuration'),
-            topmenu="config",
-            controller='config',
-            action='index'
-        )
+        return self.render('config/index.mako',
+                           submenu=self.menu,
+                           title=_('Configuration'),
+                           header=_('Configuration'),
+                           topmenu="config",
+                           controller='config',
+                           action='index')
 
 
 class ConfigResetHandler(BaseHandler, ABC):

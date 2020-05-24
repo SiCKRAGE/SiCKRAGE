@@ -22,7 +22,6 @@
 import os
 from abc import ABC
 
-from tornado.concurrent import run_on_executor
 from tornado.web import authenticated
 
 import sickrage
@@ -39,15 +38,13 @@ class ConfigGeneralHandler(BaseHandler, ABC):
         await self.run_in_executor(self.handle_get)
 
     def handle_get(self):
-        return self.render(
-            "/config/general.mako",
-            title=_('Config - General'),
-            header=_('General Configuration'),
-            topmenu='config',
-            submenu=ConfigHandler.menu,
-            controller='config',
-            action='general',
-        )
+        return self.render('config/general.mako',
+                           title=_('Config - General'),
+                           header=_('General Configuration'),
+                           topmenu='config',
+                           submenu=ConfigHandler.menu,
+                           controller='config',
+                           action='general', )
 
 
 class GenerateApiKeyHandler(BaseHandler, ABC):

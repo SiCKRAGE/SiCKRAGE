@@ -24,7 +24,6 @@ import re
 from abc import ABC
 from urllib.parse import unquote_plus, urlencode
 
-from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode
 from tornado.httputil import url_concat
 from tornado.web import authenticated
@@ -64,14 +63,12 @@ class HomeAddShowsHandler(BaseHandler, ABC):
         await self.run_in_executor(self.handle_get)
 
     def handle_get(self):
-        return self.render(
-            "/home/add_shows.mako",
-            title=_('Add Shows'),
-            header=_('Add Shows'),
-            topmenu='home',
-            controller='home',
-            action='add_shows'
-        )
+        return self.render('home/add_shows.mako',
+                           title=_('Add Shows'),
+                           header=_('Add Shows'),
+                           topmenu='home',
+                           controller='home',
+                           action='add_shows')
 
 
 class SearchIndexersForShowNameHandler(BaseHandler, ABC):
@@ -189,12 +186,10 @@ class MassAddTableHandler(BaseHandler, ABC):
                 except Exception:
                     pass
 
-        return self.render(
-            "/home/mass_add_table.mako",
-            dirList=dir_list,
-            controller='home',
-            action="mass_add_table"
-        )
+        return self.render('home/mass_add_table.mako',
+                           dirList=dir_list,
+                           controller='home',
+                           action="mass_add_table")
 
 
 class NewShowHandler(BaseHandler, ABC):
@@ -229,27 +224,25 @@ class NewShowHandler(BaseHandler, ABC):
         provided_indexer_name = show_name or ''
         provided_indexer = int(indexer or sickrage.app.config.indexer_default)
 
-        return self.render(
-            "/home/new_show.mako",
-            enable_anime_options=True,
-            use_provided_info=use_provided_info,
-            default_show_name=default_show_name,
-            other_shows=other_shows,
-            provided_show_dir=show_dir,
-            provided_indexer_id=provided_indexer_id,
-            provided_indexer_name=provided_indexer_name,
-            provided_indexer=provided_indexer,
-            indexers=IndexerApi().indexers,
-            quality=sickrage.app.config.quality_default,
-            whitelist=[],
-            blacklist=[],
-            groups=[],
-            title=_('New Show'),
-            header=_('New Show'),
-            topmenu='home',
-            controller='home',
-            action="new_show"
-        )
+        return self.render('home/new_show.mako',
+                           enable_anime_options=True,
+                           use_provided_info=use_provided_info,
+                           default_show_name=default_show_name,
+                           other_shows=other_shows,
+                           provided_show_dir=show_dir,
+                           provided_indexer_id=provided_indexer_id,
+                           provided_indexer_name=provided_indexer_name,
+                           provided_indexer=provided_indexer,
+                           indexers=IndexerApi().indexers,
+                           quality=sickrage.app.config.quality_default,
+                           whitelist=[],
+                           blacklist=[],
+                           groups=[],
+                           title=_('New Show'),
+                           header=_('New Show'),
+                           topmenu='home',
+                           controller='home',
+                           action="new_show")
 
 
 class TraktShowsHandler(BaseHandler, ABC):
@@ -273,16 +266,16 @@ class TraktShowsHandler(BaseHandler, ABC):
         while len(trakt_shows) < int(limit):
             trakt_shows += [x for x in shows if 'tvdb' in x.ids and not find_show(int(x.ids['tvdb']))]
 
-        return self.render("/home/trakt_shows.mako",
-                                 title="Trakt {} Shows".format(show_list.capitalize()),
-                                 header="Trakt {} Shows".format(show_list.capitalize()),
-                                 enable_anime_options=False,
-                                 black_list=black_list,
-                                 trakt_shows=trakt_shows[:int(limit)],
-                                 trakt_list=show_list,
-                                 limit=limit,
-                                 controller='home',
-                                 action="trakt_shows")
+        return self.render('home/trakt_shows.mako',
+                           title="Trakt {} Shows".format(show_list.capitalize()),
+                           header="Trakt {} Shows".format(show_list.capitalize()),
+                           enable_anime_options=False,
+                           black_list=black_list,
+                           trakt_shows=trakt_shows[:int(limit)],
+                           trakt_list=show_list,
+                           limit=limit,
+                           controller='home',
+                           action="trakt_shows")
 
 
 class PopularShowsHandler(BaseHandler, ABC):
@@ -302,14 +295,14 @@ class PopularShowsHandler(BaseHandler, ABC):
             popular_shows = None
             imdb_exception = e
 
-        return self.render("/home/imdb_shows.mako",
-                                 title="IMDB Popular Shows",
-                                 header="IMDB Popular Shows",
-                                 popular_shows=popular_shows,
-                                 imdb_exception=imdb_exception,
-                                 topmenu="home",
-                                 controller='home',
-                                 action="popular_shows")
+        return self.render('home/imdb_shows.mako',
+                           title="IMDB Popular Shows",
+                           header="IMDB Popular Shows",
+                           popular_shows=popular_shows,
+                           imdb_exception=imdb_exception,
+                           topmenu="home",
+                           controller='home',
+                           action="popular_shows")
 
 
 class AddShowToBlacklistHandler(BaseHandler, ABC):
@@ -334,14 +327,14 @@ class ExistingShowsHandler(BaseHandler, ABC):
         """
         Prints out the page to add existing shows from a root dir
         """
-        return self.render("/home/add_existing_shows.mako",
-                                 enable_anime_options=False,
-                                 quality=sickrage.app.config.quality_default,
-                                 title=_('Existing Show'),
-                                 header=_('Existing Show'),
-                                 topmenu="home",
-                                 controller='home',
-                                 action="add_existing_shows")
+        return self.render('home/add_existing_shows.mako',
+                           enable_anime_options=False,
+                           quality=sickrage.app.config.quality_default,
+                           title=_('Existing Show'),
+                           header=_('Existing Show'),
+                           topmenu="home",
+                           controller='home',
+                           action="add_existing_shows")
 
 
 class AddShowByIDHandler(BaseHandler, ABC):

@@ -381,18 +381,16 @@ class EpisodeStatusesHandler(BaseHandler, ABC):
                         if show.indexer_id not in sorted_show_ids:
                             sorted_show_ids.append(show.indexer_id)
 
-        return self.render(
-            "/manage/episode_statuses.mako",
-            title="Episode Overview",
-            header="Episode Overview",
-            topmenu='manage',
-            whichStatus=which_status,
-            show_names=show_names,
-            ep_counts=ep_counts,
-            sorted_show_ids=sorted_show_ids,
-            controller='manage',
-            action='episode_statuses'
-        )
+        return self.render('manage/episode_statuses.mako',
+                           title="Episode Overview",
+                           header="Episode Overview",
+                           topmenu='manage',
+                           whichStatus=which_status,
+                           show_names=show_names,
+                           ep_counts=ep_counts,
+                           sorted_show_ids=sorted_show_ids,
+                           controller='manage',
+                           action='episode_statuses')
 
 
 class ChangeEpisodeStatusesHandler(BaseHandler, ABC):
@@ -529,18 +527,16 @@ class SubtitleMissedHandler(BaseHandler, ABC):
                 if cur_indexer_id not in sorted_show_ids:
                     sorted_show_ids.append(cur_indexer_id)
 
-        return self.render(
-            "/manage/subtitles_missed.mako",
-            whichSubs=which_subs,
-            show_names=show_names,
-            ep_counts=ep_counts,
-            sorted_show_ids=sorted_show_ids,
-            title=_('Missing Subtitles'),
-            header=_('Missing Subtitles'),
-            topmenu='manage',
-            controller='manage',
-            action='subtitles_missed'
-        )
+        return self.render('/manage/subtitles_missed.mako',
+                           whichSubs=which_subs,
+                           show_names=show_names,
+                           ep_counts=ep_counts,
+                           sorted_show_ids=sorted_show_ids,
+                           title=_('Missing Subtitles'),
+                           header=_('Missing Subtitles'),
+                           topmenu='manage',
+                           controller='manage',
+                           action='subtitles_missed')
 
 
 class DownloadSubtitleMissedHandler(BaseHandler, ABC):
@@ -629,17 +625,15 @@ class BacklogOverviewHandler(BaseHandler, ABC):
             show_counts[curShow.indexer_id] = ep_counts
             show_cats[curShow.indexer_id] = ep_cats
 
-        return self.render(
-            "/manage/backlog_overview.mako",
-            showCounts=show_counts,
-            showCats=show_cats,
-            showResults=show_results,
-            title=_('Backlog Overview'),
-            header=_('Backlog Overview'),
-            topmenu='manage',
-            controller='manage',
-            action='backlog_overview'
-        )
+        return self.render('manage/backlog_overview.mako',
+                           showCounts=show_counts,
+                           showCats=show_cats,
+                           showResults=show_results,
+                           title=_('Backlog Overview'),
+                           header=_('Backlog Overview'),
+                           topmenu='manage',
+                           controller='manage',
+                           action='backlog_overview')
 
 
 class EditShowHandler(BaseHandler, ABC):
@@ -667,30 +661,26 @@ class EditShowHandler(BaseHandler, ABC):
             except AnidbAdbaConnectionException as e:
                 sickrage.app.log.debug('Unable to get ReleaseGroups: {}'.format(e))
 
-            return self.render(
-                "/home/edit_show.mako",
-                show=show_obj,
-                quality=show_obj.quality,
-                scene_exceptions=[x.split('|')[0] for x in show_obj.scene_exceptions],
-                groups=groups,
-                whitelist=whitelist,
-                blacklist=blacklist,
-                title=_('Edit Show'),
-                header=_('Edit Show'),
-                controller='home',
-                action="edit_show"
-            )
+            return self.render('home/edit_show.mako',
+                               show=show_obj,
+                               quality=show_obj.quality,
+                               scene_exceptions=[x.split('|')[0] for x in show_obj.scene_exceptions],
+                               groups=groups,
+                               whitelist=whitelist,
+                               blacklist=blacklist,
+                               title=_('Edit Show'),
+                               header=_('Edit Show'),
+                               controller='home',
+                               action="edit_show")
         else:
-            return self.render(
-                "/home/edit_show.mako",
-                show=show_obj,
-                quality=show_obj.quality,
-                scene_exceptions=[x.split('|')[0] for x in show_obj.scene_exceptions],
-                title=_('Edit Show'),
-                header=_('Edit Show'),
-                controller='home',
-                action="edit_show"
-            )
+            return self.render('/home/edit_show.mako',
+                               show=show_obj,
+                               quality=show_obj.quality,
+                               scene_exceptions=[x.split('|')[0] for x in show_obj.scene_exceptions],
+                               title=_('Edit Show'),
+                               header=_('Edit Show'),
+                               controller='home',
+                               action="edit_show")
 
     @authenticated
     async def post(self, *args, **kwargs):
@@ -839,25 +829,23 @@ class MassEditHandler(BaseHandler, ABC):
         subtitles_value = last_subtitles if subtitles_all_same else None
         search_format_value = last_search_format if search_format_all_same else None
 
-        return self.render(
-            "/manage/mass_edit.mako",
-            showList=to_edit,
-            showNames=show_names,
-            skip_downloaded_value=skip_downloaded_value,
-            default_ep_status_value=default_ep_status_value,
-            paused_value=paused_value,
-            anime_value=anime_value,
-            flatten_folders_value=flatten_folders_value,
-            quality_value=quality_value,
-            subtitles_value=subtitles_value,
-            search_format_value=search_format_value,
-            root_dir_list=root_dir_list,
-            title=_('Mass Edit'),
-            header=_('Mass Edit'),
-            topmenu='manage',
-            controller='manage',
-            action='mass_edit'
-        )
+        return self.render('manage/mass_edit.mako',
+                           showList=to_edit,
+                           showNames=show_names,
+                           skip_downloaded_value=skip_downloaded_value,
+                           default_ep_status_value=default_ep_status_value,
+                           paused_value=paused_value,
+                           anime_value=anime_value,
+                           flatten_folders_value=flatten_folders_value,
+                           quality_value=quality_value,
+                           subtitles_value=subtitles_value,
+                           search_format_value=search_format_value,
+                           root_dir_list=root_dir_list,
+                           title=_('Mass Edit'),
+                           header=_('Mass Edit'),
+                           topmenu='manage',
+                           controller='manage',
+                           action='mass_edit')
 
     @authenticated
     async def post(self, *args, **kwargs):
@@ -990,15 +978,13 @@ class MassUpdateHandler(BaseHandler, ABC):
         shows_list = sorted([x for x in get_show_list() if not sickrage.app.show_queue.is_being_removed(x.indexer_id)],
                             key=cmp_to_key(lambda x, y: x.name < y.name))
 
-        return self.render(
-            '/manage/mass_update.mako',
-            shows_list=shows_list,
-            title=_('Mass Update'),
-            header=_('Mass Update'),
-            topmenu='manage',
-            controller='manage',
-            action='mass_update'
-        )
+        return self.render('/manage/mass_update.mako',
+                           shows_list=shows_list,
+                           title=_('Mass Update'),
+                           header=_('Mass Update'),
+                           topmenu='manage',
+                           controller='manage',
+                           action='mass_update')
 
     @authenticated
     async def post(self, *args, **kwargs):
@@ -1113,16 +1099,14 @@ class FailedDownloadsHandler(BaseHandler, ABC):
         if int(limit):
             query = session.query(MainDB.FailedSnatch).limit(int(limit))
 
-        return self.render(
-            "/manage/failed_downloads.mako",
-            limit=int(limit),
-            failedResults=query.all(),
-            title=_('Failed Downloads'),
-            header=_('Failed Downloads'),
-            topmenu='manage',
-            controller='manage',
-            action='failed_downloads'
-        )
+        return self.render('manage/failed_downloads.mako',
+                           limit=int(limit),
+                           failedResults=query.all(),
+                           title=_('Failed Downloads'),
+                           header=_('Failed Downloads'),
+                           topmenu='manage',
+                           controller='manage',
+                           action='failed_downloads')
 
     @authenticated
     async def post(self, *args, **kwargs):

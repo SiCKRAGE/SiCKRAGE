@@ -77,15 +77,13 @@ class HomeHandler(BaseHandler, ABC):
             'Anime': [x for x in show_list if x.anime is True]
         })
 
-        return self.render(
-            "/home/index.mako",
-            title="Home",
-            header="Show List",
-            topmenu="home",
-            showlists=show_lists,
-            controller='home',
-            action='index'
-        )
+        return self.render('home/index.mako',
+                           title="Home",
+                           header="Show List",
+                           topmenu="home",
+                           showlists=show_lists,
+                           controller='home',
+                           action='index')
 
     def statistics(self):
         show_stat = {}
@@ -762,16 +760,14 @@ class ServerStatusHandler(BaseHandler, ABC):
             for subject in backend_dirs:
                 root_dir[subject] = get_disk_space_usage(subject)
 
-        return self.render(
-            "/home/server_status.mako",
-            title=_('Server Status'),
-            header=_('Server Status'),
-            topmenu='system',
-            tvdirFree=tvdir_free,
-            rootDir=root_dir,
-            controller='home',
-            action='server_status'
-        )
+        return self.render('home/server_status.mako',
+                           title=_('Server Status'),
+                           header=_('Server Status'),
+                           topmenu='system',
+                           tvdirFree=tvdir_free,
+                           rootDir=root_dir,
+                           controller='home',
+                           action='server_status')
 
 
 class ProviderStatusHandler(BaseHandler, ABC):
@@ -780,14 +776,12 @@ class ProviderStatusHandler(BaseHandler, ABC):
         await self.run_in_executor(self.handle_get)
 
     def handle_get(self):
-        return self.render(
-            "/home/provider_status.mako",
-            title=_('Provider Status'),
-            header=_('Provider Status'),
-            topmenu='system',
-            controller='home',
-            action='provider_status'
-        )
+        return self.render('home/provider_status.mako',
+                           title=_('Provider Status'),
+                           header=_('Provider Status'),
+                           topmenu='system',
+                           controller='home',
+                           action='provider_status')
 
 
 class ShutdownHandler(BaseHandler, ABC):
@@ -822,14 +816,12 @@ class RestartHandler(BaseHandler, ABC):
 
         sickrage.app.io_loop.add_timeout(datetime.timedelta(seconds=5), sickrage.app.shutdown, restart=True)
 
-        return self.render(
-            "/home/restart.mako",
-            title="Home",
-            header="Restarting SiCKRAGE",
-            topmenu="system",
-            controller='home',
-            action="restart",
-        )
+        return self.render('home/restart.mako',
+                           title="Home",
+                           header="Restarting SiCKRAGE",
+                           topmenu="system",
+                           controller='home',
+                           action="restart")
 
 
 class UpdateCheckHandler(BaseHandler, ABC):
@@ -1100,26 +1092,24 @@ class DisplayShowHandler(BaseHandler, ABC):
                 'name': show_obj.name,
             })
 
-        return self.render(
-            "/home/display_show.mako",
-            submenu=submenu,
-            showLoc=show_loc,
-            show_message=show_message,
-            show=show_obj,
-            episode_objects=episode_objects,
-            seasonResults=list(season_results),
-            sortedShowLists=sorted_show_lists,
-            bwl=bwl,
-            epCounts=ep_counts,
-            epCats=ep_cats,
-            scene_numbering=get_scene_numbering_for_show(indexer_id, indexer),
-            xem_numbering=get_xem_numbering_for_show(indexer_id, indexer),
-            scene_absolute_numbering=get_scene_absolute_numbering_for_show(indexer_id, indexer),
-            xem_absolute_numbering=get_xem_absolute_numbering_for_show(indexer_id, indexer),
-            title=show_obj.name,
-            controller='home',
-            action="display_show"
-        )
+        return self.render('home/display_show.mako',
+                           submenu=submenu,
+                           showLoc=show_loc,
+                           show_message=show_message,
+                           show=show_obj,
+                           episode_objects=episode_objects,
+                           seasonResults=list(season_results),
+                           sortedShowLists=sorted_show_lists,
+                           bwl=bwl,
+                           epCounts=ep_counts,
+                           epCats=ep_cats,
+                           scene_numbering=get_scene_numbering_for_show(indexer_id, indexer),
+                           xem_numbering=get_xem_numbering_for_show(indexer_id, indexer),
+                           scene_absolute_numbering=get_scene_absolute_numbering_for_show(indexer_id, indexer),
+                           xem_absolute_numbering=get_xem_absolute_numbering_for_show(indexer_id, indexer),
+                           title=show_obj.name,
+                           controller='home',
+                           action="display_show")
 
     def have_kodi(self):
         return sickrage.app.config.use_kodi and sickrage.app.config.kodi_update_library
@@ -1427,16 +1417,14 @@ class TestRenameHandler(BaseHandler, ABC):
             {'title': _('Edit'), 'path': '/manage/editShow?show=%d' % show_object.indexer_id,
              'icon': 'fas fa-edit'}]
 
-        return self.render(
-            "/home/test_renaming.mako",
-            submenu=submenu,
-            episode_objects=episode_objects,
-            show=show_object,
-            title=_('Preview Rename'),
-            header=_('Preview Rename'),
-            controller='home',
-            action="test_renaming"
-        )
+        return self.render('home/test_renaming.mako',
+                           submenu=submenu,
+                           episode_objects=episode_objects,
+                           show=show_object,
+                           title=_('Preview Rename'),
+                           header=_('Preview Rename'),
+                           controller='home',
+                           action="test_renaming")
 
 
 class DoRenameHandler(BaseHandler, ABC):

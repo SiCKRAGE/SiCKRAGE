@@ -19,9 +19,6 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 import functools
-import os
-import shutil
-import tempfile
 import threading
 import time
 import traceback
@@ -31,7 +28,6 @@ from urllib.parse import urlparse, urljoin
 from jose import ExpiredSignatureError
 from keycloak.exceptions import KeycloakClientError
 from mako.exceptions import RichTraceback
-from mako.lookup import TemplateLookup
 from tornado import locale
 from tornado.web import RequestHandler
 
@@ -58,9 +54,11 @@ class BaseHandler(RequestHandler, ABC):
                 url = url[len(sickrage.app.config.web_root) + 1:]
 
             if url[:3] != 'api':
-                self.render('/errors/404.mako', title=_('HTTP Error 404'), header=_('HTTP Error 404'))
+                return self.render('errors/404.mako',
+                                   title=_('HTTP Error 404'),
+                                   header=_('HTTP Error 404'))
             else:
-                self.write('Wrong API key used')
+                return self.write('Wrong API key used')
         elif self.settings.get("debug") and "exc_info" in kwargs:
             exc_info = kwargs["exc_info"]
             trace_info = ''.join(["%s<br>" % line for line in traceback.format_exception(*exc_info)])
@@ -70,7 +68,7 @@ class BaseHandler(RequestHandler, ABC):
             sickrage.app.log.error(error)
 
             self.set_header('Content-Type', 'text/html')
-            self.write("""<html>
+            return self.write("""<html>
                              <title>{error}</title>
                              <body>
                                 <button onclick="window.location='{webroot}/logs/';">View Log(Errors)</button>
@@ -150,19 +148,8 @@ class BaseHandler(RequestHandler, ABC):
         template_kwargs.update(self.get_template_namespace())
         template_kwargs.update(kwargs)
 
-        # template settings
-        mako_lookup = TemplateLookup(
-            directories=[sickrage.app.config.gui_views_dir],
-            module_directory=os.path.join(sickrage.app.cache_dir, 'mako'),
-            filesystem_checks=True,
-            strict_undefined=True,
-            input_encoding='utf-8',
-            output_encoding='utf-8',
-            encoding_errors='replace'
-        )
-
         try:
-            return mako_lookup.get_template(template_name).render_unicode(**template_kwargs)
+            return self.application.settings['templates'][template_name].render_unicode(**template_kwargs)
         except Exception:
             kwargs['title'] = _('HTTP Error 500')
             kwargs['header'] = _('HTTP Error 500')
@@ -171,7 +158,7 @@ class BaseHandler(RequestHandler, ABC):
 
             sickrage.app.log.error("%s: %s" % (str(kwargs['backtrace'].error.__class__.__name__), kwargs['backtrace'].error))
 
-            return mako_lookup.get_template('/errors/500.mako').render_unicode(**template_kwargs)
+            return self.application.settings['templates']['errors/500.mako'].render_unicode(**template_kwargs)
 
     def render(self, template_name, **kwargs):
         self.write(self.render_string(template_name, **kwargs))
@@ -192,14 +179,12 @@ class BaseHandler(RequestHandler, ABC):
         return url._replace(scheme="", netloc="").geturl()
 
     def _genericMessage(self, subject, message):
-        return self.render(
-            "/generic_message.mako",
-            message=message,
-            subject=subject,
-            title="",
-            controller='root',
-            action='genericmessage'
-        )
+        return self.render('generic_message.mako',
+                           message=message,
+                           subject=subject,
+                           title="",
+                           controller='root',
+                           action='genericmessage')
 
     def get_url(self, url):
         if sickrage.app.config.web_root not in url:
