@@ -633,11 +633,7 @@
                 </td>
 
                 <td class="table-fit col-airdate">
-                    <% airDate = episode_object.airdate %>
-
-                    % if airDate.year >= 1970 or show.network:
-                        <% airDate = srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(episode_object.airdate, show.airs, show.network), convert=True).dt %>
-                    % endif
+                    <% airDate = srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(episode_object.airdate, show.airs, show.network), convert=True).dt %>
 
                     % if airDate.date() > datetime.datetime.min.date():
                         <time datetime="${airDate.isoformat('T')}" class="date text-nowrap">
