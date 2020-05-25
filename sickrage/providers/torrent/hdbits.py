@@ -64,6 +64,9 @@ class HDBitsProvider(TorrentProvider):
         }
 
         show_object = find_show(show_id)
+        if not show_object:
+            return [post_data]
+
         episode_object = show_object.get_episode(season, episode)
 
         if show_object.search_format in [SearchFormats.AIR_BY_DATE, SearchFormats.SPORTS]:
@@ -93,6 +96,9 @@ class HDBitsProvider(TorrentProvider):
         }
 
         show_object = find_show(show_id)
+        if not show_object:
+            return [post_data]
+
         episode_object = show_object.get_episode(season, episode)
 
         if show_object.search_format == SearchFormats.AIR_BY_DATE:

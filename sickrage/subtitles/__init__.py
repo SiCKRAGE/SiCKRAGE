@@ -94,6 +94,9 @@ class Subtitles(object):
 
     def download_subtitles(self, show_id, season, episode):
         show_object = find_show(show_id)
+        if not show_object:
+            return [], None
+
         episode_object = show_object.get_episode(season, episode)
 
         existing_subtitles = episode_object.subtitles
@@ -180,6 +183,9 @@ class Subtitles(object):
 
     def refresh_subtitles(self, show_id, season, episode):
         show_object = find_show(show_id)
+        if not show_object:
+            return [], None
+
         episode_object = show_object.get_episode(season, episode)
 
         video = self.get_video(episode_object.location, episode_object=episode_object)

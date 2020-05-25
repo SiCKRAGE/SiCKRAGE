@@ -64,6 +64,9 @@ class NewpctProvider(TorrentProvider):
                           '%s/capitulo-%s%s/bluray-1080p/']
 
         show_object = find_show(show_id)
+        if not show_object:
+            return [search_strings]
+
         episode_object = show_object.get_episode(season, episode)
 
         for show_name in all_possible_show_names(show_id, episode_object.scene_season):
@@ -80,9 +83,6 @@ class NewpctProvider(TorrentProvider):
         Get episode search strings.
         """
 
-        show_object = find_show(show_id)
-        episode_object = show_object.get_episode(season, episode)
-
         search_strings = {
             'Episode': []
         }
@@ -92,6 +92,12 @@ class NewpctProvider(TorrentProvider):
                            '%s/capitulo-%s%s/hdtv-720p-ac3-5-1/',
                            '%s/capitulo-%s%s/hdtv-1080p-ac3-5-1/',
                            '%s/capitulo-%s%s/bluray-1080p/']
+
+        show_object = find_show(show_id)
+        if not show_object:
+            return [search_strings]
+
+        episode_object = show_object.get_episode(season, episode)
 
         for show_name in all_possible_show_names(show_id, episode_object.scene_season):
             for episode_string in episode_strings:

@@ -159,6 +159,9 @@ class GenericProvider(object):
         }
 
         show_object = find_show(show_id)
+        if not show_object:
+            return [search_string]
+
         episode_object = show_object.get_episode(season, episode)
 
         for show_name in all_possible_show_names(show_id, episode_object.scene_season):
@@ -1073,12 +1076,15 @@ class NewznabProvider(NZBProvider):
         if not self._check_auth():
             return results
 
+        show_object = find_show(show_id)
+        if not show_object:
+            return results
+
+        episode_object = show_object.get_episode(season, episode)
+
         # For providers that don't have caps, or for which the t=caps is not working.
         if not self.caps:
             self.get_newznab_categories(just_caps=True)
-
-        show_object = find_show(show_id)
-        episode_object = show_object.get_episode(season, episode)
 
         for mode in search_strings:
             self.torznab = False

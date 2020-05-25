@@ -57,6 +57,9 @@ class TVChaosUKProvider(TorrentProvider):
         search_string = {'Season': []}
 
         show_object = find_show(show_id)
+        if not show_object:
+            return [search_string]
+
         episode_object = show_object.get_episode(season, episode)
 
         for show_name in set(show_names.all_possible_show_names(show_id)):
@@ -78,6 +81,9 @@ class TVChaosUKProvider(TorrentProvider):
         search_string = {'Episode': []}
 
         show_object = find_show(show_id)
+        if not show_object:
+            return [search_string]
+
         episode_object = show_object.get_episode(season, episode)
 
         for show_name in set(show_names.all_possible_show_names(show_id)):

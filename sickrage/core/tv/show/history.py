@@ -209,6 +209,9 @@ class History:
         :param provider: Provider used for snatch
         """
         show_object = find_show(show_id)
+        if not show_object:
+            return
+
         episode_object = show_object.get_episode(season, episode)
 
         status, quality = Quality.split_composite_status(episode_object.status)
@@ -302,10 +305,13 @@ class FailedHistory(object):
         """Restore the episodes of a failed download to their original state"""
         session = sickrage.app.main_db.session()
 
-        history_eps = dict((x.episode, x) for x in session.query(MainDB.FailedSnatchHistory).filter_by(showid=show_id, season=season, episode=episode))
-
         show_object = find_show(show_id)
+        if not show_object:
+            return
+
         episode_object = show_object.get_episode(season, episode)
+
+        history_eps = dict((x.episode, x) for x in session.query(MainDB.FailedSnatchHistory).filter_by(showid=show_id, season=season, episode=episode))
 
         try:
             sickrage.app.log.info("Reverting episode (%s, %s): %s" % (season, episode, episode_object.name))
@@ -330,6 +336,9 @@ class FailedHistory(object):
         log_str = ""
 
         show_object = find_show(show_id)
+        if not show_object:
+            return log_str
+
         episode_object = show_object.get_episode(season, episode)
 
         try:

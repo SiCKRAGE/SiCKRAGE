@@ -168,6 +168,9 @@ def make_scene_season_search_string(show_id, season, episode, extraSearchType=No
     numseasons = 0
 
     show_object = find_show(show_id)
+    if not show_object:
+        return []
+
     episode_object = show_object.get_episode(season, episode)
 
     if show_object.search_format in [SearchFormats.AIR_BY_DATE, SearchFormats.SPORTS]:
