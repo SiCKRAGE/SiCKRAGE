@@ -59,6 +59,10 @@ class API(object):
         return self.SceneExceptions(self)
 
     @property
+    def alexa(self):
+        return self.AlexaAPI(self)
+
+    @property
     def session(self):
         extra = {
             'client_id': sickrage.app.auth_server.client_id,
@@ -372,3 +376,10 @@ class API(object):
         def search_by_id(self, indexer_id):
             query = 'scene-exceptions/search-by-id/{}'.format(indexer_id)
             return self.api.request('GET', query)
+
+    class AlexaAPI:
+        def __init__(self, api):
+            self.api = api
+
+        def send_notification(self, message):
+            return self.api.request('POST', 'alexa/notification', json={'message': message})

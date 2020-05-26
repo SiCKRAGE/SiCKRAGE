@@ -4289,6 +4289,12 @@ $(document).ready(function ($) {
                         });
                     });
 
+                    $('#testAlexa').on('click', function () {
+                        $.get(SICKRAGE.srWebRoot + '/home/testAlexa', function (data) {
+                            $('#testAlexa-result').html(data);
+                        });
+                    });
+
                     $('#testSlack').on('click', function () {
                         $.get(SICKRAGE.srWebRoot + '/home/testSlack', function (data) {
                             $('#testSlack-result').html(data);
@@ -4702,6 +4708,15 @@ $(document).ready(function ($) {
                             $('.plexinfo').removeClass('d-none');
                         } else {
                             $('.plexinfo').addClass('d-none');
+                        }
+                    });
+                    
+                    // show instructions for alexa when enabled
+                    $('#use_alexa').click(function () {
+                        if ($(this).is(':checked')) {
+                            $('.alexa-info').removeClass('d-none');
+                        } else {
+                            $('.alexa-info').addClass('d-none');
                         }
                     });
                 },

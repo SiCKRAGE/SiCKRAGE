@@ -65,7 +65,7 @@ from sickrage.core.webserver.handlers.home import HomeHandler, IsAliveHandler, T
     DeleteShowHandler, RefreshShowHandler, UpdateShowHandler, SubtitleShowHandler, UpdateKODIHandler, UpdatePLEXHandler, \
     UpdateEMBYHandler, SyncTraktHandler, DeleteEpisodeHandler, TestRenameHandler, DoRenameHandler, \
     SearchEpisodeHandler, GetManualSearchStatusHandler, SearchEpisodeSubtitlesHandler, \
-    SetSceneNumberingHandler, ProviderStatusHandler, ServerStatusHandler, ShowProgressHandler, TestSynologyDSMHandler
+    SetSceneNumberingHandler, ProviderStatusHandler, ServerStatusHandler, ShowProgressHandler, TestSynologyDSMHandler, TestAlexaHandler
 from sickrage.core.webserver.handlers.home.add_shows import HomeAddShowsHandler, SearchIndexersForShowNameHandler, \
     MassAddTableHandler, NewShowHandler, TraktShowsHandler, PopularShowsHandler, AddShowToBlacklistHandler, \
     ExistingShowsHandler, AddShowByIDHandler, AddNewShowHandler, AddExistingShowsHandler
@@ -298,6 +298,7 @@ class WebServer(object):
             (r'%s/home/testTwitter(/?)' % sickrage.app.config.web_root, TestTwitterHandler),
             (r'%s/home/testTwilio(/?)' % sickrage.app.config.web_root, TestTwilioHandler),
             (r'%s/home/testSlack(/?)' % sickrage.app.config.web_root, TestSlackHandler),
+            (r'%s/home/testAlexa(/?)' % sickrage.app.config.web_root, TestAlexaHandler),
             (r'%s/home/testDiscord(/?)' % sickrage.app.config.web_root, TestDiscordHandler),
             (r'%s/home/testKODI(/?)' % sickrage.app.config.web_root, TestKODIHandler),
             (r'%s/home/testPMC(/?)' % sickrage.app.config.web_root, TestPMCHandler),

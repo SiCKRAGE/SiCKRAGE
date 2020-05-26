@@ -402,6 +402,18 @@ class TestTwilioHandler(BaseHandler, ABC):
         return self.write(_('Error sending sms'))
 
 
+class TestAlexaHandler(BaseHandler, ABC):
+    @authenticated
+    async def get(self, *args, **kwargs):
+        await self.run_in_executor(self.handle_get)
+
+    def handle_get(self):
+        result = sickrage.app.notifier_providers['alexa'].test_notify()
+        if result:
+            return self.write(_('Alexa notification successful'))
+        return self.write(_('Alexa notification failed'))
+
+
 class TestSlackHandler(BaseHandler, ABC):
     @authenticated
     async def get(self, *args, **kwargs):

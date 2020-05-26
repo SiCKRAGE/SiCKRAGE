@@ -105,7 +105,7 @@ class SaveNotificationsHandler(BaseHandler, ABC):
         prowl_notify_ondownload = self.get_argument('prowl_notify_ondownload', None)
         prowl_notify_onsubtitledownload = self.get_argument('prowl_notify_onsubtitledownload', None)
         prowl_api = self.get_argument('prowl_api', None)
-        prowl_priority = self.get_argument('prowl_priority', 0)
+        prowl_priority = self.get_argument('prowl_priority', None) or 0
         use_twitter = self.get_argument('use_twitter', None)
         twitter_notify_onsnatch = self.get_argument('twitter_notify_onsnatch', None)
         twitter_notify_ondownload = self.get_argument('twitter_notify_ondownload', None)
@@ -177,7 +177,7 @@ class SaveNotificationsHandler(BaseHandler, ABC):
         nma_notify_ondownload = self.get_argument('nma_notify_ondownload', None)
         nma_notify_onsubtitledownload = self.get_argument('nma_notify_onsubtitledownload', None)
         nma_api = self.get_argument('nma_api', None)
-        nma_priority = self.get_argument('nma_priority', 0)
+        nma_priority = self.get_argument('nma_priority', None) or 0
         use_pushalot = self.get_argument('use_pushalot', None)
         pushalot_notify_onsnatch = self.get_argument('pushalot_notify_onsnatch', None)
         pushalot_notify_ondownload = self.get_argument('pushalot_notify_ondownload', None)
@@ -194,7 +194,7 @@ class SaveNotificationsHandler(BaseHandler, ABC):
         email_notify_ondownload = self.get_argument('email_notify_ondownload', None)
         email_notify_onsubtitledownload = self.get_argument('email_notify_onsubtitledownload', None)
         email_host = self.get_argument('email_host', None)
-        email_port = self.get_argument('email_port', 25)
+        email_port = self.get_argument('email_port', None) or 25
         email_from = self.get_argument('email_from', None)
         email_tls = self.get_argument('email_tls', None)
         email_user = self.get_argument('email_user', None)
@@ -205,7 +205,7 @@ class SaveNotificationsHandler(BaseHandler, ABC):
         slack_notify_ondownload = self.get_argument('slack_notify_ondownload', None)
         slack_notify_onsubtitledownload = self.get_argument('slack_notify_onsubtitledownload', None)
         slack_webhook = self.get_argument('slack_webhook', None)
-        use_discord = self.get_argument('use_discord', False)
+        use_discord = self.get_argument('use_discord', None)
         discord_notify_onsnatch = self.get_argument('discord_notify_onsnatch', None)
         discord_notify_ondownload = self.get_argument('discord_notify_ondownload', None)
         discord_notify_onsubtitledownload = self.get_argument('discord_notify_onsubtitledownload', None)
@@ -213,6 +213,10 @@ class SaveNotificationsHandler(BaseHandler, ABC):
         discord_name = self.get_argument('discord_name', None)
         discord_avatar_url = self.get_argument('discord_avatar_url', None)
         discord_tts = self.get_argument('discord_tts', None)
+        use_alexa = self.get_argument('use_alexa', None)
+        alexa_notify_onsnatch = self.get_argument('alexa_notify_onsnatch', None)
+        alexa_notify_ondownload = self.get_argument('alexa_notify_ondownload', None)
+        alexa_notify_onsubtitledownload = self.get_argument('alexa_notify_onsubtitledownload', None)
 
         results = []
 
@@ -299,6 +303,11 @@ class SaveNotificationsHandler(BaseHandler, ABC):
         sickrage.app.config.twilio_account_sid = twilio_account_sid
         sickrage.app.config.twilio_auth_token = twilio_auth_token
         sickrage.app.config.twilio_to_number = twilio_to_number
+
+        sickrage.app.config.use_alexa = checkbox_to_value(use_alexa)
+        sickrage.app.config.alexa_notify_onsnatch = checkbox_to_value(alexa_notify_onsnatch)
+        sickrage.app.config.alexa_notify_ondownload = checkbox_to_value(alexa_notify_ondownload)
+        sickrage.app.config.alexa_notify_onsubtitledownload = checkbox_to_value(alexa_notify_onsubtitledownload)
 
         sickrage.app.config.use_slack = checkbox_to_value(use_slack)
         sickrage.app.config.slack_notify_onsnatch = checkbox_to_value(slack_notify_onsnatch)

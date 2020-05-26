@@ -393,6 +393,10 @@ class Config(object):
         self.email_password = ""
         self.email_from = ""
         self.email_list = ""
+        self.use_alexa = False
+        self.alexa_notify_onsnatch = False
+        self.alexa_notify_ondownload = False
+        self.alexa_notify_onsubtitledownload = False
         self.gui_lang = ""
         self.gui_static_dir = os.path.join(sickrage.PROG_DIR, 'core', 'webserver', 'static')
         self.gui_views_dir = os.path.join(sickrage.PROG_DIR, 'core', 'webserver', 'views')
@@ -942,6 +946,12 @@ class Config(object):
                 'twilio_account_sid': '',
                 'twilio_auth_token': '',
                 'twilio_to_number': '',
+            },
+            'Alexa': {
+                'use_alexa': False,
+                'alexa_notify_onsnatch': False,
+                'alexa_notify_ondownload': False,
+                'alexa_notify_onsubtitledownload': False,
             },
             'Subtitles': {
                 'itasa_password': '',
@@ -1846,6 +1856,11 @@ class Config(object):
         self.email_from = self.check_setting_str('Email', 'email_from')
         self.email_list = self.check_setting_str('Email', 'email_list')
 
+        self.use_alexa = self.check_setting_bool('Alexa', 'use_alexa')
+        self.alexa_notify_onsnatch = self.check_setting_bool('Alexa', 'alexa_notify_onsnatch')
+        self.alexa_notify_ondownload = self.check_setting_bool('Alexa', 'alexa_notify_ondownload')
+        self.alexa_notify_onsubtitledownload = self.check_setting_bool('Alexa', 'alexa_notify_onsubtitledownload')
+
         # SUBTITLE SETTINGS
         self.use_subtitles = self.check_setting_bool('Subtitles', 'use_subtitles')
         self.subtitles_languages = self.check_setting_list('Subtitles', 'subtitles_languages')
@@ -2231,6 +2246,12 @@ class Config(object):
                 'twilio_account_sid': self.twilio_account_sid,
                 'twilio_auth_token': self.twilio_auth_token,
                 'twilio_to_number': self.twilio_to_number,
+            },
+            'Alexa': {
+                'use_alexa': int(self.use_alexa),
+                'alexa_notify_onsnatch': int(self.alexa_notify_onsnatch),
+                'alexa_notify_ondownload': int(self.alexa_notify_ondownload),
+                'alexa_notify_onsubtitledownload': int(self.alexa_notify_onsubtitledownload),
             },
             'Boxcar2': {
                 'use_boxcar2': int(self.use_boxcar2),
