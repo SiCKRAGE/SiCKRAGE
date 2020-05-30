@@ -51,7 +51,7 @@ class Config(object):
         self.config_version = 15
 
         self.sub_id = ""
-        self.app_id = ""
+        self.server_id = ""
 
         self.debug = False
 
@@ -718,7 +718,7 @@ class Config(object):
             },
             'General': {
                 'sub_id': self.sub_id,
-                'app_id': self.app_id,
+                'server_id': self.server_id,
                 'enable_sickrage_api': True,
                 'log_size': 1048576,
                 'calendar_unprotected': False,
@@ -1428,7 +1428,7 @@ class Config(object):
 
         # GENERAL SETTINGS
         self.sub_id = self.check_setting_str('General', 'sub_id')
-        self.app_id = self.check_setting_str('General', 'app_id')
+        self.server_id = self.check_setting_str('General', 'server_id')
         self.config_version = self.check_setting_int('General', 'config_version')
         self.enable_sickrage_api = self.check_setting_bool('General', 'enable_sickrage_api')
         self.debug = sickrage.app.debug or self.check_setting_bool('General', 'debug')
@@ -1945,7 +1945,7 @@ class Config(object):
         config_obj.update({
             'General': {
                 'sub_id': self.sub_id,
-                'app_id': self.app_id,
+                'server_id': self.server_id,
                 'config_version': self.config_version,
                 'last_db_compact': self.last_db_compact,
                 'enable_sickrage_api': int(self.enable_sickrage_api),
@@ -2653,7 +2653,7 @@ class ConfigMigrator(Config):
         return self.config_obj
 
     def _migrate_v15(self):
-        # app_id = self.check_setting_str('General', 'app_id', '')
-        # if not app_id and API().token:
-        #     self.config_obj['General']['app_id'] = AccountAPI().register_app_id()
+        # server_id = self.check_setting_str('General', 'server_id', '')
+        # if not server_id and API().token:
+        #     self.config_obj['General']['server_id'] = AccountAPI().register_app_id()
         return self.config_obj

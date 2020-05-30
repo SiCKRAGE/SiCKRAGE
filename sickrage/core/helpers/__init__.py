@@ -1752,3 +1752,15 @@ def md5_file_hash(filename):
 def get_extension(filename):
     __, file_extension = os.path.splitext(filename)
     return file_extension
+
+
+def get_external_ip():
+    """Return external IP of system."""
+    return requests.get('https://api.ipify.org').text
+
+
+def get_internal_ip():
+    """Return internal IP of system."""
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(('8.8.8.8', 1))
+    return s.getsockname()[0]

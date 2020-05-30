@@ -57,12 +57,12 @@ class AccountLinkHandler(BaseHandler, ABC):
 
             sickrage.app.config.enable_sickrage_api = True
 
-            if not sickrage.app.config.sub_id or not sickrage.app.config.app_id:
+            if not sickrage.app.config.sub_id or not sickrage.app.config.server_id:
                 sickrage.app.config.sub_id = decoded_token.get('sub')
 
-                app_id = sickrage.app.api.account.register_app_id()
-                if app_id:
-                    sickrage.app.config.app_id = app_id
+                server_id = sickrage.app.api.account.register_server()
+                if server_id:
+                    sickrage.app.config.server_id = server_id
 
             sickrage.app.config.save()
 
@@ -84,8 +84,8 @@ class AccountUnlinkHandler(BaseHandler, ABC):
         # if not sickrage.app.config.sub_id == self.get_current_user().get('sub'):
         #     return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
-        if not sickrage.app.config.app_id or sickrage.app.api.account.unregister_app_id(sickrage.app.config.app_id):
-            sickrage.app.config.app_id = ""
+        if not sickrage.app.config.server_id or sickrage.app.api.account.unregister_server_id(sickrage.app.config.server_id):
+            sickrage.app.config.server_id = ""
             sickrage.app.config.sub_id = ""
             sickrage.app.api.logout()
 

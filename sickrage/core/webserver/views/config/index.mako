@@ -23,13 +23,13 @@
                             </div>
                             <br/>
                         % endif
-                        % if sickrage.app.config.app_id:
+                        % if sickrage.app.config.server_id:
                             <div class="form-row">
                                 <div class="col-lg-3 col-md-3 col-sm-3">
                                     <i class="sickrage-core sickrage-core-keys"></i> ${_('SR App ID:')}
                                 </div>
                                 <div class="col-lg-9 col-md-9 col-sm-9">
-                                    ${sickrage.app.config.app_id}
+                                    ${sickrage.app.config.server_id}
                                 </div>
                             </div>
                             <br/>

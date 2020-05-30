@@ -117,8 +117,8 @@ class Logger(logging.getLoggerClass()):
 
         if sickrage.app.config and sickrage.app.config.sub_id:
             sentry_tags.update({'sub_id': sickrage.app.config.sub_id})
-        if sickrage.app.config and sickrage.app.config.app_id:
-            sentry_tags.update({'app_id': sickrage.app.config.app_id})
+        if sickrage.app.config and sickrage.app.config.server_id:
+            sentry_tags.update({'server_id': sickrage.app.config.server_id})
 
         sentry_handler = SentryHandler(client=sentry_client, ignore_exceptions=sentry_ignore_exceptions, tags=sentry_tags)
 

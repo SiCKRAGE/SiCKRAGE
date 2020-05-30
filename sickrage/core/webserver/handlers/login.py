@@ -22,7 +22,7 @@ import re
 from abc import ABC
 
 import sickrage
-from sickrage.core.helpers import is_ip_whitelisted
+from sickrage.core.helpers import is_ip_whitelisted, get_internal_ip, get_external_ip
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
@@ -92,11 +92,25 @@ class LoginHandler(BaseHandler, ABC):
                 sickrage.app.log.debug('{!r}'.format(e))
                 return self.redirect('/logout')
 
-            if not re.match(r'[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}', sickrage.app.config.app_id or ""):
-                app_id = sickrage.app.api.account.register_app_id()
-                if app_id:
-                    sickrage.app.config.app_id = app_id
+            internal_connections = "{}://{}:{}{}".format(self.request.protocol,
+                                                         get_internal_ip(),
+                                                         sickrage.app.config.web_port,
+                                                         sickrage.app.config.web_root)
+
+            external_connections = "{}://{}:{}{}".format(self.request.protocol,
+                                                         get_external_ip(),
+                                                         sickrage.app.config.web_port,
+                                                         sickrage.app.config.web_root)
+
+            connections = ','.join([internal_connections, external_connections])
+
+            if not re.match(r'[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}', sickrage.app.config.server_id or ""):
+                server_id = sickrage.app.api.account.register_server(connections)
+                if server_id:
+                    sickrage.app.config.server_id = server_id
                     sickrage.app.config.save()
+            else:
+                sickrage.app.api.account.update_server(sickrage.app.config.server_id, connections)
 
             redirect_uri = self.get_argument('next', "/{}/".format(sickrage.app.config.default_page))
             return self.redirect("{}".format(redirect_uri))

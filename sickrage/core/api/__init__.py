@@ -19,7 +19,7 @@ class API(object):
     def __init__(self):
         self.name = 'SR-API'
         self.api_base = 'https://www.sickrage.ca/api/'
-        self.api_version = 'v3'
+        self.api_version = 'v4'
         self._session = None
 
     @property
@@ -252,22 +252,31 @@ class API(object):
         def __init__(self, api):
             self.api = api
 
-        def register_app_id(self):
-            return self.api.request('GET', 'account/app-id')
-
-        def unregister_app_id(self, app_id):
-            if not app_id:
-                return
-
+        def register_server(self, connections):
             data = {
-                'app-id': app_id
+                'connections': connections,
             }
 
-            return self.api.request('DELETE', 'account/app-id', data=data)
+            return self.api.request('POST', 'account/server', data=data)
 
-        def upload_config(self, app_id, pkey_sig, config):
+        def unregister_server(self, server_id):
             data = {
-                'app-id': app_id,
+                'server-id': server_id
+            }
+
+            return self.api.request('DELETE', 'account/server', data=data)
+
+        def update_server(self, server_id, connections):
+            data = {
+                'server-id': server_id,
+                'connections': connections
+            }
+
+            return self.api.request('PUT', 'account/server', data=data)
+
+        def upload_config(self, server_id, pkey_sig, config):
+            data = {
+                'app-id': server_id,
                 'pkey-sig': pkey_sig,
                 'config': config
             }
