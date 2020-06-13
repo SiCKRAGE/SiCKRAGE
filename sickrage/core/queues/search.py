@@ -252,7 +252,7 @@ class BacklogQueueItem(SRQueueItem):
         show_object = find_show(self.show_id)
 
         try:
-            sickrage.app.log.info("Starting backlog search for: [" + show_object.name + "]")
+            sickrage.app.log.info("Starting backlog search for: [{}] S{:02d}E{:02d}".format(show_object.name, self.season, self.episode))
 
             search_result = search_providers(self.show_id, self.season, self.episode, manualSearch=False)
             if search_result:
@@ -263,14 +263,14 @@ class BacklogQueueItem(SRQueueItem):
                     [sickrage.app.search_queue.SNATCH_HISTORY.append((search_result.show_id, search_result.season, episode)) for episode in
                      search_result.episodes]
 
-                    sickrage.app.log.info("Downloading " + search_result.name + " from " + search_result.provider.name)
+                    sickrage.app.log.info("Downloading {} from {}".format(search_result.name, search_result.provider.name))
                     snatch_episode(search_result)
             else:
-                sickrage.app.log.info("Unable to find search results for: [" + show_object.name + "]")
+                sickrage.app.log.info("Unable to find search results for: [{}] S{:02d}E{:02d}".format(show_object.name, self.season, self.episode))
         except Exception:
             sickrage.app.log.debug(traceback.format_exc())
         finally:
-            sickrage.app.log.info("Finished backlog search for: [" + show_object.name + "]")
+            sickrage.app.log.info("Finished backlog search for: [{}] S{:02d}E{:02d}".format(show_object.name, self.season, self.episode))
 
 
 class FailedQueueItem(SRQueueItem):
