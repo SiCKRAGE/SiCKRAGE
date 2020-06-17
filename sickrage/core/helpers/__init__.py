@@ -1003,8 +1003,7 @@ def restore_app_data(srcDir, dstDir):
         for filename in files_list:
             srcFile = os.path.join(srcDir, filename)
             dstFile = os.path.join(dstDir, filename)
-            bakFile = os.path.join(dstDir, '{}_{}.bak'
-                                   .format(filename, datetime.datetime.now().strftime('%Y%m%d_%H%M%S')))
+            bakFile = os.path.join(dstDir, '{}_{}.bak'.format(filename, datetime.datetime.now().strftime('%Y%m%d_%H%M%S')))
 
             if os.path.exists(srcFile):
                 if os.path.isfile(dstFile):

@@ -277,3 +277,9 @@ class SRDatabase(object):
             # cleanup
             del migrate_tables
             del rows
+
+    def backup(self):
+        pass
+
+    def restore(self):
+        pass

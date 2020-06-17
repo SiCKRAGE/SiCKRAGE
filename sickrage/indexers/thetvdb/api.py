@@ -764,9 +764,14 @@ class Tvdb:
 
     @property
     def health(self):
-        try:
-            health = requests.get(urljoin(self.config['api']['base'], 'health'), verify=False, timeout=30).ok
-        except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout) as e:
+        for i in range(3):
+            try:
+                health = requests.get(urljoin(self.config['api']['base'], 'health'), verify=False, timeout=30).ok
+            except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout):
+                pass
+            else:
+                break
+        else:
             health = False
 
         if not health:

@@ -119,9 +119,14 @@ class API(object):
 
     @property
     def health(self):
-        try:
-            health = requests.get(urljoin(self.api_base, "oauth/health"), verify=False, timeout=30).ok
-        except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout):
+        for i in range(3):
+            try:
+                health = requests.get(urljoin(self.api_base, "oauth/health"), verify=False, timeout=30).ok
+            except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout):
+                pass
+            else:
+                break
+        else:
             health = False
 
         if not health:
