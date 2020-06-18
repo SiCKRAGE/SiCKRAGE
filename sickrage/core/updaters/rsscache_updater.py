@@ -28,6 +28,4 @@ class RSSCacheUpdater(object):
 
     def worker(self, provider, force):
         threading.currentThread().setName('{}::{}'.format(self.name, provider.name.upper()))
-        sickrage.app.log.debug("Updating RSS cache")
         provider.cache.update(force)
-        sickrage.app.log.debug("Updated RSS cache")

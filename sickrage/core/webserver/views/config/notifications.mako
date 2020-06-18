@@ -2779,96 +2779,96 @@
             </fieldset>
         </div><!-- /twilio tab-pane //-->
 
-        <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
-                <h3>
-                    <a href="${anon_url('http://alexa.amazon.ca/')}" rel="noreferrer"
-                       onclick="window.open(this.href, '_blank'); return false;">
-                        <i class="sickrage-notifiers sickrage-notifiers-alexa" title="Alexa"></i>
-                        ${_('Alexa')}
-                    </a>
-                </h3>
-                <small class="form-text text-muted">
-                    ${_('Alexa is smart home device. This notifier will send messages directly to your Alexa devices.')}
-                    <p class="alexa-info hide">
-                        ${_('For sending notifications to Alexa devices, install Alexa skill SiCKRAGE.')}
-                    </p>
-                </small>
-            </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
-                <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5">
-                        <label class="component-title">${_('Enable')}</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                        <label for="use_alexa">
-                            <input type="checkbox" class="enabler toggle color-primary is-material" name="use_alexa"
-                                   id="use_alexa" ${('', 'checked')[bool(sickrage.app.config.use_alexa)]}/>
-                            ${_('send messages to your devices?')}
-                        </label>
-                    </div>
-                </div>
-
-                <div id="content_use_alexa">
-                    <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5">
-                            <label class="component-title">${_('Notify on snatch')}</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                            <label for="alexa_notify_onsnatch">
-                                <input type="checkbox" class="toggle color-primary is-material"
-                                       name="alexa_notify_onsnatch"
-                                       id="alexa_notify_onsnatch" ${('', 'checked')[bool(sickrage.app.config.alexa_notify_onsnatch)]}/>
-                                ${_('send a message when a download starts?')}
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5">
-                            <label class="component-title">${_('Notify on download')}</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                            <label for="alexa_notify_ondownload">
-                                <input type="checkbox" class="toggle color-primary is-material"
-                                       name="alexa_notify_ondownload"
-                                       id="alexa_notify_ondownload" ${('', 'checked')[bool(sickrage.app.config.alexa_notify_ondownload)]}/>
-                                ${_('send a message when a download finishes?')}
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5">
-                            <label class="component-title">${_('Notify on subtitle download')}</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                            <label for="alexa_notify_onsubtitledownload">
-                                <input type="checkbox" class="toggle color-primary is-material"
-                                       name="alexa_notify_onsubtitledownload"
-                                       id="alexa_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.app.config.alexa_notify_onsubtitledownload)]}/>
-                                ${_('send a message when subtitles are downloaded?')}
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="col-md-12">
-                            <div class="card mb-3">
-                                <div class="card-text m-1">
-                                    <div id="testAlexa-result">${_('Click below to test')}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="col-md-12">
-                            <input class="btn" type="button" value="${_('Test Alexa')}" id="testAlexa"/>
-                            <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
-                        </div>
-                    </div>
-                </div><!-- /content_use_alexa //-->
-            </fieldset>
-        </div><!-- /alexa tab-pane //-->
+##         <div class="form-row">
+##             <div class="col-lg-3 col-md-4 col-sm-4 card-title">
+##                 <h3>
+##                     <a href="${anon_url('http://alexa.amazon.ca/')}" rel="noreferrer"
+##                        onclick="window.open(this.href, '_blank'); return false;">
+##                         <i class="sickrage-notifiers sickrage-notifiers-alexa" title="Alexa"></i>
+##                         ${_('Alexa')}
+##                     </a>
+##                 </h3>
+##                 <small class="form-text text-muted">
+##                     ${_('Alexa is smart home device. This notifier will send messages directly to your Alexa devices.')}
+##                     <p class="alexa-info hide">
+##                         ${_('For sending notifications to Alexa devices, install Alexa skill SiCKRAGE.')}
+##                     </p>
+##                 </small>
+##             </div>
+##             <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
+##                 <div class="form-row form-group">
+##                     <div class="col-lg-3 col-md-4 col-sm-5">
+##                         <label class="component-title">${_('Enable')}</label>
+##                     </div>
+##                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+##                         <label for="use_alexa">
+##                             <input type="checkbox" class="enabler toggle color-primary is-material" name="use_alexa"
+##                                    id="use_alexa" ${('', 'checked')[bool(sickrage.app.config.use_alexa)]}/>
+##                             ${_('send messages to your devices?')}
+##                         </label>
+##                     </div>
+##                 </div>
+##
+##                 <div id="content_use_alexa">
+##                     <div class="form-row form-group">
+##                         <div class="col-lg-3 col-md-4 col-sm-5">
+##                             <label class="component-title">${_('Notify on snatch')}</label>
+##                         </div>
+##                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+##                             <label for="alexa_notify_onsnatch">
+##                                 <input type="checkbox" class="toggle color-primary is-material"
+##                                        name="alexa_notify_onsnatch"
+##                                        id="alexa_notify_onsnatch" ${('', 'checked')[bool(sickrage.app.config.alexa_notify_onsnatch)]}/>
+##                                 ${_('send a message when a download starts?')}
+##                             </label>
+##                         </div>
+##                     </div>
+##                     <div class="form-row form-group">
+##                         <div class="col-lg-3 col-md-4 col-sm-5">
+##                             <label class="component-title">${_('Notify on download')}</label>
+##                         </div>
+##                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+##                             <label for="alexa_notify_ondownload">
+##                                 <input type="checkbox" class="toggle color-primary is-material"
+##                                        name="alexa_notify_ondownload"
+##                                        id="alexa_notify_ondownload" ${('', 'checked')[bool(sickrage.app.config.alexa_notify_ondownload)]}/>
+##                                 ${_('send a message when a download finishes?')}
+##                             </label>
+##                         </div>
+##                     </div>
+##                     <div class="form-row form-group">
+##                         <div class="col-lg-3 col-md-4 col-sm-5">
+##                             <label class="component-title">${_('Notify on subtitle download')}</label>
+##                         </div>
+##                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+##                             <label for="alexa_notify_onsubtitledownload">
+##                                 <input type="checkbox" class="toggle color-primary is-material"
+##                                        name="alexa_notify_onsubtitledownload"
+##                                        id="alexa_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.app.config.alexa_notify_onsubtitledownload)]}/>
+##                                 ${_('send a message when subtitles are downloaded?')}
+##                             </label>
+##                         </div>
+##                     </div>
+##
+##                     <div class="form-row">
+##                         <div class="col-md-12">
+##                             <div class="card mb-3">
+##                                 <div class="card-text m-1">
+##                                     <div id="testAlexa-result">${_('Click below to test')}</div>
+##                                 </div>
+##                             </div>
+##                         </div>
+##                     </div>
+##
+##                     <div class="form-row">
+##                         <div class="col-md-12">
+##                             <input class="btn" type="button" value="${_('Test Alexa')}" id="testAlexa"/>
+##                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
+##                         </div>
+##                     </div>
+##                 </div><!-- /content_use_alexa //-->
+##             </fieldset>
+##         </div><!-- /alexa tab-pane //-->
     </div>
 
     <div id="social" class="tab-pane">

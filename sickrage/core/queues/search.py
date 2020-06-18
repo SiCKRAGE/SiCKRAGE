@@ -170,6 +170,8 @@ class DailySearchQueueItem(SRQueueItem):
         self.started = True
 
         show_obj = find_show(self.show_id)
+        if not show_obj:
+            return
 
         try:
             sickrage.app.log.info("Starting daily search for: [" + show_obj.name + "]")
@@ -209,6 +211,9 @@ class ManualSearchQueueItem(SRQueueItem):
         self.started = True
 
         show_object = find_show(self.show_id)
+        if not show_object:
+            return
+
         episode_object = show_object.get_episode(self.season, self.episode)
 
         try:
@@ -250,6 +255,8 @@ class BacklogQueueItem(SRQueueItem):
         self.started = True
 
         show_object = find_show(self.show_id)
+        if not show_object:
+            return
 
         try:
             sickrage.app.log.info("Starting backlog search for: [{}] S{:02d}E{:02d}".format(show_object.name, self.season, self.episode))
@@ -289,6 +296,9 @@ class FailedQueueItem(SRQueueItem):
         self.started = True
 
         show_object = find_show(self.show_id)
+        if not show_object:
+            return
+
         episode_object = show_object.get_episode(self.season, self.episode)
 
         try:

@@ -67,7 +67,7 @@ class SRQueue(object):
 
         if not self.stop and not self.queue.empty():
             if not self.is_paused and not len(self.processing) >= int(sickrage.app.config.max_queue_workers):
-                await sickrage.app.io_loop.run_in_executor(None, self.worker, await self.get())
+                sickrage.app.io_loop.run_in_executor(None, self.worker, await self.get())
 
         self.amActive = False
 
@@ -89,6 +89,7 @@ class SRQueue(object):
             finally:
                 self.remove(item)
                 self.queue.task_done()
+                del item
 
     async def get(self):
         return await self.queue.get()

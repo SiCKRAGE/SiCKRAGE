@@ -85,12 +85,13 @@ class TVCache(object):
                 self.last_update = datetime.datetime.today()
 
                 [self._parseItem(item) for item in data['entries']]
+
+                sickrage.app.log.debug("Updated RSS cache")
             except AuthException as e:
                 sickrage.app.log.warning("Authentication error: {}".format(e))
                 return False
             except Exception as e:
-                sickrage.app.log.debug(
-                    "Error while searching {}, skipping: {}".format(self.provider.name, repr(e)))
+                sickrage.app.log.debug("Error while searching {}, skipping: {}".format(self.provider.name, repr(e)))
                 return False
 
         return True
@@ -98,7 +99,7 @@ class TVCache(object):
     def get_rss_feed(self, url, params=None):
         try:
             if self.provider.login():
-                resp = WebSession().get(url, params=params)
+                resp = WebSession().get(url, timeout=30, params=params)
                 if resp:
                     return feedparser.parse(resp.text)
         except Exception as e:
