@@ -2,12 +2,14 @@
 
 # 
 
-##Sun May 24 2020 19:30:58 GMT+0000 (Coordinated Universal Time)
+##Thu Jun 18 2020 23:48:23 GMT+0000 (Coordinated Universal Time)
 
 
-## Bug Fixes
-  - Fixed a few typos in template_name's
-  ([7fd4431e](https://gitlab-ci-token:kaoEqDEA7UoszRbJcRs3@git.sickrage.ca/SiCKRAGE/sickrage/commit/7fd4431e80e657be897252449b2da2cd6636d149))
+## Refactor
+  - Refactored health checks for SR API, SR Auth, and TheTVDB
+  ([ba4dee5d](https://gitlab-ci-token:kzfU5fYdz8meE9pFwb_-@git.sickrage.ca/SiCKRAGE/sickrage/commit/ba4dee5d002a4b6c3b7b5253490750e939c1d4b4))
+  - Refactored app_id to server_id Refactored SR API calls related to app_id to relate to new server_id Refactored SR API to v4
+  ([a928edb0](https://gitlab-ci-token:kzfU5fYdz8meE9pFwb_-@git.sickrage.ca/SiCKRAGE/sickrage/commit/a928edb06b436ca9495f75ae65a467aeb10f3624))
 
 
 
