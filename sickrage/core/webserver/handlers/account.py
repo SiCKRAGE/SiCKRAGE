@@ -84,7 +84,7 @@ class AccountUnlinkHandler(BaseHandler, ABC):
         # if not sickrage.app.config.sub_id == self.get_current_user().get('sub'):
         #     return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
-        if not sickrage.app.config.server_id or sickrage.app.api.account.unregister_server_id(sickrage.app.config.server_id):
+        if not sickrage.app.config.server_id or sickrage.app.api.account.unregister_server(sickrage.app.config.server_id):
             sickrage.app.config.server_id = ""
             sickrage.app.config.sub_id = ""
             sickrage.app.api.logout()
