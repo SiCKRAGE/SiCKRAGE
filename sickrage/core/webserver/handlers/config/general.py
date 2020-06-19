@@ -113,6 +113,7 @@ class SaveGeneralHandler(BaseHandler, ABC):
         log_size = self.get_argument('log_size', '1048576')
         web_port = self.get_argument('web_port', None)
         web_ipv6 = self.get_argument('web_ipv6', None)
+        web_host = self.get_argument('web_host', None)
         trash_remove_show = self.get_argument('trash_remove_show', None)
         trash_rotate_logs = self.get_argument('trash_rotate_logs', None)
         update_frequency = self.get_argument('update_frequency', None)
@@ -233,6 +234,7 @@ class SaveGeneralHandler(BaseHandler, ABC):
         sickrage.app.config.strip_special_file_bits = checkbox_to_value(strip_special_file_bits)
 
         sickrage.app.config.web_root = web_root
+        sickrage.app.config.web_host = web_host
 
         sickrage.app.config.ip_whitelist_enabled = checkbox_to_value(ip_whitelist_enabled)
         sickrage.app.config.ip_whitelist_localhost_enabled = checkbox_to_value(ip_whitelist_localhost_enabled)

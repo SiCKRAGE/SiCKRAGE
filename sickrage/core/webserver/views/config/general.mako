@@ -735,6 +735,30 @@ c<%inherit file="../layouts/config.mako"/>
 
                 <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5">
+                        <label class="component-title">${_('HTTP web host')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                        <div class="form-row">
+                            <div class="col-md-12">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="fas fa-globe"></span>
+                                        </span>
+                                    </div>
+                                    <input name="web_host" id="web_host"
+                                           value="${sickrage.app.config.web_host}"
+                                           placeholder="${'0.0.0.0'}"
+                                           title="${_('Web host SiCKRAGE server listens on for WebUI requests')}"
+                                           class="form-control"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row form-group">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('HTTP web root')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">

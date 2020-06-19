@@ -545,7 +545,9 @@ class Core(object):
             self.log.info("SiCKRAGE :: DATABASE VERSION:[v{}]".format(self.main_db.version))
             self.log.info("SiCKRAGE :: DATABASE TYPE:[{}]".format(self.db_type))
             self.log.info("SiCKRAGE :: URL:[{}://{}:{}{}]".format(('http', 'https')[self.config.enable_https],
-                                                                  self.config.web_host, self.config.web_port, self.config.web_root))
+                                                                  (self.config.web_host, get_lan_ip())[self.config.web_host == '0.0.0.0'],
+                                                                  self.config.web_port,
+                                                                  self.config.web_root))
 
         self.io_loop.add_callback(started)
         self.io_loop.start()

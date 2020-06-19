@@ -81,6 +81,7 @@ from sickrage.core.webserver.handlers.manage import ManageHandler, ShowEpisodeSt
 from sickrage.core.webserver.handlers.manage.queues import ManageQueuesHandler, ForceBacklogSearchHandler, \
     ForceFindPropersHandler, PauseDailySearcherHandler, PauseBacklogSearcherHandler, PausePostProcessorHandler, \
     ForceDailySearchHandler
+from sickrage.core.webserver.handlers.not_found import NotFoundHandler
 from sickrage.core.webserver.handlers.root import RobotsDotTxtHandler, MessagesDotPoHandler, \
     APIBulderHandler, SetHomeLayoutHandler, SetPosterSortByHandler, SetPosterSortDirHandler, \
     ToggleDisplayShowSpecialsHandler, SetScheduleLayoutHandler, ToggleScheduleDisplayPausedHandler, \
@@ -187,7 +188,8 @@ class WebServer(object):
             gzip=sickrage.app.config.web_use_gzip,
             cookie_secret=sickrage.app.config.web_cookie_secret,
             login_url='%s/login/' % sickrage.app.config.web_root,
-            templates=templates
+            templates=templates,
+            default_handler_class=NotFoundHandler
         )
 
         # Websocket handler
