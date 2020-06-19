@@ -24,6 +24,7 @@ from abc import ABC
 from tornado.web import authenticated
 
 import sickrage
+from sickrage.core.helpers import get_internal_ip, get_external_ip
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
@@ -60,7 +61,19 @@ class AccountLinkHandler(BaseHandler, ABC):
             if not sickrage.app.config.sub_id or not sickrage.app.config.server_id:
                 sickrage.app.config.sub_id = decoded_token.get('sub')
 
-                server_id = sickrage.app.api.account.register_server()
+                internal_connections = "{}://{}:{}{}".format(self.request.protocol,
+                                                             get_internal_ip(),
+                                                             sickrage.app.config.web_port,
+                                                             sickrage.app.config.web_root)
+
+                external_connections = "{}://{}:{}{}".format(self.request.protocol,
+                                                             get_external_ip(),
+                                                             sickrage.app.config.web_port,
+                                                             sickrage.app.config.web_root)
+
+                connections = ','.join([internal_connections, external_connections])
+
+                server_id = sickrage.app.api.account.register_server(connections)
                 if server_id:
                     sickrage.app.config.server_id = server_id
 
