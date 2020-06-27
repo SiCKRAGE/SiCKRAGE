@@ -665,8 +665,8 @@ class GenericMetadata(object):
             if image_data:
                 return image_data[which]['filename']
 
-            sickrage.app.log.warning("{}: Unable to look up show on ".format(show_obj.indexer_id) + IndexerApi(
-                show_obj.indexer).name + ", not downloading images")
+            sickrage.app.log.debug(
+                "{}: No season {} poster images on {} to download found".format(show_obj.indexer_id, season, IndexerApi(show_obj.indexer).name))
         except (KeyError, IndexError):
             pass
 
@@ -695,8 +695,8 @@ class GenericMetadata(object):
             if image_data:
                 return image_data[which]['filename']
 
-            sickrage.app.log.warning("{}: Unable to look up show on ".format(show_obj.indexer_id) + IndexerApi(
-                show_obj.indexer).name + ", not downloading images")
+            sickrage.app.log.debug(
+                "{}: No season {} banner images on {} to download found".format(show_obj.indexer_id, season, IndexerApi(show_obj.indexer).name))
         except (KeyError, IndexError):
             pass
 
