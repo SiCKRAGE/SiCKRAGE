@@ -87,8 +87,7 @@ class ShowUpdater(object):
                     sickrage.app.log.info('Show update skipped, show: {} status is ended.'.format(show_obj.name))
                     continue
                 elif not (datetime.datetime.now() - datetime.datetime.fromordinal(show_obj.last_update)).days >= 90:
-                    sickrage.app.log.info(
-                        'Show update skipped, show: {} status is ended and recently updated.'.format(show_obj.name))
+                    sickrage.app.log.info('Show update skipped, show: {} status is ended and recently updated.'.format(show_obj.name))
                     continue
 
             try:
