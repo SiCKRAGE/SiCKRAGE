@@ -324,7 +324,7 @@ class GenericProvider(object):
 
             provider_result.name, provider_result.url = self._get_title_and_url(item)
 
-            # ignore invalid urls
+            # ignore invalid non-magnet urls
             if not validate_url(provider_result.url) and not provider_result.url.startswith('magnet'):
                 continue
 

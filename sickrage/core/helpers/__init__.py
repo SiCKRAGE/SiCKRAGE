@@ -1488,7 +1488,9 @@ def launch_browser(protocol=None, host=None, startport=None):
 
 
 def is_ip_private(ip):
-    return ipaddress.ip_address(ip.decode()).is_private
+    if isinstance(ip, bytes):
+        ip = ip.decode()
+    return ipaddress.ip_address(ip).is_private
 
 
 def is_ip_whitelisted(ip):

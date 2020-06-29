@@ -32,7 +32,7 @@ import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.exceptions import AuthException
-from sickrage.core.helpers import show_names, validate_url, is_ip_private, try_int
+from sickrage.core.helpers import show_names, try_int
 from sickrage.core.nameparser import InvalidNameException, NameParser, InvalidShowException
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.websession import WebSession
@@ -203,13 +203,6 @@ class TVCache(object):
         if session.query(CacheDB.Provider).filter_by(url=url).count():
             return
 
-        # ignore invalid and private IP address urls
-        if not validate_url(url):
-            if not url.startswith('magnet'):
-                return
-        elif is_ip_private(url.split(r'//')[-1].split(r'/')[0]):
-            return
-
         try:
             # parse release name
             parse_result = NameParser(validate_show=True).parse(name)
@@ -219,7 +212,7 @@ class TVCache(object):
 
                 if season and episodes:
                     # store episodes as a seperated string
-                    episodeText = "|" + "|".join(map(str, episodes)) + "|"
+                    episode_text = "|" + "|".join(map(str, episodes)) + "|"
 
                     # get quality of release
                     quality = parse_result.quality
@@ -234,7 +227,7 @@ class TVCache(object):
                         'provider': self.providerID,
                         'name': name,
                         'season': season,
-                        'episodes': episodeText,
+                        'episodes': episode_text,
                         'series_id': parse_result.indexer_id,
                         'url': url,
                         'time': int(time.mktime(datetime.datetime.today().timetuple())),
@@ -255,7 +248,7 @@ class TVCache(object):
                         pass
 
                     # add to external provider cache database
-                    if sickrage.app.config.enable_sickrage_api and not self.provider.private:
+                    if sickrage.app.config.enable_sickrage_api and not self.provider.private and self.provider.type in ['nzb', 'torrent']:
                         try:
                             sickrage.app.io_loop.run_in_executor(None, functools.partial(sickrage.app.api.provider_cache.add, data=dbData))
                         except Exception as e:
@@ -286,13 +279,6 @@ class TVCache(object):
                 continue
 
             result = self.provider.get_result()
-
-            # ignore invalid and private IP address urls
-            if not validate_url(curResult["url"]):
-                if not curResult["url"].startswith('magnet'):
-                    continue
-            elif is_ip_private(curResult["url"].split(r'//')[-1].split(r'/')[0]):
-                continue
 
             # ignored/required words, and non-tv junk
             if not show_names.filter_bad_releases(curResult["name"]):
