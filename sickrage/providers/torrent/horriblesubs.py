@@ -35,8 +35,8 @@ class HorribleSubsProvider(TorrentProvider):
         self.minleech = None
 
         self._urls.update({
-            'search': '{base_url}/lib/search.php'.format(**self._urls),
-            'rss': '{base_url}/lib/latest.php'.format(**self._urls)
+            'search': '{base_url}/api.php'.format(**self._urls),
+            'rss': '{base_url}/rss.php'.format(**self._urls)
         })
 
         self.cache = TVCache(self, min_time=15)
@@ -53,11 +53,10 @@ class HorribleSubsProvider(TorrentProvider):
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
                     sickrage.app.log.debug("Search string: " + search_string)
-                    search_params["value"] = search_string
 
                 search_url = self.urls[('search', 'rss')[mode == 'RSS']]
 
-                resp = self.session.get(search_url, params=search_params)
+                resp = self.session.get(search_url)
                 if not resp or not resp.text:
                     sickrage.app.log.debug("No data returned from provider")
                     continue
