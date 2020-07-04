@@ -67,7 +67,7 @@ class SRQueue(object):
 
         if not self.stop and not self.queue.empty():
             if not self.is_paused and not len(self.processing) >= int(sickrage.app.config.max_queue_workers):
-                threading.Thread(target=self.worker, args=self.get()).start()
+                threading.Thread(target=self.worker, args=(self.get(),)).start()
 
         self.amActive = False
 
