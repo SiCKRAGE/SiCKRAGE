@@ -1291,25 +1291,15 @@ class SearchProviders(dict):
         self[NewznabProvider.type] = {}
         self[TorrentRssProvider.type] = {}
 
-        # scheduled URL updates
-        sickrage.app.scheduler.add_job(
-            self._update_urls,
-            IntervalTrigger(
-                hours=1,
-                timezone='utc'
-            ),
-            name=self.name,
-            id=self.name
-        )
+    def task(self, force=False):
+        threading.currentThread().setName(self.name)
+        self.update_urls()
 
     def load(self):
         self[NZBProvider.type] = dict([(p.id, p) for p in NZBProvider.get_providers()])
         self[TorrentProvider.type] = dict([(p.id, p) for p in TorrentProvider.get_providers()])
         self[NewznabProvider.type] = dict([(p.id, p) for p in NewznabProvider.get_providers()])
         self[TorrentRssProvider.type] = dict([(p.id, p) for p in TorrentRssProvider.get_providers()])
-
-        # run scheduled job to update urls now
-        sickrage.app.scheduler.get_job(self.name).modify(next_run_time=datetime.datetime.utcnow())
 
     def sort(self, key=None, randomize=False):
         sorted_providers = []
@@ -1358,9 +1348,7 @@ class SearchProviders(dict):
     def torrentrss(self):
         return self[TorrentRssProvider.type]
 
-    def _update_urls(self):
-        threading.currentThread().setName(self.name)
-
+    def update_urls(self):
         sickrage.app.log.debug('Updating provider URLs')
 
         for pID, pObj in self.all().items():

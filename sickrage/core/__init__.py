@@ -497,34 +497,45 @@ class Core(object):
             id=self.announcements.name
         )
 
+        # add provider URL update job
+        self.scheduler.add_job(
+            self.search_providers.task,
+            IntervalTrigger(
+                hours=1,
+                timezone='utc'
+            ),
+            name=self.search_providers.name,
+            id=self.search_providers.name
+        )
+
         # start queues
         self.search_queue.start()
         self.show_queue.start()
         self.postprocessor_queue.start()
 
-        # fire off startup events
-        self.load_shows()
-
         # fire off jobs now
         self.scheduler.get_job(self.version_updater.name).modify(next_run_time=datetime.datetime.utcnow())
         self.scheduler.get_job(self.tz_updater.name).modify(next_run_time=datetime.datetime.utcnow())
         self.scheduler.get_job(self.announcements.name).modify(next_run_time=datetime.datetime.utcnow())
+        self.scheduler.get_job(self.search_providers.name).modify(next_run_time=datetime.datetime.utcnow())
 
         # start scheduler service
         self.scheduler.start()
 
+        # load shows
+        self.scheduler.add_job(self.load_shows)
+
         # launch browser window
         if all([not sickrage.app.no_launch, sickrage.app.config.launch_browser]):
-            threading.Thread(target=functools.partial(launch_browser,
-                                                      ('http', 'https')[sickrage.app.config.enable_https],
-                                                      sickrage.app.config.web_host, sickrage.app.config.web_port)).start()
+            self.scheduler.add_job(launch_browser, args=[('http', 'https')[sickrage.app.config.enable_https],
+                                                          sickrage.app.config.web_host, sickrage.app.config.web_port])
 
         self.log.info("SiCKRAGE :: STARTED")
         self.log.info("SiCKRAGE :: APP VERSION:[{}]".format(sickrage.version()))
         self.log.info("SiCKRAGE :: CONFIG VERSION:[v{}]".format(self.config.config_version))
         self.log.info("SiCKRAGE :: DATABASE VERSION:[v{}]".format(self.main_db.version))
         self.log.info("SiCKRAGE :: DATABASE TYPE:[{}]".format(self.db_type))
-        self.log.info("SiCKRAGE :: URL:[{}://{}:{}{}]".format(('http', 'https')[self.config.enable_https],
+        self.log.info("SiCKRAGE :: URL:[{}://{}:{}/{}]".format(('http', 'https')[self.config.enable_https],
                                                               (self.config.web_host, get_lan_ip())[self.config.web_host == '0.0.0.0'],
                                                               self.config.web_port,
                                                               self.config.web_root))

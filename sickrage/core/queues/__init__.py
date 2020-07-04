@@ -25,8 +25,6 @@ import time
 import traceback
 from queue import Queue, PriorityQueue
 
-from apscheduler.schedulers.background import BackgroundScheduler
-
 import sickrage
 
 
@@ -47,7 +45,6 @@ class SRQueue(threading.Thread):
         super(SRQueue, self).__init__()
         self.name = name
         self.lock = threading.Lock()
-        self.scheduler = BackgroundScheduler({'apscheduler.timezone': 'UTC'})
         self.queue = PriorityQueue()
         self._result_queue = Queue()
         self._queue_items = []
@@ -55,6 +52,7 @@ class SRQueue(threading.Thread):
         self.min_priority = SRQueuePriorities.EXTREME
         self.amActive = False
         self.stop = False
+        self.daemon = True
 
     def run(self):
         """
