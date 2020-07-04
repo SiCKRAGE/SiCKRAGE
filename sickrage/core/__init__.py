@@ -559,6 +559,11 @@ class Core(object):
             if self.wserver:
                 self.wserver.shutdown()
 
+            # stop queues
+            self.search_queue.shutdown()
+            self.show_queue.shutdown()
+            self.postprocessor_queue.shutdown()
+
             # log out of ADBA
             if self.adba_connection:
                 self.log.debug("Shutting down ANIDB connection")

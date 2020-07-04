@@ -44,16 +44,6 @@ class ShowQueue(SRQueue):
     def __init__(self):
         SRQueue.__init__(self, "SHOWQUEUE")
 
-        self.scheduler.add_job(
-            self.run,
-            IntervalTrigger(
-                seconds=1,
-                timezone='utc'
-            ),
-            name=self.name,
-            id=self.name
-        )
-
     @property
     def loading_show_list(self):
         return [x.indexer_id for x in self.queue_items if x.is_loading]

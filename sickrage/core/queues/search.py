@@ -43,16 +43,6 @@ class SearchQueue(SRQueue):
         self.SNATCH_HISTORY = deque(maxlen=100)
         self.MANUAL_SEARCH_HISTORY = deque(maxlen=100)
 
-        self.scheduler.add_job(
-            self.run,
-            IntervalTrigger(
-                seconds=1,
-                timezone='utc'
-            ),
-            name=self.name,
-            id=self.name
-        )
-
     def is_in_queue(self, show_id, season, episode):
         for cur_item in self.queue_items:
             if isinstance(cur_item, BacklogQueueItem) and all([cur_item.show_id == show_id, cur_item.season == season, cur_item.episode == episode]):

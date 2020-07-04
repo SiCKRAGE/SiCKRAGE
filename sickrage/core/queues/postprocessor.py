@@ -47,16 +47,6 @@ class PostProcessorQueue(SRQueue):
         SRQueue.__init__(self, "POSTPROCESSORQUEUE")
         self._output = []
 
-        self.scheduler.add_job(
-            self.run,
-            IntervalTrigger(
-                seconds=1,
-                timezone='utc'
-            ),
-            name=self.name,
-            id=self.name
-        )
-
     @property
     def output(self):
         return '\n'.join(self._output)

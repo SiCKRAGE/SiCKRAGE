@@ -21,10 +21,11 @@
 import ctypes
 import datetime
 import threading
+import time
 import traceback
+from queue import Queue, PriorityQueue
 
 from apscheduler.schedulers.background import BackgroundScheduler
-from queue import Queue, PriorityQueue
 
 import sickrage
 
@@ -41,7 +42,7 @@ class SRQueuePriorities(object):
     PAUSED = 99
 
 
-class SRQueue(object):
+class SRQueue(threading.Thread):
     def __init__(self, name="QUEUE"):
         super(SRQueue, self).__init__()
         self.name = name
@@ -55,24 +56,22 @@ class SRQueue(object):
         self.amActive = False
         self.stop = False
 
-    def start(self):
-        self.scheduler.start()
-
     def run(self):
         """
         Process items in this queue
         """
 
-        self.amActive = True
+        while not self.stop:
+            if not self.queue.empty():
+                if not self.is_paused and not len(self.processing) >= int(sickrage.app.config.max_queue_workers):
+                    threading.Thread(target=self.worker, args=(self.get(),)).start()
 
-        if not self.stop and not self.queue.empty():
-            if not self.is_paused and not len(self.processing) >= int(sickrage.app.config.max_queue_workers):
-                threading.Thread(target=self.worker, args=(self.get(),)).start()
-
-        self.amActive = False
+            time.sleep(0.1)
 
     def worker(self, item):
         with self.lock:
+            self.amActive = True
+
             threading.currentThread().setName(item.name)
             item.thread_id = threading.currentThread().ident
 
@@ -90,6 +89,8 @@ class SRQueue(object):
                 self.remove(item)
                 self.queue.task_done()
                 del item
+
+            self.amActive = False
 
     def get(self):
         return self.queue.get()
@@ -145,6 +146,9 @@ class SRQueue(object):
 
         if ctypes.pythonapi.PyThreadState_SetAsyncExc(ctypes.c_long(item.thread_id), ctypes.py_object(QueueItemStopException)) > 1:
             ctypes.pythonapi.PyThreadState_SetAsyncExc(item.thread_id, None)
+
+    def shutdown(self):
+        self.stop = True
 
 
 class SRQueueItem(object):
