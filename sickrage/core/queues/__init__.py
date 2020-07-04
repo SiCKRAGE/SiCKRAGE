@@ -23,7 +23,7 @@ import datetime
 import threading
 import traceback
 
-from apscheduler.schedulers.tornado import TornadoScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 from queue import Queue, PriorityQueue
 
 import sickrage
@@ -46,7 +46,7 @@ class SRQueue(object):
         super(SRQueue, self).__init__()
         self.name = name
         self.lock = threading.Lock()
-        self.scheduler = TornadoScheduler({'apscheduler.timezone': 'UTC'})
+        self.scheduler = BackgroundScheduler({'apscheduler.timezone': 'UTC'})
         self.queue = PriorityQueue()
         self._result_queue = Queue()
         self._queue_items = []
