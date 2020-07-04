@@ -58,7 +58,7 @@ class SRQueue(object):
     def start(self):
         self.scheduler.start()
 
-    async def run(self):
+    def run(self):
         """
         Process items in this queue
         """
