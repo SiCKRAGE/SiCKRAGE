@@ -1293,14 +1293,13 @@ class SearchProviders(dict):
 
         # scheduled URL updates
         sickrage.app.scheduler.add_job(
-            sickrage.app.io_loop.run_in_executor,
+            self._update_urls,
             IntervalTrigger(
                 hours=1,
                 timezone='utc'
             ),
             name=self.name,
-            id=self.name,
-            args=[None, self._update_urls]
+            id=self.name
         )
 
     def load(self):

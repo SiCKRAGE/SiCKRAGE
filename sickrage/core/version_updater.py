@@ -46,20 +46,13 @@ class VersionUpdater(object):
     def updater(self):
         return self.find_install_type()
 
-    async def task(self, force=False):
+    def task(self, force=False):
         if self.amActive or sickrage.app.disable_updates or sickrage.app.developer:
             return
 
         self.amActive = True
 
         # set thread name
-        threading.currentThread().setName(self.name)
-
-        await sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, force))
-
-        self.amActive = False
-
-    def worker(self, force):
         threading.currentThread().setName(self.name)
 
         if self.check_for_new_version(force):
@@ -77,6 +70,8 @@ class VersionUpdater(object):
                 else:
                     sickrage.app.log.info("Update failed!")
                     sickrage.app.alerts.error(_('Updater'), _('Update failed!'))
+
+        self.amActive = False
 
     def backup(self):
         # Do a system backup before update

@@ -361,6 +361,8 @@ def main():
 
         # start app
         app.start()
+        while True:
+            time.sleep(0.1)
     except (SystemExit, KeyboardInterrupt):
         if app:
             app.shutdown()

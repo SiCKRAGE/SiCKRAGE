@@ -48,14 +48,13 @@ class PostProcessorQueue(SRQueue):
         self._output = []
 
         self.scheduler.add_job(
-            sickrage.app.io_loop.add_callback,
+            self.run,
             IntervalTrigger(
                 seconds=1,
                 timezone='utc'
             ),
             name=self.name,
-            id=self.name,
-            args=[self.run]
+            id=self.name
         )
 
     @property
@@ -106,7 +105,7 @@ class PostProcessorQueue(SRQueue):
 
         return length
 
-    async def put(self, dirName, nzbName=None, process_method=None, force=False, is_priority=None, delete_on=False,
+    def put(self, dirName, nzbName=None, process_method=None, force=False, is_priority=None, delete_on=False,
                   failed=False, proc_type="auto", force_next=False, **kwargs):
         """
         Adds an item to post-processing queue
@@ -141,11 +140,10 @@ class PostProcessorQueue(SRQueue):
             self.log("An item with directory {} is already being processed in the queue".format(dirName))
             return self.output
         else:
-            sickrage.app.io_loop.add_callback(super(PostProcessorQueue, self).put,
-                                          PostProcessorItem(dirName, nzbName, process_method, force, is_priority, delete_on, failed, proc_type))
+            super(PostProcessorQueue, self).put(PostProcessorItem(dirName, nzbName, process_method, force, is_priority, delete_on, failed, proc_type))
 
             if force_next:
-                result = await self._result_queue.get()
+                result = self._result_queue.get()
                 return result
 
             self.log("{} post-processing job for {} has been added to the queue".format(proc_type.title(), dirName))

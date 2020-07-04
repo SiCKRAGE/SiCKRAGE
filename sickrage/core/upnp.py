@@ -35,12 +35,9 @@ class UPNPClient(object):
     def __init__(self, *args, **kwargs):
         self.name = "UPNP"
 
-    async def task(self, force=False):
+    def task(self, force=False):
         if sickrage.app.config.enable_upnp:
-            await sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, force))
-
-    def worker(self, force):
-        self.add_nat_portmap()
+            self.add_nat_portmap()
 
     def refresh_nat_portmap(self):
         """Run an infinite loop refreshing our NAT port mapping.

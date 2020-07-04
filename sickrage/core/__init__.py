@@ -34,12 +34,10 @@ from collections import deque
 from urllib.parse import uses_netloc
 from urllib.request import FancyURLopener
 
-from apscheduler.schedulers.tornado import TornadoScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from dateutil import tz
 from fake_useragent import UserAgent
-from keycloak.realm import KeycloakRealm
-from tornado.ioloop import IOLoop
 from tornado.platform.asyncio import AnyThreadEventLoopPolicy
 
 import sickrage
@@ -83,7 +81,6 @@ from sickrage.providers import SearchProviders
 class Core(object):
     def __init__(self):
         self.started = False
-        self.io_loop = None
         self.loading_shows = False
         self.daemon = None
         self.pid = os.getpid()
@@ -182,11 +179,8 @@ class Core(object):
         # event loop policy that allows loop creation on any thread.
         asyncio.set_event_loop_policy(AnyThreadEventLoopPolicy())
 
-        # create io loop
-        self.io_loop = IOLoop.current()
-
         # scheduler
-        self.scheduler = TornadoScheduler({'apscheduler.timezone': 'UTC'})
+        self.scheduler = BackgroundScheduler({'apscheduler.timezone': 'UTC'})
 
         # init core classes
         self.api = API()
@@ -352,107 +346,99 @@ class Core(object):
 
         # add version checker job
         self.scheduler.add_job(
-            self.io_loop.add_callback,
+            self.version_updater.task,
             IntervalTrigger(
                 hours=self.config.version_updater_freq,
                 timezone='utc'
             ),
             name=self.version_updater.name,
-            id=self.version_updater.name,
-            args=[self.version_updater.task]
+            id=self.version_updater.name
         )
 
         # add network timezones updater job
         self.scheduler.add_job(
-            self.io_loop.add_callback,
+            self.tz_updater.task,
             IntervalTrigger(
                 days=1,
                 timezone='utc'
             ),
             name=self.tz_updater.name,
-            id=self.tz_updater.name,
-            args=[self.tz_updater.task]
+            id=self.tz_updater.name
         )
 
         # add show updater job
         self.scheduler.add_job(
-            self.io_loop.add_callback,
+            self.show_updater.task,
             IntervalTrigger(
                 days=1,
                 start_date=datetime.datetime.now().replace(hour=self.config.showupdate_hour),
                 timezone='utc'
             ),
             name=self.show_updater.name,
-            id=self.show_updater.name,
-            args=[self.show_updater.task]
+            id=self.show_updater.name
         )
 
         # add rss cache updater job
         self.scheduler.add_job(
-            self.io_loop.add_callback,
+            self.rsscache_updater.task,
             IntervalTrigger(
                 minutes=15,
                 timezone='utc'
             ),
             name=self.rsscache_updater.name,
-            id=self.rsscache_updater.name,
-            args=[self.rsscache_updater.task]
+            id=self.rsscache_updater.name
         )
 
         # add daily search job
         self.scheduler.add_job(
-            self.io_loop.add_callback,
+            self.daily_searcher.task,
             IntervalTrigger(
                 minutes=self.config.daily_searcher_freq,
                 start_date=datetime.datetime.now() + datetime.timedelta(minutes=4),
                 timezone='utc'
             ),
             name=self.daily_searcher.name,
-            id=self.daily_searcher.name,
-            args=[self.daily_searcher.task]
+            id=self.daily_searcher.name
         )
 
         # add failed snatch search job
         self.scheduler.add_job(
-            self.io_loop.add_callback,
+            self.failed_snatch_searcher.task,
             IntervalTrigger(
                 hours=1,
                 start_date=datetime.datetime.now() + datetime.timedelta(minutes=4),
                 timezone='utc'
             ),
             name=self.failed_snatch_searcher.name,
-            id=self.failed_snatch_searcher.name,
-            args=[self.failed_snatch_searcher.task]
+            id=self.failed_snatch_searcher.name
         )
 
         # add backlog search job
         self.scheduler.add_job(
-            self.io_loop.add_callback,
+            self.backlog_searcher.task,
             IntervalTrigger(
                 minutes=self.config.backlog_searcher_freq,
                 start_date=datetime.datetime.now() + datetime.timedelta(minutes=30),
                 timezone='utc'
             ),
             name=self.backlog_searcher.name,
-            id=self.backlog_searcher.name,
-            args=[self.backlog_searcher.task]
+            id=self.backlog_searcher.name
         )
 
         # add auto-postprocessing job
         self.scheduler.add_job(
-            self.io_loop.add_callback,
+            self.auto_postprocessor.task,
             IntervalTrigger(
                 minutes=self.config.autopostprocessor_freq,
                 timezone='utc'
             ),
             name=self.auto_postprocessor.name,
-            id=self.auto_postprocessor.name,
-            args=[self.auto_postprocessor.task]
+            id=self.auto_postprocessor.name
         )
 
         # add find proper job
         self.scheduler.add_job(
-            self.io_loop.add_callback,
+            self.proper_searcher.task,
             IntervalTrigger(
                 minutes={
                     '15m': 15,
@@ -464,56 +450,51 @@ class Core(object):
                 timezone='utc'
             ),
             name=self.proper_searcher.name,
-            id=self.proper_searcher.name,
-            args=[self.proper_searcher.task]
+            id=self.proper_searcher.name
         )
 
         # add trakt.tv checker job
         self.scheduler.add_job(
-            self.io_loop.add_callback,
+            self.trakt_searcher.task,
             IntervalTrigger(
                 hours=1,
                 timezone='utc'
             ),
             name=self.trakt_searcher.name,
-            id=self.trakt_searcher.name,
-            args=[self.trakt_searcher.task]
+            id=self.trakt_searcher.name
         )
 
         # add subtitles finder job
         self.scheduler.add_job(
-            self.io_loop.add_callback,
+            self.subtitle_searcher.task,
             IntervalTrigger(
                 hours=self.config.subtitle_searcher_freq,
                 timezone='utc'
             ),
             name=self.subtitle_searcher.name,
-            id=self.subtitle_searcher.name,
-            args=[self.subtitle_searcher.task]
+            id=self.subtitle_searcher.name
         )
 
         # add upnp client job
         self.scheduler.add_job(
-            self.io_loop.add_callback,
+            self.upnp_client.task,
             IntervalTrigger(
                 seconds=self.upnp_client._nat_portmap_lifetime,
                 timezone='utc'
             ),
             name=self.upnp_client.name,
-            id=self.upnp_client.name,
-            args=[self.upnp_client.task]
+            id=self.upnp_client.name
         )
 
         # add announcements job
         self.scheduler.add_job(
-            self.io_loop.add_callback,
+            self.announcements.task,
             IntervalTrigger(
                 minutes=15,
                 timezone='utc'
             ),
             name=self.announcements.name,
-            id=self.announcements.name,
-            args=[self.announcements.task]
+            id=self.announcements.name
         )
 
         # start queues
@@ -522,7 +503,7 @@ class Core(object):
         self.postprocessor_queue.start()
 
         # fire off startup events
-        self.io_loop.add_callback(self.load_shows)
+        self.load_shows()
 
         # fire off jobs now
         self.scheduler.get_job(self.version_updater.name).modify(next_run_time=datetime.datetime.utcnow())
@@ -534,23 +515,19 @@ class Core(object):
 
         # launch browser window
         if all([not sickrage.app.no_launch, sickrage.app.config.launch_browser]):
-            self.io_loop.add_callback(functools.partial(launch_browser, ('http', 'https')[sickrage.app.config.enable_https],
-                                                        sickrage.app.config.web_host, sickrage.app.config.web_port))
+            threading.Thread(target=functools.partial(launch_browser,
+                                                      ('http', 'https')[sickrage.app.config.enable_https],
+                                                      sickrage.app.config.web_host, sickrage.app.config.web_port)).start()
 
-        def started():
-            threading.currentThread().setName('CORE')
-            self.log.info("SiCKRAGE :: STARTED")
-            self.log.info("SiCKRAGE :: APP VERSION:[{}]".format(sickrage.version()))
-            self.log.info("SiCKRAGE :: CONFIG VERSION:[v{}]".format(self.config.config_version))
-            self.log.info("SiCKRAGE :: DATABASE VERSION:[v{}]".format(self.main_db.version))
-            self.log.info("SiCKRAGE :: DATABASE TYPE:[{}]".format(self.db_type))
-            self.log.info("SiCKRAGE :: URL:[{}://{}:{}{}]".format(('http', 'https')[self.config.enable_https],
-                                                                  (self.config.web_host, get_lan_ip())[self.config.web_host == '0.0.0.0'],
-                                                                  self.config.web_port,
-                                                                  self.config.web_root))
-
-        self.io_loop.add_callback(started)
-        self.io_loop.start()
+        self.log.info("SiCKRAGE :: STARTED")
+        self.log.info("SiCKRAGE :: APP VERSION:[{}]".format(sickrage.version()))
+        self.log.info("SiCKRAGE :: CONFIG VERSION:[v{}]".format(self.config.config_version))
+        self.log.info("SiCKRAGE :: DATABASE VERSION:[v{}]".format(self.main_db.version))
+        self.log.info("SiCKRAGE :: DATABASE TYPE:[{}]".format(self.db_type))
+        self.log.info("SiCKRAGE :: URL:[{}://{}:{}{}]".format(('http', 'https')[self.config.enable_https],
+                                                              (self.config.web_host, get_lan_ip())[self.config.web_host == '0.0.0.0'],
+                                                              self.config.web_port,
+                                                              self.config.web_root))
 
     def load_shows(self):
         threading.currentThread().setName('CORE')
@@ -606,7 +583,3 @@ class Core(object):
             sickrage.app.daemon.stop()
 
         self.started = False
-
-        # stop ioloop
-        if self.io_loop:
-            self.io_loop.stop()

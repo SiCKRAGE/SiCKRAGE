@@ -24,10 +24,12 @@ import os
 import shutil
 import socket
 import ssl
+import threading
 
 import tornado.locale
 from mako.lookup import TemplateLookup
 from tornado.httpserver import HTTPServer
+from tornado.ioloop import IOLoop
 from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 import sickrage
@@ -108,7 +110,7 @@ class StaticNoCacheFileHandler(StaticFileHandler):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
 
 
-class WebServer(object):
+class WebServer(threading.Thread):
     def __init__(self):
         super(WebServer, self).__init__()
         self.name = "TORNADO"
@@ -119,7 +121,7 @@ class WebServer(object):
         self.app = None
         self.server = None
 
-    def start(self):
+    def run(self):
         self.started = True
 
         # load languages
@@ -432,9 +434,13 @@ class WebServer(object):
             sickrage.app.log.warning(e.strerror)
             raise SystemExit
 
+        IOLoop.instance().start()
+
     def shutdown(self):
         if self.started:
             self.started = False
             if self.server:
                 self.server.close_all_connections()
                 self.server.stop()
+
+            IOLoop.instance().stop()

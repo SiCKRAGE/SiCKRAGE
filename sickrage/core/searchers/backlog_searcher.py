@@ -21,7 +21,6 @@
 
 
 import datetime
-import functools
 import threading
 
 import sickrage
@@ -40,7 +39,7 @@ class BacklogSearcher(object):
         self.amWaiting = False
         self.forced = False
 
-    async def task(self, force=False):
+    def task(self, force=False):
         if self.amActive and not force:
             return
 
@@ -52,13 +51,9 @@ class BacklogSearcher(object):
 
         self.forced = force
 
-        await sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, force))
+        self.search_backlog()
 
         self.amActive = False
-
-    def worker(self, force):
-        threading.currentThread().setName(self.name)
-        self.search_backlog()
 
     def am_running(self):
         sickrage.app.log.debug("amWaiting: " + str(self.amWaiting) + ", amActive: " + str(self.amActive))
@@ -98,7 +93,7 @@ class BacklogSearcher(object):
                 if (curShow.indexer_id, season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
                     sickrage.app.search_queue.SNATCH_HISTORY.remove((curShow.indexer_id, season, episode))
 
-                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(curShow.indexer_id, season, episode))
+                sickrage.app.search_queue.put(BacklogQueueItem(curShow.indexer_id, season, episode))
 
             if from_date == datetime.date.min and not show_id:
                 self._set_last_backlog_search(curShow, cur_date)

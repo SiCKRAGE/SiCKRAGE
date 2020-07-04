@@ -28,6 +28,7 @@ from urllib.parse import unquote_plus, quote_plus
 
 from tornado.escape import json_encode
 from tornado.httputil import url_concat
+from tornado.ioloop import IOLoop
 from tornado.web import authenticated
 
 import sickrage
@@ -826,7 +827,7 @@ class RestartHandler(BaseHandler, ABC):
         # clear current user to disable header and footer
         self.current_user = None
 
-        sickrage.app.io_loop.add_timeout(datetime.timedelta(seconds=5), sickrage.app.shutdown, restart=True)
+        IOLoop.instance().add_timeout(datetime.timedelta(seconds=5), sickrage.app.shutdown, restart=True)
 
         return self.render('home/restart.mako',
                            title="Home",
@@ -1341,7 +1342,7 @@ class SyncTraktHandler(BaseHandler, ABC):
 
         job = sickrage.app.scheduler.get_job(sickrage.app.trakt_searcher.name)
         job.modify(next_run_time=datetime.datetime.utcnow(), kwargs={'force': True})
-        sickrage.app.io_loop.add_timeout(datetime.timedelta(seconds=10), job.modify, kwargs={})
+        IOLoop.instance().add_timeout(datetime.timedelta(seconds=10), job.modify, kwargs={})
 
         return self.redirect("/home/")
 
@@ -1489,7 +1490,7 @@ class SearchEpisodeHandler(BaseHandler, ABC):
         # make a queue item for it and put it on the queue
         ep_queue_item = ManualSearchQueueItem(int(show), int(season), int(episode), bool(int(down_cur_quality)))
 
-        sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, ep_queue_item)
+        sickrage.app.search_queue.put(ep_queue_item)
         if not all([ep_queue_item.started, ep_queue_item.success]):
             return self.write(json_encode({'result': 'success'}))
 
@@ -1708,7 +1709,7 @@ class RetryEpisodeHandler(BaseHandler, ABC):
         # make a queue item for it and put it on the queue
         ep_queue_item = FailedQueueItem(int(show), int(season), int(episode), bool(int(down_cur_quality)))
 
-        sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, ep_queue_item)
+        sickrage.app.search_queue.put(ep_queue_item)
         if not all([ep_queue_item.started, ep_queue_item.success]):
             return self.write(json_encode({'result': 'success'}))
 

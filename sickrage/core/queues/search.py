@@ -44,14 +44,13 @@ class SearchQueue(SRQueue):
         self.MANUAL_SEARCH_HISTORY = deque(maxlen=100)
 
         self.scheduler.add_job(
-            sickrage.app.io_loop.add_callback,
+            self.run,
             IntervalTrigger(
                 seconds=1,
                 timezone='utc'
             ),
             name=self.name,
-            id=self.name,
-            args=[self.run]
+            id=self.name
         )
 
     def is_in_queue(self, show_id, season, episode):
@@ -145,13 +144,13 @@ class SearchQueue(SRQueue):
 
         if isinstance(item, DailySearchQueueItem):
             # daily searches
-            sickrage.app.io_loop.add_callback(super(SearchQueue, self).put, item)
+            super(SearchQueue, self).put(item)
         elif isinstance(item, BacklogQueueItem) and not self.is_in_queue(item.show_id, item.season, item.episode):
             # backlog searches
-            sickrage.app.io_loop.add_callback(super(SearchQueue, self).put, item)
+            super(SearchQueue, self).put(item)
         elif isinstance(item, (ManualSearchQueueItem, FailedQueueItem)) and not self.is_ep_in_queue(item.season, item.episode):
             # manual and failed searches
-            sickrage.app.io_loop.add_callback(super(SearchQueue, self).put, item)
+            super(SearchQueue, self).put(item)
         else:
             sickrage.app.log.debug("Not adding item, it's already in the queue")
 

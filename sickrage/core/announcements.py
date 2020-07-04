@@ -68,11 +68,7 @@ class Announcements(object):
         self.name = "ANNOUNCEMENTS"
         self._announcements = {}
 
-    async def task(self, force=False):
-        threading.currentThread().setName(self.name)
-        await sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, force))
-
-    def worker(self, force):
+    def task(self, force=False):
         threading.currentThread().setName(self.name)
 
         resp = sickrage.app.api.announcement.get_announcements()

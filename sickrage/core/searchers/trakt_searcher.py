@@ -18,7 +18,6 @@
 
 
 import datetime
-import functools
 import os
 import threading
 import traceback
@@ -48,7 +47,7 @@ def set_episode_to_wanted(show, s, e):
 
         epObj.status = WANTED
 
-        sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(show.indexer_id, epObj.season, epObj.episode))
+        sickrage.app.search_queue.put(BacklogQueueItem(show.indexer_id, epObj.season, epObj.episode))
 
         sickrage.app.log.info("Starting backlog search for %s S%02dE%02d because some episodes were set to wanted" % (show.name, s, e))
     except EpisodeNotFoundException as e:
@@ -66,20 +65,13 @@ class TraktSearcher(object):
         self.Collectionlist = {}
         self.amActive = False
 
-    async def task(self, force=False):
+    def task(self, force=False):
         if self.amActive or not sickrage.app.config.use_trakt and not force:
             return
 
         self.amActive = True
 
         # set thread name
-        threading.currentThread().setName(self.name)
-
-        await sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, force))
-
-        self.amActive = False
-
-    def worker(self, force):
         threading.currentThread().setName(self.name)
 
         self.todoWanted = []  # its about to all get re-added
@@ -100,6 +92,8 @@ class TraktSearcher(object):
                 self.sync_collection()
             except Exception:
                 sickrage.app.log.debug(traceback.format_exc())
+
+        self.amActive = False
 
     def sync_watchlist(self):
         sickrage.app.log.debug("Syncing SiCKRAGE with Trakt Watchlist")

@@ -250,7 +250,7 @@ class TVCache(object):
                     # add to external provider cache database
                     if sickrage.app.config.enable_sickrage_api and not self.provider.private and self.provider.type in ['nzb', 'torrent']:
                         try:
-                            sickrage.app.io_loop.run_in_executor(None, functools.partial(sickrage.app.api.provider_cache.add, data=dbData))
+                            sickrage.app.api.provider_cache.add(data=dbData)
                         except Exception as e:
                             pass
         except (InvalidShowException, InvalidNameException):

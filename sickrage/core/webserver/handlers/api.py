@@ -802,7 +802,7 @@ class CMD_EpisodeSearch(ApiCall):
 
         # make a queue item for it and put it on the queue
         ep_queue_item = ManualSearchQueueItem(showObj, epObj.season, epObj.episode)
-        sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, ep_queue_item)
+        sickrage.app.search_queue.put(ep_queue_item)
 
         # wait until the queue item tells us whether it worked or not
         while not ep_queue_item.success:
@@ -904,7 +904,7 @@ class CMD_EpisodeSetStatus(ApiCall):
         extra_msg = ""
         if start_backlog:
             for season, episode in wanted:
-                sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put, BacklogQueueItem(show_obj, season, episode))
+                sickrage.app.search_queue.put(BacklogQueueItem(show_obj, season, episode))
                 sickrage.app.log.info("Starting backlog for " + show_obj.name + " season " + str(season) + " because some episodes were set to WANTED")
 
             extra_msg = " Backlog started"

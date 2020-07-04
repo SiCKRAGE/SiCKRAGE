@@ -19,7 +19,6 @@
 
 
 import datetime
-import functools
 import threading
 
 import sickrage
@@ -36,7 +35,7 @@ class FailedSnatchSearcher(object):
         self.lock = threading.Lock()
         self.amActive = False
 
-    async def task(self, force=False):
+    def task(self, force=False):
         """
         Runs the failed searcher, queuing selected episodes for search that have failed to snatch
         :param force: Force search
@@ -46,14 +45,6 @@ class FailedSnatchSearcher(object):
 
         self.amActive = True
 
-        # set thread name
-        threading.currentThread().setName(self.name)
-
-        await sickrage.app.io_loop.run_in_executor(None, functools.partial(self.worker, force))
-
-        self.amActive = False
-
-    def worker(self, force):
         # set thread name
         threading.currentThread().setName(self.name)
 
@@ -74,13 +65,14 @@ class FailedSnatchSearcher(object):
             if cur_status not in {SNATCHED, SNATCHED_BEST, SNATCHED_PROPER}:
                 continue
 
-            sickrage.app.io_loop.add_callback(sickrage.app.search_queue.put,
-                                              FailedQueueItem(episode_object.showid, episode_object.season, episode_object.episode, True))
+            sickrage.app.search_queue.put(FailedQueueItem(episode_object.showid, episode_object.season, episode_object.episode, True))
 
             failed_snatches = True
 
         if not failed_snatches:
             sickrage.app.log.info("No failed snatches found")
+
+        self.amActive = False
 
     def snatched_episodes(self):
         session = sickrage.app.main_db.session()

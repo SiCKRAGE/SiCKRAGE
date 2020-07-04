@@ -24,7 +24,7 @@ import threading
 import traceback
 
 from apscheduler.schedulers.tornado import TornadoScheduler
-from tornado.queues import Queue, PriorityQueue
+from queue import Queue, PriorityQueue
 
 import sickrage
 
@@ -67,7 +67,7 @@ class SRQueue(object):
 
         if not self.stop and not self.queue.empty():
             if not self.is_paused and not len(self.processing) >= int(sickrage.app.config.max_queue_workers):
-                sickrage.app.io_loop.run_in_executor(None, self.worker, await self.get())
+                threading.Thread(target=self.worker, args=self.get())
 
         self.amActive = False
 
@@ -91,10 +91,10 @@ class SRQueue(object):
                 self.queue.task_done()
                 del item
 
-    async def get(self):
-        return await self.queue.get()
+    def get(self):
+        return self.queue.get()
 
-    async def put(self, item, *args, **kwargs):
+    def put(self, item, *args, **kwargs):
         """
         Adds an item to this queue
 
@@ -107,7 +107,7 @@ class SRQueue(object):
         item.added = datetime.datetime.now()
         item.name = "{}-{}".format(self.name, item.name)
         self._queue_items.append(item)
-        await self.queue.put(item)
+        self.queue.put(item)
 
         return item
 

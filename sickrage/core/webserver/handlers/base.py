@@ -29,6 +29,7 @@ from jose import ExpiredSignatureError
 from keycloak.exceptions import KeycloakClientError
 from mako.exceptions import RichTraceback
 from tornado import locale
+from tornado.ioloop import IOLoop
 from tornado.web import RequestHandler
 
 import sickrage
@@ -186,4 +187,4 @@ class BaseHandler(RequestHandler, ABC):
             threading.currentThread().setName('TORNADO')
             return f(*args, **kwargs)
 
-        return sickrage.app.io_loop.run_in_executor(None, functools.partial(wrapper, *args, **kwargs))
+        return IOLoop.instance().run_in_executor(None, functools.partial(wrapper, *args, **kwargs))

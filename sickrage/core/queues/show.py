@@ -45,14 +45,13 @@ class ShowQueue(SRQueue):
         SRQueue.__init__(self, "SHOWQUEUE")
 
         self.scheduler.add_job(
-            sickrage.app.io_loop.add_callback,
+            self.run,
             IntervalTrigger(
                 seconds=1,
                 timezone='utc'
             ),
             name=self.name,
-            id=self.name,
-            args=[self.run]
+            id=self.name
         )
 
     @property
@@ -93,9 +92,9 @@ class ShowQueue(SRQueue):
             raise CantUpdateShowException("{} is already being updated, can't update again until it's done.".format(show_obj.name))
 
         if force:
-            sickrage.app.io_loop.add_callback(self.put, QueueItemForceUpdate(indexer_id, indexer_update_only))
+            self.put(QueueItemForceUpdate(indexer_id, indexer_update_only))
         else:
-            sickrage.app.io_loop.add_callback(self.put, QueueItemUpdate(indexer_id, indexer_update_only))
+            self.put(QueueItemUpdate(indexer_id, indexer_update_only))
 
         while self.is_being_updated(indexer_id):
             time.sleep(1)
@@ -115,13 +114,13 @@ class ShowQueue(SRQueue):
 
         sickrage.app.log.debug("Queueing show refresh for {}".format(show_obj.name))
 
-        sickrage.app.io_loop.add_callback(self.put, QueueItemRefresh(indexer_id, force=force))
+        self.put(QueueItemRefresh(indexer_id, force=force))
 
     def rename_show_episodes(self, indexer_id):
-        sickrage.app.io_loop.add_callback(self.put, QueueItemRename(indexer_id))
+        self.put(QueueItemRename(indexer_id))
 
     def download_subtitles(self, indexer_id):
-        sickrage.app.io_loop.add_callback(self.put, QueueItemSubtitle(indexer_id))
+        self.put(QueueItemSubtitle(indexer_id))
 
     def add_show(self, indexer, indexer_id, showDir, default_status=None, quality=None, flatten_folders=None, lang=None, subtitles=None,
                  sub_use_sr_metadata=None, anime=None, search_format=None, dvdorder=None, paused=None, blacklist=None, whitelist=None,
@@ -130,7 +129,7 @@ class ShowQueue(SRQueue):
         if lang is None:
             lang = sickrage.app.config.indexer_default_language
 
-        sickrage.app.io_loop.add_callback(self.put, QueueItemAdd(indexer=indexer,
+        self.put(QueueItemAdd(indexer=indexer,
                                                                  indexer_id=indexer_id,
                                                                  showDir=showDir,
                                                                  default_status=default_status,
@@ -160,7 +159,7 @@ class ShowQueue(SRQueue):
 
         # remove other queued actions for this show.
         [self.remove(x) for x in self.queue_items if indexer_id == x.indexer_id]
-        sickrage.app.io_loop.add_callback(self.put, QueueItemRemove(indexer_id=indexer_id, full=full))
+        self.put(QueueItemRemove(indexer_id=indexer_id, full=full))
 
 
 class ShowQueueActions(object):
@@ -379,8 +378,8 @@ class QueueItemAdd(ShowQueueItem):
             sickrage.app.log.debug("Error searching dir for episodes: {}".format(e))
             sickrage.app.log.debug(traceback.format_exc())
 
-        sickrage.app.io_loop.add_callback(show_obj.write_metadata, force=True)
-        sickrage.app.io_loop.add_callback(show_obj.populate_cache)
+        show_obj.write_metadata(force=True)
+        show_obj.populate_cache()
 
         if sickrage.app.config.use_trakt:
             # if there are specific episodes that need to be added by trakt
@@ -408,7 +407,7 @@ class QueueItemAdd(ShowQueueItem):
         # if they set default ep status to WANTED then run the backlog to search for episodes
         if show_obj.default_ep_status == WANTED:
             sickrage.app.log.info(_("Launching backlog for this show since it has episodes that are WANTED"))
-            sickrage.app.io_loop.add_callback(sickrage.app.backlog_searcher.search_backlog, show_obj.indexer_id)
+            sickrage.app.backlog_searcher.search_backlog(show_obj.indexer_id)
 
         show_obj.default_ep_status = self.default_status_after
 

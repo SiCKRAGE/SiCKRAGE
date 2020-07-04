@@ -31,7 +31,7 @@ class AutoPostProcessor(object):
         self.lock = threading.Lock()
         self.amActive = False
 
-    async def task(self, force=False):
+    def task(self, force=False):
         """
         Runs the postprocessor
         :param force: Forces postprocessing run (reserved for future use)
@@ -46,6 +46,6 @@ class AutoPostProcessor(object):
         # set thread name
         threading.currentThread().setName(self.name)
 
-        sickrage.app.io_loop.add_callback(sickrage.app.postprocessor_queue.put, sickrage.app.config.tv_download_dir, force=force)
+        sickrage.app.postprocessor_queue.put(sickrage.app.config.tv_download_dir, force=force)
 
         self.amActive = False
