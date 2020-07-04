@@ -555,6 +555,10 @@ class Core(object):
         if self.started:
             self.log.info('SiCKRAGE IS SHUTTING DOWN!!!')
 
+            # shutdown scheduler
+            if self.scheduler:
+                self.scheduler.shutdown()
+
             # shutdown webserver
             if self.wserver:
                 self.wserver.shutdown()
