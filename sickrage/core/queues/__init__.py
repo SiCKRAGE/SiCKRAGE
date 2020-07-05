@@ -40,13 +40,12 @@ class SRQueue(threading.Thread):
         super(SRQueue, self).__init__()
         self.name = name
         self.lock = threading.Lock()
-        self.queue = []
-        self.current_item = None
-        self.result_queue = []
         self.min_priority = SRQueuePriorities.EXTREME
+        self.queue = []
+        self.result_queue = []
+        self.current_item = None
         self.amActive = False
         self.stop = False
-        self.threads = []
 
     def run(self):
         """
@@ -134,6 +133,8 @@ class SRQueue(threading.Thread):
         self.stop = True
         if self.current_item:
             self.current_item.join(10)
+        self.queue.clear()
+        self.join(10)
 
 
 class SRQueueItem(threading.Thread):
