@@ -1512,10 +1512,9 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
         # Running Searches
         search_status = 'Searching'
         if sickrage.app.search_queue.is_manual_search_in_progress():
-            for search_thread in sickrage.app.search_queue.processing:
-                if search_thread.success:
-                    search_status = 'Finished'
-                episodes += self.get_episodes(int(show), [search_thread], search_status)
+            if sickrage.app.search_queue.current_item and sickrage.app.search_queue.current_item.success:
+                search_status = 'Finished'
+            episodes += self.get_episodes(int(show), [sickrage.app.search_queue.current_item], search_status)
 
         # Finished Searches
         search_status = 'Finished'

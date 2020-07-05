@@ -68,11 +68,6 @@ class SearchQueue(SRQueue):
                 items.append(cur_item)
         return items
 
-    def remove_from_queue(self, show_id, season, episode):
-        for cur_item in self.queue_items:
-            if all([cur_item.show_id == show_id, cur_item.season == season, cur_item.episode == episode]):
-                self.stop_item(cur_item)
-
     def pause_daily_searcher(self):
         sickrage.app.scheduler.pause_job(sickrage.app.daily_searcher.name)
 

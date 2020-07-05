@@ -133,7 +133,7 @@ class PostProcessorQueue(SRQueue):
             super(PostProcessorQueue, self).put(PostProcessorItem(dirName, nzbName, process_method, force, is_priority, delete_on, failed, proc_type))
 
             if force_next:
-                result = self._result_queue.get()
+                result = self.result_queue.pop(0) if self.result_queue else ""
                 return result
 
             self.log("{} post-processing job for {} has been added to the queue".format(proc_type.title(), dirName))

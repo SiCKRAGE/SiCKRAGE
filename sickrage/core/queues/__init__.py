@@ -18,26 +18,21 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import ctypes
 import datetime
 import threading
 import time
-import traceback
-from queue import Queue, PriorityQueue
+from functools import cmp_to_key
+from queue import Queue
 
 import sickrage
 
 
-class QueueItemStopException(Exception):
-    pass
-
-
 class SRQueuePriorities(object):
-    EXTREME = 5
-    HIGH = 10
+    PAUSED = 0
+    LOW = 10
     NORMAL = 20
-    LOW = 30
-    PAUSED = 99
+    HIGH = 30
+    EXTREME = 40
 
 
 class SRQueue(threading.Thread):
@@ -45,53 +40,54 @@ class SRQueue(threading.Thread):
         super(SRQueue, self).__init__()
         self.name = name
         self.lock = threading.Lock()
-        self.queue = PriorityQueue()
-        self._result_queue = Queue()
-        self._queue_items = []
-        self.processing = []
+        self.queue = []
+        self.current_item = None
+        self.result_queue = []
         self.min_priority = SRQueuePriorities.EXTREME
         self.amActive = False
         self.stop = False
-        self.daemon = True
+        self.threads = []
 
     def run(self):
         """
         Process items in this queue
         """
 
+        self.amActive = True
+
         while not self.stop:
-            if not self.queue.empty():
-                if not self.is_paused and not len(self.processing) >= int(sickrage.app.config.max_queue_workers):
-                    threading.Thread(target=self.worker, args=(self.get(),)).start()
+            with self.lock:
+                if self.current_item is None or not self.current_item.is_alive():
+                    if self.current_item:
+                        if self.current_item.result:
+                            self.result_queue.append(self.current_item.result)
+                        self.current_item = None
+
+                    if self.queue and not self.is_paused:
+                        self.current_item = self.get()
+                        self.current_item.start()
 
             time.sleep(0.1)
 
-    def worker(self, item):
-        with self.lock:
-            self.amActive = True
-
-            threading.currentThread().setName(item.name)
-            item.thread_id = threading.currentThread().ident
-
-            try:
-                item.is_alive = True
-                self.processing.append(item)
-                result = item.run()
-                if result:
-                    self._result_queue.put(result)
-            except QueueItemStopException:
-                pass
-            except Exception:
-                sickrage.app.log.debug(traceback.format_exc())
-            finally:
-                self.remove(item)
-                self.queue.task_done()
-                del item
-
-            self.amActive = False
+        self.amActive = False
 
     def get(self):
-        return self.queue.get()
+        def queue_sorter(x, y):
+            """
+            Sorts by priority descending then time ascending
+            """
+            if x.priority == y.priority:
+                if y.added == x.added:
+                    return 0
+                elif y.added < x.added:
+                    return 1
+                elif y.added > x.added:
+                    return -1
+            else:
+                return y.priority - x.priority
+
+        self.queue.sort(key=cmp_to_key(lambda x, y: queue_sorter(x, y)))
+        return self.queue.pop(0)
 
     def put(self, item, *args, **kwargs):
         """
@@ -105,14 +101,16 @@ class SRQueue(threading.Thread):
 
         item.added = datetime.datetime.now()
         item.name = "{}-{}".format(self.name, item.name)
-        self._queue_items.append(item)
-        self.queue.put(item)
-
+        self.queue.append(item)
         return item
 
     @property
     def queue_items(self):
-        return self._queue_items + self.processing
+        items = self.queue.copy()
+        if self.current_item:
+            items.append(self.current_item)
+
+        return items
 
     @property
     def is_busy(self):
@@ -132,39 +130,17 @@ class SRQueue(threading.Thread):
         sickrage.app.log.info("Un-pausing {}".format(self.name))
         self.min_priority = SRQueuePriorities.EXTREME
 
-    def remove(self, item):
-        if item in self._queue_items:
-            self._queue_items.remove(item)
-        if item in self.processing:
-            self.processing.remove(item)
-
-    def stop_item(self, item):
-        if not item.is_alive:
-            return
-
-        if ctypes.pythonapi.PyThreadState_SetAsyncExc(ctypes.c_long(item.thread_id), ctypes.py_object(QueueItemStopException)) > 1:
-            ctypes.pythonapi.PyThreadState_SetAsyncExc(item.thread_id, None)
-
     def shutdown(self):
         self.stop = True
+        if self.current_item:
+            self.current_item.join(10)
 
 
-class SRQueueItem(object):
+class SRQueueItem(threading.Thread):
     def __init__(self, name, action_id=0):
         super(SRQueueItem, self).__init__()
         self.name = name.replace(" ", "-").upper()
         self.action_id = action_id
+        self.priority = SRQueuePriorities.NORMAL
         self.added = None
         self.result = None
-        self.priority = SRQueuePriorities.NORMAL
-        self.is_alive = False
-        self.thread_id = None
-
-    def __eq__(self, other):
-        return self.priority == other.priority
-
-    def __ne__(self, other):
-        return not self.priority == other.priority
-
-    def __lt__(self, other):
-        return self.priority < other.priority
