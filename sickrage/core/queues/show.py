@@ -25,13 +25,11 @@ import os
 import time
 import traceback
 
-from apscheduler.triggers.interval import IntervalTrigger
-
 import sickrage
 from sickrage.core.common import WANTED
 from sickrage.core.exceptions import CantRefreshShowException, CantRemoveShowException, CantUpdateShowException, EpisodeDeletedException, \
     MultipleShowObjectsException
-from sickrage.core.queues import SRQueue, SRQueueItem, SRQueuePriorities
+from sickrage.core.queues import Queue, Task, TaskPriority, TaskStatus
 from sickrage.core.scene_numbering import xem_refresh
 from sickrage.core.traktapi import TraktAPI
 from sickrage.core.tv.show import TVShow
@@ -40,37 +38,51 @@ from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_attributenotfound, indexer_exception
 
 
-class ShowQueue(SRQueue):
+class ShowQueue(Queue):
     def __init__(self):
-        SRQueue.__init__(self, "SHOWQUEUE")
+        Queue.__init__(self, "SHOWQUEUE")
 
     @property
     def loading_show_list(self):
-        return [x.indexer_id for x in self.queue_items if x.is_loading]
+        return [x.indexer_id for x in self.tasks.values() if x.is_loading and x.status in [TaskStatus.QUEUED, TaskStatus.STARTED]]
 
     def _is_in_queue(self, indexer_id):
-        return indexer_id in [x.indexer_id for x in self.queue_items]
+        for task in self.tasks.values():
+            if task.status not in [TaskStatus.QUEUED, TaskStatus.STARTED]:
+                continue
+
+            if task.indexer_id == indexer_id:
+                return True
+
+        return False
 
     def _is_being(self, indexer_id, actions):
-        return indexer_id in [x.indexer_id for x in self.queue_items if x.action_id in actions]
+        for task in self.tasks.values():
+            if task.status not in [TaskStatus.QUEUED, TaskStatus.STARTED]:
+                continue
+
+            if task.indexer_id == indexer_id and task.action_id in actions:
+                return True
+
+        return False
 
     def is_being_removed(self, indexer_id):
-        return self._is_being(indexer_id, [ShowQueueActions.REMOVE])
+        return self._is_being(indexer_id, [ShowTaskActions.REMOVE])
 
     def is_being_added(self, indexer_id):
-        return self._is_being(indexer_id, [ShowQueueActions.ADD])
+        return self._is_being(indexer_id, [ShowTaskActions.ADD])
 
     def is_being_updated(self, indexer_id):
-        return self._is_being(indexer_id, [ShowQueueActions.UPDATE, ShowQueueActions.FORCEUPDATE])
+        return self._is_being(indexer_id, [ShowTaskActions.UPDATE, ShowTaskActions.FORCEUPDATE])
 
     def is_being_refreshed(self, indexer_id):
-        return self._is_being(indexer_id, [ShowQueueActions.REFRESH])
+        return self._is_being(indexer_id, [ShowTaskActions.REFRESH])
 
     def is_being_renamed(self, indexer_id):
-        return self._is_being(indexer_id, [ShowQueueActions.RENAME])
+        return self._is_being(indexer_id, [ShowTaskActions.RENAME])
 
     def is_being_subtitled(self, indexer_id):
-        return self._is_being(indexer_id, [ShowQueueActions.SUBTITLE])
+        return self._is_being(indexer_id, [ShowTaskActions.SUBTITLE])
 
     def update_show(self, indexer_id, indexer_update_only=False, force=False):
         show_obj = find_show(indexer_id)
@@ -82,15 +94,13 @@ class ShowQueue(SRQueue):
             raise CantUpdateShowException("{} is already being updated, can't update again until it's done.".format(show_obj.name))
 
         if force:
-            self.put(QueueItemForceUpdate(indexer_id, indexer_update_only))
+            task_id = self.put(ShowTaskForceUpdate(indexer_id, indexer_update_only))
         else:
-            self.put(QueueItemUpdate(indexer_id, indexer_update_only))
-
-        while self.is_being_updated(indexer_id):
-            time.sleep(1)
+            task_id = self.put(ShowTaskUpdate(indexer_id, indexer_update_only))
 
         if not indexer_update_only:
             sickrage.app.show_queue.refresh_show(show_obj.indexer_id, force)
+            self.put(ShowTaskRefresh(indexer_id, force=force), depend=[task_id])
 
     def refresh_show(self, indexer_id, force=False):
         show_obj = find_show(indexer_id)
@@ -104,13 +114,13 @@ class ShowQueue(SRQueue):
 
         sickrage.app.log.debug("Queueing show refresh for {}".format(show_obj.name))
 
-        self.put(QueueItemRefresh(indexer_id, force=force))
+        self.put(ShowTaskRefresh(indexer_id, force=force))
 
     def rename_show_episodes(self, indexer_id):
-        self.put(QueueItemRename(indexer_id))
+        self.put(ShowTaskRename(indexer_id))
 
     def download_subtitles(self, indexer_id):
-        self.put(QueueItemSubtitle(indexer_id))
+        self.put(ShowTaskSubtitle(indexer_id))
 
     def add_show(self, indexer, indexer_id, showDir, default_status=None, quality=None, flatten_folders=None, lang=None, subtitles=None,
                  sub_use_sr_metadata=None, anime=None, search_format=None, dvdorder=None, paused=None, blacklist=None, whitelist=None,
@@ -119,23 +129,23 @@ class ShowQueue(SRQueue):
         if lang is None:
             lang = sickrage.app.config.indexer_default_language
 
-        self.put(QueueItemAdd(indexer=indexer,
-                                                                 indexer_id=indexer_id,
-                                                                 showDir=showDir,
-                                                                 default_status=default_status,
-                                                                 quality=quality,
-                                                                 flatten_folders=not flatten_folders,
-                                                                 lang=lang,
-                                                                 subtitles=subtitles,
-                                                                 sub_use_sr_metadata=sub_use_sr_metadata,
-                                                                 anime=anime,
-                                                                 dvdorder=dvdorder,
-                                                                 search_format=search_format,
-                                                                 paused=paused,
-                                                                 blacklist=blacklist,
-                                                                 whitelist=whitelist,
-                                                                 default_status_after=default_status_after,
-                                                                 skip_downloaded=skip_downloaded))
+        self.put(ShowTaskAdd(indexer=indexer,
+                             indexer_id=indexer_id,
+                             showDir=showDir,
+                             default_status=default_status,
+                             quality=quality,
+                             flatten_folders=not flatten_folders,
+                             lang=lang,
+                             subtitles=subtitles,
+                             sub_use_sr_metadata=sub_use_sr_metadata,
+                             anime=anime,
+                             dvdorder=dvdorder,
+                             search_format=search_format,
+                             paused=paused,
+                             blacklist=blacklist,
+                             whitelist=whitelist,
+                             default_status_after=default_status_after,
+                             skip_downloaded=skip_downloaded))
 
     def remove_show(self, indexer_id, full=False):
         show_obj = find_show(indexer_id)
@@ -144,15 +154,16 @@ class ShowQueue(SRQueue):
             raise CantRemoveShowException('Failed removing show: Show does not exist')
         elif not hasattr(show_obj, 'indexer_id'):
             raise CantRemoveShowException('Failed removing show: Show does not have an indexer id')
-        elif self._is_being(show_obj.indexer_id, (ShowQueueActions.REMOVE,)):
+        elif self._is_being(show_obj.indexer_id, (ShowTaskActions.REMOVE,)):
             raise CantRemoveShowException("{} is already queued to be removed".format(show_obj))
 
         # remove other queued actions for this show.
-        [self.remove(x) for x in self.queue_items if indexer_id == x.indexer_id]
-        self.put(QueueItemRemove(indexer_id=indexer_id, full=full))
+        self.remove_task(indexer_id)
+
+        self.put(ShowTaskForceRemove(indexer_id=indexer_id, full=full))
 
 
-class ShowQueueActions(object):
+class ShowTaskActions(object):
     def __init__(self):
         pass
 
@@ -175,7 +186,7 @@ class ShowQueueActions(object):
     }
 
 
-class ShowQueueItem(SRQueueItem):
+class ShowTask(Task):
     """
     Represents an item in the queue waiting to be executed
 
@@ -188,11 +199,11 @@ class ShowQueueItem(SRQueueItem):
     """
 
     def __init__(self, indexer_id, action_id):
-        super(ShowQueueItem, self).__init__(ShowQueueActions.names[action_id], action_id)
+        super(ShowTask, self).__init__(ShowTaskActions.names[action_id], action_id)
         self.indexer_id = indexer_id
 
     def is_in_queue(self):
-        return self in sickrage.app.show_queue.queue_items
+        return self in sickrage.app.show_queue.queue
 
     @property
     def show_name(self):
@@ -204,10 +215,10 @@ class ShowQueueItem(SRQueueItem):
         return False
 
 
-class QueueItemAdd(ShowQueueItem):
+class ShowTaskAdd(ShowTask):
     def __init__(self, indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang, subtitles, sub_use_sr_metadata, anime,
                  dvdorder, search_format, paused, blacklist, whitelist, default_status_after, skip_downloaded):
-        super(QueueItemAdd, self).__init__(None, ShowQueueActions.ADD)
+        super(ShowTaskAdd, self).__init__(None, ShowTaskActions.ADD)
 
         self.indexer = indexer
         self.indexer_id = indexer_id
@@ -226,7 +237,7 @@ class QueueItemAdd(ShowQueueItem):
         self.whitelist = whitelist
         self.default_status_after = default_status_after
         self.skip_downloaded = skip_downloaded
-        self.priority = SRQueuePriorities.HIGH
+        self.priority = TaskPriority.HIGH
 
     @property
     def show_name(self):
@@ -414,9 +425,9 @@ class QueueItemAdd(ShowQueueItem):
             pass
 
 
-class QueueItemRefresh(ShowQueueItem):
+class ShowTaskRefresh(ShowTask):
     def __init__(self, indexer_id=None, force=False):
-        super(QueueItemRefresh, self).__init__(indexer_id, ShowQueueActions.REFRESH)
+        super(ShowTaskRefresh, self).__init__(indexer_id, ShowTaskActions.REFRESH)
 
         # force refresh certain items
         self.force = force
@@ -442,9 +453,9 @@ class QueueItemRefresh(ShowQueueItem):
         sickrage.app.log.info("Finished refresh in {}s for show: {}".format(round(time.time() - start_time, 2), tv_show.name))
 
 
-class QueueItemRename(ShowQueueItem):
+class ShowTaskRename(ShowTask):
     def __init__(self, indexer_id=None):
-        super(QueueItemRename, self).__init__(indexer_id, ShowQueueActions.RENAME)
+        super(ShowTaskRename, self).__init__(indexer_id, ShowTaskActions.RENAME)
 
     def run(self):
         show_obj = find_show(self.indexer_id)
@@ -478,9 +489,9 @@ class QueueItemRename(ShowQueueItem):
         sickrage.app.log.info("Finished renames for show: {}".format(show_obj.name))
 
 
-class QueueItemSubtitle(ShowQueueItem):
+class ShowTaskSubtitle(ShowTask):
     def __init__(self, indexer_id=None):
-        super(QueueItemSubtitle, self).__init__(indexer_id, ShowQueueActions.SUBTITLE)
+        super(ShowTaskSubtitle, self).__init__(indexer_id, ShowTaskActions.SUBTITLE)
 
     def run(self):
         show_obj = find_show(self.indexer_id)
@@ -492,9 +503,9 @@ class QueueItemSubtitle(ShowQueueItem):
         sickrage.app.log.info("Finished downloading subtitles for show: {}".format(show_obj.name))
 
 
-class QueueItemUpdate(ShowQueueItem):
-    def __init__(self, indexer_id=None, indexer_update_only=False, action_id=ShowQueueActions.UPDATE):
-        super(QueueItemUpdate, self).__init__(indexer_id, action_id)
+class ShowTaskUpdate(ShowTask):
+    def __init__(self, indexer_id=None, indexer_update_only=False, action_id=ShowTaskActions.UPDATE):
+        super(ShowTaskUpdate, self).__init__(indexer_id, action_id)
         self.indexer_update_only = indexer_update_only
         self.force = False
 
@@ -561,19 +572,19 @@ class QueueItemUpdate(ShowQueueItem):
         sickrage.app.log.info("Finished updates in {}s for show: {}".format(round(time.time() - start_time, 2), show_obj.name))
 
 
-class QueueItemForceUpdate(QueueItemUpdate):
+class ShowTaskForceUpdate(ShowTaskUpdate):
     def __init__(self, indexer_id=None, indexer_update_only=False):
-        super(QueueItemForceUpdate, self).__init__(indexer_id, indexer_update_only, ShowQueueActions.FORCEUPDATE)
+        super(ShowTaskForceUpdate, self).__init__(indexer_id, indexer_update_only, ShowTaskActions.FORCEUPDATE)
         self.indexer_update_only = indexer_update_only
         self.force = True
 
 
-class QueueItemRemove(ShowQueueItem):
+class ShowTaskForceRemove(ShowTask):
     def __init__(self, indexer_id=None, full=False):
-        super(QueueItemRemove, self).__init__(indexer_id, ShowQueueActions.REMOVE)
+        super(ShowTaskForceRemove, self).__init__(indexer_id, ShowTaskActions.REMOVE)
 
         # lets make sure this happens before any other high priority actions
-        self.priority = SRQueuePriorities.EXTREME
+        self.priority = TaskPriority.EXTREME
         self.full = full
 
     @property

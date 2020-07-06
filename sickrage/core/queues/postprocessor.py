@@ -22,11 +22,9 @@ import os
 import threading
 import traceback
 
-from apscheduler.triggers.interval import IntervalTrigger
-
 import sickrage
 from sickrage.core.process_tv import ProcessResult
-from sickrage.core.queues import SRQueue, SRQueueItem, SRQueuePriorities
+from sickrage.core.queues import Queue, Task, TaskPriority, TaskStatus
 
 
 class PostProcessorQueueActions(object):
@@ -42,9 +40,9 @@ class PostProcessorQueueActions(object):
 postprocessor_queue_lock = threading.Lock()
 
 
-class PostProcessorQueue(SRQueue):
+class PostProcessorQueue(Queue):
     def __init__(self):
-        SRQueue.__init__(self, "POSTPROCESSORQUEUE")
+        Queue.__init__(self, "POSTPROCESSORQUEUE")
         self._output = []
 
     @property
@@ -63,19 +61,15 @@ class PostProcessorQueue(SRQueue):
         Finds any item in the queue with the given dirName and proc_type pair
         :param dirName: directory to be processed by the task
         :param proc_type: processing type, auto/manual
-        :return: instance of PostProcessorItem or None
+        :return: instance of PostProcessorTask or None
         """
-        for cur_item in self.queue_items:
-            if isinstance(cur_item,
-                          PostProcessorItem) and cur_item.dirName == dirName and cur_item.proc_type == proc_type:
-                return True
-        return False
+        for task in self.tasks.values():
+            if task.status not in [TaskStatus.QUEUED, TaskStatus.STARTED]:
+                continue
 
-    @property
-    def is_in_progress(self):
-        for cur_item in self.queue_items:
-            if isinstance(cur_item, PostProcessorItem):
+            if isinstance(task, PostProcessorTask) and task.dirName == dirName and task.proc_type == proc_type:
                 return True
+
         return False
 
     @property
@@ -86,9 +80,12 @@ class PostProcessorQueue(SRQueue):
         """
         length = {'auto': 0, 'manual': 0}
 
-        for cur_item in self.queue_items:
-            if isinstance(cur_item, PostProcessorItem):
-                if cur_item.proc_type == 'auto':
+        for task in self.tasks.values():
+            if task.status not in [TaskStatus.QUEUED, TaskStatus.STARTED]:
+                continue
+
+            if isinstance(task, PostProcessorTask):
+                if task.proc_type == 'auto':
                     length['auto'] += 1
                 else:
                     length['manual'] += 1
@@ -96,7 +93,7 @@ class PostProcessorQueue(SRQueue):
         return length
 
     def put(self, dirName, nzbName=None, process_method=None, force=False, is_priority=None, delete_on=False,
-                  failed=False, proc_type="auto", force_next=False, **kwargs):
+            failed=False, proc_type="auto", force_next=False, **kwargs):
         """
         Adds an item to post-processing queue
         :param dirName: directory to process
@@ -130,21 +127,22 @@ class PostProcessorQueue(SRQueue):
             self.log("An item with directory {} is already being processed in the queue".format(dirName))
             return self.output
         else:
-            super(PostProcessorQueue, self).put(PostProcessorItem(dirName, nzbName, process_method, force, is_priority, delete_on, failed, proc_type))
+            task_id = super(PostProcessorQueue, self).put(
+                PostProcessorTask(dirName, nzbName, process_method, force, is_priority, delete_on, failed, proc_type))
 
             if force_next:
-                result = self.result_queue.pop(0) if self.result_queue else ""
+                result = self.get_result(task_id)
                 return result
 
             self.log("{} post-processing job for {} has been added to the queue".format(proc_type.title(), dirName))
             return self.output + "<p><span class='hidden'>Processing succeeded</span></p>"
 
 
-class PostProcessorItem(SRQueueItem):
+class PostProcessorTask(Task):
     def __init__(self, dirName, nzbName=None, process_method=None, force=False, is_priority=None, delete_on=False,
                  failed=False, proc_type="auto"):
         action_id = (PostProcessorQueueActions.MANUAL, PostProcessorQueueActions.AUTO)[proc_type == "auto"]
-        super(PostProcessorItem, self).__init__(PostProcessorQueueActions.actions[action_id], action_id)
+        super(PostProcessorTask, self).__init__(PostProcessorQueueActions.actions[action_id], action_id)
 
         self.dirName = dirName
         self.nzbName = nzbName
@@ -155,7 +153,7 @@ class PostProcessorItem(SRQueueItem):
         self.failed = failed
         self.proc_type = proc_type
 
-        self.priority = (SRQueuePriorities.HIGH, SRQueuePriorities.NORMAL)[proc_type == 'auto']
+        self.priority = (TaskPriority.HIGH, TaskPriority.NORMAL)[proc_type == 'auto']
 
     def run(self):
         """
@@ -166,7 +164,7 @@ class PostProcessorItem(SRQueueItem):
         try:
             sickrage.app.log.info("Started {} post-processing job for: {}".format(self.proc_type, self.dirName))
 
-            self.result = ProcessResult(self.dirName, self.process_method, self.proc_type).process(
+            result = ProcessResult(self.dirName, self.process_method, self.proc_type).process(
                 nzbName=self.nzbName,
                 force=self.force,
                 is_priority=self.is_priority,
@@ -177,7 +175,7 @@ class PostProcessorItem(SRQueueItem):
             sickrage.app.log.info("Finished {} post-processing job for: {}".format(self.proc_type, self.dirName))
         except Exception:
             sickrage.app.log.debug(traceback.format_exc())
-            self.result = '{}'.format(traceback.format_exc())
-            self.result += 'Processing Failed'
+            result = '{}'.format(traceback.format_exc())
+            result += 'Processing Failed'
 
-        return self.result
+        return result

@@ -42,7 +42,7 @@ class ManageQueuesHandler(BaseHandler, ABC):
                            findPropersStatus=sickrage.app.proper_searcher.amActive,
                            searchQueueLength=sickrage.app.search_queue.queue_length(),
                            postProcessorPaused=sickrage.app.postprocessor_queue.is_paused,
-                           postProcessorRunning=sickrage.app.postprocessor_queue.is_in_progress,
+                           postProcessorRunning=sickrage.app.postprocessor_queue.is_busy,
                            postProcessorQueueLength=sickrage.app.postprocessor_queue.queue_length,
                            title=_('Manage Queues'),
                            header=_('Manage Queues'),

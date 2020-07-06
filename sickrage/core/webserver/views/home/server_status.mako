@@ -2,7 +2,8 @@
 <%!
     import datetime
     import sickrage
-    from sickrage.core.queues.show import ShowQueueActions
+    from sickrage.core.queues import TaskStatus, TaskPriority
+    from sickrage.core.queues.show import ShowTaskActions
     from sickrage.core.common import dateTimeFormat
     from sickrage.core.helpers import pretty_time_delta
 %>
@@ -128,39 +129,41 @@
                         </tr>
                         </thead>
                         <tbody>
-                            % for item in sickrage.app.show_queue.queue_items:
-                                <tr>
-                                % try:
-                                    <% showindexer_id = item.indexer_id %>
-                                    <td>${showindexer_id}</td>
-                                % except Exception:
-                                    <td></td>
-                                % endtry
-                                % try:
-                                    <% showname = item.show_name %>
-                                    <td>${showname}</td>
-                                % except Exception:
-                                    % if item.action_id == ShowQueueActions.ADD:
-                                        <td>${item.showDir}</td>
-                                    % else:
+                            % for task in sickrage.app.show_queue.tasks.values():
+                                % if task.status in [TaskStatus.QUEUED, TaskStatus.STARTED]:
+                                    <tr>
+                                    % try:
+                                        <% showindexer_id = task.indexer_id %>
+                                        <td>${showindexer_id}</td>
+                                    % except Exception:
                                         <td></td>
-                                    % endif
-                                % endtry
-                                    <td>${item.is_alive}</td>
-                                    % if item.priority == 5:
-                                        <td>${_('EXTREME')}</td>
-                                    % elif item.priority == 10:
-                                        <td>${_('HIGH')}</td>
-                                    % elif item.priority == 20:
-                                        <td>${_('NORMAL')}</td>
-                                    % elif item.priority == 30:
-                                        <td>${_('LOW')}</td>
-                                    % else:
-                                        <td>${item.priority}</td>
-                                    % endif
-                                    <td>${item.added.strftime(dateTimeFormat)}</td>
-                                    <td>${ShowQueueActions.names[item.action_id]}</td>
-                                </tr>
+                                    % endtry
+                                    % try:
+                                        <% showname = task.show_name %>
+                                        <td>${showname}</td>
+                                    % except Exception:
+                                        % if task.action_id == ShowTaskActions.ADD:
+                                            <td>${task.showDir}</td>
+                                        % else:
+                                            <td></td>
+                                        % endif
+                                    % endtry
+                                        <td>${task.is_alive}</td>
+                                        % if task.priority == TaskPriority.EXTREME:
+                                            <td>${_('EXTREME')}</td>
+                                        % elif task.priority == TaskPriority.HIGH:
+                                            <td>${_('HIGH')}</td>
+                                        % elif task.priority == TaskPriority.NORMAL:
+                                            <td>${_('NORMAL')}</td>
+                                        % elif task.priority == TaskPriority.LOW:
+                                            <td>${_('LOW')}</td>
+                                        % else:
+                                            <td>${task.priority}</td>
+                                        % endif
+                                        <td>${task.added.strftime(dateTimeFormat)}</td>
+                                        <td>${ShowTaskActions.names[task.action_id]}</td>
+                                    </tr>
+                                % endif
                             % endfor
                         </tbody>
                     </table>

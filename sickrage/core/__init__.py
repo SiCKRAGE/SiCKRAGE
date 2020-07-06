@@ -509,9 +509,9 @@ class Core(object):
         )
 
         # start queues
-        self.search_queue.start()
-        self.show_queue.start()
-        self.postprocessor_queue.start()
+        self.search_queue.start_worker(self.config.max_queue_workers)
+        self.show_queue.start_worker(self.config.max_queue_workers)
+        self.postprocessor_queue.start_worker(self.config.max_queue_workers)
 
         # fire off jobs now
         self.scheduler.get_job(self.version_updater.name).modify(next_run_time=datetime.datetime.utcnow())
