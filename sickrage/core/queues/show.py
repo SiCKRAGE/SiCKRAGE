@@ -99,7 +99,6 @@ class ShowQueue(Queue):
             task_id = self.put(ShowTaskUpdate(indexer_id, indexer_update_only))
 
         if not indexer_update_only:
-            sickrage.app.show_queue.refresh_show(show_obj.indexer_id, force)
             self.put(ShowTaskRefresh(indexer_id, force=force), depend=[task_id])
 
     def refresh_show(self, indexer_id, force=False):

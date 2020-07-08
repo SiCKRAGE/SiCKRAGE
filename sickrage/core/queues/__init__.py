@@ -369,10 +369,10 @@ class Task(object):
             for dependency in self.depend:
                 task = tasks.get(dependency, None)
                 if task is None:
-                    sickrage.app.log.debug("Cannot run task " + str(self.id) + ". Unable to find task " + str(dependency) + " in queue.")
+                    # sickrage.app.log.debug("Cannot run task " + str(self.id) + ". Unable to find task " + str(dependency) + " in queue.")
                     return False
                 if not task.is_finished():
-                    sickrage.app.log.debug("Cannot run task " + str(self.id) + ". Task " + str(dependency) + " is not finished")
+                    # sickrage.app.log.debug("Cannot run task " + str(self.id) + ". Task " + str(dependency) + " is not finished")
                     return False
 
         return True
