@@ -21,9 +21,6 @@
 import os
 
 from hachoir.core import config as hachoir_config
-from hachoir.metadata import extractMetadata
-from hachoir.parser import guessParser
-from hachoir.stream import StringInputStream
 
 import sickrage
 from sickrage.core.helpers import copy_file
@@ -176,6 +173,10 @@ class ImageCache(object):
         if not os.path.isfile(path):
             sickrage.app.log.warning("Couldn't check the type of " + str(path) + " cause it doesn't exist")
             return None
+
+        from hachoir.metadata import extractMetadata
+        from hachoir.parser import guessParser
+        from hachoir.stream import StringInputStream
 
         with open(path, 'rb') as fh:
             img_metadata = extractMetadata(guessParser(StringInputStream(fh.read())))
