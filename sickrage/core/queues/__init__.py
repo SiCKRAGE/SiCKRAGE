@@ -315,10 +315,10 @@ class Worker(object):
             self.task.status = TaskStatus.STARTED
             self.task.result = self.task.run()
             self.task.status = TaskStatus.FINISHED
-        except Exception as ex:
+        except Exception as e:
             if self.task is not None:
                 self.task.status = TaskStatus.FAILED
-                self.task.error_message = ex.message
+                self.task.error_message = str(e)
             else:
                 sickrage.app.log.debug("WORKER " + str(self.id) + " WITHOUT TASK.")
         finally:
