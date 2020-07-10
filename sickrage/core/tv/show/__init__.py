@@ -52,7 +52,7 @@ from sickrage.indexers.exceptions import indexer_attributenotfound, indexer_exce
 class TVShow(object):
     def __init__(self, indexer_id, indexer, lang='en', location=''):
         self.lock = threading.Lock()
-        self._episodes = []
+        self._episodes = {}
 
         with sickrage.app.main_db.session() as session:
             try:
@@ -351,16 +351,14 @@ class TVShow(object):
     def episodes(self):
         if not self._episodes:
             with sickrage.app.main_db.session() as session:
-                query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one()
-                for x in query.episodes:
-                    self._episodes.append(TVEpisode(showid=self.indexer_id, indexer=self.indexer, season=x.season, episode=x.episode))
-        return self._episodes
+                for x in session.query(MainDB.TVEpisode).filter_by(showid=self.indexer_id, indexer=self.indexer):
+                    self._episodes[x.indexer_id] = TVEpisode(showid=x.showid, indexer=x.indexer, season=x.season, episode=x.episode)
+        return list(self._episodes.values())
 
     @property
     def imdb_info(self):
         with sickrage.app.main_db.session() as session:
-            query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one()
-            return query.imdb_info
+            return session.query(MainDB.IMDbInfo).filter_by(indexer_id=self.indexer_id).one()
 
     @property
     def is_anime(self):
@@ -673,15 +671,14 @@ class TVShow(object):
                     season = query.season
                     episode = query.episode
 
-            for tv_episode in self._episodes:
+            for tv_episode in self.episodes:
                 if tv_episode.season == season and tv_episode.episode == episode:
                     return tv_episode
             else:
                 if no_create:
                     raise EpisodeNotFoundException
                 tv_episode = TVEpisode(showid=self.indexer_id, indexer=self.indexer, season=season, episode=episode)
-                self._episodes.append(tv_episode)
-                self._episodes = list(set(self._episodes))
+                self._episodes[tv_episode.indexer_id] = tv_episode
                 return tv_episode
         except orm.exc.MultipleResultsFound:
             if absolute_number is not None:

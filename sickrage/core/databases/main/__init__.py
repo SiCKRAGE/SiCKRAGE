@@ -17,7 +17,7 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 import datetime
 
-from sqlalchemy import Column, Integer, Text, ForeignKeyConstraint, String, DateTime, Boolean, Index, Date, BigInteger
+from sqlalchemy import Column, Integer, Text, ForeignKeyConstraint, String, DateTime, Boolean, Index, Date, BigInteger, func, literal_column
 from sqlalchemy.ext.declarative import as_declarative
 from sqlalchemy.orm import relationship
 
@@ -30,6 +30,7 @@ from sickrage.core.databases import SRDatabase, SRDatabaseBase
 class MainDBBase(SRDatabaseBase):
     pass
 
+
 class MainDB(SRDatabase):
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
         super(MainDB, self).__init__('main', 12, db_type, db_prefix, db_host, db_port, db_username, db_password)
@@ -37,6 +38,35 @@ class MainDB(SRDatabase):
         for model in MainDBBase._decl_class_registry.values():
             if hasattr(model, '__tablename__'):
                 self.tables[model.__tablename__] = model
+
+    def cleanup(self):
+        def remove_duplicate_shows():
+            session = self.session()
+
+            duplicates = session.query(self.TVShow, func.count(self.TVShow.indexer_id).label('count')). \
+                group_by(self.TVShow.indexer_id). \
+                having(literal_column('count') > 1)
+
+            for cur_duplicate in duplicates:
+                session.query(self.TVShow).filter_by(showid=cur_duplicate['indexer_id']).\
+                    limit(int(cur_duplicate['count']) - 1).delete()
+                session.commit()
+
+        def remove_duplicate_episodes():
+            session = self.session()
+
+            duplicates = session.query(self.TVEpisode, func.count(self.TVEpisode.showid).label('count')). \
+                group_by(self.TVEpisode.showid, self.TVEpisode.season, self.TVEpisode.episode). \
+                having(literal_column('count') > 1)
+
+            for cur_duplicate in duplicates:
+                session.query(self.TVEpisode). \
+                    filter_by(showid=cur_duplicate['showid'], season=cur_duplicate['season'], episode=cur_duplicate['episode']). \
+                    limit(int(cur_duplicate['count']) - 1).delete()
+                session.commit()
+
+        remove_duplicate_shows()
+        remove_duplicate_episodes()
 
     class TVShow(MainDBBase):
         __tablename__ = 'tv_shows'

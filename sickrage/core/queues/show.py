@@ -566,7 +566,7 @@ class ShowTaskUpdate(ShowTask):
 
         show_obj.retrieve_scene_exceptions()
 
-        sickrage.app.quicksearch_cache.update_show(show_obj.indexer_id)
+        sickrage.app.quicksearch_cache.add_show(show_obj.indexer_id, update=True)
 
         sickrage.app.log.info("Finished updates in {}s for show: {}".format(round(time.time() - start_time, 2), show_obj.name))
 

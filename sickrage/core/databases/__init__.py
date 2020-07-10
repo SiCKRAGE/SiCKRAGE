@@ -65,38 +65,37 @@ class ContextSession(sqlalchemy.orm.Session):
 
     def __init__(self, *args, **kwargs):
         super(ContextSession, self).__init__(*args, **kwargs)
-        self._lock = threading.Lock()
+        self._lock = threading.RLock()
         self.max_attempts = 50
 
     def commit(self, close=False):
-        with self._lock:
-            statement = None
-            params = None
-            for i in range(self.max_attempts):
-                try:
-                    if statement and params:
-                        self.bind.execute(statement, params)
-                    super(ContextSession, self).commit()
-                except OperationalError as e:
-                    self.rollback()
+        statement = None
+        params = None
+        for i in range(self.max_attempts):
+            try:
+                if statement and params:
+                    self.bind.execute(statement, params)
+                super(ContextSession, self).commit()
+            except OperationalError as e:
+                self.rollback()
 
-                    if 'database is locked' not in str(e):
-                        raise
-
-                    statement = e.statement
-                    params = e.params
-
-                    timer = random.randint(10, 30)
-                    sickrage.app.log.debug('Retrying database commit in {}s, attempt {}'.format(timer, i))
-                    sleep(timer)
-                except Exception as e:
-                    self.rollback()
+                if 'database is locked' not in str(e):
                     raise
-                else:
-                    break
-                finally:
-                    if close:
-                        self.close()
+
+                statement = e.statement
+                params = e.params
+
+                timer = random.randint(10, 30)
+                sickrage.app.log.debug('Retrying database commit in {}s, attempt {}'.format(timer, i))
+                sleep(timer)
+            except Exception as e:
+                self.rollback()
+                raise
+            else:
+                break
+            finally:
+                if close:
+                    self.close()
 
     def __enter__(self):
         return self

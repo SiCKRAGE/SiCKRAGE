@@ -19,7 +19,8 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 import threading
-import time
+
+from sqlalchemy import orm
 
 import sickrage
 from sickrage.core.databases.cache import CacheDB
@@ -60,50 +61,60 @@ class QuicksearchCache(object):
     def get_episodes(self, term):
         return [d for d in self.cache['episodes'].values() if d['name'] is not None and term.lower() in d['name'].lower()]
 
-    def update_show(self, indexer_id):
-        with self.lock:
-            self.del_show(indexer_id)
-            self.add_show(indexer_id)
-
-    def add_show(self, indexer_id):
+    def add_show(self, indexer_id, update=False):
         session = sickrage.app.cache_db.session()
 
         show = find_show(indexer_id)
 
         if indexer_id not in self.cache['shows']:
             sickrage.app.log.debug("Adding show {} to QuickSearch cache".format(show.name))
+        elif update:
+            sickrage.app.log.debug("Updating show {} in QuickSearch cache".format(show.name))
+        else:
+            return
 
+        qsData = {
+            'category': 'shows',
+            'showid': indexer_id,
+            'seasons': len(set([s.season for s in show.episodes])),
+            'name': show.name,
+            'img': sickrage.app.config.web_root + showImage(indexer_id, 'poster_thumb').url
+        }
+
+        try:
+            dbData = session.query(CacheDB.QuickSearchShow).filter_by(showid=indexer_id).one()
+            dbData.update(**qsData)
+        except orm.exc.NoResultFound:
+            session.add(CacheDB.QuickSearchShow(**qsData))
+        finally:
+            session.commit()
+            self.cache['shows'][indexer_id] = qsData
+
+        sql_insert = []
+        sql_update = []
+
+        for e in show.episodes:
             qsData = {
-                'category': 'shows',
-                'showid': indexer_id,
-                'seasons': len(set([s.season for s in show.episodes])),
-                'name': show.name,
-                'img': sickrage.app.config.web_root + showImage(indexer_id, 'poster_thumb').url
+                'category': 'episodes',
+                'showid': e.showid,
+                'episodeid': e.indexer_id,
+                'season': e.season,
+                'episode': e.episode,
+                'name': e.name,
+                'showname': show.name,
+                'img': sickrage.app.config.web_root + showImage(e.showid, 'poster_thumb').url
             }
 
-            self.cache['shows'][indexer_id] = qsData
-            session.add(CacheDB.QuickSearchShow(**qsData))
-            session.commit()
+            if e.indexer_id not in self.cache['episodes']:
+                sql_insert.append(qsData)
+            else:
+                sql_update.append(qsData)
 
-            # sql_t = []
-            # for e in show.episodes:
-            #     qsData = {
-            #         'category': 'episodes',
-            #         'showid': e.showid,
-            #         'episodeid': e.indexer_id,
-            #         'season': e.season,
-            #         'episode': e.episode,
-            #         'name': e.name,
-            #         'showname': show.name,
-            #         'img': sickrage.app.config.web_root + showImage(e.showid, 'poster_thumb').url
-            #     }
-            #
-            #     sql_t.append(qsData)
-            #
-            #     self.cache['episodes'][e.indexer_id] = qsData
-            #
-            # session.bulk_insert_mappings(CacheDB.QuickSearchEpisode, sql_t)
-            # session.commit()
+            self.cache['episodes'][e.indexer_id] = qsData
+
+        session.bulk_insert_mappings(CacheDB.QuickSearchEpisode, sql_insert)
+        session.bulk_update_mappings(CacheDB.QuickSearchEpisode, sql_update)
+        session.commit()
 
     def del_show(self, indexer_id):
         session = sickrage.app.cache_db.session()
@@ -114,16 +125,10 @@ class QuicksearchCache(object):
 
         # remove from database
         session.query(CacheDB.QuickSearchShow).filter_by(showid=indexer_id).delete()
-        session.query(CacheDB.QuickSearchEpisode).filter_by(showid=indexer_id).delete()
         session.commit()
 
-        # confirm show deleted
-        while session.query(CacheDB.QuickSearchShow).filter_by(showid=indexer_id).count():
-            time.sleep(0.1)
-
-        # confirm episodes deleted
-        while session.query(CacheDB.QuickSearchEpisode).filter_by(showid=indexer_id).count():
-            time.sleep(0.1)
+        session.query(CacheDB.QuickSearchEpisode).filter_by(showid=indexer_id).delete()
+        session.commit()
 
         if indexer_id in self.cache['shows'].copy():
             del self.cache['shows'][indexer_id]
