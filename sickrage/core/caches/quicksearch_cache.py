@@ -112,9 +112,13 @@ class QuicksearchCache(object):
 
             self.cache['episodes'][e.indexer_id] = qsData
 
-        session.bulk_insert_mappings(CacheDB.QuickSearchEpisode, sql_insert)
-        session.bulk_update_mappings(CacheDB.QuickSearchEpisode, sql_update)
-        session.commit()
+        if len(sql_insert):
+            session.bulk_insert_mappings(CacheDB.QuickSearchEpisode, sql_insert)
+            session.commit()
+
+        if len(sql_update):
+            session.bulk_update_mappings(CacheDB.QuickSearchEpisode, sql_update)
+            session.commit()
 
     def del_show(self, indexer_id):
         session = sickrage.app.cache_db.session()
