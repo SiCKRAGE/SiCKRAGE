@@ -358,7 +358,7 @@ class TVShow(object):
     @property
     def imdb_info(self):
         with sickrage.app.main_db.session() as session:
-            return session.query(MainDB.IMDbInfo).filter_by(indexer_id=self.indexer_id).one()
+            return session.query(MainDB.IMDbInfo).filter_by(indexer_id=self.indexer_id).one_or_none()
 
     @property
     def is_anime(self):
