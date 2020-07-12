@@ -97,11 +97,11 @@ class VersionUpdater(object):
 
     @staticmethod
     def safe_to_update():
-        sickrage.app.auto_postprocessor.shutdown()
+        sickrage.app.postprocessor_queue.shutdown()
         sickrage.app.log.debug("Waiting for jobs in post-processor queue to finish before updating")
         sickrage.app.alerts.message(_('Updater'), _("Waiting for jobs in post-processor queue to finish before updating"))
 
-        while sickrage.app.auto_postprocessor.amActive:
+        while sickrage.app.postprocessor_queue.is_busy:
             sleep(1)
 
         sickrage.app.show_queue.shutdown()
