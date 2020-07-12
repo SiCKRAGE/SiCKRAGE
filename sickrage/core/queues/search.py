@@ -22,19 +22,20 @@
 
 import traceback
 from collections import deque
-
-from apscheduler.triggers.interval import IntervalTrigger
+from enum import Enum
 
 import sickrage
-from sickrage.core.queues import Queue, Task, TaskPriority, TaskStatus
+from sickrage.core.queues import Queue, Task, TaskPriority
 from sickrage.core.search import search_providers, snatch_episode
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.tv.show.history import FailedHistory, History
 
-BACKLOG_SEARCH = 10
-DAILY_SEARCH = 20
-FAILED_SEARCH = 30
-MANUAL_SEARCH = 40
+
+class SearchTaskActions(Enum):
+    BACKLOG_SEARCH = 'Backlog Search'
+    DAILY_SEARCH = 'Daily Search'
+    FAILED_SEARCH = 'Failed Search'
+    MANUAL_SEARCH = 'Manual Search'
 
 
 class SearchQueue(Queue):
@@ -45,33 +46,23 @@ class SearchQueue(Queue):
 
     def is_in_queue(self, show_id, season, episode):
         for task in self.tasks.copy().values():
-            if isinstance(task, BacklogSearchTask) and all([task.show_id == show_id, task.season == season, task.episode == episode]):
+            if all([isinstance(task, BacklogSearchTask), task.show_id == show_id, task.season == season, task.episode == episode]):
                 return True
 
         return False
 
     def is_ep_in_queue(self, season, episode):
         for task in self.tasks.copy().values():
-            if isinstance(task, (ManualSearchTask, FailedSearchTask)) and all([task.season == season, task.episode == episode]):
+            if all([isinstance(task, (ManualSearchTask, FailedSearchTask)), task.season == season, task.episode == episode]):
                 return True
 
         return False
 
     def is_show_in_queue(self, show_id):
-        for task in self.tasks.copy().values():
-            if isinstance(task, (ManualSearchTask, FailedSearchTask)) and task.show_id == show_id:
-                return True
+        return any(isinstance(task, (ManualSearchTask, FailedSearchTask)) and task.show_id == show_id for task in self.tasks.copy().values())
 
-        return False
-
-    def get_all_items_from_queue(self, show_id):
-        items = []
-
-        for task in self.tasks.copy().values():
-            if isinstance(task, (ManualSearchTask, FailedSearchTask)) and task.show_id == show_id:
-                items.append(task)
-
-        return items
+    def get_all_tasks_from_queue(self, show_id):
+        return [task for task in self.tasks.copy().values() if isinstance(task, (ManualSearchTask, FailedSearchTask)) and task.show_id == show_id]
 
     def pause_daily_searcher(self):
         sickrage.app.scheduler.pause_job(sickrage.app.daily_searcher.name)
@@ -92,25 +83,13 @@ class SearchQueue(Queue):
         return not sickrage.app.scheduler.get_job(sickrage.app.backlog_searcher.name).next_run_time
 
     def is_manual_search_in_progress(self):
-        for task in self.tasks.copy().values():
-            if isinstance(task, (ManualSearchTask, FailedSearchTask)):
-                return True
-
-        return False
+        return any(isinstance(task, (ManualSearchTask, FailedSearchTask)) for task in self.tasks.copy().values())
 
     def is_backlog_in_progress(self):
-        for task in self.tasks.copy().values():
-            if isinstance(task, BacklogSearchTask):
-                return True
-
-        return False
+        return any(isinstance(task, BacklogSearchTask) for task in self.tasks.copy().values())
 
     def is_dailysearch_in_progress(self):
-        for task in self.tasks.copy().values():
-            if isinstance(task, DailySearchTask):
-                return True
-
-        return False
+        return any(isinstance(task, DailySearchTask) for task in self.tasks.copy().values())
 
     def queue_length(self):
         length = {'backlog': 0, 'daily': 0, 'manual': 0, 'failed': 0}
@@ -149,7 +128,7 @@ class SearchQueue(Queue):
 
 class DailySearchTask(Task):
     def __init__(self, show_id, season, episode):
-        super(DailySearchTask, self).__init__('Daily Search', DAILY_SEARCH)
+        super(DailySearchTask, self).__init__(SearchTaskActions.DAILY_SEARCH.value, SearchTaskActions.DAILY_SEARCH)
         self.name = 'DAILY-{}'.format(show_id)
         self.show_id = show_id
         self.season = season
@@ -188,7 +167,7 @@ class DailySearchTask(Task):
 
 class ManualSearchTask(Task):
     def __init__(self, show_id, season, episode, downCurQuality=False):
-        super(ManualSearchTask, self).__init__('Manual Search', MANUAL_SEARCH)
+        super(ManualSearchTask, self).__init__(SearchTaskActions.MANUAL_SEARCH.value, SearchTaskActions.MANUAL_SEARCH)
         self.name = 'MANUAL-{}'.format(show_id)
         self.show_id = show_id
         self.season = season
@@ -234,7 +213,7 @@ class ManualSearchTask(Task):
 
 class BacklogSearchTask(Task):
     def __init__(self, show_id, season, episode):
-        super(BacklogSearchTask, self).__init__('Backlog Search', BACKLOG_SEARCH)
+        super(BacklogSearchTask, self).__init__(SearchTaskActions.BACKLOG_SEARCH.value, SearchTaskActions.BACKLOG_SEARCH)
         self.name = 'BACKLOG-{}'.format(show_id)
         self.show_id = show_id
         self.season = season
@@ -274,7 +253,7 @@ class BacklogSearchTask(Task):
 
 class FailedSearchTask(Task):
     def __init__(self, show_id, season, episode, downCurQuality=False):
-        super(FailedSearchTask, self).__init__('Retry', FAILED_SEARCH)
+        super(FailedSearchTask, self).__init__(SearchTaskActions.FAILED_SEARCH.value, SearchTaskActions.FAILED_SEARCH)
         self.name = 'RETRY-{}'.format(show_id)
         self.show_id = show_id
         self.season = season

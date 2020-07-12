@@ -357,7 +357,20 @@ c<%inherit file="../layouts/config.mako"/>
                         <label for="notify_on_update">
                             <input type="checkbox" class="toggle color-primary is-material" name="notify_on_update"
                                    id="notify_on_update" ${('', 'checked')[bool(sickrage.app.config.notify_on_update)]}/>
-                            ${_('send a message to all enabled notifiers when SickRage has been updated')}
+                            ${_('send a message to all enabled notifiers when SiCKRAGE has been updated')}
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-row form-group">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
+                        <label class="component-title">${_('Backup on software update')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                        <label for="backup_on_update">
+                            <input type="checkbox" class="toggle color-primary is-material" name="backup_on_update"
+                                   id="backup_on_update" ${('', 'checked')[bool(sickrage.app.config.backup_on_update)]}/>
+                            ${_('backup SiCKRAGE config and databases before performing updates')}
                         </label>
                     </div>
                 </div>

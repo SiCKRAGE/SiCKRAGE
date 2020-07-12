@@ -134,6 +134,7 @@ class SaveGeneralHandler(BaseHandler, ABC):
         sort_article = self.get_argument('sort_article', None)
         auto_update = self.get_argument('auto_update', None)
         notify_on_update = self.get_argument('notify_on_update', None)
+        backup_on_update = self.get_argument('backup_on_update', None)
         proxy_setting = self.get_argument('proxy_setting', None)
         proxy_indexers = self.get_argument('proxy_indexers', None)
         anon_redirect = self.get_argument('anon_redirect', None)
@@ -194,6 +195,7 @@ class SaveGeneralHandler(BaseHandler, ABC):
         sickrage.app.config.change_version_notify(checkbox_to_value(version_notify))
         sickrage.app.config.auto_update = checkbox_to_value(auto_update)
         sickrage.app.config.notify_on_update = checkbox_to_value(notify_on_update)
+        sickrage.app.config.backup_on_update = checkbox_to_value(backup_on_update)
         sickrage.app.config.notify_on_login = checkbox_to_value(notify_on_login)
         sickrage.app.config.showupdate_stale = checkbox_to_value(showupdate_stale)
         sickrage.app.config.log_nr = log_nr

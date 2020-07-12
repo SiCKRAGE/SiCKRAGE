@@ -24,12 +24,13 @@ import datetime
 import os
 import time
 import traceback
+from enum import Enum
 
 import sickrage
 from sickrage.core.common import WANTED
 from sickrage.core.exceptions import CantRefreshShowException, CantRemoveShowException, CantUpdateShowException, EpisodeDeletedException, \
     MultipleShowObjectsException
-from sickrage.core.queues import Queue, Task, TaskPriority, TaskStatus
+from sickrage.core.queues import Queue, Task, TaskPriority
 from sickrage.core.scene_numbering import xem_refresh
 from sickrage.core.traktapi import TraktAPI
 from sickrage.core.tv.show import TVShow
@@ -156,27 +157,14 @@ class ShowQueue(Queue):
         self.put(ShowTaskForceRemove(indexer_id=indexer_id, full=full))
 
 
-class ShowTaskActions(object):
-    def __init__(self):
-        pass
-
-    REFRESH = 1
-    ADD = 2
-    UPDATE = 3
-    FORCEUPDATE = 4
-    RENAME = 5
-    SUBTITLE = 6
-    REMOVE = 7
-
-    names = {
-        REFRESH: 'Refresh',
-        ADD: 'Add',
-        UPDATE: 'Update',
-        FORCEUPDATE: 'Force Update',
-        RENAME: 'Rename',
-        SUBTITLE: 'Subtitle',
-        REMOVE: 'Remove Show'
-    }
+class ShowTaskActions(Enum):
+    REFRESH = 'Refresh'
+    ADD = 'Add'
+    UPDATE = 'Update'
+    FORCEUPDATE = 'Force Update'
+    RENAME = 'Rename'
+    SUBTITLE = 'Subtitle'
+    REMOVE = 'Remove Show'
 
 
 class ShowTask(Task):
@@ -192,7 +180,7 @@ class ShowTask(Task):
     """
 
     def __init__(self, indexer_id, action_id):
-        super(ShowTask, self).__init__(ShowTaskActions.names[action_id], action_id)
+        super(ShowTask, self).__init__(action_id.value, action_id)
         self.indexer_id = indexer_id
 
     def is_in_queue(self):

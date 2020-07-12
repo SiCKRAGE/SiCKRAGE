@@ -66,6 +66,7 @@ class Config(object):
         self.version_notify = False
         self.auto_update = False
         self.notify_on_update = False
+        self.backup_on_update = False
         self.notify_on_login = False
         self.pip3_path = ""
         self.git_reset = False
@@ -765,6 +766,7 @@ class Config(object):
                 'trash_rotate_logs': False,
                 'airdate_episodes': False,
                 'notify_on_update': True,
+                'backup_on_update': True,
                 'git_autoissues': False,
                 'backlog_days': 7,
                 'root_dirs': '',
@@ -1487,6 +1489,7 @@ class Config(object):
         self.version_notify = self.check_setting_bool('General', 'version_notify')
         self.auto_update = self.check_setting_bool('General', 'auto_update')
         self.notify_on_update = self.check_setting_bool('General', 'notify_on_update')
+        self.backup_on_update = self.check_setting_bool('General', 'backup_on_update')
         self.notify_on_login = self.check_setting_bool('General', 'notify_on_login')
         self.flatten_folders_default = self.check_setting_bool('General', 'flatten_folders_default')
         self.indexer_default = self.check_setting_int('General', 'indexer_default')
@@ -2021,6 +2024,7 @@ class Config(object):
                 'version_notify': int(self.version_notify),
                 'auto_update': int(self.auto_update),
                 'notify_on_update': int(self.notify_on_update),
+                'backup_on_update': int(self.backup_on_update),
                 'notify_on_login': int(self.notify_on_login),
                 'naming_strip_year': int(self.naming_strip_year),
                 'naming_pattern': self.naming_pattern,

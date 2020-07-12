@@ -62,7 +62,6 @@ class Queue(object):
         super(Queue, self).__init__()
         self.name = name
         self.lock = threading.RLock()
-        self.min_priority = TaskPriority.EXTREME
         self.queue = deque([])
         self.tasks = {}
         self.workers = []
@@ -274,7 +273,7 @@ class Queue(object):
 
     @property
     def is_busy(self):
-        return bool(len([task for task in self.tasks if task.status not in [TaskStatus.FINISHED, TaskStatus.FAILED]]) > 0)
+        return any(worker.status == WorkerStatus.WORKING for worker in self.workers)
 
     @property
     def is_paused(self):
@@ -336,7 +335,7 @@ class Worker(object):
                 self.task.status = TaskStatus.FAILED
                 self.task.error_message = str(e)
             else:
-                sickrage.app.log.debug("WORKER " + str(self.id) + " WITHOUT TASK.")
+                sickrage.app.log.debug("Worker " + str(self.id) + " without task.")
         finally:
             sickrage.app.log.debug("Worker " + str(self.id) + " task completed...")
             self.status = WorkerStatus.IDLE

@@ -78,6 +78,7 @@ class VersionUpdater(object):
         # Do a system backup before update
         sickrage.app.log.info("Config backup in progress...")
         sickrage.app.alerts.message(_('Updater'), _('Config backup in progress...'))
+
         try:
             backupDir = os.path.join(sickrage.app.data_dir, 'backup')
             if not os.path.isdir(backupDir):
@@ -164,7 +165,7 @@ class VersionUpdater(object):
                 return False
 
             # backup
-            if not self.backup():
+            if sickrage.app.config.backup_on_update and not self.backup():
                 return False
 
             # check for updates

@@ -19,25 +19,17 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 import os
-import threading
 import traceback
+from enum import Enum
 
 import sickrage
 from sickrage.core.process_tv import ProcessResult
-from sickrage.core.queues import Queue, Task, TaskPriority, TaskStatus
+from sickrage.core.queues import Queue, Task, TaskPriority
 
 
-class PostProcessorQueueActions(object):
-    AUTO = 1
-    MANUAL = 2
-
-    actions = {
-        AUTO: 'Auto',
-        MANUAL: 'Manual',
-    }
-
-
-postprocessor_queue_lock = threading.Lock()
+class PostProcessorTaskActions(Enum):
+    AUTO = 'Auto'
+    MANUAL = 'Manual'
 
 
 class PostProcessorQueue(Queue):
@@ -133,10 +125,9 @@ class PostProcessorQueue(Queue):
 
 
 class PostProcessorTask(Task):
-    def __init__(self, dirName, nzbName=None, process_method=None, force=False, is_priority=None, delete_on=False,
-                 failed=False, proc_type="auto"):
-        action_id = (PostProcessorQueueActions.MANUAL, PostProcessorQueueActions.AUTO)[proc_type == "auto"]
-        super(PostProcessorTask, self).__init__(PostProcessorQueueActions.actions[action_id], action_id)
+    def __init__(self, dirName, nzbName=None, process_method=None, force=False, is_priority=None, delete_on=False, failed=False, proc_type="auto"):
+        action_id = (PostProcessorTaskActions.MANUAL, PostProcessorTaskActions.AUTO)[proc_type == "auto"]
+        super(PostProcessorTask, self).__init__(action_id.value, action_id)
 
         self.dirName = dirName
         self.nzbName = nzbName
@@ -148,6 +139,8 @@ class PostProcessorTask(Task):
         self.proc_type = proc_type
 
         self.priority = (TaskPriority.HIGH, TaskPriority.NORMAL)[proc_type == 'auto']
+
+        self.auto_remove = (False, True)[proc_type == "auto"]
 
     def run(self):
         """
