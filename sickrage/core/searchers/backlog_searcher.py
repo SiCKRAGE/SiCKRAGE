@@ -25,7 +25,7 @@ import threading
 
 import sickrage
 from sickrage.core.common import Quality, DOWNLOADED, SNATCHED, SNATCHED_PROPER, WANTED
-from sickrage.core.queues.search import BacklogQueueItem
+from sickrage.core.queues.search import BacklogSearchTask
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 
 
@@ -93,7 +93,7 @@ class BacklogSearcher(object):
                 if (curShow.indexer_id, season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
                     sickrage.app.search_queue.SNATCH_HISTORY.remove((curShow.indexer_id, season, episode))
 
-                sickrage.app.search_queue.put(BacklogQueueItem(curShow.indexer_id, season, episode))
+                sickrage.app.search_queue.put(BacklogSearchTask(curShow.indexer_id, season, episode))
 
             if from_date == datetime.date.min and not show_id:
                 self._set_last_backlog_search(curShow, cur_date)

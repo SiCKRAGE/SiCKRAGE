@@ -68,6 +68,7 @@ class Queue(object):
         self.tasks = {}
         self.workers = []
         self.timer = None
+        self.auto_remove_tasks_timer = None
         self.pause = False
 
     def start_worker(self, n_workers=1):
@@ -82,6 +83,11 @@ class Queue(object):
             worker_id = "w" + self.get_random_id()
             self.workers.append(Worker(worker_id, self))
             ids.append(worker_id)
+
+        self.auto_remove_tasks_timer = threading.Timer(10.0, self.auto_remove_tasks)
+        self.auto_remove_tasks_timer.setName(self.name)
+        self.auto_remove_tasks_timer.start()
+
         return ids
 
     def stop_worker(self, worker_id=None):
@@ -102,6 +108,10 @@ class Queue(object):
                     if worker.id == worker_id:
                         worker.must_die = True
                         break
+
+            if self.auto_remove_tasks_timer is not None:
+                self.auto_remove_tasks_timer.cancel()
+                self.auto_remove_tasks_timer = None
         finally:
             self.lock.release()
             self.notify_workers()
@@ -126,6 +136,15 @@ class Queue(object):
         finally:
             self.lock.release()
             self.notify_workers()
+
+    def auto_remove_tasks(self):
+        for task in self.tasks.values():
+            if task.status in [TaskStatus.FINISHED, TaskStatus.FAILED] and task.auto_remove:
+                self.remove_task(task.id)
+
+        self.auto_remove_tasks_timer = threading.Timer(10.0, self.auto_remove_tasks)
+        self.auto_remove_tasks_timer.setName(self.name)
+        self.auto_remove_tasks_timer.start()
 
     def get(self):
         def queue_sorter(x, y):
@@ -181,14 +200,13 @@ class Queue(object):
         finally:
             self.lock.release()
 
-    def put(self, task, task_id=None, depend=None, auto_remove=True, *args, **kwargs):
+    def put(self, task, task_id=None, depend=None, *args, **kwargs):
         """
         Adds an task to this queue
 
         :param task: Task object to add
         :param task_id: Task ID to add to task object
         :param depend: Task depends on other task to be in queue
-        :param auto_remove: Auto-remove task when finished or failed
         :return: task_id
         """
         try:
@@ -205,7 +223,6 @@ class Queue(object):
             task.added = datetime.datetime.now()
             task.name = "{}-{}-{}".format(self.name, task_id, task.name)
             task.depend = depend
-            task.auto_remove = auto_remove
 
             self.tasks[task_id] = task
             self.queue.appendleft(task)
@@ -240,10 +257,10 @@ class Queue(object):
 
             if task_id in self.tasks:
                 sickrage.app.log.debug("Removing {} task {}".format(self.name, task_id))
-                self.queue.remove(self.tasks.get(task_id))
+                task = self.tasks.get(task_id)
+                if task in self.queue:
+                    self.queue.remove(self.tasks.get(task_id))
                 del self.tasks[task_id]
-            else:
-                sickrage.app.log.debug("Failed removing {} task {}, not found.".format(self.name, task_id))
         finally:
             self.lock.release()
 
@@ -339,7 +356,7 @@ class WorkerThread(threading.Thread):
 
 
 class Task(object):
-    def __init__(self, name, action_id=0, depend=None, auto_remove=None):
+    def __init__(self, name, action_id=0, depend=None):
         super(Task, self).__init__()
         self.name = name.replace(" ", "-").upper()
         self.id = None
@@ -350,7 +367,7 @@ class Task(object):
         self.result = None
         self.error_message = None
         self.depend = depend
-        self.auto_remove = auto_remove
+        self.auto_remove = True
 
     def is_finished(self):
         return self.status == TaskStatus.FINISHED

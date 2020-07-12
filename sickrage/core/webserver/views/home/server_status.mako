@@ -130,40 +130,38 @@
                         </thead>
                         <tbody>
                             % for task in sickrage.app.show_queue.tasks.values():
-                                % if task.status in [TaskStatus.QUEUED, TaskStatus.STARTED]:
-                                    <tr>
-                                    % try:
-                                        <% showindexer_id = task.indexer_id %>
-                                        <td>${showindexer_id}</td>
-                                    % except Exception:
+                                <tr>
+                                % try:
+                                    <% showindexer_id = task.indexer_id %>
+                                    <td>${showindexer_id}</td>
+                                % except Exception:
+                                    <td></td>
+                                % endtry
+                                % try:
+                                    <% showname = task.show_name %>
+                                    <td>${showname}</td>
+                                % except Exception:
+                                    % if task.action_id == ShowTaskActions.ADD:
+                                        <td>${task.showDir}</td>
+                                    % else:
                                         <td></td>
-                                    % endtry
-                                    % try:
-                                        <% showname = task.show_name %>
-                                        <td>${showname}</td>
-                                    % except Exception:
-                                        % if task.action_id == ShowTaskActions.ADD:
-                                            <td>${task.showDir}</td>
-                                        % else:
-                                            <td></td>
-                                        % endif
-                                    % endtry
-                                        <td>${task.is_alive}</td>
-                                        % if task.priority == TaskPriority.EXTREME:
-                                            <td>${_('EXTREME')}</td>
-                                        % elif task.priority == TaskPriority.HIGH:
-                                            <td>${_('HIGH')}</td>
-                                        % elif task.priority == TaskPriority.NORMAL:
-                                            <td>${_('NORMAL')}</td>
-                                        % elif task.priority == TaskPriority.LOW:
-                                            <td>${_('LOW')}</td>
-                                        % else:
-                                            <td>${task.priority}</td>
-                                        % endif
-                                        <td>${task.added.strftime(dateTimeFormat)}</td>
-                                        <td>${ShowTaskActions.names[task.action_id]}</td>
-                                    </tr>
-                                % endif
+                                    % endif
+                                % endtry
+                                    <td>${task.is_alive}</td>
+                                    % if task.priority == TaskPriority.EXTREME:
+                                        <td>${_('EXTREME')}</td>
+                                    % elif task.priority == TaskPriority.HIGH:
+                                        <td>${_('HIGH')}</td>
+                                    % elif task.priority == TaskPriority.NORMAL:
+                                        <td>${_('NORMAL')}</td>
+                                    % elif task.priority == TaskPriority.LOW:
+                                        <td>${_('LOW')}</td>
+                                    % else:
+                                        <td>${task.priority}</td>
+                                    % endif
+                                    <td>${task.added.strftime(dateTimeFormat)}</td>
+                                    <td>${ShowTaskActions.names[task.action_id]}</td>
+                                </tr>
                             % endfor
                         </tbody>
                     </table>

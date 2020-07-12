@@ -48,9 +48,6 @@ class ShowQueue(Queue):
 
     def _is_in_queue(self, indexer_id):
         for task in self.tasks.values():
-            if task.status not in [TaskStatus.QUEUED, TaskStatus.STARTED]:
-                continue
-
             if task.indexer_id == indexer_id:
                 return True
 
@@ -58,9 +55,6 @@ class ShowQueue(Queue):
 
     def _is_being(self, indexer_id, actions):
         for task in self.tasks.values():
-            if task.status not in [TaskStatus.QUEUED, TaskStatus.STARTED]:
-                continue
-
             if task.indexer_id == indexer_id and task.action_id in actions:
                 return True
 

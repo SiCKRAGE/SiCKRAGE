@@ -32,7 +32,7 @@ from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import CantUpdateShowException, CantRefreshShowException, EpisodeNotFoundException, AnidbAdbaConnectionException, NoNFOException
 from sickrage.core.helpers import try_int, checkbox_to_value
 from sickrage.core.helpers.anidb import get_release_groups_for_anime, short_group_names
-from sickrage.core.queues.search import BacklogQueueItem, FailedQueueItem
+from sickrage.core.queues.search import BacklogSearchTask, FailedSearchTask
 from sickrage.core.scene_numbering import xem_refresh
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
@@ -125,7 +125,7 @@ def set_episode_status(show, eps, status, direct=None):
             if (show_obj.indexer_id, season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
                 sickrage.app.search_queue.SNATCH_HISTORY.remove((show_obj.indexer_id, season, episode))
 
-            sickrage.app.search_queue.put(BacklogQueueItem(show_obj.indexer_id, season, episode))
+            sickrage.app.search_queue.put(BacklogSearchTask(show_obj.indexer_id, season, episode))
             msg += "<li>" + _("Season ") + str(season) + "</li>"
             sickrage.app.log.info("Sending backlog for " + show_obj.name + " season " + str(season) + " because some eps were set to wanted")
 
@@ -146,7 +146,7 @@ def set_episode_status(show, eps, status, direct=None):
             if (show_obj.indexer_id, season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
                 sickrage.app.search_queue.SNATCH_HISTORY.remove((show_obj.indexer_id, season, episode))
 
-            sickrage.app.search_queue.put(FailedQueueItem(show_obj.indexer_id, season, episode))
+            sickrage.app.search_queue.put(FailedSearchTask(show_obj.indexer_id, season, episode))
 
             msg += "<li>" + _("Season ") + str(season) + "</li>"
             sickrage.app.log.info("Retrying Search for {} season {} because some eps were set to failed".format(show_obj.name, season))

@@ -64,9 +64,6 @@ class PostProcessorQueue(Queue):
         :return: instance of PostProcessorTask or None
         """
         for task in self.tasks.values():
-            if task.status not in [TaskStatus.QUEUED, TaskStatus.STARTED]:
-                continue
-
             if isinstance(task, PostProcessorTask) and task.dirName == dirName and task.proc_type == proc_type:
                 return True
 
@@ -81,9 +78,6 @@ class PostProcessorQueue(Queue):
         length = {'auto': 0, 'manual': 0}
 
         for task in self.tasks.values():
-            if task.status not in [TaskStatus.QUEUED, TaskStatus.STARTED]:
-                continue
-
             if isinstance(task, PostProcessorTask):
                 if task.proc_type == 'auto':
                     length['auto'] += 1

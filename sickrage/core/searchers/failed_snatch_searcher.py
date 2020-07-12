@@ -24,7 +24,7 @@ import threading
 import sickrage
 from sickrage.core.common import Quality, SNATCHED, SNATCHED_BEST, SNATCHED_PROPER
 from sickrage.core.databases.main import MainDB
-from sickrage.core.queues.search import FailedQueueItem
+from sickrage.core.queues.search import FailedSearchTask
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.tv.show.history import FailedHistory
 
@@ -65,7 +65,7 @@ class FailedSnatchSearcher(object):
             if cur_status not in {SNATCHED, SNATCHED_BEST, SNATCHED_PROPER}:
                 continue
 
-            sickrage.app.search_queue.put(FailedQueueItem(episode_object.showid, episode_object.season, episode_object.episode, True))
+            sickrage.app.search_queue.put(FailedSearchTask(episode_object.showid, episode_object.season, episode_object.episode, True))
 
             failed_snatches = True
 

@@ -48,7 +48,7 @@ from sickrage.core.media.banner import Banner
 from sickrage.core.media.fanart import FanArt
 from sickrage.core.media.network import Network
 from sickrage.core.media.poster import Poster
-from sickrage.core.queues.search import BacklogQueueItem, ManualSearchQueueItem
+from sickrage.core.queues.search import BacklogSearchTask, ManualSearchTask
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.tv.show.history import History
@@ -801,7 +801,7 @@ class CMD_EpisodeSearch(ApiCall):
             return await _responds(RESULT_FAILURE, msg="Episode not found")
 
         # make a queue item for it and put it on the queue
-        ep_queue_item = ManualSearchQueueItem(showObj, epObj.season, epObj.episode)
+        ep_queue_item = ManualSearchTask(showObj, epObj.season, epObj.episode)
         sickrage.app.search_queue.put(ep_queue_item)
 
         # wait until the queue item tells us whether it worked or not
@@ -904,7 +904,7 @@ class CMD_EpisodeSetStatus(ApiCall):
         extra_msg = ""
         if start_backlog:
             for season, episode in wanted:
-                sickrage.app.search_queue.put(BacklogQueueItem(show_obj, season, episode))
+                sickrage.app.search_queue.put(BacklogSearchTask(show_obj, season, episode))
                 sickrage.app.log.info("Starting backlog for " + show_obj.name + " season " + str(season) + " because some episodes were set to WANTED")
 
             extra_msg = " Backlog started"

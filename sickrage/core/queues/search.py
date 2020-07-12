@@ -45,30 +45,21 @@ class SearchQueue(Queue):
 
     def is_in_queue(self, show_id, season, episode):
         for task in self.tasks.values():
-            if task.status not in [TaskStatus.QUEUED, TaskStatus.STARTED]:
-                continue
-
-            if isinstance(task, BacklogQueueItem) and all([task.show_id == show_id, task.season == season, task.episode == episode]):
+            if isinstance(task, BacklogSearchTask) and all([task.show_id == show_id, task.season == season, task.episode == episode]):
                 return True
 
         return False
 
     def is_ep_in_queue(self, season, episode):
         for task in self.tasks.values():
-            if task.status not in [TaskStatus.QUEUED, TaskStatus.STARTED]:
-                continue
-
-            if isinstance(task, (ManualSearchQueueItem, FailedQueueItem)) and all([task.season == season, task.episode == episode]):
+            if isinstance(task, (ManualSearchTask, FailedSearchTask)) and all([task.season == season, task.episode == episode]):
                 return True
 
         return False
 
     def is_show_in_queue(self, show_id):
         for task in self.tasks.values():
-            if task.status not in [TaskStatus.QUEUED, TaskStatus.STARTED]:
-                continue
-
-            if isinstance(task, (ManualSearchQueueItem, FailedQueueItem)) and task.show_id == show_id:
+            if isinstance(task, (ManualSearchTask, FailedSearchTask)) and task.show_id == show_id:
                 return True
 
         return False
@@ -77,10 +68,7 @@ class SearchQueue(Queue):
         items = []
 
         for task in self.tasks.values():
-            if task.status not in [TaskStatus.QUEUED, TaskStatus.STARTED]:
-                continue
-
-            if isinstance(task, (ManualSearchQueueItem, FailedQueueItem)) and task.show_id == show_id:
+            if isinstance(task, (ManualSearchTask, FailedSearchTask)) and task.show_id == show_id:
                 items.append(task)
 
         return items
@@ -105,30 +93,21 @@ class SearchQueue(Queue):
 
     def is_manual_search_in_progress(self):
         for task in self.tasks.values():
-            if task.status not in [TaskStatus.QUEUED, TaskStatus.STARTED]:
-                continue
-
-            if isinstance(task, (ManualSearchQueueItem, FailedQueueItem)):
+            if isinstance(task, (ManualSearchTask, FailedSearchTask)):
                 return True
 
         return False
 
     def is_backlog_in_progress(self):
         for task in self.tasks.values():
-            if task.status not in [TaskStatus.QUEUED, TaskStatus.STARTED]:
-                continue
-
-            if isinstance(task, BacklogQueueItem):
+            if isinstance(task, BacklogSearchTask):
                 return True
 
         return False
 
     def is_dailysearch_in_progress(self):
         for task in self.tasks.values():
-            if task.status not in [TaskStatus.QUEUED, TaskStatus.STARTED]:
-                continue
-
-            if isinstance(task, DailySearchQueueItem):
+            if isinstance(task, DailySearchTask):
                 return True
 
         return False
@@ -136,16 +115,13 @@ class SearchQueue(Queue):
     def queue_length(self):
         length = {'backlog': 0, 'daily': 0, 'manual': 0, 'failed': 0}
         for task in self.tasks.values():
-            if task.status not in [TaskStatus.QUEUED, TaskStatus.STARTED]:
-                continue
-
-            if isinstance(task, DailySearchQueueItem):
+            if isinstance(task, DailySearchTask):
                 length['daily'] += 1
-            elif isinstance(task, BacklogQueueItem):
+            elif isinstance(task, BacklogSearchTask):
                 length['backlog'] += 1
-            elif isinstance(task, ManualSearchQueueItem):
+            elif isinstance(task, ManualSearchTask):
                 length['manual'] += 1
-            elif isinstance(task, FailedQueueItem):
+            elif isinstance(task, FailedSearchTask):
                 length['failed'] += 1
 
         return length
@@ -158,22 +134,22 @@ class SearchQueue(Queue):
             sickrage.app.log.warning("Search Failed, No NZB/Torrent providers enabled")
             return
 
-        if isinstance(item, DailySearchQueueItem):
+        if isinstance(item, DailySearchTask):
             # daily searches
             super(SearchQueue, self).put(item)
-        elif isinstance(item, BacklogQueueItem) and not self.is_in_queue(item.show_id, item.season, item.episode):
+        elif isinstance(item, BacklogSearchTask) and not self.is_in_queue(item.show_id, item.season, item.episode):
             # backlog searches
             super(SearchQueue, self).put(item)
-        elif isinstance(item, (ManualSearchQueueItem, FailedQueueItem)) and not self.is_ep_in_queue(item.season, item.episode):
+        elif isinstance(item, (ManualSearchTask, FailedSearchTask)) and not self.is_ep_in_queue(item.season, item.episode):
             # manual and failed searches
             super(SearchQueue, self).put(item)
         else:
             sickrage.app.log.debug("Not adding item, it's already in the queue")
 
 
-class DailySearchQueueItem(Task):
+class DailySearchTask(Task):
     def __init__(self, show_id, season, episode):
-        super(DailySearchQueueItem, self).__init__('Daily Search', DAILY_SEARCH)
+        super(DailySearchTask, self).__init__('Daily Search', DAILY_SEARCH)
         self.name = 'DAILY-{}'.format(show_id)
         self.show_id = show_id
         self.season = season
@@ -210,9 +186,9 @@ class DailySearchQueueItem(Task):
             sickrage.app.log.info("Finished daily search for: [" + show_obj.name + "]")
 
 
-class ManualSearchQueueItem(Task):
+class ManualSearchTask(Task):
     def __init__(self, show_id, season, episode, downCurQuality=False):
-        super(ManualSearchQueueItem, self).__init__('Manual Search', MANUAL_SEARCH)
+        super(ManualSearchTask, self).__init__('Manual Search', MANUAL_SEARCH)
         self.name = 'MANUAL-{}'.format(show_id)
         self.show_id = show_id
         self.season = season
@@ -221,6 +197,7 @@ class ManualSearchQueueItem(Task):
         self.started = False
         self.priority = TaskPriority.EXTREME
         self.downCurQuality = downCurQuality
+        self.auto_remove = False
 
     def run(self):
         self.started = True
@@ -255,9 +232,9 @@ class ManualSearchQueueItem(Task):
             sickrage.app.search_queue.MANUAL_SEARCH_HISTORY.append(self)
 
 
-class BacklogQueueItem(Task):
+class BacklogSearchTask(Task):
     def __init__(self, show_id, season, episode):
-        super(BacklogQueueItem, self).__init__('Backlog Search', BACKLOG_SEARCH)
+        super(BacklogSearchTask, self).__init__('Backlog Search', BACKLOG_SEARCH)
         self.name = 'BACKLOG-{}'.format(show_id)
         self.show_id = show_id
         self.season = season
@@ -295,9 +272,9 @@ class BacklogQueueItem(Task):
             sickrage.app.log.info("Finished backlog search for: [{}] S{:02d}E{:02d}".format(show_object.name, self.season, self.episode))
 
 
-class FailedQueueItem(Task):
+class FailedSearchTask(Task):
     def __init__(self, show_id, season, episode, downCurQuality=False):
-        super(FailedQueueItem, self).__init__('Retry', FAILED_SEARCH)
+        super(FailedSearchTask, self).__init__('Retry', FAILED_SEARCH)
         self.name = 'RETRY-{}'.format(show_id)
         self.show_id = show_id
         self.season = season
@@ -306,6 +283,7 @@ class FailedQueueItem(Task):
         self.downCurQuality = downCurQuality
         self.success = False
         self.started = False
+        self.auto_remove = False
 
     def run(self):
         self.started = True

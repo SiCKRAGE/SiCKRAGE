@@ -24,7 +24,7 @@ import threading
 import sickrage
 from sickrage.core import common
 from sickrage.core.common import Quality, WANTED, DOWNLOADED, SNATCHED, SNATCHED_PROPER
-from sickrage.core.queues.search import DailySearchQueueItem
+from sickrage.core.queues.search import DailySearchTask
 from sickrage.core.tv.show.helpers import get_show_list
 
 
@@ -71,7 +71,7 @@ class DailySearcher(object):
                 if (curShow.indexer_id, season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
                     sickrage.app.search_queue.SNATCH_HISTORY.remove((curShow.indexer_id, season, episode))
 
-                sickrage.app.search_queue.put(DailySearchQueueItem(curShow.indexer_id, season, episode))
+                sickrage.app.search_queue.put(DailySearchTask(curShow.indexer_id, season, episode))
 
         self.amActive = False
 

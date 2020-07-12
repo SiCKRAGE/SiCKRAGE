@@ -25,7 +25,7 @@ from sickrage.core.exceptions import FailedPostProcessingFailedException, Episod
 from sickrage.core.helpers import show_names
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
-from sickrage.core.queues.search import FailedQueueItem
+from sickrage.core.queues.search import FailedSearchTask
 
 
 class FailedProcessor(object):
@@ -87,7 +87,7 @@ class FailedProcessor(object):
             if cur_status not in {SNATCHED, SNATCHED_BEST, SNATCHED_PROPER}:
                 continue
 
-            sickrage.app.search_queue.put(FailedQueueItem(parsed.show, episode_obj.season, episode_obj.episode))
+            sickrage.app.search_queue.put(FailedSearchTask(parsed.show, episode_obj.season, episode_obj.episode))
 
         return True
 

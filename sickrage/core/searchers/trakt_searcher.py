@@ -28,7 +28,7 @@ from sickrage.core.common import SKIPPED, WANTED, UNKNOWN
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import EpisodeNotFoundException
 from sickrage.core.helpers import sanitize_file_name, make_dir, chmod_as_parent
-from sickrage.core.queues.search import BacklogQueueItem
+from sickrage.core.queues.search import BacklogSearchTask
 from sickrage.core.traktapi import TraktAPI
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.indexers import IndexerApi
@@ -47,7 +47,7 @@ def set_episode_to_wanted(show, s, e):
 
         epObj.status = WANTED
 
-        sickrage.app.search_queue.put(BacklogQueueItem(show.indexer_id, epObj.season, epObj.episode))
+        sickrage.app.search_queue.put(BacklogSearchTask(show.indexer_id, epObj.season, epObj.episode))
 
         sickrage.app.log.info("Starting backlog search for %s S%02dE%02d because some episodes were set to wanted" % (show.name, s, e))
     except EpisodeNotFoundException as e:
