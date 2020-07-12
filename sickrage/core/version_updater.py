@@ -40,38 +40,39 @@ from sickrage.notifiers import Notifiers
 class VersionUpdater(object):
     def __init__(self):
         self.name = "VERSIONUPDATER"
-        self.amActive = False
+        self.running = False
 
     @property
     def updater(self):
         return self.find_install_type()
 
     def task(self, force=False):
-        if self.amActive or sickrage.app.disable_updates or sickrage.app.developer:
+        if self.running or sickrage.app.disable_updates or sickrage.app.developer:
             return
 
-        self.amActive = True
+        try:
+            self.running = True
 
-        # set thread name
-        threading.currentThread().setName(self.name)
+            # set thread name
+            threading.currentThread().setName(self.name)
 
-        if self.check_for_new_version(force):
-            if sickrage.app.config.auto_update:
-                if sickrage.app.show_updater.amActive:
-                    sickrage.app.log.debug("We can't proceed with auto-updating. Shows are being updated")
-                    return
+            if self.check_for_new_version(force):
+                if sickrage.app.config.auto_update:
+                    if sickrage.app.show_updater.running:
+                        sickrage.app.log.debug("We can't proceed with auto-updating. Shows are being updated")
+                        return
 
-                sickrage.app.log.info("New update found for SiCKRAGE, starting auto-updater ...")
-                sickrage.app.alerts.message(_('Updater'), _('New update found for SiCKRAGE, starting auto-updater'))
-                if self.update():
-                    sickrage.app.log.info("Update was successful!")
-                    sickrage.app.alerts.message(_('Updater'), _('Update was successful'))
-                    sickrage.app.shutdown(restart=True)
-                else:
-                    sickrage.app.log.info("Update failed!")
-                    sickrage.app.alerts.error(_('Updater'), _('Update failed!'))
-
-        self.amActive = False
+                    sickrage.app.log.info("New update found for SiCKRAGE, starting auto-updater ...")
+                    sickrage.app.alerts.message(_('Updater'), _('New update found for SiCKRAGE, starting auto-updater'))
+                    if self.update():
+                        sickrage.app.log.info("Update was successful!")
+                        sickrage.app.alerts.message(_('Updater'), _('Update was successful'))
+                        sickrage.app.shutdown(restart=True)
+                    else:
+                        sickrage.app.log.info("Update failed!")
+                        sickrage.app.alerts.error(_('Updater'), _('Update failed!'))
+        finally:
+            self.running = False
 
     def backup(self):
         # Do a system backup before update

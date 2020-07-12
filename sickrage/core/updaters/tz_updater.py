@@ -34,12 +34,19 @@ from sickrage.core.websession import WebSession
 class TimeZoneUpdater(object):
     def __init__(self):
         self.name = "TZUPDATER"
+        self.running = False
         self.time_regex = re.compile(r'(?P<hour>\d{1,2})(?:[:.]?(?P<minute>\d{2})?)? ?(?P<meridiem>[PA]\.? ?M?)?\b', re.I)
 
     def task(self, force=False):
-        # set thread name
-        threading.currentThread().setName(self.name)
-        self.update_network_timezones()
+        if self.running and not force:
+            return
+
+        try:
+            self.running = True
+            threading.currentThread().setName(self.name)
+            self.update_network_timezones()
+        finally:
+            self.running = False
 
     def update_network_timezones(self):
         """Update timezone information from SR repositories"""

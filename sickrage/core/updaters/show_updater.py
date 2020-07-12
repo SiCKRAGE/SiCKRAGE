@@ -35,64 +35,65 @@ class ShowUpdater(object):
     def __init__(self):
         self.name = "SHOWUPDATER"
         self.lock = threading.Lock()
-        self.amActive = False
+        self.running = False
 
     def task(self, force=False):
-        if self.amActive:
+        if self.running and not force:
             return
 
-        self.amActive = True
-
-        # set thread name
-        threading.currentThread().setName(self.name)
-
-        session = sickrage.app.cache_db.session()
-
-        update_timestamp = int(time.mktime(datetime.datetime.now().timetuple()))
-
         try:
-            dbData = session.query(CacheDB.LastUpdate).filter_by(provider='theTVDB').one()
-            last_update = int(dbData.time)
-        except orm.exc.NoResultFound:
-            last_update = update_timestamp
-            dbData = CacheDB.LastUpdate(**{
-                'provider': 'theTVDB',
-                'time': 0
-            })
-            session.add(dbData)
-        finally:
-            session.commit()
+            self.running = True
 
-        # get indexer updated show ids
-        indexer_api = IndexerApi().indexer(**IndexerApi().api_params.copy())
-        updated_shows = set(s["id"] for s in indexer_api.updated(last_update) or {})
+            # set thread name
+            threading.currentThread().setName(self.name)
 
-        # start update process
-        pi_list = []
-        for show_obj in get_show_list():
-            if show_obj.paused:
-                sickrage.app.log.info('Show update skipped, show: {} is paused.'.format(show_obj.name))
-                continue
+            session = sickrage.app.cache_db.session()
 
-            if show_obj.status == 'Ended':
-                if not sickrage.app.config.showupdate_stale:
-                    sickrage.app.log.info('Show update skipped, show: {} status is ended.'.format(show_obj.name))
-                    continue
-                elif not (datetime.datetime.now() - datetime.datetime.fromordinal(show_obj.last_update)).days >= 90:
-                    sickrage.app.log.info('Show update skipped, show: {} status is ended and recently updated.'.format(show_obj.name))
-                    continue
+            update_timestamp = int(time.mktime(datetime.datetime.now().timetuple()))
 
             try:
-                if show_obj.indexer_id in updated_shows:
-                    pi_list.append(sickrage.app.show_queue.update_show(show_obj.indexer_id, indexer_update_only=True, force=False))
-                elif (datetime.datetime.now() - datetime.datetime.fromordinal(show_obj.last_update)).days >= 7:
-                    pi_list.append(sickrage.app.show_queue.update_show(show_obj.indexer_id, force=False))
-            except (CantUpdateShowException, CantRefreshShowException) as e:
-                sickrage.app.log.debug("Automatic update failed: {}".format(e))
+                dbData = session.query(CacheDB.LastUpdate).filter_by(provider='theTVDB').one()
+                last_update = int(dbData.time)
+            except orm.exc.NoResultFound:
+                last_update = update_timestamp
+                dbData = CacheDB.LastUpdate(**{
+                    'provider': 'theTVDB',
+                    'time': 0
+                })
+                session.add(dbData)
+            finally:
+                session.commit()
 
-        ProgressIndicators.setIndicator('dailyShowUpdates', QueueProgressIndicator("Daily Show Updates", pi_list))
+            # get indexer updated show ids
+            indexer_api = IndexerApi().indexer(**IndexerApi().api_params.copy())
+            updated_shows = set(s["id"] for s in indexer_api.updated(last_update) or {})
 
-        dbData.time = update_timestamp
-        session.commit()
+            # start update process
+            pi_list = []
+            for show_obj in get_show_list():
+                if show_obj.paused:
+                    sickrage.app.log.info('Show update skipped, show: {} is paused.'.format(show_obj.name))
+                    continue
 
-        self.amActive = False
+                if show_obj.status == 'Ended':
+                    if not sickrage.app.config.showupdate_stale:
+                        sickrage.app.log.info('Show update skipped, show: {} status is ended.'.format(show_obj.name))
+                        continue
+                    elif not (datetime.datetime.now() - datetime.datetime.fromordinal(show_obj.last_update)).days >= 90:
+                        sickrage.app.log.info('Show update skipped, show: {} status is ended and recently updated.'.format(show_obj.name))
+                        continue
+
+                try:
+                    if show_obj.indexer_id in updated_shows:
+                        pi_list.append(sickrage.app.show_queue.update_show(show_obj.indexer_id, indexer_update_only=True, force=False))
+                    elif (datetime.datetime.now() - datetime.datetime.fromordinal(show_obj.last_update)).days >= 7:
+                        pi_list.append(sickrage.app.show_queue.update_show(show_obj.indexer_id, force=False))
+                except (CantUpdateShowException, CantRefreshShowException) as e:
+                    sickrage.app.log.debug("Automatic update failed: {}".format(e))
+
+            ProgressIndicators.setIndicator('dailyShowUpdates', QueueProgressIndicator("Daily Show Updates", pi_list))
+
+            dbData.time = update_timestamp
+            session.commit()
+        finally:
+            self.running = False

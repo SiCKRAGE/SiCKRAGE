@@ -66,18 +66,27 @@ class Announcements(object):
 
     def __init__(self):
         self.name = "ANNOUNCEMENTS"
+        self.running = False
         self._announcements = {}
 
     def task(self, force=False):
-        threading.currentThread().setName(self.name)
+        if self.running and not force:
+            return
 
-        resp = sickrage.app.api.announcement.get_announcements()
-        if resp and 'data' in resp:
-            for announcement in resp['data']:
-                if announcement['enabled']:
-                    self.add(announcement['hash'], announcement['title'], announcement['description'], announcement['image'], announcement['date'])
-                else:
-                    self.clear(announcement['hash'])
+        try:
+            self.running = True
+
+            threading.currentThread().setName(self.name)
+
+            resp = sickrage.app.api.announcement.get_announcements()
+            if resp and 'data' in resp:
+                for announcement in resp['data']:
+                    if announcement['enabled']:
+                        self.add(announcement['hash'], announcement['title'], announcement['description'], announcement['image'], announcement['date'])
+                    else:
+                        self.clear(announcement['hash'])
+        finally:
+            self.running = False
 
     def add(self, ahash, title, description, image, date):
         session = sickrage.app.cache_db.session()

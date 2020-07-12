@@ -34,37 +34,35 @@ class BacklogSearcher(object):
         self.name = "BACKLOG"
         self.lock = threading.Lock()
         self.cycleTime = 21 / 60 / 24
-        self.amActive = False
+        self.running = False
         self.amPaused = False
         self.amWaiting = False
         self.forced = False
 
     def task(self, force=False):
-        if self.amActive and not force:
+        if self.running and not force:
             return
 
-        # set thread name
-        threading.currentThread().setName(self.name)
+        try:
+            self.running = True
 
-        # set cycle time
-        self.cycleTime = sickrage.app.config.backlog_searcher_freq / 60 / 24
+            # set thread name
+            threading.currentThread().setName(self.name)
 
-        self.forced = force
+            # set cycle time
+            self.cycleTime = sickrage.app.config.backlog_searcher_freq / 60 / 24
 
-        self.search_backlog()
+            self.forced = force
 
-        self.amActive = False
+            self.search_backlog()
+        finally:
+            self.running = False
 
     def am_running(self):
-        sickrage.app.log.debug("amWaiting: " + str(self.amWaiting) + ", amActive: " + str(self.amActive))
-        return (not self.amWaiting) and self.amActive
+        sickrage.app.log.debug("amWaiting: " + str(self.amWaiting) + ", running: " + str(self.running))
+        return (not self.amWaiting) and self.running
 
     def search_backlog(self, show_id=None):
-        if self.amActive:
-            sickrage.app.log.debug("Backlog is still running, not starting it again")
-            return
-
-        self.amActive = True
         self.amPaused = False
 
         show_list = [find_show(show_id)] if show_id else get_show_list()
@@ -98,8 +96,6 @@ class BacklogSearcher(object):
             if from_date == datetime.date.min and not show_id:
                 self._set_last_backlog_search(curShow, cur_date)
                 curShow.save()
-
-        self.amActive = False
 
     @staticmethod
     def _get_wanted(show, from_date):

@@ -33,46 +33,47 @@ class FailedSnatchSearcher(object):
     def __init__(self):
         self.name = "FAILEDSNATCHSEARCHER"
         self.lock = threading.Lock()
-        self.amActive = False
+        self.running = False
 
     def task(self, force=False):
         """
         Runs the failed searcher, queuing selected episodes for search that have failed to snatch
         :param force: Force search
         """
-        if self.amActive or not sickrage.app.config.use_failed_snatcher and not force:
+        if self.running or not sickrage.app.config.use_failed_snatcher and not force:
             return
 
-        self.amActive = True
+        try:
+            self.running = True
 
-        # set thread name
-        threading.currentThread().setName(self.name)
+            # set thread name
+            threading.currentThread().setName(self.name)
 
-        # trim failed download history
-        FailedHistory.trim_history()
+            # trim failed download history
+            FailedHistory.trim_history()
 
-        sickrage.app.log.info("Searching for failed snatches")
+            sickrage.app.log.info("Searching for failed snatches")
 
-        failed_snatches = False
+            failed_snatches = False
 
-        for snatched_episode_obj in [x for x in self.snatched_episodes() if (x.showid, x.season, x.episode) not in self.downloaded_releases()]:
-            show_object = find_show(snatched_episode_obj.showid)
-            episode_object = show_object.get_episode(snatched_episode_obj.season, snatched_episode_obj.episode)
-            if episode_object.show.paused:
-                continue
+            for snatched_episode_obj in [x for x in self.snatched_episodes() if (x.showid, x.season, x.episode) not in self.downloaded_releases()]:
+                show_object = find_show(snatched_episode_obj.showid)
+                episode_object = show_object.get_episode(snatched_episode_obj.season, snatched_episode_obj.episode)
+                if episode_object.show.paused:
+                    continue
 
-            cur_status, cur_quality = Quality.split_composite_status(episode_object.status)
-            if cur_status not in {SNATCHED, SNATCHED_BEST, SNATCHED_PROPER}:
-                continue
+                cur_status, cur_quality = Quality.split_composite_status(episode_object.status)
+                if cur_status not in {SNATCHED, SNATCHED_BEST, SNATCHED_PROPER}:
+                    continue
 
-            sickrage.app.search_queue.put(FailedSearchTask(episode_object.showid, episode_object.season, episode_object.episode, True))
+                sickrage.app.search_queue.put(FailedSearchTask(episode_object.showid, episode_object.season, episode_object.episode, True))
 
-            failed_snatches = True
+                failed_snatches = True
 
-        if not failed_snatches:
-            sickrage.app.log.info("No failed snatches found")
-
-        self.amActive = False
+            if not failed_snatches:
+                sickrage.app.log.info("No failed snatches found")
+        finally:
+            self.running = False
 
     def snatched_episodes(self):
         session = sickrage.app.main_db.session()

@@ -32,48 +32,49 @@ class DailySearcher(object):
     def __init__(self):
         self.name = "DAILYSEARCHER"
         self.lock = threading.Lock()
-        self.amActive = False
+        self.running = False
 
     def task(self, force=False):
         """
         Runs the daily searcher, queuing selected episodes for search
         :param force: Force search
         """
-        if self.amActive and not force:
+        if self.running and not force:
             return
 
-        self.amActive = True
+        try:
+            self.running = True
 
-        # set thread name
-        threading.currentThread().setName(self.name)
+            # set thread name
+            threading.currentThread().setName(self.name)
 
-        # find new released episodes and update their statuses
-        for curShow in get_show_list():
-            if curShow.paused:
-                sickrage.app.log.debug("Skipping search for {} because the show is paused".format(curShow.name))
-                continue
+            # find new released episodes and update their statuses
+            for curShow in get_show_list():
+                if curShow.paused:
+                    sickrage.app.log.debug("Skipping search for {} because the show is paused".format(curShow.name))
+                    continue
 
-            for tv_episode in curShow.new_episodes:
-                tv_episode.status = tv_episode.show.default_ep_status if tv_episode.season > 0 else common.SKIPPED
-                tv_episode.save()
-                sickrage.app.log.info('Setting status ({status}) for show airing today: {name} {special}'.format(
-                    name=tv_episode.pretty_name(),
-                    status=common.statusStrings[tv_episode.status],
-                    special='(specials are not supported)' if not tv_episode.season > 0 else '',
-                ))
+                for tv_episode in curShow.new_episodes:
+                    tv_episode.status = tv_episode.show.default_ep_status if tv_episode.season > 0 else common.SKIPPED
+                    tv_episode.save()
+                    sickrage.app.log.info('Setting status ({status}) for show airing today: {name} {special}'.format(
+                        name=tv_episode.pretty_name(),
+                        status=common.statusStrings[tv_episode.status],
+                        special='(specials are not supported)' if not tv_episode.season > 0 else '',
+                    ))
 
-            wanted = self._get_wanted(curShow, datetime.date.today())
-            if not wanted:
-                sickrage.app.log.debug("Nothing needs to be downloaded for {}, skipping".format(curShow.name))
-                continue
+                wanted = self._get_wanted(curShow, datetime.date.today())
+                if not wanted:
+                    sickrage.app.log.debug("Nothing needs to be downloaded for {}, skipping".format(curShow.name))
+                    continue
 
-            for season, episode in wanted:
-                if (curShow.indexer_id, season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
-                    sickrage.app.search_queue.SNATCH_HISTORY.remove((curShow.indexer_id, season, episode))
+                for season, episode in wanted:
+                    if (curShow.indexer_id, season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
+                        sickrage.app.search_queue.SNATCH_HISTORY.remove((curShow.indexer_id, season, episode))
 
-                sickrage.app.search_queue.put(DailySearchTask(curShow.indexer_id, season, episode))
-
-        self.amActive = False
+                    sickrage.app.search_queue.put(DailySearchTask(curShow.indexer_id, season, episode))
+        finally:
+            self.running = False
 
     @staticmethod
     def _get_wanted(show, from_date):

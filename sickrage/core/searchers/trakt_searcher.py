@@ -63,37 +63,38 @@ class TraktSearcher(object):
         self.ShowWatchlist = {}
         self.EpisodeWatchlist = {}
         self.Collectionlist = {}
-        self.amActive = False
+        self.running = False
 
     def task(self, force=False):
-        if self.amActive or not sickrage.app.config.use_trakt and not force:
+        if self.running or not sickrage.app.config.use_trakt and not force:
             return
 
-        self.amActive = True
+        try:
+            self.running = True
 
-        # set thread name
-        threading.currentThread().setName(self.name)
+            # set thread name
+            threading.currentThread().setName(self.name)
 
-        self.todoWanted = []  # its about to all get re-added
-        if len(sickrage.app.config.root_dirs.split('|')) < 2:
-            sickrage.app.log.warning("No default root directory")
-            return
+            self.todoWanted = []  # its about to all get re-added
+            if len(sickrage.app.config.root_dirs.split('|')) < 2:
+                sickrage.app.log.warning("No default root directory")
+                return
 
-        # add shows from tv watchlist
-        if sickrage.app.config.trakt_sync_watchlist:
-            try:
-                self.sync_watchlist()
-            except Exception:
-                sickrage.app.log.debug(traceback.format_exc())
+            # add shows from tv watchlist
+            if sickrage.app.config.trakt_sync_watchlist:
+                try:
+                    self.sync_watchlist()
+                except Exception:
+                    sickrage.app.log.debug(traceback.format_exc())
 
-        # add shows from tv collection
-        if sickrage.app.config.trakt_sync:
-            try:
-                self.sync_collection()
-            except Exception:
-                sickrage.app.log.debug(traceback.format_exc())
-
-        self.amActive = False
+            # add shows from tv collection
+            if sickrage.app.config.trakt_sync:
+                try:
+                    self.sync_collection()
+                except Exception:
+                    sickrage.app.log.debug(traceback.format_exc())
+        finally:
+            self.running = False
 
     def sync_watchlist(self):
         sickrage.app.log.debug("Syncing SiCKRAGE with Trakt Watchlist")

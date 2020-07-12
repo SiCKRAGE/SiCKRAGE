@@ -20,6 +20,7 @@
 # ##############################################################################
 import functools
 import ipaddress
+import threading
 import time
 from urllib.parse import urlparse
 
@@ -34,10 +35,20 @@ class UPNPClient(object):
 
     def __init__(self, *args, **kwargs):
         self.name = "UPNP"
+        self.running = False
 
     def task(self, force=False):
-        if sickrage.app.config.enable_upnp:
+        if self.running or not sickrage.app.config.enable_upnp:
+            return
+
+        try:
+            self.running = True
+
+            threading.currentThread().setName(self.name)
+
             self.add_nat_portmap()
+        finally:
+            self.running = False
 
     def refresh_nat_portmap(self):
         """Run an infinite loop refreshing our NAT port mapping.

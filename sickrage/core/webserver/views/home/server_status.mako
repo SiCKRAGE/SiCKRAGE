@@ -67,14 +67,14 @@
                                                 <td align="center">${_('True')}</td>
                                             % else:
                                             % try:
-                                                <td align="center">${service.amActive}</td>
+                                                <td align="center">${service.running}</td>
                                             % except Exception:
                                                 <td>N/A</td>
                                             % endtry
                                             % endif
                                         % else:
                                         % try:
-                                            <td align="center">${service.amActive}</td>
+                                            <td align="center">${service.running}</td>
                                         % except Exception:
                                             <td align="center">N/A</td>
                                         % endtry

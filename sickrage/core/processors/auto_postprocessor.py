@@ -29,7 +29,7 @@ class AutoPostProcessor(object):
     def __init__(self):
         self.name = "POSTPROCESSOR"
         self.lock = threading.Lock()
-        self.amActive = False
+        self.running = False
 
     def task(self, force=False):
         """
@@ -38,14 +38,15 @@ class AutoPostProcessor(object):
         :return: Returns when done without a return state/code
         """
 
-        if self.amActive or (not sickrage.app.config.process_automatically) and not force:
+        if self.running or not sickrage.app.config.process_automatically and not force:
             return
 
-        self.amActive = True
+        try:
+            self.running = True
 
-        # set thread name
-        threading.currentThread().setName(self.name)
+            # set thread name
+            threading.currentThread().setName(self.name)
 
-        sickrage.app.postprocessor_queue.put(sickrage.app.config.tv_download_dir, force=force)
-
-        self.amActive = False
+            sickrage.app.postprocessor_queue.put(sickrage.app.config.tv_download_dir, force=force)
+        finally:
+            self.running = False

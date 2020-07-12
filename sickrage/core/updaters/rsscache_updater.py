@@ -9,17 +9,18 @@ class RSSCacheUpdater(object):
         super(RSSCacheUpdater, self).__init__()
         self.name = "RSSCACHE-UPDATER"
         self.lock = threading.Lock()
-        self.amActive = False
+        self.running = False
 
     def task(self, force=False):
-        if self.amActive or not sickrage.app.config.enable_rss_cache and not force:
+        if self.running or not sickrage.app.config.enable_rss_cache and not force:
             return
 
-        self.amActive = True
+        try:
+            self.running = True
 
-        for providerID, providerObj in sickrage.app.search_providers.sort().items():
-            if providerObj.is_enabled:
-                threading.currentThread().setName('{}::{}'.format(self.name, providerObj.name.upper()))
-                providerObj.cache.update(force)
-
-        self.amActive = False
+            for providerID, providerObj in sickrage.app.search_providers.sort().items():
+                if providerObj.is_enabled:
+                    threading.currentThread().setName('{}::{}'.format(self.name, providerObj.name.upper()))
+                    providerObj.cache.update(force)
+        finally:
+            self.running = False

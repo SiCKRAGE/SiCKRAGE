@@ -39,7 +39,7 @@ class ManageQueuesHandler(BaseHandler, ABC):
                            dailySearchPaused=sickrage.app.search_queue.is_daily_searcher_paused(),
                            backlogSearchStatus=sickrage.app.search_queue.is_backlog_in_progress(),
                            dailySearchStatus=sickrage.app.search_queue.is_dailysearch_in_progress(),
-                           findPropersStatus=sickrage.app.proper_searcher.amActive,
+                           findPropersStatus=sickrage.app.proper_searcher.running,
                            searchQueueLength=sickrage.app.search_queue.queue_length(),
                            postProcessorPaused=sickrage.app.postprocessor_queue.is_paused,
                            postProcessorRunning=sickrage.app.postprocessor_queue.is_busy,

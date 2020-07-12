@@ -1286,6 +1286,7 @@ class SearchProviders(dict):
     def __init__(self):
         super(SearchProviders, self).__init__()
         self.name = "SEARCH-PROVIDERS"
+        self.running = False
 
         self.provider_order = []
 
@@ -1295,8 +1296,15 @@ class SearchProviders(dict):
         self[TorrentRssProvider.type] = {}
 
     def task(self, force=False):
-        threading.currentThread().setName(self.name)
-        self.update_urls()
+        if self.running and not force:
+            return
+
+        try:
+            self.running = True
+            threading.currentThread().setName(self.name)
+            self.update_urls()
+        finally:
+            self.running = False
 
     def load(self):
         self[NZBProvider.type] = dict([(p.id, p) for p in NZBProvider.get_providers()])

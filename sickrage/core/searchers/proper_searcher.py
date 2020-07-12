@@ -41,32 +41,33 @@ from sickrage.providers import NZBProvider, NewznabProvider, TorrentProvider, To
 class ProperSearcher(object):
     def __init__(self, *args, **kwargs):
         self.name = "PROPERSEARCHER"
-        self.amActive = False
+        self.running = False
 
     def task(self, force=False):
         """
         Start looking for new propers
         :param force: Start even if already running (currently not used, defaults to False)
         """
-        if self.amActive or not sickrage.app.config.download_propers:
+        if self.running or not sickrage.app.config.download_propers:
             return
 
-        self.amActive = True
+        try:
+            self.running = True
 
-        # set thread name
-        threading.currentThread().setName(self.name)
+            # set thread name
+            threading.currentThread().setName(self.name)
 
-        sickrage.app.log.info("Beginning the search for new propers")
+            sickrage.app.log.info("Beginning the search for new propers")
 
-        propers = self._get_proper_list()
-        if propers:
-            self._download_propers(propers)
-        else:
-            sickrage.app.log.info('No recently aired episodes, no propers to search for')
+            propers = self._get_proper_list()
+            if propers:
+                self._download_propers(propers)
+            else:
+                sickrage.app.log.info('No recently aired episodes, no propers to search for')
 
-        sickrage.app.log.info("Completed the search for new propers")
-
-        self.amActive = False
+            sickrage.app.log.info("Completed the search for new propers")
+        finally:
+            self.running = False
 
     def _get_proper_list(self):
         """

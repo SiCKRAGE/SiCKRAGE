@@ -30,7 +30,7 @@ from sickrage.core.helpers import full_sanitize_scene_name
 class NameCache(object):
     def __init__(self, *args, **kwargs):
         self.name = "NAMECACHE"
-        self.amActive = False
+        self.running = False
         self.min_time = 10
         self.last_update = {}
         self.cache = {}
