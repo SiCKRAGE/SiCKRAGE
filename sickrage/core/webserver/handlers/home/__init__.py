@@ -1510,7 +1510,7 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
 
         # Running Manual Searches
         if sickrage.app.search_queue.is_manual_search_in_progress():
-            for task_id, search_task in sickrage.app.search_queue.tasks.items():
+            for search_task in sickrage.app.search_queue.tasks.copy().values():
                 if not search_task.success:
                     episodes += self.get_episodes(int(show), [search_task], 'Searching')
 

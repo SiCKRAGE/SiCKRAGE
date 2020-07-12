@@ -29,8 +29,7 @@ from functools import cmp_to_key
 import sickrage
 
 
-class TaskPriority(Enum):
-    PAUSED = 0
+class TaskPriority(object):
     LOW = 10
     NORMAL = 20
     HIGH = 30
@@ -138,7 +137,7 @@ class Queue(object):
             self.notify_workers()
 
     def auto_remove_tasks(self):
-        for task in self.tasks.values():
+        for task in self.tasks.copy().values():
             if task.status in [TaskStatus.FINISHED, TaskStatus.FAILED] and task.auto_remove:
                 self.remove_task(task.id)
 
@@ -275,7 +274,7 @@ class Queue(object):
 
     @property
     def is_busy(self):
-        return bool(len([task for task in self.tasks if task.status in [TaskStatus.QUEUED, TaskStatus.STARTED]]) > 0)
+        return bool(len([task for task in self.tasks if task.status not in [TaskStatus.FINISHED, TaskStatus.FAILED]]) > 0)
 
     @property
     def is_paused(self):

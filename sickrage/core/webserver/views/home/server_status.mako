@@ -129,7 +129,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                            % for task in sickrage.app.show_queue.tasks.values():
+                            % for task in sickrage.app.show_queue.tasks.copy().values():
                                 <tr>
                                 % try:
                                     <% showindexer_id = task.indexer_id %>

@@ -44,21 +44,21 @@ class SearchQueue(Queue):
         self.MANUAL_SEARCH_HISTORY = deque(maxlen=100)
 
     def is_in_queue(self, show_id, season, episode):
-        for task in self.tasks.values():
+        for task in self.tasks.copy().values():
             if isinstance(task, BacklogSearchTask) and all([task.show_id == show_id, task.season == season, task.episode == episode]):
                 return True
 
         return False
 
     def is_ep_in_queue(self, season, episode):
-        for task in self.tasks.values():
+        for task in self.tasks.copy().values():
             if isinstance(task, (ManualSearchTask, FailedSearchTask)) and all([task.season == season, task.episode == episode]):
                 return True
 
         return False
 
     def is_show_in_queue(self, show_id):
-        for task in self.tasks.values():
+        for task in self.tasks.copy().values():
             if isinstance(task, (ManualSearchTask, FailedSearchTask)) and task.show_id == show_id:
                 return True
 
@@ -67,7 +67,7 @@ class SearchQueue(Queue):
     def get_all_items_from_queue(self, show_id):
         items = []
 
-        for task in self.tasks.values():
+        for task in self.tasks.copy().values():
             if isinstance(task, (ManualSearchTask, FailedSearchTask)) and task.show_id == show_id:
                 items.append(task)
 
@@ -92,21 +92,21 @@ class SearchQueue(Queue):
         return not sickrage.app.scheduler.get_job(sickrage.app.backlog_searcher.name).next_run_time
 
     def is_manual_search_in_progress(self):
-        for task in self.tasks.values():
+        for task in self.tasks.copy().values():
             if isinstance(task, (ManualSearchTask, FailedSearchTask)):
                 return True
 
         return False
 
     def is_backlog_in_progress(self):
-        for task in self.tasks.values():
+        for task in self.tasks.copy().values():
             if isinstance(task, BacklogSearchTask):
                 return True
 
         return False
 
     def is_dailysearch_in_progress(self):
-        for task in self.tasks.values():
+        for task in self.tasks.copy().values():
             if isinstance(task, DailySearchTask):
                 return True
 
@@ -114,7 +114,7 @@ class SearchQueue(Queue):
 
     def queue_length(self):
         length = {'backlog': 0, 'daily': 0, 'manual': 0, 'failed': 0}
-        for task in self.tasks.values():
+        for task in self.tasks.copy().values():
             if isinstance(task, DailySearchTask):
                 length['daily'] += 1
             elif isinstance(task, BacklogSearchTask):

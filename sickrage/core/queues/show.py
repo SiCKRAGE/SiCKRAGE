@@ -44,17 +44,17 @@ class ShowQueue(Queue):
 
     @property
     def loading_show_list(self):
-        return [x.indexer_id for x in self.tasks.values() if x.is_loading and x.status in [TaskStatus.QUEUED, TaskStatus.STARTED]]
+        return [x.indexer_id for x in self.tasks.copy().values() if x.is_loading]
 
     def _is_in_queue(self, indexer_id):
-        for task in self.tasks.values():
+        for task in self.tasks.copy().values():
             if task.indexer_id == indexer_id:
                 return True
 
         return False
 
     def _is_being(self, indexer_id, actions):
-        for task in self.tasks.values():
+        for task in self.tasks.copy().values():
             if task.indexer_id == indexer_id and task.action_id in actions:
                 return True
 
