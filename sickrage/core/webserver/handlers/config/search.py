@@ -105,6 +105,7 @@ class SaveSearchHandler(BaseHandler, ABC):
         ignored_subs_list = self.get_argument('ignored_subs_list', None)
         enable_rss_cache = self.get_argument('enable_rss_cache', None)
         torrent_file_to_magnet = self.get_argument('torrent_file_to_magnet', None)
+        torrent_magnet_to_file = self.get_argument('torrent_magnet_to_file', None)
         download_unverified_magnet_link = self.get_argument('download_unverified_magnet_link', None)
 
         results = []
@@ -130,6 +131,7 @@ class SaveSearchHandler(BaseHandler, ABC):
         sickrage.app.config.randomize_providers = checkbox_to_value(randomize_providers)
         sickrage.app.config.enable_rss_cache = checkbox_to_value(enable_rss_cache)
         sickrage.app.config.torrent_file_to_magnet = checkbox_to_value(torrent_file_to_magnet)
+        sickrage.app.config.torrent_magnet_to_file = checkbox_to_value(torrent_magnet_to_file)
         sickrage.app.config.download_unverified_magnet_link = checkbox_to_value(download_unverified_magnet_link)
         sickrage.app.config.download_propers = checkbox_to_value(download_propers)
         sickrage.app.config.proper_searcher_interval = check_propers_interval

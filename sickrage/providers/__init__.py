@@ -620,7 +620,7 @@ class TorrentProvider(GenericProvider):
             except Exception:
                 pass
 
-        if url.startswith('magnet'):
+        if url.startswith('magnet') and sickrage.app.config.torrent_magnet_to_file:
             # get hash
             info_hash = str(re.findall(r'urn:btih:([\w]{32,40})', url)[0]).upper()
             if len(info_hash) == 32:
@@ -679,10 +679,10 @@ class TorrentProvider(GenericProvider):
         :return: boolean, True on success
         """
 
-        if not result.content:
-            return False
+        if not result.content and result.url.startswith('magnet:'):
+            result.content = result.url.encode()
 
-        filename = self.make_filename(result.name)
+        filename = self.make_filename(result)
 
         sickrage.app.log.info("Saving TORRENT to " + filename)
 
@@ -696,8 +696,11 @@ class TorrentProvider(GenericProvider):
     def _clean_title_from_provider(title):
         return (title or '').replace(' ', '.')
 
-    def make_filename(self, name):
-        return os.path.join(sickrage.app.config.torrent_dir, '{}.torrent'.format(sanitize_file_name(name)))
+    def make_filename(self, result):
+        if result.url.startswith('magnet:'):
+            return os.path.join(sickrage.app.config.torrent_dir, '{}.magnet'.format(sanitize_file_name(result.name)))
+        else:
+            return os.path.join(sickrage.app.config.torrent_dir, '{}.torrent'.format(sanitize_file_name(result.name)))
 
     def add_trackers(self, result):
         """

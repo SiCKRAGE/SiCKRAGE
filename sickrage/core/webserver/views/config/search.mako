@@ -92,6 +92,20 @@
 
                 <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5">
+                        <label class="component-title">${_('Convert provider torrent magnetic links to torrent files')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                        <label for="torrent_magnet_to_file">
+                            <input type="checkbox" class="enabler toggle color-primary is-material"
+                                   name="torrent_magnet_to_file" id="torrent_magnet_to_file"
+                                ${('', 'checked')[bool(sickrage.app.config.torrent_magnet_to_file)]}/>
+                            ${_('enables/disables converting of public torrent provider magnetic links to torrent files')}
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-row form-group">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable failed snatch handling')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">

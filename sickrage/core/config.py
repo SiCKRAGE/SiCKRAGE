@@ -146,6 +146,7 @@ class Config(object):
         self.download_propers = False
         self.enable_rss_cache = False
         self.torrent_file_to_magnet = False
+        self.torrent_magnet_to_file = False
         self.download_unverified_magnet_link = False
         self.proper_searcher_interval = ""
         self.allow_high_priority = False
@@ -783,6 +784,7 @@ class Config(object):
                 'showupdate_hour': 3,
                 'enable_rss_cache': True,
                 'torrent_file_to_magnet': False,
+                'torrent_magnet_to_file': True,
                 'download_unverified_magnet_link': False,
                 'status_default': SKIPPED,
                 'naming_anime': 3,
@@ -1511,6 +1513,7 @@ class Config(object):
         self.download_propers = self.check_setting_bool('General', 'download_propers')
         self.enable_rss_cache = self.check_setting_bool('General', 'enable_rss_cache')
         self.torrent_file_to_magnet = self.check_setting_bool('General', 'torrent_file_to_magnet')
+        self.torrent_magnet_to_file = self.check_setting_bool('General', 'torrent_magnet_to_file')
         self.download_unverified_magnet_link = self.check_setting_bool('General', 'download_unverified_magnet_link')
         self.proper_searcher_interval = self.check_setting_str('General', 'check_propers_interval')
         self.randomize_providers = self.check_setting_bool('General', 'randomize_providers')
@@ -1998,6 +2001,7 @@ class Config(object):
                 'download_propers': int(self.download_propers),
                 'enable_rss_cache': int(self.enable_rss_cache),
                 'torrent_file_to_magnet': int(self.torrent_file_to_magnet),
+                'torrent_magnet_to_file': int(self.torrent_magnet_to_file),
                 'download_unverified_magnet_link': int(self.download_unverified_magnet_link),
                 'randomize_providers': int(self.randomize_providers),
                 'check_propers_interval': self.proper_searcher_interval,
