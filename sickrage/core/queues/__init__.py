@@ -98,8 +98,8 @@ class Queue(object):
         try:
             self.lock.acquire()
             if worker_id is None:
+                sickrage.app.log.info("Shutting down all {} workers".format(self.name))
                 for worker in self.workers:
-                    sickrage.app.log.info("Shutting down all {} workers".format(self.name))
                     worker.must_die = True
             else:
                 for worker in self.workers:

@@ -290,4 +290,4 @@ class ForceSchedulerJobHandler(BaseHandler, ABC):
         if service:
             job = sickrage.app.scheduler.get_job(service.name)
             job.modify(next_run_time=datetime.datetime.utcnow(), kwargs={'force': True})
-            IOLoop.instance().add_timeout(datetime.timedelta(seconds=10), job.modify, kwargs={})
+            sickrage.app.wserver.io_loop.add_timeout(datetime.timedelta(seconds=10), job.modify, kwargs={})

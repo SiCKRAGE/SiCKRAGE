@@ -120,9 +120,11 @@ class WebServer(threading.Thread):
         self.api_root = None
         self.app = None
         self.server = None
+        self.io_loop = None
 
     def run(self):
         self.started = True
+        self.io_loop = IOLoop()
 
         # load languages
         tornado.locale.load_gettext_translations(sickrage.LOCALE_DIR, 'messages')
@@ -434,7 +436,7 @@ class WebServer(threading.Thread):
             sickrage.app.log.warning(e.strerror)
             raise SystemExit
 
-        IOLoop.instance().start()
+        self.io_loop.start()
 
     def shutdown(self):
         if self.started:
@@ -443,4 +445,5 @@ class WebServer(threading.Thread):
                 self.server.close_all_connections()
                 self.server.stop()
 
-            IOLoop.instance().stop()
+            if self.io_loop:
+                self.io_loop.stop()

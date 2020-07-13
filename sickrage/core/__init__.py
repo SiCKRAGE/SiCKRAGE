@@ -564,7 +564,7 @@ class Core(object):
 
     def shutdown(self, restart=False):
         if self.started:
-            self.log.info('SiCKRAGE IS SHUTTING DOWN!!!')
+            self.log.info('SiCKRAGE IS {}!!!'.format(('SHUTTING DOWN', 'RESTARTING')[restart]))
 
             # shutdown scheduler
             if self.scheduler:

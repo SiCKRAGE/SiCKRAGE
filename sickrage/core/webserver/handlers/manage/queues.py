@@ -21,7 +21,6 @@
 import datetime
 from abc import ABC
 
-from tornado.ioloop import IOLoop
 from tornado.web import authenticated
 
 import sickrage
@@ -63,7 +62,7 @@ class ForceBacklogSearchHandler(BaseHandler, ABC):
 
         job = sickrage.app.scheduler.get_job(sickrage.app.backlog_searcher.name)
         job.modify(next_run_time=datetime.datetime.utcnow(), kwargs={'force': True})
-        IOLoop.instance().add_timeout(datetime.timedelta(seconds=10), job.modify, kwargs={})
+        sickrage.app.wserver.io_loop.add_timeout(datetime.timedelta(seconds=10), job.modify, kwargs={})
 
         return self.redirect("/manage/manageQueues/")
 
@@ -80,7 +79,7 @@ class ForceDailySearchHandler(BaseHandler, ABC):
 
         job = sickrage.app.scheduler.get_job(sickrage.app.daily_searcher.name)
         job.modify(next_run_time=datetime.datetime.utcnow(), kwargs={'force': True})
-        IOLoop.instance().add_timeout(datetime.timedelta(seconds=10), job.modify, kwargs={})
+        sickrage.app.wserver.io_loop.add_timeout(datetime.timedelta(seconds=10), job.modify, kwargs={})
 
         return self.redirect("/manage/manageQueues/")
 
@@ -97,7 +96,7 @@ class ForceFindPropersHandler(BaseHandler, ABC):
 
         job = sickrage.app.scheduler.get_job(sickrage.app.proper_searcher.name)
         job.modify(next_run_time=datetime.datetime.utcnow(), kwargs={'force': True})
-        IOLoop.instance().add_timeout(datetime.timedelta(seconds=10), job.modify, kwargs={})
+        sickrage.app.wserver.io_loop.add_timeout(datetime.timedelta(seconds=10), job.modify, kwargs={})
         return self.redirect("/manage/manageQueues/")
 
 

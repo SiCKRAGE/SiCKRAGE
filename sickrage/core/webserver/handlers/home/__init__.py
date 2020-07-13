@@ -26,6 +26,7 @@ from collections import OrderedDict
 from time import sleep
 from urllib.parse import unquote_plus, quote_plus
 
+from apscheduler.triggers.date import DateTrigger
 from tornado.escape import json_encode
 from tornado.httputil import url_concat
 from tornado.ioloop import IOLoop
@@ -827,7 +828,16 @@ class RestartHandler(BaseHandler, ABC):
         # clear current user to disable header and footer
         self.current_user = None
 
-        IOLoop.instance().add_timeout(datetime.timedelta(seconds=5), sickrage.app.shutdown, restart=True)
+        sickrage.app.wserver.io_loop.add_timeout(datetime.timedelta(seconds=5), sickrage.app.shutdown, restart=True)
+
+        # sickrage.app.scheduler.add_job(
+        #     sickrage.app.shutdown,
+        #     DateTrigger(
+        #         run_date=datetime.datetime.utcnow() + datetime.timedelta(seconds=5),
+        #         timezone='utc'
+        #     ),
+        #     kwargs={'restart': True}
+        # )
 
         return self.render('home/restart.mako',
                            title="Home",
@@ -1342,7 +1352,7 @@ class SyncTraktHandler(BaseHandler, ABC):
 
         job = sickrage.app.scheduler.get_job(sickrage.app.trakt_searcher.name)
         job.modify(next_run_time=datetime.datetime.utcnow(), kwargs={'force': True})
-        IOLoop.instance().add_timeout(datetime.timedelta(seconds=10), job.modify, kwargs={})
+        sickrage.app.wserver.io_loop.add_timeout(datetime.timedelta(seconds=10), job.modify, kwargs={})
 
         return self.redirect("/home/")
 

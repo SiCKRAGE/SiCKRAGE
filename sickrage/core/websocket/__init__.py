@@ -68,4 +68,4 @@ class WebSocketMessage(object):
         """Push the message to all connected WebSocket clients."""
         message_queue.put(self.json())
         for client in clients:
-            IOLoop.instance().add_callback(client.write_message, message_queue.get())
+            sickrage.app.wserver.io_loop.add_callback(client.write_message, message_queue.get())

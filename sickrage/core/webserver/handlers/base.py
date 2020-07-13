@@ -187,4 +187,4 @@ class BaseHandler(RequestHandler, ABC):
             threading.currentThread().setName('TORNADO')
             return f(*args, **kwargs)
 
-        return IOLoop.instance().run_in_executor(None, functools.partial(wrapper, *args, **kwargs))
+        return sickrage.app.wserver.io_loop.run_in_executor(None, functools.partial(wrapper, *args, **kwargs))
