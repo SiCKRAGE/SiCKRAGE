@@ -29,7 +29,6 @@ from jose import ExpiredSignatureError
 from keycloak.exceptions import KeycloakClientError
 from mako.exceptions import RichTraceback
 from tornado import locale
-from tornado.ioloop import IOLoop
 from tornado.web import RequestHandler
 
 import sickrage

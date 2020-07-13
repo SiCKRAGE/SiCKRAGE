@@ -1,7 +1,6 @@
 import json
 from queue import Queue
 
-from tornado.ioloop import IOLoop
 from tornado.websocket import WebSocketHandler
 
 import sickrage

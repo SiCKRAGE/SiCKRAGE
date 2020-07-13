@@ -26,10 +26,8 @@ from collections import OrderedDict
 from time import sleep
 from urllib.parse import unquote_plus, quote_plus
 
-from apscheduler.triggers.date import DateTrigger
 from tornado.escape import json_encode
 from tornado.httputil import url_concat
-from tornado.ioloop import IOLoop
 from tornado.web import authenticated
 
 import sickrage

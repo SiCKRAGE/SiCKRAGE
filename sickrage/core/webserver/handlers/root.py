@@ -26,7 +26,6 @@ from abc import ABC
 from functools import cmp_to_key
 
 from tornado.httputil import url_concat
-from tornado.ioloop import IOLoop
 from tornado.web import authenticated
 
 import sickrage
