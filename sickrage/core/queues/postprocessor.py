@@ -117,7 +117,7 @@ class PostProcessorQueue(Queue):
                 PostProcessorTask(dirName, nzbName, process_method, force, is_priority, delete_on, failed, proc_type))
 
             if force_next:
-                result = self.get_result(task_id)
+                result = self.get_result(task_id) or ""
                 return result
 
             self.log("{} post-processing job for {} has been added to the queue".format(proc_type.title(), dirName))
