@@ -2,12 +2,14 @@
 
 # 
 
-##Mon Jul 13 2020 01:18:20 GMT+0000 (Coordinated Universal Time)
+##Thu Jul 16 2020 06:56:35 GMT+0000 (Coordinated Universal Time)
 
 
 ## Bug Fixes
-  - Fixed issues with app shutdown and restarts Refactored Tornado IOLoop integration
-  ([1325174c](https://gitlab-ci-token:oB8JzdTgjeJKzfyESYxp@git.sickrage.ca/SiCKRAGE/sickrage/commit/1325174caa77fcc0443b24cec7223301029dd128))
+  - Fixed #SICKRAGE-APP-5DH - 'NoneType' object has no attribute 'replace'
+  ([7d8b4df8](https://gitlab-ci-token:7rzT1ys3-zfKhg_oq2je@git.sickrage.ca/SiCKRAGE/sickrage/commit/7d8b4df89bf2c9c5e0321ad06802ac06b6b10366))
+  - Fixed #SICKRAGE-APP-5DM - object str can't be used in 'await' expression
+  ([dfe126c6](https://gitlab-ci-token:7rzT1ys3-zfKhg_oq2je@git.sickrage.ca/SiCKRAGE/sickrage/commit/dfe126c63229ed8512038890a908cac97183dfb5))
 
 
 
