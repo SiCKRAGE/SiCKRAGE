@@ -1228,9 +1228,9 @@ class CMD_PostProcess(ApiCall):
         if not self.type:
             self.type = 'manual'
 
-        data = await sickrage.app.postprocessor_queue.put(self.path, process_method=self.process_method, force=self.force_replace,
-                                                          is_priority=self.is_priority, delete_on=self.delete, failed=self.failed, proc_type=self.type,
-                                                          force_next=self.force_next)
+        data = sickrage.app.postprocessor_queue.put(self.path, process_method=self.process_method, force=self.force_replace,
+                                                    is_priority=self.is_priority, delete_on=self.delete, failed=self.failed, proc_type=self.type,
+                                                    force_next=self.force_next)
 
         if not self.return_data:
             data = ""
