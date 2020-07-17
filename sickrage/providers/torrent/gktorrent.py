@@ -68,6 +68,7 @@ class GKTorrentProvider(TorrentProvider):
                 resp = self.session.get(search_url)
                 if not resp or not resp.text:
                     sickrage.app.log.debug("No data returned from provider")
+                    continue
 
                 results += self.parse(resp.text, mode)
 
