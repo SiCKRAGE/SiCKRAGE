@@ -29,7 +29,7 @@ from enum import Enum
 import sickrage
 from sickrage.core.common import WANTED
 from sickrage.core.exceptions import CantRefreshShowException, CantRemoveShowException, CantUpdateShowException, EpisodeDeletedException, \
-    MultipleShowObjectsException
+    MultipleShowObjectsException, EpisodeNotFoundException
 from sickrage.core.queues import Queue, Task, TaskPriority
 from sickrage.core.scene_numbering import xem_refresh
 from sickrage.core.traktapi import TraktAPI
@@ -118,7 +118,7 @@ class ShowQueue(Queue):
 
     def add_show(self, indexer, indexer_id, showDir, default_status=None, quality=None, flatten_folders=None, lang=None, subtitles=None,
                  sub_use_sr_metadata=None, anime=None, search_format=None, dvdorder=None, paused=None, blacklist=None, whitelist=None,
-                 default_status_after=None, skip_downloaded=None):
+                 default_status_after=None, scene=None, skip_downloaded=None):
 
         if lang is None:
             lang = sickrage.app.config.indexer_default_language
@@ -139,6 +139,7 @@ class ShowQueue(Queue):
                              blacklist=blacklist,
                              whitelist=whitelist,
                              default_status_after=default_status_after,
+                             scene=scene,
                              skip_downloaded=skip_downloaded))
 
     def remove_show(self, indexer_id, full=False):
@@ -198,7 +199,7 @@ class ShowTask(Task):
 
 class ShowTaskAdd(ShowTask):
     def __init__(self, indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang, subtitles, sub_use_sr_metadata, anime,
-                 dvdorder, search_format, paused, blacklist, whitelist, default_status_after, skip_downloaded):
+                 dvdorder, search_format, paused, blacklist, whitelist, default_status_after, scene, skip_downloaded):
         super(ShowTaskAdd, self).__init__(None, ShowTaskActions.ADD)
 
         self.indexer = indexer
@@ -217,6 +218,7 @@ class ShowTaskAdd(ShowTask):
         self.blacklist = blacklist
         self.whitelist = whitelist
         self.default_status_after = default_status_after
+        self.scene = scene
         self.skip_downloaded = skip_downloaded
         self.priority = TaskPriority.HIGH
 
@@ -311,6 +313,7 @@ class ShowTaskAdd(ShowTask):
             show_obj.anime = self.anime or sickrage.app.config.anime_default
             show_obj.dvdorder = self.dvdorder
             show_obj.search_format = self.search_format or sickrage.app.config.search_format_default
+            show_obj.scene = self.scene or sickrage.app.config.scene_default
             show_obj.skip_downloaded = self.skip_downloaded or sickrage.app.config.skip_downloaded_default
             show_obj.paused = self.paused
 
@@ -394,8 +397,6 @@ class ShowTaskAdd(ShowTask):
         show_obj.default_ep_status = self.default_status_after
 
         show_obj.save()
-
-        sickrage.app.quicksearch_cache.add_show(show_obj.indexer_id)
 
         sickrage.app.log.info("Finished adding show {} in {}s from show dir: {}".format(self.show_name, round(time.time() - start_time, 2), self.showDir))
 
@@ -541,14 +542,14 @@ class ShowTaskUpdate(ShowTask):
             for curSeason in db_episodes:
                 for curEpisode in db_episodes[curSeason]:
                     sickrage.app.log.info("Permanently deleting episode " + str(curSeason) + "x" + str(curEpisode) + " from the database")
-                    try:
-                        show_obj.get_episode(curSeason, curEpisode).delete_episode()
-                    except EpisodeDeletedException:
-                        continue
+                    episode_obj = show_obj.get_episode(curSeason, curEpisode, no_create=True)
+                    if episode_obj:
+                        try:
+                            episode_obj.delete_episode()
+                        except EpisodeDeletedException:
+                            continue
 
         show_obj.retrieve_scene_exceptions()
-
-        sickrage.app.quicksearch_cache.add_show(show_obj.indexer_id, update=True)
 
         sickrage.app.log.info("Finished updates in {}s for show: {}".format(round(time.time() - start_time, 2), show_obj.name))
 
@@ -579,8 +580,6 @@ class ShowTaskForceRemove(ShowTask):
         show_obj = find_show(self.indexer_id)
 
         sickrage.app.log.info("Removing show: {}".format(show_obj.name))
-
-        sickrage.app.quicksearch_cache.del_show(show_obj.indexer_id)
 
         show_obj.delete_show(full=self.full)
 

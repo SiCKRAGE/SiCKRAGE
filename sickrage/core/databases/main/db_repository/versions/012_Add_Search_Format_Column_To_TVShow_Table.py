@@ -24,13 +24,13 @@ def upgrade(migrate_engine):
                 if row.anime == 1 and not row.scene == 1:
                     value = SearchFormats.ANIME
                 elif row.anime == 1 and row.scene == 1:
-                    value = SearchFormats.SCENE
+                    value = 5
                 elif row.sports == 1:
                     value = SearchFormats.SPORTS
                 elif row.air_by_date == 1:
                     value = SearchFormats.AIR_BY_DATE
                 elif row.scene == 1:
-                    value = SearchFormats.SCENE
+                    value = 5
                 else:
                     value = SearchFormats.STANDARD
 

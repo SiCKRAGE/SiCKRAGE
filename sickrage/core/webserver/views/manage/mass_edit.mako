@@ -139,6 +139,22 @@
                             </div>
 
                             <div class="row field-pair">
+                                <label for="edit_scene">
+                                    <span class="component-title">${_('Scene Numbering')}</span>
+                                    <span class="component-desc">
+                                        <select id="edit_scene" name="scene"
+                                                class="form-control form-control-inline input-sm">
+                                            <option value="keep" ${('', 'selected')[scene_value is None]}>&lt; ${_('Keep')}
+                                                &gt;</option>
+                                            <option value="enable" ${('', 'selected')[scene_value == 1]}>${_('Yes')}</option>
+                                            <option value="disable" ${('', 'selected')[scene_value == 0]}>${_('No')}</option>
+                                        </select>
+                                        ${_('Use scene numbering instead of indexer numbering')}
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div class="row field-pair">
                                 <label for="edit_skip_downloaded">
                                     <span class="component-title">${_('Skip downloaded')}</span>
                                     <span class="component-desc">

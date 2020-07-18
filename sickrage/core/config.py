@@ -123,6 +123,7 @@ class Config(object):
         self.indexer_timeout = 120
         self.search_format_default = 0
         self.anime_default = False
+        self.scene_default = False
         self.skip_downloaded_default = False
         self.add_show_year_default = False
         self.naming_multi_ep = False
@@ -759,6 +760,7 @@ class Config(object):
                 'auto_update': True,
                 'tv_download_dir': '',
                 'naming_custom_abd': False,
+                'scene_default': False,
                 'skip_downloaded_default': False,
                 'add_show_year_default': False,
                 'naming_sports_pattern': '%SN - %A-D - %EN',
@@ -1496,6 +1498,7 @@ class Config(object):
         self.indexer_timeout = self.check_setting_int('General', 'indexer_timeout')
         self.anime_default = self.check_setting_bool('General', 'anime_default')
         self.search_format_default = self.check_setting_int('General', 'search_format_default')
+        self.scene_default = self.check_setting_bool('General', 'scene_default')
         self.skip_downloaded_default = self.check_setting_bool('General', 'skip_downloaded_default')
         self.add_show_year_default = self.check_setting_bool('General', 'add_show_year_default')
         self.naming_pattern = self.check_setting_str('General', 'naming_pattern')
@@ -2018,6 +2021,7 @@ class Config(object):
                 'indexer_timeout': int(self.indexer_timeout),
                 'anime_default': int(self.anime_default),
                 'search_format_default': int(self.search_format_default),
+                'scene_default': int(self.scene_default),
                 'skip_downloaded_default': int(self.skip_downloaded_default),
                 'add_show_year_default': int(self.add_show_year_default),
                 'enable_upnp': int(self.enable_upnp),

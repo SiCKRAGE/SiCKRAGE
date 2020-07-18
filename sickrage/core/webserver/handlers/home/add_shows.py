@@ -407,6 +407,7 @@ class AddNewShowHandler(BaseHandler, ABC):
         blacklist = self.get_argument('blacklist', None)
         whitelist = self.get_argument('whitelist', None)
         defaultStatusAfter = self.get_argument('defaultStatusAfter', None)
+        scene = self.get_argument('scene', None)
         skip_downloaded = self.get_argument('skip_downloaded', None)
         add_show_year = self.get_argument('add_show_year', None)
 
@@ -475,6 +476,7 @@ class AddNewShowHandler(BaseHandler, ABC):
         flatten_folders = checkbox_to_value(flatten_folders)
         subtitles = checkbox_to_value(subtitles)
         sub_use_sr_metadata = checkbox_to_value(sub_use_sr_metadata)
+        scene = checkbox_to_value(scene)
         skip_downloaded = checkbox_to_value(skip_downloaded)
 
         if whitelist:
@@ -503,6 +505,7 @@ class AddNewShowHandler(BaseHandler, ABC):
                                          blacklist=blacklist,
                                          whitelist=whitelist,
                                          default_status_after=int(defaultStatusAfter),
+                                         scene=scene,
                                          skip_downloaded=skip_downloaded)
 
         sickrage.app.alerts.message(_('Adding Show'), _('Adding the specified show into ') + show_dir)
@@ -573,6 +576,7 @@ class AddExistingShowsHandler(BaseHandler, ABC):
                                                  anime=sickrage.app.config.anime_default,
                                                  search_format=sickrage.app.config.search_format_default,
                                                  default_status_after=sickrage.app.config.status_default_after,
+                                                 scene=sickrage.app.config.scene_default,
                                                  skip_downloaded=sickrage.app.config.skip_downloaded_default)
                 num_added += 1
 

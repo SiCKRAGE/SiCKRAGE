@@ -33,7 +33,7 @@ class MainDBBase(SRDatabaseBase):
 
 class MainDB(SRDatabase):
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
-        super(MainDB, self).__init__('main', 12, db_type, db_prefix, db_host, db_port, db_username, db_password)
+        super(MainDB, self).__init__('main', 13, db_type, db_prefix, db_host, db_port, db_username, db_password)
         MainDBBase.metadata.create_all(self.engine)
         for model in MainDBBase._decl_class_registry.values():
             if hasattr(model, '__tablename__'):
@@ -86,6 +86,7 @@ class MainDB(SRDatabase):
         flatten_folders = Column(Boolean, default=0)
         paused = Column(Boolean, default=0)
         search_format = Column(Integer, default=SearchFormats.STANDARD)
+        scene = Column(Boolean, default=0)
         anime = Column(Boolean, default=0)
         subtitles = Column(Boolean, default=0)
         dvdorder = Column(Boolean, default=0)

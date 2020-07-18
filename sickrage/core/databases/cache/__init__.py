@@ -29,7 +29,7 @@ class CacheDBBase(SRDatabaseBase):
 
 class CacheDB(SRDatabase):
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
-        super(CacheDB, self).__init__('cache', 7, db_type, db_prefix, db_host, db_port, db_username, db_password)
+        super(CacheDB, self).__init__('cache', 8, db_type, db_prefix, db_host, db_port, db_username, db_password)
         CacheDBBase.metadata.create_all(self.engine)
         for model in CacheDBBase._decl_class_registry.values():
             if hasattr(model, '__tablename__'):
@@ -105,27 +105,6 @@ class CacheDB(SRDatabase):
         seeders = Column(Integer)
         leechers = Column(Integer)
         size = Column(Integer)
-
-    class QuickSearchShow(CacheDBBase):
-        __tablename__ = 'quicksearch_shows'
-
-        category = Column(Text)
-        showid = Column(Integer, index=True, primary_key=True)
-        seasons = Column(Integer)
-        name = Column(Text)
-        img = Column(Text)
-
-    class QuickSearchEpisode(CacheDBBase):
-        __tablename__ = 'quicksearch_episodes'
-
-        category = Column(Text)
-        showid = Column(Integer, index=True, primary_key=True)
-        episodeid = Column(Integer)
-        season = Column(Integer, index=True, primary_key=True)
-        episode = Column(Integer, index=True, primary_key=True)
-        name = Column(Text)
-        showname = Column(Text)
-        img = Column(Text)
 
     class OAuth2Token(CacheDBBase):
         __tablename__ = 'oauth2_token'

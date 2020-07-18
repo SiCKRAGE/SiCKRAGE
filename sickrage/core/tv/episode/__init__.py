@@ -32,15 +32,11 @@ from sqlalchemy import orm
 
 import sickrage
 from sickrage.core.common import NAMING_EXTEND, NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT, \
-    SearchFormats
-from sickrage.core.common import Quality, SKIPPED, UNKNOWN, UNAIRED, statusStrings
+    SearchFormats, Quality, SKIPPED, UNKNOWN, UNAIRED, statusStrings
 from sickrage.core.databases.main import MainDB
-from sickrage.core.exceptions import EpisodeNotFoundException, EpisodeDeletedException
-from sickrage.core.exceptions import NoNFOException
-from sickrage.core.helpers import file_size
-from sickrage.core.helpers import is_media_file, try_int, safe_getattr
+from sickrage.core.exceptions import EpisodeNotFoundException, EpisodeDeletedException, NoNFOException
 from sickrage.core.helpers import replace_extension, modify_file_timestamp, sanitize_scene_name, remove_non_release_groups, \
-    remove_extension, sanitize_file_name, make_dirs, move_file, delete_empty_folders
+    remove_extension, sanitize_file_name, make_dirs, move_file, delete_empty_folders, file_size, is_media_file, try_int, safe_getattr
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_seasonnotfound, indexer_episodenotfound
@@ -668,11 +664,9 @@ class TVEpisode(object):
                 sickrage.app.log.warning('Unable to delete episode file %s: %s / %s' % (self.location, repr(e), str(e)))
 
         # delete myself from show episode cache
-        try:
+        if self.indexer_id in self.show.episodes:
             sickrage.app.log.debug("Deleting %s S%02dE%02d from the shows episode cache" % (self.show.name, self.season or 0, self.episode or 0))
-            del self.show.episodes[self.show.episodes.index(self)]
-        except (IndexError, ValueError) as e:
-            pass
+            del self.show._episodes[self.indexer_id]
 
         # delete myself from the database
         sickrage.app.log.debug("Deleting %s S%02dE%02d from the DB" % (self.show.name, self.season or 0, self.episode or 0))

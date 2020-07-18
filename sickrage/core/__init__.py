@@ -20,7 +20,6 @@
 # ##############################################################################
 import asyncio
 import datetime
-import functools
 import os
 import platform
 import re
@@ -44,7 +43,6 @@ import sickrage
 from sickrage.core.announcements import Announcements
 from sickrage.core.api import API
 from sickrage.core.auth import AuthServer
-from sickrage.core.caches.quicksearch_cache import QuicksearchCache
 from sickrage.core.common import SD, SKIPPED, WANTED
 from sickrage.core.config import Config
 from sickrage.core.databases.cache import CacheDB
@@ -166,7 +164,6 @@ class Core(object):
         self.auto_postprocessor = None
         self.upnp_client = None
         self.auth_server = None
-        self.quicksearch_cache = None
         self.announcements = None
         self.api = None
 
@@ -208,7 +205,6 @@ class Core(object):
         self.subtitle_searcher = SubtitleSearcher()
         self.auto_postprocessor = AutoPostProcessor()
         self.upnp_client = UPNPClient()
-        self.quicksearch_cache = QuicksearchCache()
         self.announcements = Announcements()
 
         # authorization sso client
@@ -294,9 +290,6 @@ class Core(object):
 
         # set torrent client web url
         torrent_webui_url(True)
-
-        # load quicksearch cache
-        self.quicksearch_cache.load()
 
         if self.config.default_page not in ('schedule', 'history', 'IRC'):
             self.config.default_page = 'home'
@@ -552,9 +545,8 @@ class Core(object):
         self.shows = {}
         for query in session.query(MainDB.TVShow).with_entities(MainDB.TVShow.indexer_id, MainDB.TVShow.indexer, MainDB.TVShow.name):
             try:
-                self.log.info('Loading show {} and building caches'.format(query.name))
+                self.log.info('Loading show {}'.format(query.name))
                 self.shows.update({(query.indexer_id, query.indexer): TVShow(query.indexer_id, query.indexer)})
-                self.quicksearch_cache.add_show(query.indexer_id)
             except Exception as e:
                 self.log.debug('There was an error loading show: {}'.format(query.name))
 

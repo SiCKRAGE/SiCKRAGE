@@ -339,7 +339,6 @@ class Worker(object):
         finally:
             sickrage.app.log.debug("Worker " + str(self.id) + " task completed...")
             self.status = WorkerStatus.IDLE
-            self.task = None
             self.notify()
 
 

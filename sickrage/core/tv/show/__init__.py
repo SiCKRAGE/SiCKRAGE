@@ -43,7 +43,6 @@ from sickrage.core.common import Quality, SKIPPED, WANTED, UNKNOWN, DOWNLOADED, 
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import ShowNotFoundException, EpisodeNotFoundException, EpisodeDeletedException, MultipleEpisodesInDatabaseException
 from sickrage.core.helpers import list_media_files, is_media_file, try_int, safe_getattr
-from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_attributenotfound, indexer_exception
@@ -186,6 +185,14 @@ class TVShow(object):
     @paused.setter
     def paused(self, value):
         self._data_local['paused'] = value
+
+    @property
+    def scene(self):
+        return self._data_local['scene']
+
+    @scene.setter
+    def scene(self, value):
+        self._data_local['scene'] = value
 
     @property
     def anime(self):
@@ -676,7 +683,7 @@ class TVShow(object):
                     return tv_episode
             else:
                 if no_create:
-                    raise EpisodeNotFoundException
+                    return None
                 tv_episode = TVEpisode(showid=self.indexer_id, indexer=self.indexer, season=season, episode=episode)
                 self._episodes[tv_episode.indexer_id] = tv_episode
                 return tv_episode
@@ -747,6 +754,8 @@ class TVShow(object):
 
     # find all media files in the show folder and create episodes for as many as possible
     def load_episodes_from_dir(self):
+        from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
+
         if not os.path.isdir(self.location):
             sickrage.app.log.debug(str(self.indexer_id) + ": Show dir doesn't exist, not loading episodes from disk")
             return
@@ -871,6 +880,8 @@ class TVShow(object):
         return fanart_result or poster_result or banner_result or season_posters_result or season_banners_result or season_all_poster_result or season_all_banner_result
 
     def make_ep_from_file(self, filename):
+        from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
+
         if not os.path.isfile(filename):
             sickrage.app.log.info(str(self.indexer_id) + ": That isn't even a real file dude... " + filename)
             return None

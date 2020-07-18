@@ -132,6 +132,20 @@
 
                                     <div class="form-row form-group">
                                         <div class="col-lg-3 col-md-4 col-sm-5">
+                                            <label class="component-title">${_('Scene Numbering')}</label>
+                                        </div>
+                                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                                            <label for="scene">
+                                                <input type="checkbox" class="toggle color-primary is-material"
+                                                       id="scene"
+                                                       name="scene" ${('', 'checked')[bool(show.scene)]} />
+                                                ${_('use scene numbering instead of indexer numbering')}
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row form-group">
+                                        <div class="col-lg-3 col-md-4 col-sm-5">
                                             <label class="component-title">${_('Skip downloaded')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
@@ -394,6 +408,8 @@
                     <div class="card-footer">
                         <input id="submit" type="submit" value="${_('Save Changes')}"
                                class="btn config_submitter">
+                        <input id="cancel" type="submit" value="${_('Cancel')}"
+                               class="btn">
                     </div>
                 </div>
             </form>

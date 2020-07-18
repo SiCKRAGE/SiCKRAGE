@@ -31,8 +31,9 @@ from tornado.web import authenticated
 import sickrage
 from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import remove_article
+from sickrage.core.media.util import showImage
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
-from sickrage.core.tv.show.helpers import get_show_list
+from sickrage.core.tv.show.helpers import get_show_list, find_show
 from sickrage.core.webserver import ApiHandler
 from sickrage.core.webserver.handlers.base import BaseHandler
 
@@ -262,8 +263,31 @@ class QuicksearchDotJsonHandler(BaseHandler, ABC):
     def handle_post(self):
         term = self.get_argument('term')
 
-        shows = sickrage.app.quicksearch_cache.get_shows(term)
-        episodes = sickrage.app.quicksearch_cache.get_episodes(term)
+        shows = []
+        episodes = []
+
+        session = sickrage.app.main_db.session()
+
+        for result in session.query(MainDB.TVShow).filter(MainDB.TVShow.name.like('%{}%'.format(term))).all():
+            shows.append({
+                'category': 'shows',
+                'showid': result.indexer_id,
+                'seasons': len(set([s.season for s in result.episodes])),
+                'name': result.name,
+                'img': sickrage.app.config.web_root + showImage(result.indexer_id, 'poster_thumb').url
+            })
+
+        for result in session.query(MainDB.TVEpisode).filter(MainDB.TVEpisode.name.like('%{}%'.format(term))).all():
+            episodes.append({
+                'category': 'episodes',
+                'showid': result.showid,
+                'episodeid': result.indexer_id,
+                'season': result.season,
+                'episode': result.episode,
+                'name': result.name,
+                'showname': find_show(result.showid).name,
+                'img': sickrage.app.config.web_root + showImage(result.showid, 'poster_thumb').url
+            })
 
         if not len(shows):
             shows = [{

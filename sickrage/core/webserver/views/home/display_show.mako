@@ -341,6 +341,12 @@
                                     </tr>
                                 % endif
                                 <tr>
+                                    <td class="show-legend">${_('Scene Numbering:')}</td>
+                                    <td>
+                                        <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(show.scene)]}"></i>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td class="show-legend">${_('Season Folders:')}</td>
                                     <td>
                                         <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(not show.flatten_folders or sickrage.app.config.naming_force_folders)]}"></i>
@@ -539,7 +545,7 @@
                     <th data-sorter="false" class="col-metadata">${_('TBN')}</th>
                     <th data-sorter="false" class="col-ep episode">${_('Episode')}</th>
                     <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(show.is_anime)]}>${_('Absolute')}</th>
-                    <th data-sorter="false" class="col-name">${_('Scene Numbering')}</th>
+                    <th data-sorter="false" class="col-name">${_('Scene Season/Episode')}</th>
                     <th data-sorter="false" class="col-name">${_('Scene Absolute')}</th>
                     <th data-sorter="false" class="col-name">${_('Name')}</th>
                     <th data-sorter="false" class="col-ep columnSelector-false size">${_('Size')}</th>
@@ -599,7 +605,7 @@
                            data-for-season="${episode_object.season}"
                            data-for-episode="${episode_object.episode}"
                            id="sceneSeasonXEpisode_${show.indexer_id}_${str(episode_object.season)}_${str(episode_object.episode)}"
-                           title="Change the value here if scene numbering differs from the indexer episode numbering"
+                           title="Change the value here if scene season/episode numbering differs from the indexer season/episode numbering"
                         % if dfltEpNumbering:
                            value=""
                         % else:

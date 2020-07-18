@@ -71,6 +71,18 @@
 </div>
 <div class="row field-pair">
     <div class="col-lg-3 col-md-4 col-sm-5">
+        <label class="component-title">${_('Scene Numbering')}</label>
+    </div>
+    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+        <label>
+            <input type="checkbox" class="toggle color-primary is-material" name="scene"
+                   id="scene" ${('', 'checked')[bool(sickrage.app.config.scene_default)]} />
+            ${_('use scene numbering instead of indexer numbering')}
+        </label>
+    </div>
+</div>
+<div class="row field-pair">
+    <div class="col-lg-3 col-md-4 col-sm-5">
         <label class="component-title">${_('Skip Downloaded')}</label>
     </div>
     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">

@@ -80,7 +80,6 @@ class SearchFormats(object):
     AIR_BY_DATE = 2
     ANIME = 3
     SPORTS = 4
-    SCENE = 5
     COLLECTION = 6
 
     search_format_strings = {
@@ -88,7 +87,6 @@ class SearchFormats(object):
         AIR_BY_DATE: 'Air By Date (Show.2010.03.02)',
         ANIME: 'Anime (Show.265)',
         SPORTS: 'Sports (Show.2010.03.02)',
-        SCENE: 'Scene Numbering (Show.S01E01)',
         COLLECTION: 'Collection (Show.Series.1.1of10) or (Show.Series.1.Part.1)'
     }
 

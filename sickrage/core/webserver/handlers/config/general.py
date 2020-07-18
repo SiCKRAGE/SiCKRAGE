@@ -80,6 +80,7 @@ class SaveAddShowDefaultsHandler(BaseHandler, ABC):
         anime = self.get_argument('anime', None)
         search_format = self.get_argument('search_format', None)
         default_status_after = self.get_argument('defaultStatusAfter', common.WANTED)
+        scene = self.get_argument('scene', None)
         skip_downloaded = self.get_argument('skip_downloaded', None)
         add_show_year = self.get_argument('add_show_year', None)
 
@@ -97,6 +98,7 @@ class SaveAddShowDefaultsHandler(BaseHandler, ABC):
 
         sickrage.app.config.anime_default = checkbox_to_value(anime)
         sickrage.app.config.search_format_default = int(search_format)
+        sickrage.app.config.scene_default = checkbox_to_value(scene)
         sickrage.app.config.skip_downloaded_default = checkbox_to_value(skip_downloaded)
         sickrage.app.config.add_show_year_default = checkbox_to_value(add_show_year)
 

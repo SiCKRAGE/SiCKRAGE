@@ -2898,6 +2898,7 @@ $(document).ready(function ($) {
                         anime: $('#anime').prop('checked'),
                         search_format: $('#search_format').val(),
                         defaultStatusAfter: $('#statusSelectAfter').val(),
+                        scene: $('#scene').prop('checked'),
                         skip_downloaded: $('#skip_downloaded').prop('checked'),
                         add_show_year: $('#add_show_year').prop('checked')
                     });
@@ -2907,7 +2908,7 @@ $(document).ready(function ($) {
                     SICKRAGE.notify('info', gt('Saved Defaults'), gt('Your "add show" defaults have been set to your current selections.'));
                 });
 
-                $('#statusSelect, #qualityPreset, #flatten_folders, #anyQualities, #bestQualities, #subtitles, #search_format, #anime, #statusSelectAfter, #skip_downloaded, #add_show_year').change(function () {
+                $('#statusSelect, #qualityPreset, #flatten_folders, #anyQualities, #bestQualities, #subtitles, #search_format, #anime, #statusSelectAfter, #scene, #skip_downloaded, #add_show_year').change(function () {
                     $('#saveDefaultsButton').attr('disabled', false);
                 });
             },

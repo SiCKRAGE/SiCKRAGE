@@ -434,6 +434,7 @@ class TraktSearcher(object):
                                                  flatten_folders=int(sickrage.app.config.flatten_folders_default),
                                                  paused=sickrage.app.config.trakt_start_paused,
                                                  default_status_after=status,
+                                                 scene=sickrage.app.config.scene_default,
                                                  skip_downloaded=sickrage.app.config.skip_downloaded_default)
             else:
                 sickrage.app.log.warning(

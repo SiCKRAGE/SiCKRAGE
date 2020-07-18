@@ -161,7 +161,8 @@ def set_episode_status(show, eps, status, direct=None):
 
 def edit_show(show, any_qualities, best_qualities, exceptions_list, location=None, flatten_folders=None, paused=None, direct_call=None,
               dvdorder=None, indexer_lang=None, subtitles=None, sub_use_sr_metadata=None, skip_downloaded=None, rls_ignore_words=None, search_format=None,
-              rls_require_words=None, anime=None, blacklist=None, whitelist=None, scene=None, default_ep_status=None, quality_preset=None, search_delay=None):
+              rls_require_words=None, anime=None, blacklist=None, whitelist=None, scene=None, default_ep_status=None, quality_preset=None,
+              search_delay=None):
     show_obj = find_show(int(show))
     if not show_obj:
         err_msg = _("Unable to find the specified show: ") + str(show)
@@ -174,6 +175,7 @@ def edit_show(show, any_qualities, best_qualities, exceptions_list, location=Non
     skip_downloaded = checkbox_to_value(skip_downloaded)
     paused = checkbox_to_value(paused)
     anime = checkbox_to_value(anime)
+    scene = checkbox_to_value(scene)
     search_format = int(search_format)
     subtitles = checkbox_to_value(subtitles)
     sub_use_sr_metadata = checkbox_to_value(sub_use_sr_metadata)
@@ -189,13 +191,14 @@ def edit_show(show, any_qualities, best_qualities, exceptions_list, location=Non
     else:
         do_update = True
 
-    if show_obj.search_format in [SearchFormats.SCENE, SearchFormats.ANIME]:
+    if show_obj.scene or show_obj.anime:
         do_update_scene_numbering = False
     else:
         do_update_scene_numbering = True
 
     show_obj.paused = paused
     show_obj.anime = anime
+    show_obj.scene = scene
     show_obj.search_format = int(search_format)
     show_obj.subtitles = subtitles
     show_obj.sub_use_sr_metadata = sub_use_sr_metadata
@@ -697,6 +700,7 @@ class EditShowHandler(BaseHandler, ABC):
         indexer_lang = self.get_argument('indexerLang', None)
         subtitles = self.get_argument('subtitles', None)
         sub_use_sr_metadata = self.get_argument('sub_use_sr_metadata', None)
+        scene = self.get_argument('scene', None)
         skip_downloaded = self.get_argument('skip_downloaded', None)
         rls_ignore_words = self.get_argument('rls_ignore_words', None)
         rls_require_words = self.get_argument('rls_require_words', None)
@@ -712,7 +716,7 @@ class EditShowHandler(BaseHandler, ABC):
                                     dvdorder=dvdorder, indexer_lang=indexer_lang, subtitles=subtitles, sub_use_sr_metadata=sub_use_sr_metadata,
                                     skip_downloaded=skip_downloaded, rls_ignore_words=rls_ignore_words, rls_require_words=rls_require_words, anime=anime,
                                     blacklist=blacklist, whitelist=whitelist, default_ep_status=default_ep_status, quality_preset=quality_preset,
-                                    search_delay=search_delay)
+                                    scene=scene, search_delay=search_delay)
 
         if direct_call:
             return json_encode({'result': 'success'}) if status is True else json_encode({'result': 'error', 'message': message})
@@ -758,6 +762,9 @@ class MassEditHandler(BaseHandler, ABC):
         subtitles_all_same = True
         last_subtitles = None
 
+        scene_all_same = True
+        last_scene = None
+
         search_format_all_same = True
         last_search_format = None
 
@@ -774,6 +781,13 @@ class MassEditHandler(BaseHandler, ABC):
                     skip_downloaded_all_same = False
                 else:
                     last_skip_downloaded = curShow.skip_downloaded
+
+            if scene_all_same:
+                # if we had a value already and this value is different then they're not all the same
+                if last_scene not in (None, curShow.scene):
+                    scene_all_same = False
+                else:
+                    last_scene = curShow.scene
 
             # if we know they're not all the same then no point even bothering
             if paused_all_same:
@@ -850,6 +864,7 @@ class MassEditHandler(BaseHandler, ABC):
     @authenticated
     async def post(self, *args, **kwargs):
         skip_downloaded = self.get_argument('skip_downloaded', None)
+        scene = self.get_argument('scene', None)
         paused = self.get_argument('paused', None)
         default_ep_status = self.get_argument('default_ep_status', None)
         anime = self.get_argument('anime', None)
@@ -898,6 +913,12 @@ class MassEditHandler(BaseHandler, ABC):
                 new_skip_downloaded = True if skip_downloaded == 'enable' else False
             new_skip_downloaded = 'on' if new_skip_downloaded else 'off'
 
+            if scene == 'keep':
+                new_scene = show_obj.scene
+            else:
+                new_scene = True if scene == 'enable' else False
+            new_scene = 'on' if new_scene else 'off'
+
             if paused == 'keep':
                 new_paused = show_obj.paused
             else:
@@ -940,7 +961,8 @@ class MassEditHandler(BaseHandler, ABC):
 
             status, message = edit_show(show=curShow, location=new_show_dir, any_qualities=any_qualities, best_qualities=best_qualities, exceptions_list=[],
                                         default_ep_status=new_default_ep_status, skip_downloaded=new_skip_downloaded, flatten_folders=new_flatten_folders,
-                                        paused=new_paused, search_format=new_search_format, subtitles=new_subtitles, anime=new_anime, direct_call=True)
+                                        paused=new_paused, search_format=new_search_format, subtitles=new_subtitles, anime=new_anime,
+                                        scene=new_scene, direct_call=True)
 
             if status is False:
                 cur_warnings += json_decode(message)['warnings']

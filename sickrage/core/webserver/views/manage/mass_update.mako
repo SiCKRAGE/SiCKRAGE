@@ -68,6 +68,7 @@
                                 <th>${_('Show Directory')}</th>
                                 <th class="col-legend">${_('Search Format')}</th>
                                 <th class="col-quality">${_('Quality')}</th>
+                                <th class="col-legend">${_('Scene')}</th>
                                 <th class="col-legend">${_('Anime')}</th>
                                 <th class="col-legend">${_('Season folders')}</th>
                                 <th class="col-legend">${_('Skip downloaded')}</th>
@@ -113,6 +114,10 @@
                                         <td class="table-fit">
                                             <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(not curShow.flatten_folders)]}"></i>
                                             <span class="d-none d-print-inline">${bool(not curShow.flatten_folders)}</span>
+                                        </td>
+                                        <td class="table-fit">
+                                            <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(curShow.scene)]}"></i>
+                                            <span class="d-none d-print-inline">${bool(curShow.scene)}</span>
                                         </td>
                                         <td class="table-fit">
                                             <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(curShow.skip_downloaded)]}"></i>

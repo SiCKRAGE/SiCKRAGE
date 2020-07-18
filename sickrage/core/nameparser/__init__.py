@@ -31,7 +31,6 @@ from sqlalchemy import orm
 
 import sickrage
 from sickrage.core import common
-from sickrage.core.common import SearchFormats
 from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import remove_extension, strip_accents
 from sickrage.core.nameparser import regexes
@@ -278,7 +277,7 @@ class NameParser(object):
                     s = season_number
                     e = epNo
 
-                    if show_obj.search_format == SearchFormats.SCENE and not skip_scene_detection:
+                    if show_obj.scene and not skip_scene_detection:
                         (s, e) = get_indexer_numbering(show_obj.indexer_id,
                                                        show_obj.indexer,
                                                        season_number,
@@ -290,7 +289,7 @@ class NameParser(object):
                 for epAbsNo in best_result.ab_episode_numbers:
                     a = epAbsNo
 
-                    if show_obj.search_format == SearchFormats.SCENE:
+                    if show_obj.scene:
                         scene_result = show_obj.get_scene_exception_by_name(best_result.series_name)
                         if scene_result:
                             a = get_indexer_absolute_numbering(show_obj.indexer_id,
@@ -308,7 +307,7 @@ class NameParser(object):
                     s = best_result.season_number
                     e = epNo
 
-                    if show_obj.search_format == SearchFormats.SCENE and not skip_scene_detection:
+                    if show_obj.scene and not skip_scene_detection:
                         (s, e) = get_indexer_numbering(show_obj.indexer_id,
                                                        show_obj.indexer,
                                                        best_result.season_number,
@@ -347,7 +346,7 @@ class NameParser(object):
                 best_result.episode_numbers = new_episode_numbers
                 best_result.season_number = new_season_numbers[0]
 
-            if show_obj.search_format == SearchFormats.SCENE and not skip_scene_detection:
+            if show_obj.scene and not skip_scene_detection:
                 sickrage.app.log.debug("Scene converted parsed result {} into {}".format(best_result.original_name, best_result))
 
         # CPU sleep

@@ -1766,6 +1766,7 @@ class CMD_Show(ApiCall):
         showDict["subtitles"] = (0, 1)[showObj.subtitles]
         showDict["search_format"] = showObj.search_format
         showDict["flatten_folders"] = (0, 1)[showObj.flatten_folders]
+        showDict["scene"] = (0, 1)[showObj.scene]
         showDict["anime"] = (0, 1)[showObj.anime]
         showDict["airs"] = str(showObj.airs).replace('am', ' AM').replace('pm', ' PM').replace('  ', ' ')
         showDict["dvdorder"] = (0, 1)[showObj.dvdorder]
@@ -1898,6 +1899,7 @@ class CMD_ShowAddNew(ApiCall):
             "lang": {"desc": "The 2-letter language code of the desired show"},
             "subtitles": {"desc": "True to search for subtitles, False otherwise"},
             "anime": {"desc": "True to mark the show as an anime, False otherwise"},
+            "scene": {"desc": "True to use scene numbering, False otherwise"},
             "search_format": {"desc": "The search format used when searching for episodes"},
             "future_status": {"desc": "The status of future episodes"},
             "skip_downloaded": {
@@ -1925,8 +1927,8 @@ class CMD_ShowAddNew(ApiCall):
                                             self.valid_languages.keys(), *args, **kwargs)
         self.subtitles, args = self.check_params("subtitles", bool(sickrage.app.config.use_subtitles), False,
                                                  "bool", [], *args, **kwargs)
-        self.anime, args = self.check_params("anime", bool(sickrage.app.config.anime_default), False, "bool", [],
-                                             *args, **kwargs)
+        self.scene, args = self.check_params("scene", bool(sickrage.app.config.scene_default), False, "bool", [], *args, **kwargs)
+        self.anime, args = self.check_params("anime", bool(sickrage.app.config.anime_default), False, "bool", [], *args, **kwargs)
         self.search_format, args = self.check_params("search_format", int(sickrage.app.config.search_format_default), False, "int", [],
                                                      *args, **kwargs)
         self.future_status, args = self.check_params("future_status", None, False, "string",
@@ -2041,7 +2043,7 @@ class CMD_ShowAddNew(ApiCall):
 
         sickrage.app.show_queue.add_show(
             int(indexer), int(self.indexerid), show_path, default_status=new_status, quality=new_quality,
-            flatten_folders=int(self.flatten_folders), lang=self.lang, subtitles=self.subtitles, anime=self.anime,
+            flatten_folders=int(self.flatten_folders), lang=self.lang, subtitles=self.subtitles, anime=self.anime, scene=self.scene,
             search_format=self.search_format, default_status_after=default_ep_status_after, skip_downloaded=self.skip_downloaded
         )
 
