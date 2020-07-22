@@ -43,21 +43,44 @@ class MainDB(SRDatabase):
         def remove_duplicate_shows():
             session = self.session()
 
-            duplicates = session.query(self.TVShow, func.count(self.TVShow.indexer_id).label('count')). \
-                group_by(self.TVShow.indexer_id). \
-                having(literal_column('count') > 1)
+            # count by indexer ID
+            duplicates = session.query(
+                self.TVShow.indexer_id,
+                func.count(self.TVShow.indexer_id).label('count')
+            ). group_by(
+                self.TVShow.indexer_id
+            ). having(literal_column('count') > 1).all()
 
             for cur_duplicate in duplicates:
-                session.query(self.TVShow).filter_by(showid=cur_duplicate['indexer_id']).\
-                    limit(int(cur_duplicate['count']) - 1).delete()
+                session.query(self.TVShow).filter_by(showid=cur_duplicate['indexer_id']). limit(int(cur_duplicate['count']) - 1).delete()
                 session.commit()
 
         def remove_duplicate_episodes():
             session = self.session()
 
-            duplicates = session.query(self.TVEpisode, func.count(self.TVEpisode.showid).label('count')). \
-                group_by(self.TVEpisode.showid, self.TVEpisode.season, self.TVEpisode.episode). \
-                having(literal_column('count') > 1)
+            # count by show ID
+            duplicates = session.query(
+                self.TVEpisode.showid,
+                self.TVEpisode.season,
+                self.TVEpisode.episode,
+                func.count(self.TVEpisode.showid).label('count')
+            ).group_by(
+                self.TVEpisode.showid,
+                self.TVEpisode.season,
+                self.TVEpisode.episode
+            ).having(literal_column('count') > 1).all()
+
+            # count by indexer ID
+            duplicates += session.query(
+                self.TVEpisode.showid,
+                self.TVEpisode.season,
+                self.TVEpisode.episode,
+                func.count(self.TVEpisode.indexer_id).label('count')
+            ).group_by(
+                self.TVEpisode.showid,
+                self.TVEpisode.season,
+                self.TVEpisode.episode
+            ).having(literal_column('count') > 1).all()
 
             for cur_duplicate in duplicates:
                 session.query(self.TVEpisode). \
@@ -65,8 +88,15 @@ class MainDB(SRDatabase):
                     limit(int(cur_duplicate['count']) - 1).delete()
                 session.commit()
 
+        def remove_invalid_episodes():
+            session = self.session()
+
+            session.query(self.TVEpisode).filter_by(indexer_id=0).delete()
+            session.commit()
+
         remove_duplicate_shows()
         remove_duplicate_episodes()
+        remove_invalid_episodes()
 
     class TVShow(MainDBBase):
         __tablename__ = 'tv_shows'

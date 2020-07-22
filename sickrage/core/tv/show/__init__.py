@@ -696,6 +696,37 @@ class TVShow(object):
                 sickrage.app.log.debug("No entries for absolute number: " + str(absolute_number) + " in show: " + self.name + " found.")
             raise EpisodeNotFoundException
 
+    def delete_episode(self, season, episode, full=False):
+        episode_object = self.get_episode(season, episode, no_create=True)
+        if not episode_object:
+            return
+
+        data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate([(episode_object.season, episode_object.episode)])
+        if sickrage.app.config.use_trakt and sickrage.app.config.trakt_sync_watchlist and data:
+            sickrage.app.log.debug("Deleting episode from Trakt")
+            sickrage.app.notifier_providers['trakt'].update_watchlist(self, data_episode=data, update="remove")
+
+        if full and os.path.isfile(episode_object.location):
+            sickrage.app.log.info('Attempt to delete episode file %s' % episode_object.location)
+
+            try:
+                os.remove(episode_object.location)
+            except OSError as e:
+                sickrage.app.log.warning('Unable to delete episode file %s: %s / %s' % (episode_object.location, repr(e), str(e)))
+
+        # delete episode from show episode cache
+        sickrage.app.log.debug("Deleting %s S%02dE%02d from the shows episode cache" % (self.name, episode_object.season or 0, episode_object.episode or 0))
+        try:
+            del self._episodes[episode_object.indexer_id]
+        except KeyError:
+            pass
+
+        # delete episode from database
+        sickrage.app.log.debug("Deleting %s S%02dE%02d from the DB" % (self.name, episode_object.season or 0, episode_object.episode or 0))
+        episode_object.delete()
+
+        raise EpisodeDeletedException()
+
     def write_show_nfo(self, force=False):
         result = False
 

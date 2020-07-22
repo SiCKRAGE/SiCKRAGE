@@ -430,7 +430,7 @@ class TVEpisode(object):
 
             # if I'm no longer on the Indexers but I once was then delete myself from the DB
             if self.indexer_id != 0:
-                self.show.get_episode(season, episode).delete_episode()
+                self.show.delete_episode(season, episode)
                 raise EpisodeDeletedException
 
             return False
@@ -438,7 +438,7 @@ class TVEpisode(object):
         self.indexer_id = try_int(safe_getattr(myEp, 'id'), self.indexer_id)
         if not self.indexer_id:
             sickrage.app.log.warning("Failed to retrieve ID from " + IndexerApi(self.indexer).name)
-            self.show.get_episode(season, episode).delete_episode()
+            self.show.delete_episode(season, episode)
             return False
 
         self.name = safe_getattr(myEp, 'episodename', self.name)
@@ -481,7 +481,7 @@ class TVEpisode(object):
                 firstaired, indexer_name, self.show.name, int(season or 0), int(episode or 0)))
 
             # if I'm incomplete on the indexer but I once was complete then just delete myself from the DB for now
-            self.show.get_episode(season, episode).delete_episode()
+            self.show.delete_episode(season, episode)
             return False
 
         # don't update show status if show dir is missing, unless it's missing on purpose
@@ -649,30 +649,6 @@ class TVEpisode(object):
             result = cur_provider.create_episode_thumb(self, force) or result
 
         return result
-
-    def delete_episode(self, full=False):
-        data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate([(self.season, self.episode)])
-        if sickrage.app.config.use_trakt and sickrage.app.config.trakt_sync_watchlist and data:
-            sickrage.app.log.debug("Deleting myself from Trakt")
-            sickrage.app.notifier_providers['trakt'].update_watchlist(self.show, data_episode=data, update="remove")
-
-        if full and os.path.isfile(self.location):
-            sickrage.app.log.info('Attempt to delete episode file %s' % self.location)
-            try:
-                os.remove(self.location)
-            except OSError as e:
-                sickrage.app.log.warning('Unable to delete episode file %s: %s / %s' % (self.location, repr(e), str(e)))
-
-        # delete myself from show episode cache
-        if self.indexer_id in self.show.episodes:
-            sickrage.app.log.debug("Deleting %s S%02dE%02d from the shows episode cache" % (self.show.name, self.season or 0, self.episode or 0))
-            del self.show._episodes[self.indexer_id]
-
-        # delete myself from the database
-        sickrage.app.log.debug("Deleting %s S%02dE%02d from the DB" % (self.show.name, self.season or 0, self.episode or 0))
-        self.delete()
-
-        raise EpisodeDeletedException()
 
     def fullPath(self):
         if self.location is None or self.location == "":

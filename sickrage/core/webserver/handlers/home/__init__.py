@@ -1390,10 +1390,8 @@ class DeleteEpisodeHandler(BaseHandler, ABC):
                 episode = int(ep_info[1])
 
                 try:
-                    tv_episode = show_obj.get_episode(season, episode)
-                    tv_episode.delete_episode(full=True)
-                except EpisodeNotFoundException:
-                    return self._genericMessage(_("Error"), _("Episode couldn't be retrieved"))
+                    if not show_obj.delete_episode(season, episode, full=True):
+                        return self._genericMessage(_("Error"), _("Episode couldn't be retrieved"))
                 except EpisodeDeletedException:
                     pass
 

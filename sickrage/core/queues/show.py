@@ -542,12 +542,10 @@ class ShowTaskUpdate(ShowTask):
             for curSeason in db_episodes:
                 for curEpisode in db_episodes[curSeason]:
                     sickrage.app.log.info("Permanently deleting episode " + str(curSeason) + "x" + str(curEpisode) + " from the database")
-                    episode_obj = show_obj.get_episode(curSeason, curEpisode, no_create=True)
-                    if episode_obj:
-                        try:
-                            episode_obj.delete_episode()
-                        except EpisodeDeletedException:
-                            continue
+                    try:
+                        show_obj.delete_episode(curSeason, curEpisode)
+                    except EpisodeDeletedException:
+                        continue
 
         show_obj.retrieve_scene_exceptions()
 
