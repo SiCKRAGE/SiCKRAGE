@@ -481,7 +481,7 @@ class Config(object):
         self.fanart_background_opacity = 0.4
 
         self.unrar_tool = rarfile.UNRAR_TOOL
-        self.unrar_alt_tool = rarfile.ALT_TOOL
+        # self.unrar_alt_tool = rarfile.ALT_TOOL
 
         self.view_changelog = False
 
@@ -1076,7 +1076,7 @@ class Config(object):
 
         # These must always be set to something before returning
         self.unrar_tool = rarfile.UNRAR_TOOL = rarfile.ORIG_UNRAR_TOOL = unrar_tool
-        self.unrar_alt_tool = rarfile.ALT_TOOL = unrar_alt_tool
+        # self.unrar_alt_tool = rarfile.ALT_TOOL = unrar_alt_tool
 
         try:
             rarfile._check_unrar_tool()
