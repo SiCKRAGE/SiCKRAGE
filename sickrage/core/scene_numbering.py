@@ -468,39 +468,26 @@ def xem_refresh(indexer_id, indexer, force=False):
     Refresh data from xem for a tv show
 
     :param indexer_id: int
+    :param indexer: int
+    :param force: boolean
     """
+
     if not indexer_id:
         return
 
-    session = sickrage.app.main_db.session()
+    max_refresh_age_secs = 86400  # 1 day
 
     indexer_id = int(indexer_id)
     indexer = int(indexer)
 
-    MAX_REFRESH_AGE_SECS = 86400  # 1 day
+    show_object = find_show(indexer_id, indexer)
 
-    try:
-        query = session.query(MainDB.XEMRefresh).filter_by(indexer_id=indexer_id).one()
-        last_refresh = query.last_refreshed
-        refresh = int(time.mktime(datetime.datetime.today().timetuple())) > last_refresh + MAX_REFRESH_AGE_SECS
-    except orm.exc.NoResultFound:
-        refresh = True
-
-    if refresh or force:
+    if int(time.mktime(datetime.datetime.today().timetuple())) > show_object.last_xem_refresh + max_refresh_age_secs or force:
         sickrage.app.log.debug('Looking up XEM scene mapping for show %s on %s' % (indexer_id, IndexerApi(indexer).name))
 
-        # mark refreshed
-        try:
-            query = session.query(MainDB.XEMRefresh).filter_by(indexer_id=indexer_id).one()
-            query.last_refreshed = int(time.mktime(datetime.datetime.today().timetuple()))
-        except orm.exc.NoResultFound:
-            session.add(MainDB.XEMRefresh(**{
-                'indexer': indexer,
-                'last_refreshed': int(time.mktime(datetime.datetime.today().timetuple())),
-                'indexer_id': indexer_id
-            }))
-        finally:
-            session.commit()
+        # mark xem refreshed
+        show_object.last_xem_refresh = int(time.mktime(datetime.datetime.today().timetuple()))
+        show_object.save()
 
         try:
             try:
@@ -527,24 +514,23 @@ def xem_refresh(indexer_id, indexer, force=False):
                 sickrage.app.log.info('No XEM data for show "%s on %s"' % (indexer_id, IndexerApi(indexer).name,))
                 return
 
-            tv_show = find_show(indexer_id)
             for entry in parsed_json['data']:
                 try:
-                    tv_episode = tv_show.get_episode(season=entry[IndexerApi(indexer).config['xem_origin']]['season'],
-                                                     episode=entry[IndexerApi(indexer).config['xem_origin']]['episode'])
+                    episode_object = show_object.get_episode(season=entry[IndexerApi(indexer).config['xem_origin']]['season'],
+                                                             episode=entry[IndexerApi(indexer).config['xem_origin']]['episode'])
                 except SiCKRAGETVEpisodeException:
                     continue
 
                 if 'scene' in entry:
-                    tv_episode.scene_season = entry['scene']['season']
-                    tv_episode.scene_episode = entry['scene']['episode']
-                    tv_episode.scene_absolute_number = entry['scene']['absolute']
+                    episode_object.scene_season = entry['scene']['season']
+                    episode_object.scene_episode = entry['scene']['episode']
+                    episode_object.scene_absolute_number = entry['scene']['absolute']
                 if 'scene_2' in entry:  # for doubles
-                    tv_episode.scene_season = entry['scene_2']['season']
-                    tv_episode.scene_episode = entry['scene_2']['episode']
-                    tv_episode.scene_absolute_number = entry['scene_2']['absolute']
+                    episode_object.scene_season = entry['scene_2']['season']
+                    episode_object.scene_episode = entry['scene_2']['episode']
+                    episode_object.scene_absolute_number = entry['scene_2']['absolute']
 
-                tv_episode.save()
+                episode_object.save()
         except Exception as e:
             sickrage.app.log.debug("Exception while refreshing XEM data for show {} on {}: {}".format(indexer_id, IndexerApi(indexer).name, e))
             sickrage.app.log.debug(traceback.format_exc())

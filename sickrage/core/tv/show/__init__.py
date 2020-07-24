@@ -355,6 +355,14 @@ class TVShow(object):
         self._data_local['last_scene_exceptions_refresh'] = value
 
     @property
+    def last_xem_refresh(self):
+        return self._data_local['last_xem_refresh']
+
+    @last_xem_refresh.setter
+    def last_xem_refresh(self, value):
+        self._data_local['last_xem_refresh'] = value
+
+    @property
     def episodes(self):
         if not self._episodes:
             with sickrage.app.main_db.session() as session:
@@ -1034,7 +1042,6 @@ class TVShow(object):
             session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id).delete()
             session.query(MainDB.TVEpisode).filter_by(showid=self.indexer_id).delete()
             session.query(MainDB.IMDbInfo).filter_by(indexer_id=self.indexer_id).delete()
-            session.query(MainDB.XEMRefresh).filter_by(indexer_id=self.indexer_id).delete()
             session.query(MainDB.SceneNumbering).filter_by(indexer_id=self.indexer_id).delete()
             self.save()
 

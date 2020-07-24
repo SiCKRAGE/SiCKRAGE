@@ -320,7 +320,7 @@ class NameParser(object):
                     new_episode_numbers.append(e)
                     new_season_numbers.append(s)
 
-            # need to do a quick sanity check heregex.  It's possible that we now have episodes
+            # need to do a quick sanity check here.  It's possible that we now have episodes
             # from more than one season (by tvdb numbering), and this is just too much
             # for sickrage, so we'd need to flag it.
             new_season_numbers = list(set(new_season_numbers))  # remove duplicates

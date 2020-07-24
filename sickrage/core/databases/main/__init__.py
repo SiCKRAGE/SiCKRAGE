@@ -33,7 +33,7 @@ class MainDBBase(SRDatabaseBase):
 
 class MainDB(SRDatabase):
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
-        super(MainDB, self).__init__('main', 13, db_type, db_prefix, db_host, db_port, db_username, db_password)
+        super(MainDB, self).__init__('main', 14, db_type, db_prefix, db_host, db_port, db_username, db_password)
         MainDBBase.metadata.create_all(self.engine)
         for model in MainDBBase._decl_class_registry.values():
             if hasattr(model, '__tablename__'):
@@ -132,6 +132,7 @@ class MainDB(SRDatabase):
         search_delay = Column(Integer, default=0)
         scene_exceptions = Column(Text, default='')
         last_scene_exceptions_refresh = Column(Integer, default=0)
+        last_xem_refresh = Column(Integer, default=0)
         last_update = Column(Integer, default=datetime.datetime.now().toordinal())
         last_refresh = Column(Integer, default=datetime.datetime.now().toordinal())
         last_backlog_search = Column(Integer, default=0)
@@ -208,13 +209,6 @@ class MainDB(SRDatabase):
         year = Column(Text)
         plot = Column(Text)
         last_update = Column(Integer, nullable=False)
-
-    class XEMRefresh(MainDBBase):
-        __tablename__ = 'xem_refresh'
-
-        indexer_id = Column(Integer, primary_key=True)
-        indexer = Column(Integer, primary_key=True)
-        last_refreshed = Column(Integer, nullable=False)
 
     class SceneNumbering(MainDBBase):
         __tablename__ = 'scene_numbering'
