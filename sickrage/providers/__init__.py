@@ -36,7 +36,6 @@ from time import sleep
 from urllib.parse import urljoin
 from xml.sax import SAXParseException
 
-from apscheduler.triggers.interval import IntervalTrigger
 from bencode3 import bdecode, bencode
 from feedparser import FeedParserDict
 from requests.utils import add_dict_to_cookiejar, dict_from_cookiejar
@@ -164,7 +163,7 @@ class GenericProvider(object):
 
         episode_object = show_object.get_episode(season, episode)
 
-        for show_name in all_possible_show_names(show_id, episode_object.scene_season):
+        for show_name in all_possible_show_names(show_id, episode_object.season):
             episode_string = "{}{}".format(show_name, self.search_separator)
 
             if show_object.search_format in [SearchFormats.AIR_BY_DATE, SearchFormats.SPORTS]:
@@ -172,9 +171,9 @@ class GenericProvider(object):
             elif show_object.search_format == SearchFormats.ANIME:
                 episode_string += 'Season'
             elif show_object.search_format == SearchFormats.COLLECTION:
-                episode_string += 'Series {season}'.format(season=int(episode_object.scene_season))
+                episode_string += 'Series {season}'.format(season=episode_object.get_season_episode_numbering()[0])
             else:
-                episode_string += 'S{season:0>2}'.format(season=episode_object.scene_season)
+                episode_string += 'S{season:0>2}'.format(season=episode_object.get_season_episode_numbering()[0])
 
             search_string['Season'].append(episode_string.strip())
 
@@ -195,7 +194,7 @@ class GenericProvider(object):
 
         episode_object = show_object.get_episode(season, episode)
 
-        for show_name in all_possible_show_names(show_id, episode_object.scene_season):
+        for show_name in all_possible_show_names(show_id, episode_object.season):
             episode_string = "{}{}".format(show_name, self.search_separator)
             episode_string_fallback = None
 
@@ -207,26 +206,27 @@ class GenericProvider(object):
                 episode_string += episode_object.airdate.strftime('%b')
             elif show_object.search_format == SearchFormats.ANIME:
                 # If the show name is a season scene exception, we want to use the indexer episode number.
-                if episode_object.scene_season > 0 and show_name in show_object.get_scene_exceptions_by_season(episode_object.scene_season):
+                if episode_object.season > 0 and show_name in show_object.get_scene_exceptions_by_season(episode_object.season):
                     # This is apparently a season exception, let's use the scene_episode instead of absolute
-                    ep = episode_object.scene_episode
+                    ep = episode_object.get_season_episode_numbering()[1]
                 else:
-                    ep = episode_object.scene_absolute_number
+                    ep = episode_object.get_absolute_numbering()
 
                 episode_string += '{episode:0>2}'.format(episode=ep)
                 episode_string_fallback = episode_string + '{episode:0>3}'.format(episode=ep)
             elif show_object.search_format == SearchFormats.COLLECTION:
-                episode_string += 'Series {season} {episode}of{episodes}'.format(season=int(episode_object.scene_season),
-                                                                                 episode=int(episode_object.scene_episode),
-                                                                                 episodes=len([x for x in show_object.episodes if x.scene_season == season]))
+                episode_string += 'Series {season} {episode}of{episodes}'.format(season=episode_object.get_season_episode_numbering()[0],
+                                                                                 episode=episode_object.get_season_episode_numbering()[1],
+                                                                                 episodes=len([x for x in show_object.episodes if
+                                                                                               x.episode_object.get_season_episode_numbering()[0] == season]))
                 episode_string_fallback = '{show_name}{search_separator}Series {season} Part {episode}'.format(show_name=show_name,
                                                                                                                search_separator=self.search_separator,
-                                                                                                               season=int(episode_object.scene_season),
-                                                                                                               episode=int(episode_object.scene_episode))
+                                                                                                               season=episode_object.get_season_episode_numbering()[0],
+                                                                                                               episode=episode_object.get_season_episode_numbering()[1])
             else:
                 episode_string += sickrage.app.naming_ep_type[2] % {
-                    'seasonnumber': int(episode_object.scene_season),
-                    'episodenumber': int(episode_object.scene_episode),
+                    'seasonnumber': episode_object.get_season_episode_numbering()[0],
+                    'episodenumber': episode_object.get_season_episode_numbering()[1],
                 }
 
             if add_string:
@@ -360,13 +360,13 @@ class GenericProvider(object):
                     sickrage.app.log.debug("This is supposed to be a season pack search but the result {} is not "
                                            "a valid season pack, skipping it".format(provider_result.name))
                     continue
-                elif parse_result.season_number != (episode_object.season, episode_object.scene_season)[bool(show_object.scene)]:
+                elif parse_result.season_number != episode_object.get_season_episode_numbering[0]:
                     sickrage.app.log.debug("This season result {} is for a season we are not searching for, skipping it".format(provider_result.name))
                     continue
             else:
                 if not all([parse_result.season_number is not None, parse_result.episode_numbers,
-                            parse_result.season_number == (episode_object.season, episode_object.scene_season)[bool(show_object.scene)],
-                            (episode_object.episode, episode_object.scene_episode)[bool(show_object.scene)] in parse_result.episode_numbers]):
+                            parse_result.season_number == episode_object.get_season_episode_numbering[0],
+                            episode_object.get_season_episode_numbering[1] in parse_result.episode_numbers]):
                     sickrage.app.log.debug("The result {} doesn't seem to be a valid episode "
                                            "that we are trying to snatch, ignoring".format(provider_result.name))
                     continue
@@ -1111,8 +1111,7 @@ class NewznabProvider(NZBProvider):
                         search_params['season'] = date_str.partition('-')[0]
                         search_params['ep'] = date_str.partition('-')[2].replace('-', '/')
                     else:
-                        search_params['season'] = episode_object.scene_season
-                        search_params['ep'] = episode_object.scene_episode
+                        search_params['season'], search_params['ep'] = episode_object.get_season_episode_numbering()
 
                 if mode == 'Season':
                     search_params.pop('ep', '')

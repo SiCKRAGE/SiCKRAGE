@@ -837,6 +837,7 @@ class MassEditHandler(BaseHandler, ABC):
         skip_downloaded_value = last_skip_downloaded if skip_downloaded_all_same else None
         default_ep_status_value = last_default_ep_status if default_ep_status_all_same else None
         paused_value = last_paused if paused_all_same else None
+        scene_value = last_scene if scene_all_same else None
         anime_value = last_anime if anime_all_same else None
         flatten_folders_value = last_flatten_folders if flatten_folders_all_same else None
         quality_value = last_quality if quality_all_same else None
@@ -849,6 +850,7 @@ class MassEditHandler(BaseHandler, ABC):
                            skip_downloaded_value=skip_downloaded_value,
                            default_ep_status_value=default_ep_status_value,
                            paused_value=paused_value,
+                           scene_value=scene_value,
                            anime_value=anime_value,
                            flatten_folders_value=flatten_folders_value,
                            quality_value=quality_value,

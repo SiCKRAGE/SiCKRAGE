@@ -1100,16 +1100,13 @@ class DisplayShowHandler(BaseHandler, ABC):
         if show_obj.is_anime:
             bwl = show_obj.release_groups
 
-        indexer_id = int(show_obj.indexer_id)
-        indexer = int(show_obj.indexer)
-
         # Insert most recent show
         for index, recentShow in enumerate(sickrage.app.shows_recent):
-            if recentShow['indexer_id'] == indexer_id:
+            if recentShow['indexer_id'] == show_obj.indexer_id:
                 break
         else:
             sickrage.app.shows_recent.append({
-                'indexer_id': indexer_id,
+                'indexer_id': show_obj.indexer_id,
                 'name': show_obj.name,
             })
 
@@ -1124,10 +1121,10 @@ class DisplayShowHandler(BaseHandler, ABC):
                            bwl=bwl,
                            epCounts=ep_counts,
                            epCats=ep_cats,
-                           scene_numbering=get_scene_numbering_for_show(indexer_id, indexer),
-                           xem_numbering=get_xem_numbering_for_show(indexer_id, indexer),
-                           scene_absolute_numbering=get_scene_absolute_numbering_for_show(indexer_id, indexer),
-                           xem_absolute_numbering=get_xem_absolute_numbering_for_show(indexer_id, indexer),
+                           scene_numbering=get_scene_numbering_for_show(show_obj.indexer_id, show_obj.indexer),
+                           xem_numbering=get_xem_numbering_for_show(show_obj.indexer_id, show_obj.indexer),
+                           scene_absolute_numbering=get_scene_absolute_numbering_for_show(show_obj.indexer_id, show_obj.indexer),
+                           xem_absolute_numbering=get_xem_absolute_numbering_for_show(show_obj.indexer_id, show_obj.indexer),
                            title=show_obj.name,
                            controller='home',
                            action="display_show")
@@ -1664,7 +1661,8 @@ class SetSceneNumberingHandler(BaseHandler, ABC):
                 if scene_absolute is not None:
                     scene_absolute = int(scene_absolute)
 
-                set_scene_numbering(show, indexer, absolute_number=for_absolute, sceneAbsolute=scene_absolute)
+                set_scene_numbering(show, indexer, absolute_number=for_absolute, scene_absolute=scene_absolute)
+                result['sceneAbsolute'] = get_scene_absolute_numbering(show, indexer, for_absolute)
             else:
                 sickrage.app.log.debug("setEpisodeSceneNumbering for %s from %sx%s to %sx%s" % (show, for_season, for_episode, scene_season, scene_episode))
 
@@ -1677,20 +1675,8 @@ class SetSceneNumberingHandler(BaseHandler, ABC):
                 if scene_episode is not None:
                     scene_episode = int(scene_episode)
 
-                set_scene_numbering(show, indexer, season=for_season, episode=for_episode, sceneSeason=scene_season, sceneEpisode=scene_episode)
-
-            if show_obj.is_anime:
-                sn = get_scene_absolute_numbering(show, indexer, for_absolute)
-                if sn:
-                    result['sceneAbsolute'] = sn
-                else:
-                    result['sceneAbsolute'] = None
-            else:
-                sn = get_scene_numbering(show, indexer, for_season, for_episode)
-                if sn:
-                    (result['sceneSeason'], result['sceneEpisode']) = sn
-                else:
-                    (result['sceneSeason'], result['sceneEpisode']) = (None, None)
+                set_scene_numbering(show, indexer, season=for_season, episode=for_episode, scene_season=scene_season, scene_episode=scene_episode)
+                (result['sceneSeason'], result['sceneEpisode']) = get_scene_numbering(show, indexer, for_season, for_episode)
         except (EpisodeNotFoundException, MultipleEpisodesInDatabaseException):
             result['errorMessage'] = _("Episode couldn't be retrieved")
             result['success'] = False

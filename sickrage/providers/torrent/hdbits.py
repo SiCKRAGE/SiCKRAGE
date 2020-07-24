@@ -77,12 +77,12 @@ class HDBitsProvider(TorrentProvider):
         elif show_object.search_format == SearchFormats.ANIME:
             post_data['tvdb'] = {
                 'id': show_id,
-                'season': "%d" % episode_object.scene_absolute_number,
+                'season': "%d" % episode_object.get_absolute_numbering(),
             }
         else:
             post_data['tvdb'] = {
                 'id': show_id,
-                'season': episode_object.scene_season,
+                'season': episode_object.get_season_episode_numbering()[0],
             }
 
         return [post_data]
@@ -114,13 +114,13 @@ class HDBitsProvider(TorrentProvider):
         elif show_object.search_format == SearchFormats.ANIME:
             post_data['tvdb'] = {
                 'id': show_id,
-                'episode': "%i" % int(episode_object.scene_absolute_number)
+                'episode': "%i" % episode_object.get_absolute_numbering()
             }
         else:
             post_data['tvdb'] = {
                 'id': show_id,
-                'season': episode_object.scene_season,
-                'episode': episode_object.scene_episode
+                'season': episode_object.get_season_episode_numbering()[0],
+                'episode': episode_object.get_season_episode_numbering()[1]
             }
 
         return [post_data]

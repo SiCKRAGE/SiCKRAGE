@@ -53,24 +53,16 @@ class TVEpisode(object):
                 query = session.query(MainDB.TVEpisode).filter_by(showid=showid, indexer=indexer, season=season, episode=episode).one()
                 self._data_local = query.as_dict()
             except orm.exc.NoResultFound:
-                session.add(MainDB.TVEpisode(**{
+                self._data_local = MainDB.TVEpisode().as_dict()
+                self._data_local.update(**{
                     'showid': showid,
                     'indexer': indexer,
                     'season': season,
                     'episode': episode,
                     'location': location
-                }))
-
-                try:
-                    session.commit()
-                except Exception as e:
-                    pass
-
-                query = session.query(MainDB.TVEpisode).filter_by(showid=showid, indexer=indexer, season=season, episode=episode).one()
-                self._data_local = query.as_dict()
+                })
 
                 self.populate_episode(season, episode)
-                # self.checkForMetaFiles()
 
     @property
     def showid(self):
@@ -113,6 +105,14 @@ class TVEpisode(object):
         self._data_local['episode'] = value
 
     @property
+    def absolute_number(self):
+        return self._data_local['absolute_number']
+
+    @absolute_number.setter
+    def absolute_number(self, value):
+        self._data_local['absolute_number'] = value
+
+    @property
     def scene_season(self):
         return self._data_local['scene_season']
 
@@ -127,6 +127,38 @@ class TVEpisode(object):
     @scene_episode.setter
     def scene_episode(self, value):
         self._data_local['scene_episode'] = value
+
+    @property
+    def scene_absolute_number(self):
+        return self._data_local['scene_absolute_number']
+
+    @scene_absolute_number.setter
+    def scene_absolute_number(self, value):
+        self._data_local['scene_absolute_number'] = value
+
+    @property
+    def xem_season(self):
+        return self._data_local['xem_season']
+
+    @xem_season.setter
+    def xem_season(self, value):
+        self._data_local['xem_season'] = value
+
+    @property
+    def xem_episode(self):
+        return self._data_local['xem_episode']
+
+    @xem_episode.setter
+    def xem_episode(self, value):
+        self._data_local['xem_episode'] = value
+
+    @property
+    def xem_absolute_number(self):
+        return self._data_local['xem_absolute_number']
+
+    @xem_absolute_number.setter
+    def xem_absolute_number(self, value):
+        self._data_local['xem_absolute_number'] = value
 
     @property
     def name(self):
@@ -235,22 +267,6 @@ class TVEpisode(object):
         self._data_local['is_proper'] = value
 
     @property
-    def absolute_number(self):
-        return self._data_local['absolute_number']
-
-    @absolute_number.setter
-    def absolute_number(self, value):
-        self._data_local['absolute_number'] = value
-
-    @property
-    def scene_absolute_number(self):
-        return self._data_local['scene_absolute_number']
-
-    @scene_absolute_number.setter
-    def scene_absolute_number(self, value):
-        self._data_local['scene_absolute_number'] = value
-
-    @property
     def version(self):
         return self._data_local['version']
 
@@ -278,18 +294,20 @@ class TVEpisode(object):
         return [x for x in self.show.episodes if x.location and x.location == self.location and x.season == self.season and x.episode != self.episode]
 
     def save(self):
-        with sickrage.app.main_db.session() as session:
-            query = session.query(MainDB.TVEpisode).filter_by(showid=self.showid,
-                                                              indexer=self.indexer,
-                                                              season=self.season,
-                                                              episode=self.episode).one_or_none()
-            if query:
+        with self.lock, sickrage.app.main_db.session() as session:
+            try:
+                query = session.query(MainDB.TVEpisode).filter_by(showid=self.showid,
+                                                                  indexer=self.indexer,
+                                                                  season=self.season,
+                                                                  episode=self.episode).one()
                 query.update(**self._data_local)
-
-            session.commit()
+            except orm.exc.NoResultFound:
+                session.add(MainDB.TVEpisode(**self._data_local))
+            finally:
+                session.commit()
 
     def delete(self):
-        with sickrage.app.main_db.session() as session:
+        with self.lock, sickrage.app.main_db.session() as session:
             session.query(MainDB.TVEpisode).filter_by(showid=self.showid,
                                                       indexer=self.indexer,
                                                       season=self.season,
@@ -457,16 +475,16 @@ class TVEpisode(object):
         self.season = season
         self.episode = episode
 
-        self.scene_absolute_number = get_scene_absolute_numbering(
-            self.show.indexer_id,
-            self.show.indexer,
-            self.absolute_number
-        )
-
         self.scene_season, self.scene_episode = get_scene_numbering(
             self.show.indexer_id,
             self.show.indexer,
             self.season, self.episode
+        )
+
+        self.scene_absolute_number = get_scene_absolute_numbering(
+            self.show.indexer_id,
+            self.show.indexer,
+            self.absolute_number
         )
 
         self.description = safe_getattr(myEp, 'overview', self.description)
@@ -1256,6 +1274,22 @@ class TVEpisode(object):
         delete_empty_folders(os.path.dirname(cur_path))
 
         return True
+
+    def get_season_episode_numbering(self):
+        if self.show.scene and self.scene_season != -1 and self.scene_episode != -1:
+            return self.scene_season, self.scene_episode
+        elif self.show.scene and self.xem_season != -1 and self.xem_episode != -1:
+            return self.xem_season, self.xem_season
+        else:
+            return self.season, self.episode
+
+    def get_absolute_numbering(self):
+        if self.show.scene and self.scene_absolute_number != -1:
+            return self.scene_absolute_number
+        elif self.show.scene and self.xem_absolute_number != -1:
+            return self.xem_absolute_number
+        else:
+            return self.absolute_number
 
     def __unicode__(self):
         to_return = ""

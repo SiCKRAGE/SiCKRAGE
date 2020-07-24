@@ -68,9 +68,9 @@ class TVChaosUKProvider(TorrentProvider):
                 if show_object.search_format in [SearchFormats.AIR_BY_DATE, SearchFormats.SPORTS]:
                     season_string += str(episode_object.airdate).split('-')[0]
                 elif show_object.search_format == SearchFormats.ANIME:
-                    season_string += '%d' % episode_object.scene_absolute_number
+                    season_string += '%d' % episode_object.get_absolute_numbering()
                 else:
-                    season_string += '%d' % int(episode_object.scene_season)
+                    season_string += '%d' % episode_object.get_season_episode_numbering()[0]
 
                 search_string['Season'].append(re.sub(r'\s+', ' ', season_string.replace('.', ' ').strip()))
 
@@ -94,10 +94,10 @@ class TVChaosUKProvider(TorrentProvider):
                 elif show_object.search_format == SearchFormats.SPORTS:
                     ep_string += str(episode_object.airdate).replace('-', '|') + '|' + episode_object.airdate.strftime('%b')
                 elif show_object.search_format == SearchFormats.ANIME:
-                    ep_string += '%i' % int(episode_object.scene_absolute_number)
+                    ep_string += '%i' % episode_object.get_absolute_numbering()
                 else:
-                    ep_string += sickrage.app.naming_ep_type[2] % {'seasonnumber': episode_object.scene_season,
-                                                                   'episodenumber': episode_object.scene_episode}
+                    ep_string += sickrage.app.naming_ep_type[2] % {'seasonnumber': episode_object.get_season_episode_numbering()[0],
+                                                                   'episodenumber': episode_object.get_season_episode_numbering()[1]}
 
                 if add_string:
                     ep_string += ' %s' % add_string

@@ -151,20 +151,19 @@ def scene_to_normal_show_names(name):
 
 def make_scene_show_search_strings(show_id, season=-1, anime=False):
     """
-
     :rtype: list[unicode]
     """
-    showNames = all_possible_show_names(show_id, season=season)
+    show_names = all_possible_show_names(show_id, season=season)
 
     # scenify the names
     if anime:
-        sanitizeSceneNameAnime = partial(sanitize_scene_name, anime=True)
-        return map(sanitizeSceneNameAnime, showNames)
+        sanitize_scene_name_anime = partial(sanitize_scene_name, anime=True)
+        return map(sanitize_scene_name_anime, show_names)
     else:
-        return map(sanitize_scene_name, showNames)
+        return map(sanitize_scene_name, show_names)
 
 
-def make_scene_season_search_string(show_id, season, episode, extraSearchType=None):
+def make_scene_season_search_string(show_id, season, episode, extraSearchType=None):  # TODO: remove as this is no longer needed
     numseasons = 0
 
     show_object = find_show(show_id)
@@ -183,22 +182,18 @@ def make_scene_season_search_string(show_id, season, episode, extraSearchType=No
         # compile a list of all the episode numbers we need in this 'season'
         seasonStrings = []
         for episode in (x for x in show_object.episodes if x.season == episode_object.season):
-
             # get quality of the episode
             curCompositeStatus = episode.status
             curStatus, curQuality = common.Quality.split_composite_status(curCompositeStatus)
 
+            highestBestQuality = 0
             if bestQualities:
                 highestBestQuality = max(bestQualities)
-            else:
-                highestBestQuality = 0
 
             # if we need a better one then add it to the list of episodes to fetch
-            if (curStatus in (
-                    common.DOWNLOADED,
-                    common.SNATCHED) and curQuality < highestBestQuality) or curStatus == common.WANTED:
+            if (curStatus in (common.DOWNLOADED, common.SNATCHED) and curQuality < highestBestQuality) or curStatus == common.WANTED:
                 ab_number = episode.scene_absolute_number
-                if ab_number > 0:
+                if ab_number > -1:
                     seasonStrings.append("%02d" % ab_number)
     else:
         numseasons = len(set([s.season for s in show_object.episodes if s.season > 0]))
@@ -229,7 +224,7 @@ def make_scene_season_search_string(show_id, season, episode, extraSearchType=No
     return toReturn
 
 
-def make_scene_search_string(show_id, season, episode):
+def make_scene_search_string(show_id, season, episode):  # TODO: remove as this is no longer needed
     toReturn = []
 
     show_object = find_show(show_id)

@@ -58,21 +58,17 @@ class TVShow(object):
                 query = session.query(MainDB.TVShow).filter_by(indexer_id=indexer_id, indexer=indexer).one()
                 self._data_local = query.as_dict()
             except orm.exc.NoResultFound:
-                session.add(MainDB.TVShow(**{
+                self._data_local = MainDB.TVShow().as_dict()
+                self._data_local.update(**{
                     'indexer_id': indexer_id,
                     'indexer': indexer,
                     'lang': lang,
                     'location': location
-                }))
-
-                session.commit()
-
-                query = session.query(MainDB.TVShow).filter_by(indexer_id=indexer_id, indexer=indexer).one()
-                self._data_local = query.as_dict()
-
-                sickrage.app.shows.update({(self.indexer_id, self.indexer): self})
+                })
 
                 self.load_from_indexer()
+
+                sickrage.app.shows.update({(self.indexer_id, self.indexer): self})
 
     @property
     def indexer_id(self):
@@ -568,15 +564,19 @@ class TVShow(object):
             return BlackAndWhiteList(self.indexer_id)
 
     def save(self):
-        with sickrage.app.main_db.session() as session:
+        with self.lock, sickrage.app.main_db.session() as session:
             sickrage.app.log.debug("{0:d}: Saving to database: {1}".format(self.indexer_id, self.name))
-            query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one_or_none()
-            if query:
+
+            try:
+                query = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).one()
                 query.update(**self._data_local)
-            session.commit()
+            except orm.exc.NoResultFound:
+                session.add(MainDB.TVShow(**self._data_local))
+            finally:
+                session.commit()
 
     def delete(self):
-        with sickrage.app.main_db.session() as session:
+        with self.lock, sickrage.app.main_db.session() as session:
             session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id, indexer=self.indexer).delete()
             session.commit()
 
@@ -1042,7 +1042,6 @@ class TVShow(object):
             session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id).delete()
             session.query(MainDB.TVEpisode).filter_by(showid=self.indexer_id).delete()
             session.query(MainDB.IMDbInfo).filter_by(indexer_id=self.indexer_id).delete()
-            session.query(MainDB.SceneNumbering).filter_by(indexer_id=self.indexer_id).delete()
             self.save()
 
         # remove episodes from show episode cache

@@ -33,7 +33,7 @@ class MainDBBase(SRDatabaseBase):
 
 class MainDB(SRDatabase):
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
-        super(MainDB, self).__init__('main', 14, db_type, db_prefix, db_host, db_port, db_username, db_password)
+        super(MainDB, self).__init__('main', 15, db_type, db_prefix, db_host, db_port, db_username, db_password)
         MainDBBase.metadata.create_all(self.engine)
         for model in MainDBBase._decl_class_registry.values():
             if hasattr(model, '__tablename__'):
@@ -47,12 +47,12 @@ class MainDB(SRDatabase):
             duplicates = session.query(
                 self.TVShow.indexer_id,
                 func.count(self.TVShow.indexer_id).label('count')
-            ). group_by(
+            ).group_by(
                 self.TVShow.indexer_id
-            ). having(literal_column('count') > 1).all()
+            ).having(literal_column('count') > 1).all()
 
             for cur_duplicate in duplicates:
-                session.query(self.TVShow).filter_by(showid=cur_duplicate['indexer_id']). limit(int(cur_duplicate['count']) - 1).delete()
+                session.query(self.TVShow).filter_by(showid=cur_duplicate['indexer_id']).limit(int(cur_duplicate['count']) - 1).delete()
                 session.commit()
 
         def remove_duplicate_episodes():
@@ -94,9 +94,40 @@ class MainDB(SRDatabase):
             session.query(self.TVEpisode).filter_by(indexer_id=0).delete()
             session.commit()
 
+        def fix_invalid_scene_numbering():
+            session = self.session()
+
+            session.query(self.TVEpisode).filter_by(scene_season=0, scene_episode=0).update({
+                self.TVEpisode.scene_season: -1,
+                self.TVEpisode.scene_episode: -1
+            })
+
+            session.commit()
+
+            session.query(self.TVEpisode).filter_by(scene_absolute_number=0).update({
+                self.TVEpisode.scene_absolute_number: -1
+            })
+
+            session.commit()
+
+            session.query(self.TVEpisode).filter(self.TVEpisode.season == self.TVEpisode.scene_season,
+                                                 self.TVEpisode.episode == self.TVEpisode.scene_episode).update({
+                self.TVEpisode.scene_season: -1,
+                self.TVEpisode.scene_episode: -1
+            })
+
+            session.commit()
+
+            session.query(self.TVEpisode).filter(self.TVEpisode.absolute_number == self.TVEpisode.scene_absolute_number).update({
+                self.TVEpisode.scene_absolute_number: -1
+            })
+
+            session.commit()
+
         remove_duplicate_shows()
         remove_duplicate_episodes()
         remove_invalid_episodes()
+        fix_invalid_scene_numbering()
 
     class TVShow(MainDBBase):
         __tablename__ = 'tv_shows'
@@ -131,10 +162,10 @@ class MainDB(SRDatabase):
         notify_list = Column(Text, default='')
         search_delay = Column(Integer, default=0)
         scene_exceptions = Column(Text, default='')
-        last_scene_exceptions_refresh = Column(Integer, default=0)
-        last_xem_refresh = Column(Integer, default=0)
-        last_update = Column(Integer, default=datetime.datetime.now().toordinal())
         last_refresh = Column(Integer, default=datetime.datetime.now().toordinal())
+        last_xem_refresh = Column(Integer, default=datetime.datetime.now().toordinal())
+        last_scene_exceptions_refresh = Column(Integer, default=datetime.datetime.now().toordinal())
+        last_update = Column(Integer, default=datetime.datetime.now().toordinal())
         last_backlog_search = Column(Integer, default=0)
         last_proper_search = Column(Integer, default=0)
 
@@ -157,8 +188,13 @@ class MainDB(SRDatabase):
         indexer = Column(Integer, index=True, primary_key=True)
         season = Column(Integer, index=True, primary_key=True)
         episode = Column(Integer, index=True, primary_key=True)
-        scene_season = Column(Integer, default=0)
-        scene_episode = Column(Integer, default=0)
+        absolute_number = Column(Integer, default=-1)
+        scene_season = Column(Integer, default=-1)
+        scene_episode = Column(Integer, default=-1)
+        scene_absolute_number = Column(Integer, default=-1)
+        xem_season = Column(Integer, default=-1)
+        xem_episode = Column(Integer, default=-1)
+        xem_absolute_number = Column(Integer, default=-1)
         name = Column(Text, default='')
         description = Column(Text, default='')
         subtitles = Column(Text, default='')
@@ -172,8 +208,6 @@ class MainDB(SRDatabase):
         file_size = Column(BigInteger, default=0)
         release_name = Column(Text, default='')
         is_proper = Column(Boolean, default=False)
-        absolute_number = Column(Integer, default=0)
-        scene_absolute_number = Column(Integer, default=0)
         version = Column(Integer, default=-1)
         release_group = Column(Text, default='')
 

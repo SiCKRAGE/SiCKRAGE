@@ -474,11 +474,11 @@
                     continue
 
                 (dfltSeas, dfltEpis, dfltAbsolute) = (0, 0, 0)
-                if (episode_object.season, episode_object.episode) in xem_numbering:
-                                (dfltSeas, dfltEpis) = xem_numbering[(episode_object.season, episode_object.episode)]
-
-                if episode_object.absolute_number in xem_absolute_numbering:
-                                dfltAbsolute = xem_absolute_numbering[episode_object.absolute_number]
+##                 if (episode_object.season, episode_object.episode) in xem_numbering:
+##                                 (dfltSeas, dfltEpis) = xem_numbering[(episode_object.season, episode_object.episode)]
+##
+##                 if episode_object.absolute_number in xem_absolute_numbering:
+##                                 dfltAbsolute = xem_absolute_numbering[episode_object.absolute_number]
 
                 if episode_object.absolute_number in scene_absolute_numbering:
                                 scAbsolute = scene_absolute_numbering[episode_object.absolute_number]
@@ -547,6 +547,11 @@
                     <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(show.is_anime)]}>${_('Absolute')}</th>
                     <th data-sorter="false" class="col-name">${_('Scene Season/Episode')}</th>
                     <th data-sorter="false" class="col-name">${_('Scene Absolute')}</th>
+                    % if xem_numbering or xem_absolute_numbering:
+                        <th data-sorter="false" class="col-name">${_('XEM Scene Season')}</th>
+                        <th data-sorter="false" class="col-name">${_('XEM Scene Episode')}</th>
+                        <th data-sorter="false" class="col-name">${_('XEM Scene Absolute')}</th>
+                    % endif
                     <th data-sorter="false" class="col-name">${_('Name')}</th>
                     <th data-sorter="false" class="col-ep columnSelector-false size">${_('Size')}</th>
                     <th data-sorter="false" class="col-airdate">${_('Airdate')}</th>
@@ -601,7 +606,7 @@
                 <td class="table-fit">
                     <input placeholder="${str(dfltSeas)}x${str(dfltEpis)}" size="6"
                            maxlength="8"
-                           class="sceneSeasonXEpisode form-control input-scene"
+                           class="sceneSeasonXEpisode form-control d-inline input-scene"
                            data-for-season="${episode_object.season}"
                            data-for-episode="${episode_object.episode}"
                            id="sceneSeasonXEpisode_${show.indexer_id}_${str(episode_object.season)}_${str(episode_object.episode)}"
@@ -628,6 +633,12 @@
                            style="padding: 0; text-align: center; max-width: 60px;"/>
                 </td>
 
+                % if xem_numbering or xem_absolute_numbering:
+                    <td class="table-fit">${episode_object.xem_season}</td>
+                    <td class="table-fit">${episode_object.xem_episode}</td>
+                    <td class="table-fit">${episode_object.xem_absolute_number}</td>
+                % endif
+
                 <td class="col-name">
                     <i id="plot_info_${str(show.indexer_id)}_${str(episode_object.season)}_${str(episode_object.episode)}"
                        class="fas fa-info-circle" title="${episode_object.description}"></i>
@@ -653,7 +664,7 @@
                 </td>
 
                 <td class="table-fit">
-                    % if sickrage.app.config.download_url and episode_object.location:
+                    % if sickrage.app.config.download_url and os.path.isfile(episode_object.location):
                     <%
                         filename = episode_object.location
                         for rootDir in sickrage.app.config.root_dirs.split('|'):
@@ -667,21 +678,23 @@
                     % endif
                 </td>
 
-                <td class="table-fit col-subtitles">
-                    % for flag in (episode_object.subtitles or '').split(','):
-                        % if Subtitles().name_from_code(flag).lower() != 'undetermined':
-                            % if flag.strip() != 'und':
-                                <i class="sickrage-flags sickrage-flags-${flag}"
-                                   title="${Subtitles().name_from_code(flag)}"></i>
+                % if sickrage.app.config.use_subtitles:
+                    <td class="table-fit col-subtitles">
+                        % for flag in (episode_object.subtitles or '').split(','):
+                            % if Subtitles().name_from_code(flag).lower() != 'undetermined':
+                                % if flag.strip() != 'und':
+                                    <i class="sickrage-flags sickrage-flags-${flag}"
+                                       title="${Subtitles().name_from_code(flag)}"></i>
+                                % else:
+                                    <i class="sickrage-flags sickrage-flags-${flag}"
+                                       title="${Subtitles().name_from_code(flag)}"></i>
+                                % endif
                             % else:
-                                <i class="sickrage-flags sickrage-flags-${flag}"
-                                   title="${Subtitles().name_from_code(flag)}"></i>
+                                <i class="sickrage-flags sickrage-flags-unknown" title="${_('Unknown')}"></i>
                             % endif
-                        % else:
-                            <i class="sickrage-flags sickrage-flags-unknown" title="${_('Unknown')}"></i>
-                        % endif
-                    % endfor
-                </td>
+                        % endfor
+                    </td>
+                % endif
 
                 <% curStatus, curQuality = Quality.split_composite_status(int(episode_object.status)) %>
                 % if curQuality != Quality.NONE:
