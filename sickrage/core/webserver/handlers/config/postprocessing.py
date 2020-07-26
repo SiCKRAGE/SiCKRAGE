@@ -72,7 +72,7 @@ def is_rar_supported():
         - Simulating in memory rar extraction on test.rar file
     """
 
-    check = sickrage.app.config.change_unrar_tool(sickrage.app.config.unrar_tool, sickrage.app.config.unrar_alt_tool)
+    check = sickrage.app.config.change_unrar_tool(sickrage.app.config.unrar_tool)
 
     if not check:
         sickrage.app.log.warning('Looks like unrar is not installed, check failed')

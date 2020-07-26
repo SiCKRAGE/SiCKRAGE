@@ -22,7 +22,6 @@ import base64
 import datetime
 import gettext
 import io
-import json
 import os
 import os.path
 import random
@@ -31,7 +30,6 @@ import sys
 import uuid
 from ast import literal_eval
 from itertools import cycle
-from json import JSONDecodeError
 
 import rarfile
 from configobj import ConfigObj
@@ -481,7 +479,6 @@ class Config(object):
         self.fanart_background_opacity = 0.4
 
         self.unrar_tool = rarfile.UNRAR_TOOL
-        # self.unrar_alt_tool = rarfile.ALT_TOOL
 
         self.view_changelog = False
 
@@ -872,10 +869,10 @@ class Config(object):
                 'nzbget_category_backlog': 'tv'
             },
             'SynologyDSM': {
-              'syno_dsm_host': '',
-              'syno_dsm_username': '',
-              'syno_dsm_password': '',
-              'syno_dsm_path': '',
+                'syno_dsm_host': '',
+                'syno_dsm_username': '',
+                'syno_dsm_password': '',
+                'syno_dsm_path': '',
             },
             'Emby': {
                 'use_emby': False,
@@ -997,7 +994,7 @@ class Config(object):
 
         self.gui_lang = lang
 
-    def change_unrar_tool(self, unrar_tool, unrar_alt_tool):
+    def change_unrar_tool(self, unrar_tool):
         # Check for failed unrar attempt, and remove it
         # Must be done before unrar is ever called or the self-extractor opens and locks startup
         bad_unrar = os.path.join(sickrage.app.data_dir, 'unrar.exe')
@@ -1005,22 +1002,17 @@ class Config(object):
             try:
                 os.remove(bad_unrar)
             except OSError as e:
-                sickrage.app.log.warning(
-                    "Unable to delete bad unrar.exe file {}: {}. You should delete it manually".format(bad_unrar,
-                                                                                                       e.strerror))
+                sickrage.app.log.warning("Unable to delete bad unrar.exe file {}: {}. You should delete it manually".format(bad_unrar, e.strerror))
 
         try:
-            rarfile.custom_check(unrar_tool, True)
+            rarfile.UNRAR_TOOL = unrar_tool
+            rarfile.tool_setup()
         except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
-            # Let's just return right now if the defaults work
             try:
-
-                test = rarfile._check_unrar_tool()
-                if test:
-                    # These must always be set to something before returning
-                    self.unrar_tool = rarfile.UNRAR_TOOL
-                    self.alt_unrar_tool = rarfile.ALT_TOOL
-                    return True
+                rarfile.UNRAR_TOOL = 'unrar'
+                rarfile.tool_setup()
+                self.unrar_tool = rarfile.UNRAR_TOOL
+                return True
             except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
                 pass
 
@@ -1028,6 +1020,7 @@ class Config(object):
                 # Look for WinRAR installations
                 found = False
                 winrar_path = 'WinRAR\\UnRAR.exe'
+
                 # Make a set of unique paths to check from existing environment variables
                 check_locations = {
                     os.path.join(location, winrar_path) for location in (
@@ -1035,14 +1028,15 @@ class Config(object):
                         os.environ.get("ProgramFiles"), re.sub(r'\s?\(x86\)', '', os.environ["ProgramFiles"])
                     ) if location
                 }
+
                 check_locations.add(os.path.join(sickrage.PROG_DIR, 'unrar\\unrar.exe'))
 
                 for check in check_locations:
                     if os.path.isfile(check):
                         # Can use it?
                         try:
-                            rarfile.custom_check(check)
-                            unrar_tool = check
+                            rarfile.UNRAR_TOOL = check
+                            rarfile.tool_setup()
                             found = True
                             break
                         except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
@@ -1064,9 +1058,10 @@ class Config(object):
                                                                                                              e.strerror))
 
                         check = os.path.join(sickrage.app.data_dir, "unrar.exe")
+
                         try:
-                            rarfile.custom_check(check)
-                            unrar_tool = check
+                            rarfile.UNRAR_TOOL = check
+                            rarfile.tool_setup()
                             sickrage.app.log.info('Successfully downloaded unrar.exe and set as unrar tool')
                         except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
                             sickrage.app.log.info('Sorry, unrar was not set up correctly. Try installing WinRAR and '
@@ -1075,11 +1070,10 @@ class Config(object):
                         sickrage.app.log.info('Unable to download unrar.exe')
 
         # These must always be set to something before returning
-        self.unrar_tool = rarfile.UNRAR_TOOL = rarfile.ORIG_UNRAR_TOOL = unrar_tool
-        # self.unrar_alt_tool = rarfile.ALT_TOOL = unrar_alt_tool
+        self.unrar_tool = rarfile.UNRAR_TOOL
 
         try:
-            rarfile._check_unrar_tool()
+            rarfile.tool_setup()
             return True
         except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
             if self.unpack:
@@ -2146,10 +2140,10 @@ class Config(object):
                 'nzbget_priority': self.nzbget_priority,
             },
             'SynologyDSM': {
-              'syno_dsm_host': self.syno_dsm_host,
-              'syno_dsm_username': self.syno_dsm_username,
-              'syno_dsm_password': self.syno_dsm_password,
-              'syno_dsm_path': self.syno_dsm_path,
+                'syno_dsm_host': self.syno_dsm_host,
+                'syno_dsm_username': self.syno_dsm_username,
+                'syno_dsm_password': self.syno_dsm_password,
+                'syno_dsm_path': self.syno_dsm_path,
             },
             'TORRENT': {
                 'torrent_username': self.torrent_username,

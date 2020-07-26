@@ -114,7 +114,7 @@
         <div class="col-lg-10 mx-auto">
             <div class="card mb-3">
                 <div class="card-header">
-                    <h3>${_('Show Queue')}</h3>
+                    <h3>${_('Show Task Queue')}</h3>
                 </div>
                 <div class="card-body">
                     <table id="queueStatusTable" class="table" width="100%">
@@ -122,10 +122,10 @@
                         <tr>
                             <th>${_('Show ID')}</th>
                             <th>${_('Show Name')}</th>
-                            <th>${_('In Progress')}</th>
-                            <th>${_('Priority')}</th>
-                            <th>${_('Added')}</th>
-                            <th>${_('Queue Type')}</th>
+                            <th>${_('Task Status')}</th>
+                            <th>${_('Task Priority')}</th>
+                            <th>${_('Task Added')}</th>
+                            <th>${_('Task Queue Type')}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -147,7 +147,7 @@
                                         <td></td>
                                     % endif
                                 % endtry
-                                    <td>${task.is_alive}</td>
+                                    <td>${task.status}</td>
                                     % if task.priority == TaskPriority.EXTREME:
                                         <td>${_('EXTREME')}</td>
                                     % elif task.priority == TaskPriority.HIGH:
