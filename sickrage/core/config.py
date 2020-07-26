@@ -1004,81 +1004,65 @@ class Config(object):
             except OSError as e:
                 sickrage.app.log.warning("Unable to delete bad unrar.exe file {}: {}. You should delete it manually".format(bad_unrar, e.strerror))
 
-        try:
-            rarfile.UNRAR_TOOL = unrar_tool
-            rarfile.tool_setup()
-        except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
+        for check in [unrar_tool, 'unrar']:
             try:
-                rarfile.UNRAR_TOOL = 'unrar'
-                rarfile.tool_setup()
-                self.unrar_tool = rarfile.UNRAR_TOOL
+                rarfile.custom_check([check], True)
+                self.unrar_tool = rarfile.UNRAR_TOOL = check
                 return True
             except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
-                pass
+                continue
 
-            if sys.platform == 'win32':
-                # Look for WinRAR installations
-                found = False
-                winrar_path = 'WinRAR\\UnRAR.exe'
+        if sys.platform == 'win32':
+            # Look for WinRAR installations
+            winrar_path = 'WinRAR\\UnRAR.exe'
 
-                # Make a set of unique paths to check from existing environment variables
-                check_locations = {
-                    os.path.join(location, winrar_path) for location in (
-                        os.environ.get("ProgramW6432"), os.environ.get("ProgramFiles(x86)"),
-                        os.environ.get("ProgramFiles"), re.sub(r'\s?\(x86\)', '', os.environ["ProgramFiles"])
-                    ) if location
-                }
+            # Make a set of unique paths to check from existing environment variables
+            check_locations = {
+                os.path.join(location, winrar_path) for location in (
+                    os.environ.get("ProgramW6432"), os.environ.get("ProgramFiles(x86)"),
+                    os.environ.get("ProgramFiles"), re.sub(r'\s?\(x86\)', '', os.environ["ProgramFiles"])
+                ) if location
+            }
 
-                check_locations.add(os.path.join(sickrage.PROG_DIR, 'unrar\\unrar.exe'))
+            check_locations.add(os.path.join(sickrage.PROG_DIR, 'unrar\\unrar.exe'))
 
-                for check in check_locations:
-                    if os.path.isfile(check):
-                        # Can use it?
-                        try:
-                            rarfile.UNRAR_TOOL = check
-                            rarfile.tool_setup()
-                            found = True
-                            break
-                        except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
-                            found = False
+            for check in check_locations:
+                if os.path.isfile(check):
+                    # Can use it?
+                    try:
+                        rarfile.custom_check([check], True)
+                        self.unrar_tool = rarfile.UNRAR_TOOL = check
+                        return True
+                    except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
+                        continue
 
-                # Download
-                if not found:
-                    sickrage.app.log.info('Trying to download unrar.exe and set the path')
-                    unrar_zip = os.path.join(sickrage.app.data_dir, 'unrar_win.zip')
+            # Download
+            sickrage.app.log.info('Trying to download unrar.exe and set the path')
+            unrar_zip = os.path.join(sickrage.app.data_dir, 'unrar_win.zip')
 
-                    if WebSession().download("https://sickrage.ca/downloads/unrar_win.zip",
-                                             filename=unrar_zip) and extract_zipfile(archive=unrar_zip,
-                                                                                     targetDir=sickrage.app.data_dir):
-                        try:
-                            os.remove(unrar_zip)
-                        except OSError as e:
-                            sickrage.app.log.info(
-                                "Unable to delete downloaded file {}: {}. You may delete it manually".format(unrar_zip,
-                                                                                                             e.strerror))
+            if WebSession().download("https://sickrage.ca/downloads/unrar_win.zip", filename=unrar_zip) and extract_zipfile(archive=unrar_zip,
+                                                                                                                            targetDir=sickrage.app.data_dir):
+                try:
+                    os.remove(unrar_zip)
+                except OSError as e:
+                    sickrage.app.log.info("Unable to delete downloaded file {}: {}. You may delete it manually".format(unrar_zip, e.strerror))
 
-                        check = os.path.join(sickrage.app.data_dir, "unrar.exe")
+                check = os.path.join(sickrage.app.data_dir, "unrar.exe")
 
-                        try:
-                            rarfile.UNRAR_TOOL = check
-                            rarfile.tool_setup()
-                            sickrage.app.log.info('Successfully downloaded unrar.exe and set as unrar tool')
-                        except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
-                            sickrage.app.log.info('Sorry, unrar was not set up correctly. Try installing WinRAR and '
-                                                  'make sure it is on the system PATH')
-                    else:
-                        sickrage.app.log.info('Unable to download unrar.exe')
+                try:
+                    rarfile.custom_check([check], True)
+                    self.unrar_tool = rarfile.UNRAR_TOOL = check
+                    sickrage.app.log.info('Successfully downloaded unrar.exe and set as unrar tool')
+                    return True
+                except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
+                    sickrage.app.log.info('Sorry, unrar was not set up correctly. Try installing WinRAR and '
+                                          'make sure it is on the system PATH')
+            else:
+                sickrage.app.log.info('Unable to download unrar.exe')
 
-        # These must always be set to something before returning
-        self.unrar_tool = rarfile.UNRAR_TOOL
-
-        try:
-            rarfile.tool_setup()
-            return True
-        except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
-            if self.unpack:
-                sickrage.app.log.info('Disabling UNPACK setting because no unrar is installed.')
-                self.unpack = False
+        if self.unpack:
+            sickrage.app.log.info('Disabling UNPACK setting because no unrar is installed.')
+            self.unpack = False
 
     def change_https_cert(self, https_cert):
         """
