@@ -33,6 +33,7 @@ from collections import deque
 from urllib.parse import uses_netloc
 from urllib.request import FancyURLopener
 
+from apscheduler.schedulers import SchedulerNotRunningError
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from dateutil import tz
@@ -560,7 +561,10 @@ class Core(object):
 
             # shutdown scheduler
             if self.scheduler:
-                self.scheduler.shutdown()
+                try:
+                    self.scheduler.shutdown()
+                except SchedulerNotRunningError:
+                    pass
 
             # shutdown webserver
             if self.wserver:

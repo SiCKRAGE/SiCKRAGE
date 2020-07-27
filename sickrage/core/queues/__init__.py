@@ -256,8 +256,8 @@ class Queue(object):
             if task_id in self.tasks:
                 sickrage.app.log.debug("Removing {} task {}".format(self.name, task_id))
                 task = self.tasks.get(task_id)
-                if task.status == TaskStatus.FAILED:
-                    sickrage.app.log.error("{} task {} failed: {}".format(self.name, task_id, task.error_message))
+                if task.status == TaskStatus.FAILED and task.error_message:
+                    sickrage.app.log.error("{} task {} failed: {}".format(task.name, task_id, task.error_message))
                 if task in self.queue:
                     self.queue.remove(self.tasks.get(task_id))
                 del self.tasks[task_id]
