@@ -160,7 +160,7 @@
                                         <td>${task.priority}</td>
                                     % endif
                                     <td>${task.added.strftime(dateTimeFormat)}</td>
-                                    <td>${ShowTaskActions.names[task.action_id]}</td>
+                                    <td>${ShowTaskActions(task.action_id).value}</td>
                                 </tr>
                             % endfor
                         </tbody>

@@ -1346,8 +1346,9 @@ class SyncTraktHandler(BaseHandler, ABC):
         sickrage.app.alerts.message(_('Syncing Trakt with SiCKRAGE'))
 
         job = sickrage.app.scheduler.get_job(sickrage.app.trakt_searcher.name)
-        job.modify(next_run_time=datetime.datetime.utcnow(), kwargs={'force': True})
-        sickrage.app.wserver.io_loop.add_timeout(datetime.timedelta(seconds=10), job.modify, kwargs={})
+        if job:
+            job.modify(next_run_time=datetime.datetime.utcnow(), kwargs={'force': True})
+            sickrage.app.wserver.io_loop.add_timeout(datetime.timedelta(seconds=10), job.modify, kwargs={})
 
         return self.redirect("/home/")
 

@@ -360,13 +360,13 @@ class GenericProvider(object):
                     sickrage.app.log.debug("This is supposed to be a season pack search but the result {} is not "
                                            "a valid season pack, skipping it".format(provider_result.name))
                     continue
-                elif parse_result.season_number != episode_object.get_season_episode_numbering[0]:
+                elif parse_result.season_number != episode_object.get_season_episode_numbering()[0]:
                     sickrage.app.log.debug("This season result {} is for a season we are not searching for, skipping it".format(provider_result.name))
                     continue
             else:
                 if not all([parse_result.season_number is not None, parse_result.episode_numbers,
-                            parse_result.season_number == episode_object.get_season_episode_numbering[0],
-                            episode_object.get_season_episode_numbering[1] in parse_result.episode_numbers]):
+                            parse_result.season_number == episode_object.get_season_episode_numbering()[0],
+                            episode_object.get_season_episode_numbering()[1] in parse_result.episode_numbers]):
                     sickrage.app.log.debug("The result {} doesn't seem to be a valid episode "
                                            "that we are trying to snatch, ignoring".format(provider_result.name))
                     continue
