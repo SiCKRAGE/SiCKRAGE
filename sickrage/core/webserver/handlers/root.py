@@ -18,7 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-
+import base64
 import datetime
 import json
 import os
@@ -76,17 +76,17 @@ class APIBulderHandler(BaseHandler, ABC):
         def titler(x):
             return (remove_article(x), x)[not x or sickrage.app.config.sort_article]
 
-        session = sickrage.app.main_db.session()
-
         episodes = {}
-        for result in session.query(MainDB.TVEpisode).order_by(MainDB.TVEpisode.season, MainDB.TVEpisode.episode):
-            if result.showid not in episodes:
-                episodes[result.showid] = {}
 
-            if result.season not in episodes[result.showid]:
-                episodes[result.showid][result.season] = []
+        for show_object in get_show_list():
+            if show_object.indexer_id not in episodes:
+                episodes[show_object.indexer_id] = {}
 
-            episodes[result.showid][result.season].append(result.episode)
+            for episode_object in show_object.episodes:
+                if episode_object.season not in episodes[show_object.indexer_id]:
+                    episodes[show_object.indexer_id][episode_object.season] = []
+
+                episodes[show_object.indexer_id][episode_object.season].append(episode_object.episode)
 
         if len(sickrage.app.config.api_key) == 32:
             apikey = sickrage.app.config.api_key
@@ -101,7 +101,7 @@ class APIBulderHandler(BaseHandler, ABC):
                            title=_('API Builder'),
                            header=_('API Builder'),
                            shows=sorted(get_show_list(), key=cmp_to_key(lambda x, y: titler(x.name) < titler(y.name))),
-                           episodes=episodes,
+                           episodes=base64.b64encode(json.dumps(episodes).encode()).decode(),
                            apikey=apikey,
                            api_commands=api_commands,
                            controller='root',

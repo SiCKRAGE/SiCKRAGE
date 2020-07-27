@@ -25,7 +25,6 @@ import traceback
 import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.common import SKIPPED, WANTED, UNKNOWN
-from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import EpisodeNotFoundException
 from sickrage.core.helpers import sanitize_file_name, make_dir, chmod_as_parent
 from sickrage.core.queues.search import BacklogSearchTask
@@ -99,7 +98,7 @@ class TraktSearcher(object):
     def sync_watchlist(self):
         sickrage.app.log.debug("Syncing SiCKRAGE with Trakt Watchlist")
 
-        self.remove_show_from_sick_rage()
+        self.remove_show_from_sickrage()
 
         if self._get_show_watchlist():
             self.add_show_to_trakt_watch_list()
@@ -258,19 +257,20 @@ class TraktSearcher(object):
             "WATCHLIST::REMOVE::FINISH - Look for Episodes to Remove from Trakt Watchlist")
 
     def add_episodes_to_trakt_watch_list(self):
-        session = sickrage.app.main_db.session()
-
         trakt_data = []
 
         sickrage.app.log.debug("WATCHLIST::ADD::START - Look for Episodes to Add to Trakt Watchlist")
 
-        for s in get_show_list():
-            for e in session.query(MainDB.TVEpisode).filter_by(showid=s.indexer_id).filter(
-                    ~MainDB.TVEpisode.episode.in_(Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN] + [WANTED])):
-                trakt_id = IndexerApi(s.indexer).trakt_id
-                if self._check_in_list(trakt_id, str(e.showid), e.season, e.episode):
-                    sickrage.app.log.debug("Adding Episode %s S%02dE%02d to watchlist" % (s.name, e.season, e.episode))
-                    trakt_data.append((e.showid, s.indexer, s.name, s.startyear, e.season, e.episode))
+        for show_object in get_show_list():
+            for episode_object in show_object.episodes:
+                if episode_object.status in Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN, WANTED]:
+                    continue
+
+                trakt_id = IndexerApi(show_object.indexer).trakt_id
+                if self._check_in_list(trakt_id, str(show_object.indexer_id), episode_object.season, episode_object.episode):
+                    sickrage.app.log.debug("Adding Episode %s S%02dE%02d to watchlist" % (show_object.name, episode_object.season, episode_object.episode))
+                    trakt_data.append(
+                        (show_object.indexer_id, show_object.indexer, show_object.name, show_object.startyear, episode_object.season, episode_object.episode))
 
         if len(trakt_data):
             try:
@@ -309,7 +309,7 @@ class TraktSearcher(object):
 
         sickrage.app.log.debug("SHOW_WATCHLIST::ADD::FINISH - Look for Shows to Add to Trakt Watchlist")
 
-    def remove_show_from_sick_rage(self):
+    def remove_show_from_sickrage(self):
         sickrage.app.log.debug("SHOW_SICKRAGE::REMOVE::START - Look for Shows to remove from SiCKRAGE")
 
         for show in get_show_list():

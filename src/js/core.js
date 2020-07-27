@@ -1442,8 +1442,8 @@ $(document).ready(function ($) {
                     $('.ep_summary').hide();
                     $('.ep_summaryTrigger').click(function () {
                         $(this).next('.ep_summary').slideToggle('normal', function () {
-                            $.prev('.ep_summaryTrigger').attr('src', function (i, src) {
-                                return $(this).next('.ep_summary').is(':visible') ? src.replace('plus', 'minus') : src.replace('minus', 'plus');
+                            $(this).prev('.ep_summaryTrigger').attr('class', function (i, className) {
+                                return $(this).next('.ep_summary').is(':visible') ? className.replace('fa-plus-square', 'fa-minus-square') : className.replace('fa-minus-square', 'fa-plus-square');
                             });
                         });
                     });
@@ -1591,7 +1591,7 @@ $(document).ready(function ($) {
                     var select = $('[data-command=' + command + '][name=episode]');
                     var season = $(this).val();
                     var show = $('[data-command=' + command + '][name=indexerid]').val();
-                    var episodes = $.parseJSON(SICKRAGE.getMeta('episodes'));
+                    var episodes = $.parseJSON(window.atob(SICKRAGE.getMeta('episodes')));
 
                     if (select !== undefined) {
                         select.removeClass('d-none');
@@ -1613,7 +1613,7 @@ $(document).ready(function ($) {
                     var command = $(this).data('command');
                     var select = $('[data-command=' + command + '][name=season]');
                     var show = $(this).val();
-                    var episodes = $.parseJSON(SICKRAGE.getMeta('episodes'));
+                    var episodes = $.parseJSON(window.atob(SICKRAGE.getMeta('episodes')));
 
                     if (select !== undefined) {
                         select.removeClass('d-none');

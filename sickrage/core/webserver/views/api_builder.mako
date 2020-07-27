@@ -8,7 +8,7 @@
 
 <%block name="metas">
     <meta data-var="commands" data-content="${api_commands}">
-    <meta data-var="episodes" data-content="${json.dumps(episodes)}">
+    <meta data-var="episodes" data-content="${episodes}">
 </%block>
 
 <%block name="content">
@@ -88,9 +88,7 @@
                                             <div class="col-md-12">
                                                 <h4>${_('Playground')}</h4>
                                                 <span>
-                                                    ${_('URL:')} <kbd
-                                                        id="command-${command_id}-base-url">${request.protocol}
-                                                    ://${request.host}${srWebRoot}/api/${apikey}/?cmd=${command}</kbd>
+                                                    ${_('URL:')} <kbd id="command-${command_id}-base-url">${srWebRoot}/api/${apikey}/?cmd=${command}</kbd>
                                                 </span>
                                             </div>
                                         </div>
