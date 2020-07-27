@@ -2,12 +2,12 @@
 
 # 
 
-##Mon Jul 27 2020 03:46:49 GMT+0000 (Coordinated Universal Time)
+##Mon Jul 27 2020 14:16:44 GMT+0000 (Coordinated Universal Time)
 
 
-## Bug Fixes
-  - Fixed #SICKRAGE-APP-5GG and #SICKRAGE-APP-5GF - TypeError sickrage.providers in find_search_results, 'method' object is not subscriptable Fixed #SICKRAGE-APP-5GC - AttributeError enum in __getattr__ Fixed #SICKRAGE-APP-5GH - AttributeError sickrage.core.webserver.handlers.root in handle_get, 'NoneType' object has no attribute 'modify' Added error logging for failed queue tasks
-  ([5b77ccc7](https://gitlab-ci-token:q4xAKCQ3LKxxRLbSTzxC@git.sickrage.ca/SiCKRAGE/sickrage/commit/5b77ccc74afd8a91aedaf59804068b41a32dd636))
+## Refactor
+  - Refactored error logging of failed queue tasks to include task name instead of just queue name Fixed #SICKRAGE-APP-5GP - SchedulerNotRunningError apscheduler.schedulers.base in shutdown, Scheduler is not running
+  ([509aeaee](https://gitlab-ci-token:xVss53U3R6xVxaU6CCxY@git.sickrage.ca/SiCKRAGE/sickrage/commit/509aeaee86ad8fd59022f6801e8319dfa6f3405c))
 
 
 
