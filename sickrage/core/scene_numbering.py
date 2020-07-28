@@ -26,6 +26,7 @@ from sqlalchemy import orm
 
 import sickrage
 from sickrage.core.databases.main import MainDB
+from sickrage.core.exceptions import EpisodeNotFoundException, MultipleEpisodesInDatabaseException
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.websession import WebSession
 from sickrage.indexers import IndexerApi
@@ -45,7 +46,7 @@ def get_scene_numbering(indexer_id, indexer, season, episode, fallback_to_xem=Tr
     :return: (int, int) a tuple with (season, episode)
     """
     show_obj = find_show(indexer_id)
-    if not show_obj or show_obj and not show_obj.scene:
+    if not show_obj:
         return -1, -1
 
     result = find_scene_numbering(indexer_id, indexer, season, episode)
@@ -73,7 +74,7 @@ def get_scene_absolute_numbering(indexer_id, indexer, absolute_number, fallback_
     :return: int absolute number
     """
     show_obj = find_show(indexer_id)
-    if not show_obj or show_obj and not show_obj.scene:
+    if not show_obj:
         return -1
 
     result = find_scene_absolute_numbering(indexer_id, indexer, absolute_number)
@@ -132,7 +133,7 @@ def get_indexer_absolute_numbering(indexer_id, indexer, scene_absolute_number, f
                 scene_season=scene_season
             ).one()
         return dbData.absolute_number
-    except orm.exc.NoResultFound:
+    except orm.exc.MultipleResultsFound:
         if fallback_to_xem:
             return get_indexer_absolute_numbering_from_xem_numbering(indexer_id, indexer, scene_absolute_number, scene_season)
         return -1
@@ -367,22 +368,32 @@ def find_xem_absolute_numbering(indexer_id, indexer, absolute_number):
         return
 
 
-def set_scene_numbering(indexer_id, indexer, season=None, episode=None, absolute_number=None, scene_season=-1, scene_episode=-1, scene_absolute=-1):
+def set_scene_numbering(indexer_id, indexer, season=None, episode=None, absolute_number=None, scene_season=None, scene_episode=None, scene_absolute=None):
     """
-    Set scene numbering for a season/episode.
-    To clear the scene numbering, leave both sceneSeason and sceneEpisode as None.
+    Set scene numbering for a season/episode or absolute.
+    To clear the scene numbering, leave both scene_season and scene_episode or scene_absolute as None.
     """
     session = sickrage.app.main_db.session()
 
     if season and episode:
+        if scene_season is not None and scene_episode is not None:
+            if session.query(MainDB.TVEpisode).filter_by(showid=indexer_id, indexer=indexer, scene_season=scene_season, scene_episode=scene_episode).count():
+                return False
+
         dbData = session.query(MainDB.TVEpisode).filter_by(showid=indexer_id, indexer=indexer, season=season, episode=episode).one()
-        dbData.scene_season = scene_season
-        dbData.scene_episode = scene_episode
+        dbData.scene_season = scene_season if scene_season is not None else -1
+        dbData.scene_episode = scene_episode if scene_episode is not None else -1
     elif absolute_number:
+        if scene_absolute is not None:
+            if session.query(MainDB.TVEpisode).filter_by(showid=indexer_id, indexer=indexer, scene_absolute_number=scene_absolute).count():
+                return False
+
         dbData = session.query(MainDB.TVEpisode).filter_by(showid=indexer_id, indexer=indexer, absolute_number=absolute_number).one()
-        dbData.scene_absolute_number = scene_absolute
+        dbData.scene_absolute_number = scene_absolute if scene_absolute is not None else -1
 
     session.commit()
+
+    return True
 
 
 def xem_refresh(indexer_id, indexer, force=False):
@@ -441,13 +452,10 @@ def xem_refresh(indexer_id, indexer, force=False):
                 return
 
             for entry in parsed_json['data']:
-                episode_object = show_object.get_episode(
-                    season=entry[IndexerApi(indexer).config['xem_origin']]['season'],
-                    episode=entry[IndexerApi(indexer).config['xem_origin']]['episode'],
-                    no_create=True
-                )
-
-                if not episode_object:
+                try:
+                    episode_object = show_object.get_episode(season=entry[IndexerApi(indexer).config['xem_origin']]['season'],
+                                                             episode=entry[IndexerApi(indexer).config['xem_origin']]['episode'])
+                except EpisodeNotFoundException:
                     continue
 
                 if 'scene' in entry:

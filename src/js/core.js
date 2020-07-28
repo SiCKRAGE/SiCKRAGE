@@ -2230,11 +2230,18 @@ $(document).ready(function ($) {
                         } else {
                             $('#sceneSeasonXEpisode_' + showId + '_' + forSeason + '_' + forEpisode).val(data.sceneSeason + 'x' + data.sceneEpisode);
                         }
+
                         if (!data.success) {
                             if (data.errorMessage) {
                                 alert(data.errorMessage);
                             } else {
                                 alert(gt('Update failed.'));
+                            }
+                        } else {
+                            if (data.sceneSeason === null || data.sceneEpisode === null) {
+                                alert(gt('Scene numbering cleared for season ' + forSeason + ' episode ' + forEpisode))
+                            } else {
+                                alert(gt('Scene numbering set for season ' + forSeason + ' episode ' + forEpisode))
                             }
                         }
                     });
@@ -2266,6 +2273,12 @@ $(document).ready(function ($) {
                                     alert(data.errorMessage);
                                 } else {
                                     alert(gt('Update failed.'));
+                                }
+                            } else {
+                                if (data.sceneAbsolute === null) {
+                                    alert(gt('Scene absolute numbering cleared for absolute ' + forAbsolute))
+                                } else {
+                                    alert(gt('Scene absolute numbering set for absolute ' + forAbsolute))
                                 }
                             }
                         });
@@ -4711,7 +4724,7 @@ $(document).ready(function ($) {
                             $('.plexinfo').addClass('d-none');
                         }
                     });
-                    
+
                     // show instructions for alexa when enabled
                     $('#use_alexa').click(function () {
                         if ($(this).is(':checked')) {

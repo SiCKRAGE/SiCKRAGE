@@ -68,7 +68,8 @@ class TVShow(object):
 
                 self.load_from_indexer()
 
-                sickrage.app.shows.update({(self.indexer_id, self.indexer): self})
+        sickrage.app.shows.update({(self.indexer_id, self.indexer): self})
+
 
     @property
     def indexer_id(self):
@@ -1194,7 +1195,7 @@ class TVShow(object):
 
     def want_episode(self, season, episode, quality, manualSearch=False, downCurQuality=False):
         try:
-            episode_object = self.get_episode(season, episode, no_create=True)
+            episode_object = self.get_episode(season, episode)
         except EpisodeNotFoundException:
             sickrage.app.log.debug("Unable to find a matching episode in database, ignoring found episode")
             return False

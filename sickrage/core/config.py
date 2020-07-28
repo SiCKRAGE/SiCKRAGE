@@ -1215,8 +1215,8 @@ class Config(object):
         sickrage.app.scheduler.reschedule_job(sickrage.app.version_updater.name, trigger='interval', hours=self.version_updater_freq)
 
     def change_showupdate_hour(self, freq):
-        """Change frequency of show updater thread
-
+        """
+        Change frequency of show updater thread
 
         :param freq: New frequency
         """
@@ -1225,7 +1225,7 @@ class Config(object):
             self.showupdate_hour = 0
 
         sickrage.app.scheduler.reschedule_job(sickrage.app.show_updater.name, trigger='interval', hours=1,
-                                              start_date=datetime.datetime.now().replace(hour=self.showupdate_hour))
+                                              start_date=datetime.datetime.utcnow().replace(hour=self.showupdate_hour))
 
     def change_subtitle_searcher_freq(self, freq):
         """

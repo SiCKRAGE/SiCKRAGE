@@ -282,8 +282,11 @@ class NameParser(object):
                                                        show_obj.indexer,
                                                        season_number,
                                                        epNo)
-                    new_episode_numbers.append(e)
-                    new_season_numbers.append(s)
+                    if s != -1:
+                        new_season_numbers.append(s)
+
+                    if e != -1:
+                        new_episode_numbers.append(e)
 
             elif show_obj.is_anime and best_result.ab_episode_numbers:
                 for epAbsNo in best_result.ab_episode_numbers:
@@ -298,9 +301,11 @@ class NameParser(object):
 
                     (s, e) = show_obj.get_all_episodes_from_absolute_number([a])
 
-                    new_absolute_numbers.append(a)
-                    new_episode_numbers.extend(e)
+                    if a != -1:
+                        new_absolute_numbers.append(a)
+
                     new_season_numbers.append(s)
+                    new_episode_numbers.extend(e)
 
             elif best_result.season_number and best_result.episode_numbers:
                 for epNo in best_result.episode_numbers:
@@ -314,11 +319,14 @@ class NameParser(object):
                                                        epNo)
                     if show_obj.is_anime:
                         a = get_absolute_number_from_season_and_episode(show_obj.indexer_id, s, e)
-                        if a:
+                        if a != -1:
                             new_absolute_numbers.append(a)
 
-                    new_episode_numbers.append(e)
-                    new_season_numbers.append(s)
+                    if s != -1:
+                        new_season_numbers.append(s)
+
+                    if e != -1:
+                        new_episode_numbers.append(e)
 
             # need to do a quick sanity check here.  It's possible that we now have episodes
             # from more than one season (by tvdb numbering), and this is just too much

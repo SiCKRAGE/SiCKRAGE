@@ -32,6 +32,8 @@ import time
 import traceback
 from signal import SIGTERM
 
+import pkg_resources
+
 app = None
 
 MAIN_DIR = os.path.abspath(os.path.realpath(os.path.expanduser(os.path.dirname(os.path.dirname(__file__)))))
@@ -174,6 +176,20 @@ def check_requirements():
     if sys.version_info < (3, 5, 0):
         sys.exit("Sorry, SiCKRAGE requires Python 3.5+")
 
+    # install/update requirements
+    with open(REQS_FILE) as f:
+        for line in f.readlines():
+            try:
+                req_name, req_version = line.strip().split('==')
+                if not pkg_resources.get_distribution(req_name).version == req_version:
+                    print('Updating requirement {} to {}'.format(req_name, req_version))
+                    subprocess.check_call([sys.executable, "-m", "pip", "install", "--no-cache-dir", line.strip()])
+            except pkg_resources.DistributionNotFound:
+                print('Installing requirement {}'.format(line.strip()))
+                subprocess.check_call([sys.executable, "-m", "pip", "install", "--no-cache-dir", line.strip()])
+            except ValueError:
+                continue
+
     try:
         import OpenSSL
 
@@ -181,11 +197,9 @@ def check_requirements():
         v_needed = '0.15'
 
         if not v >= v_needed:
-            print('OpenSSL installed but {} is needed while {} is installed. '
-                  'Run `pip install -U pyopenssl`'.format(v_needed, v))
+            print('OpenSSL installed but {} is needed while {} is installed. Run `pip3 install -U pyopenssl`'.format(v_needed, v))
     except ImportError:
-        print('OpenSSL not available, please install for better requests validation: '
-              '`https://pyopenssl.readthedocs.org/en/latest/install.html`')
+        print('OpenSSL not available, please install for better requests validation: `https://pyopenssl.readthedocs.org/en/latest/install.html`')
 
 
 def version():
@@ -217,6 +231,9 @@ def main():
 
     # set system default language
     gettext.install('messages', LOCALE_DIR, codeset='UTF-8', names=["ngettext"])
+
+    # check lib requirements
+    check_requirements()
 
     try:
         try:
@@ -319,9 +336,6 @@ def main():
 
         if not os.path.isabs(pid_file):
             pid_file = os.path.join(app.data_dir, pid_file)
-
-        # check lib requirements
-        check_requirements()
 
         # add sickrage module to python system path
         if not (PROG_DIR in sys.path):

@@ -1638,23 +1638,20 @@ class SetSceneNumberingHandler(BaseHandler, ABC):
             result = {
                 'success': True,
                 'forAbsolute': for_absolute,
+                'sceneAbsolute': 0
             }
         else:
             result = {
                 'success': True,
                 'forSeason': for_season,
                 'forEpisode': for_episode,
+                'sceneSeason': 0,
+                'sceneEpisode': 0
             }
 
-        # retrieve the episode object and fail if we can't get one
         try:
-            if show_obj.is_anime:
-                show_obj.get_episode(absolute=for_absolute)
-            else:
-                show_obj.get_episode(season=for_season, episode=for_episode)
-
-            if show_obj.is_anime:
-                sickrage.app.log.debug("setAbsoluteSceneNumbering for %s from %s to %s" % (show, for_absolute, scene_absolute))
+            if for_absolute is not None:
+                show_obj.get_episode(absolute_number=for_absolute)
 
                 show = int(show)
                 indexer = int(indexer)
@@ -1662,10 +1659,15 @@ class SetSceneNumberingHandler(BaseHandler, ABC):
                 if scene_absolute is not None:
                     scene_absolute = int(scene_absolute)
 
-                set_scene_numbering(show, indexer, absolute_number=for_absolute, scene_absolute=scene_absolute)
-                result['sceneAbsolute'] = get_scene_absolute_numbering(show, indexer, for_absolute)
+                if set_scene_numbering(show, indexer, absolute_number=for_absolute, scene_absolute=scene_absolute):
+                    sickrage.app.log.debug("setAbsoluteSceneNumbering for %s from %s to %s" % (show, for_absolute, scene_absolute))
+                    if scene_absolute is not None:
+                        result['sceneAbsolute'] = get_scene_absolute_numbering(show, indexer, for_absolute)
+                else:
+                    result['errorMessage'] = _("Another episode already has the same scene absolute numbering")
+                    result['success'] = False
             else:
-                sickrage.app.log.debug("setEpisodeSceneNumbering for %s from %sx%s to %sx%s" % (show, for_season, for_episode, scene_season, scene_episode))
+                show_obj.get_episode(season=for_season, episode=for_episode)
 
                 show = int(show)
                 indexer = int(indexer)
@@ -1676,9 +1678,15 @@ class SetSceneNumberingHandler(BaseHandler, ABC):
                 if scene_episode is not None:
                     scene_episode = int(scene_episode)
 
-                set_scene_numbering(show, indexer, season=for_season, episode=for_episode, scene_season=scene_season, scene_episode=scene_episode)
-                (result['sceneSeason'], result['sceneEpisode']) = get_scene_numbering(show, indexer, for_season, for_episode)
-        except (EpisodeNotFoundException, MultipleEpisodesInDatabaseException):
+                if set_scene_numbering(show, indexer, season=for_season, episode=for_episode, scene_season=scene_season, scene_episode=scene_episode):
+                    sickrage.app.log.debug(
+                        "setEpisodeSceneNumbering for %s from %sx%s to %sx%s" % (show, for_season, for_episode, scene_season, scene_episode))
+                    if scene_season is not None and scene_episode is not None:
+                        result['sceneSeason'], result['sceneEpisode'] = get_scene_numbering(show, indexer, for_season, for_episode)
+                else:
+                    result['errorMessage'] = _("Another episode already has the same scene numbering")
+                    result['success'] = False
+        except EpisodeNotFoundException:
             result['errorMessage'] = _("Episode couldn't be retrieved")
             result['success'] = False
 

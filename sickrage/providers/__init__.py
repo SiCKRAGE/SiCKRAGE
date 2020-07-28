@@ -218,7 +218,7 @@ class GenericProvider(object):
                 episode_string += 'Series {season} {episode}of{episodes}'.format(season=episode_object.get_season_episode_numbering()[0],
                                                                                  episode=episode_object.get_season_episode_numbering()[1],
                                                                                  episodes=len([x for x in show_object.episodes if
-                                                                                               x.episode_object.get_season_episode_numbering()[0] == season]))
+                                                                                               x.get_season_episode_numbering()[0] == season]))
                 episode_string_fallback = '{show_name}{search_separator}Series {season} Part {episode}'.format(show_name=show_name,
                                                                                                                search_separator=self.search_separator,
                                                                                                                season=episode_object.get_season_episode_numbering()[0],

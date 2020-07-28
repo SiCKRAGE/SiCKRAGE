@@ -21,6 +21,7 @@ from sqlalchemy import Column, Integer, Text, ForeignKeyConstraint, String, Date
 from sqlalchemy.ext.declarative import as_declarative
 from sqlalchemy.orm import relationship
 
+import sickrage
 from sickrage.core import common
 from sickrage.core.common import SearchFormats
 from sickrage.core.databases import SRDatabase, SRDatabaseBase
@@ -52,8 +53,12 @@ class MainDB(SRDatabase):
             ).having(literal_column('count') > 1).all()
 
             for cur_duplicate in duplicates:
-                session.query(self.TVShow).filter_by(showid=cur_duplicate['indexer_id']).limit(int(cur_duplicate['count']) - 1).delete()
-                session.commit()
+                sickrage.app.log.debug("Duplicate show detected! indexer_id: {dupe_id} count: {dupe_count}".format(dupe_id=cur_duplicate.indexer_id,
+                                                                                                                   dupe_count=cur_duplicate.count))
+
+                for result in session.query(self.TVShow).filter_by(indexer_id=cur_duplicate.indexer_id).limit(cur_duplicate.count - 1):
+                    session.query(self.TVShow).filter_by(indexer_id=result.indexer_id).delete()
+                    session.commit()
 
         def remove_duplicate_episodes():
             session = self.session()
@@ -83,10 +88,52 @@ class MainDB(SRDatabase):
             ).having(literal_column('count') > 1).all()
 
             for cur_duplicate in duplicates:
-                session.query(self.TVEpisode). \
-                    filter_by(showid=cur_duplicate['showid'], season=cur_duplicate['season'], episode=cur_duplicate['episode']). \
-                    limit(int(cur_duplicate['count']) - 1).delete()
-                session.commit()
+                sickrage.app.log.debug("Duplicate episode detected! "
+                                       "showid: {dupe_id} "
+                                       "season: {dupe_season} "
+                                       "episode {dupe_episode} count: {dupe_count}".format(dupe_id=cur_duplicate.showid,
+                                                                                           dupe_season=cur_duplicate.season,
+                                                                                           dupe_episode=cur_duplicate.episode,
+                                                                                           dupe_count=cur_duplicate.count))
+
+                for result in session.query(self.TVEpisode).filter_by(showid=cur_duplicate.showid,
+                                                                      season=cur_duplicate.season,
+                                                                      episode=cur_duplicate.episode).limit(cur_duplicate.count - 1):
+                    session.query(self.TVEpisode).filter_by(indexer_id=result.indexer_id).delete()
+                    session.commit()
+
+        def fix_duplicate_episode_scene_numbering():
+            session = self.session()
+
+            duplicates = session.query(
+                self.TVEpisode.showid,
+                self.TVEpisode.scene_season,
+                self.TVEpisode.scene_episode,
+                func.count(self.TVEpisode.showid).label('count')
+            ).group_by(
+                self.TVEpisode.showid,
+                self.TVEpisode.scene_season,
+                self.TVEpisode.scene_episode
+            ).filter(
+                self.TVEpisode.scene_season != -1,
+                self.TVEpisode.scene_episode != -1
+            ).having(literal_column('count') > 1)
+
+            for cur_duplicate in duplicates:
+                sickrage.app.log.debug("Duplicate episode scene numbering detected! "
+                                       "showid: {dupe_id} "
+                                       "scene season: {dupe_scene_season} "
+                                       "scene episode {dupe_scene_episode} count: {dupe_count}".format(dupe_id=cur_duplicate.showid,
+                                                                                                       dupe_scene_season=cur_duplicate.scene_season,
+                                                                                                       dupe_scene_episode=cur_duplicate.scene_episode,
+                                                                                                       dupe_count=cur_duplicate.count))
+
+                for result in session.query(self.TVEpisode).filter_by(showid=cur_duplicate.showid,
+                                                                      scene_season=cur_duplicate.scene_season,
+                                                                      scene_episode=cur_duplicate.scene_episode).limit(cur_duplicate.count - 1):
+                    result.scene_season = -1
+                    result.scene_episode = -1
+                    session.commit()
 
         def remove_invalid_episodes():
             session = self.session()
@@ -124,10 +171,25 @@ class MainDB(SRDatabase):
 
             session.commit()
 
+        def fix_tvshow_table_columns():
+            session = self.session()
+
+            session.query(self.TVShow).filter_by(sub_use_sr_metadata=None).update({'sub_use_sr_metadata': False})
+            session.query(self.TVShow).filter_by(skip_downloaded=None).update({'skip_downloaded': False})
+            session.query(self.TVShow).filter_by(dvdorder=None).update({'dvdorder': False})
+            session.query(self.TVShow).filter_by(subtitles=None).update({'subtitles': False})
+            session.query(self.TVShow).filter_by(anime=None).update({'anime': False})
+            session.query(self.TVShow).filter_by(flatten_folders=None).update({'flatten_folders': False})
+            session.query(self.TVShow).filter_by(paused=None).update({'paused': False})
+
+            session.commit()
+
         remove_duplicate_shows()
         remove_duplicate_episodes()
         remove_invalid_episodes()
         fix_invalid_scene_numbering()
+        fix_duplicate_episode_scene_numbering()
+        fix_tvshow_table_columns()
 
     class TVShow(MainDBBase):
         __tablename__ = 'tv_shows'
@@ -144,21 +206,21 @@ class MainDB(SRDatabase):
         quality = Column(Integer, default=-1)
         airs = Column(Text, default='')
         status = Column(Text, default='')
-        flatten_folders = Column(Boolean, default=0)
-        paused = Column(Boolean, default=0)
+        flatten_folders = Column(Boolean, nullable=False, default=0)
+        paused = Column(Boolean, nullable=False, default=0)
         search_format = Column(Integer, default=SearchFormats.STANDARD)
-        scene = Column(Boolean, default=0)
-        anime = Column(Boolean, default=0)
-        subtitles = Column(Boolean, default=0)
-        dvdorder = Column(Boolean, default=0)
-        skip_downloaded = Column(Boolean, default=0)
+        scene = Column(Boolean, nullable=False, default=0)
+        anime = Column(Boolean, nullable=False, default=0)
+        subtitles = Column(Boolean, nullable=False, default=0)
+        dvdorder = Column(Boolean, nullable=False, default=0)
+        skip_downloaded = Column(Boolean, nullable=False, default=0)
         startyear = Column(Integer, default=0)
         lang = Column(Text, default='')
         imdb_id = Column(Text, default='')
         rls_ignore_words = Column(Text, default='')
         rls_require_words = Column(Text, default='')
         default_ep_status = Column(Integer, default=common.SKIPPED)
-        sub_use_sr_metadata = Column(Boolean, default=0)
+        sub_use_sr_metadata = Column(Boolean, nullable=False, default=0)
         notify_list = Column(Text, default='')
         search_delay = Column(Integer, default=0)
         scene_exceptions = Column(Text, default='')
@@ -201,13 +263,13 @@ class MainDB(SRDatabase):
         subtitles_searchcount = Column(Integer, default=0)
         subtitles_lastsearch = Column(Integer, default=0)
         airdate = Column(Date, default=datetime.datetime.min)
-        hasnfo = Column(Boolean, default=False)
-        hastbn = Column(Boolean, default=False)
+        hasnfo = Column(Boolean, nullable=False, default=False)
+        hastbn = Column(Boolean, nullable=False, default=False)
         status = Column(Integer, default=common.UNKNOWN)
         location = Column(Text, default='')
         file_size = Column(BigInteger, default=0)
         release_name = Column(Text, default='')
-        is_proper = Column(Boolean, default=False)
+        is_proper = Column(Boolean, nullable=False, default=False)
         version = Column(Integer, default=-1)
         release_group = Column(Text, default='')
 
@@ -243,18 +305,6 @@ class MainDB(SRDatabase):
         year = Column(Text)
         plot = Column(Text)
         last_update = Column(Integer, nullable=False)
-
-    class SceneNumbering(MainDBBase):
-        __tablename__ = 'scene_numbering'
-
-        indexer = Column(Integer, primary_key=True)
-        indexer_id = Column(Integer, primary_key=True)
-        season = Column(Integer, primary_key=True)
-        episode = Column(Integer, primary_key=True)
-        scene_season = Column(Integer, nullable=False)
-        scene_episode = Column(Integer, nullable=False)
-        absolute_number = Column(Integer, nullable=False)
-        scene_absolute_number = Column(Integer, nullable=False)
 
     class IndexerMapping(MainDBBase):
         __tablename__ = 'indexer_mapping'

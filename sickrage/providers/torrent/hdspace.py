@@ -125,6 +125,9 @@ class HDSpaceProvider(TorrentProvider):
         except ValueError:
             sickrage.app.log.error("Could not find main torrent table")
             return results
+        except IndexError:
+            sickrage.app.log.debug("Could not parse data from provider")
+            return results
 
         with bs4_parser(data[data.index('<table'):]) as html:
             torrents = html.findAll('tr')

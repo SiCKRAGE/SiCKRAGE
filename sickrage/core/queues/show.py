@@ -306,20 +306,19 @@ class ShowTaskAdd(ShowTask):
             show_obj = TVShow(self.indexer_id, self.indexer, lang=self.lang, location=self.showDir)
 
             # set up initial values
-            show_obj.subtitles = self.subtitles or sickrage.app.config.subtitles_default
-            show_obj.sub_use_sr_metadata = self.sub_use_sr_metadata
-            show_obj.quality = self.quality or sickrage.app.config.quality_default
-            show_obj.flatten_folders = self.flatten_folders or sickrage.app.config.flatten_folders_default
-            show_obj.anime = self.anime or sickrage.app.config.anime_default
-            show_obj.dvdorder = self.dvdorder
-            show_obj.search_format = self.search_format or sickrage.app.config.search_format_default
-            show_obj.scene = self.scene or sickrage.app.config.scene_default
-            show_obj.skip_downloaded = self.skip_downloaded or sickrage.app.config.skip_downloaded_default
-            show_obj.paused = self.paused
+            show_obj.subtitles = self.subtitles if self.subtitles is not None else sickrage.app.config.subtitles_default
+            show_obj.sub_use_sr_metadata = self.sub_use_sr_metadata if self.sub_use_sr_metadata is not None else False
+            show_obj.quality = self.quality if self.quality is not None else sickrage.app.config.quality_default
+            show_obj.flatten_folders = self.flatten_folders if self.flatten_folders is not None else sickrage.app.config.flatten_folders_default
+            show_obj.scene = self.scene if self.scene is not None else sickrage.app.config.scene_default
+            show_obj.anime = self.anime if self.anime is not None else sickrage.app.config.anime_default
+            show_obj.dvdorder = self.dvdorder if self.dvdorder is not None else False
+            show_obj.search_format = self.search_format if self.search_format is not None else sickrage.app.config.search_format_default
+            show_obj.skip_downloaded = self.skip_downloaded if self.skip_downloaded is not None else sickrage.app.config.skip_downloaded_default
+            show_obj.paused = self.paused if self.paused is not None else False
 
             # set up default new/missing episode status
             sickrage.app.log.info("Setting all current episodes to the specified default status: " + str(self.default_status))
-
             show_obj.default_ep_status = self.default_status
 
             # save to database

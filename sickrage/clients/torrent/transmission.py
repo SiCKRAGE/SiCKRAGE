@@ -53,15 +53,19 @@ class TransmissionAPI(TorrentClient):
                                           verify=bool(sickrage.app.config.torrent_verify_cert))
 
         if self.response is not None and self.response.text:
-            self.auth = re.search(r'X-Transmission-Session-Id:\s*(\w+)', self.response.text).group(1)
-            self.session.headers.update({'x-transmission-session-id': self.auth})
+            auth_match = re.search(r'X-Transmission-Session-Id:\s*(\w+)', self.response.text)
+            if auth_match:
+                self.auth = auth_match.group(1)
+                self.session.headers.update({'x-transmission-session-id': self.auth})
 
-            # Validating Transmission authorization
-            success = self._request(method='post',
-                                    json={'arguments': {}, 'method': 'session-get'},
-                                    headers={'x-transmission-session-id': self.auth})
+                # Validating Transmission authorization
+                success = self._request(method='post',
+                                        json={'arguments': {}, 'method': 'session-get'},
+                                        headers={'x-transmission-session-id': self.auth})
 
-            if not success:
+                if not success:
+                    self.auth = None
+            else:
                 self.auth = None
 
         return self.auth
