@@ -2,12 +2,12 @@
 
 # 
 
-##Mon Jul 27 2020 14:16:44 GMT+0000 (Coordinated Universal Time)
+##Tue Jul 28 2020 03:07:26 GMT+0000 (Coordinated Universal Time)
 
 
 ## Refactor
-  - Refactored error logging of failed queue tasks to include task name instead of just queue name Fixed #SICKRAGE-APP-5GP - SchedulerNotRunningError apscheduler.schedulers.base in shutdown, Scheduler is not running
-  ([509aeaee](https://gitlab-ci-token:xVss53U3R6xVxaU6CCxY@git.sickrage.ca/SiCKRAGE/sickrage/commit/509aeaee86ad8fd59022f6801e8319dfa6f3405c))
+  - Refactored add_episodes_to_trakt_watch_list method Refactored APIBulderHandler get method Refactored API call CMD_ShowSeasonList Refactored API call CMD_ShowStats Fixed issues with API Builder and async calls Fixed JS issue with schedule view episode details toggle Bumped jQuery to v3.5.1 Fixed issue with API call for grabbing detailed episode information
+  ([1b9ce09f](https://gitlab-ci-token:oBVfXCyuCVoKScX4kAsG@git.sickrage.ca/SiCKRAGE/sickrage/commit/1b9ce09f3aead661c1503712836518d21f0e0f45))
 
 
 
