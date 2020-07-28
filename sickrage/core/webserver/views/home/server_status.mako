@@ -147,7 +147,7 @@
                                         <td></td>
                                     % endif
                                 % endtry
-                                    <td>${task.status}</td>
+                                    <td>${TaskStatus(task.status).value.capitalize()}</td>
                                     % if task.priority == TaskPriority.EXTREME:
                                         <td>${_('EXTREME')}</td>
                                     % elif task.priority == TaskPriority.HIGH:
