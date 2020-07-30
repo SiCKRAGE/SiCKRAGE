@@ -30,6 +30,8 @@ import tempfile
 import threading
 from time import sleep
 
+import dirsync as dirsync
+
 import sickrage
 from sickrage.core.helpers import backup_app_data
 from sickrage.core.websession import WebSession
@@ -626,7 +628,12 @@ class SourceUpdateManager(UpdateManager):
 
             with tempfile.TemporaryFile() as update_tarfile:
                 sickrage.app.log.info("Downloading update from " + repr(tar_download_url))
-                update_tarfile.write(WebSession().get(tar_download_url).content)
+                resp = WebSession().get(tar_download_url)
+                if not resp or not resp.content:
+                    sickrage.app.log.warning('Failed to download SiCKRAGE update')
+                    return False
+
+                update_tarfile.write(resp.content)
                 update_tarfile.seek(0)
 
                 with tempfile.TemporaryDirectory(prefix='sr_update_', dir=sickrage.app.data_dir) as unpack_dir:
@@ -639,29 +646,13 @@ class SourceUpdateManager(UpdateManager):
                         sickrage.app.log.warning("Invalid update data, update failed: not a gzip file")
                         return False
 
-                    # find update dir name
-                    update_dir_contents = [x for x in os.listdir(unpack_dir) if os.path.isdir(os.path.join(unpack_dir, x))]
-                    if len(update_dir_contents) != 1:
-                        sickrage.app.log.warning("Invalid update data, update failed: " + str(update_dir_contents))
+                    if len(os.listdir(unpack_dir)) != 1:
+                        sickrage.app.log.warning("Invalid update data, update failed")
                         return False
 
-                    # walk temp folder and move files to main folder
-                    content_dir = os.path.join(unpack_dir, update_dir_contents[0])
-                    sickrage.app.log.info("Moving files from " + content_dir + " to " + sickrage.MAIN_DIR)
-                    for dirname, __, filenames in os.walk(content_dir):
-                        dirname = dirname[len(content_dir) + 1:]
-                        for curfile in filenames:
-                            old_path = os.path.join(content_dir, dirname, curfile)
-                            new_path = os.path.join(sickrage.MAIN_DIR, dirname, curfile)
-
-                            if os.path.isfile(new_path) and os.path.exists(new_path):
-                                os.remove(new_path)
-
-                            try:
-                                shutil.move(old_path, new_path)
-                            except IOError:
-                                os.makedirs(os.path.dirname(new_path))
-                                shutil.move(old_path, new_path)
+                    update_dir = os.path.join(*[unpack_dir, os.listdir(unpack_dir)[0], 'sickrage'])
+                    sickrage.app.log.info("Sync folder {} to {}".format(update_dir, sickrage.PROG_DIR))
+                    dirsync.sync(update_dir, sickrage.PROG_DIR, 'sync', purge=True)
         except Exception as e:
             sickrage.app.log.error("Error while trying to update: {}".format(e))
             return False

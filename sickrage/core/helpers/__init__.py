@@ -1744,10 +1744,11 @@ def strip_accents(name):
 
 
 def md5_file_hash(filename):
-    hasher = hashlib.md5()
-    with open(filename, 'rb') as fd:
-        hasher.update(fd.read())
-    return hasher.hexdigest()
+    with open(filename, "rb") as f:
+        file_hash = hashlib.md5()
+        while chunk := f.read(8192):
+            file_hash.update(chunk)
+    return file_hash.hexdigest()
 
 
 def get_extension(filename):

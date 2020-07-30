@@ -53,7 +53,7 @@ class BaseHandler(RequestHandler, ABC):
             request_info = ''.join(["<strong>%s</strong>: %s<br>" % (k, self.request.__dict__[k]) for k in self.request.__dict__.keys()])
             error = exc_info[1]
 
-            sickrage.app.log.error(error)
+            sickrage.app.log.debug(error)
 
             self.set_header('Content-Type', 'text/html')
             return self.write("""<html>

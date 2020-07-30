@@ -85,9 +85,12 @@ class ExtraTorrentProvider(TorrentProvider):
 
         with bs4_parser(data) as html:
             torrent_table = html.find('table', class_='tl')
-            torrent_rows = torrent_table.find_all('tr')
+            if not torrent_table:
+                sickrage.app.log.debug('Data returned from provider does not contain any torrents')
+                return results
 
             # Continue only if at least one Release is found
+            torrent_rows = torrent_table.find_all('tr')
             if len(torrent_rows) < 2:
                 sickrage.app.log.debug('Data returned from provider does not contain any torrents')
                 return results

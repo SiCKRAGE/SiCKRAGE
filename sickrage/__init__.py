@@ -43,6 +43,7 @@ LIBS_DIR = os.path.join(PROG_DIR, 'libs')
 VERSION_FILE = os.path.join(PROG_DIR, 'version.txt')
 CHANGELOG_FILE = os.path.join(MAIN_DIR, 'CHANGELOG.md')
 REQS_FILE = os.path.join(MAIN_DIR, 'requirements.txt')
+CHECKSUM_FILE = os.path.join(PROG_DIR, 'checksums.md5')
 
 
 class Daemon(object):
@@ -177,18 +178,19 @@ def check_requirements():
         sys.exit("Sorry, SiCKRAGE requires Python 3.5+")
 
     # install/update requirements
-    with open(REQS_FILE) as f:
-        for line in f.readlines():
-            try:
-                req_name, req_version = line.strip().split('==')
-                if not pkg_resources.get_distribution(req_name).version == req_version:
-                    print('Updating requirement {} to {}'.format(req_name, req_version))
+    if os.path.exists(REQS_FILE):
+        with open(REQS_FILE) as f:
+            for line in f.readlines():
+                try:
+                    req_name, req_version = line.strip().split('==')
+                    if not pkg_resources.get_distribution(req_name).version == req_version:
+                        print('Updating requirement {} to {}'.format(req_name, req_version))
+                        subprocess.check_call([sys.executable, "-m", "pip", "install", "--no-cache-dir", line.strip()])
+                except pkg_resources.DistributionNotFound:
+                    print('Installing requirement {}'.format(line.strip()))
                     subprocess.check_call([sys.executable, "-m", "pip", "install", "--no-cache-dir", line.strip()])
-            except pkg_resources.DistributionNotFound:
-                print('Installing requirement {}'.format(line.strip()))
-                subprocess.check_call([sys.executable, "-m", "pip", "install", "--no-cache-dir", line.strip()])
-            except ValueError:
-                continue
+                except ValueError:
+                    continue
 
     try:
         import OpenSSL
@@ -200,6 +202,31 @@ def check_requirements():
             print('OpenSSL installed but {} is needed while {} is installed. Run `pip3 install -U pyopenssl`'.format(v_needed, v))
     except ImportError:
         print('OpenSSL not available, please install for better requests validation: `https://pyopenssl.readthedocs.org/en/latest/install.html`')
+
+
+def file_cleanup(remove=False):
+    valid_files = []
+
+    if not os.path.exists(CHECKSUM_FILE):
+        return
+
+    with open(CHECKSUM_FILE, "rb") as fp:
+        for line in fp.readlines():
+            file, checksum = line.strip().split(b' = ')
+            full_filename = os.path.join(MAIN_DIR, file.decode())
+            valid_files.append(full_filename)
+
+    for root, dirs, files in os.walk(PROG_DIR):
+        for file in files:
+            full_filename = os.path.join(root, file)
+            if full_filename != CHECKSUM_FILE and full_filename not in valid_files and PROG_DIR in full_filename:
+                try:
+                    if remove:
+                        os.remove(full_filename)
+                    else:
+                        print('Found unwanted file {}, you should delete this file manually!'.format(full_filename))
+                except OSError:
+                    print('Unable to delete filename {} during cleanup, you should delete this file manually!'.format(full_filename))
 
 
 def version():
@@ -232,85 +259,86 @@ def main():
     # set system default language
     gettext.install('messages', LOCALE_DIR, codeset='UTF-8', names=["ngettext"])
 
+    # sickrage startup options
+    parser = argparse.ArgumentParser(prog='sickrage')
+    parser.add_argument('-v', '--version',
+                        action='version',
+                        version='%(prog)s {}'.format(version()))
+    parser.add_argument('-d', '--daemon',
+                        action='store_true',
+                        help='Run as a daemon (*NIX ONLY)')
+    parser.add_argument('-q', '--quiet',
+                        action='store_true',
+                        help='Disables logging to CONSOLE')
+    parser.add_argument('-p', '--port',
+                        default=0,
+                        type=int,
+                        help='Override default/configured port to listen on')
+    parser.add_argument('-H', '--host',
+                        default='',
+                        help='Override default/configured host to listen on')
+    parser.add_argument('--dev',
+                        action='store_true',
+                        help='Enable developer mode')
+    parser.add_argument('--debug',
+                        action='store_true',
+                        help='Enable debugging')
+    parser.add_argument('--datadir',
+                        default=os.path.abspath(os.path.join(os.path.expanduser("~"), '.sickrage')),
+                        help='Overrides data folder for database, config, cache and logs (specify full path)')
+    parser.add_argument('--config',
+                        default='config.ini',
+                        help='Overrides config filename (specify full path and filename if outside datadir path)')
+    parser.add_argument('--pidfile',
+                        default='sickrage.pid',
+                        help='Creates a PID file (specify full path and filename if outside datadir path)')
+    parser.add_argument('--no_clean',
+                        action='store_true',
+                        help='Suppress cleanup of files not present in checksum.md5')
+    parser.add_argument('--nolaunch',
+                        action='store_true',
+                        help='Suppress launching web browser on startup')
+    parser.add_argument('--disable_updates',
+                        action='store_true',
+                        help='Disable application updates')
+    parser.add_argument('--web_root',
+                        default='',
+                        type=str,
+                        help='Overrides URL web root')
+    parser.add_argument('--db_type',
+                        default='sqlite',
+                        help='Database type: sqlite or mysql')
+    parser.add_argument('--db_prefix',
+                        default='sickrage',
+                        help='Database prefix you want prepended to database table names')
+    parser.add_argument('--db_host',
+                        default='localhost',
+                        help='Database hostname (not used for sqlite)')
+    parser.add_argument('--db_port',
+                        default='3306',
+                        help='Database port number (not used for sqlite)')
+    parser.add_argument('--db_username',
+                        default='sickrage',
+                        help='Database username (not used for sqlite)')
+    parser.add_argument('--db_password',
+                        default='sickrage',
+                        help='Database password (not used for sqlite)')
+
+    # Parse startup args
+    args = parser.parse_args()
+
     # check lib requirements
     check_requirements()
 
+    # cleanup unwanted files
+    file_cleanup(remove=not args.no_clean)
+
     try:
-        try:
-            from sickrage.core import Core
-        except ImportError:
-            print('Attempting to install SiCKRAGE missing requirements using pip')
-            subprocess.check_call([sys.executable, "-m", "pip", "install", "--no-cache-dir", "-U", "pip"])
-            subprocess.check_call([sys.executable, "-m", "pip", "install", "--no-cache-dir", "-r", REQS_FILE])
-            from sickrage.core import Core
+        from sickrage.core import Core
 
         # main app instance
         app = Core()
 
-        # sickrage startup options
-        parser = argparse.ArgumentParser(prog='sickrage')
-        parser.add_argument('-v', '--version',
-                            action='version',
-                            version='%(prog)s {}'.format(version()))
-        parser.add_argument('-d', '--daemon',
-                            action='store_true',
-                            help='Run as a daemon (*NIX ONLY)')
-        parser.add_argument('-q', '--quiet',
-                            action='store_true',
-                            help='Disables logging to CONSOLE')
-        parser.add_argument('-p', '--port',
-                            default=0,
-                            type=int,
-                            help='Override default/configured port to listen on')
-        parser.add_argument('-H', '--host',
-                            default='',
-                            help='Override default/configured host to listen on')
-        parser.add_argument('--dev',
-                            action='store_true',
-                            help='Enable developer mode')
-        parser.add_argument('--debug',
-                            action='store_true',
-                            help='Enable debugging')
-        parser.add_argument('--datadir',
-                            default=os.path.abspath(os.path.join(os.path.expanduser("~"), '.sickrage')),
-                            help='Overrides data folder for database, config, cache and logs (specify full path)')
-        parser.add_argument('--config',
-                            default='config.ini',
-                            help='Overrides config filename (specify full path and filename if outside datadir path)')
-        parser.add_argument('--pidfile',
-                            default='sickrage.pid',
-                            help='Creates a PID file (specify full path and filename if outside datadir path)')
-        parser.add_argument('--nolaunch',
-                            action='store_true',
-                            help='Suppress launching web browser on startup')
-        parser.add_argument('--disable_updates',
-                            action='store_true',
-                            help='Disable application updates')
-        parser.add_argument('--web_root',
-                            default='',
-                            type=str,
-                            help='Overrides URL web root')
-        parser.add_argument('--db_type',
-                            default='sqlite',
-                            help='Database type: sqlite or mysql')
-        parser.add_argument('--db_prefix',
-                            default='sickrage',
-                            help='Database prefix you want prepended to database table names')
-        parser.add_argument('--db_host',
-                            default='localhost',
-                            help='Database hostname (not used for sqlite)')
-        parser.add_argument('--db_port',
-                            default='3306',
-                            help='Database port number (not used for sqlite)')
-        parser.add_argument('--db_username',
-                            default='sickrage',
-                            help='Database username (not used for sqlite)')
-        parser.add_argument('--db_password',
-                            default='sickrage',
-                            help='Database password (not used for sqlite)')
-
-        # Parse startup args
-        args = parser.parse_args()
         app.quiet = args.quiet
         app.host = args.host
         app.web_port = int(args.port)

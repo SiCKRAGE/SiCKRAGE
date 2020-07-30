@@ -82,7 +82,6 @@ class LimeTorrentsProvider(TorrentProvider):
 
         with bs4_parser(data) as html:
             torrent_table = html.find('table', class_='table2')
-
             if not torrent_table:
                 sickrage.app.log.debug('Data returned from provider does not contain any torrents')
                 return results

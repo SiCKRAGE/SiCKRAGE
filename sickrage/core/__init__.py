@@ -49,7 +49,7 @@ from sickrage.core.config import Config
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import generate_secret, make_dir, get_lan_ip, restore_app_data, get_disk_space_usage, get_free_space, launch_browser, \
-    torrent_webui_url, encryption
+    torrent_webui_url, encryption, md5_file_hash
 from sickrage.core.logger import Logger
 from sickrage.core.nameparser.validator import check_force_season_folders
 from sickrage.core.processors import auto_postprocessor
@@ -70,7 +70,7 @@ from sickrage.core.updaters.rsscache_updater import RSSCacheUpdater
 from sickrage.core.updaters.show_updater import ShowUpdater
 from sickrage.core.updaters.tz_updater import TimeZoneUpdater
 from sickrage.core.upnp import UPNPClient
-from sickrage.core.version_updater import VersionUpdater
+from sickrage.core.version_updater import VersionUpdater, SourceUpdateManager
 from sickrage.core.webserver import WebServer
 from sickrage.metadata import MetadataProviders
 from sickrage.notifiers import NotifierProviders
@@ -522,7 +522,7 @@ class Core(object):
         # launch browser window
         if all([not sickrage.app.no_launch, sickrage.app.config.launch_browser]):
             self.scheduler.add_job(launch_browser, args=[('http', 'https')[sickrage.app.config.enable_https],
-                                                          sickrage.app.config.web_host, sickrage.app.config.web_port])
+                                                         sickrage.app.config.web_host, sickrage.app.config.web_port])
 
         self.log.info("SiCKRAGE :: STARTED")
         self.log.info("SiCKRAGE :: APP VERSION:[{}]".format(sickrage.version()))
@@ -530,9 +530,9 @@ class Core(object):
         self.log.info("SiCKRAGE :: DATABASE VERSION:[v{}]".format(self.main_db.version))
         self.log.info("SiCKRAGE :: DATABASE TYPE:[{}]".format(self.db_type))
         self.log.info("SiCKRAGE :: URL:[{}://{}:{}/{}]".format(('http', 'https')[self.config.enable_https],
-                                                              (self.config.web_host, get_lan_ip())[self.config.web_host == '0.0.0.0'],
-                                                              self.config.web_port,
-                                                              self.config.web_root))
+                                                               (self.config.web_host, get_lan_ip())[self.config.web_host == '0.0.0.0'],
+                                                               self.config.web_port,
+                                                               self.config.web_root))
 
     def load_shows(self):
         threading.currentThread().setName('CORE')

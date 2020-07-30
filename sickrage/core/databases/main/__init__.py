@@ -135,6 +135,34 @@ class MainDB(SRDatabase):
                     result.scene_episode = -1
                     session.commit()
 
+        def fix_duplicate_episode_scene_absolute_numbering():
+            session = self.session()
+
+            duplicates = session.query(
+                self.TVEpisode.showid,
+                self.TVEpisode.scene_absolute_number,
+                func.count(self.TVEpisode.showid).label('count')
+            ).group_by(
+                self.TVEpisode.showid,
+                self.TVEpisode.scene_absolute_number
+            ).filter(
+                self.TVEpisode.scene_absolute_number != -1
+            ).having(literal_column('count') > 1)
+
+            for cur_duplicate in duplicates:
+                sickrage.app.log.debug("Duplicate episode scene absolute numbering detected! "
+                                       "showid: {dupe_id} "
+                                       "scene absolute number: {dupe_scene_absolute_number} "
+                                       "count: {dupe_count}".format(dupe_id=cur_duplicate.showid,
+                                                                    dupe_scene_absolute_number=cur_duplicate.scene_absolute_number,
+                                                                    dupe_count=cur_duplicate.count))
+
+                for result in session.query(self.TVEpisode).filter_by(showid=cur_duplicate.showid,
+                                                                      scene_absolute_number=cur_duplicate.scene_absolute_number).\
+                        limit(cur_duplicate.count - 1):
+                    result.scene_absolute_number = -1
+                    session.commit()
+
         def remove_invalid_episodes():
             session = self.session()
 
@@ -189,6 +217,7 @@ class MainDB(SRDatabase):
         remove_invalid_episodes()
         fix_invalid_scene_numbering()
         fix_duplicate_episode_scene_numbering()
+        fix_duplicate_episode_scene_absolute_numbering()
         fix_tvshow_table_columns()
 
     class TVShow(MainDBBase):
