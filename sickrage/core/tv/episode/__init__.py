@@ -63,6 +63,7 @@ class TVEpisode(object):
                 })
 
                 self.populate_episode(season, episode)
+                self.checkForMetaFiles()
 
     @property
     def showid(self):
@@ -377,8 +378,6 @@ class TVEpisode(object):
         self.hasnfo = cur_nfo
         self.hastbn = cur_tbn
 
-        self.save()
-
         # if either setting has changed return true, if not return false
         return oldhasnfo != self.hasnfo or oldhastbn != self.hastbn
 
@@ -506,8 +505,7 @@ class TVEpisode(object):
         if not os.path.isdir(self.show.location) and not sickrage.app.config.create_missing_show_dirs and not sickrage.app.config.add_shows_wo_dir:
             sickrage.app.log.info("The show dir {} is missing, not bothering to change the episode statuses since it'd "
                                   "probably be invalid".format(self.show.location))
-            self.save()
-            return True
+            return False
 
         if self.location:
             sickrage.app.log.debug("%s: Setting status for S%02dE%02d based on status %s and location %s" %
@@ -537,8 +535,6 @@ class TVEpisode(object):
         else:
             sickrage.app.log.debug("6 Status changes from " + str(self.status) + " to " + str(UNKNOWN))
             self.status = UNKNOWN
-
-        self.save()
 
         return True
 
@@ -619,8 +615,6 @@ class TVEpisode(object):
             if os.path.isfile(replace_extension(nfoFile, "tbn")):
                 self.hastbn = True
 
-        self.save()
-
         return self.hasnfo
 
     def create_meta_files(self, force=False):
@@ -631,7 +625,8 @@ class TVEpisode(object):
         self.create_nfo(force)
         self.create_thumbnail(force)
 
-        self.checkForMetaFiles()
+        if self.checkForMetaFiles():
+            self.save()
 
     def create_nfo(self, force=False):
         result = False
@@ -806,6 +801,7 @@ class TVEpisode(object):
         # in case something changed with the metadata just do a quick check
         for curEp in [self] + self.related_episodes:
             curEp.checkForMetaFiles()
+            curEp.save()
 
     def airdate_modify_stamp(self):
         """
@@ -1042,13 +1038,9 @@ class TVEpisode(object):
             if not hasattr(self, '_release_group'):
                 sickrage.app.log.debug("Episode has no release group, replacing it with '" + replace_map['%RG'] + "'")
                 self.release_group = replace_map['%RG']  # if release_group is not in the db, put it there
-                if getattr(self, 'save', None):
-                    self.save()
             elif not self.release_group:
                 sickrage.app.log.debug("Episode has no release group, replacing it with '" + replace_map['%RG'] + "'")
                 self.release_group = replace_map['%RG']  # if release_group is not in the db, put it there
-                if getattr(self, 'save', None):
-                    self.save()
 
         # if there's no release name then replace it with a reasonable facsimile
         if not replace_map['%RN']:

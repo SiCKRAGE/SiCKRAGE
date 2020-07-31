@@ -665,6 +665,7 @@ class TVShow(object):
                 else:
                     try:
                         episode_obj.load_from_indexer(season, episode)
+                        episode_obj.save()
                     except EpisodeDeletedException:
                         sickrage.app.log.info("The episode was deleted, skipping the rest of the load")
                         continue
@@ -678,7 +679,7 @@ class TVShow(object):
 
         return scanned_eps
 
-    def get_episode(self, season=None, episode=None, absolute_number=None, no_create=False):
+    def get_episode(self, season=None, episode=None, absolute_number=None, location=None, no_create=False):
         try:
             if season is None and episode is None and absolute_number is not None:
                 with sickrage.app.main_db.session() as session:
@@ -693,7 +694,7 @@ class TVShow(object):
             else:
                 if no_create:
                     return None
-                tv_episode = TVEpisode(showid=self.indexer_id, indexer=self.indexer, season=season, episode=episode)
+                tv_episode = TVEpisode(showid=self.indexer_id, indexer=self.indexer, season=season, episode=episode, location=location)
                 self._episodes[tv_episode.indexer_id] = tv_episode
                 return tv_episode
         except orm.exc.MultipleResultsFound:
@@ -954,7 +955,7 @@ class TVShow(object):
             check_quality_again = False
 
             try:
-                episode_obj = self.get_episode(season, episode)
+                episode_obj = self.get_episode(season, episode, location=filename)
             except EpisodeNotFoundException:
                 sickrage.app.log.warning("{}: Unable to figure out what this file is, skipping {}".format(self.indexer_id, filename))
                 continue

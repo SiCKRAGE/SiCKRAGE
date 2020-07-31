@@ -45,6 +45,7 @@ def set_episode_to_wanted(show, s, e):
         sickrage.app.log.info("Setting episode %s S%02dE%02d to wanted" % (show.name, s, e))
 
         epObj.status = WANTED
+        epObj.save()
 
         sickrage.app.search_queue.put(BacklogSearchTask(show.indexer_id, epObj.season, epObj.episode))
 
