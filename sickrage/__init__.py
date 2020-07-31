@@ -223,7 +223,8 @@ def file_cleanup(remove=False):
             if full_filename != pathlib.Path(CHECKSUM_FILE) and full_filename not in valid_files and PROG_DIR in str(full_filename):
                 try:
                     if remove:
-                        os.remove(full_filename)
+                        print('Found unwanted file {}, removed!'.format(full_filename))
+                        full_filename.unlink()
                     else:
                         print('Found unwanted file {}, you should delete this file manually!'.format(full_filename))
                 except OSError:
