@@ -44,9 +44,9 @@ with open(checksum_file, "rb") as fp:
         file, checksum = line.decode().strip().split(' = ')
         full_filename = main_dir.joinpath(file)
         if full_filename != checksum_file:
-            if not os.path.exists(full_filename) or md5(full_filename) != checksum:
-                print('SiCKRAGE file {} integrity check failed'.format(full_filename))
+            if not full_filename.exists() or md5(full_filename) != checksum:
+                print('SiCKRAGE file {} checksum invalid'.format(full_filename))
                 failed = True
 
     if not failed:
-        print('SiCKRAGE file integrity check passed')
+        print('SiCKRAGE file checksums are all valid')

@@ -24,6 +24,7 @@ import argparse
 import atexit
 import gettext
 import os
+import pathlib
 import site
 import subprocess
 import sys
@@ -212,14 +213,14 @@ def file_cleanup(remove=False):
 
     with open(CHECKSUM_FILE, "rb") as fp:
         for line in fp.readlines():
-            file, checksum = line.strip().split(b' = ')
-            full_filename = os.path.join(MAIN_DIR, file.decode())
+            file, checksum = line.decode().strip().split(' = ')
+            full_filename = pathlib.Path(MAIN_DIR).joinpath(file)
             valid_files.append(full_filename)
 
     for root, dirs, files in os.walk(PROG_DIR):
         for file in files:
-            full_filename = os.path.join(root, file)
-            if full_filename != CHECKSUM_FILE and full_filename not in valid_files and PROG_DIR in full_filename:
+            full_filename = pathlib.Path(root).joinpath(file)
+            if full_filename != pathlib.Path(CHECKSUM_FILE) and full_filename not in valid_files and PROG_DIR in str(full_filename):
                 try:
                     if remove:
                         os.remove(full_filename)
@@ -331,7 +332,7 @@ def main():
     check_requirements()
 
     # cleanup unwanted files
-    # file_cleanup(remove=not args.no_clean)
+    file_cleanup(remove=not args.no_clean)
 
     try:
         from sickrage.core import Core
