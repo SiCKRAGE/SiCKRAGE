@@ -2,12 +2,12 @@
 
 # 
 
-##Fri Jul 31 2020 18:43:25 GMT+0000 (Coordinated Universal Time)
+##Fri Jul 31 2020 20:21:35 GMT+0000 (Coordinated Universal Time)
 
 
 ## Bug Fixes
-  - Fixed path issue with cleanup function for startup
-  ([64456b54](https://gitlab-ci-token:mAMEhtx4nfVZv2f5CZsm@git.sickrage.ca/SiCKRAGE/sickrage/commit/64456b54aaa6ab4afca20a9448586545e1f0af7d))
+  - Fixed issues with md5 checksum hasher to be compatible with python 3.5+
+  ([dca07528](https://gitlab-ci-token:bE_PCg_UC5fXp8CJPWV1@git.sickrage.ca/SiCKRAGE/sickrage/commit/dca075283e27b836146de68a5da5f91d0664a421))
 
 
 
