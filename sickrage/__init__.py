@@ -331,7 +331,7 @@ def main():
     check_requirements()
 
     # cleanup unwanted files
-    file_cleanup(remove=not args.no_clean)
+    # file_cleanup(remove=not args.no_clean)
 
     try:
         from sickrage.core import Core
