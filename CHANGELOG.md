@@ -2,12 +2,12 @@
 
 # 
 
-##Fri Jul 31 2020 20:21:35 GMT+0000 (Coordinated Universal Time)
+##Fri Jul 31 2020 23:15:29 GMT+0000 (Coordinated Universal Time)
 
 
 ## Bug Fixes
-  - Fixed issues with md5 checksum hasher to be compatible with python 3.5+
-  ([dca07528](https://gitlab-ci-token:bE_PCg_UC5fXp8CJPWV1@git.sickrage.ca/SiCKRAGE/sickrage/commit/dca075283e27b836146de68a5da5f91d0664a421))
+  - Fixed issue with removal of unwanted files and pathlib
+  ([ce4fe008](https://gitlab-ci-token:BZS3hd2CPboBFs2pyLKT@git.sickrage.ca/SiCKRAGE/sickrage/commit/ce4fe0087ee88d752b3362950fc5b62f2630fe0c))
 
 
 
