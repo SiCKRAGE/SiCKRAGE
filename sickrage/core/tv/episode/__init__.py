@@ -539,6 +539,9 @@ class TVEpisode(object):
         return True
 
     def load_from_nfo(self, location):
+        if not self.location:
+            return
+
         if not os.path.isdir(self.show.location):
             sickrage.app.log.info("{}: The show dir is missing, not bothering to try loading the episode NFO".format(self.show.indexer_id))
             return False
