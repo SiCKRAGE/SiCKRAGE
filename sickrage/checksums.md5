@@ -1,5 +1,5 @@
 sickrage/__init__.py = d960fb86ce9bb1f8b2ad1ac0170178a7
-sickrage/version.txt = ae1267b5ae21896e656cf280c77b8b6a
+sickrage/version.txt = cfa2ec674d0fedb74e69215f5a9b2872
 sickrage/metadata/mediabrowser.py = 1bbed4ed42107b62c9b1d621b02dc148
 sickrage/metadata/__init__.py = f89aa58d29a9c3e6d8f9d22c79bba0ed
 sickrage/metadata/mede8er.py = f0508a41a05a44634154f0e81f64f975
