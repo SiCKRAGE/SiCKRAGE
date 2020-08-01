@@ -694,7 +694,7 @@ class TVShow(object):
             else:
                 if no_create:
                     return None
-                tv_episode = TVEpisode(showid=self.indexer_id, indexer=self.indexer, season=season, episode=episode, location=location)
+                tv_episode = TVEpisode(showid=self.indexer_id, indexer=self.indexer, season=season, episode=episode, location=location or '')
                 self._episodes[tv_episode.indexer_id] = tv_episode
                 return tv_episode
         except orm.exc.MultipleResultsFound:
