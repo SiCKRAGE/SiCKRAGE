@@ -2,19 +2,12 @@
 
 # 
 
-##Sat Aug 01 2020 06:57:02 GMT+0000 (Coordinated Universal Time)
+##Sat Aug 01 2020 15:50:50 GMT+0000 (Coordinated Universal Time)
 
 
 ## Bug Fixes
-  - Fixed issue when episode location is null and attempting to load from .nfo file
-  ([a37348c6](https://gitlab-ci-token:vp7zsxTLXVaW5iHWzx29@git.sickrage.ca/SiCKRAGE/sickrage/commit/a37348c6abe356742f1e50a647ed90ae1fcdca93))
-
-
-
-
-## Refactor
-  - Refactored Dockerfile
-  ([d546ce01](https://gitlab-ci-token:vp7zsxTLXVaW5iHWzx29@git.sickrage.ca/SiCKRAGE/sickrage/commit/d546ce01a9b7509bfe381f5a3adc29f3d9008fe8))
+  - Fixed issue with location being NoneType for TVEpisode objects
+  ([78b25830](https://gitlab-ci-token:25ujmAQJn9mjf42U-vrC@git.sickrage.ca/SiCKRAGE/sickrage/commit/78b2583093228cbcd5ab57765d5c6d031d9d373b))
 
 
 
