@@ -1,16 +1,10 @@
-FROM python:3.7-alpine3.9
+FROM python:3.8-alpine3.12
 MAINTAINER echel0n <echel0n@sickrage.ca>
 
 ARG SOURCE_COMMIT
 ENV SOURCE_COMMIT $SOURCE_COMMIT
-
+ENV PYTHONIOENCODING="UTF-8"
 ENV TZ 'Canada/Pacific'
-ENV WEB_ROOT ''
-
-#RUN locale-gen en_US.UTF-8
-#ENV LANG en_US.UTF-8
-#ENV LANGUAGE en_US:en
-#ENV LC_ALL en_US.UTF-8
 
 COPY . /opt/sickrage/
 
@@ -21,4 +15,5 @@ RUN pip install -r /opt/sickrage/requirements.txt
 EXPOSE 8081
 VOLUME /config /downloads /tv /anime
 
-ENTRYPOINT python /opt/sickrage/SiCKRAGE.py --nolaunch --web_root ${WEB_ROOT} --datadir /config
+ENTRYPOINT ["python", "/opt/sickrage/SiCKRAGE.py"]
+CMD ["--nolaunch", "--datadir=/config"]
