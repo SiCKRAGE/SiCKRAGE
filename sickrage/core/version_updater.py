@@ -263,9 +263,9 @@ class UpdateManager(object):
             output, err = p.communicate()
             exit_status = p.returncode
 
-            if output:
+            if output is not None:
                 output = output.decode("utf-8", "ignore").strip() if isinstance(output, bytes) else output.strip()
-        except OSError:
+        except (RuntimeError, OSError):
             sickrage.app.log.info("Command " + ' '.join(cmd) + " didn't work")
             exit_status = 1
 
@@ -306,7 +306,7 @@ class UpdateManager(object):
 
             output, err = p.communicate()
             exit_status = p.returncode
-        except OSError:
+        except (RuntimeError, OSError):
             sickrage.app.log.info("Command " + ' '.join(cmd) + " didn't work")
             exit_status = 1
 

@@ -335,9 +335,6 @@ class Core(object):
         if self.config.showupdate_hour < 0 or self.config.showupdate_hour > 23:
             self.config.showupdate_hour = 0
 
-        # start web server
-        self.wserver.start()
-
         # add version checker job
         self.scheduler.add_job(
             self.version_updater.task,
@@ -506,6 +503,9 @@ class Core(object):
         self.search_queue.start_worker(self.config.max_queue_workers)
         self.show_queue.start_worker(self.config.max_queue_workers)
         self.postprocessor_queue.start_worker(self.config.max_queue_workers)
+
+        # start web server
+        self.wserver.start()
 
         # fire off jobs now
         self.scheduler.get_job(self.version_updater.name).modify(next_run_time=datetime.datetime.utcnow())

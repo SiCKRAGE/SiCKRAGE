@@ -1397,7 +1397,7 @@ class Config(object):
             try:
                 self.config_obj = self.decrypt_config(config_file)
             except Exception:
-                sickrage.app.log.error("Unable to decrypt config file {}, config is most likely corrupted and needs to be deleted.".format(config_file))
+                sickrage.app.log.warning("Unable to decrypt config file {}, config is most likely corrupted and needs to be deleted.".format(config_file))
                 raise SystemExit
 
         # use defaults

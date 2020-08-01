@@ -39,17 +39,21 @@ class QBittorrentAPI(TorrentClient):
 
         url = urljoin(self.host, 'api/v2/app/webapiVersion')
         response = self.session.get(url, verify=sickrage.app.config.torrent_verify_cert)
-        if response and response.text:
-            version = tuple(map(int, response.text.split('.')))
-            version + (0,) * (3 - len(version))
-        elif response is not None:
-            status_code = response.status_code
-            if status_code == 404:
-                url = urljoin(self.host, 'version/api')
-                response = self.session.get(url, verify=sickrage.app.config.torrent_verify_cert)
-                if response.text:
-                    version = int(response.text)
-                    version = (1, version % 100, 0)
+
+        try:
+            if response and response.text:
+                version = tuple(map(int, response.text.split('.')))
+                version + (0,) * (3 - len(version))
+            elif response is not None:
+                status_code = response.status_code
+                if status_code == 404:
+                    url = urljoin(self.host, 'version/api')
+                    response = self.session.get(url, verify=sickrage.app.config.torrent_verify_cert)
+                    if response and response.text:
+                        version = int(response.text)
+                        version = (1, version % 100, 0)
+        except ValueError:
+            pass
 
         return version
 

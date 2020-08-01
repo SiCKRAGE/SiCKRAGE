@@ -499,33 +499,25 @@ class GenericProvider(object):
 
         if self.cookies:
             result = self.add_cookies_from_ui()
-            if not result['result']:
+            if not result.get('result'):
                 sickrage.app.alerts.message(result['message'])
                 sickrage.app.log.warning(result['message'])
                 return False
         else:
-            sickrage.app.log.warning('Failed to login, you will need to add your cookies in the provider '
-                                     'settings')
+            sickrage.app.log.warning('Failed to login, you will need to add your cookies in the provider settings')
 
-            sickrage.app.alerts.error(
-                'Failed to auth with {provider}'.format(provider=self.name),
-                'You will need to add your cookies in the provider settings')
+            sickrage.app.alerts.error('Failed to auth with {provider}'.format(provider=self.name),
+                                      'You will need to add your cookies in the provider settings')
             return False
 
         response = self.session.get(check_url)
-        if any([not response, not (response.text and response.status_code == 200),
-                check_login_text.lower() in response.text.lower()]):
-            sickrage.app.log.warning('Please configure the required cookies for this provider. Check your '
-                                     'provider settings')
-
-            sickrage.app.alerts.error(
-                'Wrong cookies for {}'.format(self.name),
-                'Check your provider settings'
-            )
+        if not response or not response.text or not response.status_code == 200 or not check_login_text.lower() in response.text.lower():
+            sickrage.app.log.warning('Please configure the required cookies for this provider. Check your provider settings')
+            sickrage.app.alerts.error('Wrong cookies for {}'.format(self.name), 'Check your provider settings')
             self.session.cookies.clear()
             return False
-        else:
-            return True
+
+        return True
 
     @classmethod
     def getDefaultProviders(cls):

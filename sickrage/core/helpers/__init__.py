@@ -52,6 +52,7 @@ from bs4 import BeautifulSoup
 
 import sickrage
 from sickrage.core.helpers import encryption
+from sickrage.core.websession import WebSession
 
 
 def safe_getattr(object, name, default=None):
@@ -1761,7 +1762,10 @@ def get_extension(filename):
 
 def get_external_ip():
     """Return external IP of system."""
-    return requests.get('https://api.ipify.org').text
+    resp = WebSession().get('https://api.ipify.org')
+    if not resp or not resp.text:
+        return ''
+    return resp.text
 
 
 def get_internal_ip():

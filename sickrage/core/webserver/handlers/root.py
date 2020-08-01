@@ -278,6 +278,10 @@ class QuicksearchDotJsonHandler(BaseHandler, ABC):
             })
 
         for result in session.query(MainDB.TVEpisode).filter(MainDB.TVEpisode.name.like('%{}%'.format(term))).all():
+            show_object = find_show(result.showid)
+            if not show_object:
+                continue
+
             episodes.append({
                 'category': 'episodes',
                 'showid': result.showid,
@@ -285,7 +289,7 @@ class QuicksearchDotJsonHandler(BaseHandler, ABC):
                 'season': result.season,
                 'episode': result.episode,
                 'name': result.name,
-                'showname': find_show(result.showid).name,
+                'showname': show_object.name,
                 'img': sickrage.app.config.web_root + showImage(result.showid, 'poster_thumb').url
             })
 
