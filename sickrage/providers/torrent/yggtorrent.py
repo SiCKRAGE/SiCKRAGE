@@ -156,7 +156,7 @@ class YggtorrentProvider(TorrentProvider):
 
         if not self._is_authenticated():
             try:
-                self.session.post(self.urls['login'], data=login_params, allow_post_redirects=True)
+                self.session.post(self.urls['login'], data=login_params)
             except Exception:
                 sickrage.app.log.warning('Unable to connect or login to provider')
                 return False

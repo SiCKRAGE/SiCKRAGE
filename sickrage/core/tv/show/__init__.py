@@ -1049,8 +1049,11 @@ class TVShow(object):
         # remove episodes from show episode cache
         self.flush_episodes()
 
-        # remove from show cache
-        del sickrage.app.shows[(self.indexer_id, self.indexer)]
+        # remove from show cache if found
+        try:
+            del sickrage.app.shows[(self.indexer_id, self.indexer)]
+        except KeyError:
+            pass
 
         # clear the cache
         image_cache_dir = os.path.join(sickrage.app.cache_dir, 'images')

@@ -248,6 +248,25 @@
                 <div id="content_use_plex">
                     <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5">
+                            <label class="component-title">${_('Plex Media Server IP:Port')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><span class="fas fa-globe"></span></span>
+                                </div>
+                                <input name="plex_server_host"
+                                       id="plex_server_host"
+                                       placeholder="${_('ex. 192.168.1.1:32400, 192.168.1.2:32400')}"
+                                       value="${re.sub(r'\b,\b', ', ', sickrage.app.config.plex_server_host)}"
+                                       class="form-control"
+                                       autocapitalize="off"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row form-group">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Plex Media Server Auth Token')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
@@ -325,42 +344,22 @@
                             </label>
                         </div>
                     </div>
-                    <div id="content_plex_update_library">
-                        <div class="form-row form-group">
-                            <div class="col-lg-3 col-md-4 col-sm-5">
-                                <label class="component-title">${_('Plex Media Server IP:Port')}</label>
-                            </div>
-                            <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text"><span class="fas fa-globe"></span></span>
-                                    </div>
-                                    <input name="plex_server_host"
-                                           id="plex_server_host"
-                                           placeholder="${_('ex. 192.168.1.1:32400, 192.168.1.2:32400')}"
-                                           value="${re.sub(r'\b,\b', ', ', sickrage.app.config.plex_server_host)}"
-                                           class="form-control"
-                                           autocapitalize="off"/>
+
+                    <div class="form-row">
+                        <div class="col-md-12">
+                            <div class="card mb-3">
+                                <div class="card-text m-1">
+                                    <div id="testPMS-result">${_('Click below to test')}</div>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="form-row">
-                            <div class="col-md-12">
-                                <div class="card mb-3">
-                                    <div class="card-text m-1">
-                                        <div id="testPMS-result">${_('Click below to test')}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="col-md-12">
-                                <input class="btn" type="button" value="${_('Test Plex Server')}"
-                                       id="testPMS"/>
-                                <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
-                            </div>
+                    <div class="form-row">
+                        <div class="col-md-12">
+                            <input class="btn" type="button" value="${_('Test Plex Server')}"
+                                   id="testPMS"/>
+                            <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
                 </div><!-- /content_use_plex -->
@@ -452,7 +451,7 @@
 
                     <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5">
-                            <label class="component-title">${_('Server Username')}</label>
+                            <label class="component-title">${_('Client Username')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">

@@ -75,23 +75,18 @@ class WebSession(Session):
         """
         return certifi.where() if all([sickrage.app.config.ssl_verify, verify]) else False
 
-    def request(self, method, url, verify=False, random_ua=False, allow_post_redirects=False, *args, **kwargs):
+    def request(self, method, url, verify=False, random_ua=False, timeout=15, *args, **kwargs):
         self.headers.update({'Accept-Encoding': 'gzip, deflate',
                              'User-Agent': (sickrage.app.user_agent, UserAgent().random)[random_ua]})
 
         if not verify:
             disable_warnings()
 
-        if allow_post_redirects and method == 'POST':
-            sickrage.app.log.debug('Retrieving redirect URL for {url}'.format(**{'url': url}))
-            response = super(WebSession, self).request(method, url, allow_redirects=False)
-            url = self.get_redirect_target(response) or url
-
         for i in range(5):
             resp = None
 
             try:
-                resp = super(WebSession, self).request(method, url, verify=self._get_ssl_cert(verify), *args, **kwargs)
+                resp = super(WebSession, self).request(method, url, verify=self._get_ssl_cert(verify), timeout=timeout, *args, **kwargs)
 
                 # check of cloudflare handling is required
                 if self.cloudflare:

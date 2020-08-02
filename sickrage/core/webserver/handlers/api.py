@@ -735,7 +735,8 @@ class CMD_Episode(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         try:
-            episode = session.query(MainDB.TVEpisode).filter_by(showid=self.indexerid, season=self.s, episode=self.e).one()
+            db_data = session.query(MainDB.TVEpisode).filter_by(showid=self.indexerid, season=self.s, episode=self.e).one()
+            episode_result = db_data.as_dict()
 
             show_path = show_obj.location
 
@@ -746,24 +747,24 @@ class CMD_Episode(ApiCall):
             elif bool(self.fullPath) is False and os.path.isdir(show_path):
                 # using the length because lstrip removes to much
                 show_path_length = len(show_path) + 1  # the / or \ yeah not that nice i know
-                episode.location = episode.location[show_path_length:]
+                episode_result['location'] = episode_result['location'][show_path_length:]
             elif not os.path.isdir(show_path):  # show dir is broken ... episode path will be empty
-                episode.location = ""
+                episode_result['location'] = ""
 
             # convert stuff to human form
-            if episode.airdate > datetime.date.min:  # 1900
-                episode.airdate = srdatetime.SRDateTime(srdatetime.SRDateTime(
-                    sickrage.app.tz_updater.parse_date_time(episode.airdate, show_obj.airs, show_obj.network),
+            if episode_result['airdate'] > datetime.date.min:  # 1900
+                episode_result['airdate'] = srdatetime.SRDateTime(srdatetime.SRDateTime(
+                    sickrage.app.tz_updater.parse_date_time(episode_result['airdate'], show_obj.airs, show_obj.network),
                     convert=True).dt).srfdate(d_preset=dateFormat)
             else:
-                episode.airdate = 'Never'
+                episode_result['airdate'] = 'Never'
 
-            status, quality = Quality.split_composite_status(int(episode.status))
-            episode.status = _get_status_strings(status)
-            episode.quality = get_quality_string(quality)
-            episode.file_size_human = pretty_file_size(episode.file_size)
+            status, quality = Quality.split_composite_status(int(episode_result['status']))
+            episode_result['status'] = _get_status_strings(status)
+            episode_result['quality'] = get_quality_string(quality)
+            episode_result['file_size_human'] = pretty_file_size(episode_result['file_size'])
 
-            return _responds(RESULT_SUCCESS, episode.as_dict())
+            return _responds(RESULT_SUCCESS, episode_result)
         except orm.exc.NoResultFound:
             raise InternalApiError("Episode not found")
 
@@ -812,8 +813,7 @@ class CMD_EpisodeSearch(ApiCall):
         if ep_queue_item.success:
             status, quality = Quality.split_composite_status(epObj.status)
             # TODO: split quality and status?
-            return _responds(RESULT_SUCCESS, {"quality": get_quality_string(quality)},
-                             "Snatched (" + get_quality_string(quality) + ")")
+            return _responds(RESULT_SUCCESS, {"quality": get_quality_string(quality)}, "Snatched (" + get_quality_string(quality) + ")")
 
         return _responds(RESULT_FAILURE, msg='Unable to find episode')
 
@@ -895,6 +895,7 @@ class CMD_EpisodeSetStatus(ApiCall):
                 continue
 
             epObj.status = self.status
+            epObj.save()
 
             if self.status == WANTED:
                 start_backlog = True
@@ -1308,6 +1309,9 @@ class CMD_SiCKRAGEAddRootDir(ApiCall):
         root_dirs_new = '|'.join(x for x in root_dirs_new)
 
         sickrage.app.config.root_dirs = root_dirs_new
+
+        sickrage.app.config.save()
+
         return _responds(RESULT_SUCCESS, _get_root_dirs(), msg="Root directories updated")
 
 
@@ -1686,6 +1690,8 @@ class CMD_SiCKRAGESetDefaults(ApiCall):
         if self.future_show_paused is not None:
             sickrage.app.config.coming_eps_display_paused = int(self.future_show_paused)
 
+        sickrage.app.config.save()
+
         return _responds(RESULT_SUCCESS, msg="Saved defaults")
 
 
@@ -2034,10 +2040,8 @@ class CMD_ShowAddNew(ApiCall):
         else:
             dir_exists = make_dir(show_path)
             if not dir_exists:
-                sickrage.app.log.warning(
-                    "Unable to create the folder " + show_path + ", can't add the show")
-                return _responds(RESULT_FAILURE, {"path": show_path},
-                                 "Unable to create the folder " + show_path + ", can't add the show")
+                sickrage.app.log.warning("Unable to create the folder " + show_path + ", can't add the show")
+                return _responds(RESULT_FAILURE, {"path": show_path}, "Unable to create the folder " + show_path + ", can't add the show")
             else:
                 chmod_as_parent(show_path)
 
@@ -2276,6 +2280,8 @@ class CMD_ShowPause(ApiCall):
         else:
             show_object.paused = self.pause
 
+        show_object.save()
+
         return _responds(RESULT_SUCCESS, msg='%s has been %s' % (show_object.name, ('resumed', 'paused')[show_object.paused]))
 
 
@@ -2442,9 +2448,9 @@ class CMD_ShowSetQuality(ApiCall):
             newQuality = Quality.combine_qualities(iqualityID, aqualityID)
 
         show_object.quality = newQuality
+        show_object.save()
 
-        return _responds(RESULT_SUCCESS,
-                         msg=show_object.name + " quality has been changed to " + get_quality_string(show_object.quality))
+        return _responds(RESULT_SUCCESS, msg=show_object.name + " quality has been changed to " + get_quality_string(show_object.quality))
 
 
 class CMD_ShowStats(ApiCall):

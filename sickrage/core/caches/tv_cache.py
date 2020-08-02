@@ -21,7 +21,7 @@
 
 
 import datetime
-import functools
+import threading
 import time
 
 import feedparser
@@ -40,6 +40,7 @@ from sickrage.core.websession import WebSession
 
 class TVCache(object):
     def __init__(self, provider, **kwargs):
+        self.lock = threading.Lock()
         self.provider = provider
         self.providerID = self.provider.id
         self.min_time = kwargs.pop('min_time', 10)
@@ -144,16 +145,17 @@ class TVCache(object):
     def last_update(self, toDate):
         session = sickrage.app.cache_db.session()
 
-        try:
-            dbData = session.query(CacheDB.LastUpdate).filter_by(provider=self.providerID).one()
-            dbData.time = int(time.mktime(toDate.timetuple()))
-        except orm.exc.NoResultFound:
-            session.add(CacheDB.LastUpdate(**{
-                'provider': self.providerID,
-                'time': int(time.mktime(toDate.timetuple()))
-            }))
-        finally:
-            session.commit()
+        with self.lock:
+            try:
+                dbData = session.query(CacheDB.LastUpdate).filter_by(provider=self.providerID).one()
+                dbData.time = int(time.mktime(toDate.timetuple()))
+            except orm.exc.NoResultFound:
+                session.add(CacheDB.LastUpdate(**{
+                    'provider': self.providerID,
+                    'time': int(time.mktime(toDate.timetuple()))
+                }))
+            finally:
+                session.commit()
 
     @property
     def last_search(self):
@@ -173,16 +175,17 @@ class TVCache(object):
     def last_search(self, toDate):
         session = sickrage.app.cache_db.session()
 
-        try:
-            dbData = session.query(CacheDB.LastSearch).filter_by(provider=self.providerID).one()
-            dbData.time = int(time.mktime(toDate.timetuple()))
-        except orm.exc.NoResultFound:
-            session.add(CacheDB.LastSearch(**{
-                'provider': self.providerID,
-                'time': int(time.mktime(toDate.timetuple()))
-            }))
-        finally:
-            session.commit()
+        with self.lock:
+            try:
+                dbData = session.query(CacheDB.LastSearch).filter_by(provider=self.providerID).one()
+                dbData.time = int(time.mktime(toDate.timetuple()))
+            except orm.exc.NoResultFound:
+                session.add(CacheDB.LastSearch(**{
+                    'provider': self.providerID,
+                    'time': int(time.mktime(toDate.timetuple()))
+                }))
+            finally:
+                session.commit()
 
     def should_update(self):
         # if we've updated recently then skip the update

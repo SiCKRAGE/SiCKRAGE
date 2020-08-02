@@ -170,7 +170,7 @@ class API(object):
     def upload_privatekey(self, privatekey):
         return self.request('POST', 'account/private-key', data=dict({'privatekey': privatekey}))
 
-    def request(self, method, url, timeout=30, **kwargs):
+    def request(self, method, url, timeout=15, **kwargs):
         if not self.is_enabled or not self.session:
             return
 

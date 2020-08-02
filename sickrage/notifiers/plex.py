@@ -35,6 +35,13 @@ class PLEXNotifier(Notifiers):
         super(PLEXNotifier, self).__init__()
         self.name = 'plex'
 
+        self.headers = {
+            'X-Plex-Device-Name': 'SiCKRAGE',
+            'X-Plex-Product': 'SiCKRAGE Notifier',
+            'X-Plex-Client-Identifier': sickrage.app.user_agent,
+            'X-Plex-Version': sickrage.version()
+        }
+
     def _send_to_plex(self, command, host, username=None, password=None):
         """Handles communication to Plex hosts via HTTP API
 
@@ -149,8 +156,7 @@ class PLEXNotifier(Notifiers):
                 self._notify_pmc(update_text + new_version, title)
 
     def test_notify_pmc(self, host, username, password):
-        return self._notify_pmc('This is a test notification from SiCKRAGE', 'Test Notification', host, username,
-                                password, force=True)
+        return self._notify_pmc('This is a test notification from SiCKRAGE', 'Test Notification', host, username, password, force=True)
 
     def test_notify_pms(self, host, username, password, plex_server_token):
         return self.update_library(host=host, username=username, password=password, plex_server_token=plex_server_token, force=False)
@@ -166,64 +172,38 @@ class PLEXNotifier(Notifiers):
         """
 
         if sickrage.app.config.use_plex and sickrage.app.config.plex_update_library:
-
             if not sickrage.app.config.plex_server_host:
                 sickrage.app.log.debug('PLEX: No Plex Media Server host specified, check your settings')
                 return False
 
             if not host:
                 host = sickrage.app.config.plex_server_host
-            if not username:
-                username = sickrage.app.config.plex_username
-            if not password:
-                password = sickrage.app.config.plex_password
 
-            if not plex_server_token:
-                plex_server_token = sickrage.app.config.plex_server_token
-
-            # if username and password were provided, fetch the auth token from plex.tv
-            token_arg = ''
-            if plex_server_token:
-                token_arg = '?X-Plex-Token=' + plex_server_token
-            elif username and password:
-                sickrage.app.log.debug('PLEX: fetching plex.tv credentials for user: ' + username)
-
-                headers = {
-                    'Authorization': 'Basic %s' % base64.b64encode(bytes('{}:{}'.format(username, password).replace('\n', ''), 'utf-8')).decode('ascii'),
-                    'X-Plex-Device-Name': 'SiCKRAGE',
-                    'X-Plex-Product': 'SiCKRAGE Notifier',
-                    'X-Plex-Client-Identifier': sickrage.app.user_agent,
-                    'X-Plex-Version': '1.0'
-                }
-
-                try:
-                    resp = WebSession().get('https://plex.tv/users/sign_in.xml', headers=headers)
-                    auth_tree = ElementTree.fromstring(resp.text)
-                    token = auth_tree.findall('.//authentication-token')[0].text
-                    token_arg = '?X-Plex-Token=' + token
-                except Exception as e:
-                    sickrage.app.log.debug('PLEX: Error fetching credentials from from plex.tv for user %s: %s' % (username, e))
-
-                except (ValueError, IndexError) as e:
-                    sickrage.app.log.debug('PLEX: Error parsing plex.tv response: ' + e)
+            if not self.get_token(username, password, plex_server_token):
+                sickrage.app.log.warning('PLEX: Error getting auth token for Plex Media Server, check your settings')
+                return 'Error getting auth token for Plex Media Server, check your settings'
 
             file_location = '' if None is ep_obj else ep_obj.location
             host_list = [x.strip() for x in host.split(',')]
             hosts_all = {}
             hosts_match = {}
-            hosts_failed = []
+            hosts_failed = set()
+
             for cur_host in host_list:
                 try:
-                    url = 'http://%s/library/sections%s' % (cur_host, token_arg)
-                    resp = WebSession().get(url)
+                    url = 'http://%s/library/sections' % cur_host
+                    resp = WebSession().get(url, headers=self.headers)
+                    if not resp or not resp.text:
+                        sickrage.app.log.warning('PLEX: Unable to get library data from Plex Media Server')
+                        continue
                     media_container = ElementTree.fromstring(resp.text)
                 except IOError as e:
                     sickrage.app.log.warning('PLEX: Error while trying to contact Plex Media Server: {}'.format(e))
-                    hosts_failed.append(cur_host)
+                    hosts_failed.add(cur_host)
                     continue
                 except Exception as e:
                     if 'invalid token' in str(e):
-                        sickrage.app.log.error('PLEX: Please set TOKEN in Plex settings: ')
+                        sickrage.app.log.error('PLEX: Please set TOKEN in Plex settings')
                     else:
                         sickrage.app.log.error('PLEX: Error while trying to contact Plex Media Server: {}'.format(e))
                     continue
@@ -231,7 +211,7 @@ class PLEXNotifier(Notifiers):
                 sections = media_container.findall('.//Directory')
                 if not sections:
                     sickrage.app.log.debug('PLEX: Plex Media Server not running on: ' + cur_host)
-                    hosts_failed.append(cur_host)
+                    hosts_failed.add(cur_host)
                     continue
 
                 for section in sections:
@@ -255,12 +235,12 @@ class PLEXNotifier(Notifiers):
             host_list = []
             for section_key, cur_host in hosts_try.items():
                 try:
-                    url = 'http://%s/library/sections/%s/refresh%s' % (cur_host, section_key, token_arg)
-                    force and WebSession().get(url)
+                    url = 'http://%s/library/sections/%s/refresh' % (cur_host, section_key)
+                    WebSession().get(url, headers=self.headers)
                     host_list.append(cur_host)
                 except Exception as e:
                     sickrage.app.log.warning('PLEX: Error updating library section for Plex Media Server: {}'.format(e))
-                    hosts_failed.append(cur_host)
+                    hosts_failed.add(cur_host)
 
             if hosts_match:
                 sickrage.app.log.debug('PLEX: Updating hosts where TV section paths match the downloaded show: ' + ', '.join(set(host_list)))
@@ -268,3 +248,38 @@ class PLEXNotifier(Notifiers):
                 sickrage.app.log.debug('PLEX: Updating TV sections on these hosts: {}'.format(', '.join(set(host_list))))
 
             return (', '.join(set(hosts_failed)), None)[not len(hosts_failed)]
+
+    def get_token(self, username=None, password=None, plex_server_token=None):
+        if plex_server_token:
+            self.headers['X-Plex-Token'] = plex_server_token
+
+        if 'X-Plex-Token' in self.headers:
+            return True
+
+        if not (username and password):
+            return True
+
+        sickrage.app.log.debug('PLEX: fetching plex.tv credentials for user: ' + username)
+
+        params = {
+            'user[login]': username,
+            'user[password]': password
+        }
+
+        resp = WebSession().post('https://plex.tv/users/sign_in.json', data=params, headers=self.headers)
+
+        try:
+            data = resp.json()
+        except ValueError:
+            sickrage.app.log.debug("PLEX: No data returned from plex.tv when attempting to fetch credentials")
+            self.headers.pop('X-Plex-Token', '')
+            return False
+
+        if data and 'error' in data:
+            sickrage.app.log.debug('PLEX: Error fetching credentials from from plex.tv for user %s: %s' % (username, data['error']))
+            self.headers.pop('X-Plex-Token', '')
+            return False
+        elif data and 'user' in data:
+            self.headers['X-Plex-Token'] = data['user']['authentication_token']
+
+        return 'X-Plex-Token' in self.headers
