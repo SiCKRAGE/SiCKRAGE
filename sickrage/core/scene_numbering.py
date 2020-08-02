@@ -429,7 +429,7 @@ def xem_refresh(indexer_id, indexer, force=False):
                 return
 
             if indexer_id not in map(int, parsed_json['data']):
-                sickrage.app.log.info('No XEM data for show "%s on %s"' % (indexer_id, IndexerApi(indexer).name,))
+                sickrage.app.log.info('No XEM data for show {} on {}'.format(show_object.name, IndexerApi(indexer).name))
                 # for episode_object in show_object.episodes:
                 #     episode_object.xem_season = -1
                 #     episode_object.xem_episode = -1
@@ -448,7 +448,7 @@ def xem_refresh(indexer_id, indexer, force=False):
                 return
 
             if 'success' not in parsed_json['result']:
-                sickrage.app.log.info('No XEM data for show "%s on %s"' % (indexer_id, IndexerApi(indexer).name,))
+                sickrage.app.log.info('No XEM data for show {} on {}'.format(show_object.name, IndexerApi(indexer).name))
                 return
 
             for entry in parsed_json['data']:
