@@ -2,12 +2,12 @@
 
 # 
 
-##Sun Aug 02 2020 02:09:57 GMT+0000 (Coordinated Universal Time)
+##Mon Aug 03 2020 15:55:41 GMT+0000 (Coordinated Universal Time)
 
 
 ## Bug Fixes
-  - Fixed #SICKRAGE-APP-5RS - AttributeError sickrage.providers in cookie_login Fixed #SICKRAGE-APP-5SB - AttributeError sickrage.core.webserver.handlers.root in handle_post Fixed #SICKRAGE-APP-5S8 - RuntimeError threading in start Fixed #SICKRAGE-APP-5RJ - TypeError sickrage.core.version_updater in _git_cmd Fixed #SICKRAGE-APP-5RM - ConnectionError requests.adapters in send Downgraded error to warning before SystemExit raised due to corrupt config detected
-  ([34521b84](https://gitlab-ci-token:we2FNycBaDu3WmPLUwXn@git.sickrage.ca/SiCKRAGE/sickrage/commit/34521b84e2e7abedff8e8bdb34f8210a8172bedc))
+  - Fixed #SICKRAGE-APP-5SW - StatementError sqlalchemy.dialects.sqlite.base in process Fixed #SICKRAGE-APP-5SY - IntegrityError sqlalchemy.engine.default in do_execute Fixed #SICKRAGE-APP-5SH - AttributeError sickrage.notifiers.plex in update_library Fixed #SICKRAGE-APP-5T6 - KeyError sickrage.core.tv.show in delete_show Misc fixes for app API Refactored Plex notifier client Added default web session timeout of 15s Lowered core external API timeout to 15s Wording correcting in notifications.mako
+  ([14196682](https://gitlab-ci-token:wPQ7MhpXs7Y6uubh-icz@git.sickrage.ca/SiCKRAGE/sickrage/commit/141966823aae4964976ae72200cbece42c76dbf4))
 
 
 
