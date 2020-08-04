@@ -51,6 +51,5 @@ certifi
 pyasn1
 lxml
 ipaddress
-psutil
 cffi
 cryptography

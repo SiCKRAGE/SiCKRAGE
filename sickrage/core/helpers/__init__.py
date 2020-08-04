@@ -23,7 +23,9 @@
 import base64
 import ctypes
 import datetime
+import errno
 import glob
+import gzip
 import hashlib
 import ipaddress
 import os
@@ -45,7 +47,6 @@ from collections import OrderedDict
 from contextlib import contextmanager
 from urllib.parse import uses_netloc, urlsplit, urlunsplit, urljoin
 
-import errno
 import rarfile
 import requests
 from bs4 import BeautifulSoup
@@ -923,10 +924,17 @@ def restore_config_zip(archive, targetDir, restore_database=True, restore_config
 
         with zipfile.ZipFile(archive, 'r', allowZip64=True) as zip_file:
             for member in zip_file.namelist():
-                if not restore_database and member.split('/')[0] in ['main.db', 'main.db-shm', 'main.db-wal', 'cache.db', 'cache.db-shm', 'cache.db-wal']:
+                if not restore_database and member.split('/')[0] in ['main_db_backup.json',
+                                                                     'main.db', 'main.db-shm',
+                                                                     'main.db-wal',
+                                                                     'cache_db_backup.json',
+                                                                     'cache.db',
+                                                                     'cache.db-shm',
+                                                                     'cache.db-wal']:
                     continue
 
-                if not restore_config and member.split('/')[0] in ['config.ini', 'privatekey.pem']:
+                if not restore_config and member.split('/')[0] in ['config.ini',
+                                                                   'privatekey.pem']:
                     continue
 
                 if not restore_cache and member.split('/')[0] == 'cache':
@@ -944,12 +952,6 @@ def backup_app_data(backupDir, keep_latest=False):
     source = []
 
     files_list = [
-        'main.db',
-        'main.db-shm',
-        'main.db-wal',
-        'cache.db',
-        'cache.db-shm',
-        'cache.db-wal',
         'privatekey.pem',
         os.path.basename(sickrage.app.config_file)
     ]
@@ -969,6 +971,12 @@ def backup_app_data(backupDir, keep_latest=False):
         fp = os.path.join(sickrage.app.data_dir, f)
         if os.path.exists(fp):
             source += [fp]
+
+    # databases
+    for db in [sickrage.app.main_db, sickrage.app.cache_db]:
+        backup_file = os.path.join(*[sickrage.app.data_dir, '{}_db_backup.json'.format(db.name)])
+        db.backup(backup_file)
+        source += [backup_file]
 
     # cache folder
     if sickrage.app.cache_dir:
@@ -1010,6 +1018,12 @@ def restore_app_data(srcDir, dstDir):
                 if os.path.isfile(dstFile):
                     move_file(dstFile, bakFile)
                 move_file(srcFile, dstFile)
+
+        # database
+        for db in [sickrage.app.main_db, sickrage.app.cache_db]:
+            backup_file = os.path.join(*[srcDir, '{}_db_backup.json'.format(db.name)])
+            if os.path.exists(backup_file):
+                db.restore(backup_file)
 
         # cache
         if os.path.exists(os.path.join(srcDir, 'cache')):
@@ -1650,21 +1664,6 @@ def glob_escape(pathname):
     pathname = MAGIC_CHECK.sub(r'[\1]', pathname)
 
     return drive + pathname
-
-
-def memory_usage():
-    try:
-        try:
-            import psutil
-            p = psutil.Process(sickrage.app.pid)
-            return pretty_file_size(int(p.memory_info().rss))
-        except ImportError:
-            import resource
-            return pretty_file_size(int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss) * 1024)
-    except Exception:
-        pass
-
-    return 'unknown'
 
 
 def convert_to_timedelta(time_val):

@@ -220,7 +220,11 @@ def file_cleanup(remove=False):
     for root, dirs, files in os.walk(PROG_DIR):
         for file in files:
             full_filename = pathlib.Path(root).joinpath(file)
-            if full_filename != pathlib.Path(CHECKSUM_FILE) and full_filename not in valid_files and PROG_DIR in str(full_filename):
+
+            if full_filename == pathlib.Path(CHECKSUM_FILE) or full_filename.suffix == '.pyc':
+                continue
+
+            if full_filename not in valid_files and PROG_DIR in str(full_filename):
                 try:
                     if remove:
                         print('Found unwanted file {}, removed!'.format(full_filename))

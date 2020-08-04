@@ -5,7 +5,7 @@
     from time import time
 
     import sickrage
-    from sickrage.core.helpers import pretty_file_size, memory_usage
+    from sickrage.core.helpers import pretty_file_size
 %>
 
 <%namespace file="../includes/modals.mako" import="mainModals"/>
@@ -393,10 +393,6 @@
     ##                 ${_('Backlog Search:')} <span
     ##                     class="text-primary">${str(sickrage.app.scheduler.get_job('BACKLOG').next_run_time).split('.')[0]}</span>
     ##                 |
-    ##                 ${_('Memory used:')}
-    ##                 <span class="text-primary">
-    ##                     ${memory_usage()}
-    ##                 </span> |
     ##                 ${_('Load time:')}
     ##                 <span class="text-primary">
     ##                         ${"{:10.4f}".format(time() - srStartTime)}s

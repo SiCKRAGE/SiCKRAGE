@@ -316,6 +316,8 @@ def find_scene_absolute_numbering(indexer_id, indexer, absolute_number):
         ).filter(MainDB.TVEpisode.scene_absolute_number != -1).one()
 
         return dbData.scene_absolute_number
+    except orm.exc.MultipleResultsFound:
+        return
     except orm.exc.NoResultFound:
         return
 

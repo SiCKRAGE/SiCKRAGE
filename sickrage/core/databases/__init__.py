@@ -28,10 +28,13 @@ from time import sleep
 import sqlalchemy
 from migrate import DatabaseAlreadyControlledError, DatabaseNotControlledError
 from migrate.versioning import api
-from sqlalchemy import create_engine, event, inspect
+from sqlalchemy import create_engine, event, inspect, MetaData
 from sqlalchemy.engine import Engine
 from sqlalchemy.exc import OperationalError
+from sqlalchemy.ext.automap import automap_base
+from sqlalchemy.ext.serializer import loads, dumps
 from sqlalchemy.orm import sessionmaker, mapper, scoped_session
+from sqlalchemy.util import KeyedTuple
 
 import sickrage
 from sickrage.core.helpers import backup_versioned_file
@@ -160,6 +163,14 @@ class SRDatabase(object):
         except DatabaseNotControlledError:
             return 0
 
+    def get_metadata(self):
+        return MetaData(bind=self.engine, reflect=True)
+
+    def get_base(self):
+        base = automap_base(metadata=self.get_metadata())
+        base.prepare()
+        return base
+
     def integrity_check(self):
         if self.db_type == 'sqlite':
             if self.session().scalar("PRAGMA integrity_check") != "ok":
@@ -277,8 +288,24 @@ class SRDatabase(object):
             del migrate_tables
             del rows
 
-    def backup(self):
-        pass
+    def backup(self, filename):
+        metadata = self.get_metadata()
+        data = {t: dumps(self.session().query(metadata.tables[t]).all()) for t in metadata.tables}
+        with open(filename, 'wb') as fh:
+            pickle.dump(data, fh)
 
-    def restore(self):
-        pass
+    def restore(self, filename):
+        session = self.session()
+        metadata = self.get_metadata()
+        base = self.get_base()
+
+        with open(filename, 'rb') as fh:
+            data_dict = pickle.load(fh)
+            for table_name, data in data_dict.items():
+                table = base.classes[table_name]
+                session.query(table).delete()
+                for row in loads(data, metadata, session):
+                    if isinstance(row, KeyedTuple):
+                        row = table(**row._asdict())
+                    session.merge(row)
+            session.commit()

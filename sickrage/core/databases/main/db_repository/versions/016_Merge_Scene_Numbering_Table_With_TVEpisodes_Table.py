@@ -1,10 +1,15 @@
 from sqlalchemy import *
+from sqlalchemy.exc import NoSuchTableError
 
 
 def upgrade(migrate_engine):
     meta = MetaData(bind=migrate_engine)
     tv_episodes = Table('tv_episodes', meta, autoload=True)
-    scene_numbering = Table('scene_numbering', meta, autoload=True)
+
+    try:
+        scene_numbering = Table('scene_numbering', meta, autoload=True)
+    except NoSuchTableError:
+        scene_numbering = None
 
     if scene_numbering is not None:
         with migrate_engine.begin() as conn:
