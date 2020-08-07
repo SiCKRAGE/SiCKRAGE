@@ -2,12 +2,12 @@
 
 # 
 
-##Mon Aug 03 2020 15:55:41 GMT+0000 (Coordinated Universal Time)
+##Fri Aug 07 2020 16:55:45 GMT+0000 (Coordinated Universal Time)
 
 
-## Bug Fixes
-  - Fixed #SICKRAGE-APP-5SW - StatementError sqlalchemy.dialects.sqlite.base in process Fixed #SICKRAGE-APP-5SY - IntegrityError sqlalchemy.engine.default in do_execute Fixed #SICKRAGE-APP-5SH - AttributeError sickrage.notifiers.plex in update_library Fixed #SICKRAGE-APP-5T6 - KeyError sickrage.core.tv.show in delete_show Misc fixes for app API Refactored Plex notifier client Added default web session timeout of 15s Lowered core external API timeout to 15s Wording correcting in notifications.mako
-  ([14196682](https://gitlab-ci-token:wPQ7MhpXs7Y6uubh-icz@git.sickrage.ca/SiCKRAGE/sickrage/commit/141966823aae4964976ae72200cbece42c76dbf4))
+## Refactor
+  - Refactored database backup/restore code Bumped main database to v16 Fixed issue with returning scene absolute number by lookup of indexer absolute number when absolute number is zero and returns multiple rows Removed psutil from requirements.txt Refactored file cleanup on start to skip *.pyc files Remover memory_usage function from helpers
+  ([96cdca42](https://gitlab-ci-token:msyqhYZwXjoMN7JJVyXp@git.sickrage.ca/SiCKRAGE/sickrage/commit/96cdca42ae73a78ad4274918cd935b93e1995e36))
 
 
 
