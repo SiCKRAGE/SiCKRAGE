@@ -46,9 +46,9 @@ sqlalchemy-migrate==0.13.0
 mutagen==1.45.1
 deluge-client==1.9.0
 dirsync==2.2.5
+pyasn1==0.4.8
 PyMySQL
 certifi
-pyasn1
 asn1crypto
 lxml
 ipaddress

@@ -45,7 +45,7 @@ VERSION_FILE = os.path.join(PROG_DIR, 'version.txt')
 CHANGELOG_FILE = os.path.join(MAIN_DIR, 'CHANGELOG.md')
 REQS_FILE = os.path.join(MAIN_DIR, 'requirements.txt')
 CHECKSUM_FILE = os.path.join(PROG_DIR, 'checksums.md5')
-
+AUTO_PROCESS_TV_CFG_FILE = os.path.join(*[PROG_DIR, 'autoProcessTV', 'autoProcessTV.cfg'])
 
 class Daemon(object):
     """
@@ -186,10 +186,10 @@ def check_requirements():
                     req_name, req_version = line.strip().split('==')
                     if not pkg_resources.get_distribution(req_name).version == req_version:
                         print('Updating requirement {} to {}'.format(req_name, req_version))
-                        subprocess.check_call([sys.executable, "-m", "pip", "install", "--no-cache-dir", line.strip()])
+                        subprocess.check_call([sys.executable, "-m", "pip", "install", "--ignore-installed", "--no-cache-dir", line.strip()])
                 except pkg_resources.DistributionNotFound:
                     print('Installing requirement {}'.format(line.strip()))
-                    subprocess.check_call([sys.executable, "-m", "pip", "install", "--no-cache-dir", line.strip()])
+                    subprocess.check_call([sys.executable, "-m", "pip", "install", "--ignore-installed", "--no-cache-dir", line.strip()])
                 except ValueError:
                     continue
 
@@ -207,6 +207,7 @@ def check_requirements():
 
 def file_cleanup(remove=False):
     valid_files = []
+    exempt_files = [pathlib.Path(CHECKSUM_FILE), pathlib.Path(AUTO_PROCESS_TV_CFG_FILE)]
 
     if not os.path.exists(CHECKSUM_FILE):
         return
@@ -221,7 +222,7 @@ def file_cleanup(remove=False):
         for file in files:
             full_filename = pathlib.Path(root).joinpath(file)
 
-            if full_filename == pathlib.Path(CHECKSUM_FILE) or full_filename.suffix == '.pyc':
+            if full_filename in exempt_files or full_filename.suffix == '.pyc':
                 continue
 
             if full_filename not in valid_files and PROG_DIR in str(full_filename):
