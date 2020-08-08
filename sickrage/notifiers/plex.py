@@ -82,13 +82,13 @@ class PLEXNotifier(Notifiers):
         else:
             sickrage.app.log.debug('PLEX: Contacting via url: ' + url)
 
-        try:
-            result = WebSession().get(url, headers=headers).text
-        except Exception as e:
+        resp = WebSession().get(url, headers=headers)
+        if not resp or not resp.text:
             sickrage.app.log.warning('PLEX: Warning: Couldn\'t contact Plex at {}: {}'.format(url, e))
             return False
 
-        sickrage.app.log.debug('PLEX: HTTP response: ' + result.replace('\n', ''))
+        sickrage.app.log.debug('PLEX: HTTP response: ' + resp.text.replace('\n', ''))
+
         return 'OK'
 
     def _notify_pmc(self, message, title='SiCKRAGE', host=None, username=None, password=None, force=False):
@@ -234,13 +234,14 @@ class PLEXNotifier(Notifiers):
             hosts_try = (hosts_all.copy(), hosts_match.copy())[bool(hosts_match)]
             host_list = []
             for section_key, cur_host in hosts_try.items():
-                try:
-                    url = 'http://%s/library/sections/%s/refresh' % (cur_host, section_key)
-                    WebSession().get(url, headers=self.headers)
-                    host_list.append(cur_host)
-                except Exception as e:
-                    sickrage.app.log.warning('PLEX: Error updating library section for Plex Media Server: {}'.format(e))
+                url = 'http://%s/library/sections/%s/refresh' % (cur_host, section_key)
+                resp = WebSession().get(url, headers=self.headers)
+                if not resp or not resp.ok:
+                    sickrage.app.log.warning('PLEX: Error updating library section for Plex Media Server')
                     hosts_failed.add(cur_host)
+                    continue
+
+                host_list.append(cur_host)
 
             if hosts_match:
                 sickrage.app.log.debug('PLEX: Updating hosts where TV section paths match the downloaded show: ' + ', '.join(set(host_list)))

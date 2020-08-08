@@ -64,7 +64,7 @@ def get_ED2K(filePath, forceHash=False, cacheLocation=os.path.normpath(sys.path[
         try:
             if len(get_ED2K.ED2KCache) != 0:
                 with open(cacheLocation, 'wb') as f:
-                    pickle.dump(get_ED2K.ED2KCache, f, pickle.HIGHEST_PROTOCOL)
+                    pickle.dump(get_ED2K.ED2KCache, f, pickle.DEFAULT_PROTOCOL)
         except:
             logger.error("Error occurred while writing back to disk")
         return

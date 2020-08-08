@@ -290,9 +290,9 @@ class SRDatabase(object):
 
     def backup(self, filename):
         metadata = self.get_metadata()
-        data = {t: dumps(self.session().query(metadata.tables[t]).all()) for t in metadata.tables}
+        data = {t: dumps(self.session().query(metadata.tables[t]).all(), protocol=pickle.DEFAULT_PROTOCOL) for t in metadata.tables}
         with open(filename, 'wb') as fh:
-            pickle.dump(data, fh)
+            pickle.dump(data, fh, protocol=pickle.DEFAULT_PROTOCOL)
 
     def restore(self, filename):
         session = self.session()
