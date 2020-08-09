@@ -14,11 +14,11 @@ def upgrade(migrate_engine):
     if scene_numbering is not None:
         with migrate_engine.begin() as conn:
             for row in migrate_engine.execute(scene_numbering.select()):
-                conn.execute(tv_episodes.update().where(
+                conn.execute(tv_episodes.update().where(and_(
                     tv_episodes.c.showid == row.indexer_id,
                     tv_episodes.c.season == row.season,
                     tv_episodes.c.episode == row.episode
-                ).values(
+                )).values(
                     scene_season=row.scene_season,
                     scene_episode=row.scene_episode
                 ))
