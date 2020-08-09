@@ -2,12 +2,12 @@
 
 # 
 
-##Sun Aug 09 2020 15:15:09 GMT+0000 (Coordinated Universal Time)
+##Sun Aug 09 2020 18:03:01 GMT+0000 (Coordinated Universal Time)
 
 
 ## Bug Fixes
-  - Fixed typo in database migration script
-  ([b821ed0d](https://gitlab-ci-token:vYCBEKh_PeQS82cNZokU@git.sickrage.ca/SiCKRAGE/sickrage/commit/b821ed0df6f59c1cf978a0a7fdd5e829620d3c5d))
+  - Fixed issue with v16 database migration using multiple where clauses
+  ([135dea3c](https://gitlab-ci-token:Fy1Ve1DtH1MW-Dve-y_-@git.sickrage.ca/SiCKRAGE/sickrage/commit/135dea3c4cb176fefb891a8d5023731753c6810a))
 
 
 
