@@ -223,6 +223,7 @@ class Core(object):
 
         # check if we need to perform a restore first
         if os.path.exists(os.path.abspath(os.path.join(self.data_dir, 'restore'))):
+            self.log.info('Performing restore of backup files')
             success = restore_app_data(os.path.abspath(os.path.join(self.data_dir, 'restore')), self.data_dir)
             self.log.info("Restoring SiCKRAGE backup: %s!" % ("FAILED", "SUCCESSFUL")[success])
             if success:
@@ -274,9 +275,9 @@ class Core(object):
             self.log.info("Performing migrations on {} database".format(db.name))
             db.migrate()
 
-            # sync database repo
-            self.log.info("Performing sync on {} database".format(db.name))
-            db.sync_db_repo()
+            # upgrade database
+            self.log.info("Performing upgrades on {} database".format(db.name))
+            db.upgrade()
 
             # cleanup
             self.log.info("Performing cleanup on {} database".format(db.name))
