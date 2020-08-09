@@ -15,7 +15,7 @@ def upgrade(migrate_engine):
         with migrate_engine.begin() as conn:
             for row in migrate_engine.execute(scene_numbering.select()):
                 conn.execute(tv_episodes.update().where(
-                    tv_episodes.c.show_id == row.indexer_id,
+                    tv_episodes.c.showid == row.indexer_id,
                     tv_episodes.c.season == row.season,
                     tv_episodes.c.episode == row.episode
                 ).values(
