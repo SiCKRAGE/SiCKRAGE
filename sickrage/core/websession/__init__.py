@@ -236,7 +236,7 @@ class WebHelpers(object):
 
             return cf_resp
         else:
-            if CloudScraper.is_reCaptcha_Challenge(resp) or CloudScraper.is_Firewall_Blocked(resp):
+            if CloudScraper.is_Captcha_Challenge(resp) or CloudScraper.is_Firewall_Blocked(resp):
                 sickrage.app.log.warning("Cloudflare captcha challenge or firewall detected, it can't be bypassed.")
 
             return resp
