@@ -1,5 +1,5 @@
 sickrage/__init__.py = 0bdd61c13f24daa672b8869854a87b39
-sickrage/version.txt = 2d266f4673919e81d85f2db28bc9b6ca
+sickrage/version.txt = 21fd380a92610cae771bfc6c7b89bcda
 sickrage/metadata/mediabrowser.py = 1bbed4ed42107b62c9b1d621b02dc148
 sickrage/metadata/__init__.py = f89aa58d29a9c3e6d8f9d22c79bba0ed
 sickrage/metadata/mede8er.py = f0508a41a05a44634154f0e81f64f975
@@ -113,8 +113,8 @@ sickrage/core/webserver/views/manage/subtitles_missed.mako = 94eba4f63e4a10ab6ea
 sickrage/core/webserver/views/manage/failed_downloads.mako = d46e276dece54c095570bd7c7f8962d2
 sickrage/core/webserver/views/manage/mass_update.mako = 7a7e9e0bf4d56bb68da55bfa43272501
 sickrage/core/webserver/views/manage/backlog_overview.mako = bc86cbf87c6984c3b13068f197c39f1a
-sickrage/core/webserver/static/js/core.min.js = 263c280b719585f5d22e6f7d63d9d1b3
-sickrage/core/webserver/static/js/core.js.map = 2ed2d2fd48d350b600768184130f1641
+sickrage/core/webserver/static/js/core.min.js = 2105ea901df19011f666c9a0c0545744
+sickrage/core/webserver/static/js/core.js.map = 382b5c7156237328f9472337cdf8d2dc
 sickrage/core/webserver/static/css/core.min.css = 4907dc4940006209e76fb315b0b7e793
 sickrage/core/webserver/static/fonts/fa-regular-400.ttf = 1a78af4105d4d56e6c34f76dc70bf1bc
 sickrage/core/webserver/static/fonts/fa-regular-400.woff2 = 3a3398a6ef60fc64eacf45665958342e
@@ -198,7 +198,7 @@ sickrage/core/databases/main/db_repository/versions/005_Rename_Columns_On_IMDbIn
 sickrage/core/databases/main/db_repository/versions/013_Add_Scene_Column_To_TVShow_Table.py = 0a372341c14517fa61c952bbe98665cf
 sickrage/core/databases/main/db_repository/versions/006_Rename_Columns_On_TVEpisode_Table.py = 2d73467849594470d3af8c9d6201cb43
 sickrage/core/databases/main/db_repository/versions/001_Add_Initial_Tables.py = f35885eed78f19031415538624695647
-sickrage/core/databases/main/db_repository/versions/016_Merge_Scene_Numbering_Table_With_TVEpisodes_Table.py = 44d924fa4c90b8e3da07ee1674058aba
+sickrage/core/databases/main/db_repository/versions/016_Merge_Scene_Numbering_Table_With_TVEpisodes_Table.py = 53634bef7a1447918df031496c537fac
 sickrage/core/databases/main/db_repository/versions/__init__.py = d41d8cd98f00b204e9800998ecf8427e
 sickrage/core/databases/main/db_repository/versions/008_Convert_Date_Column_To_DateTime_Type_On_FailedSnatchHistory_Table.py = 9e2cbec80fe8fa125dc9b4069765e277
 sickrage/core/databases/main/db_repository/versions/009_Convert_Date_Column_To_DateTime_Type_On_History_Table.py = 4888c247575d7b1d146d24896e6be7a6
