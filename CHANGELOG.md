@@ -2,12 +2,19 @@
 
 # 
 
-##Sun Aug 09 2020 18:03:01 GMT+0000 (Coordinated Universal Time)
+##Mon Aug 10 2020 22:07:50 GMT+0000 (Coordinated Universal Time)
 
 
-## Bug Fixes
-  - Fixed issue with v16 database migration using multiple where clauses
-  ([135dea3c](https://gitlab-ci-token:Fy1Ve1DtH1MW-Dve-y_-@git.sickrage.ca/SiCKRAGE/sickrage/commit/135dea3c4cb176fefb891a8d5023731753c6810a))
+## Refactor
+  - Refactoring database migrations to use Alembic
+  ([cd2ef1b3](https://gitlab-ci-token:o-2eBd1wqgyPQMb4urrk@git.sickrage.ca/SiCKRAGE/sickrage/commit/cd2ef1b3f64d56b5003b5be5b0700b504b08a533))
+
+
+
+
+## Branchs merged
+  - Merge branch 'refactor-database-migrations' into develop
+  ([2c41b481](https://gitlab-ci-token:o-2eBd1wqgyPQMb4urrk@git.sickrage.ca/SiCKRAGE/sickrage/commit/2c41b48114ad7d6fd0e8e413924a940d0f656257))
 
 
 
