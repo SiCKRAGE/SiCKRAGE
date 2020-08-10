@@ -261,9 +261,6 @@ deploy:docker:develop:
 
 deploy:synology:master:
   stage: release_deploy
-  variables:
-    UPSTREAM_BRANCH: master
-    UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
   trigger:
     project: sickrage/sickrage-synology
     branch: master
@@ -275,9 +272,6 @@ deploy:synology:master:
 
 deploy:synology:develop:
   stage: release_deploy
-  variables:
-    UPSTREAM_BRANCH: develop
-    UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
   trigger:
     project: sickrage/sickrage-synology
     branch: develop
