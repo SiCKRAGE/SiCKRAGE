@@ -25,19 +25,22 @@ import threading
 from collections import OrderedDict
 from time import sleep
 
+import alembic.command
+import alembic.config
+import alembic.script
 import sqlalchemy
-from migrate import DatabaseAlreadyControlledError, DatabaseNotControlledError
-from migrate.versioning import api
-from sqlalchemy import create_engine, event, inspect, MetaData
-from sqlalchemy.engine import Engine
+from alembic.runtime.migration import MigrationContext
+from alembic.script import ScriptDirectory
+from sqlalchemy import create_engine, event, inspect, MetaData, Index
+from sqlalchemy.engine import Engine, reflection
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.ext.serializer import loads, dumps
 from sqlalchemy.orm import sessionmaker, mapper, scoped_session
+from sqlalchemy.sql.ddl import CreateTable, CreateIndex
 from sqlalchemy.util import KeyedTuple
 
 import sickrage
-from sickrage.core.helpers import backup_versioned_file
 
 
 @event.listens_for(Engine, "connect")
@@ -119,10 +122,8 @@ class SRDatabaseBase(object):
 
 
 class SRDatabase(object):
-    def __init__(self, name, db_version=0, db_type='sqlite', db_prefix='sickrage', db_host='localhost', db_port='3306', db_username='sickrage',
-                 db_password='sickrage'):
+    def __init__(self, name, db_type='sqlite', db_prefix='sickrage', db_host='localhost', db_port='3306', db_username='sickrage', db_password='sickrage'):
         self.name = name
-        self.db_version = db_version
         self.db_type = db_type
         self.db_prefix = db_prefix
         self.db_host = db_host
@@ -133,17 +134,17 @@ class SRDatabase(object):
         self.tables = {}
 
         self.db_path = os.path.join(sickrage.app.data_dir, '{}.db'.format(self.name))
-        self.db_repository = os.path.join(os.path.dirname(__file__), self.name, 'db_repository')
+        self.db_migrations_path = os.path.join(os.path.dirname(__file__), self.name, 'migrations')
 
         self.session = scoped_session(sessionmaker(class_=ContextSession, bind=self.engine))
 
-        if not self.version:
-            api.version_control(self.engine, self.db_repository, api.version(self.db_repository))
-        else:
-            try:
-                api.version_control(self.engine, self.db_repository)
-            except DatabaseAlreadyControlledError:
-                pass
+        if self.engine.dialect.has_table(self.engine, 'migrate_version'):
+            migrate_version = self.engine.execute("select version from migrate_version").fetchone().version
+            alembic.command.stamp(self.get_alembic_config(), str(migrate_version))
+            self.engine.execute("drop table migrate_version")
+
+        if not self.engine.dialect.has_table(self.engine, 'alembic_version'):
+            alembic.command.stamp(self.get_alembic_config(), 'head')
 
     @property
     def engine(self):
@@ -158,10 +159,29 @@ class SRDatabase(object):
 
     @property
     def version(self):
-        try:
-            return int(api.db_version(self.engine, self.db_repository))
-        except DatabaseNotControlledError:
-            return 0
+        context = MigrationContext.configure(self.engine)
+        current_rev = context.get_current_revision()
+        return current_rev
+
+    def upgrade(self):
+        db_version = int(self.version)
+        alembic_version = int(ScriptDirectory.from_config(self.get_alembic_config()).get_current_head())
+
+        backup_filename = os.path.join(sickrage.app.data_dir, '{}_db_backup_{}.json'.format(self.name, datetime.datetime.now().strftime('%Y%m%d_%H%M%S')))
+
+        if db_version < alembic_version:
+            sickrage.app.log.info('Upgrading {} database to v{}'.format(self.name, alembic_version))
+
+            self.backup(backup_filename)
+
+            alembic.command.upgrade(self.get_alembic_config(), 'head')
+
+    def get_alembic_config(self):
+        config = alembic.config.Config()
+        config.set_main_option('script_location', self.db_migrations_path)
+        config.set_main_option('sqlalchemy.url', str(self.engine.url))
+        config.set_main_option('url', str(self.engine.url))
+        return config
 
     def get_metadata(self):
         return MetaData(bind=self.engine, reflect=True)
@@ -176,22 +196,6 @@ class SRDatabase(object):
             if self.session().scalar("PRAGMA integrity_check") != "ok":
                 sickrage.app.log.fatal("{} database file {} is damaged, please restore a backup"
                                        " or delete the database file and restart SiCKRAGE".format(self.name.capitalize(), self.db_path))
-
-    def sync_db_repo(self):
-        if self.version < self.db_version:
-            if self.db_type == 'sqlite':
-                backup_versioned_file(self.db_path, self.version)
-                backup_versioned_file(self.db_path + '-shm', self.version)
-                backup_versioned_file(self.db_path + '-wal', self.version)
-            api.upgrade(self.engine, self.db_repository)
-            sickrage.app.log.info('Upgraded {} database to version {}'.format(self.name, self.version))
-        elif self.version > self.db_version:
-            if self.db_type == 'sqlite':
-                backup_versioned_file(self.db_path, self.version)
-                backup_versioned_file(self.db_path + '-shm', self.version)
-                backup_versioned_file(self.db_path + '-wal', self.version)
-            api.downgrade(self.engine, self.db_repository, self.db_version)
-            sickrage.app.log.info('Downgraded {} database to version {}'.format(self.name, self.version))
 
     def cleanup(self):
         pass
@@ -289,23 +293,57 @@ class SRDatabase(object):
             del rows
 
     def backup(self, filename):
-        metadata = self.get_metadata()
-        data = {t: dumps(self.session().query(metadata.tables[t]).all(), protocol=pickle.DEFAULT_PROTOCOL) for t in metadata.tables}
+        meta = self.get_metadata()
+
+        backup_dict = {
+            'schema': {},
+            'indexes': {},
+            'data': {}
+        }
+
+        for table_name, table_object in meta.tables.items():
+            backup_dict['indexes'].update({table_name: []})
+            backup_dict['schema'].update({table_name: str(CreateTable(table_object))})
+            backup_dict['data'].update({table_name: dumps(self.session().query(table_object).all(), protocol=pickle.DEFAULT_PROTOCOL)})
+            for index in reflection.Inspector.from_engine(self.engine).get_indexes(table_name):
+                cols = [table_object.c[col] for col in index['column_names']]
+                idx = Index(index['name'], *cols)
+                backup_dict['indexes'][table_name].append(str(CreateIndex(idx)))
+
         with open(filename, 'wb') as fh:
-            pickle.dump(data, fh, protocol=pickle.DEFAULT_PROTOCOL)
+            pickle.dump(backup_dict, fh, protocol=pickle.DEFAULT_PROTOCOL)
 
     def restore(self, filename):
         session = self.session()
-        metadata = self.get_metadata()
-        base = self.get_base()
 
         with open(filename, 'rb') as fh:
-            data_dict = pickle.load(fh)
-            for table_name, data in data_dict.items():
-                table = base.classes[table_name]
-                session.query(table).delete()
-                for row in loads(data, metadata, session):
-                    if isinstance(row, KeyedTuple):
-                        row = table(**row._asdict())
-                    session.merge(row)
-            session.commit()
+            backup_dict = pickle.load(fh)
+
+            # drop all tables
+            self.get_base().metadata.drop_all()
+
+            # restore schema
+            if backup_dict.get('schema', None):
+                for table_name, schema in backup_dict['schema'].items():
+                    session.execute(schema)
+                session.commit()
+
+            # restore indexes
+            if backup_dict.get('indexes', None):
+                for table_name, indexes in backup_dict['indexes'].items():
+                    for index in indexes:
+                        session.execute(index)
+                session.commit()
+
+            # restore data
+            if backup_dict.get('data', None):
+                base = self.get_base()
+                meta = self.get_metadata()
+                for table_name, data in backup_dict['data'].items():
+                    table = base.classes[table_name]
+                    session.query(table).delete()
+                    for row in loads(data, meta, session):
+                        if isinstance(row, KeyedTuple):
+                            row = table(**row._asdict())
+                        session.merge(row)
+                session.commit()

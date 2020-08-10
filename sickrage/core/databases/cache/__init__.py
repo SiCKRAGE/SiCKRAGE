@@ -29,7 +29,7 @@ class CacheDBBase(SRDatabaseBase):
 
 class CacheDB(SRDatabase):
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
-        super(CacheDB, self).__init__('cache', 8, db_type, db_prefix, db_host, db_port, db_username, db_password)
+        super(CacheDB, self).__init__('cache', db_type, db_prefix, db_host, db_port, db_username, db_password)
         CacheDBBase.metadata.create_all(self.engine)
         for model in CacheDBBase._decl_class_registry.values():
             if hasattr(model, '__tablename__'):
