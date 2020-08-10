@@ -47,6 +47,7 @@ REQS_FILE = os.path.join(MAIN_DIR, 'requirements.txt')
 CHECKSUM_FILE = os.path.join(PROG_DIR, 'checksums.md5')
 AUTO_PROCESS_TV_CFG_FILE = os.path.join(*[PROG_DIR, 'autoProcessTV', 'autoProcessTV.cfg'])
 
+
 class Daemon(object):
     """
     Usage: subclass the Daemon class
@@ -186,10 +187,14 @@ def check_requirements():
                     req_name, req_version = line.strip().split('==')
                     if not pkg_resources.get_distribution(req_name).version == req_version:
                         print('Updating requirement {} to {}'.format(req_name, req_version))
-                        subprocess.check_call([sys.executable, "-m", "pip", "install", "--ignore-installed", "--no-cache-dir", line.strip()])
+                        subprocess.check_call(
+                            [sys.executable, "-m", "pip", "install", "--no-use-pep517", "--ignore-installed", "--no-cache-dir", line.strip()]
+                        )
                 except pkg_resources.DistributionNotFound:
                     print('Installing requirement {}'.format(line.strip()))
-                    subprocess.check_call([sys.executable, "-m", "pip", "install", "--ignore-installed", "--no-cache-dir", line.strip()])
+                    subprocess.check_call(
+                        [sys.executable, "-m", "pip", "install", "--no-use-pep517", "--ignore-installed", "--no-cache-dir", line.strip()]
+                    )
                 except ValueError:
                     continue
 

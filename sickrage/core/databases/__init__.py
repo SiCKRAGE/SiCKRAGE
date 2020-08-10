@@ -298,7 +298,8 @@ class SRDatabase(object):
         backup_dict = {
             'schema': {},
             'indexes': {},
-            'data': {}
+            'data': {},
+            'version': self.version
         }
 
         for table_name, table_object in meta.tables.items():
