@@ -179,19 +179,19 @@ def check_requirements():
     if sys.version_info < (3, 5, 0):
         sys.exit("Sorry, SiCKRAGE requires Python 3.5+")
 
-    if os.path.exists(REQS_FILE):
-        with open(REQS_FILE) as f:
-            for line in f.readlines():
-                try:
-                    req_name, req_version = line.strip().split('==')
-                    if not pkg_resources.get_distribution(req_name).version == req_version:
-                        print('Updating requirement {} to {}'.format(req_name, req_version))
-                        subprocess.check_call([sys.executable, "-m", "pip", "install", "--no-deps", "--no-cache-dir", line.strip()])
-                except pkg_resources.DistributionNotFound:
-                    print('Installing requirement {}'.format(line.strip()))
-                    subprocess.check_call([sys.executable, "-m", "pip", "install", "--no-deps", "--no-cache-dir", line.strip()])
-                except ValueError:
-                    continue
+    # if os.path.exists(REQS_FILE):
+    #     with open(REQS_FILE) as f:
+    #         for line in f.readlines():
+    #             try:
+    #                 req_name, req_version = line.strip().split('==')
+    #                 if not pkg_resources.get_distribution(req_name).version == req_version:
+    #                     print('Updating requirement {} to {}'.format(req_name, req_version))
+    #                     subprocess.check_call([sys.executable, "-m", "pip", "install", "--no-deps", "--no-cache-dir", line.strip()])
+    #             except pkg_resources.DistributionNotFound:
+    #                 print('Installing requirement {}'.format(line.strip()))
+    #                 subprocess.check_call([sys.executable, "-m", "pip", "install", "--no-deps", "--no-cache-dir", line.strip()])
+    #             except ValueError:
+    #                 continue
 
     try:
         import OpenSSL
