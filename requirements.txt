@@ -4,7 +4,7 @@ bencode3==0.1.0
 CacheControl==0.12.6
 cloudscraper==1.2.46
 configobj==5.0.6
-feedparser==6.0.0b3
+feedparser==5.2.1
 guessit==3.1.1
 hachoir==3.1.1
 Mako==1.1.3
