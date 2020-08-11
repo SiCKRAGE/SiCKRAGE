@@ -352,10 +352,10 @@ class UpdateManager(object):
             os.unlink(requirements_file.name)
             return False
 
-        output, __, exit_status = self._pip_cmd('install --no-use-pep517 --no-cache-dir -r {}'.format(requirements_file.name))
+        output, __, exit_status = self._pip_cmd('install --no-use-pep517 --no-deps --no-cache-dir -r {}'.format(requirements_file.name))
 
         if exit_status != 0:
-            __, __, exit_status = self._pip_cmd('install --no-use-pep517 --no-cache-dir --user -r {}'.format(requirements_file.name))
+            __, __, exit_status = self._pip_cmd('install --no-use-pep517 --no-deps --no-cache-dir --user -r {}'.format(requirements_file.name))
 
         if exit_status == 0:
             requirements_file.close()
