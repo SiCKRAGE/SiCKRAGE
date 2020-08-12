@@ -326,12 +326,14 @@ class SRDatabase(object):
             # restore schema
             if backup_dict.get('schema', None):
                 for table_name, schema in backup_dict['schema'].items():
+                    sickrage.app.log.info('Restoring {} database table {} schema'.format(self.name, table_name))
                     session.execute(schema)
                 session.commit()
 
             # restore indexes
             if backup_dict.get('indexes', None):
                 for table_name, indexes in backup_dict['indexes'].items():
+                    sickrage.app.log.info('Restoring {} database table {} indexes'.format(self.name, table_name))
                     for index in indexes:
                         session.execute(index)
                 session.commit()
@@ -341,6 +343,7 @@ class SRDatabase(object):
                 base = self.get_base()
                 meta = self.get_metadata()
                 for table_name, data in backup_dict['data'].items():
+                    sickrage.app.log.info('Restoring {} database table {} data'.format(self.name, table_name))
                     table = base.classes[table_name]
                     session.query(table).delete()
                     for row in loads(data, meta, session):
