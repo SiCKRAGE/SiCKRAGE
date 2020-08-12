@@ -346,8 +346,10 @@ class SRDatabase(object):
                     sickrage.app.log.info('Restoring {} database table {} data'.format(self.name, table_name))
                     table = base.classes[table_name]
                     session.query(table).delete()
+
+                    rows = []
                     for row in loads(data, meta, session):
                         if isinstance(row, KeyedTuple):
-                            row = table(**row._asdict())
-                        session.merge(row)
+                            rows.append(row._asdict())
+                    session.bulk_insert_mappings(table, rows)
                 session.commit()
