@@ -474,17 +474,17 @@ class TVEpisode(object):
         self.season = season
         self.episode = episode
 
-        self.scene_season, self.scene_episode = get_scene_numbering(
-            self.show.indexer_id,
-            self.show.indexer,
-            self.season, self.episode
-        )
-
-        self.scene_absolute_number = get_scene_absolute_numbering(
-            self.show.indexer_id,
-            self.show.indexer,
-            self.absolute_number
-        )
+        # self.scene_season, self.scene_episode = get_scene_numbering(
+        #     self.show.indexer_id,
+        #     self.show.indexer,
+        #     self.season, self.episode
+        # )
+        #
+        # self.scene_absolute_number = get_scene_absolute_numbering(
+        #     self.show.indexer_id,
+        #     self.show.indexer,
+        #     self.absolute_number
+        # )
 
         self.description = safe_getattr(myEp, 'overview', self.description)
 
@@ -591,19 +591,19 @@ class TVEpisode(object):
                     self.episode = try_int(epDetails.findtext('episode'))
                     self.season = try_int(epDetails.findtext('season'))
 
-                    from sickrage.core.scene_numbering import get_scene_absolute_numbering, get_scene_numbering
-
-                    self.scene_absolute_number = get_scene_absolute_numbering(
-                        self.show.indexer_id,
-                        self.show.indexer,
-                        self.absolute_number
-                    )
-
-                    self.scene_season, self.scene_episode = get_scene_numbering(
-                        self.show.indexer_id,
-                        self.show.indexer,
-                        self.season, self.episode
-                    )
+                    # from sickrage.core.scene_numbering import get_scene_absolute_numbering, get_scene_numbering
+                    #
+                    # self.scene_absolute_number = get_scene_absolute_numbering(
+                    #     self.show.indexer_id,
+                    #     self.show.indexer,
+                    #     self.absolute_number
+                    # )
+                    #
+                    # self.scene_season, self.scene_episode = get_scene_numbering(
+                    #     self.show.indexer_id,
+                    #     self.show.indexer,
+                    #     self.season, self.episode
+                    # )
 
                     self.description = epDetails.findtext('plot') or self.description
 
