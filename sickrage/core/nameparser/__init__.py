@@ -192,6 +192,7 @@ class NameParser(object):
                 air_date = match.group('air_date')
                 try:
                     result.air_date = parser.parse(air_date, fuzzy=True).date()
+                    result.score += cur_regex_num
                 except Exception:
                     continue
 
