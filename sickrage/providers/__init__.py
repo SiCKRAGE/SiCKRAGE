@@ -453,9 +453,8 @@ class GenericProvider(object):
             return {'result': False,
                     'message': 'Cookie is not correctly formatted: {}'.format(self.cookies)}
 
-        if hasattr(self, 'required_cookies') and not all(
-                req_cookie in [x.rsplit('=', 1)[0] for x in self.cookies.split(';')] for req_cookie in
-                self.required_cookies):
+        if hasattr(self, 'required_cookies') and not all(req_cookie in [x.rsplit('=', 1)[0]
+                                                                        for x in self.cookies.split(';')] for req_cookie in self.required_cookies):
             return {'result': False,
                     'message': "You haven't configured the required cookies. Please login at {provider_url}, "
                                "and make sure you have copied the following cookies: {required_cookies!r}"
@@ -464,8 +463,7 @@ class GenericProvider(object):
         # cookie_validator got at least one cookie key/value pair, let's return success
         add_dict_to_cookiejar(self.session.cookies, dict(x.rsplit('=', 1) for x in self.cookies.split(';')))
 
-        return {'result': True,
-                'message': ''}
+        return {'result': True, 'message': ''}
 
     def check_required_cookies(self):
         """
@@ -511,7 +509,7 @@ class GenericProvider(object):
             return False
 
         response = self.session.get(check_url)
-        if not response or not response.text or not response.status_code == 200 or not check_login_text.lower() in response.text.lower():
+        if not response or not response.text or not response.status_code == 200 or check_login_text.lower() in response.text.lower():
             sickrage.app.log.warning('Please configure the required cookies for this provider. Check your provider settings')
             sickrage.app.alerts.error('Wrong cookies for {}'.format(self.name), 'Check your provider settings')
             self.session.cookies.clear()
