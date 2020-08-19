@@ -564,7 +564,7 @@ class Core(object):
             if self.scheduler:
                 try:
                     self.scheduler.shutdown()
-                except SchedulerNotRunningError:
+                except (SchedulerNotRunningError, RuntimeError):
                     pass
 
             # shutdown webserver
