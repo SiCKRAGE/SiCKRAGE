@@ -509,8 +509,7 @@ class TVEpisode(object):
 
         if self.location:
             sickrage.app.log.debug("%s: Setting status for S%02dE%02d based on status %s and location %s" %
-                                   (self.show.indexer_id, season or 0, episode or 0, statusStrings[self.status],
-                                    self.location))
+                                   (self.show.indexer_id, season or 0, episode or 0, statusStrings[self.status], self.location))
 
         if not os.path.isfile(self.location):
             if self.airdate >= datetime.date.today() or not self.airdate > datetime.date.min:
@@ -1271,9 +1270,9 @@ class TVEpisode(object):
         return True
 
     def get_season_episode_numbering(self):
-        if self.show.scene and self.scene_season != -1 and self.scene_episode != -1:
+        if self.show.scene and self.scene_season not in [-1, None] and self.scene_episode not in [-1, None]:
             return self.scene_season, self.scene_episode
-        elif self.show.scene and self.xem_season != -1 and self.xem_episode != -1:
+        elif self.show.scene and self.xem_season not in [-1, None] and self.xem_episode not in [-1, None]:
             return self.xem_season, self.xem_season
         else:
             return self.season, self.episode

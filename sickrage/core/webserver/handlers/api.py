@@ -894,7 +894,7 @@ class CMD_EpisodeSetStatus(ApiCall):
                 failure = True
                 continue
 
-            epObj.status = self.status
+            epObj.status = int(self.status)
             epObj.save()
 
             if self.status == WANTED:

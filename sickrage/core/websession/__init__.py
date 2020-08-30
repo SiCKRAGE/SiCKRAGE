@@ -19,17 +19,17 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 import collections
+import errno
 import os
 import traceback
 from time import sleep
 from urllib.parse import urlparse
 
 import certifi
-import errno
 import requests
 from cachecontrol import CacheControlAdapter
 from cloudscraper import CloudScraper
-from fake_useragent import UserAgent
+from fake_useragent import UserAgent, FakeUserAgentError
 from requests import Session
 from requests.utils import dict_from_cookiejar
 from urllib3 import disable_warnings
@@ -75,9 +75,18 @@ class WebSession(Session):
         """
         return certifi.where() if all([sickrage.app.config.ssl_verify, verify]) else False
 
+    @staticmethod
+    def _get_user_agent(random_ua=False):
+        try:
+            user_agent = (sickrage.app.user_agent, UserAgent().random)[random_ua]
+        except FakeUserAgentError:
+            user_agent = sickrage.app.user_agent
+
+        return user_agent
+
     def request(self, method, url, verify=False, random_ua=False, timeout=15, *args, **kwargs):
         self.headers.update({'Accept-Encoding': 'gzip, deflate',
-                             'User-Agent': (sickrage.app.user_agent, UserAgent().random)[random_ua]})
+                             'User-Agent': self._get_user_agent(random_ua)})
 
         if not verify:
             disable_warnings()

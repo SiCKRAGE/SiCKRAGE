@@ -133,9 +133,10 @@ def get_indexer_absolute_numbering(indexer_id, indexer, scene_absolute_number, f
                 scene_season=scene_season
             ).one()
         return dbData.absolute_number
-    except orm.exc.MultipleResultsFound:
+    except (orm.exc.MultipleResultsFound, orm.exc.NoResultFound):
         if fallback_to_xem:
             return get_indexer_absolute_numbering_from_xem_numbering(indexer_id, indexer, scene_absolute_number, scene_season)
+
         return -1
 
 
@@ -184,7 +185,7 @@ def get_indexer_absolute_numbering_from_xem_numbering(indexer_id, indexer, xem_a
                 xem_absolute_number=xem_absolute_number,
                 xem_season=xem_season).one()
         return dbData.absolute_number
-    except (orm.exc.NoResultFound, orm.exc.MultipleResultsFound):
+    except (orm.exc.MultipleResultsFound, orm.exc.NoResultFound):
         return -1
 
 
@@ -316,9 +317,7 @@ def find_scene_absolute_numbering(indexer_id, indexer, absolute_number):
         ).filter(MainDB.TVEpisode.scene_absolute_number != -1).one()
 
         return dbData.scene_absolute_number
-    except orm.exc.MultipleResultsFound:
-        return
-    except orm.exc.NoResultFound:
+    except (orm.exc.MultipleResultsFound, orm.exc.NoResultFound):
         return
 
 

@@ -305,7 +305,9 @@ class TVShow(object):
 
     @property
     def scene_exceptions(self):
-        return list(filter(None, self._data_local['scene_exceptions'].split(',')))
+        if self._data_local['scene_exceptions']:
+            return list(filter(None, self._data_local['scene_exceptions'].split(',')))
+        return []
 
     @scene_exceptions.setter
     def scene_exceptions(self, value):
@@ -1356,7 +1358,8 @@ class TVShow(object):
     def get_scene_exception_by_name(self, exception_name):
         for x in self.scene_exceptions:
             if exception_name in x:
-                return x.split('|')
+                scene_name, scene_season = x.split('|')
+                return scene_name, int(scene_season)
 
     def get_scene_exceptions_by_season(self, season=-1):
         scene_exceptions = []
