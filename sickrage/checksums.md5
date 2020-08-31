@@ -1,5 +1,5 @@
 sickrage/__init__.py = 74f33309c89fcf6738587c43509831de
-sickrage/version.txt = 6d69fc24f24bd8311074e81204575d00
+sickrage/version.txt = 90b1e6935351986b198d139c3ea424e0
 sickrage/metadata/mediabrowser.py = 1bbed4ed42107b62c9b1d621b02dc148
 sickrage/metadata/__init__.py = f89aa58d29a9c3e6d8f9d22c79bba0ed
 sickrage/metadata/mede8er.py = f0508a41a05a44634154f0e81f64f975
@@ -113,8 +113,8 @@ sickrage/core/webserver/views/manage/subtitles_missed.mako = 94eba4f63e4a10ab6ea
 sickrage/core/webserver/views/manage/failed_downloads.mako = d46e276dece54c095570bd7c7f8962d2
 sickrage/core/webserver/views/manage/mass_update.mako = 7a7e9e0bf4d56bb68da55bfa43272501
 sickrage/core/webserver/views/manage/backlog_overview.mako = bc86cbf87c6984c3b13068f197c39f1a
-sickrage/core/webserver/static/js/core.min.js = 54f0564218be699f86586eaa2283add3
-sickrage/core/webserver/static/js/core.js.map = 88af51da4a9353c9a8a588f862b9036a
+sickrage/core/webserver/static/js/core.min.js = 0015db520bf4f1c1614a8f7d89b21b78
+sickrage/core/webserver/static/js/core.js.map = f8d7dc498f27e1f4df7d0ef987f3cffc
 sickrage/core/webserver/static/css/core.min.css = 4907dc4940006209e76fb315b0b7e793
 sickrage/core/webserver/static/fonts/fa-regular-400.ttf = 1a78af4105d4d56e6c34f76dc70bf1bc
 sickrage/core/webserver/static/fonts/fa-regular-400.woff2 = 3a3398a6ef60fc64eacf45665958342e
