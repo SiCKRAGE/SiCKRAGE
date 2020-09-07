@@ -320,7 +320,7 @@ class NameParser(object):
                                                        epNo)
                     if show_obj.is_anime:
                         a = get_absolute_number_from_season_and_episode(show_obj.indexer_id, s, e)
-                        if a != -1:
+                        if a not in [-1, None]:
                             new_absolute_numbers.append(a)
 
                     if s != -1:
