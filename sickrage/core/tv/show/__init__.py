@@ -1046,7 +1046,7 @@ class TVShow(object):
             session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id).delete()
             session.query(MainDB.TVEpisode).filter_by(showid=self.indexer_id).delete()
             session.query(MainDB.IMDbInfo).filter_by(indexer_id=self.indexer_id).delete()
-            self.save()
+            session.commit()
 
         # remove episodes from show episode cache
         self.flush_episodes()
