@@ -30,7 +30,7 @@ from sickrage.providers import TorrentProvider
 class YggtorrentProvider(TorrentProvider):
     def __init__(self):
         """Initialize the class."""
-        super(YggtorrentProvider, self).__init__('Yggtorrent', 'https://www2.yggtorrent.se', True)
+        super(YggtorrentProvider, self).__init__('Yggtorrent', 'https://www2.yggtorrent.si', True)
 
         # URLs
         self._urls.update({
@@ -155,21 +155,24 @@ class YggtorrentProvider(TorrentProvider):
         }
 
         if not self._is_authenticated():
-            try:
-                self.session.post(self.urls['login'], data=login_params)
-            except Exception:
+            resp = self.session.post(self.urls['login'], data=login_params)
+            if not resp:
                 sickrage.app.log.warning('Unable to connect or login to provider')
                 return False
 
-            if not self._is_authenticated():
+            if not resp.ok and resp.status_code == 401:
                 sickrage.app.log.warning('Invalid username or password. Check your settings')
+                return False
+
+            if not self._is_authenticated():
+                sickrage.app.log.warning('Unable to connect or login to provider')
                 return False
 
         return True
 
     def _is_authenticated(self):
         try:
-            self.session.get(self.urls['auth']).json()
+            self.session.get(self.urls['auth'], params={'attempt': 1}).json()
         except Exception:
             return False
         return True

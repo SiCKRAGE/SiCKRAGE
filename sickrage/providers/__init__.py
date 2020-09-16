@@ -106,6 +106,25 @@ class GenericProvider(object):
     def urls(self):
         return self._urls
 
+    def get_redirect_url(self, url):
+        """Get the final address that the provided URL redirects to."""
+        sickrage.app.log.debug('Retrieving redirect URL for {}'.format(url))
+
+        response = self.session.get(url, stream=True)
+        if response:
+            response.close()
+            return response.url
+
+        # Jackett redirects to a magnet causing InvalidSchema.
+        # Use an alternative method to get the redirect URL.
+        sickrage.app.log.debug('Using alternative method to retrieve redirect URL')
+        response = self.session.get(url, allow_redirects=False)
+        if response and response.headers.get('Location'):
+            return response.headers['Location']
+
+        sickrage.app.log.debug('Unable to retrieve redirect URL for {}'.format(url))
+        return url
+
     def _check_auth(self):
         return True
 
