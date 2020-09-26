@@ -661,21 +661,35 @@ $(document).ready(function ($) {
 
                     if (el) {
                         var rSearchTerm = '';
-                        if (ep.searchstatus.toLowerCase() === 'searching') {
-                            img.prop('title', gt('Searching'));
-                            img.prop('class', loadingIcon);
-                            SICKRAGE.ajax_search.disableLink(el);
-                            htmlContent = ep.searchstatus;
 
-                        } else if (ep.searchstatus.toLowerCase() === 'queued') {
-                            img.prop('title', gt('Queued'));
-                            img.prop('class', queuedIcon);
+                        if (ep.searchstatus.toLowerCase() === 'searching') {
+                            img.prop('class', loadingIcon);
+
+                            img.prop('title', gt('Searching'));
+                            img.prop('alt', gt('Searching'));
+
                             SICKRAGE.ajax_search.disableLink(el);
+
+                            htmlContent = ep.searchstatus;
+                        } else if (ep.searchstatus.toLowerCase() === 'queued') {
+                            img.prop('class', queuedIcon);
+
+                            img.prop('title', gt('Queued'));
+                            img.prop('alt', gt('Queued'));
+
+                            SICKRAGE.ajax_search.disableLink(el);
+
                             htmlContent = ep.searchstatus;
                         } else if (ep.searchstatus.toLowerCase() === 'finished') {
-                            img.prop('title', gt('Searching'));
-                            img.parent().prop('class', 'epRetry');
                             img.prop('class', searchIcon);
+
+                            img.prop('title', gt('Search'));
+                            img.prop('alt', gt('Search'));
+
+                            if (ep.quality !== 'N/A') {
+                                img.parent().prop('class', 'epRetry');
+                            }
+
                             SICKRAGE.ajax_search.enableLink(el);
 
                             // Update Status and Quality
@@ -683,6 +697,7 @@ $(document).ready(function ($) {
                             htmlContent = ep.status.replace(rSearchTerm, "$1" + ' <span class="badge text-white ' + ep.quality + '">' + "$2" + '</span>');
                             parent.closest('tr').prop("class", ep.overview + " season-" + ep.season + " seasonstyle font-weight-bold text-dark");
                         }
+
                         // update the status column if it exists
                         parent.siblings('.col-status').html(htmlContent);
 
@@ -693,16 +708,16 @@ $(document).ready(function ($) {
                     if (elementCompleteEpisodes) {
                         if (ep.searchstatus.toLowerCase() === 'searching') {
                             imageCompleteEpisodes.prop('title', gt('Searching'));
-                            imageCompleteEpisodes.prop('alt', 'searching');
+                            imageCompleteEpisodes.prop('alt', gt('Searching'));
                             imageCompleteEpisodes.prop('class', loadingIcon);
                             SICKRAGE.ajax_search.disableLink(elementCompleteEpisodes);
                         } else if (ep.searchstatus.toLowerCase() === 'queued') {
                             imageCompleteEpisodes.prop('title', gt('Queued'));
-                            imageCompleteEpisodes.prop('alt', 'queued');
+                            imageCompleteEpisodes.prop('alt', gt('Queued'));
                             imageCompleteEpisodes.prop('class', queuedIcon);
                         } else if (ep.searchstatus.toLowerCase() === 'finished') {
-                            imageCompleteEpisodes.prop('title', gt('Manual Search'));
-                            imageCompleteEpisodes.prop('alt', '[search]');
+                            imageCompleteEpisodes.prop('title', gt('Search'));
+                            imageCompleteEpisodes.prop('alt', gt('Search'));
                             imageCompleteEpisodes.prop('class', searchIcon);
                             if (ep.overview.toLowerCase() === 'snatched') {
                                 elementCompleteEpisodes.closest('tr').remove();

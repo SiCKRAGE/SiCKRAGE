@@ -1509,17 +1509,21 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
     def handle_get(self):
         show = self.get_argument('show')
 
+        episodes = []
+
         # Queued Manual Searches
-        episodes = self.get_episodes(int(show), sickrage.app.search_queue.get_all_tasks_from_queue(show), 'Queued')
+        for search_task in sickrage.app.search_queue.get_all_tasks_from_queue_by_show(show):
+            if isinstance(search_task, (ManualSearchTask, FailedSearchTask)):
+                episodes += self.get_episodes(int(show), [search_task], 'Queued')
 
         # Running Manual Searches
         if sickrage.app.search_queue.is_manual_search_in_progress():
             for search_task in sickrage.app.search_queue.tasks.copy().values():
-                if not search_task.success:
+                if isinstance(search_task, (ManualSearchTask, FailedSearchTask)) and not search_task.success:
                     episodes += self.get_episodes(int(show), [search_task], 'Searching')
 
         # Finished Manual Searches
-        for search_task in sickrage.app.search_queue.MANUAL_SEARCH_HISTORY:
+        for search_task in sickrage.app.search_queue.MANUAL_SEARCH_HISTORY.copy():
             if show is not None:
                 if not str(search_task.show_id) == show:
                     continue

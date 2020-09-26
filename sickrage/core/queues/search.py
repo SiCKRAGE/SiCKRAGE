@@ -61,8 +61,8 @@ class SearchQueue(Queue):
     def is_show_in_queue(self, show_id):
         return any(isinstance(task, (ManualSearchTask, FailedSearchTask)) and task.show_id == show_id for task in self.tasks.copy().values())
 
-    def get_all_tasks_from_queue(self, show_id):
-        return [task for task in self.tasks.copy().values() if isinstance(task, (ManualSearchTask, FailedSearchTask)) and task.show_id == show_id]
+    def get_all_tasks_from_queue_by_show(self, show_id):
+        return [task for task in self.tasks.copy().values() if task.show_id == show_id]
 
     def pause_daily_searcher(self):
         sickrage.app.scheduler.pause_job(sickrage.app.daily_searcher.name)
