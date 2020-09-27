@@ -2,12 +2,12 @@
 
 # 
 
-##Sat Sep 26 2020 18:47:32 GMT+0000 (Coordinated Universal Time)
+##Sun Sep 27 2020 06:16:57 GMT+0000 (Coordinated Universal Time)
 
 
-## Bug Fixes
-  - Fixed issue #525 - removal of shows not taking due to database commit not being executed
-  ([d615ca6c](https://gitlab-ci-token:KUJHDKsooU3HzUHNps3s@git.sickrage.ca/SiCKRAGE/sickrage/commit/d615ca6cfa27353c8d0c99037cfcc452a85b4fa1))
+## Refactor
+  - Refactored web handler for getting manual search statuses
+  ([4f211c08](https://gitlab-ci-token:dfuLZMMCi9ayUHkKkYzB@git.sickrage.ca/SiCKRAGE/sickrage/commit/4f211c0875a3cba76ec7bba9cf996916cc34ae5a))
 
 
 
