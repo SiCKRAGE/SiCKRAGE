@@ -46,6 +46,7 @@ from sickrage.core.exceptions import (
 from sickrage.core.helpers import clean_url, clean_host, clean_hosts, get_disk_space_usage
 from sickrage.core.helpers.anidb import get_release_groups_for_anime
 from sickrage.core.helpers.srdatetime import SRDateTime
+from sickrage.core.queues import TaskStatus
 from sickrage.core.queues.search import FailedSearchTask, ManualSearchTask
 from sickrage.core.scene_numbering import (
     get_scene_numbering_for_show,
@@ -1511,32 +1512,18 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
 
         episodes = []
 
-        # Queued Manual Searches
-        for search_task in sickrage.app.search_queue.get_all_tasks_from_queue_by_show(show):
+        for search_task in sickrage.app.search_queue.get_all_tasks_from_queue_by_show(int(show)):
             if isinstance(search_task, (ManualSearchTask, FailedSearchTask)):
-                episodes += self.get_episodes(int(show), [search_task], 'Queued')
-
-        # Running Manual Searches
-        if sickrage.app.search_queue.is_manual_search_in_progress():
-            for search_task in sickrage.app.search_queue.tasks.copy().values():
-                if isinstance(search_task, (ManualSearchTask, FailedSearchTask)) and not search_task.success:
+                if search_task.status == TaskStatus.QUEUED:
+                    # Queued Manual Searches
+                    episodes += self.get_episodes(int(show), [search_task], 'Queued')
+                elif search_task.status == TaskStatus.STARTED:
+                    # Running Manual Searches
                     episodes += self.get_episodes(int(show), [search_task], 'Searching')
-
-        # Finished Manual Searches
-        for search_task in sickrage.app.search_queue.MANUAL_SEARCH_HISTORY.copy():
-            if show is not None:
-                if not str(search_task.show_id) == show:
-                    continue
-
-            if isinstance(search_task, (ManualSearchTask, FailedSearchTask)):
-                if not [x for x in episodes if x['season'] == search_task.season and x['episode'] == search_task.episode]:
+                elif search_task.status == TaskStatus.FINISHED:
+                    # Finished Manual Searches
                     episodes += self.get_episodes(int(show), [search_task], 'Finished')
-            else:
-                # These are only Failed Downloads/Retry SearchThreadItems.. lets loop through the episodes
-                if not [i for i, j in zip(search_task, episodes) if i.season == j['season'] and i.episode == j['episode']]:
-                    episodes += self.get_episodes(int(show), [search_task], 'Finished')
-
-            sickrage.app.search_queue.remove_task(search_task.id)
+                    sickrage.app.search_queue.remove_task(search_task.id)
 
         return self.write(json_encode({'episodes': episodes}))
 

@@ -42,7 +42,6 @@ class SearchQueue(Queue):
     def __init__(self):
         Queue.__init__(self, "SEARCHQUEUE")
         self.SNATCH_HISTORY = deque(maxlen=100)
-        self.MANUAL_SEARCH_HISTORY = deque(maxlen=100)
 
     def is_in_queue(self, show_id, season, episode):
         for task in self.tasks.copy().values():
@@ -59,7 +58,7 @@ class SearchQueue(Queue):
         return False
 
     def is_show_in_queue(self, show_id):
-        return any(isinstance(task, (ManualSearchTask, FailedSearchTask)) and task.show_id == show_id for task in self.tasks.copy().values())
+        return any(self.get_all_tasks_from_queue_by_show(show_id))
 
     def get_all_tasks_from_queue_by_show(self, show_id):
         return [task for task in self.tasks.copy().values() if task.show_id == show_id]
@@ -133,8 +132,8 @@ class DailySearchTask(Task):
         self.show_id = show_id
         self.season = season
         self.episode = episode
-        self.success = False
         self.started = False
+        self.success = False
 
     def run(self):
         self.started = True
@@ -172,8 +171,8 @@ class ManualSearchTask(Task):
         self.show_id = show_id
         self.season = season
         self.episode = episode
-        self.success = False
         self.started = False
+        self.success = False
         self.priority = TaskPriority.EXTREME
         self.downCurQuality = downCurQuality
         self.auto_remove = False
@@ -208,7 +207,6 @@ class ManualSearchTask(Task):
             sickrage.app.log.debug(traceback.format_exc())
         finally:
             sickrage.app.log.info("Finished manual search for: [" + episode_object.pretty_name() + "]")
-            sickrage.app.search_queue.MANUAL_SEARCH_HISTORY.append(self)
 
 
 class BacklogSearchTask(Task):
@@ -219,8 +217,8 @@ class BacklogSearchTask(Task):
         self.season = season
         self.episode = episode
         self.priority = TaskPriority.LOW
-        self.success = False
         self.started = False
+        self.success = False
 
     def run(self):
         self.started = True
@@ -260,8 +258,8 @@ class FailedSearchTask(Task):
         self.episode = episode
         self.priority = TaskPriority.HIGH
         self.downCurQuality = downCurQuality
-        self.success = False
         self.started = False
+        self.success = False
         self.auto_remove = False
 
     def run(self):
@@ -302,4 +300,3 @@ class FailedSearchTask(Task):
             sickrage.app.log.debug(traceback.format_exc())
         finally:
             sickrage.app.log.info("Finished failed download search for: [" + show_object.name + "]")
-            sickrage.app.search_queue.MANUAL_SEARCH_HISTORY.append(self)
