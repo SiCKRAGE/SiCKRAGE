@@ -18,22 +18,17 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-from abc import ABC
-
-import markdown2
-from tornado.concurrent import run_on_executor
-from tornado.web import authenticated
-
 import sickrage
-from sickrage.core.webserver.handlers.base import BaseHandler
+from sickrage.core.databases.main import MainDB
 
 
-class ChangelogHandler(BaseHandler, ABC):
-    @authenticated
-    def get(self, *args, **kwargs):
-        try:
-            data = markdown2.markdown(sickrage.changelog(), extras=['header-ids'])
-        except Exception:
-            data = ''
+def find_epsiode(episode_id):
+    if not episode_id:
+        return None
 
-        return self.write(data)
+    with sickrage.app.main_db.session() as session:
+        db_data = session.query(MainDB.TVEpisode).filter_by(indexer_id=episode_id).one_or_none()
+        if db_data:
+            series = sickrage.app.shows.get((db_data.showid, db_data.indexer), None)
+            if series:
+                return series.get_episode(db_data.season, db_data.episode)

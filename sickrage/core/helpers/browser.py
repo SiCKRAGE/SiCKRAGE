@@ -25,7 +25,7 @@ from operator import itemgetter
 import sickrage
 
 
-def getWinDrives():
+def get_win_drives():
     """ Return list of detected drives """
     assert os.name == 'nt'
     from ctypes import windll
@@ -115,7 +115,7 @@ def foldersAtPath(path, includeParent=False, includeFiles=False, fileTypes=None)
     if path == '':
         if os.name == 'nt':
             entries = [{'currentPath': 'Root'}]
-            for letter in getWinDrives():
+            for letter in get_win_drives():
                 letter_path = letter + ':\\'
                 entries.append({'name': letter_path, 'path': letter_path})
 

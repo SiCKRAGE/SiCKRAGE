@@ -65,6 +65,9 @@ class WebSocketMessage(object):
 
     def push(self):
         """Push the message to all connected WebSocket clients."""
-        message_queue.put(self.json())
+        # message_queue.put(self.json())
         for client in clients.copy():
-            sickrage.app.wserver.io_loop.add_callback(client.write_message, message_queue.get())
+            try:
+                client.write_message(self.json())
+            except AssertionError:
+                continue

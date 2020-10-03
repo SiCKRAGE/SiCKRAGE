@@ -8,7 +8,7 @@
 
 <%block name="metas">
     <meta data-var="sickrage.DEFAULT_LANGUAGE" data-content="${sickrage.app.config.indexer_default_language}">
-    <meta data-var="sickrage.LANGUAGES" data-content="${','.join(IndexerApi().indexer().languages.keys())}">
+    <meta data-var="sickrage.LANGUAGES" data-content="${','.join([lang['abbreviation'] for lang in IndexerApi().indexer().languages()])}">
 </%block>
 
 <%block name="content">
@@ -85,8 +85,8 @@
                                                 <select name="providedIndexer" id="providedIndexer"
                                                         class="form-control" title="Choose indexer">
                                                     % for indexer in indexers:
-                                                        <option value="${indexer}" ${('', 'selected')[provided_indexer == indexer]}>
-                                                            ${indexers[indexer]}
+                                                        <option value="${indexer['id']}" ${('', 'selected')[provided_indexer == indexer['id']]}>
+                                                            ${indexer['name']}
                                                         </option>
                                                     % endfor
                                                 </select>
@@ -107,9 +107,9 @@
                                                 </div>
                                                 <select name="indexerLang" id="indexerLang" class="form-control"
                                                         title="${_('Choose language')}">
-                                                    % for language in IndexerApi().indexer().languages.keys():
-                                                        <option value="${language}" ${('', 'selected')[sickrage.app.config.indexer_default_language == language]}>
-                                                            ${Subtitles().name_from_code(language)}
+                                                    % for language in IndexerApi().indexer().languages():
+                                                        <option value="${language['abbreviation']}" ${('', 'selected')[sickrage.app.config.indexer_default_language == language['abbreviation']]}>
+                                                            ${language['englishname']}
                                                         </option>
                                                     % endfor
                                                 </select>

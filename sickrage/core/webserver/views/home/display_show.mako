@@ -221,10 +221,10 @@
                                             ${renderQualityPill(show.quality)}
                                         % else:
                                             % if anyQualities:
-                                                <i>Allowed:</i> ${", ".join([capture(renderQualityPill, x) for x in sorted(anyQualities)])}${("", "<br>")[bool(bestQualities)]}
+                                                <i>Allowed:</i> ${" ".join([capture(renderQualityPill, x) for x in sorted(anyQualities)])}${("", "<br>")[bool(bestQualities)]}
                                             % endif
                                             % if bestQualities:
-                                                <i>Preferred:</i> ${", ".join([capture(renderQualityPill, x) for x in sorted(bestQualities)])}
+                                                <i>Preferred:</i> ${" ".join([capture(renderQualityPill, x) for x in sorted(bestQualities)])}
                                             % endif
                                         % endif
                                     </td>
@@ -435,13 +435,15 @@
                             <div class="input-group input-group-sm">
                                 <select id="statusSelect" title="Change selected episode statuses"
                                         class="form-control">
-                                    <% availableStatus = [WANTED, SKIPPED, IGNORED, FAILED] %>
-                                    % if sickrage.app.developer:
-                                        <% availableStatus.append(UNAIRED) %>
-                                    % endif
-                                    % for curStatus in availableStatus + sorted(Quality.DOWNLOADED) + sorted(Quality.ARCHIVED):
+                                    % for curStatus in [WANTED, SKIPPED, IGNORED, FAILED] + Quality.DOWNLOADED + Quality.ARCHIVED:
                                         % if curStatus not in [DOWNLOADED, ARCHIVED]:
-                                            <option value="${curStatus}">${statusStrings[curStatus]}</option>
+                                            <% split_status, quality = Quality.split_composite_status(curStatus) %>
+                                            <option value="${curStatus}">
+                                                ${statusStrings[split_status]}
+                                                %if quality:
+                                                    (${Quality.qualityStrings[quality]})
+                                                %endif
+                                            </option>
                                         % endif
                                     % endfor
                                 </select>

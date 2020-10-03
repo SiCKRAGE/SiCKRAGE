@@ -19,37 +19,37 @@
 import re
 
 import sickrage
-from sickrage.indexers.config import indexerConfig
+from sickrage.indexers.config import indexerConfig, indexerModules
 from sickrage.indexers.ui import ShowListUI
 
 
 class IndexerApi(object):
-    def __init__(self, indexerID=1):
-        self.indexerID = indexerID
-        self.module = indexerConfig[self.indexerID]['module']
+    def __init__(self, indexer_id=1):
+        self.indexer_id = indexer_id
 
     def indexer(self, *args, **kwargs):
-        self.module.settings(*args, **kwargs)
-        return self.module
+        instance = indexerModules[self.indexer_id]()
+        instance.settings(*args, **kwargs)
+        return instance
 
     @property
     def config(self):
-        return indexerConfig[self.indexerID]
+        return indexerConfig[self.indexer_id]
 
     @property
     def name(self):
-        return indexerConfig[self.indexerID]['name']
+        return indexerConfig[self.indexer_id]['name']
 
     @property
     def trakt_id(self):
-        return indexerConfig[self.indexerID]['trakt_id']
+        return indexerConfig[self.indexer_id]['trakt_id']
 
     @property
     def api_params(self):
         if sickrage.app.config.proxy_setting and sickrage.app.config.proxy_indexers:
-            indexerConfig[self.indexerID]['api_params']['proxy'] = sickrage.app.config.proxy_setting
+            indexerConfig[self.indexer_id]['api_params']['proxy'] = sickrage.app.config.proxy_setting
 
-        return indexerConfig[self.indexerID]['api_params']
+        return indexerConfig[self.indexer_id]['api_params']
 
     @property
     def cache(self):
@@ -57,11 +57,15 @@ class IndexerApi(object):
 
     @property
     def indexers(self):
-        return dict((int(x['id']), x['name']) for x in indexerConfig.values())
+        return list(indexerConfig.values())
 
     @property
-    def indexersByTraktID(self):
-        return dict((x['trakt_id'], int(x['id'])) for x in indexerConfig.values())
+    def indexers_by_slug(self):
+        return dict((x['slug'], x) for x in indexerConfig.values())
+
+    @property
+    def indexers_by_trakt_id(self):
+        return dict((x['trakt_id'], x) for x in indexerConfig.values())
 
     def search_for_show_id(self, show_name, custom_ui=None):
         """
@@ -75,12 +79,12 @@ class IndexerApi(object):
         show_name = re.sub('[. -]', ' ', show_name)
 
         # Query Indexers for each search term and build the list of results
-        lINDEXER_API_PARMS = self.api_params.copy()
-        lINDEXER_API_PARMS['custom_ui'] = custom_ui or ShowListUI
+        indexer_api_parms = self.api_params.copy()
+        indexer_api_parms['custom_ui'] = custom_ui or ShowListUI
 
         sickrage.app.log.debug("Trying to find show ID for show {} on indexer {}".format(show_name, self.name))
 
-        t = self.indexer(**lINDEXER_API_PARMS)
+        t = self.indexer(**indexer_api_parms)
         indexer_data = t[show_name]
         if not indexer_data:
             return

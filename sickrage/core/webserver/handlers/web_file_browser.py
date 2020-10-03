@@ -35,10 +35,7 @@ class WebFileBrowserHandler(BaseHandler, ABC):
         self.set_header('Content-Type', 'application/json')
 
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         path = self.get_argument('path', '')
         include_files = self.get_argument('includeFiles', None)
         file_types = self.get_argument('fileTypes', '')
@@ -51,10 +48,7 @@ class WebFileBrowserCompleteHandler(BaseHandler, ABC):
         self.set_header('Content-Type', 'application/json')
 
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         term = self.get_argument('term')
         include_files = self.get_argument('includeFiles', None)
         file_types = self.get_argument('fileTypes', '')

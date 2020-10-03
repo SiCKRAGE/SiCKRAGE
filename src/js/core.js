@@ -55,7 +55,7 @@ $(document).ready(function ($) {
                 var msg = $.parseJSON(evt.data);
 
                 switch (msg.type) {
-                    case 'notification':
+                    case 'NOTIFICATION':
                         SICKRAGE.notify(msg.data.type, msg.data.title, msg.data.body);
                         break;
                     case 'redirect':

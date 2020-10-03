@@ -33,10 +33,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 
 class CalendarHandler(BaseHandler, ABC):
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         if sickrage.app.config.calendar_unprotected:
             self.write(self.calendar())
         else:

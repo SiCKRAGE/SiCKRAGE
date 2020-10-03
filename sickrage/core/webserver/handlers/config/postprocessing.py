@@ -82,10 +82,7 @@ def is_rar_supported():
 
 class ConfigPostProcessingHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         return self.render('config/postprocessing.mako',
                            submenu=ConfigHandler.menu,
                            title=_('Config - Post Processing'),
@@ -97,7 +94,7 @@ class ConfigPostProcessingHandler(BaseHandler, ABC):
 
 class SavePostProcessingHandler(BaseHandler, ABC):
     @authenticated
-    async def post(self, *args, **kwargs):
+    def post(self, *args, **kwargs):
         naming_pattern = self.get_argument('naming_pattern', '')
         naming_multi_ep = self.get_argument('naming_multi_ep', '')
         kodi_data = self.get_argument('kodi_data', '')
@@ -226,10 +223,7 @@ class SavePostProcessingHandler(BaseHandler, ABC):
 
 class TestNamingHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         pattern = self.get_argument('pattern', None)
         multi = self.get_argument('multi', None)
         abd = self.get_argument('abd', None)
@@ -251,10 +245,7 @@ class TestNamingHandler(BaseHandler, ABC):
 
 class IsNamingPatternValidHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         pattern = self.get_argument('pattern', None)
         multi = self.get_argument('multi', None)
         abd = self.get_argument('abd', None)
@@ -266,8 +257,5 @@ class IsNamingPatternValidHandler(BaseHandler, ABC):
 
 class IsRarSupportedHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         return self.write(is_rar_supported())

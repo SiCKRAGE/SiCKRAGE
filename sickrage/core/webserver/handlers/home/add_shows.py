@@ -59,10 +59,7 @@ def split_extra_show(extra_show):
 
 class HomeAddShowsHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         return self.render('home/add_shows.mako',
                            title=_('Add Shows'),
                            header=_('Add Shows'),
@@ -73,12 +70,9 @@ class HomeAddShowsHandler(BaseHandler, ABC):
 
 class SearchIndexersForShowNameHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         search_term = self.get_argument('search_term')
-        indexer = self.get_argument('indexer')
+        indexer_id = self.get_argument('indexer', None)
         lang = self.get_argument('lang', None)
 
         if not lang or lang == 'null':
@@ -88,13 +82,16 @@ class SearchIndexersForShowNameHandler(BaseHandler, ABC):
         final_results = []
 
         # Query Indexers for each search term and build the list of results
-        for indexer in IndexerApi().indexers if not int(indexer) else [int(indexer)]:
-            l_indexer_api_parms = IndexerApi(indexer).api_params.copy()
-            l_indexer_api_parms['language'] = lang
-            l_indexer_api_parms['custom_ui'] = AllShowsUI
-            t = IndexerApi(indexer).indexer(**l_indexer_api_parms)
+        for indexer in IndexerApi().indexers:
+            if indexer_id and indexer['id'] != int(indexer_id):
+                continue
 
-            sickrage.app.log.debug("Searching for Show with term: %s on Indexer: %s" % (search_term, IndexerApi(indexer).name))
+            indexer_api_parms = IndexerApi(indexer['id']).api_params.copy()
+            indexer_api_parms['language'] = lang
+            indexer_api_parms['custom_ui'] = AllShowsUI
+            t = IndexerApi(indexer['id']).indexer(**indexer_api_parms)
+
+            sickrage.app.log.debug("Searching for Show with term: %s on Indexer: %s" % (search_term, IndexerApi(indexer['id']).name))
 
             # search via series name
             result = t[search_term]
@@ -104,7 +101,7 @@ class SearchIndexersForShowNameHandler(BaseHandler, ABC):
             if isinstance(result, dict):
                 result = [result]
 
-            results.setdefault(indexer, []).extend(result)
+            results.setdefault(indexer['id'], []).extend(result)
 
         for i, shows in results.items():
             final_results.extend([
@@ -113,16 +110,12 @@ class SearchIndexersForShowNameHandler(BaseHandler, ABC):
                  ('', 'disabled')[isinstance(find_show(int(show['id'])), TVShow)]] for show in shows
             ])
 
-        lang_id = IndexerApi().indexer().languages[lang] or 7
-        return self.write(json_encode({'results': final_results, 'langid': lang_id}))
+        return self.write(json_encode({'results': final_results, 'langid': lang}))
 
 
 class MassAddTableHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         root_dir = self.get_arguments('rootDir')
 
         root_dirs = [unquote_plus(x) for x in root_dir]
@@ -174,9 +167,9 @@ class MassAddTableHandler(BaseHandler, ABC):
                         if show_name:
                             if not indexer and showid:
                                 for idxr in IndexerApi().indexers:
-                                    result = IndexerApi(idxr).search_for_show_id(show_name)
+                                    result = IndexerApi(idxr['id']).search_for_show_id(show_name)
                                     if result == showid:
-                                        indexer = idxr
+                                        indexer = idxr['id']
                             elif not showid and indexer:
                                 showid = IndexerApi(indexer).search_for_show_id(show_name)
 
@@ -194,10 +187,7 @@ class MassAddTableHandler(BaseHandler, ABC):
 
 class NewShowHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         """
         Display the new show page which collects a tvdb id, folder, and extra options and
         posts them to addNewShow
@@ -247,10 +237,7 @@ class NewShowHandler(BaseHandler, ABC):
 
 class TraktShowsHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         """
         Display the new show page which collects a tvdb id, folder, and extra options and
         posts them to addNewShow
@@ -280,10 +267,7 @@ class TraktShowsHandler(BaseHandler, ABC):
 
 class PopularShowsHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         """
         Fetches data from IMDB to show a list of popular shows.
         """
@@ -307,10 +291,7 @@ class PopularShowsHandler(BaseHandler, ABC):
 
 class AddShowToBlacklistHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         indexer_id = self.get_argument('indexer_id')
 
         data = {'shows': [{'ids': {'tvdb': indexer_id}}]}
@@ -320,10 +301,7 @@ class AddShowToBlacklistHandler(BaseHandler, ABC):
 
 class ExistingShowsHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         """
         Prints out the page to add existing shows from a root dir
         """
@@ -339,10 +317,7 @@ class ExistingShowsHandler(BaseHandler, ABC):
 
 class AddShowByIDHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         indexer_id = self.get_argument('indexer_id')
         show_name = self.get_argument('showName')
 
@@ -373,14 +348,11 @@ class AddShowByIDHandler(BaseHandler, ABC):
 
 class AddNewShowHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         return self.redirect("/home/")
 
     @authenticated
-    async def post(self, *args, **kwargs):
+    def post(self, *args, **kwargs):
         """
         Receive tvdb id, dir, and other options and create a show from them. If extra show dirs are
         provided then it forwards back to newShow, if not it goes to /home.
@@ -527,7 +499,7 @@ class AddNewShowHandler(BaseHandler, ABC):
 
 class AddExistingShowsHandler(BaseHandler, ABC):
     @authenticated
-    async def post(self, *args, **kwargs):
+    def post(self, *args, **kwargs):
         """
         Receives a dir list and add them. Adds the ones with given TVDB IDs first, then forwards
         along to the newShow page.

@@ -19,10 +19,11 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 import functools
-import threading
 import time
 import traceback
+import types
 from abc import ABC
+from concurrent.futures.thread import ThreadPoolExecutor
 from urllib.parse import urlparse, urljoin
 
 from jose import ExpiredSignatureError
@@ -39,7 +40,8 @@ from sickrage.core.helpers import is_ip_whitelisted
 class BaseHandler(RequestHandler, ABC):
     def __init__(self, application, request, **kwargs):
         super(BaseHandler, self).__init__(application, request, **kwargs)
-        threading.currentThread().setName('TORNADO')
+
+        self.executor = ThreadPoolExecutor(thread_name_prefix='TORNADO-Thread')
 
         self.startTime = time.time()
 
@@ -153,9 +155,9 @@ class BaseHandler(RequestHandler, ABC):
 
     def set_default_headers(self):
         self.set_header("Access-Control-Allow-Origin", "*")
-        self.set_header("Access-Control-Allow-Headers", "x-requested-with")
-        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
-        self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
+        self.set_header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET, PUT, PATCH, DELETE, OPTIONS')
+        self.set_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
 
     def redirect(self, url, permanent=True, status=None):
         if sickrage.app.config.web_root not in url:
@@ -180,10 +182,20 @@ class BaseHandler(RequestHandler, ABC):
         url = urljoin("{}://{}".format(self.request.protocol, self.request.host), url)
         return url
 
-    def run_in_executor(self, f, *args, **kwargs):
-        @functools.wraps(f)
-        def wrapper(*args, **kwargs):
-            threading.currentThread().setName('TORNADO')
-            return f(*args, **kwargs)
+    def run_async(self, method):
+        @functools.wraps(method)
+        async def wrapper(self, *args, **kwargs):
+            await sickrage.app.wserver.io_loop.run_in_executor(self.executor, functools.partial(method, *args, **kwargs))
 
-        return sickrage.app.wserver.io_loop.run_in_executor(None, functools.partial(wrapper, *args, **kwargs))
+        return types.MethodType(wrapper, self)
+
+    def prepare(self):
+        method_name = self.request.method.lower()
+        method = self.run_async(getattr(self, method_name))
+        setattr(self, method_name, method)
+
+    def options(self, *args, **kwargs):
+        self.set_status(204)
+        self.finish()
+
+

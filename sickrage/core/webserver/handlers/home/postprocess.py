@@ -29,10 +29,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 class HomePostProcessHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         return self.render('home/postprocess.mako',
                            title=_('Post Processing'),
                            header=_('Post Processing'),
@@ -43,14 +40,11 @@ class HomePostProcessHandler(BaseHandler, ABC):
 
 class HomeProcessEpisodeHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         return self.write("Please use our API instead for post-processing")
 
     @authenticated
-    async def post(self, *args, **kwargs):
+    def post(self, *args, **kwargs):
         pp_options = {
             'proc_dir': self.get_argument('proc_dir'),
             'nzbname': self.get_argument('nzbname', ''),

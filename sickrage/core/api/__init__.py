@@ -155,8 +155,8 @@ class API(object):
             client = OAuth2Session(sickrage.app.auth_server.client_id, token=self.token)
             self.token = client.refresh_token(self.token_url, **extra)
 
-    def exchange_token(self, token, scope='offline_access'):
-        exchange = {'scope': scope, 'subject_token': token['access_token']}
+    def exchange_token(self, access_token, scope='offline_access'):
+        exchange = {'scope': scope, 'subject_token': access_token}
         exchanged_token = sickrage.app.auth_server.token_exchange(**exchange)
         if exchanged_token:
             self.token = exchanged_token
@@ -383,7 +383,7 @@ class API(object):
         def __init__(self, api):
             self.api = api
 
-        def get(self):
+        def get(self, *args, **kwargs):
             query = 'scene-exceptions'
             return self.api.request('GET', query)
 

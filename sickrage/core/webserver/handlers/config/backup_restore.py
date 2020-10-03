@@ -32,10 +32,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 class ConfigBackupRestoreHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         return self.render('config/backup_restore.mako',
                            submenu=ConfigHandler.menu,
                            title=_('Config - Backup/Restore'),
@@ -47,10 +44,7 @@ class ConfigBackupRestoreHandler(BaseHandler, ABC):
 
 class ConfigBackupHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         backup_dir = self.get_argument('backupDir')
 
         final_result = ''
@@ -70,10 +64,7 @@ class ConfigBackupHandler(BaseHandler, ABC):
 
 class ConfigRestoreHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         backup_file = self.get_argument('backupFile')
         restore_database = self.get_argument('restore_database')
         restore_config = self.get_argument('restore_config')
@@ -104,8 +95,5 @@ class ConfigRestoreHandler(BaseHandler, ABC):
 
 class SaveBackupRestoreHandler(BaseHandler, ABC):
     @authenticated
-    async def post(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_post)
-
-    def handle_post(self):
+    def post(self, *args, **kwargs):
         return self.redirect("/config/backuprestore/")

@@ -43,8 +43,8 @@
                     % endif
                     <td class="table-fit">
                         <select class="rounded" name="indexer">
-                            % for curIndexer in IndexerApi().indexers.items():
-                                <option value="${curIndexer[0]}" ${('', 'selected')[curIndexer[0] == indexer]}>${curIndexer[1]}</option>
+                            % for curIndexer in IndexerApi().indexers:
+                                <option value="${curIndexer['id']}" ${('', 'selected')[indexer == curIndexer['id']]}>${curIndexer['name']}</option>
                             % endfor
                         </select>
                     </td>

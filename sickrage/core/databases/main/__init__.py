@@ -17,6 +17,7 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 import datetime
 
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from sqlalchemy import Column, Integer, Text, ForeignKeyConstraint, String, DateTime, Boolean, Index, Date, BigInteger, func, literal_column
 from sqlalchemy.ext.declarative import as_declarative
 from sqlalchemy.orm import relationship
@@ -63,20 +64,8 @@ class MainDB(SRDatabase):
         def remove_duplicate_episodes():
             session = self.session()
 
-            # count by show ID
+            # count by season/episode
             duplicates = session.query(
-                self.TVEpisode.showid,
-                self.TVEpisode.season,
-                self.TVEpisode.episode,
-                func.count(self.TVEpisode.showid).label('count')
-            ).group_by(
-                self.TVEpisode.showid,
-                self.TVEpisode.season,
-                self.TVEpisode.episode
-            ).having(literal_column('count') > 1).all()
-
-            # count by indexer ID
-            duplicates += session.query(
                 self.TVEpisode.showid,
                 self.TVEpisode.season,
                 self.TVEpisode.episode,
@@ -84,7 +73,7 @@ class MainDB(SRDatabase):
             ).group_by(
                 self.TVEpisode.showid,
                 self.TVEpisode.season,
-                self.TVEpisode.episode
+                self.TVEpisode.episode,
             ).having(literal_column('count') > 1).all()
 
             for cur_duplicate in duplicates:
@@ -99,7 +88,32 @@ class MainDB(SRDatabase):
                 for result in session.query(self.TVEpisode).filter_by(showid=cur_duplicate.showid,
                                                                       season=cur_duplicate.season,
                                                                       episode=cur_duplicate.episode).limit(cur_duplicate.count - 1):
-                    session.query(self.TVEpisode).filter_by(indexer_id=result.indexer_id).delete()
+                    session.query(self.TVEpisode).filter_by(showid=result.showid, season=result.season, episode=result.episode).delete()
+                    session.commit()
+
+            # count by indexer ID
+            duplicates = session.query(
+                self.TVEpisode.showid,
+                self.TVEpisode.season,
+                self.TVEpisode.episode,
+                func.count(self.TVEpisode.indexer_id).label('count')
+            ).group_by(
+                self.TVEpisode.showid,
+                self.TVEpisode.indexer_id
+            ).having(literal_column('count') > 1).all()
+
+            for cur_duplicate in duplicates:
+                sickrage.app.log.debug("Duplicate episode detected! "
+                                       "showid: {dupe_id} "
+                                       "season: {dupe_season} "
+                                       "episode {dupe_episode} count: {dupe_count}".format(dupe_id=cur_duplicate.showid,
+                                                                                           dupe_season=cur_duplicate.season,
+                                                                                           dupe_episode=cur_duplicate.episode,
+                                                                                           dupe_count=cur_duplicate.count))
+
+                for result in session.query(self.TVEpisode).filter_by(showid=cur_duplicate.showid,
+                                                                      indexer_id=cur_duplicate.indexer_id).limit(cur_duplicate.count - 1):
+                    session.query(self.TVEpisode).filter_by(showi=result.showid, indexer_id=result.indexer_id).delete()
                     session.commit()
 
         def fix_duplicate_episode_scene_numbering():
@@ -158,7 +172,7 @@ class MainDB(SRDatabase):
                                                                     dupe_count=cur_duplicate.count))
 
                 for result in session.query(self.TVEpisode).filter_by(showid=cur_duplicate.showid,
-                                                                      scene_absolute_number=cur_duplicate.scene_absolute_number).\
+                                                                      scene_absolute_number=cur_duplicate.scene_absolute_number). \
                         limit(cur_duplicate.count - 1):
                     result.scene_absolute_number = -1
                     session.commit()
@@ -392,3 +406,38 @@ class MainDB(SRDatabase):
         release = Column(Text, nullable=False)
         size = Column(Integer, nullable=False)
         provider = Column(Text, nullable=False)
+
+
+class TVShowSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MainDB.TVShow
+        include_relationships = False
+        load_instance = True
+
+
+class TVEpisodeSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MainDB.TVEpisode
+        include_relationships = False
+        load_instance = True
+
+
+class IMDbInfoSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MainDB.IMDbInfo
+        include_relationships = False
+        load_instance = True
+
+
+class BlacklistSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MainDB.Blacklist
+        include_relationships = False
+        load_instance = True
+
+
+class WhitelistSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MainDB.Whitelist
+        include_relationships = False
+        load_instance = True

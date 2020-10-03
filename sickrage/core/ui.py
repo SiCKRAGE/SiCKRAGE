@@ -47,7 +47,7 @@ class Notifications(object):
         """
 
         n = Notification(title, message, MESSAGE)
-        if not WebSocketMessage('notification', n.data).push():
+        if not WebSocketMessage('NOTIFICATION', n.data).push():
             self._messages.append(n)
 
     def error(self, title, message=""):
@@ -59,7 +59,7 @@ class Notifications(object):
         """
 
         n = Notification(title, message, ERROR)
-        if not WebSocketMessage('notification', n.data).push():
+        if not WebSocketMessage('NOTIFICATION', n.data).push():
             self._errors.append(n)
 
     def get_notifications(self, remote_ip='127.0.0.1'):
@@ -120,70 +120,70 @@ class Notification(object):
         return self
 
 
-class ProgressIndicator:
-    def __init__(self, percentComplete=0, currentStatus=None):
-        if currentStatus is None:
-            currentStatus = {'title': ''}
-        self.percentComplete = percentComplete
-        self.currentStatus = currentStatus
+# class ProgressIndicator:
+#     def __init__(self, percentComplete=0, currentStatus=None):
+#         if currentStatus is None:
+#             currentStatus = {'title': ''}
+#         self.percentComplete = percentComplete
+#         self.currentStatus = currentStatus
 
 
-class ProgressIndicators:
-    _pi = {'massUpdate': [],
-           'massAdd': [],
-           'dailyShowUpdates': []}
+# class ProgressIndicators:
+#     _pi = {'massUpdate': [],
+#            'massAdd': [],
+#            'dailyShowUpdates': []}
+#
+#     @staticmethod
+#     def getIndicator(name):
+#         if name not in ProgressIndicators._pi:
+#             return []
+#
+#         # if any of the progress indicators are done take them off the list
+#         for curPI in ProgressIndicators._pi[name]:
+#             if curPI is not None and curPI.percentComplete() == 100:
+#                 ProgressIndicators._pi[name].remove(curPI)
+#
+#         # return the list of progress indicators associated with this name
+#         return ProgressIndicators._pi[name]
+#
+#     @staticmethod
+#     def setIndicator(name, indicator):
+#         ProgressIndicators._pi[name].append(indicator)
 
-    @staticmethod
-    def getIndicator(name):
-        if name not in ProgressIndicators._pi:
-            return []
 
-        # if any of the progress indicators are done take them off the list
-        for curPI in ProgressIndicators._pi[name]:
-            if curPI is not None and curPI.percentComplete() == 100:
-                ProgressIndicators._pi[name].remove(curPI)
-
-        # return the list of progress indicators associated with this name
-        return ProgressIndicators._pi[name]
-
-    @staticmethod
-    def setIndicator(name, indicator):
-        ProgressIndicators._pi[name].append(indicator)
-
-
-class QueueProgressIndicator:
-    """
-    A class used by the UI to show the progress of the queue or a part of it.
-    """
-
-    def __init__(self, name, queueItemList):
-        self.queueItemList = queueItemList
-        self.name = name
-
-    def numTotal(self):
-        return len(self.queueItemList)
-
-    def numFinished(self):
-        return len([x for x in self.queueItemList if not x.is_in_queue()])
-
-    def numRemaining(self):
-        return len([x for x in self.queueItemList if x.is_in_queue()])
-
-    def nextName(self):
-        for cur_item in self.queue_items:
-            if cur_item in self.queueItemList:
-                return cur_item.name
-
-        return "Unknown"
-
-    def percentComplete(self):
-        numFinished = self.numFinished()
-        numTotal = self.numTotal()
-
-        if numTotal == 0:
-            return 0
-        else:
-            return int(float(numFinished) / float(numTotal) * 100)
+# class QueueProgressIndicator:
+#     """
+#     A class used by the UI to show the progress of the queue or a part of it.
+#     """
+#
+#     def __init__(self, name, queueItemList):
+#         self.queueItemList = queueItemList
+#         self.name = name
+#
+#     def numTotal(self):
+#         return len(self.queueItemList)
+#
+#     def numFinished(self):
+#         return len([x for x in self.queueItemList if not x.is_in_queue()])
+#
+#     def numRemaining(self):
+#         return len([x for x in self.queueItemList if x.is_in_queue()])
+#
+#     def nextName(self):
+#         for cur_item in self.queue_items:
+#             if cur_item in self.queueItemList:
+#                 return cur_item.name
+#
+#         return "Unknown"
+#
+#     def percentComplete(self):
+#         numFinished = self.numFinished()
+#         numTotal = self.numTotal()
+#
+#         if numTotal == 0:
+#             return 0
+#         else:
+#             return int(float(numFinished) / float(numTotal) * 100)
 
 
 class LoadingTVShow:

@@ -18,16 +18,20 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-from sickrage.indexers.thetvdb.api import Tvdb
+from sickrage.indexers.thetvdb.api import TheTVDB
 
 INDEXER_TVDB = 1
 INDEXER_TVRAGE = 2  # Must keep
+
+indexerModules = {
+    INDEXER_TVDB: TheTVDB
+}
 
 indexerConfig = {
     INDEXER_TVDB: {
         'id': INDEXER_TVDB,
         'name': 'theTVDB',
-        'module': Tvdb(),
+        'slug': 'thetvdb',
         'api_params': {
             'apikey': 'F9C450E78D99172E',
             'language': 'en'

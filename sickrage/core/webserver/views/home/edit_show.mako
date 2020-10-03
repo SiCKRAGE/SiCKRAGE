@@ -110,17 +110,19 @@
                                             <label class="component-title">${_('Info Language')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                            <% languages = IndexerApi().indexer().languages.keys() %>
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><span
                                                             class="fas fa-language"></span></span>
                                                 </div>
-                                                <select name="indexerLang" id="indexerLangSelect"
-                                                        class="form-control bfh-languages"
-                                                        title="Show language"
-                                                        data-language="${show.lang}"
-                                                        data-available="${','.join(languages)}"></select>
+                                                <select name="indexerLang" id="indexerLangSelect" class="form-control"
+                                                        title="${_('Choose language')}">
+                                                    % for language in IndexerApi().indexer().languages():
+                                                        <option value="${language['abbreviation']}" ${('', 'selected')[sickrage.app.config.indexer_default_language == language['abbreviation']]}>
+                                                            ${language['englishname']}
+                                                        </option>
+                                                    % endfor
+                                                </select>
                                             </div>
                                             <label class="text-info" for="indexerLangSelect">
                                                 ${_('Language to translate show information into')}

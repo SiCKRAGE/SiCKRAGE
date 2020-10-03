@@ -36,6 +36,7 @@ class AuthServer(object):
         self.server_realm = 'sickrage'
         self.client_id = 'sickrage-app'
         self.client_secret = '5d4710b2-ca70-4d39-b5a3-0705e2c5e703'
+        self._certs = None
 
     @property
     def client(self):
@@ -60,20 +61,16 @@ class AuthServer(object):
         return True
 
     def get_url(self, *args, **kwargs):
-        if not self.health:
-            return
-
         try:
             return self.client.get_url(*args, **kwargs)
         except requests.exceptions.ConnectionError as e:
             return
 
     def certs(self):
-        if not self.health:
-            return
-
         try:
-            return self.client.certs()
+            if not self._certs and self.health:
+                self._certs = self.client.certs()
+            return self._certs
         except requests.exceptions.ConnectionError as e:
             return
 
@@ -84,9 +81,6 @@ class AuthServer(object):
         return self.client.logout(*args, **kwargs)
 
     def decode_token(self, *args, **kwargs):
-        if not self.health:
-            return
-
         return self.client.decode_token(*args, **kwargs)
 
     def refresh_token(self, *args, **kwargs):

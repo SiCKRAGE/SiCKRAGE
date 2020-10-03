@@ -30,10 +30,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 class ConfigAnimeHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         return self.render('config/anime.mako',
                            submenu=ConfigHandler.menu,
                            title=_('Config - Anime'),
@@ -45,10 +42,7 @@ class ConfigAnimeHandler(BaseHandler, ABC):
 
 class ConfigSaveAnimeHandler(BaseHandler, ABC):
     @authenticated
-    async def post(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_post)
-
-    def handle_post(self):
+    def post(self, *args, **kwargs):
         use_anidb = self.get_argument('use_anidb', '')
         anidb_username = self.get_argument('anidb_username', '')
         anidb_password = self.get_argument('anidb_password', '')

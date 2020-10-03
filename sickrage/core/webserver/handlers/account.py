@@ -30,10 +30,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 class AccountLinkHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         code = self.get_argument('code', None)
 
         redirect_uri = "{}://{}{}/account/link".format(self.request.protocol, self.request.host, sickrage.app.config.web_root)
@@ -90,10 +87,7 @@ class AccountLinkHandler(BaseHandler, ABC):
 
 class AccountUnlinkHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         # if not sickrage.app.config.sub_id == self.get_current_user().get('sub'):
         #     return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
@@ -112,8 +106,5 @@ class AccountUnlinkHandler(BaseHandler, ABC):
 
 class AccountIsLinkedHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         return self.write(json.dumps({'linked': ('true', 'false')[not sickrage.app.api.userinfo]}))

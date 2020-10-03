@@ -27,10 +27,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 class IRCHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         return self.render('irc.mako',
                            topmenu="system",
                            header="IRC",

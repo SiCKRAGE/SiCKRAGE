@@ -3143,7 +3143,7 @@
                                 <select id="trakt_default_indexer" name="trakt_default_indexer"
                                         class="form-control " title="Default Indexer">
                                     % for indexer in IndexerApi().indexers:
-                                        <option value="${indexer}" ${('', 'selected')[sickrage.app.config.trakt_default_indexer == indexer]}>${IndexerApi().indexers[indexer]}</option>
+                                        <option value="${indexer['id']}" ${('', 'selected')[sickrage.app.config.trakt_default_indexer == indexer['id']]}>${indexer['name']}</option>
                                     % endfor
                                 </select>
                             </div>

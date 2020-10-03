@@ -18,8 +18,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-
-
 import collections
 import datetime
 import os
@@ -30,27 +28,23 @@ import traceback
 from urllib.parse import unquote_plus
 
 from sqlalchemy import orm
-from tornado.escape import json_encode, recursive_unicode
+from tornado.escape import recursive_unicode, json_encode
 from tornado.web import RequestHandler
 
 import sickrage
+from sickrage.core import MainDB, WANTED, get_show_list, SKIPPED, make_dir
 from sickrage.core.caches import image_cache
-from sickrage.core.common import ARCHIVED, DOWNLOADED, IGNORED, \
-    Overview, Quality, SKIPPED, SNATCHED, SNATCHED_PROPER, UNAIRED, UNKNOWN, \
-    WANTED, dateFormat, dateTimeFormat, get_quality_string, statusStrings, \
-    timeFormat
-from sickrage.core.databases.main import MainDB
-from sickrage.core.exceptions import CantUpdateShowException, CantRemoveShowException, CantRefreshShowException, \
-    EpisodeNotFoundException
-from sickrage.core.helpers import chmod_as_parent, make_dir, \
-    pretty_file_size, sanitize_file_name, srdatetime, try_int, read_file_buffered, backup_app_data
+from sickrage.core.common import statusStrings, Quality, dateFormat, get_quality_string, UNAIRED, dateTimeFormat, Overview, timeFormat, IGNORED, UNKNOWN, \
+    DOWNLOADED, SNATCHED, SNATCHED_PROPER, ARCHIVED
+from sickrage.core.exceptions import EpisodeNotFoundException, CantRemoveShowException, CantRefreshShowException, CantUpdateShowException
+from sickrage.core.helpers import backup_app_data, srdatetime, pretty_file_size, read_file_buffered, try_int, sanitize_file_name, chmod_as_parent
 from sickrage.core.media.banner import Banner
 from sickrage.core.media.fanart import FanArt
 from sickrage.core.media.network import Network
 from sickrage.core.media.poster import Poster
-from sickrage.core.queues.search import BacklogSearchTask, ManualSearchTask
+from sickrage.core.queues.search import ManualSearchTask, BacklogSearchTask
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
-from sickrage.core.tv.show.helpers import find_show, get_show_list
+from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.tv.show.history import History
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.helpers import map_indexers
@@ -58,14 +52,12 @@ from sickrage.indexers.ui import AllShowsUI
 from sickrage.subtitles import Subtitles
 
 indexer_ids = ["indexerid", "tvdbid"]
-
 RESULT_SUCCESS = 10  # only use inside the run methods
 RESULT_FAILURE = 20  # only use inside the run methods
 RESULT_TIMEOUT = 30  # not used yet :(
 RESULT_ERROR = 40  # only use outside of the run methods !
 RESULT_FATAL = 50  # only use in Api.default() ! this is the "we encountered an internal error" error
 RESULT_DENIED = 60  # only use in Api.default() ! this is the access denied error
-
 result_type_map = {
     RESULT_SUCCESS: "success",
     RESULT_FAILURE: "failure",
@@ -74,16 +66,13 @@ result_type_map = {
     RESULT_FATAL: "fatal",
     RESULT_DENIED: "denied",
 }
-
 best_quality_list = [
     "sdtv", "sddvd", "hdtv", "rawhdtv", "fullhdtv", "hdwebdl", "fullhdwebdl", "hdbluray", "fullhdbluray",
     "udh4ktv", "uhd4kbluray", "udh4kwebdl", "udh8ktv", "uhd8kbluray", "udh8kwebdl"
 ]
-
 any_quality_list = best_quality_list + ["unknown"]
 
 
-# basically everything except RESULT_SUCCESS / success is bad
 class ApiHandler(RequestHandler):
     """ api class that returns json results """
     version = 5  # use an int since float-point is unpredictable
@@ -461,10 +450,6 @@ class TVDBShorthandWrapper(ApiCall):
             return CMD_Show(self.application, self.request, *args, **self.kwargs).run()
 
 
-# ###############################
-#       helper functions        #
-# ###############################
-
 def _is_int(data):
     try:
         int(data)
@@ -599,9 +584,6 @@ class IntParseError(Exception):
     """
     A value could not be parsed into an int, but should be parsable to an int
     """
-
-
-# -------------------------------------------------------------------------------------#
 
 
 class CMD_Help(ApiCall):
@@ -850,7 +832,7 @@ class CMD_EpisodeSetStatus(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         # convert the string status to a int
-        for status in statusStrings.status_strings:
+        for status in statusStrings:
             if str(statusStrings[status]).lower() == str(self.status).lower():
                 self.status = status
                 break
@@ -1123,8 +1105,8 @@ class CMD_Backlog(ApiCall):
                 continue
 
             for e in sorted(s.episodes, key=lambda x: (x.season, x.episode), reverse=True):
-                curEpCat = s.get_overview(int(e.status or -1))
-                if curEpCat and curEpCat in (Overview.WANTED, Overview.QUAL):
+                cur_ep_cat = e.overview or -1
+                if cur_ep_cat and cur_ep_cat in (Overview.WANTED, Overview.QUAL):
                     showEps += [e]
 
             if showEps:
@@ -1532,10 +1514,9 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_SiCKRAGESearchIndexers, self).__init__(application, request, *args, **kwargs)
-        self.valid_languages = IndexerApi().indexer().languages
+        self.valid_languages = [lang['abbreviation'] for lang in IndexerApi().indexer().languages()]
         self.name, args = self.check_params("name", None, False, "string", [], *args, **kwargs)
-        self.lang, args = self.check_params("lang", sickrage.app.config.indexer_default_language, False, "string",
-                                            self.valid_languages.keys(), *args, **kwargs)
+        self.lang, args = self.check_params("lang", sickrage.app.config.indexer_default_language, False, "string", self.valid_languages, *args, **kwargs)
         self.indexerid, args = self.check_params("indexerid", None, False, "int", [], *args, **kwargs)
 
     def run(self):
@@ -1545,34 +1526,36 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
         lang_id = self.valid_languages[self.lang]
 
         if self.name and not self.indexerid:  # only name was given
-            for _indexer in IndexerApi().indexers if self.indexer == 0 else [int(self.indexer)]:
-                lINDEXER_API_PARMS = IndexerApi(_indexer).api_params.copy()
-
-                lINDEXER_API_PARMS['language'] = self.lang or sickrage.app.config.indexer_default_language
-
-                lINDEXER_API_PARMS['custom_ui'] = AllShowsUI
-
-                t = IndexerApi(_indexer).indexer(**lINDEXER_API_PARMS)
-
-                indexer_data = t[self.name]
-                if not indexer_data:
+            for _indexer in IndexerApi().indexers:
+                if self.indexer and _indexer['id'] != int(self.indexer):
                     continue
 
-                for curSeries in indexer_data:
-                    results.append({indexer_ids[_indexer]: int(curSeries['id']),
+                indexer_api_parms = IndexerApi(_indexer['id']).api_params.copy()
+                indexer_api_parms['language'] = self.lang or sickrage.app.config.indexer_default_language
+                indexer_api_parms['custom_ui'] = AllShowsUI
+
+                t = IndexerApi(_indexer['id']).indexer(**indexer_api_parms)
+
+                resp = t[self.name]
+                if not resp:
+                    continue
+
+                for curSeries in resp:
+                    results.append({indexer_ids[_indexer['id']]: int(curSeries['id']),
                                     "name": curSeries['seriesname'],
                                     "first_aired": curSeries['firstaired'],
-                                    "indexer": int(_indexer)})
+                                    "indexer": _indexer['id']})
 
             return _responds(RESULT_SUCCESS, {"results": results, "langid": lang_id})
 
         elif self.indexerid:
-            for _indexer in IndexerApi().indexers if self.indexer == 0 else [int(self.indexer)]:
-                lINDEXER_API_PARMS = IndexerApi(_indexer).api_params.copy()
+            for _indexer in IndexerApi().indexers:
+                if self.indexer and _indexer['id'] != int(self.indexer):
+                    continue
 
-                lINDEXER_API_PARMS['language'] = self.lang or sickrage.app.config.indexer_default_language
-
-                t = IndexerApi(_indexer).indexer(**lINDEXER_API_PARMS)
+                indexer_api_parms = IndexerApi(_indexer['id']).api_params.copy()
+                indexer_api_parms['language'] = self.lang or sickrage.app.config.indexer_default_language
+                t = IndexerApi(_indexer['id']).indexer(**indexer_api_parms)
 
                 myShow = t[int(self.indexerid)]
                 if not myShow:
@@ -1583,10 +1566,10 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
                     return _responds(RESULT_FAILURE, msg="Show contains no name, invalid result")
 
                 # found show
-                results = [{indexer_ids[_indexer]: int(myShow.data['id']),
+                results = [{indexer_ids[_indexer['id']]: int(myShow.data['id']),
                             "name": myShow.data['seriesname'],
                             "first_aired": myShow.data['firstaired'],
-                            "indexer": int(_indexer)}]
+                            "indexer": _indexer['id']}]
 
                 # break from loop, result found!
                 break
@@ -1672,12 +1655,12 @@ class CMD_SiCKRAGESetDefaults(ApiCall):
 
         if self.status:
             # convert the string status to a int
-            for status in statusStrings.status_strings:
+            for status in statusStrings:
                 if statusStrings[status].lower() == str(self.status).lower():
                     self.status = status
                     break
             # this should be obsolete bcause of the above
-            if not self.status in statusStrings.status_strings:
+            if not self.status in statusStrings:
                 raise InternalApiError("Invalid Status")
             # only allow the status options we want
             if int(self.status) not in (3, 5, 6, 7):
@@ -1919,31 +1902,23 @@ class CMD_ShowAddNew(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowAddNew, self).__init__(application, request, *args, **kwargs)
-        self.valid_languages = IndexerApi().indexer().languages
+        self.valid_languages = [lang['abbreviation'] for lang in IndexerApi().indexer().languages()]
         self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
         self.location, args = self.check_params("location", None, False, "string", [], *args, **kwargs)
         self.initial, args = self.check_params("initial", None, False, "list", any_quality_list, *args, **kwargs)
         self.archive, args = self.check_params("archive", None, False, "list", best_quality_list, *args, **kwargs)
-        self.flatten_folders, args = self.check_params("flatten_folders",
-                                                       bool(sickrage.app.config.flatten_folders_default), False,
-                                                       "bool", [], *args, **kwargs)
-        self.status, args = self.check_params("status", None, False, "string", ["wanted", "skipped", "ignored"], *args,
-                                              **kwargs)
-        self.lang, args = self.check_params("lang", sickrage.app.config.indexer_default_language, False, "string",
-                                            self.valid_languages.keys(), *args, **kwargs)
-        self.subtitles, args = self.check_params("subtitles", bool(sickrage.app.config.use_subtitles), False,
-                                                 "bool", [], *args, **kwargs)
+        self.flatten_folders, args = self.check_params("flatten_folders", bool(sickrage.app.config.flatten_folders_default), False, "bool", [], *args,
+                                                       **kwargs)
+        self.status, args = self.check_params("status", None, False, "string", ["wanted", "skipped", "ignored"], *args, **kwargs)
+        self.lang, args = self.check_params("lang", sickrage.app.config.indexer_default_language, False, "string", self.valid_languages, *args, **kwargs)
+        self.subtitles, args = self.check_params("subtitles", bool(sickrage.app.config.use_subtitles), False, "bool", [], *args, **kwargs)
         self.scene, args = self.check_params("scene", bool(sickrage.app.config.scene_default), False, "bool", [], *args, **kwargs)
         self.anime, args = self.check_params("anime", bool(sickrage.app.config.anime_default), False, "bool", [], *args, **kwargs)
-        self.search_format, args = self.check_params("search_format", int(sickrage.app.config.search_format_default), False, "int", [],
-                                                     *args, **kwargs)
-        self.future_status, args = self.check_params("future_status", None, False, "string",
-                                                     ["wanted", "skipped", "ignored"], *args, **kwargs)
-        self.skip_downloaded, args = self.check_params("skip_downloaded",
-                                                       bool(sickrage.app.config.skip_downloaded_default), False, "bool",
-                                                       [], *args, **kwargs)
-        self.add_show_year, args = self.check_params("add_show_year", bool(sickrage.app.config.add_show_year_default),
-                                                     False, "bool", [], *args, **kwargs)
+        self.search_format, args = self.check_params("search_format", int(sickrage.app.config.search_format_default), False, "int", [], *args, **kwargs)
+        self.future_status, args = self.check_params("future_status", None, False, "string", ["wanted", "skipped", "ignored"], *args, **kwargs)
+        self.skip_downloaded, args = self.check_params("skip_downloaded", bool(sickrage.app.config.skip_downloaded_default), False, "bool", [], *args,
+                                                       **kwargs)
+        self.add_show_year, args = self.check_params("add_show_year", bool(sickrage.app.config.add_show_year_default), False, "bool", [], *args, **kwargs)
 
     def run(self):
         """ Add a new show to SiCKRAGE """
@@ -1982,12 +1957,12 @@ class CMD_ShowAddNew(ApiCall):
         new_status = sickrage.app.config.status_default
         if self.status:
             # convert the string status to a int
-            for status in statusStrings.status_strings:
+            for status in statusStrings:
                 if statusStrings[status].lower() == str(self.status).lower():
                     self.status = status
                     break
 
-            if self.status not in statusStrings.status_strings:
+            if self.status not in statusStrings:
                 raise InternalApiError("Invalid Status")
 
             # only allow the status options we want
@@ -1999,12 +1974,12 @@ class CMD_ShowAddNew(ApiCall):
         default_ep_status_after = sickrage.app.config.status_default_after
         if self.future_status:
             # convert the string status to a int
-            for status in statusStrings.status_strings:
+            for status in statusStrings:
                 if statusStrings[status].lower() == str(self.future_status).lower():
                     self.future_status = status
                     break
 
-            if self.future_status not in statusStrings.status_strings:
+            if self.future_status not in statusStrings:
                 raise InternalApiError("Invalid Status")
 
             # only allow the status options we want
@@ -2477,7 +2452,7 @@ class CMD_ShowStats(ApiCall):
 
         # show stats
         episode_status_counts_total = {"total": 0}
-        for status in statusStrings.status_strings.keys():
+        for status in statusStrings.keys():
             if status in [UNKNOWN, DOWNLOADED, SNATCHED, SNATCHED_PROPER, ARCHIVED]:
                 continue
             episode_status_counts_total[status] = 0
@@ -2553,7 +2528,7 @@ class CMD_ShowStats(ApiCall):
                 episodes_stats["total"] = episode_status_counts_total[statusCode]
                 continue
 
-            statusString = statusStrings.status_strings[statusCode]
+            statusString = statusStrings[statusCode]
             statusString = statusString.lower().replace(" ", "_").replace("(", "").replace(")", "")
             episodes_stats[statusString] = episode_status_counts_total[statusCode]
 
@@ -2675,7 +2650,7 @@ class CMD_ShowsStats(ApiCall):
 
             overall_stats['episodes']['snatched'] += show.episodes_snatched or 0
             overall_stats['episodes']['downloaded'] += show.episodes_downloaded or 0
-            overall_stats['episodes']['total'] += len(show.episodes) or 0
+            overall_stats['episodes']['total'] += show.episodes_total or 0
             overall_stats['total_size'] += show.total_size or 0
 
         return _responds(RESULT_SUCCESS, {

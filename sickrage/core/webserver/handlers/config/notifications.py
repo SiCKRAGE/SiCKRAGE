@@ -30,10 +30,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 class ConfigNotificationsHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         return self.render('config/notifications.mako',
                            submenu=ConfigHandler.menu,
                            title=_('Config - Notifications'),
@@ -45,10 +42,7 @@ class ConfigNotificationsHandler(BaseHandler, ABC):
 
 class SaveNotificationsHandler(BaseHandler, ABC):
     @authenticated
-    async def post(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_post)
-
-    def handle_post(self):
+    def post(self, *args, **kwargs):
         use_kodi = self.get_argument('use_kodi', None)
         kodi_always_on = self.get_argument('kodi_always_on', None)
         kodi_notify_onsnatch = self.get_argument('kodi_notify_onsnatch', None)

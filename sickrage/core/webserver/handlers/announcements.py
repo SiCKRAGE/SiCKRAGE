@@ -28,10 +28,7 @@ from sickrage.libs.trakt.interfaces.base import authenticated
 
 class AnnouncementsHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         return self.render('announcements.mako',
                            announcements=sickrage.app.announcements.get_all(),
                            title=_('Announcements'),
@@ -43,7 +40,7 @@ class AnnouncementsHandler(BaseHandler, ABC):
 
 class MarkAnnouncementSeenHandler(BaseHandler, ABC):
     @authenticated
-    async def post(self, *args, **kwargs):
+    def post(self, *args, **kwargs):
         ahash = self.get_argument('ahash')
 
         announcement = sickrage.app.announcements.get(ahash)
@@ -55,8 +52,5 @@ class MarkAnnouncementSeenHandler(BaseHandler, ABC):
 
 class AnnouncementCountHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         return self.write(json.dumps({'count': sickrage.app.announcements.count()}))

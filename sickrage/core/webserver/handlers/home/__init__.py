@@ -20,6 +20,7 @@
 # ##############################################################################
 
 import datetime
+import json
 import os
 from abc import ABC
 from collections import OrderedDict
@@ -60,16 +61,15 @@ from sickrage.core.scene_numbering import (
 from sickrage.core.traktapi import TraktAPI
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
+from sickrage.core.websocket import WebSocketMessage
 from sickrage.subtitles import Subtitles
 
 
 class HomeHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         show_list = [x for x in get_show_list() if not sickrage.app.show_queue.is_being_removed(x.indexer_id)]
+
         if not len(show_list):
             return self.redirect('/home/addShows/')
 
@@ -131,10 +131,7 @@ class HomeHandler(BaseHandler, ABC):
 
 
 class ShowProgressHandler(BaseHandler, ABC):
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         show_id = self.get_argument('show-id')
 
         show = find_show(int(show_id))
@@ -143,7 +140,7 @@ class ShowProgressHandler(BaseHandler, ABC):
 
         episodes_snatched = show.episodes_snatched
         episodes_downloaded = show.episodes_downloaded
-        episodes_total = len(show.episodes) - show.episodes_special - show.episodes_unaired
+        episodes_total = show.episodes_total
         progressbar_percent = int(episodes_downloaded * 100 / episodes_total if episodes_total > 0 else 1)
 
         progress_text = '?'
@@ -162,10 +159,7 @@ class ShowProgressHandler(BaseHandler, ABC):
 
 
 class IsAliveHandler(BaseHandler, ABC):
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         self.set_header('Content-Type', 'text/javascript')
 
         srcallback = self.get_argument('srcallback')
@@ -178,10 +172,7 @@ class IsAliveHandler(BaseHandler, ABC):
 
 class TestSABnzbdHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         host = clean_url(self.get_argument('host'))
         username = self.get_argument('username')
         password = self.get_argument('password')
@@ -199,10 +190,7 @@ class TestSABnzbdHandler(BaseHandler, ABC):
 
 class TestSynologyDSMHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         host = clean_url(self.get_argument('host'))
         nzb_method = self.get_argument('nzb_method')
         username = self.get_argument('username')
@@ -215,10 +203,7 @@ class TestSynologyDSMHandler(BaseHandler, ABC):
 
 class TestTorrentHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         host = clean_url(self.get_argument('host'))
         torrent_method = self.get_argument('torrent_method')
         username = self.get_argument('username')
@@ -231,10 +216,7 @@ class TestTorrentHandler(BaseHandler, ABC):
 
 class TestFreeMobileHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         freemobile_id = self.get_argument('freemobile_id')
         freemobile_apikey = self.get_argument('freemobile_apikey')
 
@@ -246,10 +228,7 @@ class TestFreeMobileHandler(BaseHandler, ABC):
 
 class TestTelegramHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         telegram_id = self.get_argument('telegram_id')
         telegram_apikey = self.get_argument('telegram_apikey')
 
@@ -261,10 +240,7 @@ class TestTelegramHandler(BaseHandler, ABC):
 
 class TestJoinHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         join_id = self.get_argument('join_id')
         join_apikey = self.get_argument('join_apikey')
 
@@ -276,10 +252,7 @@ class TestJoinHandler(BaseHandler, ABC):
 
 class TestGrowlHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         host = clean_host(self.get_argument('host'), default_port=23053)
         password = self.get_argument('password')
 
@@ -296,10 +269,7 @@ class TestGrowlHandler(BaseHandler, ABC):
 
 class TestProwlHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         prowl_api = self.get_argument('prowl_api')
         prowl_priority = self.get_argument('prowl_priority')
 
@@ -311,10 +281,7 @@ class TestProwlHandler(BaseHandler, ABC):
 
 class TestBoxcar2Handler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         accesstoken = self.get_argument('accesstoken')
 
         result = sickrage.app.notifier_providers['boxcar2'].test_notify(accesstoken)
@@ -325,10 +292,7 @@ class TestBoxcar2Handler(BaseHandler, ABC):
 
 class TestPushoverHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         user_key = self.get_argument('userKey')
         api_key = self.get_argument('apiKey')
 
@@ -340,19 +304,13 @@ class TestPushoverHandler(BaseHandler, ABC):
 
 class TwitterStep1Handler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         return self.write(sickrage.app.notifier_providers['twitter']._get_authorization())
 
 
 class TwitterStep2Handler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         key = self.get_argument('key')
 
         result = sickrage.app.notifier_providers['twitter']._get_credentials(key)
@@ -364,10 +322,7 @@ class TwitterStep2Handler(BaseHandler, ABC):
 
 class TestTwitterHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         result = sickrage.app.notifier_providers['twitter'].test_notify()
         if result:
             return self.write(_('Tweet successful, check your twitter to make sure it worked'))
@@ -376,10 +331,7 @@ class TestTwitterHandler(BaseHandler, ABC):
 
 class TestTwilioHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         account_sid = self.get_argument('account_sid')
         auth_token = self.get_argument('auth_token')
         phone_sid = self.get_argument('phone_sid')
@@ -405,10 +357,7 @@ class TestTwilioHandler(BaseHandler, ABC):
 
 class TestAlexaHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         result = sickrage.app.notifier_providers['alexa'].test_notify()
         if result:
             return self.write(_('Alexa notification successful'))
@@ -417,10 +366,7 @@ class TestAlexaHandler(BaseHandler, ABC):
 
 class TestSlackHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         result = sickrage.app.notifier_providers['slack'].test_notify()
         if result:
             return self.write(_('Slack message successful'))
@@ -429,10 +375,7 @@ class TestSlackHandler(BaseHandler, ABC):
 
 class TestDiscordHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         result = sickrage.app.notifier_providers['discord'].test_notify()
         if result:
             return self.write(_('Discord message successful'))
@@ -441,10 +384,7 @@ class TestDiscordHandler(BaseHandler, ABC):
 
 class TestKODIHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         host = clean_hosts(self.get_argument('host'))
         username = self.get_argument('username')
         password = self.get_argument('password')
@@ -463,10 +403,7 @@ class TestKODIHandler(BaseHandler, ABC):
 
 class TestPMCHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         host = clean_hosts(self.get_argument('host'))
         username = self.get_argument('username')
         password = self.get_argument('password', None)
@@ -492,10 +429,7 @@ class TestPMCHandler(BaseHandler, ABC):
 
 class TestPMSHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         host = clean_hosts(self.get_argument('host'))
         username = self.get_argument('username')
         password = self.get_argument('password', None)
@@ -526,10 +460,7 @@ class TestPMSHandler(BaseHandler, ABC):
 
 class TestLibnotifyHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         if sickrage.app.notifier_providers['libnotify'].notifier.test_notify():
             return self.write(_('Tried sending desktop notification via libnotify'))
         return self.write(sickrage.app.notifier_providers['libnotify'].diagnose())
@@ -537,10 +468,7 @@ class TestLibnotifyHandler(BaseHandler, ABC):
 
 class TestEMBYHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         host = clean_host(self.get_argument('host'))
         emby_apikey = self.get_argument('emby_apikey')
 
@@ -552,10 +480,7 @@ class TestEMBYHandler(BaseHandler, ABC):
 
 class TestNMJHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         host = clean_host(self.get_argument('host'))
         database = self.get_argument('database')
         mount = self.get_argument('mount')
@@ -568,10 +493,7 @@ class TestNMJHandler(BaseHandler, ABC):
 
 class SettingsNMJHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         host = clean_host(self.get_argument('host'))
 
         result = sickrage.app.notifier_providers['nmj'].notify_settings(unquote_plus(host))
@@ -591,10 +513,7 @@ class SettingsNMJHandler(BaseHandler, ABC):
 
 class TestNMJv2Handler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         host = clean_host(self.get_argument('host'))
 
         result = sickrage.app.notifier_providers['nmjv2'].test_notify(unquote_plus(host))
@@ -605,10 +524,7 @@ class TestNMJv2Handler(BaseHandler, ABC):
 
 class SettingsNMJv2Handler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         host = clean_host(self.get_argument('host'))
         dbloc = self.get_argument('dbloc')
         instance = self.get_argument('instance')
@@ -627,10 +543,7 @@ class SettingsNMJv2Handler(BaseHandler, ABC):
 
 class GetTraktTokenHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         trakt_pin = self.get_argument('trakt_pin')
 
         if TraktAPI().authenticate(trakt_pin):
@@ -640,10 +553,7 @@ class GetTraktTokenHandler(BaseHandler, ABC):
 
 class TestTraktHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         username = self.get_argument('username')
         blacklist_name = self.get_argument('blacklist_name')
 
@@ -652,10 +562,7 @@ class TestTraktHandler(BaseHandler, ABC):
 
 class LoadShowNotifyListsHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         data = {'_size': 0}
         for s in sorted(get_show_list(), key=lambda k: k.name):
             data[s.indexer_id] = {'id': s.indexer_id, 'name': s.name, 'list': s.notify_list}
@@ -665,10 +572,7 @@ class LoadShowNotifyListsHandler(BaseHandler, ABC):
 
 class SaveShowNotifyListHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         show = self.get_argument('show')
         emails = self.get_argument('emails')
 
@@ -681,10 +585,7 @@ class SaveShowNotifyListHandler(BaseHandler, ABC):
 
 class TestEmailHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         host = clean_host(self.get_argument('host'))
         port = self.get_argument('port')
         smtp_from = self.get_argument('smtp_from')
@@ -700,10 +601,7 @@ class TestEmailHandler(BaseHandler, ABC):
 
 class TestNMAHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         nma_api = self.get_argument('nma_api')
         nma_priority = self.get_argument('nma_priority')
 
@@ -715,10 +613,7 @@ class TestNMAHandler(BaseHandler, ABC):
 
 class TestPushalotHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         authorization_token = self.get_argument('authorizationToken')
 
         result = sickrage.app.notifier_providers['pushalot'].test_notify(authorization_token)
@@ -729,10 +624,7 @@ class TestPushalotHandler(BaseHandler, ABC):
 
 class TestPushbulletHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         api = self.get_argument('api')
 
         result = sickrage.app.notifier_providers['pushbullet'].test_notify(api)
@@ -743,10 +635,7 @@ class TestPushbulletHandler(BaseHandler, ABC):
 
 class GetPushbulletDevicesHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         api = self.get_argument('api')
 
         result = sickrage.app.notifier_providers['pushbullet'].get_devices(api)
@@ -757,10 +646,7 @@ class GetPushbulletDevicesHandler(BaseHandler, ABC):
 
 class ServerStatusHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         tvdir_free = get_disk_space_usage(sickrage.app.config.tv_download_dir)
         root_dir = {}
         if sickrage.app.config.root_dirs:
@@ -785,10 +671,7 @@ class ServerStatusHandler(BaseHandler, ABC):
 
 class ProviderStatusHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         return self.render('home/provider_status.mako',
                            title=_('Provider Status'),
                            header=_('Provider Status'),
@@ -799,10 +682,7 @@ class ProviderStatusHandler(BaseHandler, ABC):
 
 class ShutdownHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         pid = self.get_argument('pid')
 
         if str(pid) != str(sickrage.app.pid):
@@ -814,10 +694,7 @@ class ShutdownHandler(BaseHandler, ABC):
 
 class RestartHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         pid = self.get_argument('pid')
         force = self.get_argument('force', None)
 
@@ -848,10 +725,7 @@ class RestartHandler(BaseHandler, ABC):
 
 class UpdateCheckHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         pid = self.get_argument('pid')
 
         if str(pid) != str(sickrage.app.pid) or sickrage.app.disable_updates:
@@ -868,10 +742,7 @@ class UpdateCheckHandler(BaseHandler, ABC):
 
 class UpdateHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         pid = self.get_argument('pid')
 
         if str(pid) != str(sickrage.app.pid):
@@ -886,10 +757,7 @@ class UpdateHandler(BaseHandler, ABC):
 
 class VerifyPathHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         path = self.get_argument('path')
 
         if os.path.isfile(path):
@@ -899,10 +767,7 @@ class VerifyPathHandler(BaseHandler, ABC):
 
 class InstallRequirementsHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         sickrage.app.alerts.message(_('Upgrading PIP'))
         if sickrage.app.version_updater.updater.upgrade_pip():
             sickrage.app.alerts.message(_('Upgraded PIP successfully!'))
@@ -920,10 +785,7 @@ class InstallRequirementsHandler(BaseHandler, ABC):
 
 class BranchCheckoutHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         branch = self.get_argument('branch')
 
         if sickrage.app.version_updater.updater.current_branch != branch:
@@ -939,10 +801,7 @@ class BranchCheckoutHandler(BaseHandler, ABC):
 
 class DisplayShowHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         show = self.get_argument('show')
 
         submenu = []
@@ -976,13 +835,13 @@ class DisplayShowHandler(BaseHandler, ABC):
         elif sickrage.app.show_queue.is_being_subtitled(show_obj.indexer_id):
             show_message = _('Currently downloading subtitles for this show')
 
-        elif sickrage.app.show_queue.is_being_refreshed(show_obj.indexer_id):
+        elif sickrage.app.show_queue.is_queued_to_refresh(show_obj.indexer_id):
             show_message = _('This show is queued to be refreshed.')
 
-        elif sickrage.app.show_queue.is_being_updated(show_obj.indexer_id):
+        elif sickrage.app.show_queue.is_queued_to_update(show_obj.indexer_id):
             show_message = _('This show is queued and awaiting an update.')
 
-        elif sickrage.app.show_queue.is_being_subtitled(show_obj.indexer_id):
+        elif sickrage.app.show_queue.is_queued_to_subtitle(show_obj.indexer_id):
             show_message = _('This show is queued and awaiting subtitles download.')
 
         if not sickrage.app.show_queue.is_being_added(show_obj.indexer_id):
@@ -1064,7 +923,7 @@ class DisplayShowHandler(BaseHandler, ABC):
         for episode_object in episode_objects:
             season_results.add(episode_object.season)
 
-            cur_ep_cat = show_obj.get_overview(int(episode_object.status or -1))
+            cur_ep_cat = episode_object.overview or -1
 
             if episode_object.airdate > datetime.date.min:
                 today = datetime.datetime.now().replace(tzinfo=sickrage.app.tz).date()
@@ -1142,10 +1001,7 @@ class DisplayShowHandler(BaseHandler, ABC):
 
 class TogglePauseHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         show = self.get_argument('show')
 
         session = sickrage.app.main_db.session()
@@ -1165,10 +1021,7 @@ class TogglePauseHandler(BaseHandler, ABC):
 
 class DeleteShowHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         show = self.get_argument('show')
         full = self.get_argument('full', None)
 
@@ -1198,10 +1051,7 @@ class DeleteShowHandler(BaseHandler, ABC):
 
 class RefreshShowHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         show = self.get_argument('show')
 
         show_obj = find_show(int(show))
@@ -1221,10 +1071,7 @@ class RefreshShowHandler(BaseHandler, ABC):
 
 class UpdateShowHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         show = self.get_argument('show')
         force = self.get_argument('force', None)
 
@@ -1247,10 +1094,7 @@ class UpdateShowHandler(BaseHandler, ABC):
 
 class SubtitleShowHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         show = self.get_argument('show')
 
         show_obj = find_show(int(show))
@@ -1268,10 +1112,7 @@ class SubtitleShowHandler(BaseHandler, ABC):
 
 class UpdateKODIHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         show = self.get_argument('show')
 
         show_name = None
@@ -1299,10 +1140,7 @@ class UpdateKODIHandler(BaseHandler, ABC):
 
 class UpdatePLEXHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         if not sickrage.app.notifier_providers['plex'].update_library():
             sickrage.app.alerts.message(
                 _("Library update command sent to Plex Media Server host: ") +
@@ -1316,10 +1154,7 @@ class UpdatePLEXHandler(BaseHandler, ABC):
 
 class UpdateEMBYHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         show = self.get_argument('show')
 
         show_obj = find_show(int(show))
@@ -1339,10 +1174,7 @@ class UpdateEMBYHandler(BaseHandler, ABC):
 
 class SyncTraktHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         sickrage.app.log.info("Syncing Trakt with SiCKRAGE")
         sickrage.app.alerts.message(_('Syncing Trakt with SiCKRAGE'))
 
@@ -1356,10 +1188,7 @@ class SyncTraktHandler(BaseHandler, ABC):
 
 class DeleteEpisodeHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         show = self.get_argument('show')
         eps = self.get_argument('eps')
         direct = self.get_argument('direct', None)
@@ -1402,10 +1231,7 @@ class DeleteEpisodeHandler(BaseHandler, ABC):
 
 class TestRenameHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         show = self.get_argument('show')
 
         show_object = find_show(int(show))
@@ -1447,10 +1273,7 @@ class TestRenameHandler(BaseHandler, ABC):
 
 class DoRenameHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         show = self.get_argument('show')
         eps = self.get_argument('eps')
 
@@ -1483,10 +1306,7 @@ class DoRenameHandler(BaseHandler, ABC):
 
 class SearchEpisodeHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         show = self.get_argument('show')
         season = self.get_argument('season')
         episode = self.get_argument('episode')
@@ -1504,10 +1324,7 @@ class SearchEpisodeHandler(BaseHandler, ABC):
 
 class GetManualSearchStatusHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         show = self.get_argument('show')
 
         episodes = []
@@ -1549,7 +1366,7 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
                             'searchstatus': search_status,
                             'status': statusStrings[episode_object.status],
                             'quality': self.get_quality_class(episode_object.status),
-                            'overview': Overview.overviewStrings[show_object.get_overview(int(episode_object.status or -1))]})
+                            'overview': Overview.overviewStrings[episode_object.overview or -1]})
 
         return results
 
@@ -1565,10 +1382,7 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
 
 class SearchEpisodeSubtitlesHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         show = self.get_argument('show')
         season = self.get_argument('season')
         episode = self.get_argument('episode')
@@ -1597,10 +1411,7 @@ class SearchEpisodeSubtitlesHandler(BaseHandler, ABC):
 
 class SetSceneNumberingHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         show = self.get_argument('show')
         indexer = self.get_argument('indexer')
         for_season = self.get_argument('forSeason', '')
@@ -1686,10 +1497,7 @@ class SetSceneNumberingHandler(BaseHandler, ABC):
 
 class RetryEpisodeHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         show = self.get_argument('show')
         season = self.get_argument('season')
         episode = self.get_argument('episode')
@@ -1708,10 +1516,7 @@ class RetryEpisodeHandler(BaseHandler, ABC):
 
 class FetchReleasegroupsHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         show_name = self.get_argument('show_name')
 
         sickrage.app.log.info('ReleaseGroups: {}'.format(show_name))

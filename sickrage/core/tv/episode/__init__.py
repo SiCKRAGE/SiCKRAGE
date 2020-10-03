@@ -32,8 +32,8 @@ from sqlalchemy import orm
 
 import sickrage
 from sickrage.core.common import NAMING_EXTEND, NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT, \
-    SearchFormats, Quality, SKIPPED, UNKNOWN, UNAIRED, statusStrings
-from sickrage.core.databases.main import MainDB
+    SearchFormats, Quality, SKIPPED, UNKNOWN, UNAIRED, statusStrings, WANTED, IGNORED, Overview
+from sickrage.core.databases.main import MainDB, TVEpisodeSchema
 from sickrage.core.exceptions import EpisodeNotFoundException, EpisodeDeletedException, NoNFOException
 from sickrage.core.helpers import replace_extension, modify_file_timestamp, sanitize_scene_name, remove_non_release_groups, \
     remove_extension, sanitize_file_name, make_dirs, move_file, delete_empty_folders, file_size, is_media_file, try_int, safe_getattr
@@ -294,6 +294,76 @@ class TVEpisode(object):
     def related_episodes(self):
         return [x for x in self.show.episodes if x.location and x.location == self.location and x.season == self.season and x.episode != self.episode]
 
+    @property
+    def search_queue_status(self):
+        from sickrage.core.queues.search import SearchTaskActions
+
+        search_queue_status = {
+            'manual': '',
+            'daily': '',
+            'backlog': ''
+        }
+
+        for search_task in sickrage.app.search_queue.get_all_tasks_from_queue_by_show(self.showid):
+            if search_task.season == self.season and search_task.episode == self.episode:
+                if search_task.action_id in [SearchTaskActions.MANUAL_SEARCH, SearchTaskActions.FAILED_SEARCH]:
+                    search_queue_status['manual'] = search_task.status.name
+                elif search_task.action_id == SearchTaskActions.DAILY_SEARCH:
+                    search_queue_status['daily'] = search_task.status.name
+                elif search_task.action_id == SearchTaskActions.BACKLOG_SEARCH:
+                    search_queue_status['backlog'] = search_task.status.name
+
+        return search_queue_status
+
+    @property
+    def overview(self):
+        if self.status == WANTED:
+            return Overview.WANTED
+        elif self.status in (UNAIRED, UNKNOWN):
+            return Overview.UNAIRED
+        elif self.status in (SKIPPED, IGNORED):
+            return Overview.SKIPPED
+        elif self.status in Quality.ARCHIVED:
+            return Overview.GOOD
+        elif self.status in Quality.FAILED:
+            return Overview.WANTED
+        elif self.status in Quality.SNATCHED:
+            return Overview.SNATCHED
+        elif self.status in Quality.SNATCHED_PROPER:
+            return Overview.SNATCHED_PROPER
+        elif self.status in Quality.SNATCHED_BEST:
+            return Overview.SNATCHED_BEST
+        elif self.status in Quality.DOWNLOADED:
+            anyQualities, bestQualities = Quality.split_quality(self.show.quality)
+            epStatus, curQuality = Quality.split_composite_status(self.status)
+
+            if bestQualities:
+                maxBestQuality = max(bestQualities)
+                minBestQuality = min(bestQualities)
+            else:
+                maxBestQuality = None
+                minBestQuality = None
+
+            # elif epStatus == DOWNLOADED and curQuality == Quality.UNKNOWN:
+            #    return Overview.QUAL
+            # if they don't want re-downloads then we call it good if they have anything
+            if maxBestQuality is None:
+                return Overview.GOOD
+            # if the want only first match and already have one call it good
+            elif self.show.skip_downloaded and curQuality in bestQualities:
+                return Overview.GOOD
+            # if they want only first match and current quality is higher than minimal best quality call it good
+            elif self.show.skip_downloaded and minBestQuality is not None and curQuality > minBestQuality:
+                return Overview.GOOD
+            # if they have one but it's not the best they want then mark it as qual
+            elif curQuality < maxBestQuality:
+                return Overview.QUAL
+            # if it's >= maxBestQuality then it's good
+            else:
+                return Overview.GOOD
+        else:
+            sickrage.app.log.error('Could not parse episode status into a valid overview status: {}'.format(self.status))
+
     def save(self):
         with self.lock, sickrage.app.main_db.session() as session:
             try:
@@ -408,7 +478,6 @@ class TVEpisode(object):
         raise EpisodeNotFoundException("Couldn't find episode S{:02d}E{:02d}".format(season or 0, episode or 0))
 
     def load_from_indexer(self, season=None, episode=None, cache=True, tvapi=None, cachedSeason=None):
-        from sickrage.core.scene_numbering import get_scene_absolute_numbering, get_scene_numbering
 
         indexer_name = IndexerApi(self.indexer).name
 
@@ -733,8 +802,7 @@ class TVEpisode(object):
         """
 
         if not os.path.isfile(self.location):
-            sickrage.app.log.warning(
-                "Can't perform rename on " + self.location + " when it doesn't exist, skipping")
+            sickrage.app.log.warning("Can't perform rename on " + self.location + " when it doesn't exist, skipping")
             return
 
         proper_path = self.proper_path()
@@ -1298,3 +1366,14 @@ class TVEpisode(object):
         to_return += "hastbn: %r\n" % self.hastbn
         to_return += "status: %r\n" % self.status
         return to_return
+
+    def to_json(self):
+        with sickrage.app.main_db.session() as session:
+            episode = session.query(MainDB.TVEpisode).filter_by(showid=self.showid, indexer_id=self.indexer_id).one_or_none()
+            json_data = TVEpisodeSchema().dump(episode)
+
+            json_data['show_id'] = self.showid
+            json_data['overview'] = self.overview
+            json_data['search_queue_status'] = self.search_queue_status
+
+            return json_data

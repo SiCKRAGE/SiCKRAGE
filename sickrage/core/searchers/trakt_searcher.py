@@ -342,7 +342,7 @@ class TraktSearcher(object):
 
             try:
                 # determine
-                indexer = IndexerApi().indexersByTraktID[trakt_id]
+                indexer = IndexerApi().indexers_by_trakt_id[trakt_id]
             except KeyError:
                 continue
 
@@ -380,7 +380,7 @@ class TraktSearcher(object):
 
             try:
                 # determine
-                indexer = IndexerApi().indexersByTraktID[trakt_id]
+                indexer = IndexerApi().indexers_by_trakt_id[trakt_id]
             except KeyError:
                 continue
 

@@ -21,19 +21,23 @@
 import re
 from abc import ABC
 
+from jose import ExpiredSignatureError
+
 import sickrage
 from sickrage.core.helpers import is_ip_whitelisted, get_internal_ip, get_external_ip
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
 class LoginHandler(BaseHandler, ABC):
-    async def get(self, *args, **kwargs):
+    def get(self, *args, **kwargs):
         if is_ip_whitelisted(self.request.remote_ip):
             return self.redirect("{}".format(self.get_argument('next', "/{}/".format(sickrage.app.config.default_page))))
+        elif 'Authorization' in self.request.headers:
+            return self.handle_jwt_auth_get()
         elif sickrage.app.config.sso_auth_enabled and sickrage.app.auth_server.health:
-            await self.run_in_executor(self.handle_sso_auth_get)
+            return self.handle_sso_auth_get()
         elif sickrage.app.config.local_auth_enabled:
-            await self.run_in_executor(self.handle_local_auth_get)
+            return self.handle_local_auth_get()
         else:
             return self.render('login_failed.mako',
                                topmenu="system",
@@ -42,9 +46,51 @@ class LoginHandler(BaseHandler, ABC):
                                controller='root',
                                action='login')
 
-    async def post(self, *args, **kwargs):
+    def post(self, *args, **kwargs):
         if sickrage.app.config.local_auth_enabled:
-            await self.run_in_executor(self.handle_local_auth_post)
+            return self.handle_local_auth_post()
+
+    def handle_jwt_auth_get(self):
+        certs = sickrage.app.auth_server.certs()
+        auth_token = self.request.headers['Authorization'].strip('Bearer').strip()
+
+        try:
+            decoded_auth_token = sickrage.app.auth_server.decode_token(auth_token, certs)
+        except ExpiredSignatureError:
+            self.set_status(401)
+            return self.write({'error': 'Token expired'})
+
+        if not sickrage.app.config.sub_id:
+            sickrage.app.config.sub_id = decoded_auth_token.get('sub')
+            sickrage.app.config.save()
+
+        if sickrage.app.config.sub_id != decoded_auth_token.get('sub'):
+            return
+
+        if sickrage.app.config.enable_sickrage_api:
+            # if sickrage.app.api.token:
+            #     sickrage.app.api.logout()
+            sickrage.app.api.exchange_token(auth_token)
+
+        internal_connections = "{}://{}:{}{}".format(self.request.protocol,
+                                                     get_internal_ip(),
+                                                     sickrage.app.config.web_port,
+                                                     sickrage.app.config.web_root)
+
+        external_connections = "{}://{}:{}{}".format(self.request.protocol,
+                                                     get_external_ip(),
+                                                     sickrage.app.config.web_port,
+                                                     sickrage.app.config.web_root)
+
+        connections = ','.join([internal_connections, external_connections])
+
+        if not re.match(r'[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}', sickrage.app.config.server_id or ""):
+            server_id = sickrage.app.api.account.register_server(connections)
+            if server_id:
+                sickrage.app.config.server_id = server_id
+                sickrage.app.config.save()
+        else:
+            sickrage.app.api.account.update_server(sickrage.app.config.server_id, connections)
 
     def handle_sso_auth_get(self):
         code = self.get_argument('code', None)

@@ -27,10 +27,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 
 class LogoutHandler(BaseHandler, ABC):
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         logout_uri = sickrage.app.auth_server.get_url('end_session_endpoint') if sickrage.app.config.sso_auth_enabled else ""
         redirect_uri = "{}://{}{}/login".format(self.request.protocol, self.request.host, sickrage.app.config.web_root)
 

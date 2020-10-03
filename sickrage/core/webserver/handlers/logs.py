@@ -61,10 +61,7 @@ class LogsHandler(BaseHandler, ABC):
         ]
 
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         level = self.get_argument('level', sickrage.app.log.ERROR)
 
         return self.render('logs/errors.mako',
@@ -87,30 +84,21 @@ class LogsHandler(BaseHandler, ABC):
 
 class LogsClearWarningsHanlder(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         sickrage.app.log.warning_viewer.clear()
         self.redirect("/logs/view/")
 
 
 class LogsClearErrorsHanlder(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         sickrage.app.log.error_viewer.clear()
         self.redirect("/logs/view/")
 
 
 class LogsClearAllHanlder(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         sickrage.app.log.warning_viewer.clear()
         sickrage.app.log.error_viewer.clear()
         self.redirect("/logs/view/")
@@ -118,10 +106,7 @@ class LogsClearAllHanlder(BaseHandler, ABC):
 
 class LogsViewHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         min_level = self.get_argument('minLevel', None) or sickrage.app.log.INFO
         log_filter = self.get_argument('logFilter', '')
         log_search = self.get_argument('logSearch', '')
@@ -165,17 +150,11 @@ class LogsViewHandler(BaseHandler, ABC):
 
 class ErrorCountHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         return self.write(json.dumps({'count': sickrage.app.log.error_viewer.count()}))
 
 
 class WarningCountHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         return self.write(json.dumps({'count': sickrage.app.log.warning_viewer.count()}))

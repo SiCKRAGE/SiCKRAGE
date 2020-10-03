@@ -29,12 +29,13 @@ from enum import Enum
 import sickrage
 from sickrage.core.common import WANTED
 from sickrage.core.exceptions import CantRefreshShowException, CantRemoveShowException, CantUpdateShowException, EpisodeDeletedException, \
-    MultipleShowObjectsException, EpisodeNotFoundException
+    MultipleShowObjectsException
 from sickrage.core.queues import Queue, Task, TaskPriority
 from sickrage.core.scene_numbering import xem_refresh
 from sickrage.core.traktapi import TraktAPI
 from sickrage.core.tv.show import TVShow
 from sickrage.core.tv.show.helpers import find_show
+from sickrage.core.websocket import WebSocketMessage
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_attributenotfound, indexer_exception
 
@@ -47,19 +48,37 @@ class ShowQueue(Queue):
     def loading_show_list(self):
         return [x.indexer_id for x in self.tasks.copy().values() if x.is_loading]
 
-    def _is_in_queue(self, indexer_id):
+    def _is_in_queue(self, indexer_id, actions):
         for task in self.tasks.copy().values():
-            if task.indexer_id == indexer_id:
+            if task.is_queued() and task.indexer_id == indexer_id and task.action_id in actions:
                 return True
 
         return False
 
     def _is_being(self, indexer_id, actions):
         for task in self.tasks.copy().values():
-            if task.indexer_id == indexer_id and task.action_id in actions:
+            if task.is_started() and task.indexer_id == indexer_id and task.action_id in actions:
                 return True
 
         return False
+
+    def is_queued_to_remove(self, indexer_id):
+        return self._is_in_queue(indexer_id, [ShowTaskActions.REMOVE])
+
+    def is_queued_to_add(self, indexer_id):
+        return self._is_in_queue(indexer_id, [ShowTaskActions.ADD])
+
+    def is_queued_to_update(self, indexer_id):
+        return self._is_in_queue(indexer_id, [ShowTaskActions.UPDATE, ShowTaskActions.FORCEUPDATE])
+
+    def is_queued_to_refresh(self, indexer_id):
+        return self._is_in_queue(indexer_id, [ShowTaskActions.REFRESH])
+
+    def is_queued_to_rename(self, indexer_id):
+        return self._is_in_queue(indexer_id, [ShowTaskActions.RENAME])
+
+    def is_queued_to_subtitle(self, indexer_id):
+        return self._is_in_queue(indexer_id, [ShowTaskActions.SUBTITLE])
 
     def is_being_removed(self, indexer_id):
         return self._is_being(indexer_id, [ShowTaskActions.REMOVE])
@@ -88,10 +107,7 @@ class ShowQueue(Queue):
         if self.is_being_updated(indexer_id):
             raise CantUpdateShowException("{} is already being updated, can't update again until it's done.".format(show_obj.name))
 
-        if force:
-            task_id = self.put(ShowTaskForceUpdate(indexer_id, indexer_update_only))
-        else:
-            task_id = self.put(ShowTaskUpdate(indexer_id, indexer_update_only))
+        task_id = self.put(ShowTaskUpdate(indexer_id, indexer_update_only, force))
 
         if not indexer_update_only:
             self.put(ShowTaskRefresh(indexer_id, force=force), depend=[task_id])
@@ -196,6 +212,16 @@ class ShowTask(Task):
     def is_loading(self):
         return False
 
+    def run(self):
+        show_obj = find_show(self.indexer_id)
+        if show_obj:
+            WebSocketMessage('SHOW_QUEUE_STATUS_UPDATED', {'series_id': show_obj.indexer_id, 'show_queue_status': show_obj.show_queue_status}).push()
+
+    def finish(self):
+        show_obj = find_show(self.indexer_id)
+        if show_obj:
+            WebSocketMessage('SHOW_QUEUE_STATUS_UPDATED', {'series_id': show_obj.indexer_id, 'show_queue_status': show_obj.show_queue_status}).push()
+
 
 class ShowTaskAdd(ShowTask):
     def __init__(self, indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang, subtitles, sub_use_sr_metadata, anime,
@@ -242,6 +268,8 @@ class ShowTaskAdd(ShowTask):
             return True
 
     def run(self):
+        super(ShowTaskAdd, self).run()
+
         start_time = time.time()
 
         sickrage.app.log.info("Started adding show {} from show dir: {}".format(self.show_name, self.showDir))
@@ -397,6 +425,10 @@ class ShowTaskAdd(ShowTask):
 
         show_obj.save()
 
+        WebSocketMessage('SHOW_ADDED',
+                         {'series_id': show_obj.indexer_id,
+                          'series': show_obj.to_json(progress=True)}).push()
+
         sickrage.app.log.info("Finished adding show {} in {}s from show dir: {}".format(self.show_name, round(time.time() - start_time, 2), self.showDir))
 
     def _finish_early(self):
@@ -414,6 +446,8 @@ class ShowTaskRefresh(ShowTask):
         self.force = force
 
     def run(self):
+        super(ShowTaskRefresh, self).run()
+
         start_time = time.time()
 
         tv_show = find_show(self.indexer_id)
@@ -431,6 +465,10 @@ class ShowTaskRefresh(ShowTask):
 
         tv_show.save()
 
+        WebSocketMessage('SHOW_REFRESHED',
+                         {'series_id': tv_show.indexer_id,
+                          'series': tv_show.to_json(episodes=True, details=True)}).push()
+
         sickrage.app.log.info("Finished refresh in {}s for show: {}".format(round(time.time() - start_time, 2), tv_show.name))
 
 
@@ -439,17 +477,19 @@ class ShowTaskRename(ShowTask):
         super(ShowTaskRename, self).__init__(indexer_id, ShowTaskActions.RENAME)
 
     def run(self):
-        show_obj = find_show(self.indexer_id)
+        super(ShowTaskRename, self).run()
 
-        sickrage.app.log.info("Performing renames for show: {}".format(show_obj.name))
+        tv_show = find_show(self.indexer_id)
 
-        if not os.path.isdir(show_obj.location):
-            sickrage.app.log.warning("Can't perform rename on " + show_obj.name + " when the show dir is missing.")
+        sickrage.app.log.info("Performing renames for show: {}".format(tv_show.name))
+
+        if not os.path.isdir(tv_show.location):
+            sickrage.app.log.warning("Can't perform rename on " + tv_show.name + " when the show dir is missing.")
             return
 
         ep_obj_rename_list = []
 
-        for cur_ep_obj in (x for x in show_obj.episodes if x.location):
+        for cur_ep_obj in (x for x in tv_show.episodes if x.location):
             # Only want to rename if we have a location
             if cur_ep_obj.location:
                 if cur_ep_obj.related_episodes:
@@ -467,7 +507,11 @@ class ShowTaskRename(ShowTask):
         for cur_ep_obj in ep_obj_rename_list:
             cur_ep_obj.rename()
 
-        sickrage.app.log.info("Finished renames for show: {}".format(show_obj.name))
+        WebSocketMessage('SHOW_RENAMED',
+                         {'series_id': tv_show.indexer_id,
+                          'series': tv_show.to_json(episodes=True, details=True)}).push()
+
+        sickrage.app.log.info("Finished renames for show: {}".format(tv_show.name))
 
 
 class ShowTaskSubtitle(ShowTask):
@@ -475,22 +519,30 @@ class ShowTaskSubtitle(ShowTask):
         super(ShowTaskSubtitle, self).__init__(indexer_id, ShowTaskActions.SUBTITLE)
 
     def run(self):
-        show_obj = find_show(self.indexer_id)
+        super(ShowTaskSubtitle, self).run()
 
-        sickrage.app.log.info("Started downloading subtitles for show: {}".format(show_obj.name))
+        tv_show = find_show(self.indexer_id)
 
-        show_obj.download_subtitles()
+        sickrage.app.log.info("Started downloading subtitles for show: {}".format(tv_show.name))
 
-        sickrage.app.log.info("Finished downloading subtitles for show: {}".format(show_obj.name))
+        tv_show.download_subtitles()
+
+        WebSocketMessage('SHOW_SUBTITLED',
+                         {'series_id': tv_show.indexer_id,
+                          'series': tv_show.to_json(episodes=True, details=True)}).push()
+
+        sickrage.app.log.info("Finished downloading subtitles for show: {}".format(tv_show.name))
 
 
 class ShowTaskUpdate(ShowTask):
-    def __init__(self, indexer_id=None, indexer_update_only=False, action_id=ShowTaskActions.UPDATE):
-        super(ShowTaskUpdate, self).__init__(indexer_id, action_id)
+    def __init__(self, indexer_id=None, indexer_update_only=False, force=False, action_id=ShowTaskActions.UPDATE):
+        super(ShowTaskUpdate, self).__init__(indexer_id, action_id if not force else ShowTaskActions.FORCEUPDATE)
         self.indexer_update_only = indexer_update_only
-        self.force = False
+        self.force = force
 
     def run(self):
+        super(ShowTaskUpdate, self).run()
+
         show_obj = find_show(self.indexer_id)
 
         start_time = time.time()
@@ -548,14 +600,11 @@ class ShowTaskUpdate(ShowTask):
 
         show_obj.retrieve_scene_exceptions()
 
+        WebSocketMessage('SHOW_UPDATED',
+                         {'series_id': show_obj.indexer_id,
+                          'series': show_obj.to_json(episodes=True, details=True)}).push()
+
         sickrage.app.log.info("Finished updates in {}s for show: {}".format(round(time.time() - start_time, 2), show_obj.name))
-
-
-class ShowTaskForceUpdate(ShowTaskUpdate):
-    def __init__(self, indexer_id=None, indexer_update_only=False):
-        super(ShowTaskForceUpdate, self).__init__(indexer_id, indexer_update_only, ShowTaskActions.FORCEUPDATE)
-        self.indexer_update_only = indexer_update_only
-        self.force = True
 
 
 class ShowTaskForceRemove(ShowTask):
@@ -574,6 +623,8 @@ class ShowTaskForceRemove(ShowTask):
         return False
 
     def run(self):
+        super(ShowTaskForceRemove, self).run()
+
         show_obj = find_show(self.indexer_id)
 
         sickrage.app.log.info("Removing show: {}".format(show_obj.name))
@@ -585,5 +636,8 @@ class ShowTaskForceRemove(ShowTask):
                 sickrage.app.trakt_searcher.remove_show_from_trakt_library(show_obj)
             except Exception as e:
                 sickrage.app.log.warning("Unable to delete show from Trakt: %s. Error: %s" % (show_obj.name, e))
+
+        WebSocketMessage('SHOW_REMOVED',
+                         {'series_id': show_obj.indexer_id}).push()
 
         sickrage.app.log.info("Finished removing show: {}".format(show_obj.name))

@@ -112,9 +112,9 @@
                                     </a>
                                     <div class="card-header bg-dark py-0 px-0">
                                         % if sickrage.app.show_queue.is_being_added(curShow.indexer_id):
-                                            <div class="bg-dark progress shadow"></div>
+                                            <div class="bg-dark progress shadow rounded-0"></div>
                                         % else:
-                                            <div class="bg-dark progress shadow">
+                                            <div class="bg-dark progress shadow rounded-0">
                                                 <div class="progress-bar d-print-none"
                                                      data-show-id="${curShow.indexer_id}">
                                                 </div>

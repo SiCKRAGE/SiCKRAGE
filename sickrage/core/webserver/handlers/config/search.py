@@ -32,10 +32,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 class ConfigSearchHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         return self.render('config/search.mako',
                            submenu=ConfigHandler.menu,
                            title=_('Config - Search Clients'),
@@ -47,10 +44,7 @@ class ConfigSearchHandler(BaseHandler, ABC):
 
 class SaveSearchHandler(BaseHandler, ABC):
     @authenticated
-    async def post(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_post)
-
-    def handle_post(self):
+    def post(self, *args, **kwargs):
         use_nzbs = self.get_argument('use_nzbs', None)
         use_torrents = self.get_argument('use_torrents', None)
         nzb_dir = self.get_argument('nzb_dir', None)

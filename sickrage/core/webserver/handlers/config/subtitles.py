@@ -33,10 +33,7 @@ from sickrage.subtitles import Subtitles
 
 class ConfigSubtitlesHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         return self.render('config/subtitles.mako',
                            submenu=ConfigHandler.menu,
                            title=_('Config - Subtitles Settings'),
@@ -48,10 +45,7 @@ class ConfigSubtitlesHandler(BaseHandler, ABC):
 
 class ConfigSubtitleGetCodeHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         q = self.get_argument('q')
 
         codes = [{"id": code, "name": Subtitles().name_from_code(code)} for code in Subtitles().subtitle_code_filter()]
@@ -62,10 +56,7 @@ class ConfigSubtitleGetCodeHandler(BaseHandler, ABC):
 
 class ConfigSubtitlesWantedLanguagesHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         codes = [{"id": code, "name": Subtitles().name_from_code(code)} for code in Subtitles().subtitle_code_filter()]
         codes = list(filter(lambda code: code['id'] in Subtitles().wanted_languages(), codes))
 
@@ -74,10 +65,7 @@ class ConfigSubtitlesWantedLanguagesHandler(BaseHandler, ABC):
 
 class SaveSubtitlesHandler(BaseHandler, ABC):
     @authenticated
-    async def post(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_post)
-
-    def handle_post(self):
+    def post(self, *args, **kwargs):
         use_subtitles = self.get_argument('use_subtitles', None)
         subtitles_dir = self.get_argument('subtitles_dir', None)
         service_order = self.get_argument('service_order', None)

@@ -32,7 +32,7 @@ def map_indexers(indexer, indexer_id, name):
 
     # init mapped indexers object
     for mindexer in IndexerApi().indexers:
-        mapped[mindexer] = indexer_id if int(mindexer) == int(indexer) else 0
+        mapped[mindexer['id']] = indexer_id if int(mindexer['id']) == int(indexer) else 0
 
     # for each mapped entry
     for dbData in session.query(MainDB.IndexerMapping).filter_by(indexer_id=indexer_id, indexer=indexer):
@@ -43,22 +43,22 @@ def map_indexers(indexer, indexer_id, name):
             return mapped
     else:
         for mindexer in IndexerApi().indexers:
-            if mindexer == indexer:
-                mapped[mindexer] = indexer_id
+            if mindexer['id'] == indexer:
+                mapped[mindexer['id']] = indexer_id
                 continue
 
-            indexer_api_parms = IndexerApi(mindexer).api_params.copy()
+            indexer_api_parms = IndexerApi(mindexer['id']).api_params.copy()
             indexer_api_parms['custom_ui'] = ShowListUI
 
-            t = IndexerApi(mindexer).indexer(**indexer_api_parms)
+            t = IndexerApi(mindexer['id']).indexer(**indexer_api_parms)
             mapped_show = t[name]
             if not mapped_show:
                 continue
 
             if mapped_show and len(mapped_show) == 1:
-                sickrage.app.log.debug("Mapping " + IndexerApi(indexer).name + "->" + IndexerApi(mindexer).name + " for show: " + name)
+                sickrage.app.log.debug("Mapping " + IndexerApi(indexer).name + "->" + IndexerApi(mindexer['id']).name + " for show: " + name)
 
-                mapped[mindexer] = int(mapped_show['id'])
+                mapped[mindexer['id']] = int(mapped_show['id'])
 
                 sickrage.app.log.debug("Adding indexer mapping to DB for show: " + name)
 
@@ -69,7 +69,7 @@ def map_indexers(indexer, indexer_id, name):
                         'indexer_id': indexer_id,
                         'indexer': indexer,
                         'mindexer_id': int(mapped_show['id']),
-                        'mindexer': mindexer
+                        'mindexer': mindexer['id']
                     }))
                     session.commit()
 

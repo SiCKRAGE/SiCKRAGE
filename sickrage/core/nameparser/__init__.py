@@ -64,7 +64,7 @@ class NameParser(object):
 
         def indexer_lookup(term):
             for indexer in IndexerApi().indexers:
-                result = IndexerApi(indexer).search_for_show_id(term)
+                result = IndexerApi(indexer['id']).search_for_show_id(term)
                 if result:
                     return result
 

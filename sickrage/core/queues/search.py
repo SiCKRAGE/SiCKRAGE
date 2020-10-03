@@ -29,6 +29,7 @@ from sickrage.core.queues import Queue, Task, TaskPriority
 from sickrage.core.search import search_providers, snatch_episode
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.tv.show.history import FailedHistory, History
+from sickrage.core.websocket import WebSocketMessage
 
 
 class SearchTaskActions(Enum):
@@ -138,12 +139,19 @@ class DailySearchTask(Task):
     def run(self):
         self.started = True
 
-        show_obj = find_show(self.show_id)
-        if not show_obj:
+        show_object = find_show(self.show_id)
+        if not show_object:
             return
 
+        episode_object = show_object.get_episode(self.season, self.episode)
+
         try:
-            sickrage.app.log.info("Starting daily search for: [" + show_obj.name + "]")
+            sickrage.app.log.info("Starting daily search for: [" + show_object.name + "]")
+
+            WebSocketMessage('SEARCH_QUEUE_STATUS_UPDATED',
+                             {'series_id': show_object.indexer_id,
+                              'episode_id': episode_object.indexer_id,
+                              'search_queue_status': episode_object.search_queue_status}).push()
 
             search_result = search_providers(self.show_id, self.season, self.episode, cacheOnly=sickrage.app.config.enable_rss_cache)
             if search_result:
@@ -157,11 +165,16 @@ class DailySearchTask(Task):
                     sickrage.app.log.info("Downloading " + search_result.name + " from " + search_result.provider.name)
                     snatch_episode(search_result)
             else:
-                sickrage.app.log.info("Unable to find search results for: [" + show_obj.name + "]")
+                sickrage.app.log.info("Unable to find search results for: [" + show_object.name + "]")
         except Exception:
             sickrage.app.log.debug(traceback.format_exc())
         finally:
-            sickrage.app.log.info("Finished daily search for: [" + show_obj.name + "]")
+            WebSocketMessage('SEARCH_QUEUE_STATUS_UPDATED',
+                             {'series_id': show_object.indexer_id,
+                              'episode_id': episode_object.indexer_id,
+                              'search_queue_status': episode_object.search_queue_status}).push()
+
+            sickrage.app.log.info("Finished daily search for: [" + show_object.name + "]")
 
 
 class ManualSearchTask(Task):
@@ -175,7 +188,7 @@ class ManualSearchTask(Task):
         self.success = False
         self.priority = TaskPriority.EXTREME
         self.downCurQuality = downCurQuality
-        self.auto_remove = False
+        # self.auto_remove = False
 
     def run(self):
         self.started = True
@@ -185,6 +198,11 @@ class ManualSearchTask(Task):
             return
 
         episode_object = show_object.get_episode(self.season, self.episode)
+
+        WebSocketMessage('SEARCH_QUEUE_STATUS_UPDATED',
+                         {'series_id': show_object.indexer_id,
+                          'episode_id': episode_object.indexer_id,
+                          'search_queue_status': episode_object.search_queue_status}).push()
 
         try:
             sickrage.app.log.info("Starting manual search for: [" + episode_object.pretty_name() + "]")
@@ -196,6 +214,11 @@ class ManualSearchTask(Task):
 
                 sickrage.app.log.info("Downloading " + search_result.name + " from " + search_result.provider.name)
                 self.success = snatch_episode(search_result)
+
+                WebSocketMessage('EPISODE_UPDATED',
+                                 {'series_id': show_object.indexer_id,
+                                  'episode_id': episode_object.indexer_id,
+                                  'episode': episode_object.to_json()}).push()
             else:
                 sickrage.app.alerts.message(
                     _('No downloads were found'),
@@ -207,6 +230,14 @@ class ManualSearchTask(Task):
             sickrage.app.log.debug(traceback.format_exc())
         finally:
             sickrage.app.log.info("Finished manual search for: [" + episode_object.pretty_name() + "]")
+
+    def finish(self):
+        show_object = find_show(self.show_id)
+        episode_object = show_object.get_episode(self.season, self.episode)
+        WebSocketMessage('SEARCH_QUEUE_STATUS_UPDATED',
+                         {'series_id': show_object.indexer_id,
+                          'episode_id': episode_object.indexer_id,
+                          'search_queue_status': episode_object.search_queue_status}).push()
 
 
 class BacklogSearchTask(Task):
@@ -227,8 +258,15 @@ class BacklogSearchTask(Task):
         if not show_object:
             return
 
+        episode_object = show_object.get_episode(self.season, self.episode)
+
         try:
             sickrage.app.log.info("Starting backlog search for: [{}] S{:02d}E{:02d}".format(show_object.name, self.season, self.episode))
+
+            WebSocketMessage('SEARCH_QUEUE_STATUS_UPDATED',
+                             {'series_id': show_object.indexer_id,
+                              'episode_id': episode_object.indexer_id,
+                              'search_queue_status': episode_object.search_queue_status}).push()
 
             search_result = search_providers(self.show_id, self.season, self.episode, manualSearch=False)
             if search_result:
@@ -246,6 +284,11 @@ class BacklogSearchTask(Task):
         except Exception:
             sickrage.app.log.debug(traceback.format_exc())
         finally:
+            WebSocketMessage('SEARCH_QUEUE_STATUS_UPDATED',
+                             {'series_id': show_object.indexer_id,
+                              'episode_id': episode_object.indexer_id,
+                              'search_queue_status': episode_object.search_queue_status}).push()
+
             sickrage.app.log.info("Finished backlog search for: [{}] S{:02d}E{:02d}".format(show_object.name, self.season, self.episode))
 
 
@@ -260,7 +303,7 @@ class FailedSearchTask(Task):
         self.downCurQuality = downCurQuality
         self.started = False
         self.success = False
-        self.auto_remove = False
+        # self.auto_remove = False
 
     def run(self):
         self.started = True
@@ -273,6 +316,11 @@ class FailedSearchTask(Task):
 
         try:
             sickrage.app.log.info("Starting failed download search for: [" + episode_object.name + "]")
+
+            WebSocketMessage('SEARCH_QUEUE_STATUS_UPDATED',
+                             {'series_id': show_object.indexer_id,
+                              'episode_id': episode_object.indexer_id,
+                              'search_queue_status': episode_object.search_queue_status}).push()
 
             sickrage.app.log.info("Marking episode as bad: [" + episode_object.pretty_name() + "]")
 
@@ -299,4 +347,9 @@ class FailedSearchTask(Task):
         except Exception:
             sickrage.app.log.debug(traceback.format_exc())
         finally:
+            WebSocketMessage('SEARCH_QUEUE_STATUS_UPDATED',
+                             {'series_id': show_object.indexer_id,
+                              'episode_id': episode_object.indexer_id,
+                              'search_queue_status': episode_object.search_queue_status}).push()
+
             sickrage.app.log.info("Finished failed download search for: [" + show_object.name + "]")

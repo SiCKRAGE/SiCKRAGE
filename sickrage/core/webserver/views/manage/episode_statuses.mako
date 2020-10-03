@@ -27,9 +27,15 @@
                             <label for="whichStatus">${_('Manage episodes with status')}</label>
                             <div class="input-group">
                                 <select name="whichStatus" id="whichStatus" class="form-control shadow">
-                                    % for curStatus in [SKIPPED, SNATCHED, WANTED, IGNORED] + Quality.DOWNLOADED + Quality.ARCHIVED:
+                                    % for curStatus in [SKIPPED, SNATCHED, WANTED, IGNORED, FAILED] + Quality.DOWNLOADED + Quality.ARCHIVED:
                                         %if curStatus not in [ARCHIVED, DOWNLOADED]:
-                                            <option value="${curStatus}">${statusStrings[curStatus]}</option>
+                                        <% split_status, quality = Quality.split_composite_status(curStatus) %>
+                                            <option value="${curStatus}">
+                                                ${statusStrings[split_status]}
+                                                %if quality:
+                                                    (${Quality.qualityStrings[quality]})
+                                                %endif
+                                            </option>
                                         %endif
                                     % endfor
                                 </select>

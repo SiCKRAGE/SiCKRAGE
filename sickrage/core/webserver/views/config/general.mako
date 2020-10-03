@@ -56,10 +56,13 @@ c<%inherit file="../layouts/config.mako"/>
                                     <span class="fas fa-language"></span>
                                 </span>
                             </div>
-                            <select name="indexerDefaultLang" id="indexerDefaultLang"
-                                    class="form-control form-control-inline bfh-languages"
-                                    title="${_('for adding shows and metadata providers')}"
-                                    data-language=${sickrage.app.config.indexer_default_language} data-available="${','.join(IndexerApi().indexer().languages.keys())}">
+                            <select name="indexerDefaultLang" id="indexerDefaultLang" class="form-control"
+                                    title="${_('Choose language')}">
+                                % for language in IndexerApi().indexer().languages():
+                                    <option value="${language['abbreviation']}" ${('', 'selected')[sickrage.app.config.indexer_default_language == language['abbreviation']]}>
+                                        ${language['englishname']}
+                                    </option>
+                                % endfor
                             </select>
                         </div>
                     </div>
@@ -232,7 +235,7 @@ c<%inherit file="../layouts/config.mako"/>
                                     ${_('All Indexers')}
                                 </option>
                                 % for indexer in IndexerApi().indexers:
-                                    <option value="${indexer}" ${('', 'selected')[sickrage.app.config.indexer_default == indexer]}>${IndexerApi().indexers[indexer]}</option>
+                                    <option value="${indexer['id']}" ${('', 'selected')[sickrage.app.config.indexer_default == indexer['id']]}>${indexer['name']}</option>
                                 % endfor
                             </select>
                         </div>

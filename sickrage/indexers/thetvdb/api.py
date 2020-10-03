@@ -295,7 +295,7 @@ class Actor(dict):
         return "<Actor \"{}\">".format(self.get("name"))
 
 
-class Tvdb:
+class TheTVDB:
     """Create easy-to-use interface to name of season/episode name
     """
 
@@ -308,6 +308,7 @@ class Tvdb:
                 'login': '/login',
                 'refresh': '/refresh_token',
                 'languages': '/languages',
+                'languageInfo': '/languages/{id}',
                 'getSeries': "/search/series?name={name}",
                 'getSeriesIMDB': "/search/series?imdbId={id}",
                 'getSeriesZap2It': "/search/series?zap2itId={id}",
@@ -341,9 +342,14 @@ class Tvdb:
                  proxy=None,
                  headers=None):
 
-        self.config.update({'apikey': apikey, 'debug_enabled': debug, 'custom_ui': custom_ui, 'cache_enabled': cache,
-                            'dvdorder': dvdorder, 'proxy': proxy, 'headers': headers or {},
-                            'language': language if language in self.languages else None})
+        self.config.update({'apikey': apikey,
+                            'debug_enabled': debug,
+                            'custom_ui': custom_ui,
+                            'cache_enabled': cache,
+                            'dvdorder': dvdorder,
+                            'proxy': proxy,
+                            'headers': headers or {},
+                            'language': language})
 
     @property
     def jwt_token(self):
@@ -754,13 +760,17 @@ class Tvdb:
         if resp and 'data' in resp:
             return resp['data']
 
-    @property
+    @login_required
     def languages(self):
-        return {'el': 20, 'en': 7, 'zh': 27, 'it': 15, 'cs': 28, 'es': 16, 'ru': 22, 'nl': 13, 'pt': 26, 'no': 9,
-                'tr': 21, 'pl': 18, 'fr': 17, 'hr': 31, 'de': 14, 'da': 10, 'fi': 11, 'hu': 19, 'ja': 25, 'he': 24,
-                'ko': 32, 'sv': 8, 'sl': 30}
+        resp = self._request('get', self.config['api']['languages'])
+        if resp and 'data' in resp:
+            return sorted(resp['data'], key=lambda i: i['englishname'])
 
-        # return {l['abbreviation']: l['id'] for l in self._request('get', self.config['api']['languages'])}
+    @login_required
+    def language_info(self, lang_id):
+        resp = self._request('get', self.config['api']['languageInfo'].format(id=lang_id))
+        if resp and 'data' in resp:
+            return resp['data']
 
     @property
     def health(self):

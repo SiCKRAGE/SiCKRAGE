@@ -177,7 +177,7 @@ class ErrorViewer(object):
     def clear(self):
         self.errors.clear()
 
-    def get(self):
+    def get(self, *args, **kwargs):
         return self.errors
 
     def count(self):
@@ -199,7 +199,7 @@ class WarningViewer(object):
     def clear(self):
         self.warnings.clear()
 
-    def get(self):
+    def get(self, *args, **kwargs):
         return self.warnings
 
     def count(self):

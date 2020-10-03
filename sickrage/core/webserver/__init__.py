@@ -36,7 +36,13 @@ import sickrage
 from sickrage.core.helpers import create_https_certificates
 from sickrage.core.webserver.handlers.account import AccountLinkHandler, AccountUnlinkHandler, AccountIsLinkedHandler
 from sickrage.core.webserver.handlers.announcements import AnnouncementsHandler, MarkAnnouncementSeenHandler, AnnouncementCountHandler
-from sickrage.core.webserver.handlers.api import ApiHandler
+from sickrage.core.webserver.handlers.api.v1 import ApiHandler
+from sickrage.core.webserver.handlers.api.v2 import ConfigStateHandler, PingHandler, RetrieveSeriesMetadataHandler
+from sickrage.core.webserver.handlers.api.v2.episode import EpisodesManualSearchHandler, EpisodesRenameHandler
+from sickrage.core.webserver.handlers.api.v2.file_browser import FileBrowserHandler
+from sickrage.core.webserver.handlers.api.v2.indexer import IndexersSearchHandler, IndexersLanguagesHandler, IndexersHandler
+from sickrage.core.webserver.handlers.api.v2.series import SeriesHandler, SeriesEpisodesHandler, SeriesImagesHandler, SeriesImdbInfoHandler, \
+    SeriesBlacklistHandler, SeriesWhitelistHandler, SeriesRefreshHandler, SeriesUpdateHandler
 from sickrage.core.webserver.handlers.calendar import CalendarHandler
 from sickrage.core.webserver.handlers.changelog import ChangelogHandler
 from sickrage.core.webserver.handlers.config import ConfigHandler, ConfigResetHandler
@@ -199,6 +205,47 @@ class WebServer(threading.Thread):
         # Websocket handler
         self.app.add_handlers('.*$', [
             (r'%s/ws/ui' % sickrage.app.config.web_root, WebSocketUIHandler)
+        ])
+
+        # GUI App Static File Handlers
+        self.app.add_handlers('.*$', [
+            # media
+            (r'%s/app/static/media/(.*)' % sickrage.app.config.web_root, StaticImageHandler,
+             {"path": os.path.join(sickrage.app.config.gui_app_dir, 'static', 'media')}),
+
+            # css
+            (r'%s/app/static/css/(.*)' % sickrage.app.config.web_root, StaticNoCacheFileHandler,
+             {"path": os.path.join(sickrage.app.config.gui_app_dir, 'static', 'css')}),
+
+            # js
+            (r'%s/app/static/js/(.*)' % sickrage.app.config.web_root, StaticNoCacheFileHandler,
+             {"path": os.path.join(sickrage.app.config.gui_app_dir, 'static', 'js')}),
+
+            # base
+            (r"%s/app/(.*)" % sickrage.app.config.web_root, tornado.web.StaticFileHandler,
+             {"path": sickrage.app.config.gui_app_dir, "default_filename": "index.html"})
+        ])
+
+        # API Handlers
+        self.app.add_handlers('.*$', [
+            (r'%s/api/config' % sickrage.app.config.web_root, ConfigStateHandler),
+            (r'%s/api/ping' % sickrage.app.config.web_root, PingHandler),
+            (r'%s/api/file-browser' % sickrage.app.config.web_root, FileBrowserHandler),
+            (r'%s/api/retrieve-series-metadata' % sickrage.app.config.web_root, RetrieveSeriesMetadataHandler),
+            (r'%s/api/indexers' % sickrage.app.config.web_root, IndexersHandler),
+            (r'%s/api/indexers/(\w+)/search' % sickrage.app.config.web_root, IndexersSearchHandler),
+            (r'%s/api/indexers/(\w+)/languages' % sickrage.app.config.web_root, IndexersLanguagesHandler),
+            (r'%s/api/series' % sickrage.app.config.web_root, SeriesHandler),
+            (r'%s/api/series/(\d+)' % sickrage.app.config.web_root, SeriesHandler),
+            (r'%s/api/series/(\d+)/episodes' % sickrage.app.config.web_root, SeriesEpisodesHandler),
+            (r'%s/api/series/(\d+)/images' % sickrage.app.config.web_root, SeriesImagesHandler),
+            (r'%s/api/series/(\d+)/imdb-info' % sickrage.app.config.web_root, SeriesImdbInfoHandler),
+            (r'%s/api/series/(\d+)/blacklist' % sickrage.app.config.web_root, SeriesBlacklistHandler),
+            (r'%s/api/series/(\d+)/whitelist' % sickrage.app.config.web_root, SeriesWhitelistHandler),
+            (r'%s/api/series/(\d+)/refresh' % sickrage.app.config.web_root, SeriesRefreshHandler),
+            (r'%s/api/series/(\d+)/update' % sickrage.app.config.web_root, SeriesUpdateHandler),
+            (r'%s/api/episodes/rename' % sickrage.app.config.web_root, EpisodesRenameHandler),
+            (r'%s/api/episodes/(\d+)/search' % sickrage.app.config.web_root, EpisodesManualSearchHandler),
         ])
 
         # Static File Handlers

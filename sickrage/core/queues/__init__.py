@@ -144,7 +144,7 @@ class Queue(object):
         self.auto_remove_tasks_timer.setName(self.name)
         self.auto_remove_tasks_timer.start()
 
-    def get(self):
+    def get(self, *args, **kwargs):
         def queue_sorter(x, y):
             """
             Sorts by priority descending then time ascending
@@ -330,6 +330,7 @@ class Worker(object):
             self.task.status = TaskStatus.STARTED
             self.task.result = self.task.run()
             self.task.status = TaskStatus.FINISHED
+            self.task.finish()
         except Exception as e:
             if self.task is not None:
                 self.task.status = TaskStatus.FAILED
@@ -367,11 +368,20 @@ class Task(object):
         self.depend = depend
         self.auto_remove = True
 
+    def run(self):
+        pass
+
+    def finish(self):
+        pass
+
     def is_finished(self):
         return self.status == TaskStatus.FINISHED
 
     def is_started(self):
         return self.status == TaskStatus.STARTED
+
+    def is_queued(self):
+        return self.status == TaskStatus.QUEUED
 
     def is_failed(self):
         return self.status == TaskStatus.FAILED

@@ -180,10 +180,7 @@ def edit_show(show, any_qualities, best_qualities, exceptions_list, location=Non
     subtitles = checkbox_to_value(subtitles)
     sub_use_sr_metadata = checkbox_to_value(sub_use_sr_metadata)
 
-    if indexer_lang and indexer_lang in IndexerApi(show_obj.indexer).indexer().languages.keys():
-        indexer_lang = indexer_lang
-    else:
-        indexer_lang = show_obj.lang
+    indexer_lang = indexer_lang if indexer_lang else show_obj.lang
 
     # if we changed the language then kick off an update
     if indexer_lang == show_obj.lang:
@@ -316,19 +313,13 @@ def edit_show(show, any_qualities, best_qualities, exceptions_list, location=Non
 
 class ManageHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         return self.redirect('/manage/massUpdate')
 
 
 class ShowEpisodeStatusesHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         indexer_id = self.get_argument('indexer_id')
         which_status = self.get_argument('whichStatus')
 
@@ -354,10 +345,7 @@ class ShowEpisodeStatusesHandler(BaseHandler, ABC):
 
 class EpisodeStatusesHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         which_status = self.get_argument('whichStatus', None)
 
         ep_counts = {}
@@ -398,7 +386,7 @@ class EpisodeStatusesHandler(BaseHandler, ABC):
 
 class ChangeEpisodeStatusesHandler(BaseHandler, ABC):
     @authenticated
-    async def post(self, *args, **kwargs):
+    def post(self, *args, **kwargs):
         old_status = self.get_argument('oldStatus')
         new_status = self.get_argument('newStatus')
 
@@ -432,10 +420,7 @@ class ChangeEpisodeStatusesHandler(BaseHandler, ABC):
 
 class SetEpisodeStatusHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         show = self.get_argument('show')
         eps = self.get_argument('eps')
         status = self.get_argument('status')
@@ -451,10 +436,7 @@ class SetEpisodeStatusHandler(BaseHandler, ABC):
 
 class ShowSubtitleMissedHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         indexer_id = self.get_argument('indexer_id')
         which_subs = self.get_argument('whichSubs')
 
@@ -488,10 +470,7 @@ class ShowSubtitleMissedHandler(BaseHandler, ABC):
 
 class SubtitleMissedHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         which_subs = self.get_argument('whichSubs', None)
 
         ep_counts = {}
@@ -544,10 +523,7 @@ class SubtitleMissedHandler(BaseHandler, ABC):
 
 class DownloadSubtitleMissedHandler(BaseHandler, ABC):
     @authenticated
-    async def post(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_post)
-
-    def handle_post(self):
+    def post(self, *args, **kwargs):
         session = sickrage.app.main_db.session()
 
         # make a list of all shows and their associated args
@@ -577,10 +553,7 @@ class DownloadSubtitleMissedHandler(BaseHandler, ABC):
 
 class BacklogShowHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         indexer_id = self.get_argument('indexer_id')
 
         sickrage.app.backlog_searcher.search_backlog(int(indexer_id))
@@ -590,10 +563,7 @@ class BacklogShowHandler(BaseHandler, ABC):
 
 class BacklogOverviewHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         show_counts = {}
         show_cats = {}
         show_results = {}
@@ -618,7 +588,7 @@ class BacklogOverviewHandler(BaseHandler, ABC):
             show_results[curShow.indexer_id] = []
 
             for curResult in sorted(curShow.episodes, key=lambda x: (x.season, x.episode), reverse=True):
-                cur_ep_cat = curShow.get_overview(int(curResult.status or -1))
+                cur_ep_cat = curResult.overview or -1
                 if cur_ep_cat:
                     ep_cats["{}x{}".format(curResult.season, curResult.episode)] = cur_ep_cat
                     ep_counts[cur_ep_cat] += 1
@@ -641,10 +611,7 @@ class BacklogOverviewHandler(BaseHandler, ABC):
 
 class EditShowHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         show = self.get_argument('show')
 
         groups = []
@@ -686,7 +653,7 @@ class EditShowHandler(BaseHandler, ABC):
                                action="edit_show")
 
     @authenticated
-    async def post(self, *args, **kwargs):
+    def post(self, *args, **kwargs):
         show = self.get_argument('show')
         location = self.get_argument('location', None)
         any_qualities = self.get_arguments('anyQualities')
@@ -726,10 +693,7 @@ class EditShowHandler(BaseHandler, ABC):
 
 class MassEditHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         to_edit = self.get_argument('toEdit')
 
         show_ids = list(map(int, to_edit.split("|")))
@@ -864,7 +828,7 @@ class MassEditHandler(BaseHandler, ABC):
                            action='mass_edit')
 
     @authenticated
-    async def post(self, *args, **kwargs):
+    def post(self, *args, **kwargs):
         skip_downloaded = self.get_argument('skip_downloaded', None)
         scene = self.get_argument('scene', None)
         paused = self.get_argument('paused', None)
@@ -995,10 +959,7 @@ class MassEditHandler(BaseHandler, ABC):
 
 class MassUpdateHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         shows_list = sorted([x for x in get_show_list() if not sickrage.app.show_queue.is_being_removed(x.indexer_id)],
                             key=cmp_to_key(lambda x, y: x.name < y.name))
 
@@ -1011,10 +972,7 @@ class MassUpdateHandler(BaseHandler, ABC):
                            action='mass_update')
 
     @authenticated
-    async def post(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_post)
-
-    def handle_post(self):
+    def post(self, *args, **kwargs):
         to_update = self.get_argument('toUpdate', '')
         to_refresh = self.get_argument('toRefresh', '')
         to_rename = self.get_argument('toRename', '')
@@ -1111,10 +1069,7 @@ class MassUpdateHandler(BaseHandler, ABC):
 
 class FailedDownloadsHandler(BaseHandler, ABC):
     @authenticated
-    async def get(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_get)
-
-    def handle_get(self):
+    def get(self, *args, **kwargs):
         limit = self.get_argument('limit', None) or 100
 
         session = sickrage.app.main_db.session()
@@ -1133,10 +1088,7 @@ class FailedDownloadsHandler(BaseHandler, ABC):
                            action='failed_downloads')
 
     @authenticated
-    async def post(self, *args, **kwargs):
-        await self.run_in_executor(self.handle_post)
-
-    def handle_post(self):
+    def post(self, *args, **kwargs):
         to_remove = self.get_argument('toRemove', None)
 
         session = sickrage.app.main_db.session()
