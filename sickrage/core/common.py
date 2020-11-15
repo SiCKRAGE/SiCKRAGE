@@ -109,7 +109,7 @@ class StatusStrings(dict):
 
         try:
             # This will raise a ValueError if we can't convert the key to int
-            return int(key) in self or int(key) in qualities
+            return int(key) in list(self.keys()) or int(key) in qualities
         except ValueError:  # The key is not numeric and since we only want numeric keys...
             # ...and we don't want this function to fail...
             pass  # ...suppress the ValueError and do nothing, the key does not exist
