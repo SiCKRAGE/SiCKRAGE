@@ -2,12 +2,19 @@
 
 # 
 
-##Sun Nov 15 2020 05:50:21 GMT+0000 (Coordinated Universal Time)
+##Sun Nov 15 2020 22:01:35 GMT+0000 (Coordinated Universal Time)
 
 
 ## Bug Fixes
-  - Fixed "has no property 'showi'"
-  ([d0c9652a](https://gitlab-ci-token:xEorhcKL1zi3_RHcrS8J@git.sickrage.ca/SiCKRAGE/sickrage/commit/d0c9652a6e2ca40a4661801c9b7e8a5ea348dda8))
+  - Fixed recursion error in StatusStrings class
+  ([cddcbcb5](https://gitlab-ci-token:dimWx4VDK_qWJi12PKQF@git.sickrage.ca/SiCKRAGE/sickrage/commit/cddcbcb5042a96f5d01ce9cd1b9647401c9ba7d2))
+
+
+
+
+## Refactor
+  - Refactored series API endpoint for adding shows to accommodate adding existing shows as well
+  ([0207fe83](https://gitlab-ci-token:dimWx4VDK_qWJi12PKQF@git.sickrage.ca/SiCKRAGE/sickrage/commit/0207fe83f3c601e00419ba87803a5b3f312eabfa))
 
 
 
