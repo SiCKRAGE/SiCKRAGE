@@ -94,6 +94,7 @@ class MainDB(SRDatabase):
             # count by indexer ID
             duplicates = session.query(
                 self.TVEpisode.showid,
+                self.TVEpisode.indexer_id,
                 self.TVEpisode.season,
                 self.TVEpisode.episode,
                 func.count(self.TVEpisode.indexer_id).label('count')
