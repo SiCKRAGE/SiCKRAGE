@@ -1,5 +1,5 @@
 sickrage/__init__.py = b5c258e59c616d76ab1fbb057faa2fc7
-sickrage/version.txt = e01b42092d43f8b00d3f96d1d13ba302
+sickrage/version.txt = 0ddff1172b4162a16f34d46fe11824b2
 sickrage/notifiers/libnotify.py = 9932dacf268fc4857fa444893a9886fa
 sickrage/notifiers/pushover.py = 088f8b68a52016bd4e5c37a990278a1b
 sickrage/notifiers/pytivo.py = cc0dd5d5458fc43a0513fa7904f99e87
@@ -267,7 +267,7 @@ sickrage/core/databases/cache/migrations/versions/006_Add_Session_State_Column_T
 sickrage/core/databases/cache/migrations/versions/005_Add_Announcements_Table.py = 134e67c4a85e9cd2a517fee65f2f81d2
 sickrage/core/databases/cache/migrations/versions/008_Drop_QuickSearch_Tables.py = 59a36029643188be4a7b28f561a00301
 sickrage/core/databases/cache/migrations/versions/001_Add_Initial_Tables.py = 6416c418e06ad47834a3f6bdfe8ca4f1
-sickrage/core/databases/main/__init__.py = 0d164c59105d4a285b69e013741b46a4
+sickrage/core/databases/main/__init__.py = b9e80d132d451babb710469b502c8d09
 sickrage/core/databases/main/migrations/script.py.mako = 55bff267625bd1f0799d24848df6c3e8
 sickrage/core/databases/main/migrations/env.py = 5cdd195b4adf08a9eda769316ffcc57d
 sickrage/core/databases/main/migrations/versions/012_Add_Search_Format_Column_To_TVShow_Table.py = 93d368d7e71b930fd09310d437e8082c
@@ -385,8 +385,8 @@ sickrage/core/webserver/static/images/backdrops/config.jpg = ddbe8915317f7860d91
 sickrage/core/webserver/static/images/backdrops/home.jpg = 804dfc976638bbf45df310a3627e2d5c
 sickrage/core/webserver/static/images/backdrops/schedule.jpg = 0c0e5f4dcee42bfcfb73de100f1d3015
 sickrage/core/webserver/static/images/backdrops/history.jpg = b4911bfe3ec57a894b5a16fa1ab479cf
-sickrage/core/webserver/static/js/core.min.js = 189efaca1d49b32afe13e1f66673d1a4
-sickrage/core/webserver/static/js/core.js.map = 9801b3d4ae9ed62886f9c5c85ea15321
+sickrage/core/webserver/static/js/core.min.js = 7f6956f9243df2df405fa94e17ee2899
+sickrage/core/webserver/static/js/core.js.map = d0a7e20317f523ab515842c388818455
 sickrage/core/webserver/views/login.mako = 3f6c8e8325928539d6bb70a77b378116
 sickrage/core/webserver/views/login_failed.mako = 5d160bb0317195e08c899c8701815e05
 sickrage/core/webserver/views/announcements.mako = d5902b3926cc0d02cc1329676d8a9e1b
