@@ -114,7 +114,7 @@ class MainDB(SRDatabase):
 
                 for result in session.query(self.TVEpisode).filter_by(showid=cur_duplicate.showid,
                                                                       indexer_id=cur_duplicate.indexer_id).limit(cur_duplicate.count - 1):
-                    session.query(self.TVEpisode).filter_by(showi=result.showid, indexer_id=result.indexer_id).delete()
+                    session.query(self.TVEpisode).filter_by(showid=result.showid, indexer_id=result.indexer_id).delete()
                     session.commit()
 
         def fix_duplicate_episode_scene_numbering():
