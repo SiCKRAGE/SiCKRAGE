@@ -545,8 +545,11 @@ class Core(object):
         self.loading_shows = True
 
         self.shows = {}
-        for query in session.query(MainDB.TVShow).with_entities(MainDB.TVShow.indexer_id, MainDB.TVShow.indexer, MainDB.TVShow.name):
+        for query in session.query(MainDB.TVShow).with_entities(MainDB.TVShow.indexer_id, MainDB.TVShow.indexer, MainDB.TVShow.name, MainDB.TVShow.location):
             try:
+                # if not os.path.isdir(query.location) and self.config.create_missing_show_dirs:
+                #     make_dir(query.location)
+
                 self.log.info('Loading show {}'.format(query.name))
                 self.shows.update({(query.indexer_id, query.indexer): TVShow(query.indexer_id, query.indexer)})
             except Exception as e:

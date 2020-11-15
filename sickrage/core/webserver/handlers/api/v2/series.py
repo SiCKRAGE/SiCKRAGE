@@ -63,6 +63,7 @@ class SeriesHandler(APIv2BaseHandler, ABC):
         root_directory = data.get('rootDirectory', None)
         series_id = data.get('seriesId', None)
         series_name = data.get('seriesName', None)
+        series_directory = data.get('seriesDirectory', None)
         first_aired = data.get('firstAired', None)
         indexer_slug = data.get('indexerSlug', None)
         indexer_language = data.get('indexerLanguage', None)
@@ -85,22 +86,26 @@ class SeriesHandler(APIv2BaseHandler, ABC):
         if series:
             return self.send_error(400, reason="Already exists series: {}".format(series_id))
 
-        series_directory = os.path.join(root_directory, sanitize_file_name(series_name))
+        if is_existing and not series_directory:
+            return self.send_error(400, reason="Missing seriesDirectory parameter")
 
-        series_year = re.search(r'\d{4}', first_aired)
-        if add_show_year and not re.match(r'.*\(\d+\)$', series_directory) and series_year:
-            series_directory = f"{series_directory} ({series_year.group()})"
+        if not is_existing:
+            series_directory = os.path.join(root_directory, sanitize_file_name(series_name))
 
-        if os.path.isdir(series_directory):
-            sickrage.app.alerts.error(_("Unable to add show"), _("Folder ") + series_directory + _(" exists already"))
-            return self.send_error(400, reason=f"Show directory {series_directory} already exists!")
+            series_year = re.search(r'\d{4}', first_aired)
+            if add_show_year and not re.match(r'.*\(\d+\)$', series_directory) and series_year:
+                series_directory = f"{series_directory} ({series_year.group()})"
 
-        if not make_dir(series_directory):
-            sickrage.app.log.warning(f"Unable to create the folder {series_directory}, can't add the show")
-            sickrage.app.alerts.error(_("Unable to add show"), _(f"Unable to create the folder {series_directory}, can't add the show"))
-            return self.send_error(400, reason=f"Unable to create the show folder {series_directory}, can't add the show")
-        else:
-            chmod_as_parent(series_directory)
+            if os.path.isdir(series_directory):
+                sickrage.app.alerts.error(_("Unable to add show"), _("Folder ") + series_directory + _(" exists already"))
+                return self.send_error(400, reason=f"Show directory {series_directory} already exists!")
+
+            if not make_dir(series_directory):
+                sickrage.app.log.warning(f"Unable to create the folder {series_directory}, can't add the show")
+                sickrage.app.alerts.error(_("Unable to add show"), _(f"Unable to create the folder {series_directory}, can't add the show"))
+                return self.send_error(400, reason=f"Unable to create the show folder {series_directory}, can't add the show")
+
+        chmod_as_parent(series_directory)
 
         new_quality = quality_preset
         if not new_quality:

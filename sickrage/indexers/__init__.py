@@ -41,6 +41,10 @@ class IndexerApi(object):
         return indexerConfig[self.indexer_id]['name']
 
     @property
+    def slug(self):
+        return indexerConfig[self.indexer_id]['slug']
+
+    @property
     def trakt_id(self):
         return indexerConfig[self.indexer_id]['trakt_id']
 

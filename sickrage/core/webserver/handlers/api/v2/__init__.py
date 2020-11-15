@@ -28,6 +28,7 @@ from sickrage.core import WANTED, SKIPPED
 from sickrage.core.common import statusStrings, UNKNOWN, UNAIRED, SNATCHED, DOWNLOADED, ARCHIVED, IGNORED, SNATCHED_PROPER, SUBTITLED, FAILED, SNATCHED_BEST, \
     MISSED, Overview, SearchFormats, qualityPresetStrings, Quality
 from sickrage.core.webserver.handlers.base import BaseHandler
+from sickrage.indexers import IndexerApi
 
 
 class APIv2BaseHandler(BaseHandler, ABC):
@@ -164,7 +165,7 @@ class RetrieveSeriesMetadataHandler(APIv2BaseHandler, ABC):
             'seriesDirectory': series_directory,
             'seriesId': '',
             'seriesName': '',
-            'indexer': ''
+            'indexerSlug': ''
         }
 
         for cur_provider in sickrage.app.metadata_providers.values():
@@ -176,7 +177,7 @@ class RetrieveSeriesMetadataHandler(APIv2BaseHandler, ABC):
             if not json_data['seriesName'] and series_name:
                 json_data['seriesName'] = series_name
 
-            if not json_data['indexer'] and indexer:
-                json_data['indexer'] = indexer
+            if not json_data['indexerSlug'] and indexer:
+                json_data['indexerSlug'] = IndexerApi(indexer).slug
 
         self.write_json(json_data)

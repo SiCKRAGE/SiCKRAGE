@@ -714,12 +714,10 @@ class GenericMetadata(object):
             sickrage.app.log.debug("Can't load the metadata file from " + metadata_path + ", it doesn't exist")
             return empty_return
 
-        try:
-            sickrage.app.log.debug("Loading show info from sickrage.metadata file in {}".format(folder))
-        except:
-            pass
 
         try:
+            sickrage.app.log.debug(f"Loading show info from SiCKRAGE metadata file in {folder}")
+
             with open(metadata_path, 'rb') as xmlFileObj:
                 showXML = ElementTree(file=xmlFileObj)
 
