@@ -24,7 +24,7 @@ INDEXER_TVDB = 1
 INDEXER_TVRAGE = 2  # Must keep
 
 indexerModules = {
-    INDEXER_TVDB: TheTVDB
+    INDEXER_TVDB: TheTVDB()
 }
 
 indexerConfig = {

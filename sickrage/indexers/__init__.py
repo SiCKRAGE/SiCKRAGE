@@ -28,7 +28,7 @@ class IndexerApi(object):
         self.indexer_id = indexer_id
 
     def indexer(self, *args, **kwargs):
-        instance = indexerModules[self.indexer_id]()
+        instance = indexerModules[self.indexer_id]
         instance.settings(*args, **kwargs)
         return instance
 
