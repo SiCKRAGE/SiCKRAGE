@@ -68,6 +68,7 @@ class WebSocketMessage(object):
         # message_queue.put(self.json())
         for client in clients.copy():
             try:
-                client.write_message(self.json())
+                message = self.json()
+                sickrage.app.wserver.io_loop.add_callback(client.write_message, message)
             except AssertionError:
                 continue

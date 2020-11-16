@@ -126,8 +126,8 @@ class PostProcessorQueue(Queue):
 
 class PostProcessorTask(Task):
     def __init__(self, dirName, nzbName=None, process_method=None, force=False, is_priority=None, delete_on=False, failed=False, proc_type="auto"):
-        action_id = (PostProcessorTaskActions.MANUAL, PostProcessorTaskActions.AUTO)[proc_type == "auto"]
-        super(PostProcessorTask, self).__init__(action_id.value, action_id)
+        action = (PostProcessorTaskActions.MANUAL, PostProcessorTaskActions.AUTO)[proc_type == "auto"]
+        super(PostProcessorTask, self).__init__(action.value, action)
 
         self.dirName = dirName
         self.nzbName = nzbName

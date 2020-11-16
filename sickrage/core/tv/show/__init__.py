@@ -575,6 +575,11 @@ class TVShow(object):
                 'action': 'ADD',
                 'message': _('This show is in the process of being downloaded - the info below is incomplete.')
             }
+        elif sickrage.app.show_queue.is_being_removed(self.indexer_id):
+            return {
+                'action': 'REMOVE',
+                'message': _('This show is in the process of being removed.')
+            }
         elif sickrage.app.show_queue.is_being_updated(self.indexer_id):
             return {
                 'action': 'UPDATE',
@@ -605,6 +610,16 @@ class TVShow(object):
                 'action': 'SUBTITLE_QUEUE',
                 'message': _('This show is queued and awaiting subtitles download.')
             }
+
+        return {}
+
+    @property
+    def is_loading(self):
+        return self.show_queue_status.get('action') == 'ADD'
+
+    @property
+    def is_removing(self):
+        return self.show_queue_status.get('action') == 'REMOVE'
 
     def save(self):
         with self.lock, sickrage.app.main_db.session() as session:
@@ -1392,6 +1407,9 @@ class TVShow(object):
         with sickrage.app.main_db.session() as session:
             series = session.query(MainDB.TVShow).filter_by(indexer_id=self.indexer_id).one_or_none()
             json_data = TVShowSchema().dump(series)
+
+            json_data['is_loading'] = self.is_loading
+            json_data['is_removing'] = self.is_removing
 
             # images section
             json_data['images'] = {

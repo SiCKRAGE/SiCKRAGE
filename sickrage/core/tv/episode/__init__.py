@@ -306,11 +306,11 @@ class TVEpisode(object):
 
         for search_task in sickrage.app.search_queue.get_all_tasks_from_queue_by_show(self.showid):
             if search_task.season == self.season and search_task.episode == self.episode:
-                if search_task.action_id in [SearchTaskActions.MANUAL_SEARCH, SearchTaskActions.FAILED_SEARCH]:
+                if search_task.action in [SearchTaskActions.MANUAL_SEARCH, SearchTaskActions.FAILED_SEARCH]:
                     search_queue_status['manual'] = search_task.status.name
-                elif search_task.action_id == SearchTaskActions.DAILY_SEARCH:
+                elif search_task.action == SearchTaskActions.DAILY_SEARCH:
                     search_queue_status['daily'] = search_task.status.name
-                elif search_task.action_id == SearchTaskActions.BACKLOG_SEARCH:
+                elif search_task.action == SearchTaskActions.BACKLOG_SEARCH:
                     search_queue_status['backlog'] = search_task.status.name
 
         return search_queue_status

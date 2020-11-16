@@ -50,14 +50,14 @@ class ShowQueue(Queue):
 
     def _is_in_queue(self, indexer_id, actions):
         for task in self.tasks.copy().values():
-            if task.is_queued() and task.indexer_id == indexer_id and task.action_id in actions:
+            if task.is_queued() and task.indexer_id == indexer_id and task.action in actions:
                 return True
 
         return False
 
     def _is_being(self, indexer_id, actions):
         for task in self.tasks.copy().values():
-            if task.is_started() and task.indexer_id == indexer_id and task.action_id in actions:
+            if task.is_started() and task.indexer_id == indexer_id and task.action in actions:
                 return True
 
         return False
@@ -196,8 +196,8 @@ class ShowTask(Task):
     - show being subtitled
     """
 
-    def __init__(self, indexer_id, action_id):
-        super(ShowTask, self).__init__(action_id.value, action_id)
+    def __init__(self, indexer_id, action):
+        super(ShowTask, self).__init__(action.value, action)
         self.indexer_id = indexer_id
 
     def is_in_queue(self):
@@ -216,11 +216,15 @@ class ShowTask(Task):
         show_obj = find_show(self.indexer_id)
         if show_obj:
             WebSocketMessage('SHOW_QUEUE_STATUS_UPDATED', {'series_id': show_obj.indexer_id, 'show_queue_status': show_obj.show_queue_status}).push()
+        else:
+            WebSocketMessage('SHOW_QUEUE_STATUS_UPDATED', {'series_id': self.indexer_id, 'action': self.action.name}).push()
 
     def finish(self):
         show_obj = find_show(self.indexer_id)
         if show_obj:
             WebSocketMessage('SHOW_QUEUE_STATUS_UPDATED', {'series_id': show_obj.indexer_id, 'show_queue_status': show_obj.show_queue_status}).push()
+        else:
+            WebSocketMessage('SHOW_QUEUE_STATUS_UPDATED', {'series_id': self.indexer_id, 'action': self.action.name}).push()
 
 
 class ShowTaskAdd(ShowTask):
@@ -535,8 +539,8 @@ class ShowTaskSubtitle(ShowTask):
 
 
 class ShowTaskUpdate(ShowTask):
-    def __init__(self, indexer_id=None, indexer_update_only=False, force=False, action_id=ShowTaskActions.UPDATE):
-        super(ShowTaskUpdate, self).__init__(indexer_id, action_id if not force else ShowTaskActions.FORCEUPDATE)
+    def __init__(self, indexer_id=None, indexer_update_only=False, force=False, action=ShowTaskActions.UPDATE):
+        super(ShowTaskUpdate, self).__init__(indexer_id, action if not force else ShowTaskActions.FORCEUPDATE)
         self.indexer_update_only = indexer_update_only
         self.force = force
 

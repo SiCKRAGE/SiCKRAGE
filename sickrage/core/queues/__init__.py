@@ -355,11 +355,11 @@ class WorkerThread(threading.Thread):
 
 
 class Task(object):
-    def __init__(self, name, action_id=0, depend=None):
+    def __init__(self, name, action=0, depend=None):
         super(Task, self).__init__()
         self.name = name.replace(" ", "-").upper()
         self.id = None
-        self.action_id = action_id
+        self.action = action
         self.priority = TaskPriority.NORMAL
         self.status = TaskStatus.QUEUED
         self.added = None

@@ -141,7 +141,7 @@
                                     <% showname = task.show_name %>
                                     <td>${showname}</td>
                                 % except Exception:
-                                    % if task.action_id == ShowTaskActions.ADD:
+                                    % if task.action == ShowTaskActions.ADD:
                                         <td>${task.showDir}</td>
                                     % else:
                                         <td></td>
@@ -160,7 +160,7 @@
                                         <td>${task.priority}</td>
                                     % endif
                                     <td>${task.added.strftime(dateTimeFormat)}</td>
-                                    <td>${ShowTaskActions(task.action_id).value}</td>
+                                    <td>${ShowTaskActions(task.action).value}</td>
                                 </tr>
                             % endfor
                         </tbody>
