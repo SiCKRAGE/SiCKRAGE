@@ -224,6 +224,7 @@ class MainDB(SRDatabase):
             session.query(self.TVShow).filter_by(anime=None).update({'anime': False})
             session.query(self.TVShow).filter_by(flatten_folders=None).update({'flatten_folders': False})
             session.query(self.TVShow).filter_by(paused=None).update({'paused': False})
+            session.query(self.TVShow).filter_by(last_xem_refresh=None).update({'last_xem_refresh': datetime.datetime.now().toordinal()})
 
             session.commit()
 
