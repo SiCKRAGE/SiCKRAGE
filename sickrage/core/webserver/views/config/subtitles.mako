@@ -15,10 +15,10 @@
 </%block>
 <%block name="pages">
     <%
-        providerLoginDict = {'legendastv': {'user': sickrage.app.config.legendastv_user, 'pass': sickrage.app.config.legendastv_pass},
-                            'itasa': {'user': sickrage.app.config.itasa_user, 'pass': sickrage.app.config.itasa_pass},
-                            'addic7ed': {'user': sickrage.app.config.addic7ed_user, 'pass': sickrage.app.config.addic7ed_pass},
-                            'opensubtitles': {'user': sickrage.app.config.opensubtitles_user, 'pass': sickrage.app.config.opensubtitles_pass}}
+        providerLoginDict = {'legendastv': {'user': sickrage.app.config.subtitles.legendastv_user, 'pass': sickrage.app.config.subtitles.legendastv_pass},
+                            'itasa': {'user': sickrage.app.config.subtitles.itasa_user, 'pass': sickrage.app.config.subtitles.itasa_pass},
+                            'addic7ed': {'user': sickrage.app.config.subtitles.addic7ed_user, 'pass': sickrage.app.config.subtitles.addic7ed_pass},
+                            'opensubtitles': {'user': sickrage.app.config.subtitles.opensubtitles_user, 'pass': sickrage.app.config.subtitles.opensubtitles_pass}}
     %>
     <div id="subtitles-search" class="tab-pane active">
         <div class="form-row">
@@ -37,7 +37,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="use_subtitles">
                             <input type="checkbox" class="enabler toggle color-primary is-material"
-                                   ${('', ' checked="checked"')[bool(sickrage.app.config.use_subtitles)]}
+                                   ${('', ' checked="checked"')[bool(sickrage.app.config.subtitles.enable)]}
                                    id="use_subtitles" name="use_subtitles">
                             ${_('Search Subtitles')}
                         </label>
@@ -65,7 +65,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <label for="subtitles_history">
                                 <input type="checkbox" class="toggle color-primary is-material" name="subtitles_history"
-                                       id="subtitles_history" ${('', 'checked')[bool(sickrage.app.config.subtitles_history)]}/>
+                                       id="subtitles_history" ${('', 'checked')[bool(sickrage.app.config.subtitles.history)]}/>
                                 ${_('Log downloaded Subtitle on History page?')}
                             </label>
                         </div>
@@ -77,7 +77,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <label for="subtitles_multi">
                                 <input type="checkbox" class="toggle color-primary is-material" name="subtitles_multi"
-                                       id="subtitles_multi" ${('', 'checked')[bool(sickrage.app.config.subtitles_multi)]}/>
+                                       id="subtitles_multi" ${('', 'checked')[bool(sickrage.app.config.subtitles.multi)]}/>
                                 ${_('Append language codes to subtitle filenames?')}
                             </label>
                         </div>
@@ -88,8 +88,8 @@
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <label class="form-check-label">
-                                <input type="checkbox" class="toggle color-primary is-material" name="embedded_subtitles_all"
-                                       id="embedded_subtitles_all" ${('', 'checked')[bool(sickrage.app.config.embedded_subtitles_all)]}/>
+                                <input type="checkbox" class="toggle color-primary is-material" name="enable_embedded_subtitles"
+                                       id="enable_embedded_subtitles" ${('', 'checked')[bool(sickrage.app.config.subtitles.enable_embedded)]}/>
                                 ${_('Ignore subtitles embedded inside video file?')}<br/>
                                 <div class="text-info">
                                     <b>${_('Warning:')}</b> ${_('this will ignore <u>all</u> embedded subtitles for every video file!')}
@@ -104,7 +104,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <label for="subtitles_hearing_impaired">
                                 <input type="checkbox" class="toggle color-primary is-material" name="subtitles_hearing_impaired"
-                                       id="subtitles_hearing_impaired" ${('', 'checked')[bool(sickrage.app.config.subtitles_hearing_impaired)]}/>
+                                       id="subtitles_hearing_impaired" ${('', 'checked')[bool(sickrage.app.config.subtitles.hearing_impaired)]}/>
                                 ${_('Download hearing impaired style subtitles?')}
                             </label>
                         </div>
@@ -118,7 +118,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-folder-open"></span></span>
                                 </div>
-                                <input value="${sickrage.app.config.subtitles_dir}"
+                                <input value="${sickrage.app.config.subtitles.dir}"
                                        id="subtitles_dir"
                                        name="subtitles_dir" class="form-control"
                                        autocapitalize="off"/>
@@ -142,7 +142,7 @@
                                     </span>
                                 </div>
                                 <input type="number" name="subtitles_finder_frequency"
-                                       value="${sickrage.app.config.subtitle_searcher_freq}" hours="1"
+                                       value="${sickrage.app.config.general.subtitle_searcher_freq}" hours="1"
                                        placeholder="${_('1')}"
                                        title="time in hours between scans"
                                        class="form-control"/>
@@ -166,7 +166,7 @@
                                     </span>
                                 </div>
                                 <input name="subtitles_extra_scripts" id="subtitles_extra_scripts"
-                                       value="<% '|'.join(sickrage.app.config.subtitles_extra_scripts) %>"
+                                       value="<% '|'.join(sickrage.app.config.subtitles.extra_scripts) %>"
                                        class="form-control" autocapitalize="off"/>
                             </div>
                             <label class="text-info" for="subtitles_extra_scripts">

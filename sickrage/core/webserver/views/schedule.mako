@@ -6,8 +6,8 @@
 
     import sickrage
     from sickrage.core.helpers import anon_url, srdatetime
-    from sickrage.core.media.util import showImage
-    from sickrage.indexers import IndexerApi
+    from sickrage.core.media.util import series_image, SeriesImageType
+    from sickrage.core.tv.show.coming_episodes import ComingEpsLayout, ComingEpsSortBy
 %>
 <%block name="content">
     <%namespace file="./includes/quality_defaults.mako" import="renderQualityPill"/>
@@ -18,49 +18,34 @@
                 <h3 class="float-left">${title}</h3>
                 <div class="float-right">
                     <div class="form-inline">
-                        % if layout == 'list':
+                        % if layout == ComingEpsLayout.LIST:
                             <button class="btn btn-dark mr-1" id="popover" type="button">
                                 ${_('Select Columns')} <b class="fas fa-caret-down"></b>
                             </button>
                         % else:
                             <select id="sortby" name="sort" class="form-control mr-1"
                                     onchange="location = this.options[this.selectedIndex].value;">
-                                <option value="${srWebRoot}/setScheduleSort/?sort=date" ${('', 'selected')[sickrage.app.config.coming_eps_sort == 'date']} >
-                                    Date
-                                </option>
-                                <option value="${srWebRoot}/setScheduleSort/?sort=network" ${('', 'selected')[sickrage.app.config.coming_eps_sort == 'network']} >
-                                    Network
-                                </option>
-                                <option value="${srWebRoot}/setScheduleSort/?sort=show" ${('', 'selected')[sickrage.app.config.coming_eps_sort == 'show']} >
-                                    Show
-                                </option>
+                                % for item in ComingEpsSortBy:
+                                    <option value="${item.name}" ${('', 'selected')[sickrage.app.config.gui.coming_eps_sort == item]}>${item.display_name}</option>
+                                % endfor
                             </select>
                         % endif
 
                         <select id="viewpaused" name="viewpaused" class="form-control mr-1"
                                 onchange="location = this.options[this.selectedIndex].value;">
-                            <option value="${srWebRoot}/toggleScheduleDisplayPaused" ${('', 'selected')[not bool(sickrage.app.config.coming_eps_display_paused)]}>
+                            <option value="${srWebRoot}/toggleScheduleDisplayPaused" ${('', 'selected')[not bool(sickrage.app.config.gui.coming_eps_display_paused)]}>
                                 Hidden
                             </option>
-                            <option value="${srWebRoot}/toggleScheduleDisplayPaused" ${('', 'selected')[bool(sickrage.app.config.coming_eps_display_paused)]}>
+                            <option value="${srWebRoot}/toggleScheduleDisplayPaused" ${('', 'selected')[bool(sickrage.app.config.gui.coming_eps_display_paused)]}>
                                 Shown
                             </option>
                         </select>
 
                         <select id="layout" name="layout" class="form-control mr-1"
-                                onchange="location = this.options[this.selectedIndex].value;">
-                            <option value="${srWebRoot}/setScheduleLayout/?layout=poster" ${('', 'selected')[sickrage.app.config.coming_eps_layout == 'poster']} >
-                                Poster
-                            </option>
-                            <option value="${srWebRoot}/setScheduleLayout/?layout=calendar" ${('', 'selected')[sickrage.app.config.coming_eps_layout == 'calendar']} >
-                                Calendar
-                            </option>
-                            <option value="${srWebRoot}/setScheduleLayout/?layout=banner" ${('', 'selected')[sickrage.app.config.coming_eps_layout == 'banner']} >
-                                Banner
-                            </option>
-                            <option value="${srWebRoot}/setScheduleLayout/?layout=list" ${('', 'selected')[sickrage.app.config.coming_eps_layout == 'list']} >
-                                List
-                            </option>
+                                onchange="location = `${srWebRoot}/schedule?layout=this.options[this.selectedIndex].value;`">
+                            % for item in ComingEpsLayout:
+                                <option value="${item.name}" ${('', 'selected')[sickrage.app.config.gui.coming_eps_layout == item]}>${item.display_name}</option>
+                            % endfor
                         </select>
 
                         <a class="btn btn-dark forceBacklog"
@@ -70,7 +55,7 @@
                         </a>
                     </div>
                     <div class="float-right mt-1">
-                        % if 'calendar' != layout:
+                        % if ComingEpsLayout.CALENDAR != layout:
                             <span class="badge text-black-50 listing-overdue">Missed</span>
                             <span class="badge text-black-50 listing-current">Today</span>
                             <span class="badge text-black-50 listing-default">Soon</span>
@@ -80,7 +65,7 @@
                 </div>
             </div>
         <div class="card-body">
-            % if 'list' == layout:
+            % if ComingEpsLayout.LIST == layout:
                 <div class="col-md-12">
                     <% show_div = 'listing-default' %>
 
@@ -89,7 +74,8 @@
                             <thead class="thead-dark">
                             <tr>
                                 <th>
-                                    Airdate (${('local', 'network')[sickrage.app.config.timezone_display == 'network']})
+                                    Airdate
+                                    (${sickrage.app.config.gui.timezone_display.display_name})
                                 </th>
                                 <th>Ends</th>
                                 <th>Next Ep</th>
@@ -98,16 +84,16 @@
                                 <th>Network</th>
                                 <th>Run time</th>
                                 <th>Quality</th>
-                                <th>Indexers</th>
+                                <th>Series Provider</th>
                                 <th>Search</th>
                             </tr>
                             </thead>
 
                             <tbody class="text-dark">
                                 % for cur_result in results:
-                                    % if not int(cur_result['paused']) or sickrage.app.config.coming_eps_display_paused:
+                                    % if not int(cur_result['paused']) or sickrage.app.config.gui.coming_eps_display_paused:
                                         <%
-                                            cur_indexer = int(cur_result['indexer'])
+                                            cur_series_provider_id = cur_result['series_provider_id']
                                             run_time = int(cur_result['runtime'] or 0)
 
                                             cur_ep_airdate = cur_result['localtime'].date()
@@ -145,7 +131,7 @@
                                             </td>
 
                                             <td class="tvShow" class="text-nowrap">
-                                                <a href="${srWebRoot}/home/displayShow?show=${cur_result['showid']}">
+                                                <a href="${srWebRoot}/home/displayShow?show=${cur_result['series_id']}">
                                                     ${cur_result['show_name']}
                                                 </a>
                                                 % if int(cur_result['paused']):
@@ -157,7 +143,7 @@
                                                 % if cur_result['description']:
                                                     <i class="fas fa-exclamation-circle"
                                                        title="${cur_result["description"]}"
-                                                       id="plot_info_${'{}_{}_{}'.format(cur_result['showid'], cur_result['season'], cur_result['episode'])}"></i>
+                                                       id="plot_info_${'{}_{}_{}'.format(cur_result['series_id'], cur_result['season'], cur_result['episode'])}"></i>
                                                 % else:
                                                     <i class="fas fa-exclamation-circle"></i>
                                                 % endif
@@ -185,19 +171,19 @@
                                                         <i class="sickrage-core sickrage-core-imdb"></i>
                                                     </a>
                                                 % endif
-                                                <a href="${anon_url(IndexerApi(cur_indexer).config['show_url'], cur_result['showid'])}"
+                                                <a href="${anon_url(sickrage.app.series_providers[cur_series_provider_id].show_url, cur_result['series_id'])}"
                                                    rel="noreferrer"
                                                    onclick="window.open(this.href, '_blank'); return false"
-                                                   title="${IndexerApi(cur_indexer).config['show_url']}${cur_result['showid']}"><i
-                                                        class="sickrage-core sickrage-core-${IndexerApi(cur_indexer).name.lower()}"></i>
+                                                   title="${sickrage.app.series_providers[cur_series_provider_id].show_url}${cur_result['series_id']}"><i
+                                                        class="sickrage-core sickrage-core-${cur_series_provider_id.name.lower()}"></i>
                                                 </a>
                                             </td>
 
                                             <td class="table-fit col-search">
-                                                <a href="${srWebRoot}/home/searchEpisode?show=${cur_result['showid']}&season=${cur_result['season']}&episode=${cur_result['episode']}"
+                                                <a href="${srWebRoot}/home/searchEpisode?show=${cur_result['series_id']}&seriesProviderID=${cur_result['series_provider_id'].name}&season=${cur_result['season']}&episode=${cur_result['episode']}"
                                                    class="epSearch" title="${_('Manual Search')}"
-                                                   id="${cur_result['showid']}x${cur_result['season']}x${cur_result['episode']}"
-                                                   name="${cur_result['showid']}x${cur_result['season']}x${cur_result['episode']}">
+                                                   id="${cur_result['series_id']}x${cur_result['season']}x${cur_result['episode']}"
+                                                   name="${cur_result['series_id']}x${cur_result['season']}x${cur_result['episode']}">
                                                     <i class="fas fa-search"></i>
                                                 </a>
                                             </td>
@@ -208,7 +194,7 @@
                         </table>
                     </div>
                 </div>
-            % elif layout in ['banner', 'poster']:
+            % elif layout in [ComingEpsLayout.BANNER, ComingEpsLayout.POSTER]:
                 <%
                     cur_segment = None
                     too_late_header = False
@@ -216,14 +202,14 @@
                     today_header = False
                     show_div = 'ep_listing listing-default'
                 %>
-                % if sickrage.app.config.coming_eps_sort == 'show':
+                % if sickrage.app.config.gui.coming_eps_sort == ComingEpsSortBy.SHOW:
                     <br/><br/>
                 % endif
 
                 % for cur_result in results:
-                    % if not int(cur_result['paused']) or sickrage.app.config.coming_eps_display_paused:
+                    % if not int(cur_result['paused']) or sickrage.app.config.gui.coming_eps_display_paused:
                     <%
-                        cur_indexer = int(cur_result['indexer'])
+                        cur_series_provider_id = cur_result['series_provider_id']
 
                         run_time = int(cur_result['runtime'] or 0)
                         cur_ep_airdate = cur_result['localtime'].date()
@@ -234,7 +220,7 @@
                             cur_ep_enddate = cur_result['localtime']
                     %>
 
-                    % if sickrage.app.config.coming_eps_sort == 'network':
+                    % if sickrage.app.config.gui.coming_eps_sort == ComingEpsSortBy.NETWORK:
                         <% show_network = ('no network', cur_result['network'])[bool(cur_result['network'])] %>
                         % if cur_segment != show_network:
                             <div>
@@ -256,7 +242,7 @@
                                 <% show_div = 'ep_listing listing-default' %>
                             % endif
                         % endif
-                    % elif sickrage.app.config.coming_eps_sort == 'date':
+                    % elif sickrage.app.config.gui.coming_eps_sort == ComingEpsSortBy.DATE:
                         % if cur_segment != cur_ep_airdate:
                             % if cur_ep_enddate < today and cur_ep_airdate != today.date() and not missed_header:
                             <% missed_header = True %>
@@ -301,7 +287,7 @@
                             % endif
                         % endif
 
-                    % elif sickrage.app.config.coming_eps_sort == 'show':
+                    % elif sickrage.app.config.gui.coming_eps_sort == ComingEpsSortBy.SHOW:
                         % if cur_ep_enddate < today:
                             <% show_div = 'ep_listing listing-overdue listingradius' %>
                         % elif cur_ep_airdate >= next_week.date():
@@ -314,19 +300,19 @@
                             % endif
                         % endif
                     % endif
-                        <div class="card mb-3" id="listing-${cur_result['showid']}">
+                        <div class="card mb-3" id="listing-${cur_result['series_id']}">
                             <div class="card-body rounded ${show_div} m-1">
                                 <div class="row">
                                     <div class="col-auto justify-content-center align-self-center">
-                                        <a href="${srWebRoot}/home/displayShow?show=${cur_result['showid']}">
-                                            <img class="rounded shadow ${('', 'img-poster')[layout == 'poster']}"
-                                                 src="${srWebRoot}${showImage(cur_result['showid'], layout).url}"/>
+                                        <a href="${srWebRoot}/home/displayShow?show=${cur_result['series_id']}">
+                                            <img class="rounded shadow ${('', 'img-poster')[layout == ComingEpsLayout.POSTER]}"
+                                                 src="${srWebRoot}${series_image(cur_result['series_id'], cur_result['series_provider_id'], SeriesImageType[layout.name]).url}"/>
                                         </a>
                                     </div>
                                     <div class="col text-dark font-weight-bold">
                                         <div class="clearfix">
                                             <span>
-                                                <a href="${srWebRoot}/home/displayShow?show=${cur_result['showid']}">${cur_result['show_name']}
+                                                <a href="${srWebRoot}/home/displayShow?show=${cur_result['series_id']}">${cur_result['show_name']}
                                                     ${('', '<span class="pause">[paused]</span>')[int(cur_result['paused'])]}
                                                 </a>
                                                 % if cur_result['imdb_id']:
@@ -337,16 +323,16 @@
                                                         <i class="sickrage-core sickrage-core-imdb"></i>
                                                     </a>
                                                 % endif
-                                                <a href="${anon_url(IndexerApi(cur_indexer).config['show_url'], cur_result['showid'])}"
+                                                <a href="${anon_url(sickrage.app.series_providers[cur_series_provider_id].show_url, cur_result['series_id'])}"
                                                    rel="noreferrer"
                                                    onclick="window.open(this.href, '_blank'); return false"
-                                                   title="${IndexerApi(cur_indexer).config['show_url']}">
-                                                    <i class="sickrage-core sickrage-core-${IndexerApi(cur_indexer).name.lower()}"></i>
+                                                   title="${sickrage.app.series_providers[cur_series_provider_id].show_url}">
+                                                    <i class="sickrage-core sickrage-core-${cur_series_provider_id.name.lower()}"></i>
                                                 </a>
-                                                <a href="${srWebRoot}/home/searchEpisode?show=${cur_result['showid']}&season=${cur_result['season']}&episode=${cur_result['episode']}"
+                                                <a href="${srWebRoot}/home/searchEpisode?show=${cur_result['series_id']}&seriesProviderID=${cur_result['series_provider_id'].name}&season=${cur_result['season']}&episode=${cur_result['episode']}"
                                                    class="epSearch" title="${_('Manual Search')}"
-                                                   id="${cur_result['showid']}x${cur_result['season']}x${cur_result['episode']}"
-                                                   name="${cur_result['showid']}x${cur_result['season']}x${cur_result['episode']}">
+                                                   id="${cur_result['series_id']}x${cur_result['season']}x${cur_result['episode']}"
+                                                   name="${cur_result['series_id']}x${cur_result['season']}x${cur_result['episode']}">
                                                     <i class="fas fa-search"></i>
                                                 </a>
                                             </span>
@@ -399,7 +385,7 @@
                         </div>
                     % endif
                 % endfor
-            % elif 'calendar' == layout:
+            % elif ComingEpsLayout.CALENDAR == layout:
             <% dates = [today.date() + datetime.timedelta(days = i) for i in range(7)] %>
             <% tbl_day = 0 %>
                 <div class="table-responsive justify-content-center d-flex">
@@ -414,8 +400,7 @@
                             <tbody>
                                 <% day_has_show = False %>
                                 % for cur_result in results:
-                                    % if not int(cur_result['paused']) or sickrage.app.config.coming_eps_display_paused:
-                                        <% cur_indexer = int(cur_result['indexer']) %>
+                                    % if not int(cur_result['paused']) or sickrage.app.config.gui.coming_eps_display_paused:
                                         <% run_time = int(cur_result['runtime'] or 0) %>
                                         <% airday = cur_result['localtime'].date() %>
 
@@ -423,7 +408,7 @@
                                             % try:
                                             <% day_has_show = True %>
                                             <% airtime = srdatetime.SRDateTime(datetime.datetime.fromtimestamp(time.mktime(cur_result['localtime'].timetuple()))).srftime() %>
-                                            % if sickrage.app.config.trim_zero:
+                                            % if sickrage.app.config.gui.trim_zero:
                                                 <% airtime = re.sub(r'0(\d:\d\d)', r'\1', airtime, 0, re.IGNORECASE | re.MULTILINE) %>
                                             % endif
                                             % except OverflowError:
@@ -433,9 +418,9 @@
                                             <tr>
                                                 <td>
                                                     <a title="${cur_result['show_name']}"
-                                                       href="${srWebRoot}/home/displayShow?show=${cur_result['showid']}">
+                                                       href="${srWebRoot}/home/displayShow?show=${cur_result['series_id']}">
                                                         <img class="rounded shadow img-poster"
-                                                             src="${srWebRoot}${showImage(cur_result['showid'], 'poster').url}"/>
+                                                             src="${srWebRoot}${series_image(cur_result['series_id'], cur_result['series_provider_id'], SeriesImageType.POSTER).url}"/>
                                                     </a>
                                                     <div class="small">
                                                     <span class="airtime">

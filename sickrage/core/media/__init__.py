@@ -9,9 +9,9 @@ from sickrage.core.tv.show.helpers import find_show
 
 
 class Media(object):
-    def __init__(self, indexer_id, media_format=None):
+    def __init__(self, series_id, series_provider_id, media_format=None):
         """
-        :param indexer_id: The indexer id of the show
+        :param series_id: The series id of the show
         :param media_format: The media format of the show image
         """
 
@@ -20,9 +20,11 @@ class Media(object):
             self.media_format = 'normal'
 
         try:
-            self.indexer_id = int(indexer_id)
+            self.series_id = int(series_id)
         except ValueError:
-            self.indexer_id = 0
+            self.series_id = 0
+
+        self.series_provider_id = series_provider_id
 
     def get_default_media_name(self):
         """
@@ -38,7 +40,7 @@ class Media(object):
         """
 
         path = self.get_static_media_path().replace(sickrage.app.cache_dir, "")
-        path = path.replace(sickrage.app.config.gui_static_dir, "")
+        path = path.replace(sickrage.app.gui_static_dir, "")
         return url_escape(path.replace('\\', '/'), False)
 
     @property
@@ -65,7 +67,7 @@ class Media(object):
 
     def get_media_path(self):
         """
-        :return: The path to the media related to ``self.indexer_id``
+        :return: The path to the media related to ``self.series_id``
         """
 
         return ''
@@ -76,15 +78,15 @@ class Media(object):
         :return: The root folder containing the media
         """
 
-        return os.path.join(sickrage.app.config.gui_static_dir)
+        return os.path.join(sickrage.app.gui_static_dir)
 
     def get_show(self):
         """
-        :return: The show object associated with ``self.indexer_id`` or ``None``
+        :return: The show object associated with ``self.series_id`` or ``None``
         """
 
         try:
-            return find_show(self.indexer_id)
+            return find_show(self.series_id, self.series_provider_id)
         except MultipleShowObjectsException:
             return None
 

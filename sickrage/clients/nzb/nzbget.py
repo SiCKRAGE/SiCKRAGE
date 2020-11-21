@@ -24,10 +24,11 @@ from http import client
 from xmlrpc.client import ServerProxy, ProtocolError
 
 import sickrage
-from sickrage.core.common import Quality
+from sickrage.core.common import Qualities
 from sickrage.core.helpers import try_int
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.websession import WebSession
+from sickrage.search_providers import SearchProviderType
 
 
 class NZBGet(object):
@@ -40,7 +41,7 @@ class NZBGet(object):
         :param proper: True if this is a Proper download, False if not. Defaults to False
         """
 
-        if sickrage.app.config.nzbget_host is None:
+        if sickrage.app.config.nzbget.host is None:
             sickrage.app.log.warning("No NZBGet host found in configuration. Please configure it.")
             return False
 
@@ -49,20 +50,20 @@ class NZBGet(object):
         addToTop = False
         nzbgetprio = 0
 
-        category = sickrage.app.config.nzbget_category
+        category = sickrage.app.config.nzbget.category
 
-        show_object = find_show(nzb.show_id)
+        show_object = find_show(nzb.series_id, nzb.series_provider_id)
         if not show_object:
             return False
 
         if show_object.is_anime:
-            category = sickrage.app.config.nzbget_category_anime
+            category = sickrage.app.config.nzbget.category_anime
 
         url = "%(protocol)s://%(username)s:%(password)s@%(host)s/xmlrpc" % {
-            "protocol": 'https' if sickrage.app.config.nzbget_use_https else 'http',
-            "host": sickrage.app.config.nzbget_host,
-            "username": sickrage.app.config.nzbget_username,
-            "password": sickrage.app.config.nzbget_password
+            "protocol": 'https' if sickrage.app.config.nzbget.use_https else 'http',
+            "host": sickrage.app.config.nzbget.host,
+            "username": sickrage.app.config.nzbget.username,
+            "password": sickrage.app.config.nzbget.password
         }
 
         nzbget_rpc_client = ServerProxy(url)
@@ -82,7 +83,7 @@ class NZBGet(object):
                 sickrage.app.log.warning("NZBGet Protocol Error: " + e.errmsg)
             return False
 
-        show_object = find_show(nzb.show_id)
+        show_object = find_show(nzb.series_id, nzb.series_provider_id)
         if not show_object:
             return False
 
@@ -91,27 +92,24 @@ class NZBGet(object):
             episode_object = show_object.get_episode(nzb.season, episode_number)
 
             if dupe_key == "":
-                if episode_object.show.indexer == 1:
-                    dupe_key = "SiCKRAGE-" + str(episode_object.show.indexer_id)
-                elif episode_object.show.indexer == 2:
-                    dupe_key = "SiCKRAGE-tvr" + str(episode_object.show.indexer_id)
+                dupe_key = f"SiCKRAGE-{episode_object.show.series_provider_id.name}-{episode_object.show.series_id}"
 
             dupe_key += "-" + str(episode_object.season) + "." + str(episode_object.episode)
             if date.today() - episode_object.airdate <= timedelta(days=7):
                 addToTop = True
-                nzbgetprio = sickrage.app.config.nzbget_priority
+                nzbgetprio = sickrage.app.config.nzbget.priority
             else:
-                category = sickrage.app.config.nzbget_category_backlog
+                category = sickrage.app.config.nzbget.category_backlog
                 if show_object.is_anime:
-                    category = sickrage.app.config.nzbget_category_anime_backlog
+                    category = sickrage.app.config.nzbget.category_anime_backlog
 
-        if nzb.quality != Quality.UNKNOWN:
+        if nzb.quality != Qualities.UNKNOWN:
             dupe_score = nzb.quality * 100
         if proper:
             dupe_score += 10
 
         nzbcontent64 = None
-        if nzb.type == "nzbdata":
+        if nzb.provider_type == SearchProviderType.NZBDATA:
             data = nzb.extraInfo[0]
             nzbcontent64 = standard_b64encode(data)
 
@@ -127,7 +125,7 @@ class NZBGet(object):
                 if nzbcontent64 is not None:
                     nzbget_result = nzbget_rpc_client.append(nzb.name + ".nzb", category, addToTop, nzbcontent64)
                 else:
-                    if nzb.type == "nzb":
+                    if nzb.provider_type == SearchProviderType.NZB:
                         try:
                             nzbcontent64 = standard_b64encode(WebSession().get(nzb.url).text)
                         except Exception:

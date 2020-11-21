@@ -41,12 +41,12 @@ class NameCache(object):
                 int(time.mktime(datetime.today().timetuple())))) < timedelta(minutes=self.min_time):
             return True
 
-    def put(self, name, indexer_id=0):
+    def put(self, name, series_id=0):
         """
         Adds the show & tvdb id to the scene_names table in cache db
 
         :param name: The show name to cache
-        :param indexer_id: the TVDB id that this show should be cached with (can be None/0 for unknown)
+        :param series_id: the TVDB id that this show should be cached with (can be None/0 for unknown)
         """
 
         session = sickrage.app.cache_db.session()
@@ -54,13 +54,13 @@ class NameCache(object):
         # standardize the name we're using to account for small differences in providers
         name = full_sanitize_scene_name(name)
 
-        self.cache[name] = int(indexer_id)
+        self.cache[name] = int(series_id)
 
         try:
-            session.query(CacheDB.SceneName).filter_by(name=name, indexer_id=int(indexer_id)).one()
+            session.query(CacheDB.SceneName).filter_by(name=name, series_id=int(series_id)).one()
         except orm.exc.NoResultFound:
             session.add(CacheDB.SceneName(**{
-                'indexer_id': indexer_id,
+                'series_id': series_id,
                 'name': name
             }))
         finally:
@@ -77,28 +77,28 @@ class NameCache(object):
         if name in self.cache:
             return int(self.cache[name])
 
-    def clear(self, indexer_id=None, name=None):
+    def clear(self, series_id=None, name=None):
         """
-        Deletes all entries from the cache matching the indexer_id or name.
+        Deletes all entries from the cache matching the series_id or name.
         """
 
         session = sickrage.app.cache_db.session()
 
-        if any([indexer_id, name]):
-            if indexer_id:
-                session.query(CacheDB.SceneName).filter_by(indexer_id=indexer_id).delete()
+        if any([series_id, name]):
+            if series_id:
+                session.query(CacheDB.SceneName).filter_by(series_id=series_id).delete()
                 session.commit()
             elif name:
                 session.query(CacheDB.SceneName).filter_by(name=name).delete()
                 session.commit()
 
             for key, value in self.cache.copy().items():
-                if value == indexer_id or key == name:
+                if value == series_id or key == name:
                     del self.cache[key]
 
     def load(self):
         session = sickrage.app.cache_db.session()
-        self.cache = dict([(x.name, x.indexer_id) for x in session.query(CacheDB.SceneName)])
+        self.cache = dict([(x.name, x.series_id) for x in session.query(CacheDB.SceneName)])
 
     def save(self):
         """
@@ -109,12 +109,12 @@ class NameCache(object):
 
         sql_t = []
 
-        for name, indexer_id in self.cache.items():
+        for name, series_id in self.cache.items():
             try:
-                session.query(CacheDB.SceneName).filter_by(name=name, indexer_id=indexer_id).one()
+                session.query(CacheDB.SceneName).filter_by(name=name, series_id=series_id).one()
             except orm.exc.NoResultFound:
                 sql_t.append({
-                    'indexer_id': indexer_id,
+                    'series_id': series_id,
                     'name': name
                 })
 

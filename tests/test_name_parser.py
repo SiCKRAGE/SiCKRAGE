@@ -220,7 +220,7 @@ class UnicodeTests(tests.SiCKRAGETestDBCase):
         self.show.name = "The Big Bang Theory"
 
     def _test_unicode(self, name, result):
-        np = NameParser(True, show_id=self.show.indexer_id, validate_show=False)
+        np = NameParser(True, series_id=self.show.series_id, validate_show=False)
         parse_result = np.parse(name)
 
         # this shouldn't raise an exception

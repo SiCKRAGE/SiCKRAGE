@@ -22,8 +22,9 @@ import os
 from datetime import date
 
 import sickrage
-from sickrage.core.common import DOWNLOADED, Quality, SearchFormats
+from sickrage.core.enums import SearchFormat, SeriesProviderID
 from sickrage.core.nameparser import NameParser
+from sickrage.core.common import Quality, Qualities, EpisodeStatus
 from sickrage.core.tv.episode import TVEpisode
 
 name_presets = (
@@ -56,7 +57,7 @@ class FakeEpisode(object):
         self.episode = episode
         self.absolute_number = absolute_number
         self.airdate = datetime.date(2010, 3, 9)
-        self.status = Quality.composite_status(DOWNLOADED, Quality.SDTV)
+        self.status = Quality.composite_status(EpisodeStatus.DOWNLOADED, Qualities.SDTV)
         self.release_name = 'Show.Name.S02E03.HDTV.XviD-RLSGROUP'
         self.release_group = 'RLSGROUP'
         self.is_proper = True
@@ -92,8 +93,9 @@ class FakeShow(object):
     def __init__(self):
         self.name = "Show Name"
         self.genre = "Comedy"
-        self.indexer_id = 0o00001
-        self.search_format = SearchFormats.STANDARD
+        self.series_id = 0o00001
+        self.series_provider_id = SeriesProviderID.THETVDB
+        self.search_format = SearchFormat.STANDARD
         self.startyear = 2011
         self.anime = 0
 
@@ -109,10 +111,10 @@ def check_force_season_folders(pattern=None, multi=None, anime_type=None):
     :return: true if season folders need to be forced on or false otherwise.
     """
     if pattern is None:
-        pattern = sickrage.app.config.naming_pattern
+        pattern = sickrage.app.config.general.naming_pattern
 
     if anime_type is None:
-        anime_type = sickrage.app.config.naming_anime
+        anime_type = sickrage.app.config.general.naming_anime
 
     return not validate_name(pattern, multi, anime_type, file_only=True)
 
@@ -127,10 +129,10 @@ def check_valid_naming(pattern=None, multi=None, anime_type=None):
     :return: true if the naming is valid, false if not.
     """
     if pattern is None:
-        pattern = sickrage.app.config.naming_pattern
+        pattern = sickrage.app.config.general.naming_pattern
 
     if anime_type is None:
-        anime_type = sickrage.app.config.naming_anime
+        anime_type = sickrage.app.config.general.naming_anime
 
     sickrage.app.log.debug("Checking whether the pattern " + pattern + " is valid")
     return validate_name(pattern, multi, anime_type)
@@ -144,7 +146,7 @@ def check_valid_abd_naming(pattern=None):
     :return: true if the naming is valid, false if not.
     """
     if pattern is None:
-        pattern = sickrage.app.config.naming_pattern
+        pattern = sickrage.app.config.general.naming_pattern
 
     sickrage.app.log.debug("Checking whether the pattern " + pattern + " is valid for an air-by-date episode")
     valid = validate_name(pattern, abd=True)
@@ -160,7 +162,7 @@ def check_valid_sports_naming(pattern=None):
     :return: true if the naming is valid, false if not.
     """
     if pattern is None:
-        pattern = sickrage.app.config.naming_pattern
+        pattern = sickrage.app.config.general.naming_pattern
 
     sickrage.app.log.debug("Checking whether the pattern " + pattern + " is valid for an sports episode")
     valid = validate_name(pattern, sports=True)
@@ -193,7 +195,7 @@ def validate_name(pattern, multi=None, anime_type=None, file_only=False, abd=Fal
 
     sickrage.app.log.debug("Trying to parse " + new_name)
 
-    parser = NameParser(True, show_id=ep.show.indexer_id, naming_pattern=True)
+    parser = NameParser(True, series_id=ep.show.series_id, series_provider_id=ep.show.series_provider_id, naming_pattern=True)
 
     try:
         result = parser.parse(new_name)
@@ -227,18 +229,18 @@ def generate_sample_ep(multi=None, abd=False, sports=False, anime_type=None):
     # make a fake episode object
     ep = FakeEpisode(2, 3, 3, "Ep Name")
 
-    ep.status = Quality.composite_status(DOWNLOADED, Quality.HDTV)
+    ep.status = Quality.composite_status(EpisodeStatus.DOWNLOADED, Qualities.HDTV)
     ep.airdate = date(2011, 3, 9)
 
     if abd:
         ep.release_name = 'Show.Name.2011.03.09.HDTV.XviD-RLSGROUP'
-        ep.show.search_format = SearchFormats.AIR_BY_DATE
+        ep.show.search_format = SearchFormat.AIR_BY_DATE
     elif sports:
         ep.release_name = 'Show.Name.2011.03.09.HDTV.XviD-RLSGROUP'
-        ep.show.search_format = SearchFormats.SPORTS
+        ep.show.search_format = SearchFormat.SPORTS
     else:
         if anime_type != 3:
-            ep.show.search_format = SearchFormats.ANIME
+            ep.show.search_format = SearchFormat.ANIME
             ep.release_name = 'Show.Name.003.HDTV.XviD-RLSGROUP'
         else:
             ep.release_name = 'Show.Name.S02E03.HDTV.XviD-RLSGROUP'
@@ -247,12 +249,12 @@ def generate_sample_ep(multi=None, abd=False, sports=False, anime_type=None):
         ep.name = "Ep Name (1)"
 
         if anime_type != 3:
-            ep.show.search_format = SearchFormats.ANIME
+            ep.show.search_format = SearchFormat.ANIME
 
             ep.release_name = 'Show.Name.003-004.HDTV.XviD-RLSGROUP'
 
             second_ep = FakeEpisode(2, 4, 4, "Ep Name (2)")
-            second_ep.status = Quality.composite_status(DOWNLOADED, Quality.HDTV)
+            second_ep.status = Quality.composite_status(EpisodeStatus.DOWNLOADED, Qualities.HDTV)
             second_ep.release_name = ep.release_name
 
             ep.related_episodes.append(second_ep)
@@ -260,11 +262,11 @@ def generate_sample_ep(multi=None, abd=False, sports=False, anime_type=None):
             ep.release_name = 'Show.Name.S02E03E04E05.HDTV.XviD-RLSGROUP'
 
             second_ep = FakeEpisode(2, 4, 4, "Ep Name (2)")
-            second_ep.status = Quality.composite_status(DOWNLOADED, Quality.HDTV)
+            second_ep.status = Quality.composite_status(EpisodeStatus.DOWNLOADED, Qualities.HDTV)
             second_ep.release_name = ep.release_name
 
             third_ep = FakeEpisode(2, 5, 5, "Ep Name (3)")
-            third_ep.status = Quality.composite_status(DOWNLOADED, Quality.HDTV)
+            third_ep.status = Quality.composite_status(EpisodeStatus.DOWNLOADED, Qualities.HDTV)
             third_ep.release_name = ep.release_name
 
             ep.related_episodes.append(second_ep)

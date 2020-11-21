@@ -26,7 +26,7 @@ from tornado.web import authenticated
 
 import sickrage
 from sickrage.core.helpers import backup_app_data, checkbox_to_value, restore_config_zip
-from sickrage.core.webserver import ConfigHandler
+from sickrage.core.webserver import ConfigWebHandler
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
@@ -34,7 +34,7 @@ class ConfigBackupRestoreHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
         return self.render('config/backup_restore.mako',
-                           submenu=ConfigHandler.menu,
+                           submenu=ConfigWebHandler.menu,
                            title=_('Config - Backup/Restore'),
                            header=_('Backup/Restore'),
                            topmenu='config',

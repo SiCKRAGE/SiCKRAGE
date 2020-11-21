@@ -31,12 +31,12 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 class LoginHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         if is_ip_whitelisted(self.request.remote_ip):
-            return self.redirect("{}".format(self.get_argument('next', "/{}/".format(sickrage.app.config.default_page))))
+            return self.redirect("{}".format(self.get_argument('next', "/{}/".format(sickrage.app.config.general.default_page.value))))
         elif 'Authorization' in self.request.headers:
             return self.handle_jwt_auth_get()
-        elif sickrage.app.config.sso_auth_enabled and sickrage.app.auth_server.health:
+        elif sickrage.app.config.general.sso_auth_enabled and sickrage.app.auth_server.health:
             return self.handle_sso_auth_get()
-        elif sickrage.app.config.local_auth_enabled:
+        elif sickrage.app.config.general.local_auth_enabled:
             return self.handle_local_auth_get()
         else:
             return self.render('login_failed.mako',
@@ -47,7 +47,7 @@ class LoginHandler(BaseHandler, ABC):
                                action='login')
 
     def post(self, *args, **kwargs):
-        if sickrage.app.config.local_auth_enabled:
+        if sickrage.app.config.general.local_auth_enabled:
             return self.handle_local_auth_post()
 
     def handle_jwt_auth_get(self):
@@ -60,42 +60,42 @@ class LoginHandler(BaseHandler, ABC):
             self.set_status(401)
             return self.write({'error': 'Token expired'})
 
-        if not sickrage.app.config.sub_id:
-            sickrage.app.config.sub_id = decoded_auth_token.get('sub')
+        if not sickrage.app.config.user.sub_id:
+            sickrage.app.config.user.sub_id = decoded_auth_token.get('sub')
             sickrage.app.config.save()
 
-        if sickrage.app.config.sub_id != decoded_auth_token.get('sub'):
+        if sickrage.app.config.user.sub_id != decoded_auth_token.get('sub'):
             return
 
-        if sickrage.app.config.enable_sickrage_api:
+        if sickrage.app.config.general.enable_sickrage_api:
             # if sickrage.app.api.token:
             #     sickrage.app.api.logout()
             sickrage.app.api.exchange_token(auth_token)
 
         internal_connections = "{}://{}:{}{}".format(self.request.protocol,
                                                      get_internal_ip(),
-                                                     sickrage.app.config.web_port,
-                                                     sickrage.app.config.web_root)
+                                                     sickrage.app.config.general.web_port,
+                                                     sickrage.app.config.general.web_root)
 
         external_connections = "{}://{}:{}{}".format(self.request.protocol,
                                                      get_external_ip(),
-                                                     sickrage.app.config.web_port,
-                                                     sickrage.app.config.web_root)
+                                                     sickrage.app.config.general.web_port,
+                                                     sickrage.app.config.general.web_root)
 
         connections = ','.join([internal_connections, external_connections])
 
-        if not re.match(r'[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}', sickrage.app.config.server_id or ""):
+        if not re.match(r'[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}', sickrage.app.config.general.server_id or ""):
             server_id = sickrage.app.api.account.register_server(connections)
             if server_id:
-                sickrage.app.config.server_id = server_id
+                sickrage.app.config.general.server_id = server_id
                 sickrage.app.config.save()
         else:
-            sickrage.app.api.account.update_server(sickrage.app.config.server_id, connections)
+            sickrage.app.api.account.update_server(sickrage.app.config.general.server_id, connections)
 
     def handle_sso_auth_get(self):
         code = self.get_argument('code', None)
 
-        redirect_uri = "{}://{}{}/login".format(self.request.protocol, self.request.host, sickrage.app.config.web_root)
+        redirect_uri = "{}://{}{}/login".format(self.request.protocol, self.request.host, sickrage.app.config.general.web_root)
 
         if code:
             try:
@@ -117,11 +117,11 @@ class LoginHandler(BaseHandler, ABC):
                 self.set_secure_cookie('_sr_access_token', token['access_token'])
                 self.set_secure_cookie('_sr_refresh_token', token['refresh_token'])
 
-                if not sickrage.app.config.sub_id:
-                    sickrage.app.config.sub_id = decoded_token.get('sub')
+                if not sickrage.app.config.user.sub_id:
+                    sickrage.app.config.user.sub_id = decoded_token.get('sub')
                     sickrage.app.config.save()
 
-                if sickrage.app.config.sub_id != decoded_token.get('sub'):
+                if sickrage.app.config.user.sub_id != decoded_token.get('sub'):
                     if sickrage.app.api.token:
                         allowed_usernames = sickrage.app.api.allowed_usernames()['data']
                         if not decoded_token.get('preferred_username') in allowed_usernames:
@@ -130,7 +130,7 @@ class LoginHandler(BaseHandler, ABC):
                             return self.redirect('/logout')
                     else:
                         return self.redirect('/logout')
-                elif sickrage.app.config.enable_sickrage_api:
+                elif sickrage.app.config.general.enable_sickrage_api:
                     if sickrage.app.api.token:
                         sickrage.app.api.logout()
                     sickrage.app.api.token = token
@@ -140,25 +140,25 @@ class LoginHandler(BaseHandler, ABC):
 
             internal_connections = "{}://{}:{}{}".format(self.request.protocol,
                                                          get_internal_ip(),
-                                                         sickrage.app.config.web_port,
-                                                         sickrage.app.config.web_root)
+                                                         sickrage.app.config.general.web_port,
+                                                         sickrage.app.config.general.web_root)
 
             external_connections = "{}://{}:{}{}".format(self.request.protocol,
                                                          get_external_ip(),
-                                                         sickrage.app.config.web_port,
-                                                         sickrage.app.config.web_root)
+                                                         sickrage.app.config.general.web_port,
+                                                         sickrage.app.config.general.web_root)
 
             connections = ','.join([internal_connections, external_connections])
 
-            if not re.match(r'[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}', sickrage.app.config.server_id or ""):
+            if not re.match(r'[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}', sickrage.app.config.general.server_id or ""):
                 server_id = sickrage.app.api.account.register_server(connections)
                 if server_id:
-                    sickrage.app.config.server_id = server_id
+                    sickrage.app.config.general.server_id = server_id
                     sickrage.app.config.save()
             else:
-                sickrage.app.api.account.update_server(sickrage.app.config.server_id, connections)
+                sickrage.app.api.account.update_server(sickrage.app.config.general.server_id, connections)
 
-            redirect_uri = self.get_argument('next', "/{}/".format(sickrage.app.config.default_page))
+            redirect_uri = self.get_argument('next', "/{}/".format(sickrage.app.config.general.default_page.value))
             return self.redirect("{}".format(redirect_uri))
         else:
             authorization_url = sickrage.app.auth_server.authorization_url(redirect_uri=redirect_uri, scope="profile email offline_access")
@@ -180,8 +180,8 @@ class LoginHandler(BaseHandler, ABC):
         password = self.get_argument('password', '')
         remember_me = self.get_argument('remember_me', None)
 
-        if username == sickrage.app.config.web_username and password == sickrage.app.config.web_password:
-            self.set_secure_cookie('_sr', sickrage.app.config.api_key, expires_days=30 if remember_me else 1)
-            return self.redirect("{}".format(self.get_argument('next', "/{}/".format(sickrage.app.config.default_page))))
+        if username == sickrage.app.config.user.username and password == sickrage.app.config.user.password:
+            self.set_secure_cookie('_sr', sickrage.app.config.general.api_v1_key, expires_days=30 if remember_me else 1)
+            return self.redirect("{}".format(self.get_argument('next', "/{}/".format(sickrage.app.config.general.default_page.value))))
 
         return self.redirect("/login")

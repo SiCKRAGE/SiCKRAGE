@@ -40,7 +40,7 @@ class SubtitleSearcher(object):
         self.running = False
 
     def task(self, force=False):
-        if self.running or not sickrage.app.config.use_subtitles and not force:
+        if self.running or not sickrage.app.config.subtitles.enable and not force:
             return
 
         try:
@@ -72,13 +72,14 @@ class SubtitleSearcher(object):
                 if s.subtitles != 1:
                     continue
 
-                for e in session.query(MainDB.TVEpisode).filter_by(showid=s.indexer_id).filter(MainDB.TVEpisode.location != '', ~MainDB.TVEpisode.subtitles.in_(
+                for e in session.query(MainDB.TVEpisode).filter_by(series_id=s.series_id).filter(MainDB.TVEpisode.location != '', ~MainDB.TVEpisode.subtitles.in_(
                         Subtitles().wanted_languages()), or_(MainDB.TVEpisode.subtitles_searchcount <= 2,
                                                              and_(MainDB.TVEpisode.subtitles_searchcount <= 7,
                                                                   datetime.date.today() - MainDB.TVEpisode.airdate))):
                     results += [{
                         'show_name': s.name,
-                        'show_id': s.indexer_id,
+                        'series_id': s.series_id,
+                        'series_provider_id': s.series_provider_id,
                         'season': e.season,
                         'episode': e.episode,
                         'status': e.status,
@@ -94,7 +95,7 @@ class SubtitleSearcher(object):
                 return
 
             for epToSub in results:
-                show_object = find_show(epToSub['show_id'])
+                show_object = find_show(epToSub['series_id'], epToSub['series_provider_id'])
                 episode_object = show_object.get_episode(epToSub['season'], epToSub['episode'])
 
                 if not os.path.isfile(epToSub['location']):
@@ -102,10 +103,9 @@ class SubtitleSearcher(object):
                                            'subtitles for episode %dx%d of show %s' % (episode_object.season, episode_object.episode, epToSub['show_name']))
                     continue
 
-                if ((epToSub['airdate_daydiff'] > 7 and epToSub['searchcount'] < 2 and now - datetime.datetime.fromordinal(
-                        epToSub['lastsearch']) > datetime.timedelta(hours=rules['old'][epToSub['searchcount']])) or
+                if ((epToSub['airdate_daydiff'] > 7 and epToSub['searchcount'] < 2 and now - epToSub['lastsearch'] > datetime.timedelta(hours=rules['old'][epToSub['searchcount']])) or
                         (epToSub['airdate_daydiff'] <= 7 and epToSub['searchcount'] < 7 and
-                         now - datetime.datetime.fromordinal(epToSub['lastsearch']) > datetime.timedelta(hours=rules['new'][epToSub['searchcount']]))):
+                         now - epToSub['lastsearch'] > datetime.timedelta(hours=rules['new'][epToSub['searchcount']]))):
 
                     sickrage.app.log.debug('Downloading subtitles for '
                                            'episode %dx%d of show %s' % (episode_object.season, episode_object.episode, epToSub['show_name']))

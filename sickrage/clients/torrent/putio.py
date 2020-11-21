@@ -49,11 +49,11 @@ class PutioAPI(TorrentClient):
 
         self.auth = None
 
-        response = self.session.post(self.url, data=post_data, verify=bool(sickrage.app.config.torrent_verify_cert))
+        response = self.session.post(self.url, data=post_data, verify=bool(sickrage.app.config.torrent.verify_cert))
         if not response:
             return None
 
-        response = self.session.get(response.headers['location'], verify=bool(sickrage.app.config.torrent_verify_cert))
+        response = self.session.get(response.headers['location'], verify=bool(sickrage.app.config.torrent.verify_cert))
         if not response:
             return None
 

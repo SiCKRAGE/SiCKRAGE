@@ -45,7 +45,7 @@ class DownloadStationAPI(TorrentClient):
         self.url = self.urls['task']
 
         self.checked_destination = False
-        self.destination = sickrage.app.config.torrent_path
+        self.destination = sickrage.app.config.torrent.path
 
         self.post_task = {
             'method': 'create',
@@ -123,7 +123,7 @@ class DownloadStationAPI(TorrentClient):
             'format': 'cookie'
         }
 
-        self.response = self.session.get(self.urls['auth'], params=params, verify=bool(sickrage.app.config.torrent_verify_cert))
+        self.response = self.session.get(self.urls['auth'], params=params, verify=bool(sickrage.app.config.torrent.verify_cert))
         if not self.response:
             self.session.cookies.clear()
             self.auth = False
@@ -148,7 +148,7 @@ class DownloadStationAPI(TorrentClient):
 
     def _check_destination(self):
         """Validate and set torrent destination."""
-        torrent_path = sickrage.app.config.torrent_path
+        torrent_path = sickrage.app.config.torrent.path
 
         if not (self.auth or self._get_auth()):
             return False

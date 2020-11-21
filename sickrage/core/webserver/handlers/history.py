@@ -33,15 +33,15 @@ class HistoryHandler(BaseHandler, ABC):
         limit = self.get_argument('limit', None)
 
         if limit is None:
-            if sickrage.app.config.history_limit:
-                limit = int(sickrage.app.config.history_limit)
+            if sickrage.app.config.gui.history_limit:
+                limit = int(sickrage.app.config.gui.history_limit)
             else:
                 limit = 100
         else:
             limit = int(limit)
 
-        if sickrage.app.config.history_limit != limit:
-            sickrage.app.config.history_limit = limit
+        if sickrage.app.config.gui.history_limit != limit:
+            sickrage.app.config.gui.history_limit = limit
             sickrage.app.config.save()
 
         compact = []
@@ -55,7 +55,7 @@ class HistoryHandler(BaseHandler, ABC):
                 'time': row['date']
             }
 
-            if not any((history['show_id'] == row['show_id'] and
+            if not any((history['series_id'] == row['series_id'] and
                         history['season'] == row['season'] and
                         history['episode'] == row['episode'] and
                         history['quality'] == row['quality']) for history in compact):
@@ -66,14 +66,14 @@ class HistoryHandler(BaseHandler, ABC):
                     'resource': row['resource'],
                     'season': row['season'],
                     'episode': row['episode'],
-                    'show_id': row['show_id'],
+                    'series_id': row['series_id'],
                     'show_name': row['show_name']
                 }
 
                 compact.append(history)
             else:
                 index = [i for i, item in enumerate(compact)
-                         if item['show_id'] == row['show_id'] and
+                         if item['series_id'] == row['series_id'] and
                          item['season'] == row['season'] and
                          item['episode'] == row['episode'] and
                          item['quality'] == row['quality']][0]

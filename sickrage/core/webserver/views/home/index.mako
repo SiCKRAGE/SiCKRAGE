@@ -9,19 +9,20 @@
     import sickrage
     from sickrage.core.tv.show.helpers import get_show_list
     from sickrage.core.helpers import srdatetime, pretty_file_size
-    from sickrage.core.media.util import showImage
+    from sickrage.core.media.util import series_image, SeriesImageType
+    from sickrage.core.enums import HomeLayout, PosterSortBy, PosterSortDirection
 %>
 
 <%block name="sub_navbar">
     <div class="row submenu">
         <div class="col text-left">
             <div class="form-inline m-2">
-                % if sickrage.app.config.home_layout == 'poster':
+                % if sickrage.app.config.gui.home_layout == HomeLayout.POSTER:
                     <div class="px-1">
                         <select id="postersort" class="form-control bg-secondary text-white-50" style="border: none;">
-                            <option value="name"
-                                    data-sort="${srWebRoot}/setPosterSortBy/?sort=name" ${('', 'selected')[sickrage.app.config.poster_sortby == 'name']}>
-                                ${_('Name')}
+                            <option value="${PosterSortBy.NAME.name}"
+                                    data-sort="${srWebRoot}/setPosterSortBy/?sort=${PosterSortBy.NAME.name}" ${('', 'selected')[sickrage.app.config.gui.poster_sort_by == PosterSortBy.NAME]}>
+                                ${PosterSortBy.NAME.display_name}
                             </option>
                         </select>
                     </div>
@@ -29,13 +30,13 @@
                     <div class="px-1">
                         <select id="postersortdirection" class="form-control bg-secondary text-white-50"
                                 style="border: none;">
-                            <option value="true"
-                                    data-sort="${srWebRoot}/setPosterSortDir/?direction=1" ${('', 'selected')[sickrage.app.config.poster_sortdir == 1]}>
-                                ${_('Asc')}
+                            <option value="${PosterSortDirection.ASCENDING.name}"
+                                    data-sort="${srWebRoot}/setPosterSortDir/?direction=${PosterSortDirection.ASCENDING.name}" ${('', 'selected')[sickrage.app.config.gui.poster_sort_dir == PosterSortDirection.ASCENDING]}>
+                                ${PosterSortDirection.ASCENDING.display_name}
                             </option>
-                            <option value="false"
-                                    data-sort="${srWebRoot}/setPosterSortDir/?direction=0" ${('', 'selected')[sickrage.app.config.poster_sortdir == 0]}>
-                                ${_('Desc')}
+                            <option value="${PosterSortDirection.DESCENDING.name}"
+                                    data-sort="${srWebRoot}/setPosterSortDir/?direction=${PosterSortDirection.DESCENDING.name}" ${('', 'selected')[sickrage.app.config.gui.poster_sort_dir == PosterSortDirection.DESCENDING]}>
+                                ${PosterSortDirection.DESCENDING.display_name}
                             </option>
                         </select>
                     </div>
@@ -44,7 +45,7 @@
         </div>
         <div class="col text-right">
             <div class="form-inline d-inline-flex">
-                % if sickrage.app.config.home_layout != 'poster':
+                % if sickrage.app.config.gui.home_layout != HomeLayout.POSTER:
                     <div class="dropdown ml-4">
                         <button id="popover" type="button" class="btn bg-transparent dropdown-toggle"
                                 style="border: none;">
@@ -52,30 +53,30 @@
                         </button>
                     </div>
                 % endif
-                % if sickrage.app.config.home_layout == 'poster':
+                % if sickrage.app.config.gui.home_layout == HomeLayout.POSTER:
                     <div style="width: 100px" id="posterSizeSlider"></div>
                 % endif
                 <div class="dropdown ml-4">
                     <button type="button" class="btn bg-transparent dropdown-toggle" data-toggle="dropdown"
                             style="border: none;">
-                        % if sickrage.app.config.home_layout == 'poster':
+                        % if sickrage.app.config.gui.home_layout == HomeLayout.POSTER:
                             <i class="fas fa-2x fa-th-large"></i>
-                        % elif sickrage.app.config.home_layout == 'small':
+                        % elif sickrage.app.config.gui.home_layout == HomeLayout.SMALL:
                             <i class="fas fa-2x fa-th"></i>
-                        % elif sickrage.app.config.home_layout == 'banner':
+                        % elif sickrage.app.config.gui.home_layout == HomeLayout.BANNER:
                             <i class="fas fa-2x fa-image"></i>
-                        % elif sickrage.app.config.home_layout == 'detailed':
+                        % elif sickrage.app.config.gui.home_layout == HomeLayout.DETAILED:
                             <i class="fas fa-2x fa-list"></i>
-                        % elif sickrage.app.config.home_layout == 'simple':
+                        % elif sickrage.app.config.gui.home_layout == HomeLayout.SIMPLE:
                             <i class="fas fa-2x fa-list"></i>
                         % endif
                     </button>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=poster">Poster</a>
-                        <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=small">Small Poster</a>
-                        <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=banner">Banner</a>
-                        <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=detailed">Detailed</a>
-                        <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=simple">Simple</a>
+                        <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=${HomeLayout.POSTER.name}}">Poster</a>
+                        <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=${HomeLayout.SMALL.name}}">Small Poster</a>
+                        <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=${HomeLayout.BANNER.name}}">Banner</a>
+                        <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=${HomeLayout.DETAILED.name}}">Detailed</a>
+                        <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=${HomeLayout.SIMPLE.name}}">Simple</a>
                     </div>
                 </div>
             </div>
@@ -99,24 +100,24 @@
                     </div>
                 </div>
             % endif
-            % if sickrage.app.config.home_layout == 'poster':
-                <div id="${('container', 'container-anime')[curListType == 'Anime' and sickrage.app.config.home_layout == 'poster']}"
+            % if sickrage.app.config.gui.home_layout == HomeLayout.POSTER:
+                <div id="${('container', 'container-anime')[curListType == 'Anime' and sickrage.app.config.gui.home_layout == HomeLayout.POSTER]}"
                      class="show-grid clearfix mx-auto d-none">
                     <div class="posterview">
                         % for curShow in curShowlist:
-                            <div class="show-container" id="show${curShow.indexer_id}" data-name="${curShow.name}">
+                            <div class="show-container" id="show${curShow.series_id}" data-name="${curShow.name}">
                                 <div class="card card-block text-white bg-dark m-1 shadow">
-                                    <a href="${srWebRoot}/home/displayShow?show=${curShow.indexer_id}">
+                                    <a href="${srWebRoot}/home/displayShow?show=${curShow.series_id}">
                                         <img alt="" class="card-img-top"
-                                             src="${srWebRoot}${showImage(curShow.indexer_id, 'poster').url}"/>
+                                             src="${srWebRoot}${series_image(curShow.series_id, curShow.series_provider_id, SeriesImageType.POSTER).url}"/>
                                     </a>
                                     <div class="card-header bg-dark py-0 px-0">
-                                        % if sickrage.app.show_queue.is_being_added(curShow.indexer_id):
+                                        % if sickrage.app.show_queue.is_being_added(curShow.series_id):
                                             <div class="bg-dark progress shadow rounded-0"></div>
                                         % else:
                                             <div class="bg-dark progress shadow rounded-0">
                                                 <div class="progress-bar d-print-none"
-                                                     data-show-id="${curShow.indexer_id}">
+                                                     data-show-id="${curShow.series_id}">
                                                 </div>
                                             </div>
                                         % endif
@@ -138,12 +139,12 @@
                             <table class="table" id="showListTable${curListType}">
                                 <thead class="thead-dark">
                                 <tr>
-                                    % if sickrage.app.config.home_layout != 'simple':
+                                    % if sickrage.app.config.gui.home_layout != HomeLayout.SIMPLE:
                                         <th>${_('Next Ep')}</th>
                                         <th>${_('Prev Ep')}</th>
                                     % endif
                                     <th>${_('Show')}</th>
-                                    % if sickrage.app.config.home_layout != 'simple':
+                                    % if sickrage.app.config.gui.home_layout != HomeLayout.SIMPLE:
                                         <th>${_('Network')}</th>
                                         <th>${_('Quality')}</th>
                                         <th>${_('Downloads')}</th>
@@ -156,7 +157,7 @@
 
                                 <tbody class="">
                                     % for curShow in curShowlist:
-                                        % if sickrage.app.config.home_layout != 'simple':
+                                        % if sickrage.app.config.gui.home_layout != HomeLayout.SIMPLE:
                                             <%
                                                 cur_airs_next = curShow.airs_next
                                                 cur_airs_prev = curShow.airs_prev
@@ -171,7 +172,7 @@
                                             %>
                                         % endif
                                         <tr>
-                                            % if sickrage.app.config.home_layout != 'simple':
+                                            % if sickrage.app.config.gui.home_layout != HomeLayout.SIMPLE:
                                                 % if cur_airs_next > datetime.date.min:
                                                 <% airDate = srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
                                                 % try:
@@ -187,7 +188,7 @@
                                                 % endif
                                             % endif
 
-                                            % if sickrage.app.config.home_layout != 'simple':
+                                            % if sickrage.app.config.gui.home_layout != HomeLayout.SIMPLE:
                                                 % if cur_airs_prev > datetime.date.min:
                                                 <% airDate = srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_prev, curShow.airs, curShow.network), convert=True).dt %>
                                                 % try:
@@ -204,35 +205,35 @@
                                                 % endif
                                             % endif
 
-                                            % if sickrage.app.config.home_layout == 'small':
+                                            % if sickrage.app.config.gui.home_layout == HomeLayout.SMALL:
                                                 <td class="tvShow">
-                                                    <a href="${srWebRoot}/home/displayShow?show=${curShow.indexer_id}"
+                                                    <a href="${srWebRoot}/home/displayShow?show=${curShow.series_id}"
                                                        title="${curShow.name}">
-                                                        <img src="${srWebRoot}${showImage(curShow.indexer_id, 'poster_thumb').url}"
+                                                        <img src="${srWebRoot}${series_image(curShow.series_id, curShow.series_provider_id, SeriesImageType.POSTER_THUMB).url}"
                                                              class="img-smallposter rounded shadow"
-                                                             alt="${curShow.indexer_id}"/>
+                                                             alt="${curShow.series_id}"/>
                                                         ${curShow.name}
                                                     </a>
                                                 </td>
-                                            % elif sickrage.app.config.home_layout == 'banner':
+                                            % elif sickrage.app.config.gui.home_layout == HomeLayout.BANNER:
                                                 <td class="table-fit tvShow">
                                                     <span class="d-none">${curShow.name}</span>
-                                                    <a href="${srWebRoot}/home/displayShow?show=${curShow.indexer_id}">
-                                                        <img src="${srWebRoot}${showImage(curShow.indexer_id, 'banner').url}"
+                                                    <a href="${srWebRoot}/home/displayShow?show=${curShow.series_id}">
+                                                        <img src="${srWebRoot}${series_image(curShow.series_id, curShow.series_provider_id, SeriesImageType.BANNER).url}"
                                                              class="img-banner rounded shadow"
-                                                             alt="${curShow.indexer_id}"
+                                                             alt="${curShow.series_id}"
                                                              title="${curShow.name}"/>
                                                     </a>
                                                 </td>
-                                            % elif sickrage.app.config.home_layout in ['detailed', 'simple']:
+                                            % elif sickrage.app.config.gui.home_layout in [HomeLayout.DETAILED, HomeLayout.SIMPLE]:
                                                 <td class="tvShow">
-                                                    <a href="${srWebRoot}/home/displayShow?show=${curShow.indexer_id}">
+                                                    <a href="${srWebRoot}/home/displayShow?show=${curShow.series_id}">
                                                         ${curShow.name}
                                                     </a>
                                                 </td>
                                             % endif
 
-                                            % if sickrage.app.config.home_layout not in ['detailed', 'simple']:
+                                            % if sickrage.app.config.gui.home_layout not in [HomeLayout.DETAILED, HomeLayout.SIMPLE]:
                                                 <td class="table-fit align-middle">
                                                     % if curShow.network:
                                                         <span title="${curShow.network}">
@@ -246,37 +247,37 @@
                                                         <span class="d-none d-print-inline">No Network</span>
                                                     % endif
                                                 </td>
-                                            % elif sickrage.app.config.home_layout == 'detailed':
+                                            % elif sickrage.app.config.gui.home_layout == HomeLayout.DETAILED:
                                                 <td class="table-fit">
                                                     <span title="${curShow.network}">${curShow.network}</span>
                                                 </td>
                                             % endif
 
-                                            % if sickrage.app.config.home_layout != 'simple':
+                                            % if sickrage.app.config.gui.home_layout != HomeLayout.SIMPLE:
                                                 <td class="table-fit align-middle">${renderQualityPill(curShow.quality, showTitle=True)}</td>
                                             % endif
 
-                                            % if sickrage.app.config.home_layout != 'simple':
+                                            % if sickrage.app.config.gui.home_layout != HomeLayout.SIMPLE:
                                                 <td class="align-middle">
-                                                    % if sickrage.app.show_queue.is_being_added(curShow.indexer_id):
+                                                    % if sickrage.app.show_queue.is_being_added(curShow.series_id):
                                                         <div class="bg-dark progress shadow"></div>
                                                     % else:
                                                         <div class="bg-dark progress shadow">
                                                             <div class="progress-bar d-print-none"
-                                                                 data-show-id="${curShow.indexer_id}">
+                                                                 data-show-id="${curShow.series_id}">
                                                             </div>
                                                         </div>
                                                     % endif
                                                 </td>
                                             % endif
 
-                                            % if sickrage.app.config.home_layout != 'simple':
+                                            % if sickrage.app.config.gui.home_layout != HomeLayout.SIMPLE:
                                                 <td class="table-fit align-middle" data-show-size="${show_size}">
                                                     ${pretty_file_size(show_size)}
                                                 </td>
                                             % endif
 
-                                            % if sickrage.app.config.home_layout != 'simple':
+                                            % if sickrage.app.config.gui.home_layout != HomeLayout.SIMPLE:
                                                 <td class="table-fit align-middle">
                                                     <i class="fa ${("fa-times text-danger", "fa-check text-success")[not bool(curShow.paused)]}"></i>
                                                     <span class="d-none d-print-inline">${('No', 'Yes')[not bool(curShow.paused)]}</span>

@@ -55,7 +55,7 @@
                             <div class="card-header">
                                 <h3>
                                     <b>${_('Find Propers Search:')}</b><br/>
-                                    % if not sickrage.app.config.download_propers:
+                                    % if not sickrage.app.config.general.download_propers:
                                         ${_('Propers search disabled')}
                                     % elif not findPropersStatus:
                                         ${_('Not in progress')}
@@ -65,7 +65,7 @@
                                 </h3>
                             </div>
                             <div class="card-body">
-                                <a class="btn ${('disabled', '')[bool(sickrage.app.config.download_propers)]}"
+                                <a class="btn ${('disabled', '')[bool(sickrage.app.config.general.download_propers)]}"
                                    href="${srWebRoot}/manage/manageQueues/forceFindPropers">
                                     <i class="fa fa-exclamation-triangle"></i> Force
                                 </a>

@@ -1,10 +1,9 @@
 <%inherit file="../layouts/main.mako"/>
 <%!
     import sickrage
-    from sickrage.indexers import IndexerApi
     import adba
-    from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import statusStrings, Quality, SearchFormats
+    from sickrage.core.common import Quality, EpisodeStatus
+    from sickrage.core.enums import SearchFormat
 %>
 
 <%block name="metas">
@@ -48,7 +47,7 @@
                                             <label class="component-title">${_('Show Location')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                            <input type="hidden" name="show" value="${show.indexer_id}"/>
+                                            <input type="hidden" name="show" value="${show.series_id}"/>
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><span
@@ -92,8 +91,8 @@
                                                 <select name="defaultEpStatus" id="defaultEpStatusSelect"
                                                         title="This will set the status for future episodes."
                                                         class="form-control">
-                                                    % for curStatus in [WANTED, SKIPPED, IGNORED]:
-                                                        <option value="${curStatus}" ${('', 'selected')[curStatus == show.default_ep_status]}>${statusStrings[curStatus]}</option>
+                                                    % for item in [EpisodeStatus.WANTED, EpisodeStatus.SKIPPED, EpisodeStatus.IGNORED]:
+                                                        <option value="${item.name}" ${('', 'selected')[item == show.default_ep_status]}>${item.display_name}</option>
                                                     % endfor
                                                 </select>
                                             </div>
@@ -115,16 +114,16 @@
                                                     <span class="input-group-text"><span
                                                             class="fas fa-language"></span></span>
                                                 </div>
-                                                <select name="indexerLang" id="indexerLangSelect" class="form-control"
+                                                <select name="seriesProviderLanguage" id="seriesProviderLangSelect" class="form-control"
                                                         title="${_('Choose language')}">
-                                                    % for language in IndexerApi().indexer().languages():
-                                                        <option value="${language['abbreviation']}" ${('', 'selected')[sickrage.app.config.indexer_default_language == language['abbreviation']]}>
+                                                    % for language in show.series_provider.languages():
+                                                        <option value="${language['abbreviation']}" ${('', 'selected')[sickrage.app.config.general.series_provider_default_language == language['abbreviation']]}>
                                                             ${language['englishname']}
                                                         </option>
                                                     % endfor
                                                 </select>
                                             </div>
-                                            <label class="text-info" for="indexerLangSelect">
+                                            <label class="text-info" for="seriesProviderLangSelect">
                                                 ${_('Language to translate show information into')}
                                             </label>
                                         </div>
@@ -141,7 +140,7 @@
                                                 <input type="checkbox" class="toggle color-primary is-material"
                                                        id="scene"
                                                        name="scene" ${('', 'checked')[bool(show.scene)]} />
-                                                ${_('use scene numbering instead of indexer numbering')}
+                                                ${_('use scene numbering instead of series provider numbering')}
                                             </label>
                                         </div>
                                     </div>
@@ -160,7 +159,7 @@
                                         </div>
                                     </div>
 
-                                    % if sickrage.app.config.use_subtitles:
+                                    % if sickrage.app.config.subtitles.enable:
                                         <div class="form-row form-group">
                                             <div class="col-lg-3 col-md-4 col-sm-5">
                                                 <label class="component-title">${_('Subtitles')}</label>
@@ -169,7 +168,7 @@
                                                 <label for="subtitles">
                                                     <input type="checkbox" class="toggle color-primary is-material"
                                                            id="subtitles"
-                                                           name="subtitles" ${('', 'checked')[all([show.subtitles,sickrage.app.config.use_subtitles])]}${('disabled="disabled"', '')[bool(sickrage.app.config.use_subtitles)]}/>
+                                                           name="subtitles" ${('', 'checked')[all([show.subtitles,sickrage.app.config.subtitles.enable])]}${('disabled="disabled"', '')[bool(sickrage.app.config.subtitles.enable)]}/>
                                                     ${_('search for subtitles')}
                                                 </label>
                                             </div>
@@ -245,8 +244,8 @@
                                                 </div>
                                                 <select id="search_format" name="search_format"
                                                         class="form-control">
-                                                    % for search_format, search_format_string in SearchFormats.search_format_strings.items():
-                                                        <option value="${search_format}" ${('', 'selected')[show.search_format == search_format]}>${search_format_string}</option>
+                                                    % for item in SearchFormat:
+                                                        <option value="${item.name}" ${('', 'selected')[show.search_format == item]}>${item.display_name}</option>
                                                     % endfor
                                                 </select>
                                             </div>
@@ -258,10 +257,10 @@
                                             <label class="component-title">${_('DVD Order')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                            <label class="mb-0" for="dvdorder">
+                                            <label class="mb-0" for="dvd_order">
                                                 <input type="checkbox" class="toggle color-primary is-material"
-                                                       id="dvdorder"
-                                                       name="dvdorder" ${('', 'checked')[show.dvdorder == 1]} />
+                                                       id="dvd_order"
+                                                       name="dvd_order" ${('', 'checked')[show.dvd_order == 1]} />
                                                 ${_('use the DVD order instead of the air order')}
                                             </label>
                                             <div class="text-info">
@@ -279,7 +278,7 @@
                                             <label for="season_folders">
                                                 <input type="checkbox" class="toggle color-primary is-material"
                                                        id="season_folders"
-                                                       name="flatten_folders" ${('', 'checked')[bool(not show.flatten_folders or sickrage.app.config.naming_force_folders)]} ${('', 'disabled="disabled"')[bool(sickrage.app.config.naming_force_folders)]}/>
+                                                       name="flatten_folders" ${('', 'checked')[bool(not show.flatten_folders or sickrage.app.naming_force_folders)]} ${('', 'disabled="disabled"')[bool(sickrage.app.naming_force_folders)]}/>
                                                 ${_('group episodes by season folder (uncheck to store in a single folder)')}
                                             </label>
                                         </div>

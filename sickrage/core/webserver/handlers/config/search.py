@@ -25,8 +25,11 @@ from abc import ABC
 from tornado.web import authenticated
 
 import sickrage
+from sickrage.core.config.helpers import change_nzb_dir, change_torrent_dir, change_failed_snatch_age, change_daily_searcher_freq, \
+    change_backlog_searcher_freq
+from sickrage.core.enums import NzbMethod, TorrentMethod, CheckPropersInterval
 from sickrage.core.helpers import checkbox_to_value, try_int, clean_url, clean_host, torrent_webui_url
-from sickrage.core.webserver import ConfigHandler
+from sickrage.core.webserver import ConfigWebHandler
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
@@ -34,7 +37,7 @@ class ConfigSearchHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
         return self.render('config/search.mako',
-                           submenu=ConfigHandler.menu,
+                           submenu=ConfigWebHandler.menu,
                            title=_('Config - Search Clients'),
                            header=_('Search Clients'),
                            topmenu='config',
@@ -92,7 +95,7 @@ class SaveSearchHandler(BaseHandler, ABC):
         torrent_seed_time = self.get_argument('torrent_seed_time', None)
         torrent_paused = self.get_argument('torrent_paused', None)
         torrent_high_bandwidth = self.get_argument('torrent_high_bandwidth', None)
-        torrent_rpcurl = self.get_argument('torrent_rpcurl', None)
+        torrent_rpc_url = self.get_argument('torrent_rpc_url', None)
         torrent_auth_type = self.get_argument('torrent_auth_type', None)
         ignore_words = self.get_argument('ignore_words', None)
         require_words = self.get_argument('require_words', None)
@@ -104,66 +107,67 @@ class SaveSearchHandler(BaseHandler, ABC):
 
         results = []
 
-        if not sickrage.app.config.change_nzb_dir(nzb_dir):
+        if not change_nzb_dir(nzb_dir):
             results += [_("Unable to create directory ") + os.path.normpath(nzb_dir) + _(", dir not changed.")]
 
-        if not sickrage.app.config.change_torrent_dir(torrent_dir):
+        if not change_torrent_dir(torrent_dir):
             results += [_("Unable to create directory ") + os.path.normpath(torrent_dir) + _(", dir not changed.")]
 
-        sickrage.app.config.change_failed_snatch_age(failed_snatch_age)
-        sickrage.app.config.use_failed_snatcher = checkbox_to_value(use_failed_snatcher)
-        sickrage.app.config.change_daily_searcher_freq(dailysearch_frequency)
-        sickrage.app.config.change_backlog_searcher_freq(backlog_frequency)
-        sickrage.app.config.use_nzbs = checkbox_to_value(use_nzbs)
-        sickrage.app.config.use_torrents = checkbox_to_value(use_torrents)
-        sickrage.app.config.nzb_method = nzb_method
-        sickrage.app.config.torrent_method = torrent_method
-        sickrage.app.config.usenet_retention = try_int(usenet_retention, 500)
-        sickrage.app.config.ignore_words = ignore_words if ignore_words else ""
-        sickrage.app.config.require_words = require_words if require_words else ""
-        sickrage.app.config.ignored_subs_list = ignored_subs_list if ignored_subs_list else ""
-        sickrage.app.config.randomize_providers = checkbox_to_value(randomize_providers)
-        sickrage.app.config.enable_rss_cache = checkbox_to_value(enable_rss_cache)
-        sickrage.app.config.torrent_file_to_magnet = checkbox_to_value(torrent_file_to_magnet)
-        sickrage.app.config.torrent_magnet_to_file = checkbox_to_value(torrent_magnet_to_file)
-        sickrage.app.config.download_unverified_magnet_link = checkbox_to_value(download_unverified_magnet_link)
-        sickrage.app.config.download_propers = checkbox_to_value(download_propers)
-        sickrage.app.config.proper_searcher_interval = check_propers_interval
-        sickrage.app.config.allow_high_priority = checkbox_to_value(allow_high_priority)
-        sickrage.app.config.sab_username = sab_username
-        sickrage.app.config.sab_password = sab_password
-        sickrage.app.config.sab_apikey = sab_apikey.strip()
-        sickrage.app.config.sab_category = sab_category
-        sickrage.app.config.sab_category_backlog = sab_category_backlog
-        sickrage.app.config.sab_category_anime = sab_category_anime
-        sickrage.app.config.sab_category_anime_backlog = sab_category_anime_backlog
-        sickrage.app.config.sab_host = clean_url(sab_host)
-        sickrage.app.config.sab_forced = checkbox_to_value(sab_forced)
-        sickrage.app.config.nzbget_username = nzbget_username
-        sickrage.app.config.nzbget_password = nzbget_password
-        sickrage.app.config.nzbget_category = nzbget_category
-        sickrage.app.config.nzbget_category_backlog = nzbget_category_backlog
-        sickrage.app.config.nzbget_category_anime = nzbget_category_anime
-        sickrage.app.config.nzbget_category_anime_backlog = nzbget_category_anime_backlog
-        sickrage.app.config.nzbget_host = clean_host(nzbget_host)
-        sickrage.app.config.nzbget_use_https = checkbox_to_value(nzbget_use_https)
-        sickrage.app.config.nzbget_priority = try_int(nzbget_priority, 100)
-        sickrage.app.config.syno_dsm_host = clean_host(syno_dsm_host)
-        sickrage.app.config.syno_dsm_username = syno_dsm_username
-        sickrage.app.config.syno_dsm_password = syno_dsm_password
-        sickrage.app.config.syno_dsm_path = syno_dsm_path.rstrip('/\\')
-        sickrage.app.config.torrent_username = torrent_username
-        sickrage.app.config.torrent_password = torrent_password
-        sickrage.app.config.torrent_label = torrent_label
-        sickrage.app.config.torrent_label_anime = torrent_label_anime
-        sickrage.app.config.torrent_verify_cert = checkbox_to_value(torrent_verify_cert)
-        sickrage.app.config.torrent_path = torrent_path.rstrip('/\\')
-        sickrage.app.config.torrent_seed_time = torrent_seed_time
-        sickrage.app.config.torrent_paused = checkbox_to_value(torrent_paused)
-        sickrage.app.config.torrent_high_bandwidth = checkbox_to_value(torrent_high_bandwidth)
-        sickrage.app.config.torrent_host = clean_url(torrent_host)
-        sickrage.app.config.torrent_rpcurl = torrent_rpcurl
-        sickrage.app.config.torrent_auth_type = torrent_auth_type
+        change_failed_snatch_age(failed_snatch_age)
+        change_daily_searcher_freq(dailysearch_frequency)
+        change_backlog_searcher_freq(backlog_frequency)
+
+        sickrage.app.config.failed_snatches.enable = checkbox_to_value(use_failed_snatcher)
+        sickrage.app.config.general.use_nzbs = checkbox_to_value(use_nzbs)
+        sickrage.app.config.general.use_torrents = checkbox_to_value(use_torrents)
+        sickrage.app.config.general.nzb_method = NzbMethod[nzb_method]
+        sickrage.app.config.general.torrent_method = TorrentMethod[torrent_method]
+        sickrage.app.config.general.usenet_retention = try_int(usenet_retention, 500)
+        sickrage.app.config.general.ignore_words = ignore_words if ignore_words else ""
+        sickrage.app.config.general.require_words = require_words if require_words else ""
+        sickrage.app.config.general.ignored_subs_list = ignored_subs_list if ignored_subs_list else ""
+        sickrage.app.config.general.randomize_providers = checkbox_to_value(randomize_providers)
+        sickrage.app.config.general.enable_rss_cache = checkbox_to_value(enable_rss_cache)
+        sickrage.app.config.general.torrent_file_to_magnet = checkbox_to_value(torrent_file_to_magnet)
+        sickrage.app.config.general.torrent_magnet_to_file = checkbox_to_value(torrent_magnet_to_file)
+        sickrage.app.config.general.download_unverified_magnet_link = checkbox_to_value(download_unverified_magnet_link)
+        sickrage.app.config.general.download_propers = checkbox_to_value(download_propers)
+        sickrage.app.config.general.proper_searcher_interval = CheckPropersInterval[check_propers_interval]
+        sickrage.app.config.general.allow_high_priority = checkbox_to_value(allow_high_priority)
+        sickrage.app.config.sabnzbd.username = sab_username
+        sickrage.app.config.sabnzbd.password = sab_password
+        sickrage.app.config.sabnzbd.apikey = sab_apikey.strip()
+        sickrage.app.config.sabnzbd.category = sab_category
+        sickrage.app.config.sabnzbd.category_backlog = sab_category_backlog
+        sickrage.app.config.sabnzbd.category_anime = sab_category_anime
+        sickrage.app.config.sabnzbd.category_anime_backlog = sab_category_anime_backlog
+        sickrage.app.config.sabnzbd.host = clean_url(sab_host)
+        sickrage.app.config.sabnzbd.forced = checkbox_to_value(sab_forced)
+        sickrage.app.config.nzbget.username = nzbget_username
+        sickrage.app.config.nzbget.password = nzbget_password
+        sickrage.app.config.nzbget.category = nzbget_category
+        sickrage.app.config.nzbget.category_backlog = nzbget_category_backlog
+        sickrage.app.config.nzbget.category_anime = nzbget_category_anime
+        sickrage.app.config.nzbget.category_anime_backlog = nzbget_category_anime_backlog
+        sickrage.app.config.nzbget.host = clean_host(nzbget_host)
+        sickrage.app.config.nzbget.use_https = checkbox_to_value(nzbget_use_https)
+        sickrage.app.config.nzbget.priority = try_int(nzbget_priority, 100)
+        sickrage.app.config.synology.host = clean_host(syno_dsm_host)
+        sickrage.app.config.synology.username = syno_dsm_username
+        sickrage.app.config.synology.password = syno_dsm_password
+        sickrage.app.config.synology.path = syno_dsm_path.rstrip('/\\')
+        sickrage.app.config.torrent.username = torrent_username
+        sickrage.app.config.torrent.password = torrent_password
+        sickrage.app.config.torrent.label = torrent_label
+        sickrage.app.config.torrent.label_anime = torrent_label_anime
+        sickrage.app.config.torrent.verify_cert = checkbox_to_value(torrent_verify_cert)
+        sickrage.app.config.torrent.path = torrent_path.rstrip('/\\')
+        sickrage.app.config.torrent.seed_time = torrent_seed_time
+        sickrage.app.config.torrent.paused = checkbox_to_value(torrent_paused)
+        sickrage.app.config.torrent.high_bandwidth = checkbox_to_value(torrent_high_bandwidth)
+        sickrage.app.config.torrent.host = clean_url(torrent_host)
+        sickrage.app.config.torrent.rpc_url = torrent_rpc_url
+        sickrage.app.config.torrent.auth_type = torrent_auth_type
 
         torrent_webui_url(reset=True)
 
@@ -173,6 +177,6 @@ class SaveSearchHandler(BaseHandler, ABC):
             [sickrage.app.log.error(x) for x in results]
             sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.app.alerts.message(_('[SEARCH] Configuration Encrypted and Saved to disk'))
+            sickrage.app.alerts.message(_('[SEARCH] Configuration Saved to Database'))
 
         return self.redirect("/config/search/")

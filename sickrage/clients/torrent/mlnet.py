@@ -33,7 +33,7 @@ class mlnetAPI(TorrentClient):
     def _get_auth(self):
         self.auth = None
 
-        self.response = self.session.get(self.host, auth=(self.username, self.password), verify=bool(sickrage.app.config.torrent_verify_cert))
+        self.response = self.session.get(self.host, auth=(self.username, self.password), verify=bool(sickrage.app.config.torrent.verify_cert))
         if self.response and self.response.text:
             self.auth = self.response.text
 

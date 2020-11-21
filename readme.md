@@ -16,7 +16,7 @@ Automatic Video Library Manager for TV Shows. It watches for new episodes of you
  - Searches TheTVDB.com and AniDB.net for shows, seasons, episodes, and metadata
  - Episode status management allows for mass failing seasons/episodes to force retrying
  - DVD Order numbering for returning the results in DVD order instead of Air-By-Date order
- - Allows you to choose which indexer to have SickRage search its show info from when importing
+ - Allows you to choose which series provider to have SiCKRAGE search its show info from when importing
  - Automatic XEM Scene Numbering/Naming for seasons/episodes
  - Available for any platform, uses a simple HTTP interface
  - Specials and multi-episode torrent/nzb support

@@ -99,8 +99,8 @@ class ListAssociatedFiles(tests.SiCKRAGETestCase):
         self.post_processor = PostProcessor('Show Name')
         self.post_processor._log = _log
         self.maxDiff = None
-        sickrage.app.config.move_associated_files = True
-        sickrage.app.config.allowed_extensions = ''
+        sickrage.app.config.general.move_associated_files = True
+        sickrage.app.config.general.allowed_extensions = ''
 
         make_dirs(self.test_tree)
         for test_file in self.file_list:

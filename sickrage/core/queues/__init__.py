@@ -64,6 +64,7 @@ class Queue(object):
         self.lock = threading.RLock()
         self.queue = deque([])
         self.tasks = {}
+        self.task_results = {}
         self.workers = []
         self.timer = None
         self.auto_remove_tasks_timer = None
@@ -137,7 +138,7 @@ class Queue(object):
 
     def auto_remove_tasks(self):
         for task in self.tasks.copy().values():
-            if task.status in [TaskStatus.FINISHED, TaskStatus.FAILED] and task.auto_remove:
+            if task.status in [TaskStatus.FINISHED, TaskStatus.FAILED]:
                 self.remove_task(task.id)
 
         self.auto_remove_tasks_timer = threading.Timer(10.0, self.auto_remove_tasks)
@@ -262,14 +263,8 @@ class Queue(object):
         finally:
             self.lock.release()
 
-    def get_result(self, task_id, remove=True):
-        task = self.tasks.get(task_id, None)
-        if task:
-            if remove and (task.status == TaskStatus.FINISHED or task.status == TaskStatus.FAILED):
-                sickrage.app.log.debug("Removing {} task {}".format(self.name, task_id))
-                self.tasks.pop(task_id)
-            return task.result
-        return TaskStatus.NOT_QUEUED
+    def get_result(self, task_id):
+        return self.task_results.pop(task_id) if task_id in self.task_results else None
 
     @property
     def is_busy(self):
@@ -330,6 +325,8 @@ class Worker(object):
             self.task.status = TaskStatus.STARTED
             self.task.result = self.task.run()
             self.task.status = TaskStatus.FINISHED
+            if self.task.result is not None:
+                self.queue.task_results[self.task.id] = self.task.result
             self.task.finish()
         except Exception as e:
             if self.task is not None:
@@ -366,7 +363,6 @@ class Task(object):
         self.result = None
         self.error_message = None
         self.depend = depend
-        self.auto_remove = True
 
     def run(self):
         pass

@@ -5,11 +5,12 @@
 
     import sickrage
     from sickrage.core.helpers import anon_url, srdatetime
-    from sickrage.core.media.util import indexerImage
+    from sickrage.core.media.util import series_provider_image
+    from sickrage.core.enums import SeriesProviderID
 %>
 
 <%block name="metas">
-    <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.app.config.sort_article}">
+    <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.app.config.general.sort_article}">
 </%block>
 
 <%block name="sub_navbar">
@@ -81,7 +82,7 @@
                     % else:
                         <div class="show-grid mx-auto">
                             % for cur_show in trakt_shows:
-                            <% indexer_id = cur_show.ids['tvdb'] %>
+                            <% series_id = cur_show.ids['tvdb'] %>
                             <% show_url = 'http://www.trakt.tv/shows/%s' % cur_show.ids['slug'] %>
                                 <div class="show-container" data-name="${cur_show.title}"
                                      data-rating="${cur_show.rating.value}" data-votes="${cur_show.votes}">
@@ -89,7 +90,7 @@
                                         <div class="card-header p-0">
                                             <a href="${anon_url(show_url)}" target="_blank">
                                                 <img class="card-img-top"
-                                                     src="${srWebRoot}${indexerImage(id=indexer_id, which="poster_thumb").url}"/>
+                                                     src="${srWebRoot}${series_provider_image(series_id=series_id, series_provider_id=SeriesProviderID.THETVDB, which="poster_thumb").url}"/>
                                             </a>
                                         </div>
                                         <div class="card-body text-truncate py-1 px-1 small">
@@ -104,10 +105,10 @@
                                             </div>
                                         </div>
                                         <div class="card-footer show-details p-1">
-                                            <a href="${srWebRoot}/home/addShows/addShowByID/?indexer_id=${indexer_id}&showName=${cur_show.title}"
+                                            <a href="${srWebRoot}/home/addShows/addShowByID/?series_id=${series_id}&showName=${cur_show.title}"
                                                class="btn btn-sm" data-no-redirect>${_('Add Show')}</a>
                                             % if black_list:
-                                                <a href="${srWebRoot}/addShows/addShowToBlacklist?indexer_id=${indexer_id}"
+                                                <a href="${srWebRoot}/addShows/addShowToBlacklist?series_id=${series_id}"
                                                    class="btn btn-sm">${_('Remove Show')}</a>
                                             % endif
                                         </div>

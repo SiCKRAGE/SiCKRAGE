@@ -31,7 +31,7 @@ import alembic.script
 import sqlalchemy
 from alembic.runtime.migration import MigrationContext
 from alembic.script import ScriptDirectory
-from sqlalchemy import create_engine, event, inspect, MetaData, Index
+from sqlalchemy import create_engine, event, inspect, MetaData, Index, TypeDecorator
 from sqlalchemy.engine import Engine, reflection
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.ext.automap import automap_base
@@ -64,6 +64,19 @@ def instant_defaults_listener(target, args, kwargs):
                 setattr(target, key, column.default.arg(target))
             else:
                 setattr(target, key, column.default.arg)
+
+
+class IntFlag(TypeDecorator):
+    impl = sqlalchemy.types.Integer()
+
+    def __init__(self, enum):
+        self.enum = enum
+
+    def process_bind_param(self, value, dialect):
+        return int(value) if value is not None else None
+
+    def process_result_value(self, value, dialect):
+        return self.enum(value) if value is not None else None
 
 
 class ContextSession(sqlalchemy.orm.Session):
@@ -111,6 +124,11 @@ class ContextSession(sqlalchemy.orm.Session):
 
 
 class SRDatabaseBase(object):
+    @staticmethod
+    def encryption_key(*args, **kwargs):
+        if hasattr(sickrage.app.config.user, 'sub_id'):
+            return sickrage.app.config.user.sub_id
+
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
@@ -119,7 +137,6 @@ class SRDatabaseBase(object):
         for key, value in kwargs.items():
             if key not in primary_keys:
                 setattr(self, key, value)
-
 
 class SRDatabase(object):
     def __init__(self, name, db_type='sqlite', db_prefix='sickrage', db_host='localhost', db_port='3306', db_username='sickrage', db_password='sickrage'):
@@ -152,7 +169,7 @@ class SRDatabase(object):
             return create_engine('sqlite:///{}'.format(self.db_path), echo=False, connect_args={'check_same_thread': False, 'timeout': 30})
         elif self.db_type == 'mysql':
             mysql_engine = create_engine('mysql+pymysql://{}:{}@{}:{}/'.format(self.db_username, self.db_password, self.db_host, self.db_port), echo=False)
-            mysql_engine.execute("CREATE DATABASE IF NOT EXISTS {}_{}".format(self.db_prefix, self.name))
+            mysql_engine.execute(f"CREATE DATABASE IF NOT EXISTS {self.db_prefix}_{self.name}")
             return create_engine(
                 'mysql+pymysql://{}:{}@{}:{}/{}_{}'.format(self.db_username, self.db_password, self.db_host, self.db_port, self.db_prefix, self.name),
                 echo=False)
@@ -172,7 +189,7 @@ class SRDatabase(object):
         if db_version < alembic_version:
             sickrage.app.log.info('Upgrading {} database to v{}'.format(self.name, alembic_version))
 
-            self.backup(backup_filename)
+            # self.backup(backup_filename)
 
             alembic.command.upgrade(self.get_alembic_config(), 'head')
 
@@ -207,7 +224,7 @@ class SRDatabase(object):
                     'show_name': 'name'
                 },
                 'tv_episodes': {
-                    'indexerid': 'indexer_id'
+                    'indexerid': 'series_id'
                 },
             },
             'cache': {}

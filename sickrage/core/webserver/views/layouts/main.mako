@@ -6,6 +6,7 @@
 
     import sickrage
     from sickrage.core.helpers import pretty_file_size
+    from sickrage.core.enums import UITheme
 %>
 
 <%namespace file="../includes/modals.mako" import="mainModals"/>
@@ -25,9 +26,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=0.5, user-scalable=no">
 
-    % if sickrage.app.config.theme_name == "dark":
+    % if sickrage.app.config.gui.theme_name == UITheme.DARK:
         <meta name="theme-color" content="#15528F">
-    % elif sickrage.app.config.theme_name == "light":
+    % elif sickrage.app.config.gui.theme_name == UITheme.LIGHT:
         <meta name="theme-color" content="#333333">
     % endif
 
@@ -35,31 +36,52 @@
     <meta name="msapplication-TileImage" content="${srWebRoot}/images/ico/ms-icon-144x144.png">
     <meta name="msapplication-config" content="${srWebRoot}/images/ico/browserconfig.xml">
 
-    <meta data-var="srPID" data-content="${srPID}">
-    <meta data-var="srDefaultPage" data-content="${srDefaultPage}">
-    <meta data-var="srWebRoot" data-content="${srWebRoot}">
-    <meta data-var="themeSpinner" data-content="${('', '-dark')[sickrage.app.config.theme_name == 'dark']}">
-    <meta data-var="anonURL" data-content="${sickrage.app.config.anon_redirect}">
-    <meta data-var="srLocale" data-content="${srLocale}">
-    <meta data-var="srLocaleDir" data-content="${srLocaleDir}">
-    <meta data-var="sickrage.ANIME_SPLIT_HOME" data-content="${sickrage.app.config.anime_split_home}">
-    <meta data-var="sickrage.COMING_EPS_LAYOUT" data-content="${sickrage.app.config.coming_eps_layout}">
-    <meta data-var="sickrage.COMING_EPS_SORT" data-content="${sickrage.app.config.coming_eps_sort}">
-    <meta data-var="sickrage.DATE_PRESET" data-content="${sickrage.app.config.date_preset}">
-    <meta data-var="sickrage.FILTER_ROW" data-content="${sickrage.app.config.filter_row}">
-    <meta data-var="sickrage.FUZZY_DATING" data-content="${sickrage.app.config.fuzzy_dating}">
-    <meta data-var="sickrage.HISTORY_LAYOUT" data-content="${sickrage.app.config.history_layout}">
-    <meta data-var="sickrage.HOME_LAYOUT" data-content="${sickrage.app.config.home_layout}">
-    <meta data-var="sickrage.POSTER_SORTBY" data-content="${sickrage.app.config.poster_sortby}">
-    <meta data-var="sickrage.POSTER_SORTDIR" data-content="${sickrage.app.config.poster_sortdir}">
-    <meta data-var="sickrage.ROOT_DIRS" data-content="${sickrage.app.config.root_dirs}">
-    <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.app.config.sort_article}">
-    <meta data-var="sickrage.TIME_PRESET" data-content="${sickrage.app.config.time_preset}">
-    <meta data-var="sickrage.TRIM_ZERO" data-content="${sickrage.app.config.trim_zero}">
-    <meta data-var="sickrage.VIEW_CHANGELOG" data-content="${sickrage.app.config.view_changelog}">
-    <meta data-var="sickrage.FANART_BACKGROUND" data-content="${sickrage.app.config.fanart_background}">
+    <meta data-var="srPID"
+          data-content="${srPID}">
+    <meta data-var="srDefaultPage"
+          data-content="${srDefaultPage}">
+    <meta data-var="srWebRoot"
+          data-content="${srWebRoot}">
+    <meta data-var="themeSpinner"
+          data-content="${('', '-dark')[sickrage.app.config.gui.theme_name == UITheme.DARK]}">
+    <meta data-var="anonURL"
+          data-content="${sickrage.app.config.general.anon_redirect}">
+    <meta data-var="srLocale"
+          data-content="${srLocale}">
+    <meta data-var="srLocaleDir"
+          data-content="${srLocaleDir}">
+    <meta data-var="sickrage.ANIME_SPLIT_HOME"
+          data-content="${sickrage.app.config.anidb.split_home}">
+    <meta data-var="sickrage.COMING_EPS_LAYOUT"
+          data-content="${sickrage.app.config.gui.coming_eps_layout.name}">
+    <meta data-var="sickrage.COMING_EPS_SORT"
+          data-content="${sickrage.app.config.gui.coming_eps_sort.name}">
+    <meta data-var="sickrage.DATE_PRESET"
+          data-content="${sickrage.app.config.gui.date_preset}">
+    <meta data-var="sickrage.FILTER_ROW"
+          data-content="${sickrage.app.config.gui.filter_row}">
+    <meta data-var="sickrage.FUZZY_DATING"
+          data-content="${sickrage.app.config.gui.fuzzy_dating}">
+    <meta data-var="sickrage.HISTORY_LAYOUT"
+          data-content="${sickrage.app.config.gui.history_layout.name}">
+    <meta data-var="sickrage.POSTER_SORT_BY"
+          data-content="${sickrage.app.config.gui.poster_sort_by.name}">
+    <meta data-var="sickrage.POSTER_SORT_DIR"
+          data-content="${sickrage.app.config.gui.poster_sort_dir}">
+    <meta data-var="sickrage.ROOT_DIRS"
+          data-content="${sickrage.app.config.general.root_dirs}">
+    <meta data-var="sickrage.SORT_ARTICLE"
+          data-content="${sickrage.app.config.general.sort_article}">
+    <meta data-var="sickrage.TIME_PRESET"
+          data-content="${sickrage.app.config.gui.time_preset}">
+    <meta data-var="sickrage.TRIM_ZERO"
+          data-content="${sickrage.app.config.gui.trim_zero}">
+    <meta data-var="sickrage.VIEW_CHANGELOG"
+          data-content="${sickrage.app.config.general.view_changelog}">
+    <meta data-var="sickrage.FANART_BACKGROUND"
+          data-content="${sickrage.app.config.gui.fanart_background}">
     <meta data-var="sickrage.FANART_BACKGROUND_OPACITY"
-          data-content="${sickrage.app.config.fanart_background_opacity}">
+          data-content="${sickrage.app.config.gui.fanart_background_opacity}">
     <%block name="metas" />
 
     <link rel="icon" type="image/png" sizes="32x32" href="${srWebRoot}/images/favicon.png">
@@ -131,7 +153,7 @@
                                     <div class="dropdown-divider"></div>
                                 % for recentShow in sickrage.app.shows_recent:
                                     <a class="dropdown-item"
-                                       href="${srWebRoot}/home/displayShow/?show=${recentShow['indexer_id']}">
+                                       href="${srWebRoot}/home/displayShow/?show=${recentShow['series_id']}">
                                         <i class="fas fa-fw fa-tv"></i>&nbsp;${recentShow['name']|trim,h}
                                     </a>
                                 % endfor
@@ -159,26 +181,16 @@
                                 <a class="dropdown-item" href="${srWebRoot}/manage/episodeStatuses/">
                                     <i class="fas fa-fw fa-th-list"></i>&nbsp;${_('Episode Status Management')}
                                 </a>
-                                % if sickrage.app.config.use_trakt and sickrage.app.config.trakt_oauth_token != "":
+                                % if sickrage.app.config.trakt.enable and sickrage.app.config.trakt.oauth_token != "":
                                     <a class="dropdown-item" href="${srWebRoot}/home/syncTrakt/">
                                         <i class="fas fa-fw fa-sync"></i>&nbsp;${_('Sync Trakt')}
                                     </a>
                                 % endif
-                                % if sickrage.app.config.use_plex and sickrage.app.config.plex_server_host != "":
+                                % if sickrage.app.config.plex.enable and sickrage.app.config.plex.server_host != "":
                                     <a class="dropdown-item" href="${srWebRoot}/home/updatePLEX/">
                                         <i class="fas fa-fw fa-sync"></i>&nbsp;${_('Update PLEX')}
                                     </a>
                                 % endif
-                                ##                                 % if sickrage.app.config.use_kodi and sickrage.app.config.kodi_host != "":
-                                ##                                     <a class="dropdown-item" href="${srWebRoot}/home/updateKODI/">
-                                ##                                         <i class="fas fa-fw fa-sync"></i>&nbsp;${_('Update KODI')}
-                                ##                                     </a>
-                                ##                                 % endif
-                                ##                                 % if sickrage.app.config.use_emby and sickrage.app.config.emby_host != "" and sickrage.app.config.emby_apikey != "":
-                                ##                                     <a class="dropdown-item" href="${srWebRoot}/home/updateEMBY/">
-                                ##                                         <i class="fas fa-fw fa-sync"></i>&nbsp;${_('Update Emby')}
-                                ##                                     </a>
-                                ##                                 % endif
                                 % if torrent_webui_url:
                                 <a class="dropdown-item" href="${torrent_webui_url}" target="_blank">
                                     <i class="fas fa-fw fa-video"></i>&nbsp;${_('Manage Torrents')}
@@ -187,7 +199,7 @@
                                 <a class="dropdown-item" href="${srWebRoot}/manage/failedDownloads/">
                                     <i class="fas fa-fw fa-first-aid"></i>&nbsp;${_('Failed Downloads')}
                                 </a>
-                                % if sickrage.app.config.use_subtitles:
+                                % if sickrage.app.config.subtitles.enable:
                                     <a class="dropdown-item" href="${srWebRoot}/manage/subtitleMissed/">
                                         <i class="fas fa-fw fa-question"></i>&nbsp;${_('Missed Subtitle Management')}
                                     </a>
@@ -274,7 +286,7 @@
                                     <i class="fas fa-fw fa-globe"></i>&nbsp;${_('Changelog')}
                                 </a>
                                 <a class="dropdown-item" href="https://opencollective.com/sickrage" rel="noreferrer"
-                                   onclick="window.open('${sickrage.app.config.anon_redirect}' + this.href); return false;">
+                                   onclick="window.open('${sickrage.app.config.general.anon_redirect}' + this.href); return false;">
                                     <i class="fas fa-fw fa-donate"></i>&nbsp;${_('Donate')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/announcements/">
@@ -316,7 +328,7 @@
                                 <a class="dropdown-item" href="${srWebRoot}/home/serverStatus/">
                                     <i class="fas fa-fw fa-server"></i>&nbsp;${_('Server Status')}
                                 </a>
-                                % if sickrage.app.config.sso_auth_enabled:
+                                % if sickrage.app.config.general.sso_auth_enabled:
                                     <a class="dropdown-item" href="${srWebRoot}/home/providerStatus/">
                                         <i class="fas fa-fw fa-server"></i>&nbsp;${_('Provider Status')}
                                     </a>

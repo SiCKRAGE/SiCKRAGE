@@ -14,11 +14,9 @@ import sickrage
 
 def initialize():
     private_key_filename = os.path.join(sickrage.app.data_dir, 'privatekey.pem')
-    sickrage.app.private_key = load_private_key(private_key_filename)
-    if not sickrage.app.private_key:
-        sickrage.app.private_key = generate_private_key()
-        save_private_key(private_key_filename, sickrage.app.private_key)
-    sickrage.app.public_key = sickrage.app.private_key.public_key()
+    private_key = load_private_key(private_key_filename)
+    if not private_key:
+        save_private_key(private_key_filename, generate_private_key())
 
 
 def generate_private_key():

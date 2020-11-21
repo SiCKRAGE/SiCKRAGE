@@ -4,6 +4,7 @@
     import sickrage
 
     from sickrage.core.helpers import anon_url
+    from sickrage.search_providers import SearchProviderType
 %>
 <%block name="content">
     <div class="row">
@@ -24,7 +25,7 @@
                             </thead>
                             <tbody>
                                 % for providerID, providerObj in sickrage.app.search_providers.sort().items():
-                                    % if providerObj.type not in ['torrentrss', 'newznab'] and providerObj.id not in ['bitcannon']:
+                                    % if providerObj.provider_type not in [SearchProviderType.TORRENT_RSS, SearchProviderType.NEWZNAB] and providerObj.id not in ['bitcannon']:
                                         <% providerURL = providerObj.urls['base_url'] %>
                                         <%
                                             online = True

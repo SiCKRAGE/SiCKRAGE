@@ -71,7 +71,7 @@ class ListInterfacesDirective(rst.Directive):
 
         source_name = '<' + __name__ + '>'
 
-        api_map = interfaces.construct_map(trakt.Trakt.client)
+        api_map = interfaces.construct_map(trakt.trakt.client)
         iface_map = {iface_type: api_map.get(iface_type)}
 
         result = ViewList()

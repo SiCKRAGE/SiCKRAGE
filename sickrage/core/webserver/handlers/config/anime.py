@@ -24,7 +24,7 @@ from tornado.web import authenticated
 
 import sickrage
 from sickrage.core.helpers import checkbox_to_value
-from sickrage.core.webserver import ConfigHandler
+from sickrage.core.webserver import ConfigWebHandler
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
@@ -32,7 +32,7 @@ class ConfigAnimeHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
         return self.render('config/anime.mako',
-                           submenu=ConfigHandler.menu,
+                           submenu=ConfigWebHandler.menu,
                            title=_('Config - Anime'),
                            header=_('Anime'),
                            topmenu='config',
@@ -51,11 +51,11 @@ class ConfigSaveAnimeHandler(BaseHandler, ABC):
 
         results = []
 
-        sickrage.app.config.use_anidb = checkbox_to_value(use_anidb)
-        sickrage.app.config.anidb_username = anidb_username
-        sickrage.app.config.anidb_password = anidb_password
-        sickrage.app.config.anidb_use_mylist = checkbox_to_value(anidb_use_mylist)
-        sickrage.app.config.anime_split_home = checkbox_to_value(split_home)
+        sickrage.app.config.anidb.enable = checkbox_to_value(use_anidb)
+        sickrage.app.config.anidb.username = anidb_username
+        sickrage.app.config.anidb.password = anidb_password
+        sickrage.app.config.anidb.use_my_list = checkbox_to_value(anidb_use_mylist)
+        sickrage.app.config.anidb.split_home = checkbox_to_value(split_home)
 
         sickrage.app.config.save()
 
@@ -63,6 +63,6 @@ class ConfigSaveAnimeHandler(BaseHandler, ABC):
             [sickrage.app.log.error(x) for x in results]
             sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.app.alerts.message(_('[ANIME] Configuration Encrypted and Saved to disk'))
+            sickrage.app.alerts.message(_('[ANIME] Configuration Saved to Database'))
 
         return self.redirect("/config/anime/")

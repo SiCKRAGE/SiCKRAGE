@@ -38,7 +38,7 @@ class AutoPostProcessor(object):
         :return: Returns when done without a return state/code
         """
 
-        if self.running or not sickrage.app.config.process_automatically and not force:
+        if self.running or not sickrage.app.config.general.process_automatically and not force:
             return
 
         try:
@@ -47,6 +47,6 @@ class AutoPostProcessor(object):
             # set thread name
             threading.currentThread().setName(self.name)
 
-            sickrage.app.postprocessor_queue.put(sickrage.app.config.tv_download_dir, force=force)
+            sickrage.app.postprocessor_queue.put(sickrage.app.config.general.tv_download_dir, force=force)
         finally:
             self.running = False

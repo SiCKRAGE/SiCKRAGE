@@ -667,7 +667,7 @@ _all_methods_list = [methods,
 class_methods_pair = {
     RTorrent: methods,
     rtorrentlib.file.File: rtorrentlib.file.methods,
-    rtorrentlib.torrent.Torrent: rtorrentlib.torrent.methods,
+    rtorrentlib.torrent.torrent: rtorrentlib.torrent.methods,
     rtorrentlib.tracker.Tracker: rtorrentlib.tracker.methods,
     rtorrentlib.peer.Peer: rtorrentlib.peer.methods,
 }

@@ -4,8 +4,8 @@
 
     import sickrage
     from sickrage.core.tv.show.helpers import get_show_list
-    from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import Overview, Quality, qualityPresets, qualityPresetStrings
+    from sickrage.core.common import Overview
+    from sickrage.core.common import Quality
     from sickrage.core.helpers import srdatetime
 %>
 <%block name="content">
@@ -16,8 +16,8 @@
             <% continue %>
         % endif
 
-        <% totalWanted = totalWanted + showCounts[curShow.indexer_id][Overview.WANTED] %>
-        <% totalQual = totalQual + showCounts[curShow.indexer_id][Overview.QUAL] %>
+        <% totalWanted = totalWanted + showCounts[curShow.series_id][Overview.WANTED] %>
+        <% totalQual = totalQual + showCounts[curShow.series_id][Overview.LOW_QUALITY] %>
     % endfor
 
     <div class="row">
@@ -46,8 +46,8 @@
                                             <% continue %>
                                         % endif
 
-                                        % if showCounts[curShow.indexer_id][Overview.QUAL] + showCounts[curShow.indexer_id][Overview.WANTED] != 0:
-                                            <option value="${curShow.indexer_id}">${curShow.name}</option>
+                                        % if showCounts[curShow.series_id][Overview.LOW_QUALITY] + showCounts[curShow.series_id][Overview.WANTED] != 0:
+                                            <option value="${curShow.series_id}">${curShow.name}</option>
                                         % endif
                                     % endfor
                                 </select>
@@ -65,22 +65,22 @@
                                         <% continue %>
                                     % endif
 
-                                    % if not showCounts[curShow.indexer_id][Overview.QUAL] + showCounts[curShow.indexer_id][Overview.WANTED] == 0:
+                                    % if not showCounts[curShow.series_id][Overview.LOW_QUALITY] + showCounts[curShow.series_id][Overview.WANTED] == 0:
                                     <table class="table mb-3">
-                                        <tr class="seasonheader" id="show-${curShow.indexer_id}">
+                                        <tr class="seasonheader" id="show-${curShow.series_id}">
                                             <td colspan="3" class="align-left">
                                                 <div class="float-md-left">
                                                     <h2>
-                                                        <a href="${srWebRoot}/home/displayShow?show=${curShow.indexer_id}">${curShow.name}</a>
+                                                        <a href="${srWebRoot}/home/displayShow?show=${curShow.series_id}">${curShow.name}</a>
                                                     </h2>
                                                 </div>
                                                 <div class="text-center float-md-right">
                                                         <span class="badge wanted">${_('Wanted:')}
-                                                            <b>${showCounts[curShow.indexer_id][Overview.WANTED]}</b></span>
+                                                            <b>${showCounts[curShow.series_id][Overview.WANTED]}</b></span>
                                                     <span class="badge qual">${_('Low Quality:')}
-                                                        <b>${showCounts[curShow.indexer_id][Overview.QUAL]}</b></span>
+                                                        <b>${showCounts[curShow.series_id][Overview.LOW_QUALITY]}</b></span>
                                                     <a class="btn forceBacklog"
-                                                       href="${srWebRoot}/manage/backlogShow?indexer_id=${curShow.indexer_id}"><i
+                                                       href="${srWebRoot}/manage/backlogShow?series_id=${curShow.series_id}&series_provider_id=${curShow.series_provider_id}"><i
                                                             class="icon-play-circle icon-white"></i> ${_('Force Backlog')}
                                                     </a>
                                                 </div>
@@ -93,11 +93,11 @@
                                             <th class="text-nowrap">${_('Airdate')}</th>
                                         </tr>
 
-                                    % for curResult in showResults[curShow.indexer_id]:
+                                    % for curResult in showResults[curShow.series_id]:
                                         <% whichStr = '{}x{}'.format(curResult.season, curResult.episode) %>
-                                        <% overview = showCats[curShow.indexer_id][whichStr] %>
-                                        % if overview in (Overview.QUAL, Overview.WANTED):
-                                            <tr class="seasonstyle ${Overview.overviewStrings[showCats[curShow.indexer_id][whichStr]]}">
+                                        <% overview = showCats[curShow.series_id][whichStr] %>
+                                        % if overview in (Overview.LOW_QUALITY, Overview.WANTED):
+                                            <tr class="seasonstyle ${Overview.overviewStrings[showCats[curShow.series_id][whichStr]]}">
                                                 <td class="tableleft" align="center">${whichStr}</td>
                                                 <td class="tableright" align="center" class="text-nowrap">
                                                     ${curResult.name}

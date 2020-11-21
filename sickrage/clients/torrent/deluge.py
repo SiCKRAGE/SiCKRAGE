@@ -40,7 +40,7 @@ class DelugeAPI(TorrentClient):
                      "params": [self.password],
                      "id": 1}
 
-        self.response = self.session.post(self.url, json=post_data, verify=bool(sickrage.app.config.torrent_verify_cert))
+        self.response = self.session.post(self.url, json=post_data, verify=bool(sickrage.app.config.torrent.verify_cert))
         if not self.response or not self.response.content:
             return None
 
@@ -57,7 +57,7 @@ class DelugeAPI(TorrentClient):
             "id": 10
         }
 
-        self.response = self.session.post(self.url, json=post_data, verify=bool(sickrage.app.config.torrent_verify_cert))
+        self.response = self.session.post(self.url, json=post_data, verify=bool(sickrage.app.config.torrent.verify_cert))
         if not self.response or not self.response.content:
             return None
 
@@ -73,7 +73,7 @@ class DelugeAPI(TorrentClient):
                 "id": 11
             }
 
-            self.response = self.session.post(self.url, json=post_data, verify=bool(sickrage.app.config.torrent_verify_cert))
+            self.response = self.session.post(self.url, json=post_data, verify=bool(sickrage.app.config.torrent.verify_cert))
             if not self.response or not self.response.content:
                 return None
 
@@ -92,7 +92,7 @@ class DelugeAPI(TorrentClient):
                 "id": 11
             }
 
-            self.response = self.session.post(self.url, json=post_data, verify=bool(sickrage.app.config.torrent_verify_cert))
+            self.response = self.session.post(self.url, json=post_data, verify=bool(sickrage.app.config.torrent.verify_cert))
             if not self.response:
                 return None
 
@@ -102,7 +102,7 @@ class DelugeAPI(TorrentClient):
                 "id": 10
             }
 
-            self.response = self.session.post(self.url, json=post_data, verify=bool(sickrage.app.config.torrent_verify_cert))
+            self.response = self.session.post(self.url, json=post_data, verify=bool(sickrage.app.config.torrent.verify_cert))
             if not self.response or not self.response.content:
                 return None
 
@@ -140,12 +140,12 @@ class DelugeAPI(TorrentClient):
         return self.response.json()['result']
 
     def _set_torrent_label(self, result):
-        label = sickrage.app.config.torrent_label
+        label = sickrage.app.config.torrent.label
 
-        tv_show = find_show(result.show_id)
+        tv_show = find_show(result.series_id, result.series_provider_id)
 
         if tv_show.is_anime:
-            label = sickrage.app.config.torrent_label_anime
+            label = sickrage.app.config.torrent.label_anime
 
         if ' ' in label:
             sickrage.app.log.warning(self.name + ': Invalid label. Label must not contain a space')
@@ -206,7 +206,7 @@ class DelugeAPI(TorrentClient):
         return True
 
     def _set_torrent_path(self, result):
-        if sickrage.app.config.torrent_path:
+        if sickrage.app.config.torrent.path:
             post_data = {"method": "core.set_torrent_move_completed",
                          "params": [result.hash, True],
                          "id": 7}
@@ -214,7 +214,7 @@ class DelugeAPI(TorrentClient):
             self._request(method='post', json=post_data)
 
             post_data = {"method": "core.set_torrent_move_completed_path",
-                         "params": [result.hash, sickrage.app.config.torrent_path],
+                         "params": [result.hash, sickrage.app.config.torrent.path],
                          "id": 8}
 
             self._request(method='post', json=post_data)
@@ -224,7 +224,7 @@ class DelugeAPI(TorrentClient):
         return True
 
     def _set_torrent_pause(self, result):
-        if sickrage.app.config.torrent_paused:
+        if sickrage.app.config.torrent.paused:
             post_data = {"method": "core.pause_torrent",
                          "params": [[result.hash]],
                          "id": 9}

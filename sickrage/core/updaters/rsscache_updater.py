@@ -12,7 +12,7 @@ class RSSCacheUpdater(object):
         self.running = False
 
     def task(self, force=False):
-        if self.running or not sickrage.app.config.enable_rss_cache and not force:
+        if self.running or not sickrage.app.config.general.enable_rss_cache and not force:
             return
 
         try:

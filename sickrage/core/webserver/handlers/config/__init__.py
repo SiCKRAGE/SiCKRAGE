@@ -28,7 +28,7 @@ import sickrage
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class ConfigHandler(BaseHandler, ABC):
+class ConfigWebHandler(BaseHandler, ABC):
     menu = [
         {'title': _('Help and Info'), 'path': '/config/', 'icon': 'fas fa-info'},
         {'title': _('General'), 'path': '/config/general/', 'icon': 'fas fa-cogs'},

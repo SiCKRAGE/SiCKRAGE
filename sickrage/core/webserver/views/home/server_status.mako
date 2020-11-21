@@ -16,15 +16,15 @@
             _('RSS Cache Updater'): 'rsscache_updater',
         }
 
-        if sickrage.app.config.version_notify:
+        if sickrage.app.config.general.version_notify:
             schedulers.update({_('Version Check'): 'version_updater'})
-        if sickrage.app.config.download_propers:
+        if sickrage.app.config.general.download_propers:
             schedulers.update({_('Proper Finder'): 'proper_searcher'})
-        if sickrage.app.config.process_automatically:
+        if sickrage.app.config.general.process_automatically:
             schedulers.update({_('Post Processor'): 'auto_postprocessor'})
-        if sickrage.app.config.use_subtitles:
+        if sickrage.app.config.subtitles.enable:
             schedulers.update({_('Subtitles Finder'): 'subtitle_searcher'})
-        if sickrage.app.config.use_trakt:
+        if sickrage.app.config.trakt.enable:
             schedulers.update({_('Trakt Checker'): 'trakt_searcher'})
     %>
 
@@ -132,8 +132,8 @@
                             % for task in sickrage.app.show_queue.tasks.copy().values():
                                 <tr>
                                 % try:
-                                    <% showindexer_id = task.indexer_id %>
-                                    <td>${showindexer_id}</td>
+                                    <% series_id = task.series_id %>
+                                    <td>${series_id}</td>
                                 % except Exception:
                                     <td></td>
                                 % endtry
@@ -142,7 +142,7 @@
                                     <td>${showname}</td>
                                 % except Exception:
                                     % if task.action == ShowTaskActions.ADD:
-                                        <td>${task.showDir}</td>
+                                        <td>${task.show_dir}</td>
                                     % else:
                                         <td></td>
                                     % endif
@@ -186,10 +186,10 @@
                         </tr>
                         </thead>
                         <tbody>
-                            % if sickrage.app.config.tv_download_dir:
+                            % if sickrage.app.config.general.tv_download_dir:
                                 <tr>
                                     <td>${_('TV Download Directory')}</td>
-                                    <td>${sickrage.app.config.tv_download_dir}</td>
+                                    <td>${sickrage.app.config.general.tv_download_dir}</td>
                                     % if tvdirFree is not False:
                                         <td align="middle">${tvdirFree}</td>
                                     % else:

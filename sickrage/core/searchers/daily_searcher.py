@@ -22,8 +22,7 @@ import datetime
 import threading
 
 import sickrage
-from sickrage.core import common
-from sickrage.core.common import Quality, WANTED, DOWNLOADED, SNATCHED, SNATCHED_PROPER
+from sickrage.core.common import Quality, Qualities, EpisodeStatus
 from sickrage.core.queues.search import DailySearchTask
 from sickrage.core.tv.show.helpers import get_show_list
 
@@ -55,11 +54,11 @@ class DailySearcher(object):
                     continue
 
                 for tv_episode in curShow.new_episodes:
-                    tv_episode.status = tv_episode.show.default_ep_status if tv_episode.season > 0 else common.SKIPPED
+                    tv_episode.status = tv_episode.show.default_ep_status if tv_episode.season > 0 else EpisodeStatus.SKIPPED
                     tv_episode.save()
                     sickrage.app.log.info('Setting status ({status}) for show airing today: {name} {special}'.format(
                         name=tv_episode.pretty_name(),
-                        status=common.statusStrings[tv_episode.status],
+                        status=tv_episode.status.display_name,
                         special='(specials are not supported)' if not tv_episode.season > 0 else '',
                     ))
 
@@ -69,10 +68,10 @@ class DailySearcher(object):
                     continue
 
                 for season, episode in wanted:
-                    if (curShow.indexer_id, season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
-                        sickrage.app.search_queue.SNATCH_HISTORY.remove((curShow.indexer_id, season, episode))
+                    if (curShow.series_id, season, episode) in sickrage.app.search_queue.SNATCH_HISTORY:
+                        sickrage.app.search_queue.SNATCH_HISTORY.remove((curShow.series_id, season, episode))
 
-                    sickrage.app.search_queue.put(DailySearchTask(curShow.indexer_id, season, episode))
+                    sickrage.app.search_queue.put(DailySearchTask(curShow.series_id, curShow.series_provider_id, season, episode))
         finally:
             self.running = False
 
@@ -97,26 +96,26 @@ class DailySearcher(object):
             if not episode_object.season > 0 or not episode_object.airdate >= from_date:
                 continue
 
-            cur_status, cur_quality = Quality.split_composite_status(int(episode_object.status or -1))
+            cur_status, cur_quality = Quality.split_composite_status(episode_object.status)
 
             # if we need a better one then say yes
-            if cur_status not in (WANTED, DOWNLOADED, SNATCHED, SNATCHED_PROPER):
+            if cur_status not in (EpisodeStatus.WANTED, EpisodeStatus.DOWNLOADED, EpisodeStatus.SNATCHED, EpisodeStatus.SNATCHED_PROPER):
                 continue
 
-            if cur_status != WANTED:
+            if cur_status != EpisodeStatus.WANTED:
                 if best_qualities:
                     if cur_quality in best_qualities:
                         continue
-                    elif cur_quality != Quality.UNKNOWN and cur_quality > max(best_qualities):
+                    elif cur_quality != Qualities.UNKNOWN and cur_quality > max(best_qualities):
                         continue
                 else:
                     if cur_quality in any_qualities:
                         continue
-                    elif cur_quality != Quality.UNKNOWN and cur_quality > max(any_qualities):
+                    elif cur_quality != Qualities.UNKNOWN and cur_quality > max(any_qualities):
                         continue
 
             # skip upgrading quality of downloaded episodes if enabled
-            if cur_status == DOWNLOADED and show.skip_downloaded:
+            if cur_status == EpisodeStatus.DOWNLOADED and show.skip_downloaded:
                 continue
 
             wanted += [(episode_object.season, episode_object.episode)]

@@ -23,11 +23,10 @@
 import base64
 import ctypes
 import datetime
-import errno
 import glob
-import gzip
 import hashlib
 import ipaddress
+import operator
 import os
 import platform
 import random
@@ -43,15 +42,18 @@ import unicodedata
 import uuid
 import webbrowser
 import zipfile
-from collections import OrderedDict
+from collections import OrderedDict, Iterable
 from contextlib import contextmanager
+from functools import reduce
 from urllib.parse import uses_netloc, urlsplit, urlunsplit, urljoin
 
+import errno
 import rarfile
 import requests
 from bs4 import BeautifulSoup
 
 import sickrage
+from sickrage.core.enums import TorrentMethod
 from sickrage.core.helpers import encryption
 from sickrage.core.websession import WebSession
 
@@ -149,7 +151,7 @@ def remove_extension(name):
 
     if name and "." in name:
         base_name, sep, extension = name.rpartition('.')
-        if base_name and extension.lower() in ['nzb', 'torrent'] + sickrage.app.config.allowed_video_file_exts:
+        if base_name and extension.lower() in ['nzb', 'torrent'] + sickrage.app.config.general.allowed_video_file_exts.split(','):
             name = base_name
 
     return name
@@ -282,7 +284,7 @@ def is_sync_file(filename):
 
     extension = filename.rpartition(".")[2].lower()
     # if extension == '!sync' or extension == 'lftp-pget-status' or extension == 'part' or extension == 'bts':
-    syncfiles = sickrage.app.config.sync_files
+    syncfiles = sickrage.app.config.general.sync_files
     if extension in syncfiles.split(",") or filename.startswith('.syncthing'):
         return True
     else:
@@ -314,7 +316,7 @@ def is_media_file(filename):
     if re.search('extras?$', sepFile[0], re.I):
         return False
 
-    return sepFile[-1].lower() in sickrage.app.config.allowed_video_file_exts
+    return sepFile[-1].lower() in sickrage.app.config.general.allowed_video_file_exts.split(',')
 
 
 def is_rar_file(filename):
@@ -370,7 +372,7 @@ def make_dir(path):
     if not os.path.isdir(path):
         try:
             os.makedirs(path)
-            sickrage.app.notifier_providers['synoindex'].addFolder(path)
+            sickrage.app.notification_providers['synoindex'].addFolder(path)
         except OSError:
             return False
     return True
@@ -556,7 +558,7 @@ def make_dirs(path):
                     # use normpath to remove end separator, otherwise checks permissions against itself
                     chmod_as_parent(os.path.normpath(sofar))
                     # do the library update for synoindex
-                    sickrage.app.notifier_providers['synoindex'].addFolder(sofar)
+                    sickrage.app.notification_providers['synoindex'].addFolder(sofar)
                 except (OSError, IOError) as e:
                     sickrage.app.log.error("Failed creating %s : %r" % (sofar, e))
                     return False
@@ -591,7 +593,7 @@ def delete_empty_folders(check_empty_dir, keep_dir=None):
                     shutil.rmtree(check_empty_dir)
 
                     # do the library update for synoindex
-                    sickrage.app.notifier_providers['synoindex'].deleteFolder(check_empty_dir)
+                    sickrage.app.notification_providers['synoindex'].deleteFolder(check_empty_dir)
                 except OSError as e:
                     sickrage.app.log.warning("Unable to delete %s. Error: %r" % (check_empty_dir, repr(e)))
                     raise StopIteration
@@ -645,7 +647,7 @@ def chmod_as_parent(child_path):
     child_path_stat = os.stat(child_path)
     child_path_mode = stat.S_IMODE(child_path_stat[stat.ST_MODE])
 
-    if os.path.isfile(child_path) and sickrage.app.config.strip_special_file_bits:
+    if os.path.isfile(child_path) and sickrage.app.config.general.strip_special_file_bits:
         child_mode = file_bit_filter(parent_mode)
     else:
         child_mode = parent_mode
@@ -803,7 +805,7 @@ def anon_url(*url):
     if not re.search(unicode_uri_pattern, url):
         url = 'http://' + url
 
-    return '{}{}'.format(sickrage.app.config.anon_redirect, url)
+    return '{}{}'.format(sickrage.app.config.general.anon_redirect, url)
 
 
 def full_sanitize_scene_name(name):
@@ -925,7 +927,8 @@ def restore_config_zip(archive, targetDir, restore_database=True, restore_config
         with zipfile.ZipFile(archive, 'r', allowZip64=True) as zip_file:
             for member in zip_file.namelist():
                 if not restore_database and member.split('/')[0] in ['main_db_backup.json',
-                                                                     'main.db', 'main.db-shm',
+                                                                     'main.db',
+                                                                     'main.db-shm',
                                                                      'main.db-wal',
                                                                      'cache_db_backup.json',
                                                                      'cache.db',
@@ -934,7 +937,8 @@ def restore_config_zip(archive, targetDir, restore_database=True, restore_config
                     continue
 
                 if not restore_config and member.split('/')[0] in ['config.ini',
-                                                                   'privatekey.pem']:
+                                                                   'privatekey.pem'
+                                                                   'config.db']:
                     continue
 
                 if not restore_cache and member.split('/')[0] == 'cache':
@@ -951,10 +955,10 @@ def restore_config_zip(archive, targetDir, restore_database=True, restore_config
 def backup_app_data(backupDir, keep_latest=False):
     source = []
 
-    files_list = [
-        'privatekey.pem',
-        os.path.basename(sickrage.app.config_file)
-    ]
+    # files_list = [
+    #     'privatekey.pem',
+    #     os.path.basename(sickrage.app.config_file)
+    # ]
 
     def _keep_latest_backup():
         for x in sorted(glob.glob(os.path.join(backupDir, '*.zip')), key=os.path.getctime, reverse=True)[1:]:
@@ -967,13 +971,13 @@ def backup_app_data(backupDir, keep_latest=False):
         _keep_latest_backup()
 
     # individual files
-    for f in files_list:
-        fp = os.path.join(sickrage.app.data_dir, f)
-        if os.path.exists(fp):
-            source += [fp]
+    # for f in files_list:
+    #     fp = os.path.join(sickrage.app.data_dir, f)
+    #     if os.path.exists(fp):
+    #         source += [fp]
 
     # databases
-    for db in [sickrage.app.main_db, sickrage.app.cache_db]:
+    for db in [sickrage.app.main_db, sickrage.app.config.db, sickrage.app.cache_db]:
         backup_file = os.path.join(*[sickrage.app.data_dir, '{}_db_backup.json'.format(db.name)])
         db.backup(backup_file)
         source += [backup_file]
@@ -1000,6 +1004,7 @@ def restore_app_data(srcDir, dstDir):
             'main.db',
             'main.db-shm',
             'main.db-wal',
+            'config.db',
             'cache.db',
             'cache.db-shm',
             'cache.db-wal',
@@ -1020,7 +1025,7 @@ def restore_app_data(srcDir, dstDir):
                 move_file(srcFile, dstFile)
 
         # database
-        for db in [sickrage.app.main_db, sickrage.app.cache_db]:
+        for db in [sickrage.app.main_db, sickrage.app.config.db, sickrage.app.cache_db]:
             backup_file = os.path.join(*[srcDir, '{}_db_backup.json'.format(db.name)])
             if os.path.exists(backup_file):
                 db.restore(backup_file)
@@ -1513,9 +1518,9 @@ def is_ip_whitelisted(ip):
 
     whitelisted_addresses = []
 
-    if sickrage.app.config.ip_whitelist_enabled:
-        whitelisted_addresses += sickrage.app.config.ip_whitelist.split(',')
-    if sickrage.app.config.ip_whitelist_localhost_enabled:
+    if sickrage.app.config.general.ip_whitelist_enabled:
+        whitelisted_addresses += sickrage.app.config.general.ip_whitelist.split(',')
+    if sickrage.app.config.general.ip_whitelist_localhost_enabled:
         whitelisted_addresses += ['127.0.0.1', '::1']
 
     for x in whitelisted_addresses:
@@ -1551,15 +1556,15 @@ def torrent_webui_url(reset=False):
     if not reset:
         return sickrage.app.client_web_urls.get('torrent', '')
 
-    if not sickrage.app.config.use_torrents or \
-            not sickrage.app.config.torrent_host.lower().startswith('http') or \
-            sickrage.app.config.torrent_method == 'blackhole' or sickrage.app.config.enable_https and \
-            not sickrage.app.config.torrent_host.lower().startswith('https'):
+    if not sickrage.app.config.general.use_torrents or \
+            not sickrage.app.config.torrent.host.lower().startswith('http') or \
+            sickrage.app.config.general.torrent_method == TorrentMethod.BLACKHOLE or sickrage.app.config.general.enable_https and \
+            not sickrage.app.config.torrent.host.lower().startswith('https'):
         sickrage.app.client_web_urls['torrent'] = ''
         return sickrage.app.client_web_urls['torrent']
 
-    torrent_ui_url = re.sub('localhost|127.0.0.1', sickrage.app.config.web_host or get_lan_ip(),
-                            sickrage.app.config.torrent_host or '', re.I)
+    torrent_ui_url = re.sub('localhost|127.0.0.1', sickrage.app.config.general.web_host or get_lan_ip(),
+                            sickrage.app.config.torrent.host or '', re.I)
 
     def test_exists(url):
         try:
@@ -1568,9 +1573,9 @@ def torrent_webui_url(reset=False):
         except (requests.exceptions.ConnectionError, requests.exceptions.ConnectTimeout):
             return False
 
-    if sickrage.app.config.torrent_method == 'utorrent':
+    if sickrage.app.config.general.torrent_method == TorrentMethod.UTORRENT:
         torrent_ui_url = '/'.join(s.strip('/') for s in (torrent_ui_url, 'gui/'))
-    elif sickrage.app.config.torrent_method == 'download_station':
+    elif sickrage.app.config.general.torrent_method == TorrentMethod.DOWNLOAD_STATION:
         if test_exists(urljoin(torrent_ui_url, 'download/')):
             torrent_ui_url = urljoin(torrent_ui_url, 'download/')
 
@@ -1587,6 +1592,7 @@ def checkbox_to_value(option, value_on=True, value_off=False):
 
     if isinstance(option, list):
         option = option[-1]
+
     if isinstance(option, str):
         option = str(option).strip().lower()
 
@@ -1772,3 +1778,33 @@ def get_internal_ip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect(('8.8.8.8', 1))
     return s.getsockname()[0]
+
+
+def camelcase(s):
+    parts = iter(s.split("_"))
+    return next(parts) + "".join(i.title() for i in parts)
+
+
+def convert_dict_keys_to_camelcase(d):
+    new = {}
+
+    for k, v in d.items():
+        if isinstance(v, dict):
+            v = convert_dict_keys_to_camelcase(v)
+        if isinstance(k, str):
+            new[camelcase(k)] = v
+
+    return new
+
+
+def flatten(nested_list):
+    flat = []
+
+    for x in nested_list:
+        if isinstance(x, Iterable) and not isinstance(x, (str, bytes)):
+            for sub_x in flatten(x):
+                flat.append(sub_x)
+        else:
+            flat.append(x)
+
+    return flat

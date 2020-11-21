@@ -27,8 +27,7 @@ def upgrade():
     with op.get_context().begin_transaction():
         for row in conn.execute(xem_refresh.select()):
             last_xem_refresh = row.last_refreshed or datetime.datetime.now().toordinal()
-            conn.execute('UPDATE tv_shows SET last_xem_refresh = {} WHERE tv_shows.indexer_id = {}'
-                         .format(last_xem_refresh, row.indexer_id))
+            conn.execute(f'UPDATE tv_shows SET last_xem_refresh = {last_xem_refresh} WHERE tv_shows.indexer_id = {row.indexer_id}')
 
     op.drop_table('xem_refresh')
 

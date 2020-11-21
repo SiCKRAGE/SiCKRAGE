@@ -29,8 +29,8 @@ class FanArt(Media):
     Get the fan art of a show
     """
 
-    def __init__(self, indexer_id, media_format=None):
-        super(FanArt, self).__init__(indexer_id, media_format)
+    def __init__(self, series_id, series_provider_id, media_format=None):
+        super(FanArt, self).__init__(series_id, series_provider_id, media_format)
 
     def get_default_media_name(self):
         return 'fanart.png'
@@ -39,10 +39,10 @@ class FanArt(Media):
         media_file = ''
 
         if self.media_format == 'normal':
-            media_file = ImageCache().fanart_path(self.indexer_id)
+            media_file = ImageCache().fanart_path(self.series_id)
 
         if self.media_format == 'thumb':
-            media_file = ImageCache().fanart_thumb_path(self.indexer_id)
+            media_file = ImageCache().fanart_thumb_path(self.series_id)
 
         if not all([media_file, os.path.exists(media_file)]):
             media_file = os.path.join(self.get_media_root(), 'images', self.get_default_media_name())

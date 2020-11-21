@@ -20,15 +20,29 @@
 # ##############################################################################
 import sickrage
 from sickrage.core.databases.main import MainDB
+from sickrage.core.enums import SeriesProviderID
 
 
-def find_epsiode(episode_id):
-    if not episode_id:
+def find_episode(episode_id, series_provider_id):
+    if not episode_id or not series_provider_id:
         return None
 
     with sickrage.app.main_db.session() as session:
-        db_data = session.query(MainDB.TVEpisode).filter_by(indexer_id=episode_id).one_or_none()
+        db_data = session.query(MainDB.TVEpisode).filter_by(episode_id=int(episode_id), series_provider_id=series_provider_id).one_or_none()
         if db_data:
-            series = sickrage.app.shows.get((db_data.showid, db_data.indexer), None)
-            if series:
-                return series.get_episode(db_data.season, db_data.episode)
+            series = sickrage.app.shows.get((db_data.series_id, db_data.series_provider_id), None)
+            return series.get_episode(db_data.season, db_data.episode)
+
+
+def find_episode_by_slug(episode_slug):
+    if not episode_slug:
+        return None
+
+    episode_id, series_provider_slug = episode_slug.split('-')
+    series_provider_id = SeriesProviderID.by_slug(series_provider_slug)
+
+    with sickrage.app.main_db.session() as session:
+        db_data = session.query(MainDB.TVEpisode).filter_by(episode_id=int(episode_id), series_provider_id=series_provider_id).one_or_none()
+        if db_data:
+            series = sickrage.app.shows.get((db_data.series_id, db_data.series_provider_id), None)
+            return series.get_episode(db_data.season, db_data.episode)

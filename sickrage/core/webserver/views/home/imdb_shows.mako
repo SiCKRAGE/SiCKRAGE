@@ -82,7 +82,7 @@
                                                 </div>
                                             </div>
                                             <div class="card-footer show-details p-1">
-                                                <a href="${srWebRoot}/home/addShows/addShowByID/?indexer_id=${cur_result['imdb_tt']}&showName=${cur_result['name']}"
+                                                <a href="${srWebRoot}/home/addShows/addShowByID/?series_id=${cur_result['imdb_tt']}&showName=${cur_result['name']}"
                                                    class="btn btn-sm" data-no-redirect>${_('Add Show')}</a>
                                             </div>
                                         </div>

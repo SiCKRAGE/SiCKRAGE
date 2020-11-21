@@ -70,7 +70,7 @@ class EpisodeDeletedException(SiCKRAGETVEpisodeException):
 
 class EpisodeNotFoundException(SiCKRAGETVEpisodeException):
     """
-    The episode wasn't found on the Indexer
+    The episode wasn't found on the series provider
     """
 
 

@@ -7,9 +7,9 @@
 
     import sickrage
     from sickrage.core.helpers import srdatetime
-    from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED, DOWNLOADED, SUBTITLED
-    from sickrage.core.common import Quality, statusStrings, Overview
+    from sickrage.core.common import Overview, Quality, EpisodeStatus
     from sickrage.core.tv.show.history import History
+    from sickrage.core.enums import  HistoryLayout
 %>
 <%block name="content">
     <%namespace file="./includes/quality_defaults.mako" import="renderQualityPill"/>
@@ -33,13 +33,10 @@
                             </select>
 
                             <select name="HistoryLayout" class="form-control"
-                                    onchange="location = this.options[this.selectedIndex].value;">
-                                <option value="${srWebRoot}/setHistoryLayout/?layout=compact"  ${('', 'selected')[sickrage.app.config.history_layout == 'compact']}>
-                                    ${_('Compact')}
-                                </option>
-                                <option value="${srWebRoot}/setHistoryLayout/?layout=detailed" ${('', 'selected')[sickrage.app.config.history_layout == 'detailed']}>
-                                    ${_('Detailed')}
-                                </option>
+                                    onchange="location = `${srWebRoot}/history?layout=this.options[this.selectedIndex].value;`">
+                                % for item in HistoryLayout:
+                                    <option value="${item.name}" ${('', 'selected')[sickrage.app.config.gui.history_layout == item]}>${item.display_name}</option>
+                                % endfor
                             </select>
                         </div>
                     </div>
@@ -47,7 +44,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        % if sickrage.app.config.history_layout == "detailed":
+                        % if sickrage.app.config.gui.history_layout == HistoryLayout.DETAILED:
                             <table id="historyTable" class="table ">
                                 <thead class="thead-dark">
                                 <tr>
@@ -70,23 +67,23 @@
                                                 <time datetime="${isoDate}" class="date">${airDate}</time>
                                             </td>
                                             <td class="tvShow">
-                                                <a href="${srWebRoot}/home/displayShow?show=${hItem["show_id"]}#S${hItem["season"]}E${hItem["episode"]}">
+                                                <a href="${srWebRoot}/home/displayShow?show=${hItem["series_id"]}#S${hItem["season"]}E${hItem["episode"]}">
                                                     ${hItem["show_name"]}
                                                     - ${"S{:02d}".format(hItem['season'])}${"E{:02d}".format(hItem['episode'])}${('', ' <span class="badge badge-success">Proper</span>')['proper' in hItem["resource"].lower() or 'repack' in hItem["resource"].lower()]}
                                                 </a>
                                             </td>
-                                            <td class="table-fit" ${('', 'class="subtitles_column"')[curStatus == SUBTITLED]}>
-                                                % if curStatus == SUBTITLED:
+                                            <td class="table-fit" ${('', 'class="subtitles_column"')[curStatus == EpisodeStatus.SUBTITLED]}>
+                                                % if curStatus == EpisodeStatus.SUBTITLED:
                                                     <i class="sickrage-flags sickrage-flags-${hItem['resource']}"></i>
                                                 % endif
                                                 <span style="cursor: help; vertical-align:middle;"
-                                                      title="${os.path.basename(hItem['resource'])}">${statusStrings[curStatus]}</span>
+                                                      title="${os.path.basename(hItem['resource'])}">${curStatus.display_name}</span>
                                             </td>
                                             <td class="table-fit">
                                                 % if hItem["provider"]:
                                                     % if hItem["provider"].lower() in sickrage.app.search_providers.all():
                                                     <% provider = sickrage.app.search_providers.all()[hItem["provider"].lower()] %>
-                                                        <i class="sickrage-providers sickrage-providers-${provider.id}"
+                                                        <i class="sickrage-search-providers sickrage-search-providers-${provider.id}"
                                                            style="vertical-align:middle;">
                                                         </i>
                                                         <span style="vertical-align:middle;">${provider.name}</span>
@@ -110,7 +107,7 @@
                                     <th>${_('Episode')}</th>
                                     <th>${_('Snatched')}</th>
                                     <th>${_('Downloaded')}</th>
-                                    % if sickrage.app.config.use_subtitles:
+                                    % if sickrage.app.config.subtitles.enable:
                                         <th>${_('Subtitled')}</th>
                                     % endif
                                     <th>${_('Quality')}</th>
@@ -127,7 +124,7 @@
                                             </td>
                                             <td class="tvShow" width="25%">
                                                 <span>
-                                                    <a href="${srWebRoot}/home/displayShow?show=${hItem["show_id"]}#S${hItem["season"]}E${hItem["episode"]}">
+                                                    <a href="${srWebRoot}/home/displayShow?show=${hItem["series_id"]}#S${hItem["season"]}E${hItem["episode"]}">
                                                         ${hItem["show_name"]}
                                                         - ${"S{:02d}".format(hItem['season'])}${"E{:02d}".format(hItem['episode'])}${('', ' <span class="badge badge-success">Proper</span>')['proper' in hItem["resource"].lower() or 'repack' in hItem["resource"].lower()]}
                                                     </a>
@@ -137,14 +134,14 @@
                                                 data-provider="${sorted(hItem["actions"], key=lambda x:sorted(x.keys()))[0]["provider"]}">
                                                 % for action in sorted(hItem["actions"], key=lambda x:sorted(x.keys())):
                                                     <% curStatus, curQuality = Quality.split_composite_status(int(action["action"])) %>
-                                                    % if curStatus in [SNATCHED, FAILED]:
+                                                    % if curStatus in [EpisodeStatus.SNATCHED, EpisodeStatus.FAILED]:
                                                         % if action["provider"].lower() in sickrage.app.search_providers.all():
                                                         <% provider = sickrage.app.search_providers.all()[action["provider"].lower()] %>
-                                                            <i class="sickrage-providers sickrage-providers-${provider.id}"
+                                                            <i class="sickrage-search-providers sickrage-search-providers-${provider.id}"
                                                                title="${provider.name}: ${os.path.basename(action["resource"])}"
                                                                style="vertical-align:middle;cursor: help;"></i>
                                                         % else:
-                                                            <i class="sickrage-providers sickrage-providers-missing"
+                                                            <i class="sickrage-search-providers sickrage-search-providers-missing"
                                                                style="vertical-align:middle;"
                                                                title="${_('missing provider')}"></i>
                                                         % endif
@@ -154,7 +151,7 @@
                                             <td class="table-fit">
                                                 % for action in sorted(hItem["actions"], key=lambda x:sorted(x.keys())):
                                                     <% curStatus, curQuality = Quality.split_composite_status(int(action["action"])) %>
-                                                    % if curStatus in [DOWNLOADED, ARCHIVED]:
+                                                    % if curStatus in [EpisodeStatus.DOWNLOADED, EpisodeStatus.ARCHIVED]:
                                                         % if action["provider"] != "-1":
                                                             <span style="cursor: help;"
                                                                   title="${os.path.basename(action["resource"])}"><i>${action["release_group"]}</i></span>
@@ -165,11 +162,11 @@
                                                     % endif
                                                 % endfor
                                             </td>
-                                            % if sickrage.app.config.use_subtitles:
+                                            % if sickrage.app.config.subtitles.enable:
                                                 <td class="table-fit">
                                                     % for action in sorted(hItem["actions"], key=lambda x:sorted(x.keys())):
                                                         <% curStatus, curQuality = Quality.split_composite_status(int(action["action"])) %>
-                                                        % if curStatus == SUBTITLED:
+                                                        % if curStatus == EpisodeStatus.SUBTITLED:
                                                             <i class="sickrage-subtitles sickrage-subtitles-${action['provider']}"
                                                                style="vertical-align:middle;"
                                                                title="${action["provider"].capitalize()}: ${os.path.basename(action["resource"])}"></i>

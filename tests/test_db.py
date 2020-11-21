@@ -27,42 +27,40 @@ import unittest
 
 import sickrage
 import tests
-from sickrage.core import MainDB
-from sickrage.core.common import UNAIRED
-from sickrage.core.tv.episode import TVEpisode
-from sickrage.core.tv.show import TVShow
+from sickrage.core.databases.main import MainDB
+from sickrage.core.common import EpisodeStatus
 
 
 class DBBasicTests(tests.SiCKRAGETestDBCase):
     def setUp(self):
         super(DBBasicTests, self).setUp()
         session = sickrage.app.main_db.session()
-        show = MainDB.TVShow(**{'indexer_id': 0o0001, 'indexer': 1, 'lang': 'en'})
+        show = MainDB.TVShow(**{'series_id': 0o0001, 'indexer': 1, 'lang': 'en'})
         session.add(show)
         session.commit()
 
-        ep = MainDB.TVEpisode(**{'showid': show.indexer_id, 'indexer': 1, 'season': 1, 'episode': 1, 'location': ''})
+        ep = MainDB.TVEpisode(**{'series_id': show.series_id, 'indexer': 1, 'season': 1, 'episode': 1, 'location': ''})
         session.add(ep)
-        ep.indexer_id = 1
+        ep.episode_id = 1
         ep.name = "test episode 1"
         ep.airdate = datetime.date.fromordinal(733832)
-        ep.status = UNAIRED
+        ep.status = EpisodeStatus.UNAIRED
         session.commit()
 
-        ep = MainDB.TVEpisode(**{'showid': show.indexer_id, 'indexer': 1, 'season': 1, 'episode': 2, 'location': ''})
+        ep = MainDB.TVEpisode(**{'series_id': show.series_id, 'indexer': 1, 'season': 1, 'episode': 2, 'location': ''})
         session.add(ep)
-        ep.indexer_id = 2
+        ep.episode_id = 2
         ep.name = "test episode 2"
         ep.airdate = datetime.date.fromordinal(733832)
-        ep.status = UNAIRED
+        ep.status = EpisodeStatus.UNAIRED
         session.commit()
 
-        ep = MainDB.TVEpisode(**{'showid': show.indexer_id, 'indexer': 1, 'season': 1, 'episode': 3, 'location': ''})
+        ep = MainDB.TVEpisode(**{'series_id': show.series_id, 'indexer': 1, 'season': 1, 'episode': 3, 'location': ''})
         session.add(ep)
-        ep.indexer_id = 3
+        ep.episode_id = 3
         ep.name = "test episode 3"
         ep.airdate = datetime.date.fromordinal(733832)
-        ep.status = UNAIRED
+        ep.status = EpisodeStatus.UNAIRED
         session.commit()
 
     def test_unaired(self):
@@ -71,14 +69,14 @@ class DBBasicTests(tests.SiCKRAGETestDBCase):
         session = sickrage.app.main_db.session()
 
         for episode_obj in session.query(MainDB.TVEpisode):
-            if all([episode_obj.status == UNAIRED, episode_obj.season > 0, episode_obj.airdate > datetime.date.min]):
+            if all([episode_obj.status == EpisodeStatus.UNAIRED, episode_obj.season > 0, episode_obj.airdate > datetime.date.min]):
                 count += 1
 
                 ep = MainDB.TVEpisode(**{'indexer': 1, 'episode': episode_obj.episode})
-                ep.indexer_id = episode_obj.episode
+                ep.episode_id = episode_obj.episode
                 ep.name = "test episode {}".format(episode_obj.episode)
                 ep.airdate = datetime.date.fromordinal(733832)
-                ep.status = UNAIRED
+                ep.status = EpisodeStatus.UNAIRED
 
         self.assertEqual(count, 3)
 

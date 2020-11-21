@@ -17,21 +17,16 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 import datetime
 
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
-from sqlalchemy import Column, Integer, Text, ForeignKeyConstraint, String, DateTime, Boolean, Index, Date, BigInteger, func, literal_column
-from sqlalchemy.ext.declarative import as_declarative
+from sqlalchemy import Column, Integer, Text, ForeignKeyConstraint, String, DateTime, Boolean, Index, Date, BigInteger, func, literal_column, Enum
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
 import sickrage
-from sickrage.core import common
-from sickrage.core.common import SearchFormats
-from sickrage.core.databases import SRDatabase, SRDatabaseBase
+from sickrage.core.common import Qualities, EpisodeStatus
+from sickrage.core.databases import SRDatabase, SRDatabaseBase, IntFlag
+from sickrage.core.enums import SearchFormat, SeriesProviderID
 
-
-@as_declarative()
-class MainDBBase(SRDatabaseBase):
-    pass
-
+MainDBBase = declarative_base(cls=SRDatabaseBase)
 
 class MainDB(SRDatabase):
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
@@ -45,20 +40,20 @@ class MainDB(SRDatabase):
         def remove_duplicate_shows():
             session = self.session()
 
-            # count by indexer ID
+            # count by series id
             duplicates = session.query(
-                self.TVShow.indexer_id,
-                func.count(self.TVShow.indexer_id).label('count')
+                self.TVShow.series_id,
+                func.count(self.TVShow.series_id).label('count')
             ).group_by(
-                self.TVShow.indexer_id
+                self.TVShow.series_id
             ).having(literal_column('count') > 1).all()
 
             for cur_duplicate in duplicates:
-                sickrage.app.log.debug("Duplicate show detected! indexer_id: {dupe_id} count: {dupe_count}".format(dupe_id=cur_duplicate.indexer_id,
+                sickrage.app.log.debug("Duplicate show detected! series_id: {dupe_id} count: {dupe_count}".format(dupe_id=cur_duplicate.series_id,
                                                                                                                    dupe_count=cur_duplicate.count))
 
-                for result in session.query(self.TVShow).filter_by(indexer_id=cur_duplicate.indexer_id).limit(cur_duplicate.count - 1):
-                    session.query(self.TVShow).filter_by(indexer_id=result.indexer_id).delete()
+                for result in session.query(self.TVShow).filter_by(series_id=cur_duplicate.series_id).limit(cur_duplicate.count - 1):
+                    session.query(self.TVShow).filter_by(series_id=result.series_id).delete()
                     session.commit()
 
         def remove_duplicate_episodes():
@@ -66,67 +61,67 @@ class MainDB(SRDatabase):
 
             # count by season/episode
             duplicates = session.query(
-                self.TVEpisode.showid,
+                self.TVEpisode.series_id,
                 self.TVEpisode.season,
                 self.TVEpisode.episode,
-                func.count(self.TVEpisode.indexer_id).label('count')
+                func.count(self.TVEpisode.episode_id).label('count')
             ).group_by(
-                self.TVEpisode.showid,
+                self.TVEpisode.series_id,
                 self.TVEpisode.season,
                 self.TVEpisode.episode,
             ).having(literal_column('count') > 1).all()
 
             for cur_duplicate in duplicates:
                 sickrage.app.log.debug("Duplicate episode detected! "
-                                       "showid: {dupe_id} "
+                                       "series_id: {dupe_id} "
                                        "season: {dupe_season} "
-                                       "episode {dupe_episode} count: {dupe_count}".format(dupe_id=cur_duplicate.showid,
+                                       "episode {dupe_episode} count: {dupe_count}".format(dupe_id=cur_duplicate.series_id,
                                                                                            dupe_season=cur_duplicate.season,
                                                                                            dupe_episode=cur_duplicate.episode,
                                                                                            dupe_count=cur_duplicate.count))
 
-                for result in session.query(self.TVEpisode).filter_by(showid=cur_duplicate.showid,
+                for result in session.query(self.TVEpisode).filter_by(series_id=cur_duplicate.series_id,
                                                                       season=cur_duplicate.season,
                                                                       episode=cur_duplicate.episode).limit(cur_duplicate.count - 1):
-                    session.query(self.TVEpisode).filter_by(showid=result.showid, season=result.season, episode=result.episode).delete()
+                    session.query(self.TVEpisode).filter_by(series_id=result.series_id, season=result.season, episode=result.episode).delete()
                     session.commit()
 
-            # count by indexer ID
+            # count by series id
             duplicates = session.query(
-                self.TVEpisode.showid,
-                self.TVEpisode.indexer_id,
+                self.TVEpisode.series_id,
+                self.TVEpisode.episode_id,
                 self.TVEpisode.season,
                 self.TVEpisode.episode,
-                func.count(self.TVEpisode.indexer_id).label('count')
+                func.count(self.TVEpisode.episode_id).label('count')
             ).group_by(
-                self.TVEpisode.showid,
-                self.TVEpisode.indexer_id
+                self.TVEpisode.series_id,
+                self.TVEpisode.episode_id
             ).having(literal_column('count') > 1).all()
 
             for cur_duplicate in duplicates:
                 sickrage.app.log.debug("Duplicate episode detected! "
-                                       "showid: {dupe_id} "
+                                       "series_id: {dupe_id} "
                                        "season: {dupe_season} "
-                                       "episode {dupe_episode} count: {dupe_count}".format(dupe_id=cur_duplicate.showid,
+                                       "episode {dupe_episode} count: {dupe_count}".format(dupe_id=cur_duplicate.series_id,
                                                                                            dupe_season=cur_duplicate.season,
                                                                                            dupe_episode=cur_duplicate.episode,
                                                                                            dupe_count=cur_duplicate.count))
 
-                for result in session.query(self.TVEpisode).filter_by(showid=cur_duplicate.showid,
-                                                                      indexer_id=cur_duplicate.indexer_id).limit(cur_duplicate.count - 1):
-                    session.query(self.TVEpisode).filter_by(showid=result.showid, indexer_id=result.indexer_id).delete()
+                for result in session.query(self.TVEpisode).filter_by(series_id=cur_duplicate.series_id,
+                                                                      episode_id=cur_duplicate.episode_id).limit(cur_duplicate.count - 1):
+                    session.query(self.TVEpisode).filter_by(series_id=result.series_id, episode_id=result.episode_id).delete()
                     session.commit()
 
         def fix_duplicate_episode_scene_numbering():
             session = self.session()
 
             duplicates = session.query(
-                self.TVEpisode.showid,
+                self.TVEpisode.series_id,
                 self.TVEpisode.scene_season,
                 self.TVEpisode.scene_episode,
-                func.count(self.TVEpisode.showid).label('count')
+                func.count(self.TVEpisode.series_id).label('count')
             ).group_by(
-                self.TVEpisode.showid,
+                self.TVEpisode.series_id,
                 self.TVEpisode.scene_season,
                 self.TVEpisode.scene_episode
             ).filter(
@@ -136,14 +131,14 @@ class MainDB(SRDatabase):
 
             for cur_duplicate in duplicates:
                 sickrage.app.log.debug("Duplicate episode scene numbering detected! "
-                                       "showid: {dupe_id} "
+                                       "series_id: {dupe_id} "
                                        "scene season: {dupe_scene_season} "
-                                       "scene episode {dupe_scene_episode} count: {dupe_count}".format(dupe_id=cur_duplicate.showid,
+                                       "scene episode {dupe_scene_episode} count: {dupe_count}".format(dupe_id=cur_duplicate.series_id,
                                                                                                        dupe_scene_season=cur_duplicate.scene_season,
                                                                                                        dupe_scene_episode=cur_duplicate.scene_episode,
                                                                                                        dupe_count=cur_duplicate.count))
 
-                for result in session.query(self.TVEpisode).filter_by(showid=cur_duplicate.showid,
+                for result in session.query(self.TVEpisode).filter_by(series_id=cur_duplicate.series_id,
                                                                       scene_season=cur_duplicate.scene_season,
                                                                       scene_episode=cur_duplicate.scene_episode).limit(cur_duplicate.count - 1):
                     result.scene_season = -1
@@ -154,11 +149,11 @@ class MainDB(SRDatabase):
             session = self.session()
 
             duplicates = session.query(
-                self.TVEpisode.showid,
+                self.TVEpisode.series_id,
                 self.TVEpisode.scene_absolute_number,
-                func.count(self.TVEpisode.showid).label('count')
+                func.count(self.TVEpisode.series_id).label('count')
             ).group_by(
-                self.TVEpisode.showid,
+                self.TVEpisode.series_id,
                 self.TVEpisode.scene_absolute_number
             ).filter(
                 self.TVEpisode.scene_absolute_number != -1
@@ -166,13 +161,13 @@ class MainDB(SRDatabase):
 
             for cur_duplicate in duplicates:
                 sickrage.app.log.debug("Duplicate episode scene absolute numbering detected! "
-                                       "showid: {dupe_id} "
+                                       "series_id: {dupe_id} "
                                        "scene absolute number: {dupe_scene_absolute_number} "
-                                       "count: {dupe_count}".format(dupe_id=cur_duplicate.showid,
+                                       "count: {dupe_count}".format(dupe_id=cur_duplicate.series_id,
                                                                     dupe_scene_absolute_number=cur_duplicate.scene_absolute_number,
                                                                     dupe_count=cur_duplicate.count))
 
-                for result in session.query(self.TVEpisode).filter_by(showid=cur_duplicate.showid,
+                for result in session.query(self.TVEpisode).filter_by(series_id=cur_duplicate.series_id,
                                                                       scene_absolute_number=cur_duplicate.scene_absolute_number). \
                         limit(cur_duplicate.count - 1):
                     result.scene_absolute_number = -1
@@ -181,7 +176,7 @@ class MainDB(SRDatabase):
         def remove_invalid_episodes():
             session = self.session()
 
-            session.query(self.TVEpisode).filter_by(indexer_id=0).delete()
+            session.query(self.TVEpisode).filter_by(episode_id=0).delete()
             session.commit()
 
         def fix_invalid_scene_numbering():
@@ -219,12 +214,12 @@ class MainDB(SRDatabase):
 
             session.query(self.TVShow).filter_by(sub_use_sr_metadata=None).update({'sub_use_sr_metadata': False})
             session.query(self.TVShow).filter_by(skip_downloaded=None).update({'skip_downloaded': False})
-            session.query(self.TVShow).filter_by(dvdorder=None).update({'dvdorder': False})
+            session.query(self.TVShow).filter_by(dvd_order=None).update({'dvd_order': False})
             session.query(self.TVShow).filter_by(subtitles=None).update({'subtitles': False})
             session.query(self.TVShow).filter_by(anime=None).update({'anime': False})
             session.query(self.TVShow).filter_by(flatten_folders=None).update({'flatten_folders': False})
             session.query(self.TVShow).filter_by(paused=None).update({'paused': False})
-            session.query(self.TVShow).filter_by(last_xem_refresh=None).update({'last_xem_refresh': datetime.datetime.now().toordinal()})
+            session.query(self.TVShow).filter_by(last_xem_refresh=None).update({'last_xem_refresh': datetime.datetime.now()})
 
             session.commit()
 
@@ -239,8 +234,8 @@ class MainDB(SRDatabase):
     class TVShow(MainDBBase):
         __tablename__ = 'tv_shows'
 
-        indexer_id = Column(Integer, index=True, primary_key=True)
-        indexer = Column(Integer, index=True, primary_key=True)
+        series_id = Column(Integer, index=True, primary_key=True)
+        series_provider_id = Column(Enum(SeriesProviderID), index=True, primary_key=True)
         name = Column(Text, default='')
         location = Column(Text, default='')
         network = Column(Text, default='')
@@ -248,33 +243,33 @@ class MainDB(SRDatabase):
         overview = Column(Text, default='')
         classification = Column(Text, default='Scripted')
         runtime = Column(Integer, default=0)
-        quality = Column(Integer, default=-1)
+        quality = Column(IntFlag(Qualities), default=Qualities.SD)
         airs = Column(Text, default='')
         status = Column(Text, default='')
         flatten_folders = Column(Boolean, nullable=False, default=0)
         paused = Column(Boolean, nullable=False, default=0)
-        search_format = Column(Integer, default=SearchFormats.STANDARD)
+        search_format = Column(Enum(SearchFormat), default=SearchFormat.STANDARD)
         scene = Column(Boolean, nullable=False, default=0)
         anime = Column(Boolean, nullable=False, default=0)
         subtitles = Column(Boolean, nullable=False, default=0)
-        dvdorder = Column(Boolean, nullable=False, default=0)
+        dvd_order = Column(Boolean, nullable=False, default=0)
         skip_downloaded = Column(Boolean, nullable=False, default=0)
         startyear = Column(Integer, default=0)
         lang = Column(Text, default='')
         imdb_id = Column(Text, default='')
         rls_ignore_words = Column(Text, default='')
         rls_require_words = Column(Text, default='')
-        default_ep_status = Column(Integer, default=common.SKIPPED)
+        default_ep_status = Column(Enum(EpisodeStatus), default=EpisodeStatus.SKIPPED)
         sub_use_sr_metadata = Column(Boolean, nullable=False, default=0)
         notify_list = Column(Text, default='')
         search_delay = Column(Integer, default=0)
         scene_exceptions = Column(Text, default='')
-        last_refresh = Column(Integer, default=datetime.datetime.now().toordinal())
-        last_xem_refresh = Column(Integer, default=datetime.datetime.now().toordinal())
-        last_scene_exceptions_refresh = Column(Integer, default=datetime.datetime.now().toordinal())
-        last_update = Column(Integer, default=datetime.datetime.now().toordinal())
-        last_backlog_search = Column(Integer, default=0)
-        last_proper_search = Column(Integer, default=0)
+        last_refresh = Column(DateTime(timezone=True), default=datetime.datetime.now())
+        last_xem_refresh = Column(DateTime(timezone=True), default=datetime.datetime.now())
+        last_scene_exceptions_refresh = Column(DateTime(timezone=True), default=datetime.datetime.now())
+        last_update = Column(DateTime(timezone=True), default=datetime.datetime.now())
+        last_backlog_search = Column(DateTime(timezone=True), default=datetime.datetime.now())
+        last_proper_search = Column(DateTime(timezone=True), default=datetime.datetime.now())
 
         episodes = relationship('TVEpisode', uselist=True, backref='tv_shows', lazy='dynamic')
         imdb_info = relationship('IMDbInfo', uselist=False, backref='tv_shows')
@@ -282,17 +277,18 @@ class MainDB(SRDatabase):
     class TVEpisode(MainDBBase):
         __tablename__ = 'tv_episodes'
         __table_args__ = (
-            ForeignKeyConstraint(['showid', 'indexer'], ['tv_shows.indexer_id', 'tv_shows.indexer']),
-            Index('idx_showid_indexer', 'showid', 'indexer'),
-            Index('idx_showid_indexerid', 'showid', 'indexer_id'),
-            Index('idx_sta_epi_air', 'status', 'episode', 'airdate'),
-            Index('idx_sea_epi_sta_air', 'season', 'episode', 'status', 'airdate'),
-            Index('idx_indexer_id_airdate', 'indexer_id', 'airdate'),
+            ForeignKeyConstraint(['series_id', 'series_provider_id'], ['tv_shows.series_id', 'tv_shows.series_provider_id'], ondelete='CASCADE',
+                                 name=f'fk_{__tablename__}_series_id_series_provider_id'),
+            Index('idx_series_id_series_provider_id', 'series_id', 'series_provider_id'),
+            Index('idx_series_id_episode_id', 'series_id', 'episode_id'),
+            Index('idx_status_episode_airdate', 'status', 'episode', 'airdate'),
+            Index('idx_season_episode_status_airdate', 'season', 'episode', 'status', 'airdate'),
+            Index('idx_episode_id_airdate', 'episode_id', 'airdate'),
         )
 
-        showid = Column(Integer, index=True, primary_key=True)
-        indexer_id = Column(Integer, default=0)
-        indexer = Column(Integer, index=True, primary_key=True)
+        series_id = Column(Integer, index=True, primary_key=True)
+        series_provider_id = Column(Enum(SeriesProviderID), index=True, primary_key=True)
+        episode_id = Column(Integer, default=0)
         season = Column(Integer, index=True, primary_key=True)
         episode = Column(Integer, index=True, primary_key=True)
         absolute_number = Column(Integer, default=-1)
@@ -306,11 +302,11 @@ class MainDB(SRDatabase):
         description = Column(Text, default='')
         subtitles = Column(Text, default='')
         subtitles_searchcount = Column(Integer, default=0)
-        subtitles_lastsearch = Column(Integer, default=0)
+        subtitles_lastsearch = Column(DateTime(timezone=True), default=func.current_timestamp())
         airdate = Column(Date, default=datetime.datetime.min)
         hasnfo = Column(Boolean, nullable=False, default=False)
         hastbn = Column(Boolean, nullable=False, default=False)
-        status = Column(Integer, default=common.UNKNOWN)
+        status = Column(Enum(EpisodeStatus), default=EpisodeStatus.UNKNOWN)
         location = Column(Text, default='')
         file_size = Column(BigInteger, default=0)
         release_name = Column(Text, default='')
@@ -323,10 +319,11 @@ class MainDB(SRDatabase):
     class IMDbInfo(MainDBBase):
         __tablename__ = 'imdb_info'
         __table_args__ = (
-            ForeignKeyConstraint(['indexer_id'], ['tv_shows.indexer_id']),
+            ForeignKeyConstraint(['series_id', 'imdb_id'], ['tv_shows.series_id', 'tv_shows.imdb_id'], ondelete='CASCADE',
+                                 name=f'fk_{__tablename__}_series_id_imdb_id'),
         )
 
-        indexer_id = Column(Integer, primary_key=True)
+        series_id = Column(Integer, primary_key=True)
         imdb_id = Column(String(10), index=True, unique=True)
         rated = Column(Text)
         title = Column(Text)
@@ -349,97 +346,92 @@ class MainDB(SRDatabase):
         metascore = Column(Text)
         year = Column(Text)
         plot = Column(Text)
-        last_update = Column(Integer, nullable=False)
+        last_update = Column(DateTime(timezone=True), default=datetime.datetime.now())
 
-    class IndexerMapping(MainDBBase):
-        __tablename__ = 'indexer_mapping'
+    class SeriesProviderMapping(MainDBBase):
+        __tablename__ = 'series_provider_mapping'
+        __table_args__ = (
+            ForeignKeyConstraint(['series_id', 'series_provider_id'], ['tv_shows.series_id', 'tv_shows.series_provider_id'], ondelete='CASCADE',
+                                 name=f'fk_{__tablename__}_series_id_series_provider_id'),
+        )
 
-        indexer_id = Column(Integer, primary_key=True)
-        indexer = Column(Integer, primary_key=True)
-        mindexer_id = Column(Integer, nullable=False)
-        mindexer = Column(Integer, primary_key=True)
+        series_id = Column(Integer, primary_key=True)
+        series_provider_id = Column(Enum(SeriesProviderID), primary_key=True)
+        mapped_series_id = Column(Integer, nullable=False)
+        mapped_series_provider_id = Column(Enum(SeriesProviderID), primary_key=True)
 
     class Blacklist(MainDBBase):
         __tablename__ = 'blacklist'
+        __table_args__ = (
+            ForeignKeyConstraint(['series_id', 'series_provider_id'], ['tv_shows.series_id', 'tv_shows.series_provider_id'], ondelete='CASCADE',
+                                 name=f'fk_{__tablename__}_series_id_series_provider_id'),
+        )
 
-        id = Column(Integer, primary_key=True)
-        show_id = Column(Integer, nullable=False)
+        id = Column(Integer, autoincrement=True, primary_key=True)
+        series_id = Column(Integer, nullable=False)
+        series_provider_id = Column(Enum(SeriesProviderID), nullable=False)
         keyword = Column(Text, nullable=False)
 
     class Whitelist(MainDBBase):
         __tablename__ = 'whitelist'
+        __table_args__ = (
+            ForeignKeyConstraint(['series_id', 'series_provider_id'], ['tv_shows.series_id', 'tv_shows.series_provider_id'], ondelete='CASCADE',
+                                 name=f'fk_{__tablename__}_series_id_series_provider_id'),
+        )
 
-        id = Column(Integer, primary_key=True)
-        show_id = Column(Integer, nullable=False)
+        id = Column(Integer, autoincrement=True, primary_key=True)
+        series_id = Column(Integer, nullable=False)
+        series_provider_id = Column(Enum(SeriesProviderID), nullable=False)
         keyword = Column(Text, nullable=False)
 
     class History(MainDBBase):
         __tablename__ = 'history'
+        __table_args__ = (
+            ForeignKeyConstraint(['series_id', 'series_provider_id'], ['tv_shows.series_id', 'tv_shows.series_provider_id'], ondelete='CASCADE',
+                                 name=f'fk_{__tablename__}_series_id_series_provider_id'),
+        )
 
-        id = Column(Integer, primary_key=True)
-        showid = Column(Integer, nullable=False)
+        id = Column(Integer, autoincrement=True, primary_key=True)
+        series_id = Column(Integer, nullable=False)
+        series_provider_id = Column(Enum(SeriesProviderID), nullable=False)
         season = Column(Integer, nullable=False)
         episode = Column(Integer, nullable=False)
-        resource = Column(Text, nullable=False)
+        resource = Column(Text, nullable=False, index=True)
         action = Column(Integer, nullable=False)
         version = Column(Integer, default=-1)
         provider = Column(Text, nullable=False)
         date = Column(DateTime, nullable=False)
-        quality = Column(Integer, nullable=False)
+        quality = Column(IntFlag(Qualities), nullable=False)
         release_group = Column(Text, nullable=False)
 
     class FailedSnatchHistory(MainDBBase):
         __tablename__ = 'failed_snatch_history'
+        __table_args__ = (
+            ForeignKeyConstraint(['series_id', 'series_provider_id'], ['tv_shows.series_id', 'tv_shows.series_provider_id'], ondelete='CASCADE',
+                                 name=f'fk_{__tablename__}_series_id_series_provider_id'),
+        )
 
-        id = Column(Integer, primary_key=True)
+        id = Column(Integer, autoincrement=True, primary_key=True)
+        series_id = Column(Integer, nullable=False)
+        series_provider_id = Column(Enum(SeriesProviderID), nullable=False)
         date = Column(DateTime, nullable=False)
         size = Column(Integer, nullable=False)
-        release = Column(Text, nullable=False)
+        release = Column(Text, nullable=False, index=True)
         provider = Column(Text, nullable=False)
-        showid = Column(Integer, nullable=False)
         season = Column(Integer, nullable=False)
         episode = Column(Integer, nullable=False)
-        old_status = Column(Integer, nullable=False)
+        old_status = Column(Enum(EpisodeStatus), nullable=False)
 
     class FailedSnatch(MainDBBase):
         __tablename__ = 'failed_snatches'
+        __table_args__ = (
+            ForeignKeyConstraint(['series_id', 'series_provider_id'], ['tv_shows.series_id', 'tv_shows.series_provider_id'], ondelete='CASCADE',
+                                 name=f'fk_{__tablename__}_series_id_series_provider_id'),
+        )
 
-        id = Column(Integer, primary_key=True)
-        release = Column(Text, nullable=False)
+        id = Column(Integer, autoincrement=True, primary_key=True)
+        series_id = Column(Integer, nullable=False)
+        series_provider_id = Column(Enum(SeriesProviderID), nullable=False)
+        release = Column(Text, nullable=False, index=True)
         size = Column(Integer, nullable=False)
         provider = Column(Text, nullable=False)
-
-
-class TVShowSchema(SQLAlchemyAutoSchema):
-    class Meta:
-        model = MainDB.TVShow
-        include_relationships = False
-        load_instance = True
-
-
-class TVEpisodeSchema(SQLAlchemyAutoSchema):
-    class Meta:
-        model = MainDB.TVEpisode
-        include_relationships = False
-        load_instance = True
-
-
-class IMDbInfoSchema(SQLAlchemyAutoSchema):
-    class Meta:
-        model = MainDB.IMDbInfo
-        include_relationships = False
-        load_instance = True
-
-
-class BlacklistSchema(SQLAlchemyAutoSchema):
-    class Meta:
-        model = MainDB.Blacklist
-        include_relationships = False
-        load_instance = True
-
-
-class WhitelistSchema(SQLAlchemyAutoSchema):
-    class Meta:
-        model = MainDB.Whitelist
-        include_relationships = False
-        load_instance = True

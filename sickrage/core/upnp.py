@@ -38,7 +38,7 @@ class UPNPClient(object):
         self.running = False
 
     def task(self, force=False):
-        if self.running or not sickrage.app.config.enable_upnp:
+        if self.running or not sickrage.app.config.general.enable_upnp:
             return
 
         try:
@@ -88,10 +88,10 @@ class UPNPClient(object):
         for protocol, description in [('TCP', 'SiCKRAGE')]:
             upnp_dev.WANIPConn1.AddPortMapping(
                 NewRemoteHost='',
-                NewExternalPort=sickrage.app.config.web_external_port,
+                NewExternalPort=sickrage.app.config.general.web_external_port,
                 NewProtocol=protocol,
-                NewInternalPort=sickrage.app.config.web_port,
-                NewInternalClient=sickrage.app.config.web_host,
+                NewInternalPort=sickrage.app.config.general.web_port,
+                NewInternalClient=sickrage.app.config.general.web_host,
                 NewEnabled='1',
                 NewPortMappingDescription=description,
                 NewLeaseDuration=self._nat_portmap_lifetime,
@@ -111,7 +111,7 @@ class UPNPClient(object):
         for protocol, description in [('TCP', 'SiCKRAGE')]:
             upnp_dev.WANIPConn1.DeletePortMapping(
                 NewRemoteHost='',
-                NewExternalPort=sickrage.app.config.web_external_port,
+                NewExternalPort=sickrage.app.config.general.web_external_port,
                 NewProtocol=protocol,
             )
 

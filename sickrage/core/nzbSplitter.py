@@ -22,12 +22,10 @@ import re
 from xml.etree import ElementTree
 
 import sickrage
-from sickrage.core.classes import NZBDataSearchResult
-from sickrage.core.common import Quality
-from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
-    NameParser
+from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.websession import WebSession
+from sickrage.search_providers import NZBDataSearchProviderResult
 
 
 def getSeasonNZBs(name, urlData, season):
@@ -130,7 +128,7 @@ def split_nzb_result(result):
 
     # parse the season ep name
     try:
-        parse_result = NameParser(False, show_id=result.show_id).parse(result.name)
+        parse_result = NameParser(False, series_id=result.series_id, series_provider_id=result.series_provider_id).parse(result.name)
     except InvalidNameException:
         sickrage.app.log.debug("Unable to parse the filename " + result.name + " into a valid episode")
         return False
@@ -148,7 +146,7 @@ def split_nzb_result(result):
 
         # parse the name
         try:
-            parse_result = NameParser(False, show_id=result.show_id).parse(newNZB)
+            parse_result = NameParser(False, series_id=result.series_id, series_provider_id=result.series_provider_id).parse(newNZB)
         except InvalidNameException:
             sickrage.app.log.debug("Unable to parse the filename {} into a valid episode".format(newNZB))
             return False
@@ -166,9 +164,9 @@ def split_nzb_result(result):
 
         want_ep = True
         for epNo in parse_result.episode_numbers:
-            show_object = find_show(parse_result.indexer_id)
+            show_object = find_show(parse_result.series_id, parse_result.series_provider_id)
             if not show_object.want_episode(parse_result.season_number, epNo, result.quality):
-                sickrage.app.log.info("Ignoring result {} because we don't want an episode that is {}".format(newNZB, Quality.qualityStrings[result.quality]))
+                sickrage.app.log.info("Ignoring result {} because we don't want an episode that is {}".format(newNZB, result.quality.display_name))
                 want_ep = False
                 break
 
@@ -176,7 +174,7 @@ def split_nzb_result(result):
             continue
 
         # make a result
-        cur_result = NZBDataSearchResult(season, parse_result.episode_numbers)
+        cur_result = NZBDataSearchProviderResult(season, parse_result.episode_numbers)
         cur_result.name = newNZB
         cur_result.provider = result.provider
         cur_result.quality = result.quality

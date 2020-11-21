@@ -3,8 +3,8 @@
 <%!
     import json
     import sickrage
-    from sickrage.providers import NZBProvider, TorrentProvider, NewznabProvider, TorrentRssProvider
-    from sickrage.providers.torrent import thepiratebay
+    from sickrage.search_providers import SearchProviderType
+    from sickrage.search_providers.torrent import thepiratebay
     from sickrage.core.helpers import anon_url, validate_url
 %>
 
@@ -13,11 +13,11 @@
                                  href="#provider-priorities">${_('Provider Priorities')}</a></li>
     <li class="nav-item px-1"><a class="nav-link" data-toggle="tab"
                                  href="#provider-options">${_('Provider Options')}</a></li>
-    % if sickrage.app.config.use_nzbs:
+    % if sickrage.app.config.general.use_nzbs:
         <li class="nav-item px-1"><a class="nav-link" data-toggle="tab"
                                      href="#custom-newnab-providers">${_('Custom Newznab Providers')}</a></li>
     % endif
-    % if sickrage.app.config.use_torrents:
+    % if sickrage.app.config.general.use_torrents:
         <li class="nav-item px-1"><a class="nav-link" data-toggle="tab"
                                      href="#custom-torrent-providers">${_('Custom Torrent Providers')}</a></li>
     % endif
@@ -28,7 +28,7 @@
         newznab_providers = ''
         torrentrss_providers = ''
 
-        if sickrage.app.config.use_nzbs:
+        if sickrage.app.config.general.use_nzbs:
             for providerID, providerObj in sickrage.app.search_providers.newznab().items():
                 if providerObj.default:
                     continue
@@ -40,9 +40,9 @@
                         str(providerObj.key),
                         providerObj.catIDs,
                         ("false", "true")[bool(providerObj.default)],
-                        ("false", "true")[bool(sickrage.app.config.use_nzbs)]]))
+                        ("false", "true")[bool(sickrage.app.config.general.use_nzbs)]]))
 
-        if sickrage.app.config.use_torrents:
+        if sickrage.app.config.general.use_torrents:
             for providerID, providerObj in sickrage.app.search_providers.torrentrss().items():
                 if providerObj.default:
                     continue
@@ -54,7 +54,7 @@
                               providerObj.cookies,
                               providerObj.titleTAG,
                               ("false", "true")[bool(providerObj.default)],
-                              ("false", "true")[bool(sickrage.app.config.use_torrents)]]))
+                              ("false", "true")[bool(sickrage.app.config.general.use_torrents)]]))
     %>
     <meta data-var="NEWZNAB_PROVIDERS" data-content="${newznab_providers}">
     <meta data-var="TORRENTRSS_PROVIDERS" data-content="${torrentrss_providers}">
@@ -70,7 +70,7 @@
                     ${_('At least one provider is required but two are recommended.')}
                 </small>
 
-                % if not sickrage.app.config.use_nzbs or not sickrage.app.config.use_torrents:
+                % if not sickrage.app.config.general.use_nzbs or not sickrage.app.config.general.use_torrents:
                     <small class="form-text text-muted">
                         ${_('NZB/Torrent providers can be toggled in')}
                         <b><a href="${srWebRoot}/config/search">${_('Search Clients')}</a></b>
@@ -88,12 +88,12 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="list-group w-50" id="provider_order_list">
                     % for providerID, providerObj in sickrage.app.search_providers.sort().items():
-                        % if (providerObj.type in [NZBProvider.type, NewznabProvider.type] and sickrage.app.config.use_nzbs) or (providerObj.type in [TorrentProvider.type, TorrentRssProvider.type] and sickrage.app.config.use_torrents):
+                        % if (providerObj.provider_type in [SearchProviderType.NZB, SearchProviderType.NEWZNAB] and sickrage.app.config.general.use_nzbs) or (providerObj.provider_type in [SearchProviderType.TORRENT, SearchProviderType.TORRENT_RSS] and sickrage.app.config.general.use_torrents):
                         <% provider_url = providerObj.urls.get('base_url', '') %>
-                        % if hasattr(providerObj, 'custom_url') and validate_url(providerObj.custom_url):
-                            <% provider_url = providerObj.custom_url %>
+                        % if providerObj.custom_settings.get('custom_url', None) and validate_url(providerObj.custom_settings['custom_url']):
+                            <% provider_url = providerObj.custom_settings['custom_url'] %>
                         % endif
-                            <div class="list-group-item list-group-item-action ${('list-group-item-dark', 'list-group-item-secondary')[bool(providerObj.type in [TorrentProvider.type, TorrentRssProvider.type])]} rounded mb-1 p-2"
+                            <div class="list-group-item list-group-item-action ${('list-group-item-dark', 'list-group-item-secondary')[bool(providerObj.provider_type in [SearchProviderType.TORRENT, SearchProviderType.TORRENT_RSS])]} rounded mb-1 p-2"
                                  id="${providerID}">
                                 <div class="align-middle">
                                     <label class="form-check-label" for="enable_${providerID}">
@@ -101,10 +101,10 @@
                                                class="provider_enabler text-left" ${('', 'checked')[bool(providerObj.is_enabled)]}/>
                                         <a href="${anon_url(provider_url)}" class="text-right" rel="noreferrer"
                                            onclick="window.open(this.href, '_blank'); return false;">
-                                            % if providerObj.type in ['nzb', 'torrent']:
-                                                <i class="sickrage-providers sickrage-providers-${providerObj.id}"></i>
+                                            % if providerObj.provider_type in [SearchProviderType.NZB, SearchProviderType.TORRENT]:
+                                                <i class="sickrage-search-providers sickrage-search-providers-${providerObj.id}"></i>
                                             % else:
-                                                <i class="sickrage-providers sickrage-providers-${providerObj.type}"></i>
+                                                <i class="sickrage-search-providers sickrage-search-providers-${providerObj.provider_type.value}"></i>
                                             % endif
                                         </a>
                                         <span class="font-weight-bold">${providerObj.name}</span>
@@ -290,7 +290,7 @@
 
                 % for providerID, providerObj in sickrage.app.search_providers.nzb().items():
                     <div class="providerDiv" id="${providerID}Div">
-                        % if hasattr(providerObj, 'username'):
+                        % if providerObj.custom_settings.get('username', None):
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Username:')}</label>
@@ -301,7 +301,7 @@
                                             <span class="input-group-text"><span class="fas fa-user"></span></span>
                                         </div>
                                         <input name="${providerID}_username"
-                                               value="${providerObj.username}"
+                                               value="${providerObj.custom_settings['username']}"
                                                title="Provider username"
                                                class="form-control" autocapitalize="off"/>
                                     </div>
@@ -309,7 +309,7 @@
                             </div>
                         % endif
 
-                        % if hasattr(providerObj, 'api_key'):
+                        % if providerObj.custom_settings.get('api_key', None):
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('API key:')}</label>
@@ -320,7 +320,7 @@
                                             <span class="input-group-text"><span class="fas fa-cloud"></span></span>
                                         </div>
                                         <input name="${providerID}_api_key"
-                                               value="${providerObj.api_key}"
+                                               value="${providerObj.custom_settings['api_key']}"
                                                title="Provider API key"
                                                class="form-control" autocapitalize="off"/>
                                     </div>
@@ -420,7 +420,7 @@
 
                 % for providerID, providerObj in sickrage.app.search_providers.all_torrent().items():
                     <div class="providerDiv" id="${providerID}Div">
-                        % if hasattr(providerObj, 'custom_url'):
+                        % if providerObj.custom_settings.get('custom_url', None):
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Custom URL:')}</label>
@@ -432,7 +432,7 @@
                                         </div>
                                         <input name="${providerID}_custom_url"
                                                id="${providerID}_custom_url"
-                                               value="${providerObj.custom_url}"
+                                               value="${providerObj.custom_settings['custom_url']}"
                                                title="${_('Provider custom url')}"
                                                class="form-control"
                                                autocapitalize="off"/>
@@ -441,7 +441,7 @@
                             </div>
                         % endif
 
-                        % if hasattr(providerObj, 'api_key'):
+                        % if providerObj.custom_settings.get('api_key', None):
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Api key:')}</label>
@@ -453,7 +453,7 @@
                                         </div>
                                         <input name="${providerID}_api_key"
                                                id="${providerID}_api_key"
-                                               value="${providerObj.api_key}"
+                                               value="${providerObj.custom_settings['api_key']}"
                                                title="${_('Provider API key')}"
                                                class="form-control"
                                                autocapitalize="off"/>
@@ -462,7 +462,7 @@
                             </div>
                         % endif
 
-                        % if hasattr(providerObj, 'digest'):
+                        % if providerObj.custom_settings.get('digest', None):
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Digest:')}</label>
@@ -473,7 +473,7 @@
                                             <span class="input-group-text"><span class="fas fa-lock"></span></span>
                                         </div>
                                         <input name="${providerID}_digest" id="${providerID}_digest"
-                                               value="${providerObj.digest}"
+                                               value="${providerObj.custom_settings['digest']}"
                                                title="${_('Provider digest')}"
                                                class="form-control"
                                                autocapitalize="off"/>
@@ -482,7 +482,7 @@
                             </div>
                         % endif
 
-                        % if hasattr(providerObj, 'hash'):
+                        % if providerObj.custom_settings.get('hash', None):
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Hash:')}</label>
@@ -495,7 +495,7 @@
                                             </span>
                                         </div>
                                         <input name="${providerID}_hash" id="${providerID}_hash"
-                                               value="${providerObj.hash}"
+                                               value="${providerObj.custom_settings['hash']}"
                                                title="${_('Provider hash')}"
                                                class="form-control"
                                                autocapitalize="off"/>
@@ -504,7 +504,7 @@
                             </div>
                         % endif
 
-                        % if hasattr(providerObj, 'username'):
+                        % if providerObj.custom_settings.get('username', None):
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Username:')}</label>
@@ -516,7 +516,7 @@
                                         </div>
                                         <input name="${providerID}_username"
                                                id="${providerID}_username"
-                                               value="${providerObj.username}"
+                                               value="${providerObj.custom_settings['username']}"
                                                title="${_('Provider username')}"
                                                class="form-control"
                                                autocapitalize="off"/>
@@ -525,7 +525,7 @@
                             </div>
                         % endif
 
-                        % if hasattr(providerObj, 'password'):
+                        % if providerObj.custom_settings.get('password', None):
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Password:')}</label>
@@ -536,7 +536,8 @@
                                             <span class="input-group-text"><span class="fas fa-lock"></span></span>
                                         </div>
                                         <input type="password" name="${providerID}_password"
-                                               id="${providerID}_password" value="${providerObj.password}"
+                                               id="${providerID}_password"
+                                               value="${providerObj.custom_settings['password']}"
                                                title="${_('Provider password')}"
                                                class="form-control" autocapitalize="off"/>
                                     </div>
@@ -544,7 +545,7 @@
                             </div>
                         % endif
 
-                        % if hasattr(providerObj, 'passkey'):
+                        % if providerObj.custom_settings.get('passkey', None):
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Passkey:')}</label>
@@ -556,7 +557,7 @@
                                         </div>
                                         <input name="${providerID}_passkey"
                                                id="${providerID}_passkey"
-                                               value="${providerObj.passkey}"
+                                               value="${providerObj.custom_settings['passkey']}"
                                                title="${_('Provider PassKey')}"
                                                class="form-control"
                                                autocapitalize="off"/>
@@ -594,7 +595,7 @@
                             </div>
                         % endif
 
-                        % if hasattr(providerObj, 'pin'):
+                        % if providerObj.custom_settings.get('pin', None):
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Pin:')}</label>
@@ -606,7 +607,7 @@
                                         </div>
                                         <input type="password" name="${providerID}_pin"
                                                id="${providerID}_pin"
-                                               value="${providerObj.pin}"
+                                               value="${providerObj.custom_settings['pin']}"
                                                title="${_('Provider PIN#')}"
                                                class="form-control"
                                                autocapitalize="off"/>
@@ -637,7 +638,7 @@
                             </div>
                         % endif
 
-                        % if hasattr(providerObj, 'minseed'):
+                        % if providerObj.custom_settings.get('minseed', None):
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Minimum seeders:')}</label>
@@ -651,15 +652,15 @@
                                         </div>
                                         <input type="number" name="${providerID}_minseed"
                                                id="${providerID}_minseed"
-                                               value="${providerObj.minseed}"
+                                               value="${providerObj.custom_settings['minseed']}"
                                                title="${_('Minimum allowed seeders')}"
-                                                       class="form-control"/>
+                                               class="form-control"/>
                                     </div>
                                 </div>
                             </div>
                         % endif
 
-                        % if hasattr(providerObj, 'minleech'):
+                        % if providerObj.custom_settings.get('minleech', None):
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Minimum leechers:')}</label>
@@ -673,15 +674,15 @@
                                         </div>
                                         <input type="number" name="${providerID}_minleech"
                                                id="${providerID}_minleech"
-                                               value="${providerObj.minleech}"
+                                               value="${providerObj.custom_settings['minleech']}"
                                                title="${_('Minimum allowed leechers')}"
-                                                       class="form-control"/>
+                                               class="form-control"/>
                                     </div>
                                 </div>
                             </div>
                         % endif
 
-                        % if hasattr(providerObj, 'confirmed'):
+                        % if providerObj.custom_settings.get('confirmed', None):
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Confirmed download')}</label>
@@ -690,14 +691,14 @@
                                     <label for="${providerID}_confirmed">
                                         <input type="checkbox" class="toggle color-primary is-material"
                                                name="${providerID}_confirmed"
-                                               id="${providerID}_confirmed" ${('', 'checked')[bool(providerObj.confirmed)]}/>
+                                               id="${providerID}_confirmed" ${('', 'checked')[bool(providerObj.custom_settings['confirmed'])]}/>
                                         ${_('only download torrents from trusted or verified uploaders?')}
                                     </label>
                                 </div>
                             </div>
                         % endif
 
-                        % if hasattr(providerObj, 'ranked'):
+                        % if providerObj.custom_settings.get('ranked', None):
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Ranked torrents')}</label>
@@ -706,14 +707,14 @@
                                     <label for="${providerID}_ranked">
                                         <input type="checkbox" class="toggle color-primary is-material"
                                                name="${providerID}_ranked"
-                                               id="${providerID}_ranked" ${('', 'checked')[bool(providerObj.ranked)]} />
+                                               id="${providerID}_ranked" ${('', 'checked')[bool(providerObj.custom_settings['ranked'])]} />
                                         ${_('only download ranked torrents (internal releases)')}
                                     </label>
                                 </div>
                             </div>
                         % endif
 
-                        % if hasattr(providerObj, 'engrelease'):
+                        % if providerObj.custom_settings.get('engrelease', None):
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('English torrents')}</label>
@@ -722,14 +723,14 @@
                                     <label for="${providerID}_engrelease">
                                         <input type="checkbox" class="toggle color-primary is-material"
                                                name="${providerID}_engrelease"
-                                               id="${providerID}_engrelease" ${('', 'checked')[bool(providerObj.engrelease)]} />
+                                               id="${providerID}_engrelease" ${('', 'checked')[bool(providerObj.custom_settings['engrelease'])]} />
                                         ${_('only download english torrents ,or torrents containing english subtitles')}
                                     </label>
                                 </div>
                             </div>
                         % endif
 
-                        % if hasattr(providerObj, 'onlyspasearch'):
+                        % if providerObj.custom_settings.get('onlyspasearch', None):
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('For Spanish torrents')}</label>
@@ -738,7 +739,7 @@
                                     <label for="${providerID}_onlyspasearch">
                                         <input type="checkbox" class="toggle color-primary is-material"
                                                name="${providerID}_onlyspasearch"
-                                               id="${providerID}_onlyspasearch" ${('', 'checked')[bool(providerObj.onlyspasearch)]} />
+                                               id="${providerID}_onlyspasearch" ${('', 'checked')[bool(providerObj.custom_settings['onlyspasearch'])]} />
                                         <p>
                                             ${_('ONLY search on this provider if show info is defined as "Spanish" '
                                             '(avoid provider\'s use for VOS shows)')}
@@ -748,7 +749,7 @@
                             </div>
                         % endif
 
-                        % if hasattr(providerObj, 'sorting'):
+                        % if providerObj.custom_settings.get('sorting', None):
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Sort results by')}</label>
@@ -763,7 +764,7 @@
                                                 title="${_('Sort search results')}"
                                                 class="form-control">
                                             % for curAction in ('last', 'seeders', 'leechers'):
-                                                <option value="${curAction}" ${('', 'selected')[curAction == providerObj.sorting]}>${curAction}</option>
+                                                <option value="${curAction}" ${('', 'selected')[curAction == providerObj.custom_settings['sorting']]}>${curAction}</option>
                                             % endfor
                                         </select>
                                     </div>
@@ -771,7 +772,7 @@
                             </div>
                         % endif
 
-                        % if hasattr(providerObj, 'freeleech'):
+                        % if providerObj.custom_settings.get('freeleech', None):
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Freeleech')}</label>
@@ -780,7 +781,7 @@
                                     <label for="${providerID}_freeleech">
                                         <input type="checkbox" class="toggle color-primary is-material"
                                                name="${providerID}_freeleech"
-                                               id="${providerID}_freeleech" ${('', 'checked')[bool(providerObj.freeleech)]}/>
+                                               id="${providerID}_freeleech" ${('', 'checked')[bool(providerObj.custom_settings['freeleech'])]}/>
                                         ${_('only download')} <b>[${_('FreeLeech')}]</b> ${_('torrents.')}
                                     </label>
                                 </div>
@@ -803,7 +804,7 @@
                             </div>
                         % endif
 
-                        % if hasattr(providerObj, 'reject_m2ts'):
+                        % if providerObj.custom_settings.get('reject_m2ts', None):
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Reject Blu-ray M2TS releases')}</label>
@@ -812,7 +813,7 @@
                                     <label for="${providerID}_reject_m2ts">
                                         <input type="checkbox" class="toggle color-primary is-material"
                                                name="${providerID}_reject_m2ts"
-                                               id="${providerID}_reject_m2ts" ${('', 'checked')[bool(providerObj.reject_m2ts)]}/>
+                                               id="${providerID}_reject_m2ts" ${('', 'checked')[bool(providerObj.custom_settings['reject_m2ts'])]}/>
                                         ${_('enable to ignore Blu-ray MPEG-2 Transport Stream container releases')}
                                     </label>
                                 </div>
@@ -891,29 +892,29 @@
                             </div>
                         % endif
 
-                        % if hasattr(providerObj, 'cat') and providerID == 'tntvillage':
-                            <div class="form-row form-group">
-                                <div class="col-lg-3 col-md-4 col-sm-5">
-                                    <label class="component-title">${_('Category:')}</label>
-                                </div>
-                                <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text"><span class="fas fa-list"></span></span>
-                                        </div>
-                                        <select name="${providerID}_cat" id="${providerID}_cat"
-                                                title="Provider category"
-                                                class="form-control">
-                                            % for i in providerObj.category_dict.keys():
-                                                <option value="${providerObj.category_dict[i]}" ${('', 'selected')[providerObj.category_dict[i] == providerObj.cat]}>${i}</option>
-                                            % endfor
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        % endif
+##                         % if hasattr(providerObj, 'cat') and providerID == 'tntvillage':
+##                             <div class="form-row form-group">
+##                                 <div class="col-lg-3 col-md-4 col-sm-5">
+##                                     <label class="component-title">${_('Category:')}</label>
+##                                 </div>
+##                                 <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+##                                     <div class="input-group">
+##                                         <div class="input-group-prepend">
+##                                             <span class="input-group-text"><span class="fas fa-list"></span></span>
+##                                         </div>
+##                                         <select name="${providerID}_cat" id="${providerID}_cat"
+##                                                 title="Provider category"
+##                                                 class="form-control">
+##                                             % for i in providerObj.category_dict.keys():
+##                                                 <option value="${providerObj.category_dict[i]}" ${('', 'selected')[providerObj.category_dict[i] == providerObj.cat]}>${i}</option>
+##                                             % endfor
+##                                         </select>
+##                                     </div>
+##                                 </div>
+##                             </div>
+##                         % endif
 
-                        % if hasattr(providerObj, 'subtitle') and providerID == 'tntvillage':
+                        % if providerObj.custom_settings.get('subtitle', None) and providerID == 'tntvillage':
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Subtitled')}</label>
@@ -922,7 +923,7 @@
                                     <label for="${providerID}_subtitle">
                                         <input type="checkbox" class="toggle color-primary is-material"
                                                name="${providerID}_subtitle"
-                                               id="${providerID}_subtitle" ${('', 'checked')[bool(providerObj.subtitle)]}/>
+                                               id="${providerID}_subtitle" ${('', 'checked')[bool(providerObj.custom_settings['subtitle'])]}/>
                                         ${_('select torrent with Italian subtitle')}
                                     </label>
                                 </div>
@@ -940,7 +941,7 @@
         </div>
     </div><!-- /tab-pane2 //-->
 
-    % if sickrage.app.config.use_nzbs:
+    % if sickrage.app.config.general.use_nzbs:
         <div id="custom-newnab-providers" class="tab-pane">
             <div class="form-row">
                 <div class="col-lg-3 col-md-4 col-sm-4 card-title">
@@ -1067,7 +1068,7 @@
         </div><!-- /tab-pane3 //-->
     % endif
 
-    % if sickrage.app.config.use_torrents:
+    % if sickrage.app.config.general.use_torrents:
         <div id="custom-torrent-providers" class="tab-pane">
             <div class="form-row">
                 <div class="col-lg-3 col-md-4 col-sm-4 card-title">

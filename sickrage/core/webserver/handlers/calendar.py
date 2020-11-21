@@ -34,7 +34,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 class CalendarHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
-        if sickrage.app.config.calendar_unprotected:
+        if sickrage.app.config.general.calendar_unprotected:
             self.write(self.calendar())
         else:
             self.calendar_auth()
@@ -80,7 +80,7 @@ class CalendarHandler(BaseHandler, ABC):
                 ical += 'DTSTART:' + air_date_time.strftime("%Y%m%d") + 'T' + air_date_time.strftime("%H%M%S") + 'Z\r\n'
                 ical += 'DTEND:' + air_date_time_end.strftime("%Y%m%d") + 'T' + air_date_time_end.strftime(
                     "%H%M%S") + 'Z\r\n'
-                if sickrage.app.config.calendar_icons:
+                if sickrage.app.config.general.calendar_icons:
                     ical += 'X-GOOGLE-CALENDAR-CONTENT-ICON:https://www.sickrage.ca/favicon.ico\r\n'
                     ical += 'X-GOOGLE-CALENDAR-CONTENT-DISPLAY:CHIP\r\n'
                 ical += 'SUMMARY: {0} - {1}x{2} - {3}\r\n'.format(show.name, episode.season, episode.episode, episode.name)

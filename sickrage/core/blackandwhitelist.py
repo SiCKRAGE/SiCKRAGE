@@ -26,10 +26,11 @@ class BlackAndWhiteList(object):
     blacklist = []
     whitelist = []
 
-    def __init__(self, show_id):
-        if not show_id:
+    def __init__(self, series_id, series_provider_id):
+        if not series_id:
             raise BlackWhitelistNoShowIDException()
-        self.show_id = show_id
+        self.series_id = series_id
+        self.series_provider_id = series_provider_id
         self.load()
 
     def load(self):
@@ -39,13 +40,13 @@ class BlackAndWhiteList(object):
 
         session = sickrage.app.main_db.session()
 
-        sickrage.app.log.debug('Building black and white list for ' + str(self.show_id))
+        sickrage.app.log.debug('Building black and white list for ' + str(self.series_id))
 
-        self.blacklist = self._load_list(session.query(MainDB.Blacklist).filter_by(show_id=self.show_id))
-        sickrage.app.log.debug('BWL: {} loaded keywords from {}: {}'.format(self.show_id, MainDB.Blacklist.__tablename__, self.blacklist))
+        self.blacklist = self._load_list(session.query(MainDB.Blacklist).filter_by(series_id=self.series_id, series_provider_id=self.series_provider_id))
+        sickrage.app.log.debug('BWL: {} loaded keywords from {}: {}'.format(self.series_id, MainDB.Blacklist.__tablename__, self.blacklist))
 
-        self.whitelist = self._load_list(session.query(MainDB.Whitelist).filter_by(show_id=self.show_id))
-        sickrage.app.log.debug('BWL: {} loaded keywords from {}: {}'.format(self.show_id, MainDB.Whitelist.__tablename__, self.whitelist))
+        self.whitelist = self._load_list(session.query(MainDB.Whitelist).filter_by(series_id=self.series_id, series_provider_id=self.series_provider_id))
+        sickrage.app.log.debug('BWL: {} loaded keywords from {}: {}'.format(self.series_id, MainDB.Whitelist.__tablename__, self.whitelist))
 
     def _add_keywords(self, table, values):
         """
@@ -59,7 +60,8 @@ class BlackAndWhiteList(object):
 
         for value in values:
             session.add(table(**{
-                'show_id': self.show_id,
+                'series_id': self.series_id,
+                'series_provider_id': self.series_provider_id,
                 'keyword': value
             }))
             session.commit()
@@ -73,7 +75,7 @@ class BlackAndWhiteList(object):
         """
 
         session = sickrage.app.main_db.session()
-        session.query(MainDB.Blacklist).filter_by(show_id=self.show_id).delete()
+        session.query(MainDB.Blacklist).filter_by(series_id=self.series_id, series_provider_id=self.series_provider_id).delete()
         session.commit()
 
         self._add_keywords(MainDB.Blacklist, values)
@@ -89,7 +91,7 @@ class BlackAndWhiteList(object):
         :param session: Database session
         """
         session = sickrage.app.main_db.session()
-        session.query(MainDB.Whitelist).filter_by(show_id=self.show_id).delete()
+        session.query(MainDB.Whitelist).filter_by(series_id=self.series_id, series_provider_id=self.series_provider_id).delete()
         session.commit()
 
         self._add_keywords(MainDB.Whitelist, values)
@@ -147,4 +149,4 @@ class BlackAndWhiteList(object):
 
 
 class BlackWhitelistNoShowIDException(Exception):
-    """No show_id was given"""
+    """No series_id was given"""

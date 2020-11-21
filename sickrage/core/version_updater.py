@@ -36,7 +36,7 @@ import sickrage
 from sickrage.core.helpers import backup_app_data
 from sickrage.core.websession import WebSession
 from sickrage.core.websocket import WebSocketMessage
-from sickrage.notifiers import Notifiers
+from sickrage.notification_providers import NotificationProvider
 
 
 class VersionUpdater(object):
@@ -59,7 +59,7 @@ class VersionUpdater(object):
             threading.currentThread().setName(self.name)
 
             if self.check_for_new_version(force):
-                if sickrage.app.config.auto_update:
+                if sickrage.app.config.general.auto_update:
                     if sickrage.app.show_updater.running:
                         sickrage.app.log.debug("We can't proceed with auto-updating. Shows are being updated")
                         return
@@ -152,11 +152,11 @@ class VersionUpdater(object):
         if sickrage.app.disable_updates:
             return False
 
-        if not self.updater or not sickrage.app.config.version_notify and not force:
+        if not self.updater or not sickrage.app.config.general.version_notify and not force:
             return False
 
         if self.updater.need_update():
-            if not sickrage.app.config.auto_update or force:
+            if not sickrage.app.config.general.auto_update or force:
                 self.updater.set_newest_text()
             return True
 
@@ -167,7 +167,7 @@ class VersionUpdater(object):
                 return False
 
             # backup
-            if sickrage.app.config.backup_on_update and not self.backup():
+            if sickrage.app.config.general.backup_on_update and not self.backup():
                 return False
 
             # check for updates
@@ -183,10 +183,10 @@ class VersionUpdater(object):
                     [os.remove(os.path.join(root, name)) for name in files]
                     [shutil.rmtree(os.path.join(root, name)) for name in dirs]
 
-                sickrage.app.config.view_changelog = True
+                sickrage.app.config.general.view_changelog = True
 
                 if webui:
-                    WebSocketMessage('redirect', {'url': '{}/home/restart/?pid={}'.format(sickrage.app.config.web_root, sickrage.app.pid)}).push()
+                    WebSocketMessage('redirect', {'url': '{}/home/restart/?pid={}'.format(sickrage.app.config.general.web_root, sickrage.app.pid)}).push()
 
                 return True
 
@@ -219,7 +219,7 @@ class UpdateManager(object):
             'darwin': '/usr/local/git/bin/git'
         }
 
-        main_git = sickrage.app.config.git_path or 'git'
+        main_git = sickrage.app.config.general.git_path or 'git'
 
         # sickrage.app.log.debug("Checking if we can use git commands: " + main_git + ' ' + test_cmd)
         __, __, exit_status = self._git_cmd(main_git, test_cmd, silent=True)
@@ -322,7 +322,7 @@ class UpdateManager(object):
 
     @staticmethod
     def get_update_url():
-        return "{}/home/update/?pid={}".format(sickrage.app.config.web_root, sickrage.app.pid)
+        return "{}/home/update/?pid={}".format(sickrage.app.config.general.web_root, sickrage.app.pid)
 
     def upgrade_pip(self):
         output, __, exit_status = self._pip_cmd('install --no-cache-dir -U pip')
@@ -398,7 +398,7 @@ class GitUpdateManager(UpdateManager):
 
     @property
     def remote_branches(self):
-        branches, __, exit_status = self._git_cmd(self._git_path, 'ls-remote --heads {}'.format(sickrage.app.config.git_remote))
+        branches, __, exit_status = self._git_cmd(self._git_path, 'ls-remote --heads {}'.format(sickrage.app.git_remote_url))
         if exit_status == 0 and branches:
             return re.findall(r'refs/heads/(.*)', branches)
 
@@ -473,7 +473,7 @@ class GitUpdateManager(UpdateManager):
         on the call's success.
         """
 
-        if sickrage.app.config.git_reset:
+        if sickrage.app.config.general.git_reset:
             self.reset()
 
         if not self.upgrade_pip():
@@ -482,12 +482,12 @@ class GitUpdateManager(UpdateManager):
         if not self.install_requirements(self.current_branch):
             return False
 
-        __, __, exit_status = self._git_cmd(self._git_path, 'pull -f {} {}'.format(sickrage.app.config.git_remote,
+        __, __, exit_status = self._git_cmd(self._git_path, 'pull -f {} {}'.format(sickrage.app.git_remote_url,
                                                                                    self.current_branch))
         if exit_status == 0:
             sickrage.app.log.info("Updating SiCKRAGE from GIT servers")
             sickrage.app.alerts.message(_('Updater'), _('Updating SiCKRAGE from GIT servers'))
-            Notifiers.mass_notify_version_update(self.get_newest_version)
+            NotificationProvider.mass_notify_version_update(self.get_newest_version)
             return True
 
         return False
@@ -530,7 +530,7 @@ class GitUpdateManager(UpdateManager):
                 return False
 
             # remove untracked files and performs a hard reset on git branch to avoid update issues
-            if sickrage.app.config.git_reset:
+            if sickrage.app.config.general.git_reset:
                 self.reset()
 
             # fetch all branches
@@ -544,13 +544,13 @@ class GitUpdateManager(UpdateManager):
 
     def get_remote_url(self):
         url, __, exit_status = self._git_cmd(self._git_path,
-                                             'remote get-url {}'.format(sickrage.app.config.git_remote))
+                                             'remote get-url {}'.format(sickrage.app.git_remote_url))
         return ("", url)[exit_status == 0 and url is not None]
 
     def set_remote_url(self):
         if not sickrage.app.developer:
-            self._git_cmd(self._git_path, 'remote set-url {} {}'.format(sickrage.app.config.git_remote,
-                                                                        sickrage.app.config.git_remote_url))
+            self._git_cmd(self._git_path, 'remote set-url {} {}'.format(sickrage.app.git_remote_url,
+                                                                        sickrage.app.app.git_remote_url))
 
 
 class SourceUpdateManager(UpdateManager):
@@ -657,7 +657,7 @@ class SourceUpdateManager(UpdateManager):
             return False
 
         # Notify update successful
-        Notifiers.mass_notify_version_update(self.get_newest_version)
+        NotificationProvider.mass_notify_version_update(self.get_newest_version)
 
         return True
 
@@ -725,7 +725,7 @@ class PipUpdateManager(UpdateManager):
         if exit_status == 0:
             sickrage.app.log.info("Updating SiCKRAGE from PyPi servers")
             sickrage.app.alerts.message(_('Updater'), _('Updating SiCKRAGE from PyPi servers'))
-            Notifiers.mass_notify_version_update(self.get_newest_version)
+            NotificationProvider.mass_notify_version_update(self.get_newest_version)
             return True
 
         return False

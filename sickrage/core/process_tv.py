@@ -28,14 +28,12 @@ import rarfile
 from sqlalchemy import or_
 
 import sickrage
-from sickrage.core.common import Quality
+from sickrage.core.common import EpisodeStatus
 from sickrage.core.databases.main import MainDB
-from sickrage.core.exceptions import EpisodePostProcessingFailedException, \
-    FailedPostProcessingFailedException, NoFreeSpaceException
-from sickrage.core.helpers import is_media_file, is_rar_file, is_hidden_folder, real_path, is_torrent_or_nzb_file, \
-    is_sync_file, get_extension
-from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
-    NameParser
+from sickrage.core.enums import ProcessMethod
+from sickrage.core.exceptions import EpisodePostProcessingFailedException, FailedPostProcessingFailedException, NoFreeSpaceException
+from sickrage.core.helpers import is_media_file, is_rar_file, is_hidden_folder, real_path, is_torrent_or_nzb_file, is_sync_file, get_extension
+from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
 from sickrage.core.processors import failed_processor, post_processor
 from sickrage.core.tv.show.helpers import get_show_list
 
@@ -44,7 +42,7 @@ class ProcessResult(object):
     def __init__(self, path, process_method=None, process_type='auto'):
         self._output = []
         self._path = path
-        self.process_method = process_method or sickrage.app.config.process_method
+        self.process_method = process_method or sickrage.app.config.general.process_method
         self.process_type = process_type
         self.video_files = []
         self.missed_files = []
@@ -61,10 +59,10 @@ class ProcessResult(object):
         if os.path.isdir(value):
             dir_name = os.path.realpath(value)
             self.log("Processing in folder {0}".format(dir_name), sickrage.app.log.DEBUG)
-        elif all([sickrage.app.config.tv_download_dir,
-                  os.path.isdir(sickrage.app.config.tv_download_dir),
-                  os.path.normpath(value) == os.path.normpath(sickrage.app.config.tv_download_dir)]):
-            dir_name = os.path.join(sickrage.app.config.tv_download_dir,
+        elif all([sickrage.app.config.general.tv_download_dir,
+                  os.path.isdir(sickrage.app.config.general.tv_download_dir),
+                  os.path.normpath(value) == os.path.normpath(sickrage.app.config.general.tv_download_dir)]):
+            dir_name = os.path.join(sickrage.app.config.general.tv_download_dir,
                                     os.path.abspath(value).split(os.path.sep)[-1])
             self.log("Trying to use folder: {0} ".format(dir_name), sickrage.app.log.DEBUG)
         else:
@@ -100,8 +98,8 @@ class ProcessResult(object):
             return False
 
         # check if it isn't TV_DOWNLOAD_DIR
-        if sickrage.app.config.tv_download_dir:
-            if real_path(folder) == real_path(sickrage.app.config.tv_download_dir):
+        if sickrage.app.config.general.tv_download_dir:
+            if real_path(folder) == real_path(sickrage.app.config.general.tv_download_dir):
                 return False
 
         # check if it's empty folder when wanted checked
@@ -186,7 +184,7 @@ class ProcessResult(object):
             generator_to_use = [(self.path, [], [nzbName])]
         else:
             self.log("Processing {}".format(self.path), sickrage.app.log.INFO)
-            generator_to_use = os.walk(self.path, followlinks=sickrage.app.config.processor_follow_symlinks)
+            generator_to_use = os.walk(self.path, followlinks=sickrage.app.config.general.processor_follow_symlinks)
 
         rar_files = []
         for current_directory, directory_names, file_names in generator_to_use:
@@ -218,13 +216,13 @@ class ProcessResult(object):
                 self.result = False
 
             # Delete all file not needed and avoid deleting files if Manual PostProcessing
-            if not (self.process_method == "move" and self.result) or (self.process_type == "manual" and not delete_on):
+            if not (self.process_method == ProcessMethod.MOVE and self.result) or (self.process_type == "manual" and not delete_on):
                 continue
 
             # Check for unwanted files
             unwanted_files = list(
                 filter(
-                    lambda x: x not in video_files and get_extension(x) not in sickrage.app.config.allowed_extensions,
+                    lambda x: x not in video_files and get_extension(x) not in sickrage.app.config.general.allowed_extensions,
                     file_names)
             )
 
@@ -236,10 +234,10 @@ class ProcessResult(object):
             if self.delete_folder(current_directory, check_empty=not delete_on):
                 self.log("Deleted folder: {0}".format(current_directory), sickrage.app.log.DEBUG)
 
-        method_fallback = ('move', self.process_method)[self.process_method in ('move', 'copy')]
+        method_fallback = (ProcessMethod.MOVE, self.process_method)[self.process_method in (ProcessMethod.MOVE, ProcessMethod.COPY)]
 
-        delete_rar_contents = any([sickrage.app.config.delrarcontents and self.process_type != 'manual',
-                                   not sickrage.app.config.delrarcontents and self.process_type == 'auto' and method_fallback == 'move',
+        delete_rar_contents = any([sickrage.app.config.general.del_rar_contents and self.process_type != 'manual',
+                                   not sickrage.app.config.general.del_rar_contents and self.process_type == 'auto' and method_fallback == ProcessMethod.MOVE,
                                    self.process_type == 'manual' and delete_on])
 
         for directory_from_rar in directories_from_rars:
@@ -252,7 +250,7 @@ class ProcessResult(object):
             )
 
             # Delete rar file only if the extracted dir was successfully processed
-            if self.process_type == 'auto' and method_fallback == 'move' or self.process_type == 'manual' and delete_on:
+            if self.process_type == 'auto' and method_fallback == ProcessMethod.MOVE or self.process_type == 'manual' and delete_on:
                 this_rar = [rar_file for rar_file in rar_files if
                             os.path.basename(directory_from_rar) == rar_file.rpartition('.')[0]]
                 self.delete_files(self.path, this_rar)
@@ -300,8 +298,8 @@ class ProcessResult(object):
             self.missed_files.append("{0} : Failed download".format(process_path))
             return False
 
-        if sickrage.app.config.tv_download_dir and real_path(process_path) != real_path(
-                sickrage.app.config.tv_download_dir) and is_hidden_folder(process_path):
+        if sickrage.app.config.general.tv_download_dir and real_path(process_path) != real_path(
+                sickrage.app.config.general.tv_download_dir) and is_hidden_folder(process_path):
             self.log("Ignoring hidden folder: {0}".format(process_path), sickrage.app.log.DEBUG)
             self.missed_files.append("{0} : Hidden folder".format(process_path))
             return False
@@ -314,9 +312,9 @@ class ProcessResult(object):
                 return False
 
         for current_directory, directory_names, file_names in os.walk(process_path, topdown=False,
-                                                                      followlinks=sickrage.app.config.processor_follow_symlinks):
+                                                                      followlinks=sickrage.app.config.general.processor_follow_symlinks):
             sync_files = list(filter(is_sync_file, file_names))
-            if sync_files and sickrage.app.config.postpone_if_sync_files:
+            if sync_files and sickrage.app.config.general.postpone_if_sync_files:
                 self.log("Found temporary sync files: {0} in path: {1}".format(sync_files,
                                                                                os.path.join(
                                                                                    process_path,
@@ -327,10 +325,10 @@ class ProcessResult(object):
                 continue
 
             found_files = list(filter(is_media_file, file_names))
-            if sickrage.app.config.unpack == 1:
+            if sickrage.app.config.general.unpack == 1:
                 found_files += list(filter(is_rar_file, file_names))
 
-            if current_directory != sickrage.app.config.tv_download_dir and found_files:
+            if current_directory != sickrage.app.config.general.tv_download_dir and found_files:
                 found_files.append(os.path.basename(current_directory))
 
             for found_file in found_files:
@@ -357,7 +355,7 @@ class ProcessResult(object):
 
         unpacked_dirs = []
 
-        if sickrage.app.config.unpack == 1 and rar_files:
+        if sickrage.app.config.general.unpack == 1 and rar_files:
             self.log("Packed Releases detected: {0}".format(rar_files), sickrage.app.log.DEBUG)
             for archive in rar_files:
                 failure = None
@@ -389,11 +387,11 @@ class ProcessResult(object):
                     rar_release_name = archive.rpartition('.')[0]
 
                     # Choose the directory we'll unpack to:
-                    if sickrage.app.config.unpack_dir and os.path.isdir(sickrage.app.config.unpack_dir):
-                        unpack_base_dir = sickrage.app.config.unpack_dir
+                    if sickrage.app.config.general.unpack_dir and os.path.isdir(sickrage.app.config.general.unpack_dir):
+                        unpack_base_dir = sickrage.app.config.general.unpack_dir
                     else:
                         unpack_base_dir = path
-                        if sickrage.app.config.unpack_dir:  # Let user know if we can't unpack there
+                        if sickrage.app.config.general.unpack_dir:  # Let user know if we can't unpack there
                             self.log('Unpack directory cannot be verified. Using {}'.format(path),
                                      sickrage.app.log.DEBUG)
 
@@ -467,7 +465,8 @@ class ProcessResult(object):
         session = sickrage.app.main_db.session()
 
         # Avoid processing the same dir again if we use a process method <> move
-        if session.query(MainDB.TVEpisode).filter(or_(MainDB.TVEpisode.release_name.contains(dirName), MainDB.TVEpisode.release_name.contains(videofile))).count() > 0:
+        if session.query(MainDB.TVEpisode).filter(
+                or_(MainDB.TVEpisode.release_name.contains(dirName), MainDB.TVEpisode.release_name.contains(videofile))).count() > 0:
             return True
 
         # Needed if we have downloaded the same episode @ different quality
@@ -479,9 +478,10 @@ class ProcessResult(object):
             parse_result = False
 
         for h in session.query(MainDB.History).filter(MainDB.History.resource.endswith(videofile)):
-            for e in session.query(MainDB.TVEpisode).filter_by(showid=h.showid, season=h.season, episode=h.episode).filter(MainDB.TVEpisode.status.in_(Quality.DOWNLOADED)):
-                if parse_result and (parse_result.indexer_id and parse_result.episode_numbers and parse_result.season_number):
-                    if e.showid == int(parse_result.indexer_id) and e.season == int(parse_result.season_number and e.episode) == int(
+            for e in session.query(MainDB.TVEpisode).filter_by(series_id=h.series_id, season=h.season, episode=h.episode).filter(
+                    MainDB.TVEpisode.status.in_(EpisodeStatus.composites(EpisodeStatus.DOWNLOADED))):
+                if parse_result and (parse_result.series_id and parse_result.episode_numbers and parse_result.season_number):
+                    if e.series_id == int(parse_result.series_id) and e.season == int(parse_result.season_number and e.episode) == int(
                             parse_result.episode_numbers[0]):
                         return True
                 else:
@@ -548,7 +548,7 @@ class ProcessResult(object):
         if processor:
             self._output.append(processor.log)
 
-        if sickrage.app.config.delete_failed and self.result:
+        if sickrage.app.config.failed_downloads.enable and self.result:
             if self.delete_folder(dirName, check_empty=False):
                 self.log("Deleted folder: " + dirName, sickrage.app.log.DEBUG)
 

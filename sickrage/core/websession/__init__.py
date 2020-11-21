@@ -35,14 +35,13 @@ from requests.utils import dict_from_cookiejar
 from urllib3 import disable_warnings
 
 import sickrage
-from sickrage.core import helpers
 
 
 def _add_proxies():
-    if sickrage.app.config.proxy_setting:
-        sickrage.app.log.debug("Using global proxy: " + sickrage.app.config.proxy_setting)
-        proxy = urlparse(sickrage.app.config.proxy_setting)
-        address = sickrage.app.config.proxy_setting if proxy.scheme else 'http://{}'.format(sickrage.app.config.proxy_setting)
+    if sickrage.app.config.general.proxy_setting:
+        sickrage.app.log.debug("Using global proxy: " + sickrage.app.config.general.proxy_setting)
+        proxy = urlparse(sickrage.app.config.general.proxy_setting)
+        address = sickrage.app.config.general.proxy_setting if proxy.scheme else 'http://{}'.format(sickrage.app.config.general.proxy_setting)
         return {"http": address, "https": address}
 
 
@@ -57,7 +56,7 @@ class WebSession(Session):
             self.mount('https://', adapter)
 
         # add proxies
-        self.proxies = proxies or _add_proxies()
+        self.proxies = proxies
 
         # cloudflare
         self.cloudflare = cloudflare
@@ -73,7 +72,7 @@ class WebSession(Session):
         We need to overwrite this in the request method. As it's not available in the session init.
         :param verify: SSL verification on or off.
         """
-        return certifi.where() if all([sickrage.app.config.ssl_verify, verify]) else False
+        return certifi.where() if all([sickrage.app.config.general.ssl_verify, verify]) else False
 
     @staticmethod
     def _get_user_agent(random_ua=False):
@@ -87,6 +86,9 @@ class WebSession(Session):
     def request(self, method, url, verify=False, random_ua=False, timeout=15, *args, **kwargs):
         self.headers.update({'Accept-Encoding': 'gzip, deflate',
                              'User-Agent': self._get_user_agent(random_ua)})
+
+        # add proxies
+        self.proxies = self.proxies or _add_proxies()
 
         if not verify:
             disable_warnings()
@@ -138,7 +140,8 @@ class WebSession(Session):
                     if chunk:
                         f.write(chunk)
 
-            helpers.chmod_as_parent(filename)
+            from sickrage.core.helpers import chmod_as_parent
+            chmod_as_parent(filename)
         except Exception as e:
             sickrage.app.log.debug("Failed to download file from {} - ERROR: {}".format(url, e))
             if os.path.exists(filename):

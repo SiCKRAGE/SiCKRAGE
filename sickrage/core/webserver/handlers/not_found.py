@@ -30,11 +30,11 @@ class NotFoundHandler(BaseHandler, ABC):
     def prepare(self):
         url = self.request.uri
 
-        if sickrage.app.config.web_root:
-            if not self.request.uri.startswith(sickrage.app.config.web_root):
+        if sickrage.app.config.general.web_root:
+            if not self.request.uri.startswith(sickrage.app.config.general.web_root):
                 return self.redirect(url)
 
-            url = url[len(sickrage.app.config.web_root) + 1:]
+            url = url[len(sickrage.app.config.general.web_root) + 1:]
 
         if url[:3] != 'api':
             raise tornado.web.HTTPError(

@@ -6,10 +6,6 @@ stages:
   - release_sentry
   - release_deploy
 
-services:
-  - name: docker:dind
-    command: ["--mtu=1450"]
-
 #review:webpack:
 #  stage: review_webpack
 #  image:
@@ -120,7 +116,7 @@ release:build:master:
     - yarn run build
     - python checksum-generator.py
     - git add --all
-    - git commit -m "[TASK] Releasing v$(cat sickrage/version.txt)"
+    - git commit -m "[TASK] Releasing v$(cat sickrage/version.txt) [ci-skip]"
     - git fetch . release-$(cat sickrage/version.txt):master
     - git fetch . release-$(cat sickrage/version.txt):develop
     - git tag -a $(cat sickrage/version.txt) -m "Release v$(cat sickrage/version.txt) master"
@@ -129,7 +125,7 @@ release:build:master:
     - bumpversion --allow-dirty patch package.json sickrage/version.txt
     - python checksum-generator.py
     - git add --all
-    - git commit -m "[TASK] Bump develop branch to v$(cat sickrage/version.txt)"
+    - git commit -m "[TASK] Bump develop branch to v$(cat sickrage/version.txt) [ci-skip]"
     - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:develop --follow-tags
   when: manual
   only:
@@ -138,8 +134,8 @@ release:build:master:
     refs:
       - branches
       - triggers
-    variables:
-      - $CI_COMMIT_MESSAGE =~ /\[TASK\] Releasing/
+#    variables:
+#      - $CI_COMMIT_MESSAGE =~ /\[TASK\] Releasing/
 
 release:build:develop:
   stage: release_build
@@ -163,7 +159,7 @@ release:build:develop:
     - git config --global user.email $(git --no-pager show -s --format='%ae' HEAD)
     - git config --global user.name $(git --no-pager show -s --format='%an' HEAD)
     - git add --all
-    - git commit -m "[TASK] Pre-Releasing v$(cat sickrage/version.txt)"
+    - git commit -m "[TASK] Pre-Releasing v$(cat sickrage/version.txt) [ci-skip]"
     - git tag -a $(cat sickrage/version.txt) -m "Pre-release v$(cat sickrage/version.txt)"
     - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME --follow-tags
   only:
@@ -172,9 +168,9 @@ release:build:develop:
     refs:
       - tags
       - triggers
-    variables:
-      - $CI_COMMIT_MESSAGE =~ /\[TASK\] Pre-Releasing/
-      - $CI_COMMIT_MESSAGE =~ /\[TASK\] Bump/
+#    variables:
+#      - $CI_COMMIT_MESSAGE =~ /\[TASK\] Pre-Releasing/
+#      - $CI_COMMIT_MESSAGE =~ /\[TASK\] Bump/
 
 release:sentry:master:
   stage: release_sentry
@@ -233,9 +229,6 @@ deploy:pypi:
 
 deploy:docker:master:
   stage: release_deploy
-  variables:
-    UPSTREAM_BRANCH: master
-    UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
   trigger:
     project: sickrage/sickrage-docker
     branch: master
@@ -247,12 +240,9 @@ deploy:docker:master:
 
 deploy:docker:develop:
   stage: release_deploy
-  variables:
-    UPSTREAM_BRANCH: develop
-    UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
   trigger:
     project: sickrage/sickrage-docker
-    branch: master
+    branch: develop
   only:
     - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage
   except:

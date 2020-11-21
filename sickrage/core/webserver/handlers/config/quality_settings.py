@@ -24,7 +24,7 @@ from tornado.web import authenticated
 
 import sickrage
 from sickrage.core.common import Quality
-from sickrage.core.webserver import ConfigHandler
+from sickrage.core.webserver import ConfigWebHandler
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
@@ -32,7 +32,7 @@ class ConfigQualitySettingsHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
         return self.render('config/quality_settings.mako',
-                           submenu=ConfigHandler.menu,
+                           submenu=ConfigWebHandler.menu,
                            title=_('Config - Quality Settings'),
                            header=_('Quality Settings'),
                            topmenu='config',
@@ -43,29 +43,14 @@ class ConfigQualitySettingsHandler(BaseHandler, ABC):
 class SaveQualitiesHandler(BaseHandler, ABC):
     @authenticated
     def post(self, *args, **kwargs):
-        quality_sizes = {
-            Quality.UNKNOWN: int(self.get_argument(str(Quality.UNKNOWN))),
-            Quality.SDTV: int(self.get_argument(str(Quality.SDTV))),
-            Quality.SDDVD: int(self.get_argument(str(Quality.SDDVD))),
-            Quality.HDTV: int(self.get_argument(str(Quality.HDTV))),
-            Quality.RAWHDTV: int(self.get_argument(str(Quality.RAWHDTV))),
-            Quality.FULLHDTV: int(self.get_argument(str(Quality.FULLHDTV))),
-            Quality.HDWEBDL: int(self.get_argument(str(Quality.HDWEBDL))),
-            Quality.FULLHDWEBDL: int(self.get_argument(str(Quality.FULLHDWEBDL))),
-            Quality.HDBLURAY: int(self.get_argument(str(Quality.HDBLURAY))),
-            Quality.FULLHDBLURAY: int(self.get_argument(str(Quality.FULLHDBLURAY))),
-            Quality.UHD_4K_TV: int(self.get_argument(str(Quality.UHD_4K_TV))),
-            Quality.UHD_4K_WEBDL: int(self.get_argument(str(Quality.UHD_4K_WEBDL))),
-            Quality.UHD_4K_BLURAY: int(self.get_argument(str(Quality.UHD_4K_BLURAY))),
-            Quality.UHD_8K_TV: int(self.get_argument(str(Quality.UHD_8K_TV))),
-            Quality.UHD_8K_WEBDL: int(self.get_argument(str(Quality.UHD_8K_WEBDL))),
-            Quality.UHD_8K_BLURAY: int(self.get_argument(str(Quality.UHD_8K_BLURAY))),
-        }
-
-        sickrage.app.config.quality_sizes.update(quality_sizes)
+        for quality in sickrage.app.config.quality_sizes.keys():
+            quality_size_min = self.get_argument(f"{quality}_min")
+            quality_size_max = self.get_argument(f"{quality}_max")
+            sickrage.app.config.quality_sizes[quality]['min_size'] = int(quality_size_min)
+            sickrage.app.config.quality_sizes[quality]['max_size'] = int(quality_size_max)
 
         sickrage.app.config.save()
 
-        sickrage.app.alerts.message(_('[QUALITY SETTINGS] Configuration Encrypted and Saved to disk'))
+        sickrage.app.alerts.message(_('[QUALITY SETTINGS] Configuration Saved to Database'))
 
         return self.redirect("/config/qualitySettings/")

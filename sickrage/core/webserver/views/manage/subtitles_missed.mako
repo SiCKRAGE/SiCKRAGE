@@ -25,7 +25,7 @@
                         <form action="${srWebRoot}/manage/subtitleMissed" method="get">
                             ${_('Manage episodes without')}
                             <div class="input-group">
-                                % if sickrage.app.config.subtitles_multi:
+                                % if sickrage.app.config.subtitles.multi:
                                     <select name="whichSubs" class="form-control form-control-inline input-sm">
                                         <option value="all">All</option>
                                         % for sub_code in Subtitles().wanted_languages():
@@ -56,7 +56,7 @@
                         <input type="hidden" id="selectSubLang" name="selectSubLang" value="${whichSubs}"/>
 
                         <form action="${srWebRoot}/manage/downloadSubtitleMissed" method="post">
-                            % if sickrage.app.config.subtitles_multi:
+                            % if sickrage.app.config.subtitles.multi:
                                 <h2>${_('Episodes without')} ${subsLanguage} ${_('subtitles.')}</h2>
                             % else:
                                 % for index, sub_code in enumerate(Subtitles().wanted_languages()):
@@ -76,20 +76,20 @@
                             <br>
                             <div class="table-responsive">
                                 <table class="table">
-                                    % for cur_indexer_id in sorted_show_ids:
-                                        <tr id="${cur_indexer_id}">
+                                    % for series_id in sorted_show_ids:
+                                        <tr id="${series_id}">
                                             <th style="width: 1%;">
-                                                <input type="checkbox" class="allCheck" id="allCheck-${cur_indexer_id}"
-                                                       name="toDownload" value="${cur_indexer_id}-all" checked/>
+                                                <input type="checkbox" class="allCheck" id="allCheck-${series_id}"
+                                                       name="toDownload" value="${series_id}-all" checked/>
                                             </th>
                                             <th colspan="3" style="text-align: left;">
                                                 <a class="whitelink"
-                                                   href="${srWebRoot}/home/displayShow?show=${cur_indexer_id}">
-                                                    ${show_names[cur_indexer_id]}
+                                                   href="${srWebRoot}/home/displayShow?show=${series_id}">
+                                                    ${show_names[series_id]}
                                                 </a>
-                                                (${ep_counts[cur_indexer_id]})
+                                                (${ep_counts[series_id]})
                                                 <input type="button" class="btn get_more_eps"
-                                                       id="${cur_indexer_id}" value="${_('Expand')}"/>
+                                                       id="${series_id}" value="${_('Expand')}"/>
                                             </th>
                                         </tr>
                                     % endfor

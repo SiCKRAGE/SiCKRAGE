@@ -12,24 +12,24 @@
             <div class="card">
                 <div class="card-body">
                     <div class="card-text">
-                        % if sickrage.app.config.sub_id:
+                        % if sickrage.app.config.user.sub_id:
                             <div class="form-row">
                                 <div class="col-lg-3 col-md-3 col-sm-3">
                                     <i class="sickrage-core sickrage-core-keys"></i> ${_('SR Sub ID:')}
                                 </div>
                                 <div class="col-lg-9 col-md-9 col-sm-9">
-                                    ${sickrage.app.config.sub_id}
+                                    ${sickrage.app.config.user.sub_id}
                                 </div>
                             </div>
                             <br/>
                         % endif
-                        % if sickrage.app.config.server_id:
+                        % if sickrage.app.config.general.server_id:
                             <div class="form-row">
                                 <div class="col-lg-3 col-md-3 col-sm-3">
                                     <i class="sickrage-core sickrage-core-keys"></i> ${_('SR App ID:')}
                                 </div>
                                 <div class="col-lg-9 col-md-9 col-sm-9">
-                                    ${sickrage.app.config.server_id}
+                                    ${sickrage.app.config.general.server_id}
                                 </div>
                             </div>
                             <br/>
@@ -120,13 +120,13 @@
                             </div>
                         </div>
                         <br/>
-                        % if sickrage.app.config.web_root:
+                        % if sickrage.app.config.general.web_root:
                             <div class="form-row">
                                 <div class="col-lg-3 col-md-3 col-sm-3">
                                     <i class="sickrage-core sickrage-core-version"></i> ${_('SR Web Root:')}
                                 </div>
                                 <div class="col-lg-9 col-md-9 col-sm-9">
-                                    ${sickrage.app.config.web_root}
+                                    ${sickrage.app.config.general.web_root}
                                 </div>
                             </div>
                             <br/>

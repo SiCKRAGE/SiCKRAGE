@@ -30,9 +30,10 @@ from tornado.web import authenticated
 
 import sickrage
 from sickrage.core.databases.main import MainDB
+from sickrage.core.enums import HomeLayout, HistoryLayout, PosterSortBy, PosterSortDirection
 from sickrage.core.helpers import remove_article
-from sickrage.core.media.util import showImage
-from sickrage.core.tv.show.coming_episodes import ComingEpisodes
+from sickrage.core.media.util import series_image, SeriesImageType
+from sickrage.core.tv.show.coming_episodes import ComingEpisodes, ComingEpsLayout, ComingEpsSortBy
 from sickrage.core.tv.show.helpers import get_show_list, find_show
 from sickrage.core.webserver import ApiHandler
 from sickrage.core.webserver.handlers.base import BaseHandler
@@ -54,8 +55,8 @@ class MessagesDotPoHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
         """ Get /sickrage/locale/{lang_code}/LC_MESSAGES/messages.po """
-        if sickrage.app.config.gui_lang:
-            locale_file = os.path.join(sickrage.LOCALE_DIR, sickrage.app.config.gui_lang, 'LC_MESSAGES/messages.po')
+        if sickrage.app.config.gui.gui_lang:
+            locale_file = os.path.join(sickrage.LOCALE_DIR, sickrage.app.config.gui.gui_lang, 'LC_MESSAGES/messages.po')
             if os.path.isfile(locale_file):
                 with open(locale_file, 'r', encoding='utf8') as f:
                     return self.write(f.read())
@@ -65,22 +66,22 @@ class APIBulderHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
         def titler(x):
-            return (remove_article(x), x)[not x or sickrage.app.config.sort_article]
+            return (remove_article(x), x)[not x or sickrage.app.config.general.sort_article]
 
         episodes = {}
 
         for show_object in get_show_list():
-            if show_object.indexer_id not in episodes:
-                episodes[show_object.indexer_id] = {}
+            if show_object.series_id not in episodes:
+                episodes[show_object.series_id] = {}
 
             for episode_object in show_object.episodes:
-                if episode_object.season not in episodes[show_object.indexer_id]:
-                    episodes[show_object.indexer_id][episode_object.season] = []
+                if episode_object.season not in episodes[show_object.series_id]:
+                    episodes[show_object.series_id][episode_object.season] = []
 
-                episodes[show_object.indexer_id][episode_object.season].append(episode_object.episode)
+                episodes[show_object.series_id][episode_object.season].append(episode_object.episode)
 
-        if len(sickrage.app.config.api_key) == 32:
-            apikey = sickrage.app.config.api_key
+        if len(sickrage.app.config.general.api_v1_key) == 32:
+            apikey = sickrage.app.config.general.api_v1_key
         else:
             apikey = _('API Key not generated')
 
@@ -102,12 +103,12 @@ class APIBulderHandler(BaseHandler, ABC):
 class SetHomeLayoutHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        layout = self.get_argument('layout', 'poster')
+        layout = self.get_argument('layout', 'POSTER')
 
-        if layout not in ('poster', 'small', 'banner', 'simple', 'detailed'):
-            layout = 'poster'
+        if layout not in ('POSTER', 'SMALL', 'BANNER', 'SIMPLE', 'DETAILED'):
+            layout = 'POSTER'
 
-        sickrage.app.config.home_layout = layout
+        sickrage.app.config.gui.home_layout = HomeLayout[layout]
 
         # Don't redirect to default page so user can see new layout
         return self.redirect("/home/")
@@ -116,33 +117,33 @@ class SetHomeLayoutHandler(BaseHandler, ABC):
 class SetPosterSortByHandler(BaseHandler, ABC):
     @authenticated
     def post(self, *args, **kwargs):
-        sort = self.get_argument('sort')
+        sort = self.get_argument('sort', 'NAME')
 
-        if sort not in ('name', 'date', 'network', 'progress'):
-            sort = 'name'
+        if sort not in ('NAME', 'DATE', 'NETWORK', 'PROGRESS'):
+            sort = 'NAME'
 
-        sickrage.app.config.poster_sortby = sort
+        sickrage.app.config.gui.poster_sort_by = PosterSortBy[sort]
         sickrage.app.config.save()
 
 
 class SetPosterSortDirHandler(BaseHandler, ABC):
     @authenticated
     def post(self, *args, **kwargs):
-        direction = self.get_argument('direction')
+        direction = self.get_argument('direction', 'ASCENDING')
 
-        sickrage.app.config.poster_sortdir = int(direction)
+        sickrage.app.config.gui.poster_sort_dir = PosterSortDirection[direction]
         sickrage.app.config.save()
 
 
 class SetHistoryLayoutHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        layout = self.get_argument('layout', 'detailed')
+        layout = self.get_argument('layout', 'DETAILED')
 
-        if layout not in ('compact', 'detailed'):
-            layout = 'detailed'
+        if layout not in ('COMPACT', 'DETAILED'):
+            layout = 'DETAILED'
 
-        sickrage.app.config.history_layout = layout
+        sickrage.app.config.gui.history_layout = HistoryLayout[layout]
 
         return self.redirect("/history/")
 
@@ -152,22 +153,22 @@ class ToggleDisplayShowSpecialsHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
 
-        sickrage.app.config.display_show_specials = not sickrage.app.config.display_show_specials
+        sickrage.app.config.gui.display_show_specials = not sickrage.app.config.gui.display_show_specials
         return self.redirect(url_concat("/home/displayShow", {'show': show}))
 
 
 class SetScheduleLayoutHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        layout = self.get_argument('layout', 'banner')
+        layout = self.get_argument('layout', 'BANNER')
 
-        if layout not in ('poster', 'banner', 'list', 'calendar'):
-            layout = 'banner'
+        if layout not in ('POSTER', 'BANNER', 'LIST', 'CALENDAR'):
+            layout = 'BANNER'
 
-        if layout == 'calendar':
-            sickrage.app.config.coming_eps_sort = 'date'
+        if layout == 'CALENDAR':
+            sickrage.app.config.gui.coming_eps_sort = ComingEpsSortBy.DATE
 
-        sickrage.app.config.coming_eps_layout = layout
+        sickrage.app.config.gui.coming_eps_layout = ComingEpsLayout[layout]
 
         return self.redirect("/schedule/")
 
@@ -175,22 +176,22 @@ class SetScheduleLayoutHandler(BaseHandler, ABC):
 class ToggleScheduleDisplayPausedHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        sickrage.app.config.coming_eps_display_paused = not sickrage.app.config.coming_eps_display_paused
+        sickrage.app.config.gui.coming_eps_display_paused = not sickrage.app.config.gui.coming_eps_display_paused
         self.redirect("/schedule/")
 
 
 class SetScheduleSortHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        sort = self.get_argument('sort', 'date')
+        sort = self.get_argument('sort', 'DATE')
 
-        if sort not in ('date', 'network', 'show'):
-            sort = 'date'
+        if sort not in ('DATE', 'NETWORK', 'SHOW'):
+            sort = 'DATE'
 
-        if sickrage.app.config.coming_eps_layout == 'calendar':
-            sort = 'date'
+        if sickrage.app.config.gui.coming_eps_layout == ComingEpsLayout.CALENDAR:
+            sort = 'DATE'
 
-        sickrage.app.config.coming_eps_sort = sort
+        sickrage.app.config.gui.coming_eps_sort = ComingEpsSortBy[sort]
 
         return self.redirect("/schedule/")
 
@@ -198,20 +199,20 @@ class SetScheduleSortHandler(BaseHandler, ABC):
 class ScheduleHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        layout = self.get_argument('layout', sickrage.app.config.coming_eps_layout)
+        layout = self.get_argument('layout', None)
 
         next_week = datetime.datetime.combine(datetime.date.today() + datetime.timedelta(days=7),
                                               datetime.datetime.now().time().replace(tzinfo=sickrage.app.tz))
 
         today = datetime.datetime.now().replace(tzinfo=sickrage.app.tz)
 
-        results = ComingEpisodes.get_coming_episodes(ComingEpisodes.categories, sickrage.app.config.coming_eps_sort, False)
+        results = ComingEpisodes.get_coming_episodes(ComingEpisodes.categories, sickrage.app.config.gui.coming_eps_sort, False)
 
         return self.render('schedule.mako',
                            next_week=next_week,
                            today=today,
                            results=results,
-                           layout=layout,
+                           layout=ComingEpsLayout[layout] if layout else sickrage.app.config.gui.coming_eps_layout,
                            title=_('Schedule'),
                            header=_('Schedule'),
                            topmenu='schedule',
@@ -232,32 +233,35 @@ class QuicksearchDotJsonHandler(BaseHandler, ABC):
         for result in session.query(MainDB.TVShow).filter(MainDB.TVShow.name.like('%{}%'.format(term))).all():
             shows.append({
                 'category': 'shows',
-                'showid': result.indexer_id,
+                'series_id': result.series_id,
+                'series_provider_id': result.series_provider_id,
                 'seasons': len(set([s.season for s in result.episodes])),
                 'name': result.name,
-                'img': sickrage.app.config.web_root + showImage(result.indexer_id, 'poster_thumb').url
+                'img': sickrage.app.config.general.web_root + series_image(result.series_id, result.series_provider_id, SeriesImageType.POSTER_THUMB).url
             })
 
         for result in session.query(MainDB.TVEpisode).filter(MainDB.TVEpisode.name.like('%{}%'.format(term))).all():
-            show_object = find_show(result.showid)
+            show_object = find_show(result.series_id, result.series_provider_id)
             if not show_object:
                 continue
 
             episodes.append({
                 'category': 'episodes',
-                'showid': result.showid,
-                'episodeid': result.indexer_id,
+                'series_id': result.series_id,
+                'series_provider_id': result.series_provider_id,
+                'episode__id': result.episode__id,
                 'season': result.season,
                 'episode': result.episode,
                 'name': result.name,
-                'showname': show_object.name,
-                'img': sickrage.app.config.web_root + showImage(result.showid, 'poster_thumb').url
+                'show_name': show_object.name,
+                'img': sickrage.app.config.general.web_root + series_image(result.series_id, result.series_provider_id, SeriesImageType.POSTER_THUMB).url
             })
 
         if not len(shows):
             shows = [{
                 'category': 'shows',
-                'showid': '',
+                'series_id': '',
+                'series_provider_id': '',
                 'name': term,
                 'img': '/images/poster-thumb.png',
                 'seasons': 0,

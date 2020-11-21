@@ -33,8 +33,7 @@ from tornado import locale
 from tornado.web import RequestHandler
 
 import sickrage
-from sickrage.core import helpers
-from sickrage.core.helpers import is_ip_whitelisted
+from sickrage.core.helpers import is_ip_whitelisted, torrent_webui_url
 
 
 class BaseHandler(RequestHandler, ABC):
@@ -46,7 +45,7 @@ class BaseHandler(RequestHandler, ABC):
         self.startTime = time.time()
 
     def get_user_locale(self):
-        return locale.get(sickrage.app.config.gui_lang)
+        return locale.get(sickrage.app.config.gui.gui_lang)
 
     def write_error(self, status_code, **kwargs):
         if self.settings.get("debug") and "exc_info" in kwargs:
@@ -55,7 +54,7 @@ class BaseHandler(RequestHandler, ABC):
             request_info = ''.join(["<strong>%s</strong>: %s<br>" % (k, self.request.__dict__[k]) for k in self.request.__dict__.keys()])
             error = exc_info[1]
 
-            sickrage.app.log.debug(error)
+            sickrage.app.log.debug(''.join(traceback.format_exception(*exc_info)))
 
             self.set_header('Content-Type', 'text/html')
             return self.write("""<html>
@@ -75,12 +74,12 @@ class BaseHandler(RequestHandler, ABC):
                                              error=error,
                                              traceback=trace_info,
                                              request=request_info,
-                                             webroot=sickrage.app.config.web_root))
+                                             webroot=sickrage.app.config.general.web_root))
 
     def get_current_user(self):
         if is_ip_whitelisted(self.request.remote_ip):
             return True
-        elif sickrage.app.config.sso_auth_enabled and sickrage.app.auth_server.health:
+        elif sickrage.app.config.general.sso_auth_enabled and sickrage.app.auth_server.health:
             try:
                 access_token = self.get_secure_cookie('_sr_access_token')
                 refresh_token = self.get_secure_cookie('_sr_refresh_token')
@@ -103,9 +102,9 @@ class BaseHandler(RequestHandler, ABC):
                     return sickrage.app.auth_server.decode_token(token['access_token'], certs)
             except Exception as e:
                 return
-        elif sickrage.app.config.local_auth_enabled:
+        elif sickrage.app.config.general.local_auth_enabled:
             cookie = self.get_secure_cookie('_sr').decode() if self.get_secure_cookie('_sr') else None
-            if cookie == sickrage.app.config.api_key:
+            if cookie == sickrage.app.config.general.api_v1_key:
                 return True
 
     def render_string(self, template_name, **kwargs):
@@ -117,20 +116,19 @@ class BaseHandler(RequestHandler, ABC):
             'controller': "home",
             'action': "index",
             'srPID': sickrage.app.pid,
-            'srHttpsEnabled': sickrage.app.config.enable_https or bool(self.request.headers.get('X-Forwarded-Proto') == 'https'),
+            'srHttpsEnabled': sickrage.app.config.general.enable_https or bool(self.request.headers.get('X-Forwarded-Proto') == 'https'),
             'srHost': self.request.headers.get('X-Forwarded-Host', self.request.host.split(':')[0]),
-            'srHttpPort': self.request.headers.get('X-Forwarded-Port', sickrage.app.config.web_port),
-            'srHttpsPort': sickrage.app.config.web_port,
-            'srHandleReverseProxy': sickrage.app.config.handle_reverse_proxy,
-            'srThemeName': sickrage.app.config.theme_name,
-            'srDefaultPage': sickrage.app.config.default_page,
-            'srWebRoot': sickrage.app.config.web_root,
+            'srHttpPort': self.request.headers.get('X-Forwarded-Port', sickrage.app.config.general.web_port),
+            'srHttpsPort': sickrage.app.config.general.web_port,
+            'srHandleReverseProxy': sickrage.app.config.general.handle_reverse_proxy,
+            'srDefaultPage': sickrage.app.config.general.default_page.value,
+            'srWebRoot': sickrage.app.config.general.web_root,
             'srLocale': self.get_user_locale().code,
             'srLocaleDir': sickrage.LOCALE_DIR,
             'srStartTime': self.startTime,
             'makoStartTime': time.time(),
             'overall_stats': None,
-            'torrent_webui_url': helpers.torrent_webui_url(),
+            'torrent_webui_url': torrent_webui_url(),
             'application': self.application,
             'request': self.request,
         }
@@ -160,12 +158,12 @@ class BaseHandler(RequestHandler, ABC):
         self.set_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
 
     def redirect(self, url, permanent=True, status=None):
-        if sickrage.app.config.web_root not in url:
-            url = urljoin(sickrage.app.config.web_root + '/', url.lstrip('/'))
+        if sickrage.app.config.general.web_root not in url:
+            url = urljoin(sickrage.app.config.general.web_root + '/', url.lstrip('/'))
         super(BaseHandler, self).redirect(url, permanent, status)
 
     def previous_url(self):
-        url = urlparse(self.request.headers.get("referer", "/{}/".format(sickrage.app.config.default_page)))
+        url = urlparse(self.request.headers.get("referer", "/{}/".format(sickrage.app.config.general.default_page.value)))
         return url._replace(scheme="", netloc="").geturl()
 
     def _genericMessage(self, subject, message):
@@ -177,8 +175,8 @@ class BaseHandler(RequestHandler, ABC):
                            action='genericmessage')
 
     def get_url(self, url):
-        if sickrage.app.config.web_root not in url:
-            url = urljoin(sickrage.app.config.web_root + '/', url.lstrip('/'))
+        if sickrage.app.config.general.web_root not in url:
+            url = urljoin(sickrage.app.config.general.web_root + '/', url.lstrip('/'))
         url = urljoin("{}://{}".format(self.request.protocol, self.request.host), url)
         return url
 
@@ -197,5 +195,3 @@ class BaseHandler(RequestHandler, ABC):
     def options(self, *args, **kwargs):
         self.set_status(204)
         self.finish()
-
-

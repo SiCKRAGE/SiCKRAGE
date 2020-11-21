@@ -218,9 +218,9 @@ $(document).ready(function ($) {
                     });
 
                     if (item.category === 'shows') {
-                        if (item.showid) {
+                        if (item.series_id) {
                             $a.attr({
-                                href: `${SICKRAGE.srWebRoot}/home/displayShow?show=${item.showid}`,
+                                href: `${SICKRAGE.srWebRoot}/home/displayShow?show=${item.series_id}`,
                                 class: 'btn btn-dark btn-block d-inline-block text-left'
                             });
                         } else {
@@ -234,7 +234,7 @@ $(document).ready(function ($) {
                         $li.find('a').append($('<div class="row"><div class="col-2"><div id="show-img"></div></div><div class="col-10"><div class="row"><strong id="show-name" class="text-white text-truncate"></strong></div><div class="row"><strong id="show-seasons" class="text-secondary"></strong></div></div></div>'));
                         $li.find('#show-img').append($img);
 
-                        if (item.showid) {
+                        if (item.series_id) {
                             $li.find('#show-name').append(item.name);
                         } else {
                             $li.find('#show-name').append('Add new show: ' + item.name);
@@ -243,7 +243,7 @@ $(document).ready(function ($) {
                         $li.find('#show-seasons').append(item.seasons + ' seasons');
                     } else {
                         $a.attr({
-                            href: `${SICKRAGE.srWebRoot}/home/displayShow?show=${item.showid}#S${item.season}E${item.episode}`,
+                            href: `${SICKRAGE.srWebRoot}/home/displayShow?show=${item.series_id}#S${item.season}E${item.episode}`,
                             class: 'btn btn-dark btn-block d-inline-block text-left'
                         });
 
@@ -784,13 +784,13 @@ $(document).ready(function ($) {
             },
 
             checkManualSearches: function () {
-                const showId = $('#showID').val();
+                const series_id = $('#series_id').val();
 
-                if (showId !== undefined) {
+                if (series_id !== undefined) {
                     let pollInterval = 5000;
 
                     $.ajax({
-                        url: SICKRAGE.ajax_search.searchStatusUrl + `?show=${showId}`,
+                        url: SICKRAGE.ajax_search.searchStatusUrl + `?show=${series_id}`,
                         success: function (data) {
                             if (data.episodes) {
                                 pollInterval = 5000;
@@ -1406,8 +1406,8 @@ $(document).ready(function ($) {
                 $.backstretch(SICKRAGE.srWebRoot + '/images/backdrops/schedule.jpg');
                 $('.backstretch').css("opacity", SICKRAGE.getMeta('sickrage.FANART_BACKGROUND_OPACITY')).fadeIn("500");
 
-                if (SICKRAGE.isMeta('sickrage.COMING_EPS_LAYOUT', ['list'])) {
-                    var sortCodes = {'date': 0, 'show': 2, 'network': 5};
+                if (SICKRAGE.isMeta('sickrage.COMING_EPS_LAYOUT', ['LIST'])) {
+                    var sortCodes = {'DATE': 0, 'SHOW': 2, 'NETWORK': 5};
                     var sort = SICKRAGE.getMeta('sickrage.COMING_EPS_SORT');
                     var sortList = (sort in sortCodes) ? [[sortCodes[sort], 0]] : [[0, 0]];
 
@@ -1453,7 +1453,7 @@ $(document).ready(function ($) {
                     });
                 }
 
-                if (SICKRAGE.isMeta('sickrage.COMING_EPS_LAYOUT', ['banner', 'poster'])) {
+                if (SICKRAGE.isMeta('sickrage.COMING_EPS_LAYOUT', ['BANNER', 'POSTER'])) {
                     $('.ep_summary').hide();
                     $('.ep_summaryTrigger').click(function () {
                         $(this).next('.ep_summary').slideToggle('normal', function () {
@@ -1483,7 +1483,7 @@ $(document).ready(function ($) {
                     widgets: ['filter'],
                     sortList: [[0, 1]],
                     textExtraction: (function () {
-                        if (SICKRAGE.isMeta('sickrage.HISTORY_LAYOUT', ['detailed'])) {
+                        if (SICKRAGE.isMeta('sickrage.HISTORY_LAYOUT', ['DETAILED'])) {
                             return {
                                 0: function (node) {
                                     return $(node).find('time').attr('datetime');
@@ -1510,7 +1510,7 @@ $(document).ready(function ($) {
                         }
                     }()),
                     headers: (function () {
-                        if (SICKRAGE.isMeta('sickrage.HISTORY_LAYOUT', ['detailed'])) {
+                        if (SICKRAGE.isMeta('sickrage.HISTORY_LAYOUT', ['DETAILED'])) {
                             return {
                                 0: {sorter: 'realISODate'},
                                 4: {sorter: 'data-quality'}
@@ -1605,7 +1605,7 @@ $(document).ready(function ($) {
                     var command = $(this).data('command');
                     var select = $('[data-command=' + command + '][name=episode]');
                     var season = $(this).val();
-                    var show = $('[data-command=' + command + '][name=indexerid]').val();
+                    var show = $('[data-command=' + command + '][name=series_id]').val();
                     var episodes = $.parseJSON(window.atob(SICKRAGE.getMeta('episodes')));
 
                     if (select !== undefined) {
@@ -1873,8 +1873,8 @@ $(document).ready(function ($) {
 
                     $('.show-grid').isotope({
                         itemSelector: '.show-container',
-                        sortBy: SICKRAGE.getMeta('sickrage.POSTER_SORTBY'),
-                        sortAscending: SICKRAGE.getMeta('sickrage.POSTER_SORTDIR'),
+                        sortBy: SICKRAGE.getMeta('sickrage.POSTER_SORT_BY'),
+                        sortAscending: SICKRAGE.getMeta('sickrage.POSTER_SORT_BY'),
                         layoutMode: 'masonry',
                         masonry: {
                             isFitWidth: true
@@ -1984,7 +1984,7 @@ $(document).ready(function ($) {
                     SICKRAGE.home.display_show.imdbRating();
 
                     if (SICKRAGE.metaToBool('sickrage.FANART_BACKGROUND')) {
-                        $.backstretch(SICKRAGE.srWebRoot + '/images/' + $('#showID').attr('value') + '.fanart.jpg');
+                        $.backstretch(SICKRAGE.srWebRoot + '/images/' + $('#series_id').attr('value') + '.fanart.jpg');
                         $('.backstretch').css("opacity", SICKRAGE.getMeta('sickrage.FANART_BACKGROUND_OPACITY')).fadeIn("500");
                     }
 
@@ -2043,7 +2043,7 @@ $(document).ready(function ($) {
                             return false;
                         }
 
-                        window.location.href = SICKRAGE.srWebRoot + '/manage/setEpisodeStatus?show=' + $('#showID').attr('value') + '&eps=' + epArr.join('|') + '&status=' + $('#statusSelect').val();
+                        window.location.href = SICKRAGE.srWebRoot + '/manage/setEpisodeStatus?show=' + $('#series_id').attr('value') + '&eps=' + epArr.join('|') + '&status=' + $('#statusSelect').val();
                     });
 
                     $('#deleteEpisode').on('click', function () {
@@ -2059,7 +2059,7 @@ $(document).ready(function ($) {
                             return false;
                         }
 
-                        window.location.href = SICKRAGE.srWebRoot + '/home/deleteEpisode?show=' + $('#showID').attr('value') + '&eps=' + epArr.join('|');
+                        window.location.href = SICKRAGE.srWebRoot + '/home/deleteEpisode?show=' + $('#series_id').attr('value') + '&eps=' + epArr.join('|');
                     });
 
                     $('.seasonCheck').on('click', function () {
@@ -2221,8 +2221,8 @@ $(document).ready(function ($) {
                 },
 
                 setEpisodeSceneNumbering: function (forSeason, forEpisode, sceneSeason, sceneEpisode) {
-                    var showId = $('#showID').val();
-                    var indexer = $('#indexer').val();
+                    var series_id = $('#series_id').val();
+                    var series_provider_id = $('#series_provider_id').val();
 
                     if (sceneSeason === '') {
                         sceneSeason = null;
@@ -2232,8 +2232,8 @@ $(document).ready(function ($) {
                     }
 
                     $.getJSON(SICKRAGE.srWebRoot + '/home/setSceneNumbering', {
-                        'show': showId,
-                        'indexer': indexer,
+                        'series_id': series_id,
+                        'series_provider_id': series_provider_id,
                         'forSeason': forSeason,
                         'forEpisode': forEpisode,
                         'sceneSeason': sceneSeason,
@@ -2241,9 +2241,9 @@ $(document).ready(function ($) {
                     }, function (data) {
                         //	Set the values we get back
                         if (data.sceneSeason === null || data.sceneEpisode === null) {
-                            $('#sceneSeasonXEpisode_' + showId + '_' + forSeason + '_' + forEpisode).val('');
+                            $('#sceneSeasonXEpisode_' + series_id + '_' + forSeason + '_' + forEpisode).val('');
                         } else {
-                            $('#sceneSeasonXEpisode_' + showId + '_' + forSeason + '_' + forEpisode).val(data.sceneSeason + 'x' + data.sceneEpisode);
+                            $('#sceneSeasonXEpisode_' + series_id + '_' + forSeason + '_' + forEpisode).val(data.sceneSeason + 'x' + data.sceneEpisode);
                         }
 
                         if (!data.success) {
@@ -2263,25 +2263,25 @@ $(document).ready(function ($) {
                 },
 
                 setAbsoluteSceneNumbering: function (forAbsolute, sceneAbsolute) {
-                    var showId = $('#showID').val();
-                    var indexer = $('#indexer').val();
+                    var series_id = $('#series_id').val();
+                    var series_provider_id = $('#series_provider_id').val();
 
                     if (sceneAbsolute === '') {
                         sceneAbsolute = null;
                     }
 
                     $.getJSON(SICKRAGE.srWebRoot + '/home/setSceneNumbering', {
-                            'show': showId,
-                            'indexer': indexer,
+                            'show': series_id,
+                            'series_provider_id': series_provider_id,
                             'forAbsolute': forAbsolute,
                             'sceneAbsolute': sceneAbsolute
                         },
                         function (data) {
                             //	Set the values we get back
                             if (data.sceneAbsolute === null) {
-                                $('#sceneAbsolute_' + showId + '_' + forAbsolute).val('');
+                                $('#sceneAbsolute_' + series_id + '_' + forAbsolute).val('');
                             } else {
-                                $('#sceneAbsolute_' + showId + '_' + forAbsolute).val(data.sceneAbsolute);
+                                $('#sceneAbsolute_' + series_id + '_' + forAbsolute).val(data.sceneAbsolute);
                             }
                             if (!data.success) {
                                 if (data.errorMessage) {
@@ -2387,11 +2387,11 @@ $(document).ready(function ($) {
                         $('.dirCheck').each(function () {
                             if (this.checked === true) {
                                 var show = $(this).attr('id');
-                                var indexer = $(this).closest('tr').find('select').val();
+                                var series_provider_id = $(this).closest('tr').find('select').val();
                                 $('<input>', {
                                     type: 'hidden',
                                     name: 'shows_to_add',
-                                    value: indexer + '|' + show
+                                    value: series_provider_id + '|' + show
                                 }).appendTo(submitForm);
                                 selectedShows = true;
                             }
@@ -2704,7 +2704,7 @@ $(document).ready(function ($) {
                         return false;
                     }
 
-                    window.location.href = SICKRAGE.srWebRoot + '/home/doRename?show=' + $('#showID').attr('value') + '&eps=' + epArr.join('|');
+                    window.location.href = SICKRAGE.srWebRoot + '/home/doRename?show=' + $('#series_id').attr('value') + '&eps=' + epArr.join('|');
                 });
 
             },
@@ -2736,7 +2736,7 @@ $(document).ready(function ($) {
                     if ($('input:hidden[name=whichSeries]').length) {
                         $('#addShowForm')[0].classList.add('was-validated');
 
-                        SICKRAGE.home.update_bwlist($('#providedName').val());
+                        SICKRAGE.home.update_bwlist($('#providedSeriesName').val());
 
                         navListItems.addClass('disabled');
                         navListItems.removeClass('btn-success').addClass('btn-dark');
@@ -2793,7 +2793,7 @@ $(document).ready(function ($) {
                             }
                             // if we provided a show in the hidden field, use that
                             else if ($('input:hidden[name=whichSeries]').length && $('input:hidden[name=whichSeries]').val().length) {
-                                showName = $('#providedName').val();
+                                showName = $('#providedSeriesName').val();
                             }
 
                             if (showName.length) {
@@ -2815,7 +2815,7 @@ $(document).ready(function ($) {
 
                     $('#searchName').on('click', function () {
                         $('#searchName').prop('disabled', true);
-                        SICKRAGE.home.new_show.searchIndexers();
+                        SICKRAGE.home.new_show.searchSeriesProvider();
                         $('#searchName').prop('disabled', false);
                     });
 
@@ -2835,25 +2835,25 @@ $(document).ready(function ($) {
                     $('div.setup-panel div a.btn-success').trigger('click');
                 },
 
-                searchIndexers: function () {
+                searchSeriesProvider: function () {
                     if (!$('#nameToSearch').val().length) {
                         return;
                     }
 
-                    var searchingFor = '<b>' + $('#nameToSearch').val().trim() + '</b> on ' + $('#providedIndexer option:selected').text() + '<br/>';
+                    var searchingFor = '<b>' + $('#nameToSearch').val().trim() + '</b> on ' + $('#providedSeriesProviderID option:selected').text() + '<br/>';
                     $('#step-1-messages').empty().html('<i id="searchingAnim" class="fas fa-spinner fa-spin fa-fw"></i> searching for ' + searchingFor);
 
                     $.ajax({
-                        url: SICKRAGE.srWebRoot + '/home/addShows/searchIndexersForShowName',
+                        url: SICKRAGE.srWebRoot + '/home/addShows/searchSeriesProviderForShowName',
                         data: {
                             'search_term': $('#nameToSearch').val().trim(),
-                            'lang': $('#indexerLang').val(),
-                            'indexer': $('#providedIndexer').val()
+                            'lang': $('#seriesProviderLanguage').val(),
+                            'series_provider_id': $('#providedSeriesProviderID').val()
                         },
-                        timeout: parseInt($('#indexer_timeout').val(), 10) * 1000,
+                        timeout: parseInt($('#series_provider_timeout').val(), 10) * 1000,
                         dataType: 'json',
                         error: function () {
-                            $('#step-1-messages').empty().html(gt('search timed out, try increasing timeout for indexer'));
+                            $('#step-1-messages').empty().html(gt('search timed out, try increasing timeout for series provider'));
                         },
                         success: function (data) {
                             var firstResult = true;
@@ -3078,16 +3078,16 @@ $(document).ready(function ($) {
                     SICKRAGE.root_dirs.init();
 
                     if ($("input[name='proxy_setting']").val().length === 0) {
-                        $("input[id='proxy_indexers']").prop('checked', false);
-                        $("label[for='proxy_indexers']").hide();
+                        $("input[id='proxy_series_providers']").prop('checked', false);
+                        $("label[for='proxy_series_providers']").hide();
                     }
 
                     $("input[name='proxy_setting']").on('input', function () {
                         if ($(this).val().length === 0) {
-                            $("input[id='proxy_indexers']").prop('checked', false);
-                            $("label[for='proxy_indexers']").hide();
+                            $("input[id='proxy_series_providers']").prop('checked', false);
+                            $("label[for='proxy_series_providers']").hide();
                         } else {
-                            $("label[for='proxy_indexers']").show();
+                            $("label[for='proxy_series_providers']").show();
                         }
                     });
 
@@ -3511,7 +3511,7 @@ $(document).ready(function ($) {
                         $('#torrent_label_anime_option').show();
                         $('#path_synology').hide();
                         $('#torrent_paused_option').show();
-                        $('#torrent_rpcurl_option').hide();
+                        $('#torrent_rpc_url_option').hide();
 
                         if (selectedProvider.toLowerCase() === 'utorrent') {
                             client = 'uTorrent';
@@ -3527,7 +3527,7 @@ $(document).ready(function ($) {
                             $('#torrent_high_bandwidth_option').show();
                             $('#torrent_label_option').hide();
                             $('#torrent_label_anime_option').hide();
-                            $('#torrent_rpcurl_option').show();
+                            $('#torrent_rpc_url_option').show();
                             $('#torrent_host').attr('placeholder', gt('URL to your Transmission client (e.g. http://localhost:9091)'));
                             $('#torrent_host').prop('required', true);
                         } else if (selectedProvider.toLowerCase() === 'deluge') {
@@ -4102,18 +4102,18 @@ $(document).ready(function ($) {
                     });
 
                     $('#testProwl').click(function () {
-                        var prowl_api = $.trim($('#prowl_api').val());
+                        var prowl_apikey = $.trim($('#prowl_apikey').val());
                         var prowl_priority = $('#prowl_priority').val();
-                        if (!prowl_api) {
+                        if (!prowl_apikey) {
                             $('#testProwl-result').html(gt('Please fill out the necessary fields above.'));
-                            $('#prowl_api').addClass('warning');
+                            $('#prowl_apikey').addClass('warning');
                             return;
                         }
-                        $('#prowl_api').removeClass('warning');
+                        $('#prowl_apikey').removeClass('warning');
                         $(this).prop('disabled', true);
                         $('#testProwl-result').html(SICKRAGE.loadingHTML);
                         $.get(SICKRAGE.srWebRoot + '/home/testProwl', {
-                            'prowl_api': prowl_api,
+                            'prowl_apikey': prowl_apikey,
                             'prowl_priority': prowl_priority
                         }).done(function (data) {
                             $('#testProwl-result').html(data);
@@ -4723,6 +4723,7 @@ $(document).ready(function ($) {
                         $.get(SICKRAGE.srWebRoot + "/home/saveShowNotifyList",
                             {
                                 'show': $('#email_show').val(),
+                                'series_provider_id': $('#email_series_provider_id').val(),
                                 'emails': $('#email_show_list').val()
                             })
                             .done(function () {
@@ -5143,7 +5144,7 @@ $(document).ready(function ($) {
                     }
 
                     if ($('#provider_order_list > #' + id).length === 0 && showProvider !== 'false') {
-                        $('#provider_order_list').append('<div class="list-group-item list-group-item-action list-group-item-dark rounded mb-1 p-2" id="' + id + '"><div class="align-middle"><label class="form-check-label" for="enable_' + id + '"><input type="checkbox" id="enable_' + id + '" class="provider_enabler text-left" checked><a href="' + SICKRAGE.anonURL + url + '" class="text-right" target="_new"> <i class="sickrage-providers sickrage-providers-newznab"></i></a> <span class="font-weight-bold">' + name + '</span></label><span class="float-right d-inline-block"><i class="fas fa-lock text-danger"></i></span></div>');
+                        $('#provider_order_list').append('<div class="list-group-item list-group-item-action list-group-item-dark rounded mb-1 p-2" id="' + id + '"><div class="align-middle"><label class="form-check-label" for="enable_' + id + '"><input type="checkbox" id="enable_' + id + '" class="provider_enabler text-left" checked><a href="' + SICKRAGE.anonURL + url + '" class="text-right" target="_new"> <i class="sickrage-search-providers sickrage-search-providers-newznab"></i></a> <span class="font-weight-bold">' + name + '</span></label><span class="float-right d-inline-block"><i class="fas fa-lock text-danger"></i></span></div>');
                         $('#provider_order_list').sortable("refresh");
                     }
 
@@ -5284,7 +5285,7 @@ $(document).ready(function ($) {
                     }
 
                     if ($('#provider_order_list > #' + id).length === 0 && showProvider !== 'false') {
-                        $('#provider_order_list').append('<div class="list-group-item list-group-item-action list-group-item-secondary rounded mb-1 p-2" id="' + id + '"><div class="align-middle"><label class="form-check-label" for="enable_' + id + '"><input type="checkbox" id="enable_' + id + '" class="provider_enabler text-left" checked><a href="' + SICKRAGE.anonURL + url + '" class="text-right" target="_new"> <i class="sickrage-providers sickrage-providers-torrentrss"></i></a> <span class="font-weight-bold">' + name + '</span></label><span class="float-right d-inline-block"><i class="fas fa-lock text-danger"></i></span></div>');
+                        $('#provider_order_list').append('<div class="list-group-item list-group-item-action list-group-item-secondary rounded mb-1 p-2" id="' + id + '"><div class="align-middle"><label class="form-check-label" for="enable_' + id + '"><input type="checkbox" id="enable_' + id + '" class="provider_enabler text-left" checked><a href="' + SICKRAGE.anonURL + url + '" class="text-right" target="_new"> <i class="sickrage-search-providers sickrage-search-providers-torrentrss"></i></a> <span class="font-weight-bold">' + name + '</span></label><span class="float-right d-inline-block"><i class="fas fa-lock text-danger"></i></span></div>');
                         $('#provider_order_list').sortable("refresh");
                     }
 
@@ -5421,10 +5422,10 @@ $(document).ready(function ($) {
             },
 
             episode_statuses: function () {
-                function makeRow(indexerId, season, episode, name, checked) {
+                function makeRow(series_id, season, episode, name, checked) {
                     var row = '';
-                    row += ' <tr class="text-dark ' + $('#row_class').val() + ' show-' + indexerId + '">';
-                    row += '  <td align="center"><input type="checkbox" class="' + indexerId + '-epcheck" name="toChange" value="' + indexerId + '-' + season + 'x' + episode + '"' + (checked ? ' checked' : '') + '></td>';
+                    row += ' <tr class="text-dark ' + $('#row_class').val() + ' show-' + series_id + '">';
+                    row += '  <td align="center"><input type="checkbox" class="' + series_id + '-epcheck" name="toChange" value="' + series_id + '-' + season + 'x' + episode + '"' + (checked ? ' checked' : '') + '></td>';
                     row += '  <td>' + season + 'x' + episode + '</td>';
                     row += '  <td style="width: 100%">' + name + '</td>';
                     row += ' </tr>';
@@ -5433,26 +5434,26 @@ $(document).ready(function ($) {
                 }
 
                 $('.allCheck').click(function () {
-                    var indexerId = $(this).attr('id').split('-')[1];
-                    $('.' + indexerId + '-epcheck').prop('checked', $(this).prop('checked'));
+                    var series_id = $(this).attr('id').split('-')[1];
+                    $('.' + series_id + '-epcheck').prop('checked', $(this).prop('checked'));
                 });
 
                 $('.get_more_eps').click(function () {
-                    var curIndexerId = $(this).attr('id');
-                    var checked = $('#allCheck-' + curIndexerId).prop('checked');
-                    var lastRow = $('tr#' + curIndexerId);
+                    var series_id = $(this).attr('id');
+                    var checked = $('#allCheck-' + series_id).prop('checked');
+                    var lastRow = $('tr#' + series_id);
                     var clicked = $(this).attr('data-clicked');
                     var action = $(this).attr('value');
 
                     if (!clicked) {
                         $.getJSON(SICKRAGE.srWebRoot + '/manage/showEpisodeStatuses', {
-                            indexer_id: curIndexerId,
+                            series_id: series_id,
                             whichStatus: $('#oldStatus').val()
                         }, function (data) {
                             $.each(data, function (season, eps) {
                                 $.each(eps, function (episode, name) {
                                     //alert(season+'x'+episode+': '+name);
-                                    lastRow.after(makeRow(curIndexerId, season, episode, name, checked));
+                                    lastRow.after(makeRow(series_id, season, episode, name, checked));
                                 });
                             });
                         });
@@ -5460,10 +5461,10 @@ $(document).ready(function ($) {
                         $(this).prop('value', 'Collapse');
                     } else {
                         if (action.toLowerCase() === 'collapse') {
-                            $('table tr').filter('.show-' + curIndexerId).hide();
+                            $('table tr').filter('.show-' + series_id).hide();
                             $(this).prop('value', 'Expand');
                         } else if (action.toLowerCase() === 'expand') {
-                            $('table tr').filter('.show-' + curIndexerId).show();
+                            $('table tr').filter('.show-' + series_id).show();
                             $(this).prop('value', 'Collapse');
                         }
                     }
@@ -5799,12 +5800,12 @@ $(document).ready(function ($) {
             },
 
             subtitles_missed: function () {
-                function makeRow(indexerId, season, episode, name, subtitles, checked) {
+                function makeRow(series_id, season, episode, name, subtitles, checked) {
                     checked = checked ? ' checked' : '';
 
                     var row = '';
-                    row += ' <tr class="good show-' + indexerId + '">';
-                    row += '  <td align="center"><input type="checkbox" class="' + indexerId + '-epcheck" name="toDownload" value="' + indexerId + '-' + season + 'x' + episode + '"' + checked + '></td>';
+                    row += ' <tr class="good show-' + series_id + '">';
+                    row += '  <td align="center"><input type="checkbox" class="' + series_id + '-epcheck" name="toDownload" value="' + series_id + '-' + season + 'x' + episode + '"' + checked + '></td>';
                     row += '  <td style="width: 1%;">' + season + 'x' + episode + '</td>';
                     row += '  <td>' + name + '</td>';
                     row += ' </tr>';
@@ -5813,26 +5814,26 @@ $(document).ready(function ($) {
                 }
 
                 $('.allCheck').click(function () {
-                    var indexerId = $(this).attr('id').split('-')[1];
-                    $('.' + indexerId + '-epcheck').prop('checked', $(this).prop('checked'));
+                    var series_id = $(this).attr('id').split('-')[1];
+                    $('.' + series_id + '-epcheck').prop('checked', $(this).prop('checked'));
                 });
 
                 $('.get_more_eps').click(function () {
-                    var indexerId = $(this).attr('id');
-                    var checked = $('#allCheck-' + indexerId).prop('checked');
-                    var lastRow = $('tr#' + indexerId);
+                    var series_id = $(this).attr('id');
+                    var checked = $('#allCheck-' + series_id).prop('checked');
+                    var lastRow = $('tr#' + series_id);
                     var clicked = $(this).attr('data-clicked');
                     var action = $(this).attr('value');
 
                     if (!clicked) {
                         $.getJSON(SICKRAGE.srWebRoot + '/manage/showSubtitleMissed', {
-                            indexer_id: indexerId,
+                            series_id: series_id,
                             whichSubs: $('#selectSubLang').val()
                         }, function (data) {
                             $.each(data, function (season, eps) {
                                 $.each(eps, function (episode, data) {
                                     //alert(season+'x'+episode+': '+name);
-                                    lastRow.after(makeRow(indexerId, season, episode, data.name, data.subtitles, checked));
+                                    lastRow.after(makeRow(series_id, season, episode, data.name, data.subtitles, checked));
                                 });
                             });
                         });
@@ -5840,10 +5841,10 @@ $(document).ready(function ($) {
                         $(this).prop('value', 'Collapse');
                     } else {
                         if (action === 'Collapse') {
-                            $('table tr').filter('.show-' + indexerId).hide();
+                            $('table tr').filter('.show-' + series_id).hide();
                             $(this).prop('value', 'Expand');
                         } else if (action === 'Expand') {
-                            $('table tr').filter('.show-' + indexerId).show();
+                            $('table tr').filter('.show-' + series_id).show();
                             $(this).prop('value', 'Collapse');
                         }
                     }

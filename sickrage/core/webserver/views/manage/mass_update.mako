@@ -4,8 +4,8 @@
 
     import sickrage
     from sickrage.core.tv.show.helpers import get_show_list
-    from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import statusStrings, SearchFormats
+    from sickrage.core.enums import SearchFormat
+    from sickrage.core.common import EpisodeStatus
     from sickrage.core.helpers.compat import cmp
 %>
 
@@ -18,7 +18,7 @@
             <button class="btn" id="submitMassRename">${_('Mass Rename')}</button>
             <button class="btn" id="submitMassDelete">${_('Mass Delete')}</button>
             <button class="btn" id="submitMassRemove">${_('Mass Remove')}</button>
-            % if sickrage.app.config.use_subtitles:
+            % if sickrage.app.config.subtitles.enable:
                 <button class="btn" id="submitMassSubtitle">${_('Mass Subtitle')}</button>
             % endif
         </div>
@@ -83,29 +83,29 @@
                                 % for curShow in shows_list:
                                     <% curEp = curShow.airs_next %>
 
-                                    <tr class="${curShow.status}" id="${curShow.indexer_id}">
+                                    <tr class="${curShow.status}" id="${curShow.series_id}">
                                         <td class="table-fit">
-                                            <input type="checkbox" class="showCheck" id="${curShow.indexer_id}"
-                                                   name="${curShow.indexer_id}" ${('disabled', '')[bool(not any([
-                                            sickrage.app.show_queue.is_being_renamed(curShow.indexer_id),
-                                            sickrage.app.show_queue.is_being_renamed(curShow.indexer_id),
-                                            sickrage.app.show_queue.is_being_refreshed(curShow.indexer_id),
-                                            sickrage.app.show_queue.is_being_updated(curShow.indexer_id),
-                                            sickrage.app.show_queue.is_being_updated(curShow.indexer_id),
-                                            sickrage.app.show_queue.is_being_refreshed(curShow.indexer_id),
-                                            sickrage.app.show_queue.is_being_refreshed(curShow.indexer_id),
-                                            sickrage.app.show_queue.is_being_renamed(curShow.indexer_id),
-                                            sickrage.app.show_queue.is_being_renamed(curShow.indexer_id),
-                                            sickrage.app.show_queue.is_being_subtitled(curShow.indexer_id),
-                                            sickrage.app.show_queue.is_being_subtitled(curShow.indexer_id)]))]}/>
+                                            <input type="checkbox" class="showCheck" id="${curShow.series_id}"
+                                                   name="${curShow.series_id}" ${('disabled', '')[bool(not any([
+                                            sickrage.app.show_queue.is_being_renamed(curShow.series_id),
+                                            sickrage.app.show_queue.is_being_renamed(curShow.series_id),
+                                            sickrage.app.show_queue.is_being_refreshed(curShow.series_id),
+                                            sickrage.app.show_queue.is_being_updated(curShow.series_id),
+                                            sickrage.app.show_queue.is_being_updated(curShow.series_id),
+                                            sickrage.app.show_queue.is_being_refreshed(curShow.series_id),
+                                            sickrage.app.show_queue.is_being_refreshed(curShow.series_id),
+                                            sickrage.app.show_queue.is_being_renamed(curShow.series_id),
+                                            sickrage.app.show_queue.is_being_renamed(curShow.series_id),
+                                            sickrage.app.show_queue.is_being_subtitled(curShow.series_id),
+                                            sickrage.app.show_queue.is_being_subtitled(curShow.series_id)]))]}/>
                                         </td>
                                         <td class="tvShow">
-                                            <a href="${srWebRoot}/home/displayShow?show=${curShow.indexer_id}">${curShow.name}</a>
+                                            <a href="${srWebRoot}/home/displayShow?show=${curShow.series_id}">${curShow.name}</a>
                                         </td>
                                         <td>
                                             ${curShow.location}
                                         </td>
-                                        <td class="table-fit">${SearchFormats.search_format_strings[curShow.search_format]}</td>
+                                        <td class="table-fit">${curShow.search_format.display_name}</td>
                                         <td class="table-fit">${renderQualityPill(curShow.quality, showTitle=True)}</td>
                                         <td class="table-fit">
                                             <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(curShow.is_anime)]}"></i>
@@ -132,7 +132,7 @@
                                             <span class="d-none d-print-inline">${bool(curShow.subtitles)}</span>
                                         </td>
                                         <td class="table-fit">
-                                            ${statusStrings[curShow.default_ep_status]}
+                                            ${curShow.default_ep_status.display_name}
                                         </td>
                                         <td class="table-fit">
                                             ${curShow.status}

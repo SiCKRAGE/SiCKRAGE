@@ -19,12 +19,12 @@ class API(object):
     def __init__(self):
         self.name = 'SR-API'
         self.api_base = 'https://www.sickrage.ca/api/'
-        self.api_version = 'v4'
+        self.api_version = 'v5'
         self._session = None
 
     @property
     def is_enabled(self):
-        return sickrage.app.config.enable_sickrage_api and self.token
+        return sickrage.app.config.general.enable_sickrage_api and self.token
 
     @property
     def imdb(self):
@@ -281,7 +281,7 @@ class API(object):
 
         def upload_config(self, server_id, pkey_sig, config):
             data = {
-                'app-id': server_id,
+                'server-id': server_id,
                 'pkey-sig': pkey_sig,
                 'config': config
             }
@@ -318,7 +318,7 @@ class API(object):
             self.api = api
 
         def get(self, provider, series_id, season, episode):
-            query = 'cache/provider/{}/series-id/{}/season/{}/episode/{}'.format(provider, series_id, season, episode)
+            query = f'cache/provider/{provider}/series-id/{series_id}/season/{season}/episode/{episode}'
             return self.api.request('GET', query)
 
         def add(self, data):
@@ -387,8 +387,8 @@ class API(object):
             query = 'scene-exceptions'
             return self.api.request('GET', query)
 
-        def search_by_id(self, indexer_id):
-            query = 'scene-exceptions/search-by-id/{}'.format(indexer_id)
+        def search_by_id(self, series_id):
+            query = 'scene-exceptions/search-by-id/{}'.format(series_id)
             return self.api.request('GET', query)
 
     class AlexaAPI:

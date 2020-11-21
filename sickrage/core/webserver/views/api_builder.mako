@@ -202,12 +202,12 @@
                         % endfor
                     % endif
                 </select>
-            % elif parameter == 'indexerid':
+            % elif parameter == 'series_id':
                 <select class="form-control" name="${parameter}" data-action="update-seasons" data-command="${command}">
                     <option>${parameter}</option>
 
                     % for show in shows:
-                        <option value="${show.indexer_id}">${show.name}</option>
+                        <option value="${show.series_id}">${show.name}</option>
                     % endfor
                 </select>
             % if 'season' in parameters:

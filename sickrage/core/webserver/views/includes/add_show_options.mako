@@ -1,10 +1,10 @@
 <%
     import sickrage
-    from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings, statusStrings, SearchFormats
+    from sickrage.core.common import Quality, EpisodeStatus
+    from sickrage.core.enums import SearchFormat
 %>
 <%namespace file="../includes/quality_chooser.mako" import="QualityChooser"/>
-% if sickrage.app.config.use_subtitles:
+% if sickrage.app.config.subtitles.enable:
     <div class="row field-pair">
         <div class="col-lg-3 col-md-4 col-sm-5">
             <label class="component-title">${_('Subtitles')}</label>
@@ -12,7 +12,7 @@
         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
             <label>
                 <input type="checkbox" class="toggle color-primary is-material" name="subtitles"
-                       id="subtitles" ${('', 'checked')[bool(sickrage.app.config.subtitles_default)]} />
+                       id="subtitles" ${('', 'checked')[bool(sickrage.app.config.subtitles.default)]} />
                 ${_('enables searching for episode subtitles')}
             </label>
         </div>
@@ -38,7 +38,7 @@
     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
         <label>
             <input type="checkbox" class="toggle color-primary is-material" name="flatten_folders"
-                   id="flatten_folders" ${('', 'checked')[bool(not sickrage.app.config.flatten_folders_default)]}/>
+                   id="flatten_folders" ${('', 'checked')[bool(not sickrage.app.config.general.flatten_folders_default)]}/>
             ${_('group episodes by season folder (uncheck to store in a single folder)')}
         </label>
     </div>
@@ -51,7 +51,7 @@
         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
             <label>
                 <input type="checkbox" class="toggle color-primary is-material" name="anime"
-                       id="anime" ${('', 'checked')[bool(sickrage.app.config.anime_default)]} />
+                       id="anime" ${('', 'checked')[bool(sickrage.app.config.general.anime_default)]} />
                 ${_('search by absolute numbering and enables searching with anime providers')}
             </label>
         </div>
@@ -63,8 +63,8 @@
     </div>
     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
         <label>
-            <input type="checkbox" class="toggle color-primary is-material" id="dvdorder"
-                   name="dvdorder"/>
+            <input type="checkbox" class="toggle color-primary is-material" id="dvd_order"
+                   name="dvd_order"/>
             ${_('use the DVD order instead of the air order')}
         </label>
     </div>
@@ -76,8 +76,8 @@
     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
         <label>
             <input type="checkbox" class="toggle color-primary is-material" name="scene"
-                   id="scene" ${('', 'checked')[bool(sickrage.app.config.scene_default)]} />
-            ${_('use scene numbering instead of indexer numbering')}
+                   id="scene" ${('', 'checked')[bool(sickrage.app.config.general.scene_default)]} />
+            ${_('use scene numbering instead of series provider numbering')}
         </label>
     </div>
 </div>
@@ -88,7 +88,7 @@
     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
         <label>
             <input type="checkbox" class="toggle color-primary is-material" name="skip_downloaded"
-                   id="skip_downloaded" ${('', 'checked')[bool(sickrage.app.config.skip_downloaded_default)]} />
+                   id="skip_downloaded" ${('', 'checked')[bool(sickrage.app.config.general.skip_downloaded_default)]} />
             ${_('skips updating quality of old/new downloaded episodes')}
         </label>
     </div>
@@ -100,7 +100,7 @@
     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
         <label>
             <input type="checkbox" class="toggle color-primary is-material" name="add_show_year"
-                   id="add_show_year" ${('', 'checked')[bool(sickrage.app.config.add_show_year_default)]} />
+                   id="add_show_year" ${('', 'checked')[bool(sickrage.app.config.general.add_show_year_default)]} />
             ${_('include year of show in show folder name during initial show folder creation')}
         </label>
     </div>
@@ -117,8 +117,8 @@
                 </span>
             </div>
             <select id="search_format" name="search_format" class="form-control">
-                % for search_format, search_format_string in SearchFormats.search_format_strings.items():
-                    <option value="${search_format}" ${('', 'selected')[sickrage.app.config.search_format_default == search_format]}>${search_format_string}</option>
+                % for item in SearchFormat:
+                    <option value="${item.name}" ${('', 'selected')[sickrage.app.config.general.search_format_default == item]}>${item.display_name}</option>
                 % endfor
             </select>
         </div>
@@ -137,8 +137,8 @@
             </div>
             <select name="defaultStatus" id="statusSelect" class="form-control"
                     title="Status for previously aired episodes">
-                % for curStatus in [SKIPPED, WANTED, IGNORED]:
-                    <option value="${curStatus}" ${('', 'selected')[sickrage.app.config.status_default == curStatus]}>${statusStrings[curStatus]}</option>
+                % for item in [EpisodeStatus.SKIPPED, EpisodeStatus.WANTED, EpisodeStatus.IGNORED]:
+                    <option value="${item.name}" ${('', 'selected')[sickrage.app.config.general.status_default == item]}>${item.display_name}</option>
                 % endfor
             </select>
         </div>
@@ -157,8 +157,8 @@
             </div>
             <select name="defaultStatusAfter" id="statusSelectAfter" title="Status for future episodes"
                     class="form-control">
-                % for curStatus in [SKIPPED, WANTED, IGNORED]:
-                    <option value="${curStatus}" ${('', 'selected')[sickrage.app.config.status_default_after == curStatus]}>${statusStrings[curStatus]}</option>
+                % for item in [EpisodeStatus.SKIPPED, EpisodeStatus.WANTED, EpisodeStatus.IGNORED]:
+                    <option value="${item.name}" ${('', 'selected')[sickrage.app.config.general.status_default_after == item]}>${item.display_name}</option>
                 % endfor
             </select>
         </div>

@@ -20,28 +20,17 @@ def upgrade():
     meta = sa.MetaData(bind=conn)
     tv_episodes = sa.Table('tv_episodes', meta, autoload=True)
 
-    op.alter_column('tv_episodes', 'airdate', type=sa.String(32))
+    with op.batch_alter_table("tv_episodes") as batch_op:
+        batch_op.alter_column('airdate', type_=sa.String(32))
 
     with op.get_context().begin_transaction():
         for row in conn.execute(tv_episodes.select()):
             date = datetime.date.fromordinal(int(row.airdate))
-            conn.execute('UPDATE tv_episodes SET airdate = {} WHERE tv_episodes.indexer_id = {}'
-                         .format(date, row.indexer_id))
+            conn.execute(f'UPDATE tv_episodes SET airdate = "{date}" WHERE tv_episodes.indexer_id = {row.indexer_id}')
 
-    op.alter_column('tv_episodes', 'airdate', type=sa.Date)
+    with op.batch_alter_table("tv_episodes") as batch_op:
+        batch_op.alter_column('airdate', type_=sa.Date)
 
 
 def downgrade():
-    conn = op.get_bind()
-    meta = sa.MetaData(bind=conn)
-    tv_episodes = sa.Table('tv_episodes', meta, autoload=True)
-
-    op.alter_column('tv_episodes', 'airdate', type=sa.String(32))
-
-    with op.get_context().begin_transaction():
-        for row in conn.execute(tv_episodes.select()):
-            date = str(row.airdate.toordinal())
-            conn.execute('UPDATE tv_episodes SET airdate = {} WHERE tv_episodes.indexer_id = {}'
-                         .format(date, row.indexer_id))
-
-    op.alter_column('tv_episodes', 'airdate', type=sa.Integer)
+    pass

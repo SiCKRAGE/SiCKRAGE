@@ -6,8 +6,7 @@
 
     import sickrage
     from sickrage.core.helpers import pretty_file_size
-    from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings, statusStrings, Overview
+    from sickrage.core.common import Overview, Quality
 %>
 <%block name="content">
     <div class="row">
@@ -53,11 +52,11 @@
                                         <td class="table-fit">
                                             % if hItem.provider.lower() in sickrage.app.search_providers.all():
                                             <% provider = sickrage.app.search_providers.all()[hItem.provider.lower()] %>
-                                                <i class="sickrage-providers sickrage-providers-${provider.id}"
+                                                <i class="sickrage-search-providers sickrage-search-providers-${provider.id}"
                                                    title="${provider.name}"
                                                    style="vertical-align:middle;cursor: help;"></i>
                                             % else:
-                                                <i class="sickrage-providers sickrage-providers-missing"
+                                                <i class="sickrage-search-providers sickrage-search-providers-missing"
                                                    style="vertical-align:middle;"
                                                    title="${_('missing provider')}"></i>
                                             % endif

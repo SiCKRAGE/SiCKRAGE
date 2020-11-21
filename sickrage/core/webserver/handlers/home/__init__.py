@@ -20,7 +20,6 @@
 # ##############################################################################
 
 import datetime
-import json
 import os
 from abc import ABC
 from collections import OrderedDict
@@ -34,7 +33,8 @@ from tornado.web import authenticated
 import sickrage
 from sickrage.clients import get_client_instance
 from sickrage.clients.nzb.sabnzbd import SabNZBd
-from sickrage.core.common import Overview, Quality, cpu_presets, statusStrings
+from sickrage.core.common import Overview, Quality, Qualities
+from sickrage.core.enums import SeriesProviderID
 from sickrage.core.exceptions import (
     AnidbAdbaConnectionException,
     CantRefreshShowException,
@@ -61,14 +61,13 @@ from sickrage.core.scene_numbering import (
 from sickrage.core.traktapi import TraktAPI
 from sickrage.core.tv.show.helpers import find_show, get_show_list
 from sickrage.core.webserver.handlers.base import BaseHandler
-from sickrage.core.websocket import WebSocketMessage
 from sickrage.subtitles import Subtitles
 
 
 class HomeHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        show_list = [x for x in get_show_list() if not sickrage.app.show_queue.is_being_removed(x.indexer_id)]
+        show_list = [x for x in get_show_list() if not sickrage.app.show_queue.is_being_removed(x.series_id)]
 
         if not len(show_list):
             return self.redirect('/home/addShows/')
@@ -103,8 +102,8 @@ class HomeHandler(BaseHandler, ABC):
         }
 
         for show in get_show_list():
-            if sickrage.app.show_queue.is_being_added(show.indexer_id) or sickrage.app.show_queue.is_being_removed(show.indexer_id):
-                show_stat[show.indexer_id] = {
+            if sickrage.app.show_queue.is_being_added(show.series_id) or sickrage.app.show_queue.is_being_removed(show.series_id):
+                show_stat[show.series_id] = {
                     'ep_airs_next': datetime.date.min,
                     'ep_airs_prev': datetime.date.min,
                     'ep_snatched': 0,
@@ -113,7 +112,7 @@ class HomeHandler(BaseHandler, ABC):
                     'total_size': 0
                 }
             else:
-                show_stat[show.indexer_id] = {
+                show_stat[show.series_id] = {
                     'ep_airs_next': show.airs_next or datetime.date.min,
                     'ep_airs_prev': show.airs_prev or datetime.date.min,
                     'ep_snatched': show.episodes_snatched or 0,
@@ -122,19 +121,19 @@ class HomeHandler(BaseHandler, ABC):
                     'total_size': show.total_size or 0
                 }
 
-            overall_stats['episodes']['snatched'] += show_stat[show.indexer_id]['ep_snatched']
-            overall_stats['episodes']['downloaded'] += show_stat[show.indexer_id]['ep_downloaded']
-            overall_stats['episodes']['total'] += show_stat[show.indexer_id]['ep_total']
-            overall_stats['total_size'] += show_stat[show.indexer_id]['total_size']
+            overall_stats['episodes']['snatched'] += show_stat[show.series_id]['ep_snatched']
+            overall_stats['episodes']['downloaded'] += show_stat[show.series_id]['ep_downloaded']
+            overall_stats['episodes']['total'] += show_stat[show.series_id]['ep_total']
+            overall_stats['total_size'] += show_stat[show.series_id]['total_size']
 
         return show_stat, overall_stats
 
 
 class ShowProgressHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
-        show_id = self.get_argument('show-id')
+        series_id = self.get_argument('show-id')
 
-        show = find_show(int(show_id))
+        show = find_show(int(series_id))
         if not show:
             return
 
@@ -220,7 +219,7 @@ class TestFreeMobileHandler(BaseHandler, ABC):
         freemobile_id = self.get_argument('freemobile_id')
         freemobile_apikey = self.get_argument('freemobile_apikey')
 
-        result, message = sickrage.app.notifier_providers['freemobile'].test_notify(freemobile_id, freemobile_apikey)
+        result, message = sickrage.app.notification_providers['freemobile'].test_notify(freemobile_id, freemobile_apikey)
         if result:
             return self.write(_('SMS sent successfully'))
         return self.write(_('Problem sending SMS: ') + message)
@@ -232,7 +231,7 @@ class TestTelegramHandler(BaseHandler, ABC):
         telegram_id = self.get_argument('telegram_id')
         telegram_apikey = self.get_argument('telegram_apikey')
 
-        result, message = sickrage.app.notifier_providers['telegram'].test_notify(telegram_id, telegram_apikey)
+        result, message = sickrage.app.notification_providers['telegram'].test_notify(telegram_id, telegram_apikey)
         if result:
             return self.write(_('Telegram notification succeeded. Check your Telegram clients to make sure it worked'))
         return self.write(_('Error sending Telegram notification: {message}').format(message=message))
@@ -244,7 +243,7 @@ class TestJoinHandler(BaseHandler, ABC):
         join_id = self.get_argument('join_id')
         join_apikey = self.get_argument('join_apikey')
 
-        result, message = sickrage.app.notifier_providers['join'].test_notify(join_id, join_apikey)
+        result, message = sickrage.app.notification_providers['join'].test_notify(join_id, join_apikey)
         if result:
             return self.write(_('Join notification succeeded. Check your Join clients to make sure it worked'))
         return self.write(_('Error sending Join notification: {message}').format(message=message))
@@ -256,7 +255,7 @@ class TestGrowlHandler(BaseHandler, ABC):
         host = clean_host(self.get_argument('host'), default_port=23053)
         password = self.get_argument('password')
 
-        result = sickrage.app.notifier_providers['growl'].test_notify(host, password)
+        result = sickrage.app.notification_providers['growl'].test_notify(host, password)
         if password is None or password == '':
             pw_append = ''
         else:
@@ -270,10 +269,10 @@ class TestGrowlHandler(BaseHandler, ABC):
 class TestProwlHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        prowl_api = self.get_argument('prowl_api')
+        prowl_apikey = self.get_argument('prowl_apikey')
         prowl_priority = self.get_argument('prowl_priority')
 
-        result = sickrage.app.notifier_providers['prowl'].test_notify(prowl_api, prowl_priority)
+        result = sickrage.app.notification_providers['prowl'].test_notify(prowl_apikey, prowl_priority)
         if result:
             return self.write(_('Test prowl notice sent successfully'))
         return self.write(_('Test prowl notice failed'))
@@ -284,7 +283,7 @@ class TestBoxcar2Handler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         accesstoken = self.get_argument('accesstoken')
 
-        result = sickrage.app.notifier_providers['boxcar2'].test_notify(accesstoken)
+        result = sickrage.app.notification_providers['boxcar2'].test_notify(accesstoken)
         if result:
             return self.write(_('Boxcar2 notification succeeded. Check your Boxcar2 clients to make sure it worked'))
         return self.write(_('Error sending Boxcar2 notification'))
@@ -296,7 +295,7 @@ class TestPushoverHandler(BaseHandler, ABC):
         user_key = self.get_argument('userKey')
         api_key = self.get_argument('apiKey')
 
-        result = sickrage.app.notifier_providers['pushover'].test_notify(user_key, api_key)
+        result = sickrage.app.notification_providers['pushover'].test_notify(user_key, api_key)
         if result:
             return self.write(_('Pushover notification succeeded. Check your Pushover clients to make sure it worked'))
         return self.write(_('Error sending Pushover notification'))
@@ -305,7 +304,7 @@ class TestPushoverHandler(BaseHandler, ABC):
 class TwitterStep1Handler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        return self.write(sickrage.app.notifier_providers['twitter']._get_authorization())
+        return self.write(sickrage.app.notification_providers['twitter']._get_authorization())
 
 
 class TwitterStep2Handler(BaseHandler, ABC):
@@ -313,7 +312,7 @@ class TwitterStep2Handler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         key = self.get_argument('key')
 
-        result = sickrage.app.notifier_providers['twitter']._get_credentials(key)
+        result = sickrage.app.notification_providers['twitter']._get_credentials(key)
         sickrage.app.log.info("result: " + str(result))
         if result:
             return self.write(_('Key verification successful'))
@@ -323,7 +322,7 @@ class TwitterStep2Handler(BaseHandler, ABC):
 class TestTwitterHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        result = sickrage.app.notifier_providers['twitter'].test_notify()
+        result = sickrage.app.notification_providers['twitter'].test_notify()
         if result:
             return self.write(_('Tweet successful, check your twitter to make sure it worked'))
         return self.write(_('Error sending tweet'))
@@ -337,19 +336,19 @@ class TestTwilioHandler(BaseHandler, ABC):
         phone_sid = self.get_argument('phone_sid')
         to_number = self.get_argument('to_number')
 
-        if not sickrage.app.notifier_providers['twilio'].account_regex.match(account_sid):
+        if not sickrage.app.notification_providers['twilio'].account_regex.match(account_sid):
             return self.write(_('Please enter a valid account sid'))
 
-        if not sickrage.app.notifier_providers['twilio'].auth_regex.match(auth_token):
+        if not sickrage.app.notification_providers['twilio'].auth_regex.match(auth_token):
             return self.write(_('Please enter a valid auth token'))
 
-        if not sickrage.app.notifier_providers['twilio'].phone_regex.match(phone_sid):
+        if not sickrage.app.notification_providers['twilio'].phone_regex.match(phone_sid):
             return self.write(_('Please enter a valid phone sid'))
 
-        if not sickrage.app.notifier_providers['twilio'].number_regex.match(to_number):
+        if not sickrage.app.notification_providers['twilio'].number_regex.match(to_number):
             return self.write(_('Please format the phone number as "+1-###-###-####"'))
 
-        result = sickrage.app.notifier_providers['twilio'].test_notify()
+        result = sickrage.app.notification_providers['twilio'].test_notify()
         if result:
             return self.write(_('Authorization successful and number ownership verified'))
         return self.write(_('Error sending sms'))
@@ -358,7 +357,7 @@ class TestTwilioHandler(BaseHandler, ABC):
 class TestAlexaHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        result = sickrage.app.notifier_providers['alexa'].test_notify()
+        result = sickrage.app.notification_providers['alexa'].test_notify()
         if result:
             return self.write(_('Alexa notification successful'))
         return self.write(_('Alexa notification failed'))
@@ -367,7 +366,7 @@ class TestAlexaHandler(BaseHandler, ABC):
 class TestSlackHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        result = sickrage.app.notifier_providers['slack'].test_notify()
+        result = sickrage.app.notification_providers['slack'].test_notify()
         if result:
             return self.write(_('Slack message successful'))
         return self.write(_('Slack message failed'))
@@ -376,7 +375,7 @@ class TestSlackHandler(BaseHandler, ABC):
 class TestDiscordHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        result = sickrage.app.notifier_providers['discord'].test_notify()
+        result = sickrage.app.notification_providers['discord'].test_notify()
         if result:
             return self.write(_('Discord message successful'))
         return self.write(_('Discord message failed'))
@@ -391,7 +390,7 @@ class TestKODIHandler(BaseHandler, ABC):
 
         final_result = ''
         for curHost in [x.strip() for x in host.split(",")]:
-            cur_result = sickrage.app.notifier_providers['kodi'].test_notify(unquote_plus(curHost), username, password)
+            cur_result = sickrage.app.notification_providers['kodi'].test_notify(unquote_plus(curHost), username, password)
             if len(cur_result.split(":")) > 2 and 'OK' in cur_result.split(":")[2]:
                 final_result += _('Test KODI notice sent successfully to ') + unquote_plus(curHost)
             else:
@@ -409,12 +408,12 @@ class TestPMCHandler(BaseHandler, ABC):
         password = self.get_argument('password', None)
 
         if password and set('*') == set(password):
-            password = sickrage.app.config.plex_client_password
+            password = sickrage.app.config.plex.client_password
 
         final_result = ''
         for curHost in [x.strip() for x in host.split(',')]:
-            cur_result = sickrage.app.notifier_providers['plex'].test_notify_pmc(unquote_plus(curHost), username,
-                                                                                 password)
+            cur_result = sickrage.app.notification_providers['plex'].test_notify_pmc(unquote_plus(curHost), username,
+                                                                                     password)
             if len(cur_result.split(':')) > 2 and 'OK' in cur_result.split(':')[2]:
                 final_result += _('Successful test notice sent to Plex client ... ') + unquote_plus(curHost)
             else:
@@ -436,12 +435,12 @@ class TestPMSHandler(BaseHandler, ABC):
         plex_server_token = self.get_argument('plex_server_token')
 
         if password and set('*') == set(password):
-            password = sickrage.app.config.plex_password
+            password = sickrage.app.config.plex.password
 
         final_result = ''
 
-        cur_result = sickrage.app.notifier_providers['plex'].test_notify_pms(unquote_plus(host), username, password,
-                                                                             plex_server_token)
+        cur_result = sickrage.app.notification_providers['plex'].test_notify_pms(unquote_plus(host), username, password,
+                                                                                 plex_server_token)
         if cur_result is None:
             final_result += _('Successful test of Plex server(s) ... ') + \
                             unquote_plus(host.replace(',', ', '))
@@ -461,9 +460,9 @@ class TestPMSHandler(BaseHandler, ABC):
 class TestLibnotifyHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        if sickrage.app.notifier_providers['libnotify'].notifier.test_notify():
+        if sickrage.app.notification_providers['libnotify'].test_notify():
             return self.write(_('Tried sending desktop notification via libnotify'))
-        return self.write(sickrage.app.notifier_providers['libnotify'].diagnose())
+        return self.write(sickrage.app.notification_providers['libnotify'].diagnose())
 
 
 class TestEMBYHandler(BaseHandler, ABC):
@@ -472,7 +471,7 @@ class TestEMBYHandler(BaseHandler, ABC):
         host = clean_host(self.get_argument('host'))
         emby_apikey = self.get_argument('emby_apikey')
 
-        result = sickrage.app.notifier_providers['emby'].test_notify(unquote_plus(host), emby_apikey)
+        result = sickrage.app.notification_providers['emby'].test_notify(unquote_plus(host), emby_apikey)
         if result:
             return self.write(_('Test notice sent successfully to ') + unquote_plus(host))
         return self.write(_('Test notice failed to ') + unquote_plus(host))
@@ -485,7 +484,7 @@ class TestNMJHandler(BaseHandler, ABC):
         database = self.get_argument('database')
         mount = self.get_argument('mount')
 
-        result = sickrage.app.notifier_providers['nmj'].test_notify(unquote_plus(host), database, mount)
+        result = sickrage.app.notification_providers['nmj'].test_notify(unquote_plus(host), database, mount)
         if result:
             return self.write(_('Successfully started the scan update'))
         return self.write(_('Test failed to start the scan update'))
@@ -496,13 +495,13 @@ class SettingsNMJHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         host = clean_host(self.get_argument('host'))
 
-        result = sickrage.app.notifier_providers['nmj'].notify_settings(unquote_plus(host))
+        result = sickrage.app.notification_providers['nmj'].notify_settings(unquote_plus(host))
         if result:
             return self.write(
                 '{"message": "%(message)s %(host)s", "database": "%(database)s", "mount": "%(mount)s"}' % {
                     "message": _('Got settings from'),
-                    "host": host, "database": sickrage.app.config.nmj_database,
-                    "mount": sickrage.app.config.nmj_mount
+                    "host": host, "database": sickrage.app.config.nmj.database,
+                    "mount": sickrage.app.config.nmj.mount
                 })
 
         message = _('Failed! Make sure your Popcorn is on and NMJ is running. (see Log & Errors -> Debug for '
@@ -516,7 +515,7 @@ class TestNMJv2Handler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         host = clean_host(self.get_argument('host'))
 
-        result = sickrage.app.notifier_providers['nmjv2'].test_notify(unquote_plus(host))
+        result = sickrage.app.notification_providers['nmjv2'].test_notify(unquote_plus(host))
         if result:
             return self.write(_('Test notice sent successfully to ') + unquote_plus(host))
         return self.write(_('Test notice failed to ') + unquote_plus(host))
@@ -529,11 +528,11 @@ class SettingsNMJv2Handler(BaseHandler, ABC):
         dbloc = self.get_argument('dbloc')
         instance = self.get_argument('instance')
 
-        result = sickrage.app.notifier_providers['nmjv2'].notify_settings(unquote_plus(host), dbloc, instance)
+        result = sickrage.app.notification_providers['nmjv2'].notify_settings(unquote_plus(host), dbloc, instance)
         if result:
             return self.write(
                 '{"message": "NMJ Database found at: %(host)s", "database": "%(database)s"}' % {"host": host,
-                                                                                                "database": sickrage.app.config.nmjv2_database}
+                                                                                                "database": sickrage.app.config.nmjv2.database}
             )
         return self.write(
             '{"message": "Unable to find NMJ Database at location: %(dbloc)s. Is the right location selected and PCH '
@@ -557,7 +556,7 @@ class TestTraktHandler(BaseHandler, ABC):
         username = self.get_argument('username')
         blacklist_name = self.get_argument('blacklist_name')
 
-        return self.write(sickrage.app.notifier_providers['trakt'].test_notify(username, blacklist_name))
+        return self.write(sickrage.app.notification_providers['trakt'].test_notify(username, blacklist_name))
 
 
 class LoadShowNotifyListsHandler(BaseHandler, ABC):
@@ -565,7 +564,7 @@ class LoadShowNotifyListsHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         data = {'_size': 0}
         for s in sorted(get_show_list(), key=lambda k: k.name):
-            data[s.indexer_id] = {'id': s.indexer_id, 'name': s.name, 'list': s.notify_list}
+            data[s.series_id] = {'id': s.series_id, 'name': s.name, 'list': s.notify_list}
             data['_size'] += 1
         return self.write(json_encode(data))
 
@@ -594,9 +593,9 @@ class TestEmailHandler(BaseHandler, ABC):
         pwd = self.get_argument('pwd')
         to = self.get_argument('to')
 
-        if sickrage.app.notifier_providers['email'].test_notify(host, port, smtp_from, use_tls, user, pwd, to):
+        if sickrage.app.notification_providers['email'].test_notify(host, port, smtp_from, use_tls, user, pwd, to):
             return self.write(_('Test email sent successfully! Check inbox.'))
-        return self.write(_('ERROR: %s') % sickrage.app.notifier_providers['email'].last_err)
+        return self.write(_('ERROR: %s') % sickrage.app.notification_providers['email'].last_err)
 
 
 class TestNMAHandler(BaseHandler, ABC):
@@ -605,7 +604,7 @@ class TestNMAHandler(BaseHandler, ABC):
         nma_api = self.get_argument('nma_api')
         nma_priority = self.get_argument('nma_priority')
 
-        result = sickrage.app.notifier_providers['nma'].test_notify(nma_api, nma_priority)
+        result = sickrage.app.notification_providers['nma'].test_notify(nma_api, nma_priority)
         if result:
             return self.write(_('Test NMA notice sent successfully'))
         return self.write(_('Test NMA notice failed'))
@@ -616,7 +615,7 @@ class TestPushalotHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         authorization_token = self.get_argument('authorizationToken')
 
-        result = sickrage.app.notifier_providers['pushalot'].test_notify(authorization_token)
+        result = sickrage.app.notification_providers['pushalot'].test_notify(authorization_token)
         if result:
             return self.write(_('Pushalot notification succeeded. Check your Pushalot clients to make sure it worked'))
         return self.write(_('Error sending Pushalot notification'))
@@ -627,7 +626,7 @@ class TestPushbulletHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         api = self.get_argument('api')
 
-        result = sickrage.app.notifier_providers['pushbullet'].test_notify(api)
+        result = sickrage.app.notification_providers['pushbullet'].test_notify(api)
         if result:
             return self.write(_('Pushbullet notification succeeded. Check your device to make sure it worked'))
         return self.write(_('Error sending Pushbullet notification'))
@@ -638,7 +637,7 @@ class GetPushbulletDevicesHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         api = self.get_argument('api')
 
-        result = sickrage.app.notifier_providers['pushbullet'].get_devices(api)
+        result = sickrage.app.notification_providers['pushbullet'].get_devices(api)
         if result:
             return self.write(result)
         return self.write(_('Error getting Pushbullet devices'))
@@ -647,10 +646,10 @@ class GetPushbulletDevicesHandler(BaseHandler, ABC):
 class ServerStatusHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        tvdir_free = get_disk_space_usage(sickrage.app.config.tv_download_dir)
+        tvdir_free = get_disk_space_usage(sickrage.app.config.general.tv_download_dir)
         root_dir = {}
-        if sickrage.app.config.root_dirs:
-            backend_pieces = sickrage.app.config.root_dirs.split('|')
+        if sickrage.app.config.general.root_dirs:
+            backend_pieces = sickrage.app.config.general.root_dirs.split('|')
             backend_dirs = backend_pieces[1:]
         else:
             backend_dirs = []
@@ -686,7 +685,7 @@ class ShutdownHandler(BaseHandler, ABC):
         pid = self.get_argument('pid')
 
         if str(pid) != str(sickrage.app.pid):
-            return self.redirect("/{}/".format(sickrage.app.config.default_page))
+            return self.redirect("/{}/".format(sickrage.app.config.general.default_page.value))
 
         self._genericMessage(_("Shutting down"), _("SiCKRAGE is shutting down"))
         sickrage.app.shutdown()
@@ -699,7 +698,7 @@ class RestartHandler(BaseHandler, ABC):
         force = self.get_argument('force', None)
 
         if str(pid) != str(sickrage.app.pid) and not force:
-            return self.redirect("/{}/".format(sickrage.app.config.default_page))
+            return self.redirect("/{}/".format(sickrage.app.config.general.default_page.value))
 
         # clear current user to disable header and footer
         self.current_user = None
@@ -729,7 +728,7 @@ class UpdateCheckHandler(BaseHandler, ABC):
         pid = self.get_argument('pid')
 
         if str(pid) != str(sickrage.app.pid) or sickrage.app.disable_updates:
-            return self.redirect("/{}/".format(sickrage.app.config.default_page))
+            return self.redirect("/{}/".format(sickrage.app.config.general.default_page.value))
 
         sickrage.app.alerts.message(_("Updater"), _('Checking for updates'))
 
@@ -746,7 +745,7 @@ class UpdateHandler(BaseHandler, ABC):
         pid = self.get_argument('pid')
 
         if str(pid) != str(sickrage.app.pid):
-            return self.redirect("/{}/".format(sickrage.app.config.default_page))
+            return self.redirect("/{}/".format(sickrage.app.config.general.default_page.value))
 
         sickrage.app.alerts.message(_("Updater"), _('Updating SiCKRAGE'))
 
@@ -815,7 +814,7 @@ class DisplayShowHandler(BaseHandler, ABC):
 
         submenu.append({
             'title': _('Edit'),
-            'path': '/manage/editShow?show=%d' % show_obj.indexer_id,
+            'path': '/manage/editShow?show=%d' % show_obj.series_id,
             'icon': 'fas fa-edit'
         })
 
@@ -823,45 +822,45 @@ class DisplayShowHandler(BaseHandler, ABC):
 
         show_message = ''
 
-        if sickrage.app.show_queue.is_being_added(show_obj.indexer_id):
+        if sickrage.app.show_queue.is_being_added(show_obj.series_id):
             show_message = _('This show is in the process of being downloaded - the info below is incomplete.')
 
-        elif sickrage.app.show_queue.is_being_updated(show_obj.indexer_id):
+        elif sickrage.app.show_queue.is_being_updated(show_obj.series_id):
             show_message = _('The information on this page is in the process of being updated.')
 
-        elif sickrage.app.show_queue.is_being_refreshed(show_obj.indexer_id):
+        elif sickrage.app.show_queue.is_being_refreshed(show_obj.series_id):
             show_message = _('The episodes below are currently being refreshed from disk')
 
-        elif sickrage.app.show_queue.is_being_subtitled(show_obj.indexer_id):
+        elif sickrage.app.show_queue.is_being_subtitled(show_obj.series_id):
             show_message = _('Currently downloading subtitles for this show')
 
-        elif sickrage.app.show_queue.is_queued_to_refresh(show_obj.indexer_id):
+        elif sickrage.app.show_queue.is_queued_to_refresh(show_obj.series_id):
             show_message = _('This show is queued to be refreshed.')
 
-        elif sickrage.app.show_queue.is_queued_to_update(show_obj.indexer_id):
+        elif sickrage.app.show_queue.is_queued_to_update(show_obj.series_id):
             show_message = _('This show is queued and awaiting an update.')
 
-        elif sickrage.app.show_queue.is_queued_to_subtitle(show_obj.indexer_id):
+        elif sickrage.app.show_queue.is_queued_to_subtitle(show_obj.series_id):
             show_message = _('This show is queued and awaiting subtitles download.')
 
-        if not sickrage.app.show_queue.is_being_added(show_obj.indexer_id):
-            if not sickrage.app.show_queue.is_being_updated(show_obj.indexer_id):
+        if not sickrage.app.show_queue.is_being_added(show_obj.series_id):
+            if not sickrage.app.show_queue.is_being_updated(show_obj.series_id):
                 if show_obj.paused:
                     submenu.append({
                         'title': _('Resume'),
-                        'path': '/home/togglePause?show=%d' % show_obj.indexer_id,
+                        'path': '/home/togglePause?show=%d' % show_obj.series_id,
                         'icon': 'fas fa-play'
                     })
                 else:
                     submenu.append({
                         'title': _('Pause'),
-                        'path': '/home/togglePause?show=%d' % show_obj.indexer_id,
+                        'path': '/home/togglePause?show=%d' % show_obj.series_id,
                         'icon': 'fas fa-pause'
                     })
 
                 submenu.append({
                     'title': _('Remove'),
-                    'path': '/home/deleteShow?show=%d' % show_obj.indexer_id,
+                    'path': '/home/deleteShow?show=%d' % show_obj.series_id,
                     'class': 'removeshow',
                     'confirm': True,
                     'icon': 'fas fa-trash'
@@ -869,41 +868,41 @@ class DisplayShowHandler(BaseHandler, ABC):
 
                 submenu.append({
                     'title': _('Re-scan files'),
-                    'path': '/home/refreshShow?show=%d' % show_obj.indexer_id,
+                    'path': '/home/refreshShow?show=%d' % show_obj.series_id,
                     'icon': 'fas fa-compass'
                 })
 
                 submenu.append({
                     'title': _('Full Update'),
-                    'path': '/home/updateShow?show=%d&amp;force=1' % show_obj.indexer_id,
+                    'path': '/home/updateShow?show=%d&amp;force=1' % show_obj.series_id,
                     'icon': 'fas fa-sync'
                 })
 
                 submenu.append({
                     'title': _('Update show in KODI'),
-                    'path': '/home/updateKODI?show=%d' % show_obj.indexer_id,
+                    'path': '/home/updateKODI?show=%d' % show_obj.series_id,
                     'requires': self.have_kodi(),
                     'icon': 'fas fa-tv'
                 })
 
                 submenu.append({
                     'title': _('Update show in Emby'),
-                    'path': '/home/updateEMBY?show=%d' % show_obj.indexer_id,
+                    'path': '/home/updateEMBY?show=%d' % show_obj.series_id,
                     'requires': self.have_emby(),
                     'icon': 'fas fa-tv'
                 })
 
                 submenu.append({
                     'title': _('Preview Rename'),
-                    'path': '/home/testRename?show=%d' % show_obj.indexer_id,
+                    'path': '/home/testRename?show=%d' % show_obj.series_id,
                     'icon': 'fas fa-tag'
                 })
 
-                if sickrage.app.config.use_subtitles and show_obj.subtitles:
-                    if not sickrage.app.show_queue.is_being_subtitled(show_obj.indexer_id):
+                if sickrage.app.config.subtitles.enable and show_obj.subtitles:
+                    if not sickrage.app.show_queue.is_being_subtitled(show_obj.series_id):
                         submenu.append({
                             'title': _('Download Subtitles'),
-                            'path': '/home/subtitleShow?show=%d' % show_obj.indexer_id,
+                            'path': '/home/subtitleShow?show=%d' % show_obj.series_id,
                             'icon': 'fas fa-comment'
                         })
 
@@ -911,7 +910,7 @@ class DisplayShowHandler(BaseHandler, ABC):
         ep_counts = {
             Overview.SKIPPED: 0,
             Overview.WANTED: 0,
-            Overview.QUAL: 0,
+            Overview.LOW_QUALITY: 0,
             Overview.GOOD: 0,
             Overview.UNAIRED: 0,
             Overview.SNATCHED: 0,
@@ -939,7 +938,7 @@ class DisplayShowHandler(BaseHandler, ABC):
                 ep_cats[str(episode_object.season) + "x" + str(episode_object.episode)] = cur_ep_cat
                 ep_counts[cur_ep_cat] += 1
 
-        if sickrage.app.config.anime_split_home:
+        if sickrage.app.config.anidb.split_home:
             shows, anime = [], []
             for show in get_show_list():
                 if show.is_anime:
@@ -962,11 +961,11 @@ class DisplayShowHandler(BaseHandler, ABC):
 
         # Insert most recent show
         for index, recentShow in enumerate(sickrage.app.shows_recent):
-            if recentShow['indexer_id'] == show_obj.indexer_id:
+            if recentShow['series_id'] == show_obj.series_id:
                 break
         else:
             sickrage.app.shows_recent.append({
-                'indexer_id': show_obj.indexer_id,
+                'series_id': show_obj.series_id,
                 'name': show_obj.name,
             })
 
@@ -981,22 +980,22 @@ class DisplayShowHandler(BaseHandler, ABC):
                            bwl=bwl,
                            epCounts=ep_counts,
                            epCats=ep_cats,
-                           scene_numbering=get_scene_numbering_for_show(show_obj.indexer_id, show_obj.indexer),
-                           xem_numbering=get_xem_numbering_for_show(show_obj.indexer_id, show_obj.indexer),
-                           scene_absolute_numbering=get_scene_absolute_numbering_for_show(show_obj.indexer_id, show_obj.indexer),
-                           xem_absolute_numbering=get_xem_absolute_numbering_for_show(show_obj.indexer_id, show_obj.indexer),
+                           scene_numbering=get_scene_numbering_for_show(show_obj.series_id, show_obj.series_provider_id),
+                           xem_numbering=get_xem_numbering_for_show(show_obj.series_id, show_obj.series_provider_id),
+                           scene_absolute_numbering=get_scene_absolute_numbering_for_show(show_obj.series_id, show_obj.series_provider_id),
+                           xem_absolute_numbering=get_xem_absolute_numbering_for_show(show_obj.series_id, show_obj.series_provider_id),
                            title=show_obj.name,
                            controller='home',
                            action="display_show")
 
     def have_kodi(self):
-        return sickrage.app.config.use_kodi and sickrage.app.config.kodi_update_library
+        return sickrage.app.config.kodi.enable and sickrage.app.config.kodi.update_library
 
     def have_plex(self):
-        return sickrage.app.config.use_plex and sickrage.app.config.plex_update_library
+        return sickrage.app.config.plex.enable and sickrage.app.config.plex.update_library
 
     def have_emby(self):
-        return sickrage.app.config.use_emby
+        return sickrage.app.config.emby.enable
 
 
 class TogglePauseHandler(BaseHandler, ABC):
@@ -1016,7 +1015,7 @@ class TogglePauseHandler(BaseHandler, ABC):
         sickrage.app.alerts.message(
             _('%s has been %s') % (show_obj.name, (_('resumed'), _('paused'))[show_obj.paused]))
 
-        return self.redirect("/home/displayShow?show=%i" % show_obj.indexer_id)
+        return self.redirect("/home/displayShow?show=%i" % show_obj.series_id)
 
 
 class DeleteShowHandler(BaseHandler, ABC):
@@ -1031,19 +1030,19 @@ class DeleteShowHandler(BaseHandler, ABC):
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         try:
-            sickrage.app.show_queue.remove_show(show_obj.indexer_id, bool(full))
+            sickrage.app.show_queue.remove_show(show_obj.series_id, show_obj.series_provider_id, bool(full))
             sickrage.app.alerts.message(
                 _('%s has been %s %s') %
                 (
                     show_obj.name,
-                    (_('deleted'), _('trashed'))[bool(sickrage.app.config.trash_remove_show)],
+                    (_('deleted'), _('trashed'))[bool(sickrage.app.config.general.trash_remove_show)],
                     (_('(media untouched)'), _('(with all related media)'))[bool(full)]
                 )
             )
         except CantRemoveShowException as e:
             sickrage.app.alerts.error(_('Unable to delete this show.'), str(e))
 
-        sleep(cpu_presets[sickrage.app.config.cpu_preset])
+        sleep(sickrage.app.config.general.cpu_preset.value)
 
         # Don't redirect to the default page, so the user can confirm that the show was deleted
         return self.redirect('/home/')
@@ -1060,13 +1059,13 @@ class RefreshShowHandler(BaseHandler, ABC):
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         try:
-            sickrage.app.show_queue.refresh_show(show_obj.indexer_id, True)
+            sickrage.app.show_queue.refresh_show(show_obj.series_id, show_obj.series_provider_id, True)
         except CantRefreshShowException as e:
             sickrage.app.alerts.error(_('Unable to refresh this show.'), str(e))
 
-        sleep(cpu_presets[sickrage.app.config.cpu_preset])
+        sleep(sickrage.app.config.general.cpu_preset.value)
 
-        return self.redirect("/home/displayShow?show=" + str(show_obj.indexer_id))
+        return self.redirect("/home/displayShow?show=" + str(show_obj.series_id))
 
 
 class UpdateShowHandler(BaseHandler, ABC):
@@ -1082,14 +1081,14 @@ class UpdateShowHandler(BaseHandler, ABC):
 
         # force the update
         try:
-            sickrage.app.show_queue.update_show(show_obj.indexer_id, force=bool(force))
+            sickrage.app.show_queue.update_show(show_obj.series_id, show_obj.series_provider_id, force=bool(force))
         except CantUpdateShowException as e:
             sickrage.app.alerts.error(_("Unable to update this show."), str(e))
 
         # just give it some time
-        sleep(cpu_presets[sickrage.app.config.cpu_preset])
+        sleep(sickrage.app.config.general.cpu_preset.value)
 
-        return self.redirect("/home/displayShow?show=" + str(show_obj.indexer_id))
+        return self.redirect("/home/displayShow?show=" + str(show_obj.series_id))
 
 
 class SubtitleShowHandler(BaseHandler, ABC):
@@ -1103,11 +1102,11 @@ class SubtitleShowHandler(BaseHandler, ABC):
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         # search and download subtitles
-        sickrage.app.show_queue.download_subtitles(show_obj.indexer_id)
+        sickrage.app.show_queue.download_subtitles(show_obj.series_id, show_obj.series_provider_id)
 
-        sleep(cpu_presets[sickrage.app.config.cpu_preset])
+        sleep(sickrage.app.config.general.cpu_preset.value)
 
-        return self.redirect("/home/displayShow?show=" + str(show_obj.indexer_id))
+        return self.redirect("/home/displayShow?show=" + str(show_obj.series_id))
 
 
 class UpdateKODIHandler(BaseHandler, ABC):
@@ -1122,18 +1121,18 @@ class UpdateKODIHandler(BaseHandler, ABC):
             show_name = quote_plus(show_obj.name.encode())
 
         if show_name:
-            if sickrage.app.config.kodi_update_onlyfirst:
-                host = sickrage.app.config.kodi_host.split(",")[0].strip()
+            if sickrage.app.config.kodi.update_only_first:
+                host = sickrage.app.config.kodi.host.split(",")[0].strip()
             else:
-                host = sickrage.app.config.kodi_host
+                host = sickrage.app.config.kodi.host
 
-            if sickrage.app.notifier_providers['kodi'].update_library(showName=show_name):
+            if sickrage.app.notification_providers['kodi'].update_library(showName=show_name):
                 sickrage.app.alerts.message(_("Library update command sent to KODI host(s): ") + host)
             else:
                 sickrage.app.alerts.error(_("Unable to contact one or more KODI host(s): ") + host)
 
         if show_obj:
-            return self.redirect('/home/displayShow?show=' + str(show_obj.indexer_id))
+            return self.redirect('/home/displayShow?show=' + str(show_obj.series_id))
         else:
             return self.redirect('/home/')
 
@@ -1141,14 +1140,14 @@ class UpdateKODIHandler(BaseHandler, ABC):
 class UpdatePLEXHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        if not sickrage.app.notifier_providers['plex'].update_library():
+        if not sickrage.app.notification_providers['plex'].update_library():
             sickrage.app.alerts.message(
                 _("Library update command sent to Plex Media Server host: ") +
-                sickrage.app.config.plex_server_host)
+                sickrage.app.config.plex.server_host)
         else:
             sickrage.app.alerts.error(
                 _("Unable to contact Plex Media Server host: ") +
-                sickrage.app.config.plex_server_host)
+                sickrage.app.config.plex.server_host)
         return self.redirect('/home/')
 
 
@@ -1160,14 +1159,14 @@ class UpdateEMBYHandler(BaseHandler, ABC):
         show_obj = find_show(int(show))
 
         if show_obj:
-            if sickrage.app.notifier_providers['emby'].update_library(show_obj):
+            if sickrage.app.notification_providers['emby'].update_library(show_obj):
                 sickrage.app.alerts.message(
-                    _("Library update command sent to Emby host: ") + sickrage.app.config.emby_host)
+                    _("Library update command sent to Emby host: ") + sickrage.app.config.emby.host)
             else:
                 sickrage.app.alerts.error(
-                    _("Unable to contact Emby host: ") + sickrage.app.config.emby_host)
+                    _("Unable to contact Emby host: ") + sickrage.app.config.emby.host)
 
-            return self.redirect('/home/displayShow?show=' + str(show_obj.indexer_id))
+            return self.redirect('/home/displayShow?show=' + str(show_obj.series_id))
         else:
             return self.redirect('/home/')
 
@@ -1258,7 +1257,7 @@ class TestRenameHandler(BaseHandler, ABC):
             episode_objects.reverse()
 
         submenu = [
-            {'title': _('Edit'), 'path': '/manage/editShow?show=%d' % show_object.indexer_id,
+            {'title': _('Edit'), 'path': '/manage/editShow?show=%d' % show_object.series_id,
              'icon': 'fas fa-edit'}]
 
         return self.render('home/test_renaming.mako',
@@ -1308,12 +1307,13 @@ class SearchEpisodeHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
+        series_provider_id = self.get_argument('seriesProviderID')
         season = self.get_argument('season')
         episode = self.get_argument('episode')
         down_cur_quality = self.get_argument('downCurQuality')
 
         # make a queue item for it and put it on the queue
-        ep_queue_item = ManualSearchTask(int(show), int(season), int(episode), bool(int(down_cur_quality)))
+        ep_queue_item = ManualSearchTask(int(show), SeriesProviderID[series_provider_id], int(season), int(episode), bool(int(down_cur_quality)))
 
         sickrage.app.search_queue.put(ep_queue_item)
         if not all([ep_queue_item.started, ep_queue_item.success]):
@@ -1329,53 +1329,54 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
 
         episodes = []
 
-        for search_task in sickrage.app.search_queue.get_all_tasks_from_queue_by_show(int(show)):
+        for task_id, task_items in sickrage.app.search_queue.TASK_HISTORY.copy().items():
+            search_task = sickrage.app.search_queue.fetch_task(task_id)
+            if not search_task:
+                # Finished Manual Searches
+                episodes += self.get_episodes(int(show), task_items['season'], task_items['episode'], 'Finished')
+                del sickrage.app.search_queue.TASK_HISTORY[task_id]
+
             if isinstance(search_task, (ManualSearchTask, FailedSearchTask)):
                 if search_task.status == TaskStatus.QUEUED:
                     # Queued Manual Searches
-                    episodes += self.get_episodes(int(show), [search_task], 'Queued')
+                    episodes += self.get_episodes(int(show), task_items['season'], task_items['episode'], 'Queued')
                 elif search_task.status == TaskStatus.STARTED:
                     # Running Manual Searches
-                    episodes += self.get_episodes(int(show), [search_task], 'Searching')
-                elif search_task.status == TaskStatus.FINISHED:
-                    # Finished Manual Searches
-                    episodes += self.get_episodes(int(show), [search_task], 'Finished')
-                    sickrage.app.search_queue.remove_task(search_task.id)
+                    episodes += self.get_episodes(int(show), task_items['season'], task_items['episode'], 'Searching')
 
         return self.write(json_encode({'episodes': episodes}))
 
-    def get_episodes(self, show_id, items, search_status):
+    def get_episodes(self, series_id, season, episode, search_status):
         results = []
 
-        if not show_id:
+        if not series_id:
             return results
 
-        show_object = find_show(show_id)
+        show_object = find_show(series_id)
         if not show_object:
             return results
 
-        for item in items:
-            try:
-                episode_object = show_object.get_episode(item.season, item.episode)
-            except EpisodeNotFoundException:
-                continue
+        try:
+            episode_object = show_object.get_episode(season, episode)
+        except EpisodeNotFoundException:
+            return results
 
-            results.append({'show': show_id,
-                            'season': episode_object.season,
-                            'episode': episode_object.episode,
-                            'searchstatus': search_status,
-                            'status': statusStrings[episode_object.status],
-                            'quality': self.get_quality_class(episode_object.status),
-                            'overview': Overview.overviewStrings[episode_object.overview or -1]})
+        results.append({'show': series_id,
+                        'season': episode_object.season,
+                        'episode': episode_object.episode,
+                        'searchstatus': search_status,
+                        'status': episode_object.status.display_name,
+                        'quality': self.get_quality_class(episode_object.status),
+                        'overview': episode_object.overview.css_name})
 
         return results
 
     def get_quality_class(self, status):
         __, ep_quality = Quality.split_composite_status(status)
-        if ep_quality in Quality.cssClassStrings:
-            quality_class = Quality.cssClassStrings[ep_quality]
+        if ep_quality in Qualities:
+            quality_class = ep_quality.css_name
         else:
-            quality_class = Quality.cssClassStrings[Quality.UNKNOWN]
+            quality_class = Qualities.UNKNOWN.css_name
 
         return quality_class
 
@@ -1413,7 +1414,7 @@ class SetSceneNumberingHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
-        indexer = self.get_argument('indexer')
+        series_provider_id = self.get_argument('series_provider_id')
         for_season = self.get_argument('forSeason', '')
         for_episode = self.get_argument('forEpisode', '')
         for_absolute = self.get_argument('forAbsolute', '')
@@ -1456,15 +1457,15 @@ class SetSceneNumberingHandler(BaseHandler, ABC):
                 show_obj.get_episode(absolute_number=for_absolute)
 
                 show = int(show)
-                indexer = int(indexer)
+                series_provider_id = SeriesProviderID[series_provider_id]
                 for_absolute = int(for_absolute)
                 if scene_absolute is not None:
                     scene_absolute = int(scene_absolute)
 
-                if set_scene_numbering(show, indexer, absolute_number=for_absolute, scene_absolute=scene_absolute):
+                if set_scene_numbering(show, series_provider_id, absolute_number=for_absolute, scene_absolute=scene_absolute):
                     sickrage.app.log.debug("setAbsoluteSceneNumbering for %s from %s to %s" % (show, for_absolute, scene_absolute))
                     if scene_absolute is not None:
-                        result['sceneAbsolute'] = get_scene_absolute_numbering(show, indexer, for_absolute)
+                        result['sceneAbsolute'] = get_scene_absolute_numbering(show, series_provider_id, for_absolute)
                 else:
                     result['errorMessage'] = _("Another episode already has the same scene absolute numbering")
                     result['success'] = False
@@ -1472,7 +1473,7 @@ class SetSceneNumberingHandler(BaseHandler, ABC):
                 show_obj.get_episode(season=for_season, episode=for_episode)
 
                 show = int(show)
-                indexer = int(indexer)
+                series_provider_id = SeriesProviderID[series_provider_id]
                 for_season = int(for_season)
                 for_episode = int(for_episode)
                 if scene_season is not None:
@@ -1480,11 +1481,12 @@ class SetSceneNumberingHandler(BaseHandler, ABC):
                 if scene_episode is not None:
                     scene_episode = int(scene_episode)
 
-                if set_scene_numbering(show, indexer, season=for_season, episode=for_episode, scene_season=scene_season, scene_episode=scene_episode):
+                if set_scene_numbering(show, series_provider_id, season=for_season, episode=for_episode, scene_season=scene_season,
+                                       scene_episode=scene_episode):
                     sickrage.app.log.debug(
                         "setEpisodeSceneNumbering for %s from %sx%s to %sx%s" % (show, for_season, for_episode, scene_season, scene_episode))
                     if scene_season is not None and scene_episode is not None:
-                        result['sceneSeason'], result['sceneEpisode'] = get_scene_numbering(show, indexer, for_season, for_episode)
+                        result['sceneSeason'], result['sceneEpisode'] = get_scene_numbering(show, series_provider_id, for_season, for_episode)
                 else:
                     result['errorMessage'] = _("Another episode already has the same scene numbering")
                     result['success'] = False
@@ -1499,13 +1501,14 @@ class RetryEpisodeHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
+        series_provider_id = self.get_argument('seriesProviderID')
         season = self.get_argument('season')
         episode = self.get_argument('episode')
         down_cur_quality = self.get_argument('downCurQuality')
 
         # retrieve the episode object and fail if we can't get one
         # make a queue item for it and put it on the queue
-        ep_queue_item = FailedSearchTask(int(show), int(season), int(episode), bool(int(down_cur_quality)))
+        ep_queue_item = FailedSearchTask(int(show), SeriesProviderID[series_provider_id], int(season), int(episode), bool(int(down_cur_quality)))
 
         sickrage.app.search_queue.put(ep_queue_item)
         if not all([ep_queue_item.started, ep_queue_item.success]):

@@ -7,11 +7,10 @@
 
     import sickrage
     from sickrage.subtitles import Subtitles
-    from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, FAILED, DOWNLOADED
-    from sickrage.core.common import Quality, qualityPresets, statusStrings, Overview, SearchFormats
-    from sickrage.core.helpers import anon_url, srdatetime, pretty_file_size, get_size
-    from sickrage.core.media.util import showImage
-    from sickrage.indexers import IndexerApi
+    from sickrage.core.common import Overview, Quality, Qualities, EpisodeStatus
+    from sickrage.core.helpers import anon_url, srdatetime, pretty_file_size, get_size, flatten
+    from sickrage.core.media.util import series_image, SeriesImageType
+    from sickrage.core.enums import SearchFormat
 %>
 
 <%namespace file="../includes/modals.mako" import="displayShowModals"/>
@@ -52,7 +51,7 @@
                                             <optgroup label="${show_list_name}">
                                         % endif
                                         % for cur_show in show_list:
-                                            <option value="${cur_show.indexer_id}" ${('', 'selected')[cur_show.indexer_id == show.indexer_id]}>${cur_show.name}</option>
+                                            <option value="${cur_show.series_id}" ${('', 'selected')[cur_show.series_id == show.series_id]}>${cur_show.name}</option>
                                         % endfor
                                         % if len(sortedShowLists) > 1:
                                             </optgroup>
@@ -72,15 +71,15 @@
                             % else:
                                 <% season_special = 0 %>
                             % endif
-                            % if not sickrage.app.config.display_show_specials and season_special:
+                            % if not sickrage.app.config.gui.display_show_specials and season_special:
                                 <% lastSeason = seasonResults.pop(-1) %>
                             % endif
                                 <div class="float-right text-left">
                                     % if season_special:
                                     ${_('Display Specials:')}
                                         <a class="inner"
-                                           href="${srWebRoot}/toggleDisplayShowSpecials/?show=${show.indexer_id}">
-                                            ${('Show', 'Hide')[bool(sickrage.app.config.display_show_specials)]}
+                                           href="${srWebRoot}/toggleDisplayShowSpecials/?show=${show.series_id}">
+                                            ${('Show', 'Hide')[bool(sickrage.app.config.gui.display_show_specials)]}
                                         </a>
                                     % endif
                                     <br/>
@@ -157,10 +156,10 @@
                                         </a>
                                     % endif
 
-                                    <a href="${anon_url(IndexerApi(show.indexer).config['show_url'], show.indexer_id)}"
+                                    <a href="${anon_url(show.series_provider.show_url, show.series_id)}"
                                        onclick="window.open(this.href, '_blank'); return false;"
-                                       title="<% IndexerApi(show.indexer).config["show_url"] + str(show.indexer_id) %>">
-                                        <i class="sickrage-core sickrage-core-${IndexerApi(show.indexer).name.lower()}"
+                                       title="<% show.series_provider.show_url + str(show.series_id) %>">
+                                        <i class="sickrage-core sickrage-core-${show.series_provider.name.lower()}"
                                            style="margin-top: -1px; vertical-align:middle;"></i>
                                     </a>
                                 </div>
@@ -191,7 +190,7 @@
                         </div>
                         <div class="col-auto my-auto d-lg-none d-xl-flex">
                             <img class="rounded shadow-lg img-banner"
-                                 src="${srWebRoot}${showImage(show.indexer_id, 'banner').url}"/>
+                                 src="${srWebRoot}${series_image(show.series_id, show.series_provider_id, SeriesImageType.BANNER).url}"/>
                         </div>
                     </div>
                 </div>
@@ -202,7 +201,7 @@
                     <div class="row">
                         <div class="col-auto d-none d-lg-block">
                             <img class="shadow-lg rounded img-poster"
-                                 src="${srWebRoot}${showImage(show.indexer_id, 'poster').url}"/>
+                                 src="${srWebRoot}${series_image(show.series_id, show.series_provider_id, SeriesImageType.POSTER).url}"/>
                         </div>
 
                         <div class="col">
@@ -217,7 +216,7 @@
                                     <td class="show-legend">${_('Quality:')}</td>
                                     <td>
                                         <% anyQualities, bestQualities = Quality.split_quality(int(show.quality)) %>
-                                        % if show.quality in qualityPresets:
+                                        % if Qualities(show.quality).is_preset:
                                             ${renderQualityPill(show.quality)}
                                         % else:
                                             % if anyQualities:
@@ -256,7 +255,7 @@
 
                                 <tr>
                                     <td class="show-legend">${_('Default EP Status:')}</td>
-                                    <td>${statusStrings[show.default_ep_status]}</td>
+                                    <td>${show.default_ep_status.display_name}</td>
                                 </tr>
 
                                 <tr>
@@ -285,7 +284,7 @@
 
                                 <tr>
                                     <td class="show-legend">${_('Search Format:')}</td>
-                                    <td>${SearchFormats.search_format_strings[show.search_format]}</td>
+                                    <td>${show.search_format.display_name}</td>
                                 </tr>
 
                                 % if show.rls_require_words:
@@ -326,7 +325,7 @@
                                         <i class="sickrage-flags sickrage-flags-${info_flag}"></i>
                                     </td>
                                 </tr>
-                                % if sickrage.app.config.use_subtitles:
+                                % if sickrage.app.config.subtitles.enable:
                                     <tr>
                                         <td class="show-legend">${_('Subtitles:')}</td>
                                         <td>
@@ -349,7 +348,7 @@
                                 <tr>
                                     <td class="show-legend">${_('Season Folders:')}</td>
                                     <td>
-                                        <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(not show.flatten_folders or sickrage.app.config.naming_force_folders)]}"></i>
+                                        <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(not show.flatten_folders or sickrage.app.naming_force_folders)]}"></i>
                                     </td>
                                 </tr>
                                 <tr>
@@ -367,7 +366,7 @@
                                 <tr>
                                     <td class="show-legend">${_('DVD Order:')}</td>
                                     <td>
-                                        <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(show.dvdorder)]}"></i>
+                                        <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(show.dvd_order)]}"></i>
                                     </td>
                                 </tr>
                                 <tr>
@@ -398,7 +397,7 @@
                                     </span>
                                     <span class="badge qual">
                                         <input type="checkbox" id="qual" checked/>
-                                        ${_('Low Quality:')} <b>${epCounts[Overview.QUAL]}</b>
+                                        ${_('Low Quality:')} <b>${epCounts[Overview.LOW_QUALITY]}</b>
                                     </span>
                                     <span class="badge good">
                                         <input type="checkbox" id="good" checked/>
@@ -435,14 +434,10 @@
                             <div class="input-group input-group-sm">
                                 <select id="statusSelect" title="Change selected episode statuses"
                                         class="form-control">
-                                    % for curStatus in [WANTED, SKIPPED, IGNORED, FAILED] + Quality.DOWNLOADED + Quality.ARCHIVED:
-                                        % if curStatus not in [DOWNLOADED, ARCHIVED]:
-                                            <% split_status, quality = Quality.split_composite_status(curStatus) %>
-                                            <option value="${curStatus}">
-                                                ${statusStrings[split_status]}
-                                                %if quality:
-                                                    (${Quality.qualityStrings[quality]})
-                                                %endif
+                                    % for curStatus in flatten([EpisodeStatus.WANTED, EpisodeStatus.SKIPPED, EpisodeStatus.IGNORED, EpisodeStatus.FAILED, list(EpisodeStatus.composites(EpisodeStatus.DOWNLOADED)), list(EpisodeStatus.composites(EpisodeStatus.ARCHIVED))]):
+                                        % if curStatus not in [EpisodeStatus.DOWNLOADED, EpisodeStatus.ARCHIVED]:
+                                            <option value="${curStatus.name}">
+                                                ${curStatus.display_name}
                                             </option>
                                         % endif
                                     % endfor
@@ -451,8 +446,8 @@
                                     <button id="changeStatus" class="btn fas fa-play"></button>
                                 </div>
                             </div>
-                            <input type="hidden" id="showID" value="${show.indexer_id}"/>
-                            <input type="hidden" id="indexer" value="${show.indexer}"/>
+                            <input type="hidden" id="series_id" value="${show.series_id}"/>
+                            <input type="hidden" id="series_provider_id" value="${show.series_provider_id.name}"/>
                         </div>
                     </div>
                 </div>
@@ -472,15 +467,15 @@
                 if not epStr in epCats:
                     continue
 
-                if not sickrage.app.config.display_show_specials and int(episode_object.season) == 0:
+                if not sickrage.app.config.gui.display_show_specials and int(episode_object.season) == 0:
                     continue
 
                 (dfltSeas, dfltEpis, dfltAbsolute) = (0, 0, 0)
-##                 if (episode_object.season, episode_object.episode) in xem_numbering:
-##                                 (dfltSeas, dfltEpis) = xem_numbering[(episode_object.season, episode_object.episode)]
-##
-##                 if episode_object.absolute_number in xem_absolute_numbering:
-##                                 dfltAbsolute = xem_absolute_numbering[episode_object.absolute_number]
+                ##                 if (episode_object.season, episode_object.episode) in xem_numbering:
+                ##                                 (dfltSeas, dfltEpis) = xem_numbering[(episode_object.season, episode_object.episode)]
+                ##
+                ##                 if episode_object.absolute_number in xem_absolute_numbering:
+                ##                                 dfltAbsolute = xem_absolute_numbering[episode_object.absolute_number]
 
                 if episode_object.absolute_number in scene_absolute_numbering:
                                 scAbsolute = scene_absolute_numbering[episode_object.absolute_number]
@@ -518,7 +513,7 @@
                             <a name="season-${episode_object.season}"></a>
                             ${(_("Specials"), _("Season") + ' ' + str(episode_object.season))[int (episode_object.season) > 0]}
                         </h3>
-                        % if not sickrage.app.config.display_all_seasons:
+                        % if not sickrage.app.config.general.display_all_seasons:
                             % if curSeason == -1:
                                 <button id="showseason-${episode_object.season}" type="button"
                                         class="btn btn-sm text-right"
@@ -557,9 +552,9 @@
                     <th data-sorter="false" class="col-name">${_('Name')}</th>
                     <th data-sorter="false" class="col-ep columnSelector-false size">${_('Size')}</th>
                     <th data-sorter="false" class="col-airdate">${_('Airdate')}</th>
-                    <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(sickrage.app.config.download_url)]}>${_('Download')}</th>
-                    % if sickrage.app.config.use_subtitles:
-                        <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(sickrage.app.config.use_subtitles)]}>${_('Subtitles')}</th>
+                    <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(sickrage.app.config.general.download_url)]}>${_('Download')}</th>
+                    % if sickrage.app.config.subtitles.enable:
+                        <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(sickrage.app.config.subtitles.enable)]}>${_('Subtitles')}</th>
                     % endif
                     <th data-sorter="false" class="col-status">${_('Status')}</th>
                     % if len(sickrage.app.search_providers.enabled()):
@@ -569,17 +564,17 @@
                 </thead>
 
             <tbody
-                % if sickrage.app.config.display_all_seasons == False:
+                % if sickrage.app.config.general.display_all_seasons == False:
                     class="collapse${("", " in")[curSeason == -1]}"
                     id="collapseSeason-${episode_object.season}"
                 % endif
             >
             % endif
-            <tr class="${Overview.overviewStrings[epCats[epStr]]} season-${curSeason} seasonstyle font-weight-bold text-dark"
+            <tr class="${epCats[epStr].css_name} season-${curSeason} seasonstyle font-weight-bold text-dark"
                 id="S${str(episode_object.season)}E${str(episode_object.episode)}">
 
                 <td class="table-fit col-checkbox">
-                    % if int(episode_object.status) != UNAIRED:
+                    % if int(episode_object.status) != EpisodeStatus.UNAIRED:
                         <input type="checkbox" class="epCheck"
                                id="${str(episode_object.season)}x${str(episode_object.episode)}"
                                name="${str(episode_object.season)}x${str(episode_object.episode)}" title=""/>
@@ -611,8 +606,8 @@
                            class="sceneSeasonXEpisode form-control d-inline input-scene"
                            data-for-season="${episode_object.season}"
                            data-for-episode="${episode_object.episode}"
-                           id="sceneSeasonXEpisode_${show.indexer_id}_${str(episode_object.season)}_${str(episode_object.episode)}"
-                           title="Change the value here if scene season/episode numbering differs from the indexer season/episode numbering"
+                           id="sceneSeasonXEpisode_${show.series_id}_${str(episode_object.season)}_${str(episode_object.episode)}"
+                           title="Change the value here if scene season/episode numbering differs from the series provider season/episode numbering"
                         % if dfltEpNumbering:
                            value=""
                         % else:
@@ -625,8 +620,8 @@
                     <input placeholder="${str(dfltAbsolute)}" size="6" maxlength="8"
                            class="sceneAbsolute form-control d-inline input-scene"
                            data-for-absolute="${episode_object.absolute_number}"
-                           id="sceneAbsolute_${show.indexer_id}_${str(episode_object.absolute_number)}"
-                           title="Change the value here if scene absolute numbering differs from the indexer absolute numbering"
+                           id="sceneAbsolute_${show.series_id}_${str(episode_object.absolute_number)}"
+                           title="Change the value here if scene absolute numbering differs from the series provider absolute numbering"
                         % if dfltAbsNumbering:
                            value=""
                         % else:
@@ -642,7 +637,7 @@
                 % endif
 
                 <td class="col-name">
-                    <i id="plot_info_${str(show.indexer_id)}_${str(episode_object.season)}_${str(episode_object.episode)}"
+                    <i id="plot_info_${str(show.series_id)}_${str(episode_object.season)}_${str(episode_object.episode)}"
                        class="fas fa-info-circle" title="${episode_object.description}"></i>
                     ${episode_object.name}
                 </td>
@@ -666,13 +661,13 @@
                 </td>
 
                 <td class="table-fit">
-                    % if sickrage.app.config.download_url and os.path.isfile(episode_object.location):
+                    % if sickrage.app.config.general.download_url and os.path.isfile(episode_object.location):
                     <%
                         filename = episode_object.location
-                        for rootDir in sickrage.app.config.root_dirs.split('|'):
+                        for rootDir in sickrage.app.config.general.root_dirs.split('|'):
                                                 if rootDir.startswith('/'):
                                                     filename = filename.replace(rootDir, "")
-                        filename = sickrage.app.config.download_url + urllib.parse.quote(filename.encode('utf8'))
+                        filename = sickrage.app.config.general.download_url + urllib.parse.quote(filename.encode('utf8'))
                     %>
                         <div style="text-align: center;">
                             <a href="${filename}">${_('Download')}</a>
@@ -680,7 +675,7 @@
                     % endif
                 </td>
 
-                % if sickrage.app.config.use_subtitles:
+                % if sickrage.app.config.subtitles.enable:
                     <td class="table-fit col-subtitles">
                         % for flag in (episode_object.subtitles or '').split(','):
                             % if Subtitles().name_from_code(flag).lower() != 'undetermined':
@@ -698,35 +693,35 @@
                     </td>
                 % endif
 
-                <% curStatus, curQuality = Quality.split_composite_status(int(episode_object.status)) %>
-                % if curQuality != Quality.NONE:
-                    <td class="table-fit text-nowrap col-status">${statusStrings[curStatus]} ${renderQualityPill(curQuality)}</td>
+                <% curStatus, curQuality = Quality.split_composite_status(episode_object.status) %>
+                % if curQuality != Qualities.NONE:
+                    <td class="table-fit text-nowrap col-status">${curStatus.display_name} ${renderQualityPill(curQuality)}</td>
                 % else:
-                    <td class="table-fit text-nowrap col-status">${statusStrings[curStatus]}</td>
+                    <td class="table-fit text-nowrap col-status">${curStatus.display_name}</td>
                 % endif
 
                 % if len(sickrage.app.search_providers.enabled()):
                     <td class="table-fit col-search">
                         % if int(episode_object.season) != 0:
-                            % if ( int(episode_object.status) in Quality.SNATCHED + Quality.DOWNLOADED ):
+                            % if episode_object.status in flatten([EpisodeStatus.composites(EpisodeStatus.SNATCHED), EpisodeStatus.composites(EpisodeStatus.DOWNLOADED)]):
                                 <a class="epRetry"
-                                   id="${str(show.indexer_id)}x${str(episode_object.season)}x${str(episode_object.episode)}"
-                                   name="${str(show.indexer_id)}x${str(episode_object.season)}x${str(episode_object.episode)}"
-                                   href="${srWebRoot}/home/retryEpisode?show=${show.indexer_id}&amp;season=${episode_object.season}&amp;episode=${episode_object.episode}">
+                                   id="${str(show.series_id)}x${str(episode_object.season)}x${str(episode_object.episode)}"
+                                   name="${str(show.series_id)}x${str(episode_object.season)}x${str(episode_object.episode)}"
+                                   href="${srWebRoot}/home/retryEpisode?show=${show.series_id}&amp;seriesProviderID=${show.series_provider_id.name}&amp;season=${episode_object.season}&amp;episode=${episode_object.episode}">
                                     <i class="fas fa-sync" title="${_('Retry Download')}"></i>
                                 </a>
                             % else:
                                 <a class="epSearch"
-                                   id="${str(show.indexer_id)}x${str(episode_object.season)}x${str(episode_object.episode)}"
-                                   name="${str(show.indexer_id)}x${str(episode_object.season)}x${str(episode_object.episode)}"
-                                   href="${srWebRoot}/home/searchEpisode?show=${show.indexer_id}&amp;season=${episode_object.season}&amp;episode=${episode_object.episode}">
+                                   id="${str(show.series_id)}x${str(episode_object.season)}x${str(episode_object.episode)}"
+                                   name="${str(show.series_id)}x${str(episode_object.season)}x${str(episode_object.episode)}"
+                                   href="${srWebRoot}/home/searchEpisode?show=${show.series_id}&amp;seriesProviderID=${show.series_provider_id.name}&amp;season=${episode_object.season}&amp;episode=${episode_object.episode}">
                                     <i class="fas fa-search" title="${_('Manual Search')}"></i>
                                 </a>
                             % endif
                         % endif
-                        % if sickrage.app.config.use_subtitles and show.subtitles and episode_object.location and frozenset(Subtitles().wanted_languages()).difference(episode_object.subtitles.split(',')):
+                        % if sickrage.app.config.subtitles.enable and show.subtitles and episode_object.location and frozenset(Subtitles().wanted_languages()).difference(episode_object.subtitles.split(',')):
                             <a class="epSubtitlesSearch"
-                               href="${srWebRoot}/home/searchEpisodeSubtitles?show=${show.indexer_id}&amp;season=${episode_object.season}&amp;episode=${episode_object.episode}">
+                               href="${srWebRoot}/home/searchEpisodeSubtitles?show=${show.series_id}&amp;seriesProviderID=${show.series_provider_id.name}&amp;season=${episode_object.season}&amp;episode=${episode_object.episode}">
                                 <i class="fas fa-comment" title="${_('Subtitles Search')}"></i>
                             </a>
                         % endif

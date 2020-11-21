@@ -6341,7 +6341,7 @@ msgid "Error(s) Saving Configuration"
 msgstr ""
 
 #: sickrage/core/webserver/handlers/config/anime.py:68
-msgid "[ANIME] Configuration Encrypted and Saved to disk"
+msgid "[ANIME] Configuration Saved to Database"
 msgstr ""
 
 #: sickrage/core/webserver/handlers/config/backup_restore.py:39
@@ -6385,7 +6385,7 @@ msgid "General Configuration"
 msgstr ""
 
 #: sickrage/core/webserver/handlers/config/general.py:264
-msgid "[GENERAL] Configuration Encrypted and Saved to disk"
+msgid "[GENERAL] Configuration Saved to Database"
 msgstr ""
 
 #: sickrage/core/webserver/handlers/config/notifications.py:37
@@ -6393,7 +6393,7 @@ msgid "Config - Notifications"
 msgstr ""
 
 #: sickrage/core/webserver/handlers/config/notifications.py:412
-msgid "[NOTIFICATIONS] Configuration Encrypted and Saved to disk"
+msgid "[NOTIFICATIONS] Configuration Saved to Database"
 msgstr ""
 
 #: sickrage/core/webserver/handlers/config/postprocessing.py:42
@@ -6439,7 +6439,7 @@ msgid ""
 msgstr ""
 
 #: sickrage/core/webserver/handlers/config/postprocessing.py:206
-msgid "[POST-PROCESSING] Configuration Encrypted and Saved to disk"
+msgid "[POST-PROCESSING] Configuration Saved to Database"
 msgstr ""
 
 #: sickrage/core/webserver/handlers/config/providers.py:39
@@ -6447,7 +6447,7 @@ msgid "Config - Search Providers"
 msgstr ""
 
 #: sickrage/core/webserver/handlers/config/providers.py:183
-msgid "[PROVIDERS] Configuration Encrypted and Saved to disk"
+msgid "[PROVIDERS] Configuration Saved to Database"
 msgstr ""
 
 #: sickrage/core/webserver/handlers/config/quality_settings.py:37
@@ -6455,7 +6455,7 @@ msgid "Config - Quality Settings"
 msgstr ""
 
 #: sickrage/core/webserver/handlers/config/quality_settings.py:65
-msgid "[QUALITY SETTINGS] Configuration Encrypted and Saved to disk"
+msgid "[QUALITY SETTINGS] Configuration Saved to Database"
 msgstr ""
 
 #: sickrage/core/webserver/handlers/config/search.py:39
@@ -6463,7 +6463,7 @@ msgid "Config - Search Clients"
 msgstr ""
 
 #: sickrage/core/webserver/handlers/config/search.py:168
-msgid "[SEARCH] Configuration Encrypted and Saved to disk"
+msgid "[SEARCH] Configuration Saved to Database"
 msgstr ""
 
 #: sickrage/core/webserver/handlers/config/subtitles.py:40
@@ -6471,7 +6471,7 @@ msgid "Config - Subtitles Settings"
 msgstr ""
 
 #: sickrage/core/webserver/handlers/config/subtitles.py:131
-msgid "[SUBTITLES] Configuration Encrypted and Saved to disk"
+msgid "[SUBTITLES] Configuration Saved to Database"
 msgstr ""
 
 #: sickrage/core/webserver/handlers/home/__init__.py:63

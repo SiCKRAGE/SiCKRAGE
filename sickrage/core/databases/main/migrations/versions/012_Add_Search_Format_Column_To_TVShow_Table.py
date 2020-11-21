@@ -8,11 +8,25 @@ Create Date: 2017-12-29 14:39:27.854291
 import sqlalchemy as sa
 from alembic import op
 
-from sickrage.core.common import SearchFormats
-
 # revision identifiers, used by Alembic.
 revision = '12'
 down_revision = '11'
+
+
+class SearchFormats(object):
+    STANDARD = 1
+    AIR_BY_DATE = 2
+    ANIME = 3
+    SPORTS = 4
+    COLLECTION = 6
+
+    search_format_strings = {
+        STANDARD: 'Standard (Show.S01E01)',
+        AIR_BY_DATE: 'Air By Date (Show.2010.03.02)',
+        ANIME: 'Anime (Show.265)',
+        SPORTS: 'Sports (Show.2010.03.02)',
+        COLLECTION: 'Collection (Show.Series.1.1of10) or (Show.Series.1.Part.1)'
+    }
 
 
 def upgrade():
@@ -38,7 +52,7 @@ def upgrade():
             else:
                 value = SearchFormats.STANDARD
 
-            conn.execute('UPDATE tv_shows SET search_format = {} WHERE tv_shows.indexer_id = {}'.format(value, row.indexer_id))
+            conn.execute(f'UPDATE tv_shows SET search_format = {value} WHERE tv_shows.indexer_id = {row.indexer_id}')
 
     with op.batch_alter_table('tv_shows') as batch_op:
         if hasattr(tv_shows.c, 'sports'):

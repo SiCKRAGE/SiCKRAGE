@@ -1,8 +1,8 @@
 <%inherit file="../layouts/main.mako"/>
 <%!
     import sickrage
-    from sickrage.core.common import DOWNLOADED, SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import statusStrings, Quality, Overview
+    from sickrage.core.helpers import flatten
+    from sickrage.core.common import Overview, Quality, Qualities, EpisodeStatus
 %>
 <%block name="content">
     <div class="row">
@@ -17,7 +17,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <h2>
-                                    ${_('None of your episodes have status')} ${statusStrings[int(whichStatus)]}
+                                    ${_('None of your episodes have status')} ${whichStatus.display_name}
                                 </h2>
                             </div>
                         </div>
@@ -27,14 +27,10 @@
                             <label for="whichStatus">${_('Manage episodes with status')}</label>
                             <div class="input-group">
                                 <select name="whichStatus" id="whichStatus" class="form-control shadow">
-                                    % for curStatus in [SKIPPED, SNATCHED, WANTED, IGNORED, FAILED] + Quality.DOWNLOADED + Quality.ARCHIVED:
-                                        %if curStatus not in [ARCHIVED, DOWNLOADED]:
-                                        <% split_status, quality = Quality.split_composite_status(curStatus) %>
+                                    % for curStatus in flatten([EpisodeStatus.SKIPPED, EpisodeStatus.SNATCHED, EpisodeStatus.WANTED, EpisodeStatus.IGNORED, EpisodeStatus.FAILED, EpisodeStatus.composites(EpisodeStatus.DOWNLOADED), EpisodeStatus.composites(EpisodeStatus.ARCHIVED)]):
+                                        %if curStatus not in [EpisodeStatus.ARCHIVED, EpisodeStatus.DOWNLOADED]:
                                             <option value="${curStatus}">
-                                                ${statusStrings[split_status]}
-                                                %if quality:
-                                                    (${Quality.qualityStrings[quality]})
-                                                %endif
+                                                ${curStatus.display_name}
                                             </option>
                                         %endif
                                     % endfor
@@ -57,7 +53,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <h2>
-                                        ${_('Shows containing')} ${statusStrings[int(whichStatus)]} ${_('episodes')}
+                                        ${_('Shows containing')} ${whichStatus.display_name} ${_('episodes')}
                                     </h2>
                                 </div>
                             </div>
@@ -65,10 +61,10 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <%
-                                        if int(whichStatus) in [IGNORED, SNATCHED] + Quality.DOWNLOADED + Quality.ARCHIVED:
+                                        if whichStatus in flatten([EpisodeStatus.IGNORED, EpisodeStatus.SNATCHED, EpisodeStatus.composites(EpisodeStatus.DOWNLOADED), EpisodeStatus.composites(EpisodeStatus.ARCHIVED)]):
                                             row_class = "good"
                                         else:
-                                            row_class = Overview.overviewStrings[int(whichStatus)]
+                                            row_class = Overview(whichStatus).display_name
                                     %>
 
                                     <input type="hidden" id="row_class" value="${row_class}"/>
@@ -77,19 +73,21 @@
                                     <div class="input-group">
                                         <select name="newStatus" id="newStatus" class="form-control">
                                             <%
-                                                statusList = [SKIPPED, WANTED, IGNORED] + Quality.DOWNLOADED + Quality.ARCHIVED
+                                                statusList = flatten([EpisodeStatus.SKIPPED, EpisodeStatus.WANTED, EpisodeStatus.IGNORED, EpisodeStatus.composites(EpisodeStatus.DOWNLOADED), EpisodeStatus.composites(EpisodeStatus.ARCHIVED)])
+
                                                 # Do not allow setting to bare downloaded or archived!
-                                                statusList.remove(DOWNLOADED)
-                                                statusList.remove(ARCHIVED)
-                                                if int(whichStatus) in statusList:
+                                                statusList.remove(EpisodeStatus.DOWNLOADED)
+                                                statusList.remove(EpisodeStatus.ARCHIVED)
+
+                                                if whichStatus in statusList:
                                                     statusList.remove(int(whichStatus))
 
-                                                if int(whichStatus) in [SNATCHED, SNATCHED_PROPER, SNATCHED_BEST] + Quality.ARCHIVED + Quality.DOWNLOADED:
-                                                    statusList.append(FAILED)
+                                                if whichStatus in flatten([EpisodeStatus.SNATCHED, EpisodeStatus.SNATCHED_PROPER, EpisodeStatus.SNATCHED_BEST, EpisodeStatus.composites(EpisodeStatus.ARCHIVED), EpisodeStatus.composites(EpisodeStatus.DOWNLOADED)]):
+                                                    statusList.append(EpisodeStatus.FAILED)
                                             %>
 
                                             % for curStatus in statusList:
-                                                <option value="${curStatus}">${statusStrings[curStatus]}</option>
+                                                <option value="${curStatus}">${curStatus.display_name}</option>
                                             % endfor
                                         </select>
                                         <div class="input-group-append">
@@ -103,25 +101,25 @@
                                 <div class="col-md-12">
                                     <div class="table-responsive">
                                         <table class="table">
-                                            % for cur_indexer_id in sorted_show_ids:
-                                                <tr id="${cur_indexer_id}">
+                                            % for series_id in sorted_show_ids:
+                                                <tr id="${series_id}">
                                                     <td class="table-fit" style="border:none">
                                                         <input type="checkbox" class="allCheck"
-                                                               id="allCheck-${cur_indexer_id}"
-                                                               title="${show_names[cur_indexer_id]}"
-                                                               name="toChange" value="${cur_indexer_id}-all" checked/>
+                                                               id="allCheck-${series_id}"
+                                                               title="${show_names[series_id]}"
+                                                               name="toChange" value="${series_id}-all" checked/>
                                                     </td>
                                                     <td class="text-left text-nowrap" style="border:none">
                                                         <a class="text-white"
-                                                           href="${srWebRoot}/home/displayShow?show=${cur_indexer_id}">
-                                                            ${show_names[cur_indexer_id]}
+                                                           href="${srWebRoot}/home/displayShow?show=${series_id}">
+                                                            ${show_names[series_id]}
                                                         </a>
-                                                        (<span class="text-info">${ep_counts[cur_indexer_id]}</span>)
+                                                        (<span class="text-info">${ep_counts[series_id]}</span>)
                                                     </td>
                                                     <td style="border:none"></td>
                                                     <td class="table-fit" style="border:none">
                                                         <input type="button" class="btn btn-sm get_more_eps"
-                                                               id="${cur_indexer_id}" value="${_('Expand')}"/>
+                                                               id="${series_id}" value="${_('Expand')}"/>
                                                     </td>
                                                 </tr>
                                             % endfor

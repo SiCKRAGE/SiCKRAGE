@@ -2,6 +2,7 @@
 <%def name='formaction()'><% return 'saveSearch' %></%def>
 <%!
     import sickrage
+    from sickrage.core.enums import NzbMethod, TorrentMethod, CheckPropersInterval
 %>
 <%block name="menus">
     <li class="nav-item px-1"><a class="nav-link" data-toggle="tab"
@@ -29,7 +30,7 @@
                         <label for="randomize_providers">
                             <input type="checkbox" class="enabler toggle color-primary is-material"
                                    name="randomize_providers" id="randomize_providers"
-                                ${('', 'checked')[bool(sickrage.app.config.randomize_providers)]}/>
+                                ${('', 'checked')[bool(sickrage.app.config.general.randomize_providers)]}/>
                             ${_('randomize the provider search order')}
                         </label>
                     </div>
@@ -42,7 +43,7 @@
                         <label for="download_propers">
                             <input type="checkbox" class="enabler toggle color-primary is-material"
                                    name="download_propers" id="download_propers"
-                                ${('', 'checked')[bool(sickrage.app.config.download_propers)]}/>
+                                ${('', 'checked')[bool(sickrage.app.config.general.download_propers)]}/>
                             ${_('replace original download with "Proper" or "Repack" if nuked')}
                         </label>
                     </div>
@@ -55,7 +56,7 @@
                         <label for="enable_rss_cache">
                             <input type="checkbox" class="enabler toggle color-primary is-material"
                                    name="enable_rss_cache" id="enable_rss_cache"
-                                ${('', 'checked')[bool(sickrage.app.config.enable_rss_cache)]}/>
+                                ${('', 'checked')[bool(sickrage.app.config.general.enable_rss_cache)]}/>
                             ${_('enables/disables provider RSS feed caching')}
                         </label>
                     </div>
@@ -70,7 +71,7 @@
                             <input type="checkbox" class="enabler toggle color-primary is-material"
                                    name="download_unverified_magnet_link"
                                    id="download_unverified_magnet_link"
-                                ${('', 'checked')[bool(sickrage.app.config.download_unverified_magnet_link)]}/>
+                                ${('', 'checked')[bool(sickrage.app.config.general.download_unverified_magnet_link)]}/>
                             ${_('enables/disables downloading of unverified torrent magnet links via clients')}
                         </label>
                     </div>
@@ -84,7 +85,7 @@
                         <label for="torrent_file_to_magnet">
                             <input type="checkbox" class="enabler toggle color-primary is-material"
                                    name="torrent_file_to_magnet" id="torrent_file_to_magnet"
-                                ${('', 'checked')[bool(sickrage.app.config.torrent_file_to_magnet)]}/>
+                                ${('', 'checked')[bool(sickrage.app.config.general.torrent_file_to_magnet)]}/>
                             ${_('enables/disables converting of public torrent provider file links to magnetic links')}
                         </label>
                     </div>
@@ -98,7 +99,7 @@
                         <label for="torrent_magnet_to_file">
                             <input type="checkbox" class="enabler toggle color-primary is-material"
                                    name="torrent_magnet_to_file" id="torrent_magnet_to_file"
-                                ${('', 'checked')[bool(sickrage.app.config.torrent_magnet_to_file)]}/>
+                                ${('', 'checked')[bool(sickrage.app.config.general.torrent_magnet_to_file)]}/>
                             ${_('enables/disables converting of public torrent provider magnetic links to torrent files')}
                         </label>
                     </div>
@@ -112,7 +113,7 @@
                         <label for="use_failed_snatcher">
                             <input type="checkbox" class="enabler toggle color-primary is-material"
                                    name="use_failed_snatcher" id="use_failed_snatcher"
-                                ${('', 'checked')[bool(sickrage.app.config.use_failed_snatcher)]}/>
+                                ${('', 'checked')[bool(sickrage.app.config.failed_snatches.enable)]}/>
                             ${_('enables/disables failed snatch handling, automatically retries failed snatches')}
                         </label>
                     </div>
@@ -131,9 +132,9 @@
                                     </span>
                                 </div>
                                 <select id="failed_snatch_age" name="failed_snatch_age" class="form-control"
-                                        title="minimum allowed time ${sickrage.app.config.min_failed_snatch_age} hours">
+                                        title="minimum allowed time ${sickrage.app.min_failed_snatch_age} hours">
                                     % for hour in range(1,25):
-                                        <option value="${hour}" ${('', 'selected')[sickrage.app.config.failed_snatch_age == hour]}>${hour}</option>
+                                        <option value="${hour}" ${('', 'selected')[sickrage.app.config.failed_snatches.age == hour]}>${hour}</option>
                                     % endfor
                                 </select>
                                 <div class="input-group-append">
@@ -160,9 +161,8 @@
                                 </div>
                                 <select id="check_propers_interval" name="check_propers_interval"
                                         class="form-control" title="Interval to check for propers">
-                                    <% check_propers_interval_text = {'daily': _("24 hours"), '4h': _("4 hours"), '90m': _("90 mins"), '45m': _("45 mins"), '15m': _("15 mins")} %>
-                                    % for curInterval in ('daily', '4h', '90m', '45m', '15m'):
-                                        <option value="${curInterval}" ${('', 'selected')[sickrage.app.config.proper_searcher_interval == curInterval]}>${check_propers_interval_text[curInterval]}</option>
+                                    % for item in CheckPropersInterval:
+                                        <option value="${item.name}" ${('', 'selected')[sickrage.app.config.general.proper_searcher_interval == item]}>${item.display_name}</option>
                                     % endfor
                                 </select>
                             </div>
@@ -183,9 +183,9 @@
                             </div>
                             <input name="backlog_frequency"
                                    id="backlog_frequency"
-                                   value="${sickrage.app.config.backlog_searcher_freq}"
+                                   value="${sickrage.app.config.general.backlog_searcher_freq}"
                                    placeholder="${_('time in minutes')}"
-                                   title="minimum allowed time ${sickrage.app.config.min_backlog_searcher_freq} minutes"
+                                   title="minimum allowed time ${sickrage.app.min_backlog_searcher_freq} minutes"
                                    class="form-control"/>
                             <div class="input-group-append">
                                 <span class="input-group-text">
@@ -209,9 +209,9 @@
                             </div>
                             <input name="dailysearch_frequency"
                                    id="dailysearch_frequency"
-                                   value="${sickrage.app.config.daily_searcher_freq}"
+                                   value="${sickrage.app.config.general.daily_searcher_freq}"
                                    placeholder="${_('time in minutes')}"
-                                   title="minimum allowed time ${sickrage.app.config.min_daily_searcher_freq} minutes"
+                                   title="minimum allowed time ${sickrage.app.min_auto_postprocessor_freq} minutes"
                                    class="form-control"/>
                             <div class="input-group-append">
                                 <span class="input-group-text">
@@ -235,7 +235,7 @@
                             </div>
                             <input name="usenet_retention"
                                    id="usenet_retention"
-                                   value="${sickrage.app.config.usenet_retention}"
+                                   value="${sickrage.app.config.general.usenet_retention}"
                                    title="age limit in days (ex. 500)"
                                    class="form-control"/>
                             <div class="input-group-append">
@@ -257,7 +257,7 @@
                                 <span class="input-group-text"><span class="fas fa-font"></span></span>
                             </div>
                             <input name="ignore_words"
-                                   value="${sickrage.app.config.ignore_words}"
+                                   value="${sickrage.app.config.general.ignore_words}"
                                    placeholder="${_('ex. word1,word2,word3')}"
                                    title="Results with one or more word from this list will be ignored separate words with a comma"
                                    class="form-control" autocapitalize="off"/>
@@ -275,7 +275,7 @@
                                 <span class="input-group-text"><span class="fas fa-font"></span></span>
                             </div>
                             <input name="require_words"
-                                   value="${sickrage.app.config.require_words}"
+                                   value="${sickrage.app.config.general.require_words}"
                                    placeholder="${_('ex. word1,word2,word3')}"
                                    title="Results with no word from this list will be ignored separate words with a comma"
                                    class="form-control" autocapitalize="off"/>
@@ -293,7 +293,7 @@
                                 <span class="input-group-text"><span class="fas fa-font"></span></span>
                             </div>
                             <input name="ignored_subs_list"
-                                   value="${sickrage.app.config.ignored_subs_list}"
+                                   value="${sickrage.app.config.general.ignored_subs_list}"
                                    placeholder="${_('ex. lang1,lang2,lang3')}"
                                    title="Ignore subbed releases based on language names, ex: dk will ignore words: dksub, dksubs, dksubbed, dksubed"
                                    class="form-control" autocapitalize="off"/>
@@ -308,7 +308,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="allow_high_priority">
                             <input type="checkbox" class="toggle color-primary is-material" name="allow_high_priority"
-                                   id="allow_high_priority" ${('', 'checked')[bool(sickrage.app.config.allow_high_priority)]}/>
+                                   id="allow_high_priority" ${('', 'checked')[bool(sickrage.app.config.general.allow_high_priority)]}/>
                             ${_('Set downloads of recently aired episodes to high priority')}
                         </label>
                     </div>
@@ -343,7 +343,7 @@
                         <label for="use_nzbs">
                             <input type="checkbox" class="enabler toggle color-primary is-material" name="use_nzbs"
                                    title="Enable NZB searches"
-                                   id="use_nzbs" ${('', 'checked')[bool(sickrage.app.config.use_nzbs)]}/>
+                                   id="use_nzbs" ${('', 'checked')[bool(sickrage.app.config.general.use_nzbs)]}/>
                             ${_('enable NZB searches')}
                         </label>
                     </div>
@@ -360,9 +360,8 @@
                                     <span class="input-group-text"><span class="fas fa-cloud-upload-alt"></span></span>
                                 </div>
                                 <select name="nzb_method" id="nzb_method" class="form-control" title="NZB Clients">
-                                    <% nzb_method_text = {'blackhole': "Black hole", 'sabnzbd': "SABnzbd", 'nzbget': "NZBget", 'download_station': "Synology DS"} %>
-                                    % for curAction in ('sabnzbd', 'blackhole', 'nzbget', 'download_station'):
-                                        <option value="${curAction}" ${('', 'selected')[sickrage.app.config.nzb_method == curAction]}>${nzb_method_text[curAction]}</option>
+                                    % for item in NzbMethod:
+                                        <option value="${item.name}" ${('', 'selected')[sickrage.app.config.general.nzb_method == item]}>${item.display_name}</option>
                                     % endfor
                                 </select>
                             </div>
@@ -377,7 +376,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                 <div class="input-group">
                                     <input name="nzb_dir" id="nzb_dir"
-                                           value="${sickrage.app.config.nzb_dir}"
+                                           value="${sickrage.app.config.blackhole.nzb_dir}"
                                            class="form-control" autocapitalize="off"/>
                                 </div>
                                 <label for="nzb_dir">
@@ -400,7 +399,7 @@
                                         <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                     </div>
                                     <input id="sab_host" name="sab_host"
-                                           value="${sickrage.app.config.sab_host}"
+                                           value="${sickrage.app.config.sabnzbd.host}"
                                            placeholder="${_('ex. http://localhost:8080')}"
                                            class="form-control" autocapitalize="off"
                                            type="url"
@@ -427,7 +426,7 @@
                                         <span class="input-group-text"><span class="fas fa-user"></span></span>
                                     </div>
                                     <input name="sab_username" id="sab_username"
-                                           value="${sickrage.app.config.sab_username}"
+                                           value="${sickrage.app.config.sabnzbd.username}"
                                            placeholder="${_('blank = no authentication')}"
                                            class="form-control"
                                            autocapitalize="off"/>
@@ -445,7 +444,7 @@
                                         <span class="input-group-text"><span class="fas fa-lock"></span></span>
                                     </div>
                                     <input type="password" name="sab_password" id="sab_password"
-                                           value="${sickrage.app.config.sab_password}"
+                                           value="${sickrage.app.config.sabnzbd.password}"
                                            placeholder="${_('blank = no authentication')}"
                                            class="form-control"
                                            autocapitalize="off"/>
@@ -463,7 +462,7 @@
                                         <span class="input-group-text"><span class="fas fa-cloud"></span></span>
                                     </div>
                                     <input name="sab_apikey" id="sab_apikey"
-                                           value="${sickrage.app.config.sab_apikey}"
+                                           value="${sickrage.app.config.sabnzbd.apikey}"
                                            class="form-control"
                                            title="locate at... SABnzbd Config -> General -> API Key"
                                            autocapitalize="off"/>
@@ -481,7 +480,7 @@
                                         <span class="input-group-text"><span class="fas fa-book"></span></span>
                                     </div>
                                     <input name="sab_category" id="sab_category"
-                                           value="${sickrage.app.config.sab_category}"
+                                           value="${sickrage.app.config.sabnzbd.category}"
                                            placeholder="${_('ex. TV')}"
                                            title="SABNzbd download category"
                                            class="form-control"/>
@@ -499,7 +498,7 @@
                                         <span class="input-group-text"><span class="fas fa-book"></span></span>
                                     </div>
                                     <input name="sab_category_backlog" id="sab_category_backlog"
-                                           value="${sickrage.app.config.sab_category_backlog}"
+                                           value="${sickrage.app.config.sabnzbd.category_backlog}"
                                            placeholder="${_('ex. TV')}"
                                            title="add downloads of old episodes to this category"
                                            class="form-control"/>
@@ -517,7 +516,7 @@
                                         <span class="input-group-text"><span class="fas fa-book"></span></span>
                                     </div>
                                     <input name="sab_category_anime" id="sab_category_anime"
-                                           value="${sickrage.app.config.sab_category_anime}"
+                                           value="${sickrage.app.config.sabnzbd.category_anime}"
                                            placeholder="${_('ex. anime')}"
                                            title="add anime downloads to this category"
                                            class="form-control"/>
@@ -537,7 +536,7 @@
                                     </div>
                                     <input name="sab_category_anime_backlog"
                                            id="sab_category_anime_backlog"
-                                           value="${sickrage.app.config.sab_category_anime_backlog}"
+                                           value="${sickrage.app.config.sabnzbd.category_anime_backlog}"
                                            placeholder="${_('ex. anime')}"
                                            title="add anime downloads of old episodes to this category"
                                            class="form-control"/>
@@ -545,7 +544,7 @@
                             </div>
                         </div>
 
-                        % if sickrage.app.config.allow_high_priority == True:
+                        % if sickrage.app.config.general.allow_high_priority == True:
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Use forced priority')}</label>
@@ -554,7 +553,7 @@
                                     <label for="sab_forced">
                                         <input type="checkbox" class="enabler toggle color-primary is-material"
                                                name="sab_forced"
-                                               id="sab_forced" ${('', 'selected')[bool(sickrage.app.config.sab_forced)]}/>
+                                               id="sab_forced" ${('', 'selected')[bool(sickrage.app.config.sabnzbd.forced)]}/>
                                         ${_('enable to change priority from HIGH to FORCED')}
                                     </label>
                                 </div>
@@ -571,7 +570,7 @@
                                 <label for="nzbget_use_https">
                                     <input id="nzbget_use_https" type="checkbox"
                                            class="enabler toggle color-primary is-material"
-                                           name="nzbget_use_https" ${('', 'selected')[bool(sickrage.app.config.nzbget_use_https)]}/>
+                                           name="nzbget_use_https" ${('', 'selected')[bool(sickrage.app.config.nzbget.use_https)]}/>
                                     ${_('enable secure control')}
                                 </label>
                             </div>
@@ -587,7 +586,7 @@
                                         <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                     </div>
                                     <input name="nzbget_host" id="nzbget_host"
-                                           value="${sickrage.app.config.nzbget_host}"
+                                           value="${sickrage.app.config.nzbget.host}"
                                            placeholder="${_('ex. http://localhost:6789')}"
                                            title="NZBget RPC host name and port number (not NZBgetweb!"
                                            class="form-control"
@@ -611,7 +610,7 @@
                                         <span class="input-group-text"><span class="fas fa-user"></span></span>
                                     </div>
                                     <input name="nzbget_username" id="nzbget_username"
-                                           value="${sickrage.app.config.nzbget_username}"
+                                           value="${sickrage.app.config.nzbget.username}"
                                            placeholder="${_('default = nzbget')}"
                                            title="locate in nzbget.conf"
                                            class="form-control" autocapitalize="off"/>
@@ -629,7 +628,7 @@
                                         <span class="input-group-text"><span class="fas fa-lock"></span></span>
                                     </div>
                                     <input type="password" name="nzbget_password" id="nzbget_password"
-                                           value="${sickrage.app.config.nzbget_password}"
+                                           value="${sickrage.app.config.nzbget.password}"
                                            placeholder="${_('default = tegbzn6789')}"
                                            title="locate in nzbget.conf"
                                            class="form-control" autocapitalize="off"/>
@@ -647,7 +646,7 @@
                                         <span class="input-group-text"><span class="fas fa-book"></span></span>
                                     </div>
                                     <input name="nzbget_category" id="nzbget_category"
-                                           value="${sickrage.app.config.nzbget_category}"
+                                           value="${sickrage.app.config.nzbget.category}"
                                            placeholder="${_('ex. TV')}"
                                            title="send downloads marked this category"
                                            class="form-control"/>
@@ -665,7 +664,7 @@
                                         <span class="input-group-text"><span class="fas fa-book"></span></span>
                                     </div>
                                     <input name="nzbget_category_backlog" id="nzbget_category_backlog"
-                                           value="${sickrage.app.config.nzbget_category_backlog}"
+                                           value="${sickrage.app.config.nzbget.category_backlog}"
                                            placeholder="${_('ex. TV')}"
                                            title="send downloads of old episodes marked this category"
                                            class="form-control"/>
@@ -683,7 +682,7 @@
                                         <span class="input-group-text"><span class="fas fa-book"></span></span>
                                     </div>
                                     <input name="nzbget_category_anime" id="nzbget_category_anime"
-                                           value="${sickrage.app.config.nzbget_category_anime}"
+                                           value="${sickrage.app.config.nzbget.category_anime}"
                                            placeholder="${_('ex. anime')}"
                                            title="send anime downloads marked this category"
                                            class="form-control"/>
@@ -702,7 +701,7 @@
                                     </div>
                                     <input name="nzbget_category_anime_backlog"
                                            id="nzbget_category_anime_backlog"
-                                           value="${sickrage.app.config.nzbget_category_anime_backlog}"
+                                           value="${sickrage.app.config.nzbget.category_anime_backlog}"
                                            placeholder="${_('ex. anime')}"
                                            title="send anime downloads of old episodes marked this category"
                                            class="form-control"/>
@@ -724,22 +723,22 @@
                                     <select name="nzbget_priority" id="nzbget_priority"
                                             title="priority for daily snatches (no backlog)"
                                             class="form-control">
-                                        <option value="-100" ${('', 'selected')[sickrage.app.config.nzbget_priority == -100]}>
+                                        <option value="-100" ${('', 'selected')[sickrage.app.config.nzbget.priority == -100]}>
                                             ${_('Very low')}
                                         </option>
-                                        <option value="-50" ${('', 'selected')[sickrage.app.config.nzbget_priority == -50]}>
+                                        <option value="-50" ${('', 'selected')[sickrage.app.config.nzbget.priority == -50]}>
                                             ${_('Low')}
                                         </option>
-                                        <option value="0" ${('', 'selected')[sickrage.app.config.nzbget_priority == 0]}>
+                                        <option value="0" ${('', 'selected')[sickrage.app.config.nzbget.priority == 0]}>
                                             ${_('Normal')}
                                         </option>
-                                        <option value="50" ${('', 'selected')[sickrage.app.config.nzbget_priority == 50]}>
+                                        <option value="50" ${('', 'selected')[sickrage.app.config.nzbget.priority == 50]}>
                                             ${_('High')}
                                         </option>
-                                        <option value="100" ${('', 'selected')[sickrage.app.config.nzbget_priority == 100]}>
+                                        <option value="100" ${('', 'selected')[sickrage.app.config.nzbget.priority == 100]}>
                                             ${_('Very high')}
                                         </option>
-                                        <option value="900" ${('', 'selected')[sickrage.app.config.nzbget_priority == 900]}>
+                                        <option value="900" ${('', 'selected')[sickrage.app.config.nzbget.priority == 900]}>
                                             ${_('Force')}
                                         </option>
                                     </select>
@@ -759,7 +758,7 @@
                                         <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                     </div>
                                     <input name="syno_dsm_host" id="syno_dsm_host"
-                                           value="${sickrage.app.config.syno_dsm_host}"
+                                           value="${sickrage.app.config.synology.host}"
                                            placeholder="${_('ex. http://localhost:5000/')}"
                                            title="URL to your Synology DSM"
                                            class="form-control"
@@ -783,7 +782,7 @@
                                         <span class="input-group-text"><span class="fas fa-user"></span></span>
                                     </div>
                                     <input name="syno_dsm_username" id="syno_dsm_username"
-                                           value="${sickrage.app.config.syno_dsm_username}"
+                                           value="${sickrage.app.config.synology.username}"
                                            placeholder="${_('blank for none')}"
                                            title="Synology DSM username"
                                            class="form-control" autocapitalize="off"/>
@@ -801,7 +800,7 @@
                                         <span class="input-group-text"><span class="fas fa-lock"></span></span>
                                     </div>
                                     <input type="password" name="syno_dsm_password" id="syno_dsm_password"
-                                           value="${sickrage.app.config.syno_dsm_password}"
+                                           value="${sickrage.app.config.synology.password}"
                                            placeholder="${_('blank for none')}"
                                            title="Synology DSM password"
                                            class="form-control" autocapitalize="off"/>
@@ -816,7 +815,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                 <div class="input-group">
                                     <input name="syno_dsm_path" id="syno_dsm_path"
-                                           value="${sickrage.app.config.syno_dsm_path}"
+                                           value="${sickrage.app.config.synology.path}"
                                            class="form-control"
                                            autocapitalize="off"/>
                                 </div>
@@ -871,7 +870,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="use_torrents">
                             <input type="checkbox" class="enabler toggle color-primary is-material" name="use_torrents"
-                                   id="use_torrents" ${('', 'checked')[bool(sickrage.app.config.use_torrents)]}/>
+                                   id="use_torrents" ${('', 'checked')[bool(sickrage.app.config.general.use_torrents)]}/>
                             ${_('Enable torrent searches')}
                         </label>
                     </div>
@@ -889,9 +888,8 @@
                                 </div>
                                 <select name="torrent_method" id="torrent_method" class="form-control"
                                         title="Torrent Clients">
-                                    <% torrent_method_text = {'blackhole': "Black hole", 'utorrent': "uTorrent", 'transmission': "Transmission", 'deluge': "Deluge (via WebUI)", 'deluged': "Deluge (via Daemon)", 'download_station': "Synology DS", 'rtorrent': "rTorrent", 'qbittorrent': "qbittorrent", 'mlnet': "MLDonkey", 'putio': "Putio"} %>
-                                    % for curAction in ('blackhole', 'utorrent', 'transmission', 'deluge', 'deluged', 'download_station', 'rtorrent', 'qbittorrent', 'mlnet', 'putio'):
-                                        <option value="${curAction}" ${('', 'selected')[sickrage.app.config.torrent_method == curAction]}>${torrent_method_text[curAction]}</option>
+                                    % for item in TorrentMethod:
+                                        <option value="${item.name}" ${('', 'selected')[sickrage.app.config.general.torrent_method == item]}>${item.display_name}</option>
                                     % endfor
                                 </select>
                             </div>
@@ -906,7 +904,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                 <div class="input-group">
                                     <input name="torrent_dir" id="torrent_dir"
-                                           value="${sickrage.app.config.torrent_dir}"
+                                           value="${sickrage.app.config.blackhole.torrent_dir}"
                                            class="form-control"
                                            autocapitalize="off"/>
                                 </div>
@@ -934,7 +932,7 @@
                                         <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                     </div>
                                     <input name="torrent_host" id="torrent_host"
-                                           value="${sickrage.app.config.torrent_host}"
+                                           value="${sickrage.app.config.torrent.host}"
                                            title="URL to your torrent client"
                                            class="form-control"
                                            autocapitalize="off"
@@ -947,7 +945,7 @@
                             </div>
                         </div>
 
-                        <div class="form-row form-group" id="torrent_rpcurl_option">
+                        <div class="form-row form-group" id="torrent_rpc_url_option">
                             <div class="col-lg-3 col-md-4 col-sm-5">
                                 <label class="component-title" id="rpcurl_title">${_('Torrent RPC URL')}</label>
                             </div>
@@ -956,8 +954,8 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                     </div>
-                                    <input name="torrent_rpcurl" id="torrent_rpcurl"
-                                           value="${sickrage.app.config.torrent_rpcurl}"
+                                    <input name="torrent_rpc_url" id="torrent_rpc_url"
+                                           value="${sickrage.app.config.torrent.rpc_url}"
                                            placeholder="${_('ex. transmission')}"
                                            title="The path without leading and trailing slashes"
                                            class="form-control"
@@ -980,7 +978,7 @@
                                         <% http_authtype = {'none': _("None"), 'basic': _("Basic"), 'digest': _("Digest")} %>
                                         % for authvalue, authname in http_authtype.items():
                                             <option id="torrent_auth_type_value"
-                                                    value="${authvalue}" ${('', 'selected')[sickrage.app.config.torrent_auth_type == authvalue]}>${authname}</option>
+                                                    value="${authvalue}" ${('', 'selected')[sickrage.app.config.torrent.auth_type == authvalue]}>${authname}</option>
                                         % endfor
                                     </select>
                                 </div>
@@ -995,7 +993,7 @@
                                 <label for="torrent_verify_cert">
                                     <input type="checkbox" class="enabler toggle color-primary is-material"
                                            name="torrent_verify_cert"
-                                           id="torrent_verify_cert" ${('', 'checked')[bool(sickrage.app.config.torrent_verify_cert)]}/>
+                                           id="torrent_verify_cert" ${('', 'checked')[bool(sickrage.app.config.torrent.verify_cert)]}/>
                                     <p id="torrent_verify_deluge">
                                         ${_('disable if you get "Deluge: Authentication Error" in your log')}
                                     </p>
@@ -1016,7 +1014,7 @@
                                         <span class="input-group-text"><span class="fas fa-user"></span></span>
                                     </div>
                                     <input name="torrent_username" id="torrent_username"
-                                           value="${sickrage.app.config.torrent_username}"
+                                           value="${sickrage.app.config.torrent.username}"
                                            placeholder="${_('blank = no authentication')}"
                                            class="form-control" autocapitalize="off"/>
                                 </div>
@@ -1033,7 +1031,7 @@
                                         <span class="input-group-text"><span class="fas fa-lock"></span></span>
                                     </div>
                                     <input type="password" name="torrent_password" id="torrent_password"
-                                           value="${sickrage.app.config.torrent_password}"
+                                           value="${sickrage.app.config.torrent.password}"
                                            placeholder="${_('blank = no authentication')}"
                                            class="form-control" autocapitalize="off"/>
                                 </div>
@@ -1050,7 +1048,7 @@
                                         <span class="input-group-text"><span class="fas fa-tag"></span></span>
                                     </div>
                                     <input name="torrent_label" id="torrent_label"
-                                           value="${sickrage.app.config.torrent_label}"
+                                           value="${sickrage.app.config.torrent.label}"
                                            placeholder="${_('blank spaces are not allowed')}"
                                            title="label plugin must be enabled in Deluge clients"
                                            class="form-control"/>
@@ -1068,7 +1066,7 @@
                                         <span class="input-group-text"><span class="fas fa-tag"></span></span>
                                     </div>
                                     <input name="torrent_label_anime" id="torrent_label_anime"
-                                           value="${sickrage.app.config.torrent_label_anime}"
+                                           value="${sickrage.app.config.torrent.label_anime}"
                                            placeholder="${_('blank spaces are not allowed')}"
                                            title="label plugin must be enabled in Deluge clients"
                                            class="form-control"/>
@@ -1083,7 +1081,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                 <div class="input-group">
                                     <input name="torrent_path" id="torrent_path"
-                                           value="${sickrage.app.config.torrent_path}"
+                                           value="${sickrage.app.config.torrent.path}"
                                            class="form-control"
                                            autocapitalize="off"/>
                                 </div>
@@ -1110,7 +1108,7 @@
                                            step="1"
                                            name="torrent_seed_time"
                                            id="torrent_seed_time"
-                                           value="${sickrage.app.config.torrent_seed_time}"
+                                           value="${sickrage.app.config.torrent.seed_time}"
                                            title="hours. (default:'0' passes blank to client and '-1' passes nothing)"
                                            class="form-control"/>
                                 </div>
@@ -1125,7 +1123,7 @@
                                 <label for="torrent_paused">
                                     <input type="checkbox" class="enabler toggle color-primary is-material"
                                            name="torrent_paused"
-                                           id="torrent_paused" ${('', 'checked')[bool(sickrage.app.config.torrent_paused)]}/>
+                                           id="torrent_paused" ${('', 'checked')[bool(sickrage.app.config.torrent.paused)]}/>
                                     ${_('add .torrent to client but do <b>not</b> start downloading')}
                                 </label>
                             </div>
@@ -1139,7 +1137,7 @@
                                 <label for="torrent_high_bandwidth">
                                     <input type="checkbox" class="enabler toggle color-primary is-material"
                                            name="torrent_high_bandwidth"
-                                           id="torrent_high_bandwidth" ${('', 'checked')[bool(sickrage.app.config.torrent_high_bandwidth)]}/>
+                                           id="torrent_high_bandwidth" ${('', 'checked')[bool(sickrage.app.config.torrent.high_bandwidth)]}/>
                                     ${_('use high bandwidth allocation if priority is high')}
                                 </label>
                             </div>

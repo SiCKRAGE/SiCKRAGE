@@ -29,8 +29,9 @@ from sqlalchemy import orm
 from sqlalchemy.exc import IntegrityError
 
 import sickrage
-from sickrage.core.common import Quality
+from sickrage.core.common import Quality, Qualities
 from sickrage.core.databases.cache import CacheDB
+from sickrage.core.enums import SeriesProviderID
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import show_names, try_int
 from sickrage.core.nameparser import InvalidNameException, NameParser, InvalidShowException
@@ -209,7 +210,7 @@ class TVCache(object):
         try:
             # parse release name
             parse_result = NameParser(validate_show=True).parse(name)
-            if parse_result.series_name and parse_result.quality != Quality.UNKNOWN:
+            if parse_result.series_name and parse_result.quality != Qualities.UNKNOWN:
                 season = parse_result.season_number if parse_result.season_number else 1
                 episodes = parse_result.episode_numbers
 
@@ -231,7 +232,8 @@ class TVCache(object):
                         'name': name,
                         'season': season,
                         'episodes': episode_text,
-                        'series_id': parse_result.indexer_id,
+                        'series_id': parse_result.series_id,
+                        'series_provider_id': parse_result.series_provider_id,
                         'url': url,
                         'time': int(time.mktime(datetime.datetime.today().timetuple())),
                         'quality': quality,
@@ -251,21 +253,23 @@ class TVCache(object):
                         pass
 
                     # add to external provider cache database
-                    if sickrage.app.config.enable_sickrage_api and not self.provider.private and self.provider.type in ['nzb', 'torrent']:
-                        try:
-                            sickrage.app.api.provider_cache.add(data=dbData)
-                        except Exception as e:
-                            pass
+                    if sickrage.app.config.general.enable_sickrage_api:
+                        from sickrage.search_providers import SearchProviderType
+                        if not self.provider.private and self.provider.provider_type in [SearchProviderType.NZB, SearchProviderType.TORRENT]:
+                            try:
+                                sickrage.app.api.provider_cache.add(data=dbData)
+                            except Exception as e:
+                                pass
         except (InvalidShowException, InvalidNameException):
             pass
 
-    def search_cache(self, show_id, season, episode, manualSearch=False, downCurQuality=False):
+    def search_cache(self, series_id, series_provider_id, season, episode, manualSearch=False, downCurQuality=False):
         cache_results = {}
         dbData = []
 
         # get data from external database
-        if sickrage.app.config.enable_sickrage_api and not self.provider.private:
-            resp = sickrage.app.api.provider_cache.get(self.providerID, show_id, season, episode)
+        if sickrage.app.config.general.enable_sickrage_api and not self.provider.private:
+            resp = sickrage.app.api.provider_cache.get(self.providerID, series_id, season, episode)
             if resp and 'data' in resp:
                 dbData += resp['data']
 
@@ -273,12 +277,13 @@ class TVCache(object):
         session = sickrage.app.cache_db.session()
         dbData += [x.as_dict() for x in
                    session.query(CacheDB.Provider).filter_by(provider=self.providerID,
-                                                             series_id=show_id,
+                                                             series_id=series_id,
                                                              season=season).filter(CacheDB.Provider.episodes.contains("|{}|".format(episode)))]
 
         for curResult in dbData:
-            show_object = find_show(int(curResult["series_id"]))
-            if not show_object:
+            # get series, if it's not one of our shows then ignore it
+            series = find_show(int(curResult["series_id"]), SeriesProviderID[curResult["series_provider_id"]])
+            if not series or series.series_provider_id != series_provider_id:
                 continue
 
             result = self.provider.get_result()
@@ -287,12 +292,12 @@ class TVCache(object):
             if not show_names.filter_bad_releases(curResult["name"]):
                 continue
 
-            # get the show object, or if it's not one of our shows then ignore it
-            result.show_id = int(curResult["series_id"])
+            result.series_id = int(curResult["series_id"])
+            result.series_provider_id = SeriesProviderID[curResult["series_provider_id"]]
 
             # skip if provider is anime only and show is not anime
-            if self.provider.anime_only and not show_object.is_anime:
-                sickrage.app.log.debug("" + str(show_object.name) + " is not an anime, skiping")
+            if self.provider.anime_only and not series.is_anime:
+                sickrage.app.log.debug("" + str(series.name) + " is not an anime, skiping")
                 continue
 
             # get season and ep data (ignoring multi-eps for now)
@@ -303,25 +308,25 @@ class TVCache(object):
             result.season = curSeason
             result.episodes = [int(curEp) for curEp in filter(None, curResult["episodes"].split("|"))]
 
-            result.quality = int(curResult["quality"])
+            result.quality = Qualities(curResult["quality"])
             result.release_group = curResult["release_group"]
             result.version = curResult["version"]
 
             # make sure we want the episode
             wantEp = False
             for result_episode in result.episodes:
-                if show_object.want_episode(result.season, result_episode, result.quality, manualSearch, downCurQuality):
+                if series.want_episode(result.season, result_episode, result.quality, manualSearch, downCurQuality):
                     wantEp = True
 
             if not wantEp:
-                sickrage.app.log.info("Skipping " + curResult["name"] + " because we don't want an episode that's " + Quality.qualityStrings[result.quality])
+                sickrage.app.log.info("Skipping " + curResult["name"] + " because we don't want an episode that's " + result.quality.display_name)
                 continue
 
             # build a result object
             result.name = curResult["name"]
             result.url = curResult["url"]
 
-            sickrage.app.log.info("Found cached {} result {}".format(result.type, result.name))
+            sickrage.app.log.info("Found cached {} result {}".format(result.provider_type, result.name))
 
             result.seeders = curResult.get("seeders", -1)
             result.leechers = curResult.get("leechers", -1)

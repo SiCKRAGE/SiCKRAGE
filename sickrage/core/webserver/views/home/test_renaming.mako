@@ -5,8 +5,8 @@
     import calendar
 
     import sickrage
-    from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings, SearchFormats
+    from sickrage.core.common import Quality
+    from sickrage.core.enums import SearchFormat
     from sickrage.core.helpers import srdatetime
 %>
 <%block name="content">
@@ -17,7 +17,7 @@
                     <h3>${title}</h3>
                 </div>
                 <div class="card-body">
-                    <input type="hidden" id="showID" value="${show.indexer_id}"/>
+                    <input type="hidden" id="series_id" value="${show.series_id}"/>
 
                     <div class="row">
                         <div class="col mx-auto">
@@ -26,12 +26,12 @@
                                 <div class="card-body">
                                     <h3>${_('Preview of the proposed name changes')}</h3>
                                     <blockquote>
-                                        % if show.search_format == SearchFormats.AIR_BY_DATE and sickrage.app.config.naming_custom_abd:
-                                    ${sickrage.app.config.naming_abd_pattern}
-                                        % elif show.search_format == SearchFormats.SPORTS and sickrage.app.config.naming_custom_sports:
-                                    ${sickrage.app.config.naming_sports_pattern}
+                                        % if show.search_format == SearchFormat.AIR_BY_DATE and sickrage.app.config.general.naming_custom_abd:
+                                    ${sickrage.app.config.general.naming_abd_pattern}
+                                        % elif show.search_format == SearchFormat.SPORTS and sickrage.app.config.general.naming_custom_sports:
+                                    ${sickrage.app.config.general.naming_sports_pattern}
                                         % else:
-                                    ${sickrage.app.config.naming_pattern}
+                                    ${sickrage.app.config.general.naming_pattern}
                                         % endif
                                     </blockquote>
                                 </div>
@@ -66,7 +66,7 @@
                                 </div>
                                 <div class="card-footer">
                                     <input type="submit" value="${_('Rename Selected')}" class="btn btn-success"/>
-                                    <a href="${srWebRoot}/home/displayShow?show=${show.indexer_id}"
+                                    <a href="${srWebRoot}/home/displayShow?show=${show.series_id}"
                                        class="btn btn-danger">${_('Cancel Rename')}</a>
                                 </div>
                             </div>
@@ -131,7 +131,7 @@
                                 </div>
                                 <div class="card-footer">
                                     <input type="submit" value="${_('Rename Selected')}" class="btn btn-success"/>
-                                    <a href="${srWebRoot}/home/displayShow?show=${show.indexer_id}"
+                                    <a href="${srWebRoot}/home/displayShow?show=${show.series_id}"
                                        class="btn btn-danger">${_('Cancel Rename')}</a>
                                 </div>
                             </div>

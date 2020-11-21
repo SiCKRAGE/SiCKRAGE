@@ -1,17 +1,16 @@
 <%inherit file="../layouts/main.mako"/>
 <%!
     import sickrage
-    from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings, statusStrings, SearchFormats
-    from sickrage.core.common import SD
+    from sickrage.core.common import Quality, Qualities, EpisodeStatus
+    from sickrage.core.enums import SearchFormat
 %>
 
 <%block name="content">
     <%
         if quality_value is not None:
-            initial_quality = int(quality_value)
+            initial_quality = quality_value
         else:
-            initial_quality = SD
+            initial_quality = Qualities.SD
 
         anyQualities, bestQualities = Quality.split_quality(initial_quality)
     %>
@@ -101,35 +100,35 @@
                                                 class="form-control form-control-inline input-sm">
                                             <option value="keep">&lt; Keep &gt;</option>
                                             <% selected = None %>
-                                            <option value="0" ${('', 'selected')[quality_value is not None and quality_value not in qualityPresets]}>
+                                            <option value="0" ${('', 'selected')[quality_value is not None and quality_value not in Qualities]}>
                                                 ${_('Custom')}
                                             </option>
-                                            % for curPreset in sorted(qualityPresets):
-                                                <option value="${curPreset}" ${('', 'selected')[quality_value == curPreset]}>${qualityPresetStrings[curPreset]}</option>
+                                            % for item in Qualities:
+                                                <option value="${item.name}" ${('', 'selected')[quality_value == item]}>${item.display_name}</option>
                                             % endfor
                                         </select>
 
                                         <div id="customQuality" style="padding-left: 0;">
                                             <div style="padding-right: 40px; text-align: left; float: left;">
                                                 <h5>Allowed</h5>
-                                                <% anyQualityList = list(filter(lambda x: x > Quality.NONE, Quality.qualityStrings)) %>
+                                                <% anyQualityList = list(filter(lambda x: x > Qualities.NONE, Qualities)) %>
                                                 <select id="anyQualities" name="anyQualities" multiple="multiple"
                                                         size="${len(anyQualityList)}"
                                                         class="form-control form-control-inline input-sm">
-                                                    % for curQuality in sorted(anyQualityList):
-                                                        <option value="${curQuality}" ${('', 'selected')[curQuality in anyQualities]}>${Quality.qualityStrings[curQuality]}</option>
+                                                    % for item in sorted(anyQualityList):
+                                                        <option value="${item.name}" ${('', 'selected')[item in anyQualities]}>${item.display_name}</option>
                                                     % endfor
                                                 </select>
                                             </div>
 
                                             <div style="text-align: left; float: left;">
                                                 <h5>Preferred</h5>
-                                                <% bestQualityList = list(filter(lambda x: x >= Quality.SDTV, Quality.qualityStrings)) %>
+                                                <% bestQualityList = list(filter(lambda x: x >= Qualities.SDTV, Qualities)) %>
                                                 <select id="bestQualities" name="bestQualities" multiple="multiple"
                                                         size="${len(bestQualityList)}"
                                                         class="form-control form-control-inline input-sm">
-                                                    % for curQuality in sorted(bestQualityList):
-                                                        <option value="${curQuality}" ${('', 'selected')[curQuality in bestQualities]}>${Quality.qualityStrings[curQuality]}</option>
+                                                    % for item in sorted(bestQualityList):
+                                                        <option value="${item.name}" ${('', 'selected')[item in bestQualities]}>${item.display_name}</option>
                                                     % endfor
                                                 </select>
                                             </div>
@@ -149,7 +148,7 @@
                                             <option value="enable" ${('', 'selected')[scene_value == 1]}>${_('Yes')}</option>
                                             <option value="disable" ${('', 'selected')[scene_value == 0]}>${_('No')}</option>
                                         </select>
-                                        ${_('Use scene numbering instead of indexer numbering')}
+                                        ${_('Use scene numbering instead of series provider numbering')}
                                     </span>
                                 </label>
                             </div>
@@ -210,8 +209,8 @@
                                         <select id="edit_default_ep_status" name="default_ep_status"
                                                 class="form-control form-control-inline input-sm">
                                             <option value="keep">&lt; ${_('Keep')} &gt;</option>
-                                            % for curStatus in [WANTED, SKIPPED, IGNORED]:
-                                                <option value="${curStatus}" ${('', 'selected')[curStatus == default_ep_status_value]}>${statusStrings[curStatus]}</option>
+                                            % for item in [EpisodeStatus.WANTED, EpisodeStatus.SKIPPED, EpisodeStatus.IGNORED]:
+                                                <option value="${item.name}" ${('', 'selected')[item == default_ep_status_value]}>${item.display_name}</option>
                                             % endfor
                                         </select>
                                         ${_('This will set the status for future episodes.')}
@@ -248,8 +247,8 @@
                                             <select id="search_format" name="search_format"
                                                     class="form-control">
                                                 <option value="keep" ${('', 'selected')[search_format_value is None]}>&lt; ${_('Keep')}</option>
-                                                % for search_format, search_format_string in SearchFormats.search_format_strings.items():
-                                                    <option value="${search_format}" ${('', 'selected')[search_format_value == search_format]}>${search_format_string}</option>
+                                                % for item in SearchFormat:
+                                                    <option value="${item.name}" ${('', 'selected')[search_format_value == item]}>${item.display_name}</option>
                                                 % endfor
                                             </select>
                                         </div>

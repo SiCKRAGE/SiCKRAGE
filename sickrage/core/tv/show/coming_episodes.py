@@ -18,13 +18,54 @@
 
 
 import datetime
+import enum
 from functools import cmp_to_key
 
 import sickrage
-from sickrage.core.common import Quality, get_quality_string, WANTED, UNAIRED, timeFormat, dateFormat
+from sickrage.core.common import Qualities, EpisodeStatus
+from sickrage.core.common import timeFormat, dateFormat
 from sickrage.core.databases.main import MainDB
+from sickrage.core.helpers import flatten
 from sickrage.core.helpers.srdatetime import SRDateTime
 from sickrage.core.tv.show.helpers import get_show_list
+
+
+class ComingEpsLayout(enum.Enum):
+    POSTER = 'poster'
+    BANNER = 'banner'
+    CALENDAR = 'calendar'
+    LIST = 'list'
+
+    @property
+    def _strings(self):
+        return {
+            self.POSTER.name: 'Poster',
+            self.BANNER.name: 'Banner',
+            self.CALENDAR.name: 'Calendar',
+            self.LIST.name: 'List',
+        }
+
+    @property
+    def display_name(self):
+        return self._strings[self.name]
+
+
+class ComingEpsSortBy(enum.Enum):
+    DATE = 1
+    NETWORK = 2
+    SHOW = 3
+
+    @property
+    def _strings(self):
+        return {
+            self.DATE.name: 'Date',
+            self.NETWORK.name: 'Network',
+            self.SHOW.name: 'Show',
+        }
+
+    @property
+    def display_name(self):
+        return self._strings[self.name]
 
 
 class ComingEpisodes:
@@ -35,17 +76,18 @@ class ComingEpisodes:
     Later:    later than next week
     """
     categories = ['later', 'missed', 'soon', 'today']
-    sorts = {
-        'date': lambda a: a['localtime'].date(),
-        'network': cmp_to_key(lambda a, b: (a['network'], a['localtime'].date()) < (b['network'], b['localtime'].date())),
-        'show': cmp_to_key(lambda a, b: (a['show_name'], a['localtime'].date()) < (b['show_name'], b['localtime'].date())),
+
+    sort = {
+        ComingEpsSortBy.DATE.name: lambda a: a['localtime'].date(),
+        ComingEpsSortBy.NETWORK.name: cmp_to_key(lambda a, b: (a['network'], a['localtime'].date()) < (b['network'], b['localtime'].date())),
+        ComingEpsSortBy.SHOW.name: cmp_to_key(lambda a, b: (a['show_name'], a['localtime'].date()) < (b['show_name'], b['localtime'].date()))
     }
 
     @staticmethod
-    def get_coming_episodes(categories, sort, group, paused=False):
+    def get_coming_episodes(categories, sort_by, group, paused=False):
         """
         :param categories: The categories of coming episodes. See ``ComingEpisodes.categories``
-        :param sort: The sort to apply to the coming episodes. See ``ComingEpisodes.sorts``
+        :param sort: The sort to apply to the coming episodes. See ``ComingEpsSortBy``
         :param group: ``True`` to group the coming episodes by category, ``False`` otherwise
         :param paused: ``True`` to include paused shows, ``False`` otherwise
         :return: The list of coming episodes
@@ -58,8 +100,8 @@ class ComingEpisodes:
                 'description': episode.description,
                 'episode': episode.episode,
                 'imdb_id': show.imdb_id,
-                'indexer': episode.indexer,
-                'indexer_id': show.indexer_id,
+                'series_provider_id': show.series_provider_id,
+                'series_id': show.series_id,
                 'name': episode.name,
                 'network': show.network,
                 'paused': show.paused,
@@ -67,7 +109,7 @@ class ComingEpisodes:
                 'runtime': show.runtime,
                 'season': episode.season,
                 'show_name': show.name,
-                'showid': episode.showid,
+                'episode_id': episode.episode_id,
                 'status': show.status,
                 'localtime': SRDateTime(sickrage.app.tz_updater.parse_date_time(episode.airdate, show.airs, show.network), convert=True).dt
             }
@@ -75,9 +117,9 @@ class ComingEpisodes:
             if grouped:
                 to_return['airs'] = SRDateTime(to_return['localtime']).srftime(t_preset=timeFormat).lstrip('0').replace(' 0', ' ')
                 to_return['airdate'] = SRDateTime(to_return['localtime']).srfdate(d_preset=dateFormat)
-                to_return['quality'] = get_quality_string(to_return['quality'])
+                to_return['quality'] = Qualities(to_return['quality']).display_name
                 to_return['weekday'] = 1 + to_return['localtime'].date().weekday()
-                to_return['tvdbid'] = to_return['indexer_id']
+                to_return['series_provider_id'] = to_return['series_provider_id'].display_name
 
             if grouped:
                 if to_return['paused'] and not paused:
@@ -99,13 +141,10 @@ class ComingEpisodes:
             else:
                 results.append(to_return)
 
-        paused = sickrage.app.config.coming_eps_display_paused or paused
+        paused = sickrage.app.config.gui.coming_eps_display_paused or paused
 
         if not isinstance(categories, list):
             categories = categories.split('|')
-
-        if sort not in ComingEpisodes.sorts.keys():
-            sort = 'date'
 
         results = []
         grouped_results = {category: [] for category in categories}
@@ -113,22 +152,19 @@ class ComingEpisodes:
         today = datetime.date.today()
         next_week = datetime.date.today() + datetime.timedelta(days=7)
 
-        recently = datetime.date.today() - datetime.timedelta(days=sickrage.app.config.coming_eps_missed_range)
+        recently = datetime.date.today() - datetime.timedelta(days=sickrage.app.config.gui.coming_eps_missed_range)
 
-        qualities_list = Quality.DOWNLOADED + \
-                         Quality.SNATCHED + \
-                         Quality.SNATCHED_BEST + \
-                         Quality.SNATCHED_PROPER + \
-                         Quality.ARCHIVED + \
-                         Quality.IGNORED
+        qualities_list = flatten([EpisodeStatus.composites(EpisodeStatus.DOWNLOADED), EpisodeStatus.composites(EpisodeStatus.SNATCHED),
+                                  EpisodeStatus.composites(EpisodeStatus.SNATCHED_BEST), EpisodeStatus.composites(EpisodeStatus.SNATCHED_PROPER),
+                                  EpisodeStatus.composites(EpisodeStatus.ARCHIVED), EpisodeStatus.composites(EpisodeStatus.IGNORED)])
 
         for show in get_show_list():
             with sickrage.app.main_db.session() as session:
                 [add_result(show, episode, grouped=group) for episode in session.query(
                     MainDB.TVEpisode
                 ).filter_by(
-                    showid=show.indexer_id,
-                    indexer=show.indexer
+                    series_id=show.series_id,
+                    series_provider_id=show.series_provider_id
                 ).filter(
                     MainDB.TVEpisode.airdate < next_week,
                     MainDB.TVEpisode.airdate >= today,
@@ -136,35 +172,37 @@ class ComingEpisodes:
                     ~MainDB.TVEpisode.status.in_(qualities_list)
                 )]
 
-                if show.indexer_id not in [int(r['showid']) for r in results]:
+                if show.series_id not in [int(r['series_id']) for r in results]:
                     [add_result(show, episode, grouped=group) for episode in session.query(
                         MainDB.TVEpisode
                     ).filter_by(
-                        showid=show.indexer_id,
-                        indexer=show.indexer
+                        series_id=show.series_id,
+                        series_provider_id=show.series_provider_id
                     ).filter(
                         MainDB.TVEpisode.airdate >= next_week,
                         MainDB.TVEpisode.season != 0,
-                        ~MainDB.TVEpisode.status.in_(Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER)
+                        ~MainDB.TVEpisode.status.in_(flatten(
+                            [EpisodeStatus.composites(EpisodeStatus.DOWNLOADED), EpisodeStatus.composites(EpisodeStatus.SNATCHED),
+                             EpisodeStatus.composites(EpisodeStatus.SNATCHED_BEST), EpisodeStatus.composites(EpisodeStatus.SNATCHED_PROPER)]))
                     )]
 
                 [add_result(show, episode, grouped=group) for episode in session.query(
                     MainDB.TVEpisode
                 ).filter_by(
-                    showid=show.indexer_id,
-                    indexer=show.indexer
+                    series_id=show.series_id,
+                    series_provider_id=show.series_provider_id
                 ).filter(
                     MainDB.TVEpisode.airdate >= recently,
                     MainDB.TVEpisode.airdate < today,
                     MainDB.TVEpisode.season != 0,
-                    MainDB.TVEpisode.status.in_([WANTED, UNAIRED]),
+                    MainDB.TVEpisode.status.in_([EpisodeStatus.WANTED, EpisodeStatus.UNAIRED]),
                     ~MainDB.TVEpisode.status.in_(qualities_list)
                 )]
 
         if group:
             for category in categories:
-                grouped_results[category].sort(key=ComingEpisodes.sorts[sort])
+                grouped_results[category].sort(key=ComingEpisodes.sort[sort_by.name])
             return grouped_results
         else:
-            results.sort(key=ComingEpisodes.sorts[sort])
+            results.sort(key=ComingEpisodes.sort[sort_by.name])
             return results

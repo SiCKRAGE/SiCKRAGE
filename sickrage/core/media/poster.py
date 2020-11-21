@@ -29,8 +29,8 @@ class Poster(Media):
     Get the poster of a show
     """
 
-    def __init__(self, indexer_id, media_format='normal'):
-        super(Poster, self).__init__(indexer_id, media_format)
+    def __init__(self, series_id, series_provider_id, media_format='normal'):
+        super(Poster, self).__init__(series_id, series_provider_id, media_format)
 
     def get_default_media_name(self):
         return 'poster-thumb.png' if self.media_format == 'thumb' else 'poster.png'
@@ -39,10 +39,10 @@ class Poster(Media):
         media_file = ''
 
         if self.media_format == 'normal':
-            media_file = ImageCache().poster_path(self.indexer_id)
+            media_file = ImageCache().poster_path(self.series_id)
 
         if self.media_format == 'thumb':
-            media_file = ImageCache().poster_thumb_path(self.indexer_id)
+            media_file = ImageCache().poster_thumb_path(self.series_id)
 
         if not all([media_file, os.path.exists(media_file)]):
             media_file = os.path.join(self.get_media_root(), 'images', self.get_default_media_name())

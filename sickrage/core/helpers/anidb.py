@@ -6,11 +6,11 @@ from sickrage.core.exceptions import AnidbAdbaConnectionException
 
 def set_up_anidb_connection():
     """Connect to anidb."""
-    if not sickrage.app.config.use_anidb:
+    if not sickrage.app.config.anidb.enable:
         sickrage.app.log.debug('Usage of AniDB disabled. Skipping')
         return False
 
-    if not sickrage.app.config.anidb_username and not sickrage.app.config.anidb_password:
+    if not sickrage.app.config.anidb.username and not sickrage.app.config.anidb.password:
         sickrage.app.log.debug('AniDB username and/or password are not set. Aborting anidb lookup.')
         return False
 
@@ -23,7 +23,7 @@ def set_up_anidb_connection():
 
     try:
         if not sickrage.app.adba_connection.authed():
-            sickrage.app.adba_connection.auth(sickrage.app.config.anidb_username, sickrage.app.config.anidb_password)
+            sickrage.app.adba_connection.auth(sickrage.app.config.anidb.username, sickrage.app.config.anidb.password)
         else:
             return True
     except Exception as error:

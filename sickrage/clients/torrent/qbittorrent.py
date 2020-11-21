@@ -38,7 +38,7 @@ class QBittorrentAPI(TorrentClient):
         version = (1, 0, 0)
 
         url = urljoin(self.host, 'api/v2/app/webapiVersion')
-        response = self.session.get(url, verify=sickrage.app.config.torrent_verify_cert)
+        response = self.session.get(url, verify=sickrage.app.config.torrent.verify_cert)
 
         try:
             if response and response.text:
@@ -48,7 +48,7 @@ class QBittorrentAPI(TorrentClient):
                 status_code = response.status_code
                 if status_code == 404:
                     url = urljoin(self.host, 'version/api')
-                    response = self.session.get(url, verify=sickrage.app.config.torrent_verify_cert)
+                    response = self.session.get(url, verify=sickrage.app.config.torrent.verify_cert)
                     if response and response.text:
                         version = int(response.text)
                         version = (1, version % 100, 0)
@@ -66,7 +66,7 @@ class QBittorrentAPI(TorrentClient):
         }
 
         url = urljoin(self.host, 'api/v2/auth/login')
-        self.response = self.session.post(url, data=data, verify=sickrage.app.config.torrent_verify_cert)
+        self.response = self.session.post(url, data=data, verify=sickrage.app.config.torrent.verify_cert)
         if self.response and self.response.text and not self.response.text == 'Fails.':
             self.session.cookies = self.response.cookies
             self.auth = True
@@ -74,7 +74,7 @@ class QBittorrentAPI(TorrentClient):
             status_code = self.response.status_code
             if status_code == 404:
                 url = urljoin(self.host, 'login')
-                self.response = self.session.post(url, data=data, verify=sickrage.app.config.torrent_verify_cert)
+                self.response = self.session.post(url, data=data, verify=sickrage.app.config.torrent.verify_cert)
                 if self.response:
                     self.session.cookies = self.response.cookies
                     self.auth = True
@@ -87,7 +87,7 @@ class QBittorrentAPI(TorrentClient):
         return self.auth
 
     def _set_torrent_label(self, result):
-        label = sickrage.app.config.torrent_label_anime if find_show(result.show_id).is_anime else sickrage.app.config.torrent_label
+        label = sickrage.app.config.torrent.label_anime if find_show(result.series_id, result.series_provider_id).is_anime else sickrage.app.config.torrent.label
         if not label:
             return True
 
@@ -125,7 +125,7 @@ class QBittorrentAPI(TorrentClient):
 
     def _set_torrent_pause(self, result):
         command = 'api/v2/torrents' if self.api_version >= (2, 0, 0) else 'command'
-        state = 'pause' if sickrage.app.config.torrent_paused else 'resume'
+        state = 'pause' if sickrage.app.config.torrent.paused else 'resume'
         self.url = urljoin(self.host, '{command}/{state}'.format(command=command, state=state))
         data = {'hashes' if self.api_version >= (1, 18, 0) else 'hash': result.hash}
         return self._request(method='post', data=data, cookies=self.session.cookies)

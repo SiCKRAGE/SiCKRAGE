@@ -46,7 +46,7 @@ class uTorrentAPI(TorrentClient):
 
         self.response = self.session.get(self.url + 'token.html',
                                          timeout=120, auth=(self.username, self.password),
-                                         verify=bool(sickrage.app.config.torrent_verify_cert))
+                                         verify=bool(sickrage.app.config.torrent.verify_cert))
 
         if self.response and self.response.text:
             auth_match = re.findall("<div.*?>(.*?)</", self.response.text)
@@ -66,11 +66,11 @@ class uTorrentAPI(TorrentClient):
         return self._request(method='post', params=params, files=files, cookies=self.cookies)
 
     def _set_torrent_label(self, result):
-        label = sickrage.app.config.torrent_label
-        show_object = find_show(result.show_id)
+        label = sickrage.app.config.torrent.label
+        show_object = find_show(result.series_id, result.series_provider_id)
 
         if show_object.is_anime:
-            label = sickrage.app.config.torrent_label_anime
+            label = sickrage.app.config.torrent.label_anime
 
         params = {'action': 'setprops',
                   'hash': result.hash,
@@ -103,8 +103,8 @@ class uTorrentAPI(TorrentClient):
         return True
 
     def _set_torrent_seed_time(self, result):
-        if sickrage.app.config.torrent_seed_time:
-            time = 3600 * float(sickrage.app.config.torrent_seed_time)
+        if sickrage.app.config.torrent.seed_time:
+            time = 3600 * float(sickrage.app.config.torrent.seed_time)
             params = {'action': 'setprops',
                       'hash': result.hash,
                       's': 'seed_override',
@@ -130,7 +130,7 @@ class uTorrentAPI(TorrentClient):
             return True
 
     def _set_torrent_pause(self, result):
-        if sickrage.app.config.torrent_paused:
+        if sickrage.app.config.torrent.paused:
             params = {'action': 'pause', 'hash': result.hash}
         else:
             params = {'action': 'start', 'hash': result.hash}

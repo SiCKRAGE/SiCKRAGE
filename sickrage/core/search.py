@@ -25,14 +25,12 @@ import sickrage
 from sickrage.clients import get_client_instance
 from sickrage.clients.nzb.nzbget import NZBGet
 from sickrage.clients.nzb.sabnzbd import SabNZBd
+from sickrage.core.common import Quality, Qualities, EpisodeStatus
 from sickrage.core.common import (
-    Quality,
     SEASON_RESULT,
-    SNATCHED_BEST,
-    SNATCHED_PROPER,
-    SNATCHED,
     MULTI_EP_RESULT
 )
+from sickrage.core.enums import NzbMethod, TorrentMethod
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import show_names
 from sickrage.core.nzbSplitter import split_nzb_result
@@ -41,16 +39,16 @@ from sickrage.core.tv.show.history import (
     FailedHistory,
     History
 )
-from sickrage.notifiers import Notifiers
-from sickrage.providers import (
+from sickrage.notification_providers import NotificationProvider
+from sickrage.search_providers import (
     NZBProvider,
     NewznabProvider,
     TorrentProvider,
-    TorrentRssProvider
+    TorrentRssProvider, SearchProviderType
 )
 
 
-def snatch_episode(result, end_status=SNATCHED):
+def snatch_episode(result, end_status=EpisodeStatus.SNATCHED):
     """
     Contains the internal logic necessary to actually "snatch" a result that
     has been found.
@@ -63,50 +61,48 @@ def snatch_episode(result, end_status=SNATCHED):
     if result is None:
         return False
 
-    show_object = find_show(result.show_id)
+    show_object = find_show(result.series_id, result.series_provider_id)
 
     result.priority = 0  # -1 = low, 0 = normal, 1 = high
-    if sickrage.app.config.allow_high_priority:
+    if sickrage.app.config.general.allow_high_priority:
         # if it aired recently make it high priority
         for episode_number in result.episodes:
             if date.today() - show_object.get_episode(result.season, episode_number).airdate <= timedelta(days=7):
                 result.priority = 1
 
     if re.search(r'(^|[. _-])(proper|repack)([. _-]|$)', result.name, re.I) is not None:
-        end_status = SNATCHED_PROPER
+        end_status = EpisodeStatus.SNATCHED_PROPER
 
     # get result content
     result.content = result.provider.get_content(result.url)
 
     dlResult = False
-    if result.type in ("nzb", "nzbdata"):
-        if sickrage.app.config.nzb_method == "blackhole":
+    if result.provider_type in (SearchProviderType.NZB, SearchProviderType.NZBDATA):
+        if sickrage.app.config.general.nzb_method == NzbMethod.BLACKHOLE:
             dlResult = result.provider.download_result(result)
-        elif sickrage.app.config.nzb_method == "sabnzbd":
+        elif sickrage.app.config.general.nzb_method == NzbMethod.SABNZBD:
             dlResult = SabNZBd.sendNZB(result)
-        elif sickrage.app.config.nzb_method == "nzbget":
-            is_proper = True if end_status == SNATCHED_PROPER else False
+        elif sickrage.app.config.general.nzb_method == NzbMethod.NZBGET:
+            is_proper = True if end_status == EpisodeStatus.NATCHED_PROPER else False
             dlResult = NZBGet.sendNZB(result, is_proper)
-        elif sickrage.app.config.nzb_method == "download_station":
-            client = get_client_instance(sickrage.app.config.nzb_method, client_type='nzb')()
+        elif sickrage.app.config.general.nzb_method == NzbMethod.DOWNLOAD_STATION:
+            client = get_client_instance(sickrage.app.config.general.nzb_method.value, client_type='nzb')()
             dlResult = client.sendNZB(result)
-        else:
-            sickrage.app.log.error("Unknown NZB action specified in config: " + sickrage.app.config.nzb_method)
-    elif result.type in ("torrent", "torznab"):
+    elif result.provider_type in (SearchProviderType.TORRENT, SearchProviderType.TORZNAB):
         # add public trackers to torrent result
         if not result.provider.private:
             result = result.provider.add_trackers(result)
 
-        if sickrage.app.config.torrent_method == "blackhole":
+        if sickrage.app.config.general.torrent_method == TorrentMethod.BLACKHOLE:
             dlResult = result.provider.download_result(result)
         else:
             if any([result.content, result.url.startswith('magnet:')]):
-                client = get_client_instance(sickrage.app.config.torrent_method, client_type='torrent')()
+                client = get_client_instance(sickrage.app.config.general.torrent_method.value, client_type='torrent')()
                 dlResult = client.send_torrent(result)
             else:
                 sickrage.app.log.warning("Torrent file content is empty")
     else:
-        sickrage.app.log.error("Unknown result type, unable to download it (%r)" % result.type)
+        sickrage.app.log.error("Unknown result type, unable to download it (%r)" % result.provider_type.display_name)
 
     # no download results found
     if not dlResult:
@@ -122,26 +118,26 @@ def snatch_episode(result, end_status=SNATCHED):
         episode_obj = show_object.get_episode(result.season, episode_number)
 
         if is_first_best_match(result):
-            episode_obj.status = Quality.composite_status(SNATCHED_BEST, result.quality)
+            episode_obj.status = Quality.composite_status(EpisodeStatus.SNATCHED_BEST, result.quality)
         else:
             episode_obj.status = Quality.composite_status(end_status, result.quality)
 
         episode_obj.save()
 
         # don't notify when we re-download an episode
-        if episode_obj.status not in Quality.DOWNLOADED:
+        if episode_obj.status not in EpisodeStatus.composites(EpisodeStatus.DOWNLOADED):
             try:
-                Notifiers.mass_notify_snatch(episode_obj._format_pattern('%SN - %Sx%0E - %EN - %QN') + " from " + result.provider.name)
+                NotificationProvider.mass_notify_snatch(episode_obj._format_pattern('%SN - %Sx%0E - %EN - %QN') + " from " + result.provider.name)
             except Exception:
                 sickrage.app.log.debug("Failed to send snatch notification")
 
             trakt_data.append((episode_obj.season, episode_obj.episode))
 
-    data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate(trakt_data)
+    data = sickrage.app.notification_providers['trakt'].trakt_episode_data_generate(trakt_data)
 
-    if sickrage.app.config.use_trakt and sickrage.app.config.trakt_sync_watchlist:
+    if sickrage.app.config.trakt.enable and sickrage.app.config.trakt.sync_watchlist:
         if data:
-            sickrage.app.notifier_providers['trakt'].update_watchlist(show_object, data_episode=data, update="add")
+            sickrage.app.notification_providers['trakt'].update_watchlist(show_object, data_episode=data, update="add")
 
     return True
 
@@ -151,7 +147,7 @@ def pick_best_result(results, season_pack=False):
     Find the best result out of a list of search results for a show
 
     :param results: list of result objects
-    :param show_id: Show ID we check for
+    :param series_id: Show ID we check for
     :return: best result object
     """
 
@@ -163,14 +159,14 @@ def pick_best_result(results, season_pack=False):
 
     # find the best result for the current episode
     for cur_result in results:
-        show_obj = find_show(cur_result.show_id)
+        show_obj = find_show(cur_result.series_id, cur_result.series_provider_id)
 
         # build the black And white list
         if show_obj.is_anime:
             if not show_obj.release_groups.is_valid(cur_result):
                 continue
 
-        sickrage.app.log.info("Quality of " + cur_result.name + " is " + Quality.qualityStrings[cur_result.quality])
+        sickrage.app.log.info("Quality of " + cur_result.name + " is " + cur_result.quality.display_name)
 
         any_qualities, best_qualities = Quality.split_quality(show_obj.quality)
         if cur_result.quality not in any_qualities + best_qualities:
@@ -178,15 +174,15 @@ def pick_best_result(results, season_pack=False):
             continue
 
         # check if seeders meet out minimum requirements, disgard result if it does not
-        if hasattr(cur_result.provider, 'minseed') and cur_result.seeders not in (-1, None):
-            if int(cur_result.seeders) < min(cur_result.provider.minseed, 1):
+        if cur_result.provider.custom_settings.get('minseed', 0) and cur_result.seeders not in (-1, None):
+            if int(cur_result.seeders) < min(cur_result.provider.custom_settings.get('minseed', 0), 1):
                 sickrage.app.log.info("Discarding torrent because it doesn't meet the minimum seeders: {}. Seeders:  "
                                       "{}".format(cur_result.name, cur_result.seeders))
                 continue
 
         # check if leechers meet out minimum requirements, disgard result if it does not
-        if hasattr(cur_result.provider, 'minleech') and cur_result.leechers not in (-1, None):
-            if int(cur_result.leechers) < min(cur_result.provider.minleech, 0):
+        if cur_result.provider.custom_settings.get('minleech', 0) and cur_result.leechers not in (-1, None):
+            if int(cur_result.leechers) < min(cur_result.provider.custom_settings.get('minleech', 0), 0):
                 sickrage.app.log.info("Discarding torrent because it doesn't meet the minimum leechers: {}. Leechers:  "
                                       "{}".format(cur_result.name, cur_result.leechers))
                 continue
@@ -211,24 +207,26 @@ def pick_best_result(results, season_pack=False):
             # quality definition video file size constraints check
             try:
                 if cur_result.size:
-                    quality_size = sickrage.app.config.quality_sizes[cur_result.quality]
+                    quality_size_min = sickrage.app.config.quality_sizes[cur_result.quality.name]['min_size']
+                    quality_size_max = sickrage.app.config.quality_sizes[cur_result.quality.name]['max_size']
 
-                    if season_pack and not len(cur_result.episodes):
-                        episode_count = len([x for x in show_obj.episodes if x.season == cur_result.season])
-                        file_size = float(cur_result.size / episode_count / 1000000)
-                    else:
-                        file_size = float(cur_result.size / len(cur_result.episodes) / 1000000)
+                    if quality_size_min != 0 and quality_size_max != 0:
+                        if season_pack and not len(cur_result.episodes):
+                            episode_count = len([x for x in show_obj.episodes if x.season == cur_result.season])
+                            file_size = float(cur_result.size / episode_count / 1000000)
+                        else:
+                            file_size = float(cur_result.size / len(cur_result.episodes) / 1000000)
 
-                    if file_size > quality_size:
-                        raise Exception("Ignoring " + cur_result.name + " with size: {} based on quality size filter: {}".format(file_size, quality_size))
+                        if quality_size_min > file_size > quality_size_max:
+                            raise Exception("Ignoring " + cur_result.name + " with size {}".format(file_size))
             except Exception as e:
                 sickrage.app.log.info(e)
                 continue
 
         # verify result content
         # if not cur_result.provider.private:
-        #     if cur_result.type in ["nzb", "torrent"] and not cur_result.provider.get_content(cur_result.url):
-        #         if not sickrage.app.config.download_unverified_magnet_link and cur_result.url.startswith('magnet'):
+        #     if cur_result.provider_type in ["nzb", "torrent"] and not cur_result.provider.get_content(cur_result.url):
+        #         if not sickrage.app.config.general.download_unverified_magnet_link and cur_result.url.startswith('magnet'):
         #             sickrage.app.log.info("Ignoring {} because we are unable to verify the download url".format(cur_result.name))
         #             continue
 
@@ -266,7 +264,7 @@ def is_final_result(result):
 
     sickrage.app.log.debug("Checking if we should keep searching after we've found " + result.name)
 
-    show_obj = find_show(result.show_id)
+    show_obj = find_show(result.series_id, result.series_provider_id)
 
     any_qualities, best_qualities = Quality.split_quality(show_obj.quality)
 
@@ -297,7 +295,7 @@ def is_first_best_match(result):
 
     sickrage.app.log.debug("Checking if we should archive our first best quality match for episode " + result.name)
 
-    show_obj = find_show(result.show_id)
+    show_obj = find_show(result.series_id, result.series_provider_id)
 
     any_qualities, best_qualities = Quality.split_quality(show_obj.quality)
 
@@ -309,11 +307,11 @@ def is_first_best_match(result):
     return False
 
 
-def search_providers(show_id, season, episode, manualSearch=False, downCurQuality=False, cacheOnly=False):
+def search_providers(series_id, series_provider_id, season, episode, manualSearch=False, downCurQuality=False, cacheOnly=False):
     """
     Walk providers for information on shows
 
-    :param show_id: Show ID we are looking for
+    :param series_id: Show ID we are looking for
     :param episodes: Episode IDs we hope to find
     :param manualSearch: Boolean, is this a manual search?
     :param downCurQuality: Boolean, should we re-download currently available quality file
@@ -322,19 +320,19 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
 
     orig_thread_name = threading.currentThread().getName()
 
-    show_object = find_show(show_id)
+    show_object = find_show(series_id, series_provider_id)
 
     final_results = []
 
-    for providerID, providerObj in sickrage.app.search_providers.sort(randomize=sickrage.app.config.randomize_providers).items():
+    for providerID, providerObj in sickrage.app.search_providers.sort(randomize=sickrage.app.config.general.randomize_providers).items():
         # check if provider is enabled
         if not providerObj.is_enabled:
             continue
 
         # check provider type
-        if not sickrage.app.config.use_nzbs and providerObj.type in [NZBProvider.type, NewznabProvider.type]:
+        if not sickrage.app.config.general.use_nzbs and providerObj.provider_type in [NZBProvider.provider_type, NewznabProvider.provider_type]:
             continue
-        elif not sickrage.app.config.use_torrents and providerObj.type in [TorrentProvider.type, TorrentRssProvider.type]:
+        elif not sickrage.app.config.general.use_torrents and providerObj.provider_type in [TorrentProvider.provider_type, TorrentRssProvider.provider_type]:
             continue
 
         if providerObj.anime_only and not show_object.is_anime:
@@ -362,7 +360,8 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
                     sickrage.app.log.info("Performing season pack search for " + show_object.name)
 
                 # search provider for episodes
-                found_results = providerObj.find_search_results(show_id,
+                found_results = providerObj.find_search_results(series_id,
+                                                                series_provider_id,
                                                                 season,
                                                                 episode,
                                                                 search_mode,
@@ -382,7 +381,7 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
                 # make a list of all the results for this provider
                 for search_result in found_results:
                     # Sort results by seeders if available
-                    if providerObj.type == 'torrent' or getattr(providerObj, 'torznab', False):
+                    if providerObj.provider_type == SearchProviderType.TORRENT or getattr(providerObj, 'torznab', False):
                         found_results[search_result].sort(key=lambda k: int(k.seeders), reverse=True)
                 break
             elif not providerObj.search_fallback or search_count == 2:
@@ -411,16 +410,16 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
         highest_quality_overall = 0
         for cur_episode in found_results:
             for cur_result in found_results[cur_episode]:
-                if cur_result.quality != Quality.UNKNOWN and cur_result.quality > highest_quality_overall:
+                if cur_result.quality != Qualities.UNKNOWN and cur_result.quality > highest_quality_overall:
                     highest_quality_overall = cur_result.quality
 
-        sickrage.app.log.debug("The highest quality of any match is " + Quality.qualityStrings[highest_quality_overall])
+        sickrage.app.log.debug("The highest quality of any match is " + highest_quality_overall.display_name)
 
         # see if every episode is wanted
         if best_season_result:
             # get the quality of the season nzb
             season_qual = best_season_result.quality
-            sickrage.app.log.debug("The quality of the season " + best_season_result.provider.type + " is " + Quality.qualityStrings[season_qual])
+            sickrage.app.log.debug("The quality of the season " + best_season_result.provider.provider_type.display_name + " is " + season_qual.display_name)
 
             all_episodes = set([x.episode for x in show_object.episodes if x.season == best_season_result.season])
 
@@ -439,7 +438,7 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
             # with it (unless single episodes are preferred)
             if all_wanted and best_season_result.quality == highest_quality_overall:
                 sickrage.app.log.info("Every ep in this season is needed, "
-                                      "downloading the whole " + best_season_result.provider.type + " " + best_season_result.name)
+                                      "downloading the whole " + best_season_result.provider.provider_type.display_name + " " + best_season_result.name)
 
                 best_season_result.episodes = all_episodes
 
@@ -447,7 +446,7 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
             elif not any_wanted:
                 sickrage.app.log.debug("No eps from this season are wanted at this quality, ignoring the result of {}".format(best_season_result.name))
             else:
-                if best_season_result.provider.type == NZBProvider.type:
+                if best_season_result.provider.provider_type == NZBProvider.provider_type:
                     sickrage.app.log.debug("Breaking apart the NZB and adding the individual ones to our results")
 
                     # if not, break it apart and add them as the lowest priority results
@@ -558,7 +557,7 @@ def search_providers(show_id, season, episode, manualSearch=False, downCurQualit
         # narrow results by comparing seeders for torrent results
         if len(final_results) > 1:
             final_results = list(set(
-                [a for a, b in itertools.product(final_results, repeat=len(final_results)) if a.provider.type == NZBProvider.type or a.seeders > b.seeders]))
+                [a for a, b in itertools.product(final_results, repeat=len(final_results)) if a.provider.provider_type == NZBProvider.provider_type or a.seeders > b.seeders]))
 
         # check that we got all the episodes we wanted first before doing a match and snatch
         for result in final_results.copy():

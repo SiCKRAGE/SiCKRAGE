@@ -18,19 +18,16 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
+# CPU Presets for sleep timers
+import enum
 import operator
 import pathlib
 import re
 from functools import reduce
 
-from sickrage.core.helpers.metadata import get_file_metadata, get_resolution
+from aenum import IntEnum, extend_enum
 
-# CPU Presets for sleep timers
-cpu_presets = {
-    'HIGH': 0.05,
-    'NORMAL': 0.02,
-    'LOW': 0.01
-}
+from sickrage.core.helpers.metadata import get_file_metadata, get_resolution
 
 countryList = {'Australia': 'AU',
                'Canada': 'CA',
@@ -44,257 +41,128 @@ timeFormat = '%A %I:%M %p'
 MULTI_EP_RESULT = -1
 SEASON_RESULT = -2
 
-# Episode statuses
-UNKNOWN = -1  # should never happen
-UNAIRED = 1  # episodes that haven't aired yet
-SNATCHED = 2  # qualified with quality
-WANTED = 3  # episodes we don't have but want to get
-DOWNLOADED = 4  # qualified with quality
-SKIPPED = 5  # episodes we don't want
-ARCHIVED = 6  # episodes that you don't have locally (counts toward download completion stats)
-IGNORED = 7  # episodes that you don't want included in your download stats
-SNATCHED_PROPER = 9  # qualified with quality
-SUBTITLED = 10  # qualified with quality
-FAILED = 11  # episode downloaded or snatched we don't want
-SNATCHED_BEST = 12  # episode redownloaded using best quality
-MISSED = 13  # episode missed
 
-NAMING_REPEAT = 1
-NAMING_EXTEND = 2
-NAMING_DUPLICATE = 4
-NAMING_LIMITED_EXTEND = 8
-NAMING_SEPARATED_REPEAT = 16
-NAMING_LIMITED_EXTEND_E_PREFIXED = 32
+class EpisodeStatus(IntEnum):
+    UNKNOWN = -1  # SHOULD NEVER HAPPEN
+    UNAIRED = 1  # EPISODES THAT HAVEN'T AIRED YET
+    SNATCHED = 2  # QUALIFIED WITH QUALITY
+    WANTED = 3  # EPISODES WE DON'T HAVE BUT WANT TO GET
+    DOWNLOADED = 4  # QUALIFIED WITH QUALITY
+    SKIPPED = 5  # EPISODES WE DON'T WANT
+    ARCHIVED = 6  # EPISODES THAT YOU DON'T HAVE LOCALLY (COUNTS TOWARD DOWNLOAD COMPLETION STATS)
+    IGNORED = 7  # EPISODES THAT YOU DON'T WANT INCLUDED IN YOUR DOWNLOAD STATS
+    SNATCHED_PROPER = 9  # QUALIFIED WITH QUALITY
+    SUBTITLED = 10  # QUALIFIED WITH QUALITY
+    FAILED = 11  # EPISODE DOWNLOADED OR SNATCHED WE DON'T WANT
+    SNATCHED_BEST = 12  # EPISODE REDOWNLOADED USING BEST QUALITY
+    MISSED = 13
 
-multiEpStrings = {NAMING_REPEAT: _("Repeat"),
-                  NAMING_SEPARATED_REPEAT: _("Repeat (Separated)"),
-                  NAMING_DUPLICATE: _("Duplicate"),
-                  NAMING_EXTEND: _("Extend"),
-                  NAMING_LIMITED_EXTEND: _("Extend (Limited)"),
-                  NAMING_LIMITED_EXTEND_E_PREFIXED: _("Extend (Limited, E-prefixed)")}
+    @classmethod
+    def _strings(cls):
+        return {
+            cls.UNKNOWN.name: "Unknown",
+            cls.UNAIRED.name: "Unaired",
+            cls.SNATCHED.name: "Snatched",
+            cls.SNATCHED_PROPER.name: "Snatched (Proper)",
+            cls.SNATCHED_BEST.name: "Snatched (Best)",
+            cls.DOWNLOADED.name: "Downloaded",
+            cls.SKIPPED.name: "Skipped",
+            cls.WANTED.name: "Wanted",
+            cls.ARCHIVED.name: "Archived",
+            cls.IGNORED.name: "Ignored",
+            cls.SUBTITLED.name: "Subtitled",
+            cls.FAILED.name: "Failed",
+            cls.MISSED.name: "Missed"
+        }
 
+    @classmethod
+    def _prefix_strings(cls):
+        return {
+            cls.DOWNLOADED.name: _("Downloaded"),
+            cls.SNATCHED.name: _("Snatched"),
+            cls.SNATCHED_PROPER.name: _("Snatched (Proper)"),
+            cls.SNATCHED_BEST.name: _("Snatched (Best)"),
+            cls.ARCHIVED.name: _("Archived"),
+            cls.FAILED.name: _("Failed"),
+            cls.MISSED.name: _("Missed")
+        }
 
-class StatusStrings(dict):
-    def __setitem__(self, key, value):
-        super(StatusStrings, self).__setitem__(int(key), value)
+    @property
+    def display_name(self):
+        status, quality = Quality.split_composite_status(self)
+        if quality == Qualities.NONE:
+            return self._strings()[status.name]
+        return self._strings()[status.name] + " (" + quality.display_name + ")"
 
-    def __missing__(self, key):
-        """
-        If the key is not found, search for the missing key in qualities
+    @property
+    def prefix_name(self):
+        return self._prefix_strings()[self.name]
 
-        Keys must be convertible to int or a ValueError will be raised.  This is intentional to match old functionality until
-        the old StatusStrings is fully deprecated, then we will raise a KeyError instead, where appropriate.
-        """
-
-        qualities = Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED + Quality.FAILED
-
-        if isinstance(key, int):  # if the key is already an int...
-            if key in list(self.keys()) + qualities:
-                status, quality = Quality.split_composite_status(key)
-                if not quality:  # If a Quality is not listed...
-                    return self[status]  # ...return the status...
-                return self[status] + " (" + Quality.qualityStrings[quality] + ")"  # ...otherwise append the quality to the status
-            return ''  # return '' to match old functionality when the numeric key is not found
-        return self[int(key)]
-
-    def __contains__(self, key):
-        """
-        Checks for existence of key
-
-        Unlike __missing__() this will NOT raise a ValueError to match expected functionality
-        when checking for 'key in dict'
-        """
-
-        qualities = Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED + Quality.FAILED
-
-        try:
-            # This will raise a ValueError if we can't convert the key to int
-            return int(key) in list(self.keys()) or int(key) in qualities
-        except ValueError:  # The key is not numeric and since we only want numeric keys...
-            # ...and we don't want this function to fail...
-            pass  # ...suppress the ValueError and do nothing, the key does not exist
-
-
-statusStrings = StatusStrings({UNKNOWN: _("Unknown"),
-                               UNAIRED: _("Unaired"),
-                               SNATCHED: _("Snatched"),
-                               SNATCHED_PROPER: _("Snatched (Proper)"),
-                               SNATCHED_BEST: _("Snatched (Best)"),
-                               DOWNLOADED: _("Downloaded"),
-                               SKIPPED: _("Skipped"),
-                               WANTED: _("Wanted"),
-                               ARCHIVED: _("Archived"),
-                               IGNORED: _("Ignored"),
-                               SUBTITLED: _("Subtitled"),
-                               FAILED: _("Failed"),
-                               MISSED: _("Missed")})
+    @staticmethod
+    def composites(status):
+        return {
+            EpisodeStatus.DOWNLOADED: [EpisodeStatus[f"{EpisodeStatus.DOWNLOADED.name}_{q.name}"] for q in Qualities if not q.is_preset],
+            EpisodeStatus.SNATCHED: [EpisodeStatus[f"{EpisodeStatus.SNATCHED.name}_{q.name}"] for q in Qualities if not q.is_preset],
+            EpisodeStatus.SNATCHED_PROPER: [EpisodeStatus[f"{EpisodeStatus.SNATCHED_PROPER.name}_{q.name}"] for q in Qualities if not q.is_preset],
+            EpisodeStatus.SNATCHED_BEST: [EpisodeStatus[f"{EpisodeStatus.SNATCHED_BEST.name}_{q.name}"] for q in Qualities if not q.is_preset],
+            EpisodeStatus.ARCHIVED: [EpisodeStatus[f"{EpisodeStatus.ARCHIVED.name}_{q.name}"] for q in Qualities if not q.is_preset],
+            EpisodeStatus.FAILED: [EpisodeStatus[f"{EpisodeStatus.FAILED.name}_{q.name}"] for q in Qualities if not q.is_preset],
+            EpisodeStatus.IGNORED: [EpisodeStatus[f"{EpisodeStatus.IGNORED.name}_{q.name}"] for q in Qualities if not q.is_preset],
+        }[status]
 
 
-class SearchFormats(object):
-    STANDARD = 1
-    AIR_BY_DATE = 2
-    ANIME = 3
-    SPORTS = 4
-    COLLECTION = 6
+class Overview(enum.Enum):
+    UNAIRED = EpisodeStatus.UNAIRED.value  # 1
+    SNATCHED = EpisodeStatus.SNATCHED.value  # 2
+    WANTED = EpisodeStatus.WANTED.value  # 3
+    GOOD = EpisodeStatus.DOWNLOADED.value  # 4
+    SKIPPED = EpisodeStatus.SKIPPED.value  # 5
+    SNATCHED_PROPER = EpisodeStatus.SNATCHED_PROPER.value  # 9
+    SNATCHED_BEST = EpisodeStatus.SNATCHED_BEST.value  # 12
+    MISSED = EpisodeStatus.MISSED.value  # 13
+    LOW_QUALITY = 50
 
-    search_format_strings = {
-        STANDARD: 'Standard (Show.S01E01)',
-        AIR_BY_DATE: 'Air By Date (Show.2010.03.02)',
-        ANIME: 'Anime (Show.265)',
-        SPORTS: 'Sports (Show.2010.03.02)',
-        COLLECTION: 'Collection (Show.Series.1.1of10) or (Show.Series.1.Part.1)'
-    }
+    @property
+    def _strings(self):
+        return {
+            self.SKIPPED.name: "skipped",
+            self.WANTED.name: "wanted",
+            self.LOW_QUALITY.name: "low-quality",
+            self.GOOD.name: "good",
+            self.UNAIRED.name: "unaired",
+            self.SNATCHED.name: "snatched",
+            self.SNATCHED_BEST.name: "snatched",
+            self.SNATCHED_PROPER.name: "snatched",
+            self.MISSED.name: "missed"
+        }
+
+    @property
+    def css_name(self):
+        return self._strings[self.name]
 
 
 class Quality(object):
-    NONE = 0  # 0
-    SDTV = 1  # 1
-    SDDVD = 1 << 1  # 2
-    HDTV = 1 << 2  # 4
-    RAWHDTV = 1 << 3  # 8  -- 720p/1080i mpeg2 (trollhd releases)
-    FULLHDTV = 1 << 4  # 16 -- 1080p HDTV (QCF releases)
-    HDWEBDL = 1 << 5  # 32
-    FULLHDWEBDL = 1 << 6  # 64 -- 1080p web-dl
-    HDBLURAY = 1 << 7  # 128
-    FULLHDBLURAY = 1 << 8  # 256
-    UHD_4K_TV = 1 << 9  # 512 -- 2160p aka 4K UHD aka UHD-1
-    UHD_4K_WEBDL = 1 << 10  # 1024
-    UHD_4K_BLURAY = 1 << 11  # 2048
-    UHD_8K_TV = 1 << 12  # 4096 -- 4320p aka 8K UHD aka UHD-2
-    UHD_8K_WEBDL = 1 << 13  # 8192
-    UHD_8K_BLURAY = 1 << 14  # 16384
-    ANYHDTV = HDTV | FULLHDTV  # 20
-    ANYWEBDL = HDWEBDL | FULLHDWEBDL  # 96
-    ANYBLURAY = HDBLURAY | FULLHDBLURAY  # 384
-
-    # put these bits at the other end of the spectrum, far enough out that they shouldn't interfere
-    UNKNOWN = 1 << 15  # 32768
-
-    qualitySizes = {NONE: 0,
-                    UNKNOWN: 500,
-                    SDTV: 1200,
-                    SDDVD: 1200,
-                    HDTV: 1500,
-                    RAWHDTV: 1500,
-                    FULLHDTV: 1500,
-                    HDWEBDL: 1500,
-                    FULLHDWEBDL: 1800,
-                    HDBLURAY: 1500,
-                    FULLHDBLURAY: 1800,
-                    UHD_4K_TV: 8000,
-                    UHD_8K_TV: 16000,
-                    UHD_4K_WEBDL: 8000,
-                    UHD_8K_WEBDL: 16000,
-                    UHD_4K_BLURAY: 8000,
-                    UHD_8K_BLURAY: 16000}
-
-    qualityStrings = {NONE: "N/A",
-                      UNKNOWN: "Unknown",
-                      SDTV: "SDTV",
-                      SDDVD: "SD DVD",
-                      HDTV: "720p HDTV",
-                      RAWHDTV: "RawHD",
-                      FULLHDTV: "1080p HDTV",
-                      HDWEBDL: "720p WEB-DL",
-                      FULLHDWEBDL: "1080p WEB-DL",
-                      HDBLURAY: "720p BluRay",
-                      FULLHDBLURAY: "1080p BluRay",
-                      UHD_4K_TV: "4K UHD TV",
-                      UHD_8K_TV: "8K UHD TV",
-                      UHD_4K_WEBDL: "4K UHD WEB-DL",
-                      UHD_8K_WEBDL: "8K UHD WEB-DL",
-                      UHD_4K_BLURAY: "4K UHD BluRay",
-                      UHD_8K_BLURAY: "8K UHD BluRay"}
-
-    sceneQualityStrings = {NONE: "N/A",
-                           UNKNOWN: "Unknown",
-                           SDTV: "HDTV",
-                           SDDVD: "",
-                           HDTV: "720p HDTV",
-                           RAWHDTV: "1080i HDTV",
-                           FULLHDTV: "1080p HDTV",
-                           HDWEBDL: "720p WEB-DL",
-                           FULLHDWEBDL: "1080p WEB-DL",
-                           HDBLURAY: "720p BluRay",
-                           FULLHDBLURAY: "1080p BluRay",
-                           UHD_4K_TV: "4K UHD TV",
-                           UHD_8K_TV: "8K UHD TV",
-                           UHD_4K_WEBDL: "4K UHD WEB-DL",
-                           UHD_8K_WEBDL: "8K UHD WEB-DL",
-                           UHD_4K_BLURAY: "4K UHD BluRay",
-                           UHD_8K_BLURAY: "8K UHD BluRay"}
-
-    combinedQualityStrings = {ANYHDTV: "HDTV",
-                              ANYWEBDL: "WEB-DL",
-                              ANYBLURAY: "BluRay"}
-
-    cssClassStrings = {NONE: "N/A",
-                       UNKNOWN: "Unknown",
-                       SDTV: "SDTV",
-                       SDDVD: "SDDVD",
-                       HDTV: "HD720p",
-                       RAWHDTV: "RawHD",
-                       FULLHDTV: "HD1080p",
-                       HDWEBDL: "HD720p",
-                       FULLHDWEBDL: "HD1080p",
-                       HDBLURAY: "HD720p",
-                       FULLHDBLURAY: "HD1080p",
-                       UHD_4K_TV: "UHD-4K",
-                       UHD_8K_TV: "UHD-8K",
-                       UHD_4K_WEBDL: "UHD-4K",
-                       UHD_8K_WEBDL: "UHD-8K",
-                       UHD_4K_BLURAY: "UHD-4K",
-                       UHD_8K_BLURAY: "UHD-8K",
-                       ANYHDTV: "any-hd",
-                       ANYWEBDL: "any-hd",
-                       ANYBLURAY: "any-hd"}
-
-    statusPrefixes = {DOWNLOADED: _("Downloaded"),
-                      SNATCHED: _("Snatched"),
-                      SNATCHED_PROPER: _("Snatched (Proper)"),
-                      SNATCHED_BEST: _("Snatched (Best)"),
-                      ARCHIVED: _("Archived"),
-                      FAILED: _("Failed"),
-                      MISSED: _("Missed"), }
-
-    @staticmethod
-    def _get_status_strings(status):
-        """
-        Returns string values associated with Status prefix
-
-        :param status: Status prefix to resolve
-        :return: Human readable status value
-        """
-        toReturn = {}
-        for q in Quality.qualityStrings.keys():
-            toReturn[Quality.composite_status(status, q)] = Quality.statusPrefixes[status] + " (" + \
-                                                            Quality.qualityStrings[q] + ")"
-        return toReturn
-
     @staticmethod
     def combine_qualities(anyQualities, bestQualities):
-        anyQuality = 0
-        bestQuality = 0
+        any_quality = 0
+        best_quality = 0
 
         if anyQualities:
-            anyQuality = reduce(operator.or_, anyQualities, anyQuality)
+            any_quality = reduce(operator.or_, anyQualities, any_quality)
         if bestQualities:
-            bestQuality = reduce(operator.or_, bestQualities, bestQuality)
+            best_quality = reduce(operator.or_, bestQualities, best_quality)
 
-        return anyQuality | (bestQuality << 16)
+        return any_quality | (best_quality << 16)
 
     @staticmethod
     def split_quality(quality):
-        anyQualities = []
-        bestQualities = []
+        any_qualities = [quality_flag for quality_flag in Qualities if
+                         quality_flag in Qualities(quality) and quality_flag and not quality_flag.is_preset]
 
-        for curQual in Quality.qualityStrings.keys():
-            if curQual & quality:
-                anyQualities.append(curQual)
-            if curQual << 16 & quality:
-                bestQualities.append(curQual)
+        best_qualities = [quality_flag for quality_flag in Qualities if
+                          quality_flag in Qualities(quality >> 16) and quality_flag and not quality_flag.is_preset]
 
-        return sorted(anyQualities), sorted(bestQualities)
+        return sorted(any_qualities), sorted(best_qualities)
 
     @staticmethod
     def name_quality(name, anime=False):
@@ -308,17 +176,17 @@ class Quality(object):
 
         # Try Scene names first
         quality = Quality.scene_quality(name, anime)
-        if quality != Quality.UNKNOWN:
+        if quality != Qualities.UNKNOWN:
             return quality
 
         quality = Quality.quality_from_file_meta(name)
-        if quality != Quality.UNKNOWN:
+        if quality != Qualities.UNKNOWN:
             return quality
 
         if name.lower().endswith(".ts"):
-            return Quality.RAWHDTV
+            return Qualities.RAWHDTV
 
-        return Quality.UNKNOWN
+        return Qualities.UNKNOWN
 
     @staticmethod
     def scene_quality(name, anime=False):
@@ -330,9 +198,7 @@ class Quality(object):
         :return: Quality prefix
         """
 
-        # pylint: disable=R0912
-
-        ret = Quality.UNKNOWN
+        ret = Qualities.UNKNOWN
         if not name:
             return ret
 
@@ -341,103 +207,89 @@ class Quality(object):
         check_name = lambda l, func: func([re.search(x, name, re.I) for x in l])
 
         if anime:
-            dvdOptions = check_name([r"dvd", r"dvdrip"], any)
-            blueRayOptions = check_name([r"BD", r"blue?-?ray"], any)
-            sdOptions = check_name([r"360p", r"480p", r"848x480", r"XviD"], any)
-            hdOptions = check_name([r"720p", r"1280x720", r"960x720"], any)
-            fullHD = check_name([r"1080p", r"1920x1080"], any)
+            dvd_options = check_name([r"dvd", r"dvdrip"], any)
+            blue_ray_options = check_name([r"BD", r"blue?-?ray"], any)
+            sd_options = check_name([r"360p", r"480p", r"848x480", r"XviD"], any)
+            hd_options = check_name([r"720p", r"1280x720", r"960x720"], any)
+            full_hd = check_name([r"1080p", r"1920x1080"], any)
 
-            if sdOptions and not blueRayOptions and not dvdOptions:
-                ret = Quality.SDTV
-            elif dvdOptions:
-                ret = Quality.SDDVD
-            elif hdOptions and not blueRayOptions and not fullHD:
-                ret = Quality.HDTV
-            elif fullHD and not blueRayOptions and not hdOptions:
-                ret = Quality.FULLHDTV
-            elif hdOptions and not blueRayOptions and not fullHD:
-                ret = Quality.HDWEBDL
-            elif blueRayOptions and hdOptions and not fullHD:
-                ret = Quality.HDBLURAY
-            elif blueRayOptions and fullHD and not hdOptions:
-                ret = Quality.FULLHDBLURAY
+            if sd_options and not blue_ray_options and not dvd_options:
+                ret = Qualities.SDTV
+            elif dvd_options:
+                ret = Qualities.SDDVD
+            elif hd_options and not blue_ray_options and not full_hd:
+                ret = Qualities.HDTV
+            elif full_hd and not blue_ray_options and not hd_options:
+                ret = Qualities.FULLHDTV
+            elif hd_options and not blue_ray_options and not full_hd:
+                ret = Qualities.HDWEBDL
+            elif blue_ray_options and hd_options and not full_hd:
+                ret = Qualities.HDBLURAY
+            elif blue_ray_options and full_hd and not hd_options:
+                ret = Qualities.FULLHDBLURAY
 
             return ret
 
         if (check_name([r"480p|\bweb\b|web.?dl|web(rip|mux|hd)|[sph]d.?tv|dsr|tv(rip|mux)|satrip", r"xvid|divx|[xh].?26[45]"], all)
                 and not check_name([r"(720|1080|2160|4320)[pi]"], all)
                 and not check_name([r"hr.ws.pdtv.[xh].?26[45]"], any)):
-            ret = Quality.SDTV
+            ret = Qualities.SDTV
         elif (check_name([r"dvd(rip|mux)|b[rd](rip|mux)|blue?-?ray", r"xvid|divx|[xh].?26[45]"], all)
               and not check_name([r"(720|1080|2160|4320)[pi]"], all)
               and not check_name([r"hr.ws.pdtv.[xh].?26[45]"], any)):
-            ret = Quality.SDDVD
+            ret = Qualities.SDDVD
         elif (check_name([r"720p", r"hd.?tv", r"[xh].?26[45]"], all)
               or check_name([r"720p", r"hevc", r"[xh].?26[45]"], all)
               or check_name([r"hr.ws.pdtv.[xh].?26[45]"], any) and not check_name([r"1080[pi]"], all)):
-            ret = Quality.HDTV
+            ret = Qualities.HDTV
         elif (check_name([r"720p|1080i", r"hd.?tv", r"mpeg-?2"], all)
               or check_name([r"1080[pi].hdtv", r"h.?26[45]"], all)):
-            ret = Quality.RAWHDTV
+            ret = Qualities.RAWHDTV
         elif (check_name([r"1080p", r"hd.?tv", r"[xh].?26[45]"], all)
               or check_name([r"1080p", r"hevc", r"[xh].?26[45]"], all)):
-            ret = Quality.FULLHDTV
+            ret = Qualities.FULLHDTV
         elif (check_name([r"720p", r"\bweb\b|web.?dl|web(rip|mux|hd)"], all)
               or check_name([r"720p", r"itunes", r"[xh].?26[45]"], all)):
-            ret = Quality.HDWEBDL
+            ret = Qualities.HDWEBDL
         elif (check_name([r"1080p", r"\bweb\b|web.?dl|web(rip|mux|hd)"], all)
               or check_name([r"1080p", r"itunes", r"[xh].?26[45]"], all)):
-            ret = Quality.FULLHDWEBDL
+            ret = Qualities.FULLHDWEBDL
         elif check_name([r"720p", r"blue?-?ray|hddvd|b[rd](rip|mux)", r"[xh].?26[45]"], all):
-            ret = Quality.HDBLURAY
+            ret = Qualities.HDBLURAY
         elif check_name([r"1080p", r"blue?-?ray|hddvd|b[rd](rip|mux)", r"[xh].?26[45]"], all):
-            ret = Quality.FULLHDBLURAY
+            ret = Qualities.FULLHDBLURAY
         elif check_name([r"2160p", r"hd.?tv", r"[xh].?26[45]"], all):
-            ret = Quality.UHD_4K_TV
+            ret = Qualities.UHD_4K_TV
         elif check_name([r"4320p", r"hd.?tv", r"[xh].?26[45]"], all):
-            ret = Quality.UHD_8K_TV
+            ret = Qualities.UHD_8K_TV
         elif (check_name([r"2160p", r"\bweb\b|web.?dl|web(rip|mux|hd)"], all)
               or check_name([r"2160p", r"itunes", r"[xh].?26[45]"], all)):
-            ret = Quality.UHD_4K_WEBDL
+            ret = Qualities.UHD_4K_WEBDL
         elif (check_name([r"4320p", r"\bweb\b|web.?dl|web(rip|mux|hd)"], all)
               or check_name([r"4320p", r"itunes", r"[xh].?26[45]"], all)):
-            ret = Quality.UHD_8K_WEBDL
+            ret = Qualities.UHD_8K_WEBDL
         elif check_name([r"2160p", r"blue?-?ray|hddvd|b[rd](rip|mux)", r"[xh].?26[45]"], all):
-            ret = Quality.UHD_4K_BLURAY
+            ret = Qualities.UHD_4K_BLURAY
         elif check_name([r"4320p", r"blue?-?ray|hddvd|b[rd](rip|mux)", r"[xh].?26[45]"], all):
-            ret = Quality.UHD_8K_BLURAY
+            ret = Qualities.UHD_8K_BLURAY
 
         return ret
 
     @staticmethod
     def composite_status(status, quality):
-        return status + 100 * quality
-
-    @staticmethod
-    def quality_downloaded(status):
-        return (status - DOWNLOADED) / 100
+        return EpisodeStatus(status + 100 * quality)
 
     @staticmethod
     def split_composite_status(status):
         """Returns a tuple containing (status, quality)"""
-        if status == UNKNOWN:
-            return UNKNOWN, Quality.UNKNOWN
+        if status == EpisodeStatus.UNKNOWN:
+            return status, Qualities.UNKNOWN
 
-        for q in sorted(Quality.qualityStrings.keys(), reverse=True):
+        for q in sorted(Qualities, reverse=True):
             if status > q * 100:
-                return status - q * 100, q
+                return EpisodeStatus(status - q * 100), q
 
-        return status, Quality.NONE
-
-    @staticmethod
-    def status_from_composite_status(status):
-        status, quality = Quality.split_composite_status(status)
-        return status
-
-    @staticmethod
-    def quality_from_composite_status(status):
-        status, quality = Quality.split_composite_status(status)
-        return quality
+        return status, Qualities.NONE
 
     @staticmethod
     def quality_from_file_meta(filename):
@@ -449,7 +301,7 @@ class Quality(object):
         """
 
         data = {}
-        quality = Quality.UNKNOWN
+        quality = Qualities.UNKNOWN
 
         try:
             if pathlib.Path(filename).is_file():
@@ -467,16 +319,15 @@ class Quality(object):
                 webdl = re.search(r"\bweb\b|web.?dl|web(rip|mux|hd)", base_filename, re.I) is not None
 
                 if 3240 < data['resolution_height']:
-                    quality = ((Quality.UHD_8K_TV, Quality.UHD_8K_BLURAY)[bluray], Quality.UHD_8K_WEBDL)[webdl]
+                    quality = ((Qualities.UHD_8K_TV, Qualities.UHD_8K_BLURAY)[bluray], Qualities.UHD_8K_WEBDL)[webdl]
                 if 1620 < data['resolution_height'] <= 3240:
-                    quality = ((Quality.UHD_4K_TV, Quality.UHD_4K_BLURAY)[bluray], Quality.UHD_4K_WEBDL)[webdl]
+                    quality = ((Qualities.UHD_4K_TV, Qualities.UHD_4K_BLURAY)[bluray], Qualities.UHD_4K_WEBDL)[webdl]
                 elif 800 < data['resolution_height'] <= 1620:
-                    quality = ((Quality.FULLHDTV, Quality.FULLHDBLURAY)[bluray], Quality.FULLHDWEBDL)[webdl]
+                    quality = ((Qualities.FULLHDTV, Qualities.FULLHDBLURAY)[bluray], Qualities.FULLHDWEBDL)[webdl]
                 elif 680 < data['resolution_height'] < 800:
-                    quality = ((Quality.HDTV, Quality.HDBLURAY)[bluray], Quality.HDWEBDL)[webdl]
+                    quality = ((Qualities.HDTV, Qualities.HDBLURAY)[bluray], Qualities.HDWEBDL)[webdl]
                 elif data['resolution_height'] < 680:
-                    quality = (Quality.SDTV, Quality.SDDVD)[
-                        re.search(r'dvd|b[rd]rip|blue?-?ray', base_filename, re.I) is not None]
+                    quality = (Qualities.SDTV, Qualities.SDDVD)[re.search(r'dvd|b[rd]rip|blue?-?ray', base_filename, re.I) is not None]
         except Exception:
             pass
 
@@ -510,8 +361,7 @@ class Quality(object):
             sorted_codecs = sorted(found_codecs, reverse=True)
             found_codec = found_codecs[list(sorted_codecs)[0]]
 
-        # 2 corresponds to SDDVD quality
-        if quality == 2:
+        if quality == Qualities.SDDVD:
             if re.search(r"b(r|d|rd)?([- .])?(rip|mux)", name.lower()):
                 rip_type = " BDRip"
             elif re.search(r"(dvd)([- .])?(rip|mux)?", name.lower()):
@@ -533,11 +383,11 @@ class Quality(object):
             elif found_codec in h265List:
                 found_codec = h265List[0]
 
-            if quality == 2:
+            if quality == Qualities.SDDVD:
                 return rip_type + " " + found_codec
             else:
                 return " " + found_codec
-        elif quality == 2:
+        elif quality == Qualities.SDDVD:
             return rip_type
         else:
             return ""
@@ -553,100 +403,175 @@ class Quality(object):
         :return: Composite status/quality object
         """
         quality = Quality.name_quality(name, anime)
-        return Quality.composite_status(DOWNLOADED, quality)
-
-    DOWNLOADED = None
-    SNATCHED = None
-    SNATCHED_PROPER = None
-    SNATCHED_BEST = None
-    ARCHIVED = None
-    FAILED = None
-    IGNORED = None
+        return Quality.composite_status(EpisodeStatus.DOWNLOADED, quality)
 
 
-Quality.DOWNLOADED = [Quality.composite_status(DOWNLOADED, x) for x in Quality.qualityStrings.keys()]
-Quality.SNATCHED = [Quality.composite_status(SNATCHED, x) for x in Quality.qualityStrings.keys()]
-Quality.SNATCHED_PROPER = [Quality.composite_status(SNATCHED_PROPER, x) for x in Quality.qualityStrings.keys()]
-Quality.SNATCHED_BEST = [Quality.composite_status(SNATCHED_BEST, x) for x in Quality.qualityStrings.keys()]
-Quality.ARCHIVED = [Quality.composite_status(ARCHIVED, x) for x in Quality.qualityStrings.keys()]
-Quality.FAILED = [Quality.composite_status(FAILED, x) for x in Quality.qualityStrings.keys()]
-Quality.IGNORED = [Quality.composite_status(IGNORED, x) for x in Quality.qualityStrings.keys()]
+class Qualities(enum.IntFlag):
+    NONE = 0  # 0
+    SDTV = 1  # 1
+    SDDVD = 1 << 1  # 2
+    HDTV = 1 << 2  # 4
+    RAWHDTV = 1 << 3  # 8  -- 720P/1080I MPEG2 (TROLLHD RELEASES)
+    FULLHDTV = 1 << 4  # 16 -- 1080P HDTV (QCF RELEASES)
+    HDWEBDL = 1 << 5  # 32
+    FULLHDWEBDL = 1 << 6  # 64 -- 1080P WEB-DL
+    HDBLURAY = 1 << 7  # 128
+    FULLHDBLURAY = 1 << 8  # 256
+    UHD_4K_TV = 1 << 9  # 512 -- 2160P AKA 4K UHD AKA UHD-1
+    UHD_4K_WEBDL = 1 << 10  # 1024
+    UHD_4K_BLURAY = 1 << 11  # 2048
+    UHD_8K_TV = 1 << 12  # 4096 -- 4320P AKA 8K UHD AKA UHD-2
+    UHD_8K_WEBDL = 1 << 13  # 8192
+    UHD_8K_BLURAY = 1 << 14  # 16384
 
-Quality.DOWNLOADED.sort()
-Quality.SNATCHED.sort()
-Quality.SNATCHED_BEST.sort()
-Quality.SNATCHED_PROPER.sort()
-Quality.FAILED.sort()
-Quality.ARCHIVED.sort()
+    ANYHDTV = HDTV | FULLHDTV  # 20
+    ANYWEBDL = HDWEBDL | FULLHDWEBDL  # 96
+    ANYBLURAY = HDBLURAY | FULLHDBLURAY
 
-HD720p = Quality.combine_qualities([Quality.HDTV, Quality.HDWEBDL, Quality.HDBLURAY], [])
-HD1080p = Quality.combine_qualities([Quality.FULLHDTV, Quality.FULLHDWEBDL, Quality.FULLHDBLURAY], [])
-UHD_4K = Quality.combine_qualities([Quality.UHD_4K_TV, Quality.UHD_4K_WEBDL, Quality.UHD_4K_BLURAY], [])
-UHD_8K = Quality.combine_qualities([Quality.UHD_8K_TV, Quality.UHD_8K_WEBDL, Quality.UHD_8K_BLURAY], [])
+    UNKNOWN = 1 << 15  # 32768
 
-SD = Quality.combine_qualities([Quality.SDTV, Quality.SDDVD], [])
-HD = Quality.combine_qualities([HD720p, HD1080p, Quality.RAWHDTV], [])
-UHD = Quality.combine_qualities([UHD_4K, UHD_8K], [])
-ANY = Quality.combine_qualities([SD, HD, UHD], [])
-ANY_PLUS_UNKNOWN = Quality.combine_qualities([Quality.UNKNOWN, SD, HD, UHD], [])
+    # Presets
+    SD = Quality.combine_qualities([SDTV, SDDVD], [])
+    HD720P = Quality.combine_qualities([HDTV, HDWEBDL, HDBLURAY], [])
+    HD1080P = Quality.combine_qualities([FULLHDTV, FULLHDWEBDL, FULLHDBLURAY], [])
+    HD = Quality.combine_qualities([HD720P, HD1080P, RAWHDTV], [])
+    UHD_4K = Quality.combine_qualities([UHD_4K_TV, UHD_4K_WEBDL, UHD_4K_BLURAY], [])
+    UHD_8K = Quality.combine_qualities([UHD_8K_TV, UHD_8K_WEBDL, UHD_8K_BLURAY], [])
+    UHD = Quality.combine_qualities([UHD_4K, UHD_8K], [])
+    ANY = Quality.combine_qualities([SD, HD, UHD], [])
+    ANY_PLUS_UNKNOWN = Quality.combine_qualities([UNKNOWN, SD, HD, UHD], [])
 
-# legacy template, cant remove due to reference in mainDB upgrade?
-BEST = Quality.combine_qualities([Quality.SDTV, Quality.HDTV, Quality.HDWEBDL], [Quality.HDTV])
+    @property
+    def _strings(self):
+        return {
+            self.NONE.name: "N/A",
+            self.UNKNOWN.name: "Unknown",
+            self.SDTV.name: "SDTV",
+            self.SDDVD.name: "SD DVD",
+            self.HDTV.name: "720p HDTV",
+            self.RAWHDTV.name: "RawHD",
+            self.FULLHDTV.name: "1080p HDTV",
+            self.HDWEBDL.name: "720p WEB-DL",
+            self.FULLHDWEBDL.name: "1080p WEB-DL",
+            self.HDBLURAY.name: "720p BluRay",
+            self.FULLHDBLURAY.name: "1080p BluRay",
+            self.UHD_4K_TV.name: "4K UHD TV",
+            self.UHD_8K_TV.name: "8K UHD TV",
+            self.UHD_4K_WEBDL.name: "4K UHD WEB-DL",
+            self.UHD_8K_WEBDL.name: "8K UHD WEB-DL",
+            self.UHD_4K_BLURAY.name: "4K UHD BluRay",
+            self.UHD_8K_BLURAY.name: "8K UHD BluRay"
+        }
 
-qualityPresets = (SD,
-                  HD,
-                  HD720p,
-                  HD1080p,
-                  UHD,
-                  UHD_4K,
-                  UHD_8K,
-                  ANY,
-                  ANY_PLUS_UNKNOWN)
+    @property
+    def _preset_strings(self):
+        return {
+            self.SD.name: "SD",
+            self.HD.name: "HD",
+            self.HD720P.name: "HD720p",
+            self.HD1080P.name: "HD1080p",
+            self.UHD.name: "UHD",
+            self.UHD_4K.name: "UHD-4K",
+            self.UHD_8K.name: "UHD-8K",
+            self.ANY.name: "Any",
+            self.ANY_PLUS_UNKNOWN.name: "Any + Unknown"
+        }
 
-qualityPresetStrings = {SD: "SD",
-                        HD: "HD",
-                        HD720p: "HD720p",
-                        HD1080p: "HD1080p",
-                        UHD: "UHD",
-                        UHD_4K: "UHD-4K",
-                        UHD_8K: "UHD-8K",
-                        ANY: "Any",
-                        ANY_PLUS_UNKNOWN: "Any + Unknown"}
+    @property
+    def _scene_strings(self):
+        return {
+            self.NONE.name: "N/A",
+            self.UNKNOWN.name: "Unknown",
+            self.SDTV.name: "HDTV",
+            self.SDDVD.name: "",
+            self.HDTV.name: "720p HDTV",
+            self.RAWHDTV.name: "1080i HDTV",
+            self.FULLHDTV.name: "1080p HDTV",
+            self.HDWEBDL.name: "720p WEB-DL",
+            self.FULLHDWEBDL.name: "1080p WEB-DL",
+            self.HDBLURAY.name: "720p BluRay",
+            self.FULLHDBLURAY.name: "1080p BluRay",
+            self.UHD_4K_TV.name: "4K UHD TV",
+            self.UHD_8K_TV.name: "8K UHD TV",
+            self.UHD_4K_WEBDL.name: "4K UHD WEB-DL",
+            self.UHD_8K_WEBDL.name: "8K UHD WEB-DL",
+            self.UHD_4K_BLURAY.name: "4K UHD BluRay",
+            self.UHD_8K_BLURAY.name: "8K UHD BluRay"
+        }
+
+    @property
+    def _css_strings(self):
+        return {
+            self.NONE.name: "N/A",
+            self.UNKNOWN.name: "Unknown",
+            self.SDTV.name: "SDTV",
+            self.SDDVD.name: "SDDVD",
+            self.HDTV.name: "HD720p",
+            self.RAWHDTV.name: "RawHD",
+            self.FULLHDTV.name: "HD1080p",
+            self.HDWEBDL.name: "HD720p",
+            self.FULLHDWEBDL.name: "HD1080p",
+            self.HDBLURAY.name: "HD720p",
+            self.FULLHDBLURAY.name: "HD1080p",
+            self.UHD_4K_TV.name: "UHD-4K",
+            self.UHD_8K_TV.name: "UHD-8K",
+            self.UHD_4K_WEBDL.name: "UHD-4K",
+            self.UHD_8K_WEBDL.name: "UHD-8K",
+            self.UHD_4K_BLURAY.name: "UHD-4K",
+            self.UHD_8K_BLURAY.name: "UHD-8K",
+            self.ANYHDTV.name: "any-hd",
+            self.ANYWEBDL.name: "any-hd",
+            self.ANYBLURAY.name: "any-hd"
+        }
+
+    @property
+    def _combined_strings(self):
+        return {
+            self.ANYHDTV.name: "HDTV",
+            self.ANYWEBDL.name: "WEB-DL",
+            self.ANYBLURAY.name: "BluRay"
+        }
+
+    @property
+    def display_name(self):
+        if self.name in self._strings:
+            return self._strings[self.name]
+        elif self.name in self._preset_strings:
+            return self._preset_strings[self.name]
+        elif self.name in self._combined_strings:
+            return self._combined_strings[self.name]
+        return "Custom"
+
+    @property
+    def scene_name(self):
+        if self.name in self._scene_strings:
+            return self._scene_strings[self.name]
+        return ""
+
+    @property
+    def css_name(self):
+        if self.name in self._css_strings:
+            return self._css_strings[self.name]
+        elif self.name in self._preset_strings:
+            return self._preset_strings[self.name]
+        return ""
+
+    @property
+    def is_preset(self):
+        return self.name in self._preset_strings
+
+    @property
+    def is_combined(self):
+        return self.name in self._combined_strings
 
 
-class Overview(object):
-    UNAIRED = UNAIRED  # 1
-    SNATCHED = SNATCHED  # 2
-    WANTED = WANTED  # 3
-    GOOD = DOWNLOADED  # 4
-    SKIPPED = SKIPPED  # 5
-    SNATCHED_PROPER = SNATCHED_PROPER  # 9
-    SNATCHED_BEST = SNATCHED_BEST  # 12
-    MISSED = MISSED  # 13
-
-    QUAL = 50
-
-    overviewStrings = {SKIPPED: "skipped",
-                       WANTED: "wanted",
-                       QUAL: "qual",
-                       GOOD: "good",
-                       UNAIRED: "unaired",
-                       SNATCHED: "snatched",
-                       SNATCHED_BEST: "snatched",
-                       SNATCHED_PROPER: "snatched",
-                       MISSED: "missed"}
-
-
-def get_quality_string(quality):
-    """
-    :param quality: The quality to convert into a string
-    :return: The string representation of the provided quality
-    """
-
-    if quality in qualityPresetStrings:
-        return qualityPresetStrings[quality]
-
-    if quality in Quality.qualityStrings:
-        return Quality.qualityStrings[quality]
-
-    return 'Custom'
+# extend episode status enum class with composite statuses
+[extend_enum(EpisodeStatus, f"{status.name}_{q.name}", status + 100 * q)
+ for status in list(EpisodeStatus).copy()
+ for q in Qualities if not q.is_preset and status in [EpisodeStatus.DOWNLOADED,
+                                                      EpisodeStatus.SNATCHED,
+                                                      EpisodeStatus.SNATCHED_BEST,
+                                                      EpisodeStatus.SNATCHED_PROPER,
+                                                      EpisodeStatus.ARCHIVED,
+                                                      EpisodeStatus.FAILED,
+                                                      EpisodeStatus.IGNORED]]

@@ -107,7 +107,7 @@ class PostProcessorQueue(Queue):
             return self.output
 
         if not delete_on:
-            delete_on = (False, (not sickrage.app.config.no_delete, True)[process_method == "move"])[proc_type == "auto"]
+            delete_on = (False, (not sickrage.app.config.general.no_delete, True)[process_method == "move"])[proc_type == "auto"]
 
         if self.find_in_queue(dirName, proc_type):
             self.log("An item with directory {} is already being processed in the queue".format(dirName))
@@ -139,8 +139,6 @@ class PostProcessorTask(Task):
         self.proc_type = proc_type
 
         self.priority = (TaskPriority.HIGH, TaskPriority.NORMAL)[proc_type == 'auto']
-
-        self.auto_remove = (False, True)[proc_type == "auto"]
 
     def run(self):
         """

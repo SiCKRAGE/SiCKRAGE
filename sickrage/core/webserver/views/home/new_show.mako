@@ -3,12 +3,13 @@
     import sickrage
     from sickrage.subtitles import Subtitles
     from sickrage.core.helpers import anon_url
-    from sickrage.indexers import IndexerApi
+    from sickrage.core.enums import SeriesProviderID
 %>
 
 <%block name="metas">
-    <meta data-var="sickrage.DEFAULT_LANGUAGE" data-content="${sickrage.app.config.indexer_default_language}">
-    <meta data-var="sickrage.LANGUAGES" data-content="${','.join([lang['abbreviation'] for lang in IndexerApi().indexer().languages()])}">
+    <meta data-var="sickrage.DEFAULT_LANGUAGE" data-content="${sickrage.app.config.general.series_provider_default_language}">
+    <meta data-var="sickrage.LANGUAGES"
+          data-content="${','.join([lang['abbreviation'] for lang in sickrage.app.series_providers[SeriesProviderID.THETVDB].languages()])}">
 </%block>
 
 <%block name="content">
@@ -42,14 +43,14 @@
                       action="${srWebRoot}/home/addShows/addNewShow" novalidate>
 
                     % if use_provided_info:
-                        <input type="hidden" id="indexerLang" name="indexerLang"
-                               value="${sickrage.app.config.indexer_default_language}"/>
+                        <input type="hidden" id="seriesProviderLanguage" name="seriesProviderLanguage"
+                               value="${sickrage.app.config.general.series_provider_default_language}"/>
                         <input type="hidden" id="whichSeries" name="whichSeries"
-                               value="${provided_indexer_id}"/>
-                        <input type="hidden" id="providedIndexer" name="providedIndexer"
-                               value="${provided_indexer}"/>
-                        <input type="hidden" id="providedName" name="providedName"
-                               value="${provided_indexer_name}"/>
+                               value="${provided_series_id}"/>
+                        <input type="hidden" id="providedSeriesProviderID" name="providedSeriesProviderID"
+                               value="${provided_series_provider_id}"/>
+                        <input type="hidden" id="providedSeriesName" name="providedSeriesName"
+                               value="${provided_series_name}"/>
                     % endif
 
                     % if provided_show_dir:
@@ -70,8 +71,8 @@
                             </div>
                             <div class="card-body">
                                 <div class="form-group">
-                                    <input type="hidden" id="indexer_timeout"
-                                           value="${sickrage.app.config.indexer_timeout}"/>
+                                    <input type="hidden" id="series_provider_timeout"
+                                           value="${sickrage.app.config.general.series_provider_timeout}"/>
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="input-group">
@@ -82,12 +83,10 @@
                                                 </div>
                                                 <input id="nameToSearch" value="${default_show_name}"
                                                        title="TV show name" class="form-control" required/>
-                                                <select name="providedIndexer" id="providedIndexer"
-                                                        class="form-control" title="Choose indexer">
-                                                    % for indexer in indexers:
-                                                        <option value="${indexer['id']}" ${('', 'selected')[provided_indexer == indexer['id']]}>
-                                                            ${indexer['name']}
-                                                        </option>
+                                                <select name="providedSeriesProviderID" id="providedSeriesProviderID"
+                                                        class="form-control" title="Choose series provider">
+                                                    % for item in SeriesProviderID:
+                                                        <option value="${item.name}" ${('', 'selected')[provided_series_provider_id == item]}>${item.display_name}</option>
                                                     % endfor
                                                 </select>
                                                 <div class="invalid-feedback">
@@ -105,10 +104,10 @@
                                                         <span class="fas fa-flag"></span>
                                                     </span>
                                                 </div>
-                                                <select name="indexerLang" id="indexerLang" class="form-control"
+                                                <select name="seriesProviderLanguage" id="seriesProviderLanguage" class="form-control"
                                                         title="${_('Choose language')}">
-                                                    % for language in IndexerApi().indexer().languages():
-                                                        <option value="${language['abbreviation']}" ${('', 'selected')[sickrage.app.config.indexer_default_language == language['abbreviation']]}>
+                                                    % for language in sickrage.app.series_providers[SeriesProviderID.THETVDB].languages():
+                                                        <option value="${language['abbreviation']}" ${('', 'selected')[sickrage.app.config.general.series_provider_default_language == language['abbreviation']]}>
                                                             ${language['englishname']}
                                                         </option>
                                                     % endfor

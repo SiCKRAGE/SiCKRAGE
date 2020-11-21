@@ -43,7 +43,7 @@ class DownloadStationAPI(NZBClient):
         self.url = self.urls['task']
 
         self.checked_destination = False
-        self.destination = sickrage.app.config.syno_dsm_path
+        self.destination = sickrage.app.config.synology.path
 
         self.post_task = {
             'method': 'create',
@@ -148,7 +148,7 @@ class DownloadStationAPI(NZBClient):
 
     def _check_destination(self):
         """Validate and set nzb destination."""
-        nzb_path = sickrage.app.config.syno_dsm_path
+        nzb_path = sickrage.app.config.synology.path
 
         if not (self.auth or self._get_auth()):
             return False

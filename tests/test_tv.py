@@ -32,7 +32,7 @@ from sickrage.core.tv.show import TVShow
 class TVShowTests(tests.SiCKRAGETestDBCase):
     def test_init_indexer_id(self):
         show = TVShow(0o001, 1)
-        self.assertEqual(show.indexer_id, 0o001)
+        self.assertEqual(show.series_id, 0o001)
 
     def test_change_indexer_id(self):
         show = TVShow(0o001, 1)
@@ -44,8 +44,8 @@ class TVShowTests(tests.SiCKRAGETestDBCase):
         show.default_ep_status = "5"
         show.airs = "monday"
         show.startyear = 1987
-        show.indexer_id = 0o002
-        self.assertEqual(show.indexer_id, 0o002)
+        show.series_id = 0o002
+        self.assertEqual(show.series_id, 0o002)
 
     def test_set_name(self):
         show = TVShow(0o001, 1)

@@ -1,12 +1,12 @@
 <%!
     import sickrage
-    from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings
+    from sickrage.core.common import Quality, Qualities
 %>
 
 <%def name="QualityChooser(anyQualities=None, bestQualities=None)">
     <%
         if not anyQualities and not bestQualities:
-            anyQualities, bestQualities = Quality.split_quality(sickrage.app.config.quality_default)
+            anyQualities, bestQualities = Quality.split_quality(sickrage.app.config.general.quality_default)
 
         overall_quality = Quality.combine_qualities(anyQualities, bestQualities)
     %>
@@ -21,8 +21,8 @@
                 </div>
                 <select id="qualityPreset" name="quality_preset" class="form-control" title="qualityPreset">
                     <option value="0">Custom</option>
-                    % for curPreset in qualityPresets:
-                        <option value="${curPreset}" ${('', 'selected="selected"')[curPreset == overall_quality]} ${('', 'style="padding-left: 15px;"')[qualityPresetStrings[curPreset].endswith("0p")]}>${qualityPresetStrings[curPreset]}</option>
+                    % for item in [x for x in Qualities if x.is_preset]:
+                        <option value="${item.name}" ${('', 'selected="selected"')[item == overall_quality]} ${('', 'style="padding-left: 15px;"')[item.display_name.endswith("0P")]}>${item.display_name}</option>
                     % endfor
                 </select>
             </div>
@@ -50,11 +50,11 @@
                                 <span class="fas fa-glasses"></span>
                             </span>
                         </div>
-                        <% anyQualityList = list(filter(lambda x: x > Quality.NONE, Quality.qualityStrings)) %>
+                        <% anyQualityList = list(filter(lambda x: x > Qualities.NONE, [x for x in Qualities if not x.is_preset])) %>
                         <select id="anyQualities" name="anyQualities" multiple="multiple" size="${len(anyQualityList)}"
                                 class="form-control form-control-inline input-sm" title="anyQualities">
-                            % for curQuality in sorted(anyQualityList):
-                                <option value="${curQuality}" ${('', 'selected="selected"')[curQuality in anyQualities]}>${Quality.qualityStrings[curQuality]}</option>
+                            % for item in sorted(anyQualityList):
+                                <option value="${item.name}" ${('', 'selected="selected"')[item in anyQualities]}>${item.display_name}</option>
                             % endfor
                         </select>
                     </div>
@@ -68,12 +68,12 @@
                                 <span class="fas fa-glasses"></span>
                             </span>
                         </div>
-                        <% bestQualityList = list(filter(lambda x: Quality.SDTV <= x < Quality.UNKNOWN, Quality.qualityStrings)) %>
+                        <% bestQualityList = list(filter(lambda x: Qualities.SDTV <= x < Qualities.UNKNOWN, [x for x in Qualities if not x.is_preset])) %>
                         <select id="bestQualities" name="bestQualities" multiple="multiple"
                                 size="${len(bestQualityList)}" class="form-control form-control-inline"
                                 title="bestQualities">
-                            % for curQuality in sorted(bestQualityList):
-                                <option value="${curQuality}" ${('', 'selected="selected"')[curQuality in bestQualities]}>${Quality.qualityStrings[curQuality]}</option>
+                            % for item in sorted(bestQualityList):
+                                <option value="${item.name}" ${('', 'selected="selected"')[item in bestQualities]}>${item.display_name}</option>
                             % endfor
                         </select>
                     </div>

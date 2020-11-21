@@ -23,6 +23,7 @@ from abc import ABC
 from tornado.web import authenticated
 
 import sickrage
+from sickrage.core.enums import ProcessMethod
 from sickrage.core.helpers import arg_to_bool
 from sickrage.core.webserver.handlers.base import BaseHandler
 
@@ -48,8 +49,8 @@ class HomeProcessEpisodeHandler(BaseHandler, ABC):
         pp_options = {
             'proc_dir': self.get_argument('proc_dir'),
             'nzbname': self.get_argument('nzbname', ''),
-            'process_method': self.get_argument('process_method'),
-            'proc_type': self.get_argument('proc_type'),
+            'process_method': self.get_argument('process_method', sickrage.app.config.general.process_method),
+            'proc_type': self.get_argument('proc_type', 'manual'),
             'force': arg_to_bool(self.get_argument('force', 'false')),
             'is_priority': arg_to_bool(self.get_argument('is_priority', 'false')),
             'delete_on': arg_to_bool(self.get_argument('delete_on', 'false')),
@@ -63,6 +64,9 @@ class HomeProcessEpisodeHandler(BaseHandler, ABC):
 
         if not proc_dir:
             return self.redirect("/home/postprocess/")
+
+        if not isinstance(pp_options['process_method'], ProcessMethod):
+            pp_options['process_method'] = ProcessMethod[pp_options['process_method'].upper()]
 
         result = sickrage.app.postprocessor_queue.put(proc_dir, **pp_options)
         if quiet:

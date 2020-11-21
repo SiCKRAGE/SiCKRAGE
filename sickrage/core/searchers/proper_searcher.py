@@ -28,14 +28,14 @@ import traceback
 from sqlalchemy import orm
 
 import sickrage
-from sickrage.core.common import DOWNLOADED, Quality, SNATCHED, SNATCHED_PROPER, cpu_presets
+from sickrage.core.common import Quality, EpisodeStatus
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AuthException
-from sickrage.core.helpers import remove_non_release_groups
+from sickrage.core.helpers import remove_non_release_groups, flatten
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
 from sickrage.core.search import pick_best_result, snatch_episode
 from sickrage.core.tv.show.helpers import find_show, get_show_list
-from sickrage.providers import NZBProvider, NewznabProvider, TorrentProvider, TorrentRssProvider
+from sickrage.search_providers import NZBProvider, NewznabProvider, TorrentProvider, TorrentRssProvider
 
 
 class ProperSearcher(object):
@@ -48,7 +48,7 @@ class ProperSearcher(object):
         Start looking for new propers
         :param force: Start even if already running (currently not used, defaults to False)
         """
-        if self.running or not sickrage.app.config.download_propers:
+        if self.running or not sickrage.app.config.general.download_propers:
             return
 
         try:
@@ -89,14 +89,14 @@ class ProperSearcher(object):
                 sickrage.app.log.debug("Nothing needs to be downloaded for {}, skipping".format(show.name))
                 continue
 
-            self._lastProperSearch = self._get_last_proper_search(show.indexer_id)
+            self._lastProperSearch = self._get_last_proper_search(show.series_id, show.series_provider_id)
 
             # for each provider get a list of the
-            for providerID, providerObj in sickrage.app.search_providers.sort(randomize=sickrage.app.config.randomize_providers).items():
+            for providerID, providerObj in sickrage.app.search_providers.sort(randomize=sickrage.app.config.general.randomize_providers).items():
                 # check provider type and provider is enabled
-                if not sickrage.app.config.use_nzbs and providerObj.type in [NZBProvider.type, NewznabProvider.type]:
+                if not sickrage.app.config.general.use_nzbs and providerObj.provider_type in [NZBProvider.provider_type, NewznabProvider.provider_type]:
                     continue
-                elif not sickrage.app.config.use_torrents and providerObj.type in [TorrentProvider.type, TorrentRssProvider.type]:
+                elif not sickrage.app.config.general.use_torrents and providerObj.provider_type in [TorrentProvider.provider_type, TorrentRssProvider.provider_type]:
                     continue
                 elif not providerObj.is_enabled:
                     continue
@@ -107,7 +107,7 @@ class ProperSearcher(object):
 
                 try:
                     for season, episode in wanted:
-                        for x in providerObj.find_propers(show.indexer_id, season, episode):
+                        for x in providerObj.find_propers(show.series_id, show.series_provider_id, season, episode):
                             if not re.search(r'(^|[. _-])(proper|repack)([. _-]|$)', x.name, re.I):
                                 sickrage.app.log.debug('Found a non-proper, we have caught and skipped it.')
                                 continue
@@ -127,7 +127,7 @@ class ProperSearcher(object):
 
                 threading.currentThread().setName(orig_thread_name)
 
-            self._set_last_proper_search(show.indexer_id, datetime.datetime.today().toordinal())
+            self._set_last_proper_search(show.series_id, show.series_provider_id, datetime.datetime.now())
 
         # take the list of unique propers and get it sorted by
         sorted_propers = sorted(propers.values(), key=operator.attrgetter('date'), reverse=True)
@@ -148,14 +148,14 @@ class ProperSearcher(object):
                 sickrage.app.log.debug("Ignoring " + curProper.name + " because it's for a full season rather than specific episode")
                 continue
 
-            show = find_show(parse_result.indexer_id)
+            show = find_show(parse_result.series_id, parse_result.series_provider_id)
             sickrage.app.log.debug("Successful match! Result " + parse_result.original_name + " matched to show " + show.name)
 
-            # set the indexer_id in the db to the show's indexer_id
-            curProper.indexer_id = parse_result.indexer_id
+            # set the series_id in the db to the show's series_id
+            curProper.series_id = parse_result.series_id
 
-            # set the indexer in the db to the show's indexer
-            curProper.indexer = show.indexer
+            # set the series_provider_id in the db to the show's series_provider_id
+            curProper.series_provider_id = show.series_provider_id
 
             # populate our Proper instance
             curProper.season = parse_result.season_number if parse_result.season_number is not None else 1
@@ -178,14 +178,14 @@ class ProperSearcher(object):
                     continue
 
             # check if we actually want this proper (if it's the right quality)            
-            dbData = session.query(MainDB.TVEpisode).filter_by(showid=best_result.indexer_id, season=best_result.season,
+            dbData = session.query(MainDB.TVEpisode).filter_by(series_id=best_result.series_id, season=best_result.season,
                                                                episode=best_result.episode).one_or_none()
             if not dbData:
                 continue
 
             # only keep the proper if we have already retrieved the same quality ep (don't get better/worse ones)
             old_status, old_quality = Quality.split_composite_status(int(dbData.status))
-            if old_status not in (DOWNLOADED, SNATCHED) or old_quality != best_result.quality:
+            if old_status not in (EpisodeStatus.DOWNLOADED, EpisodeStatus.SNATCHED) or old_quality != best_result.quality:
                 continue
 
             # check if we actually want this proper (if it's the right release group and a higher version)
@@ -204,8 +204,8 @@ class ProperSearcher(object):
 
             # if the show is in our list and there hasn't been a proper already added for that particular episode
             # then add it to our list of propers
-            if best_result.indexer_id != -1 and (best_result.indexer_id, best_result.season, best_result.episode) not in map(
-                    operator.attrgetter('indexer_id', 'season', 'episode'), final_propers):
+            if best_result.series_id != -1 and (best_result.series_id, best_result.season, best_result.episode) not in map(
+                    operator.attrgetter('series_id', 'season', 'episode'), final_propers):
                 sickrage.app.log.info("Found a proper that we need: " + str(best_result.name))
                 final_propers.append(best_result)
 
@@ -216,10 +216,12 @@ class ProperSearcher(object):
 
         wanted = []
 
-        for result in session.query(MainDB.TVEpisode).filter_by(showid=show.indexer_id).filter(MainDB.TVEpisode.airdate >= search_date,
-                                                                                               MainDB.TVEpisode.status.in_(Quality.DOWNLOADED +
-                                                                                                                           Quality.SNATCHED +
-                                                                                                                           Quality.SNATCHED_BEST)):
+        for result in session.query(MainDB.TVEpisode).filter_by(series_id=show.series_id).filter(MainDB.TVEpisode.airdate >= search_date,
+                                                                                                 MainDB.TVEpisode.status.in_(flatten(
+                                                                                                         [EpisodeStatus.composites(EpisodeStatus.DOWNLOADED),
+                                                                                                          EpisodeStatus.composites(EpisodeStatus.SNATCHED),
+                                                                                                          EpisodeStatus.composites(
+                                                                                                                  EpisodeStatus.SNATCHED_BEST)]))):
             wanted += [(result.season, result.episode)]
 
         return wanted
@@ -237,10 +239,13 @@ class ProperSearcher(object):
             history_limit = datetime.datetime.today() - datetime.timedelta(days=30)
 
             # make sure the episode has been downloaded before
-            history_results = [x for x in session.query(MainDB.History).filter_by(
-                showid=curProper.indexer_id, season=curProper.season, episode=curProper.episode,
-                quality=curProper.quality).filter(MainDB.History.date >= history_limit.toordinal(),
-                                                  MainDB.History.action.in_(Quality.SNATCHED + Quality.DOWNLOADED))]
+            history_results = [x for x in
+                               session.query(MainDB.History).filter_by(series_id=curProper.series_id, season=curProper.season, episode=curProper.episode,
+                                                                       quality=curProper.quality).filter(MainDB.History.date >= history_limit.toordinal(),
+                                                                                                         MainDB.History.action.in_(flatten(
+                                                                                                             [EpisodeStatus.composites(EpisodeStatus.SNATCHED),
+                                                                                                              EpisodeStatus.composites(
+                                                                                                                  EpisodeStatus.DOWNLOADED)])))]
 
             # if we didn't download this episode in the first place we don't know what quality to use for the proper
             # so we can't do it
@@ -266,7 +271,7 @@ class ProperSearcher(object):
 
             # make the result object
             result = curProper.provider.get_result(curProper.season, [curProper.episode])
-            result.show_id = curProper.indexer_id
+            result.series_id = curProper.series_id
             result.url = curProper.url
             result.name = curProper.name
             result.quality = curProper.quality
@@ -279,31 +284,29 @@ class ProperSearcher(object):
             result.content = curProper.content
 
             # snatch it
-            snatch_episode(result, SNATCHED_PROPER)
-            time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
+            snatch_episode(result, EpisodeStatus.SNATCHED_PROPER)
+            time.sleep(sickrage.app.config.general.cpu_preset.value)
 
     def _generic_name(self, name):
         return name.replace(".", " ").replace("-", " ").replace("_", " ").lower()
 
-    def _set_last_proper_search(self, show_id, when):
+    def _set_last_proper_search(self, series_id, series_provider_id, when):
         """
         Record last propersearch in DB
 
         :param when: When was the last proper search
         """
 
-        session = sickrage.app.main_db.session()
-
         sickrage.app.log.debug("Setting the last proper search in database to " + str(when))
 
         try:
-            show = find_show(show_id)
+            show = find_show(series_id, series_provider_id)
             show.last_proper_search = when
             show.save()
         except orm.exc.NoResultFound:
             pass
 
-    def _get_last_proper_search(self, show_id):
+    def _get_last_proper_search(self, series_id, series_provider_id):
         """
         Find last propersearch from DB
         """
@@ -311,7 +314,7 @@ class ProperSearcher(object):
         sickrage.app.log.debug("Retrieving the last check time from the DB")
 
         try:
-            show = find_show(show_id)
-            return int(show.last_proper_search)
+            show = find_show(series_id, series_provider_id)
+            return show.last_proper_search
         except orm.exc.NoResultFound:
             return 1

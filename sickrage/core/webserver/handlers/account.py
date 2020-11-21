@@ -33,7 +33,7 @@ class AccountLinkHandler(BaseHandler, ABC):
     def get(self, *args, **kwargs):
         code = self.get_argument('code', None)
 
-        redirect_uri = "{}://{}{}/account/link".format(self.request.protocol, self.request.host, sickrage.app.config.web_root)
+        redirect_uri = "{}://{}{}/account/link".format(self.request.protocol, self.request.host, sickrage.app.config.general.web_root)
 
         if code:
             token = sickrage.app.auth_server.authorization_code(code, redirect_uri)
@@ -53,26 +53,26 @@ class AccountLinkHandler(BaseHandler, ABC):
 
             sickrage.app.api.token = token
 
-            sickrage.app.config.enable_sickrage_api = True
+            sickrage.app.config.general.enable_sickrage_api = True
 
-            if not sickrage.app.config.sub_id or not sickrage.app.config.server_id:
-                sickrage.app.config.sub_id = decoded_token.get('sub')
+            if not sickrage.app.config.user.sub_id or not sickrage.app.config.general.server_id:
+                sickrage.app.config.user.sub_id = decoded_token.get('sub')
 
                 internal_connections = "{}://{}:{}{}".format(self.request.protocol,
                                                              get_internal_ip(),
-                                                             sickrage.app.config.web_port,
-                                                             sickrage.app.config.web_root)
+                                                             sickrage.app.config.general.web_port,
+                                                             sickrage.app.config.general.web_root)
 
                 external_connections = "{}://{}:{}{}".format(self.request.protocol,
                                                              get_external_ip(),
-                                                             sickrage.app.config.web_port,
-                                                             sickrage.app.config.web_root)
+                                                             sickrage.app.config.general.web_port,
+                                                             sickrage.app.config.general.web_root)
 
                 connections = ','.join([internal_connections, external_connections])
 
                 server_id = sickrage.app.api.account.register_server(connections)
                 if server_id:
-                    sickrage.app.config.server_id = server_id
+                    sickrage.app.config.general.server_id = server_id
 
             sickrage.app.config.save()
 
@@ -88,17 +88,17 @@ class AccountLinkHandler(BaseHandler, ABC):
 class AccountUnlinkHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        # if not sickrage.app.config.sub_id == self.get_current_user().get('sub'):
-        #     return self.redirect("/{}/".format(sickrage.app.config.default_page))
+        # if not sickrage.app.config.user.sub_id == self.get_current_user().get('sub'):
+        #     return self.redirect("/{}/".format(sickrage.app.config.general.default_page.value))
 
-        if not sickrage.app.config.server_id or sickrage.app.api.account.unregister_server(sickrage.app.config.server_id):
-            sickrage.app.config.server_id = ""
-            sickrage.app.config.sub_id = ""
+        if not sickrage.app.config.general.server_id or sickrage.app.api.account.unregister_server(sickrage.app.config.general.server_id):
+            sickrage.app.config.general.server_id = ""
+            sickrage.app.config.user.sub_id = ""
             sickrage.app.api.logout()
 
             del sickrage.app.api.token
 
-            sickrage.app.config.enable_sickrage_api = False
+            sickrage.app.config.general.enable_sickrage_api = False
             sickrage.app.config.save()
 
             sickrage.app.alerts.message(_('Unlinked SiCKRAGE account from SiCKRAGE API'))

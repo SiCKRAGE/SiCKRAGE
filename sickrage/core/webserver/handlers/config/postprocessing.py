@@ -25,18 +25,17 @@ from abc import ABC
 from tornado.web import authenticated
 
 import sickrage
+from sickrage.core.config.helpers import change_tv_download_dir, change_auto_postprocessor_freq, change_unrar_tool
+from sickrage.core.enums import FileTimestampTimezone, MultiEpNaming, ProcessMethod
 from sickrage.core.helpers import checkbox_to_value
 from sickrage.core.nameparser import validator
-from sickrage.core.webserver import ConfigHandler
+from sickrage.core.webserver import ConfigWebHandler
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
 def is_naming_pattern_valid(pattern=None, multi=None, abd=None, sports=None, anime_type=None):
     if pattern is None:
         return 'invalid'
-
-    if multi is not None:
-        multi = int(multi)
 
     if anime_type is not None:
         anime_type = int(anime_type)
@@ -72,7 +71,7 @@ def is_rar_supported():
         - Simulating in memory rar extraction on test.rar file
     """
 
-    check = sickrage.app.config.change_unrar_tool(sickrage.app.config.unrar_tool)
+    check = change_unrar_tool(sickrage.app.unrar_tool)
 
     if not check:
         sickrage.app.log.warning('Looks like unrar is not installed, check failed')
@@ -84,7 +83,7 @@ class ConfigPostProcessingHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
         return self.render('config/postprocessing.mako',
-                           submenu=ConfigHandler.menu,
+                           submenu=ConfigWebHandler.menu,
                            title=_('Config - Post Processing'),
                            header=_('Post Processing'),
                            topmenu='config',
@@ -131,7 +130,7 @@ class SavePostProcessingHandler(BaseHandler, ABC):
         naming_custom_anime = self.get_argument('naming_custom_anime', '')
         naming_anime_pattern = self.get_argument('naming_anime_pattern', '')
         naming_anime_multi_ep = self.get_argument('naming_anime_multi_ep', '')
-        autopostprocessor_frequency = self.get_argument('autopostprocessor_frequency', '')
+        auto_postprocessor_frequency = self.get_argument('auto_postprocessor_frequency', '')
         delete_non_associated_files = self.get_argument('delete_non_associated_files', '')
         allowed_extensions = self.get_argument('allowed_extensions', '')
         processor_follow_symlinks = self.get_argument('processor_follow_symlinks', '')
@@ -139,66 +138,66 @@ class SavePostProcessingHandler(BaseHandler, ABC):
 
         results = []
 
-        if not sickrage.app.config.change_tv_download_dir(tv_download_dir):
+        if not change_tv_download_dir(tv_download_dir):
             results += [_("Unable to create directory ") + os.path.normpath(tv_download_dir) + _(", dir not changed.")]
 
-        sickrage.app.config.change_autopostprocessor_freq(autopostprocessor_frequency)
-        sickrage.app.config.process_automatically = checkbox_to_value(process_automatically)
+        change_auto_postprocessor_freq(auto_postprocessor_frequency)
+        sickrage.app.config.general.process_automatically = checkbox_to_value(process_automatically)
 
         if unpack:
             if is_rar_supported() != "not supported":
-                sickrage.app.config.unpack = checkbox_to_value(unpack)
-                sickrage.app.config.unpack_dir = unpack_dir
+                sickrage.app.config.general.unpack = checkbox_to_value(unpack)
+                sickrage.app.config.general.unpack_dir = unpack_dir
             else:
-                sickrage.app.config.unpack = 0
+                sickrage.app.config.general.unpack = 0
                 results.append(_("Unpacking Not Supported, disabling unpack setting"))
         else:
-            sickrage.app.config.unpack = checkbox_to_value(unpack)
+            sickrage.app.config.general.unpack = checkbox_to_value(unpack)
 
-        sickrage.app.config.no_delete = checkbox_to_value(no_delete)
-        sickrage.app.config.keep_processed_dir = checkbox_to_value(keep_processed_dir)
-        sickrage.app.config.create_missing_show_dirs = checkbox_to_value(create_missing_show_dirs)
-        sickrage.app.config.add_shows_wo_dir = checkbox_to_value(add_shows_wo_dir)
-        sickrage.app.config.process_method = process_method
-        sickrage.app.config.delrarcontents = checkbox_to_value(del_rar_contents)
-        sickrage.app.config.extra_scripts = [x.strip() for x in extra_scripts.split('|') if x.strip()]
-        sickrage.app.config.rename_episodes = checkbox_to_value(rename_episodes)
-        sickrage.app.config.airdate_episodes = checkbox_to_value(airdate_episodes)
-        sickrage.app.config.file_timestamp_timezone = file_timestamp_timezone
-        sickrage.app.config.move_associated_files = checkbox_to_value(move_associated_files)
-        sickrage.app.config.sync_files = sync_files
-        sickrage.app.config.postpone_if_sync_files = checkbox_to_value(postpone_if_sync_files)
-        sickrage.app.config.allowed_extensions = ','.join({x.strip() for x in allowed_extensions.split(',') if x.strip()})
-        sickrage.app.config.naming_custom_abd = checkbox_to_value(naming_custom_abd)
-        sickrage.app.config.naming_custom_sports = checkbox_to_value(naming_custom_sports)
-        sickrage.app.config.naming_custom_anime = checkbox_to_value(naming_custom_anime)
-        sickrage.app.config.naming_strip_year = checkbox_to_value(naming_strip_year)
-        sickrage.app.config.delete_failed = checkbox_to_value(delete_failed)
-        sickrage.app.config.nfo_rename = checkbox_to_value(nfo_rename)
-        sickrage.app.config.delete_non_associated_files = checkbox_to_value(delete_non_associated_files)
-        sickrage.app.config.processor_follow_symlinks = checkbox_to_value(processor_follow_symlinks)
+        sickrage.app.config.general.no_delete = checkbox_to_value(no_delete)
+        sickrage.app.config.general.keep_processed_dir = checkbox_to_value(keep_processed_dir)
+        sickrage.app.config.general.create_missing_show_dirs = checkbox_to_value(create_missing_show_dirs)
+        sickrage.app.config.general.add_shows_wo_dir = checkbox_to_value(add_shows_wo_dir)
+        sickrage.app.config.general.process_method = ProcessMethod[process_method]
+        sickrage.app.config.general.del_rar_contents = checkbox_to_value(del_rar_contents)
+        sickrage.app.config.general.extra_scripts = ','.join([x.strip() for x in extra_scripts.split('|') if x.strip()])
+        sickrage.app.config.general.rename_episodes = checkbox_to_value(rename_episodes)
+        sickrage.app.config.general.airdate_episodes = checkbox_to_value(airdate_episodes)
+        sickrage.app.config.general.file_timestamp_timezone = FileTimestampTimezone[file_timestamp_timezone]
+        sickrage.app.config.general.move_associated_files = checkbox_to_value(move_associated_files)
+        sickrage.app.config.general.sync_files = sync_files
+        sickrage.app.config.general.postpone_if_sync_files = checkbox_to_value(postpone_if_sync_files)
+        sickrage.app.config.general.allowed_extensions = ','.join({x.strip() for x in allowed_extensions.split(',') if x.strip()})
+        sickrage.app.config.general.naming_custom_abd = checkbox_to_value(naming_custom_abd)
+        sickrage.app.config.general.naming_custom_sports = checkbox_to_value(naming_custom_sports)
+        sickrage.app.config.general.naming_custom_anime = checkbox_to_value(naming_custom_anime)
+        sickrage.app.config.general.naming_strip_year = checkbox_to_value(naming_strip_year)
+        sickrage.app.config.failed_downloads.enable = checkbox_to_value(delete_failed)
+        sickrage.app.config.general.nfo_rename = checkbox_to_value(nfo_rename)
+        sickrage.app.config.general.delete_non_associated_files = checkbox_to_value(delete_non_associated_files)
+        sickrage.app.config.general.processor_follow_symlinks = checkbox_to_value(processor_follow_symlinks)
 
-        if is_naming_pattern_valid(pattern=naming_pattern, multi=naming_multi_ep) != "invalid":
-            sickrage.app.config.naming_pattern = naming_pattern
-            sickrage.app.config.naming_multi_ep = int(naming_multi_ep)
-            sickrage.app.config.naming_force_folders = validator.check_force_season_folders()
+        if is_naming_pattern_valid(pattern=naming_pattern, multi=MultiEpNaming[naming_multi_ep]) != "invalid":
+            sickrage.app.config.general.naming_pattern = naming_pattern
+            sickrage.app.config.general.naming_multi_ep = MultiEpNaming[naming_multi_ep]
+            sickrage.app.naming_force_folders = validator.check_force_season_folders()
         else:
             results.append(_("You tried saving an invalid naming config, not saving your naming settings"))
 
-        if is_naming_pattern_valid(pattern=naming_anime_pattern, multi=naming_anime_multi_ep, anime_type=naming_anime) != "invalid":
-            sickrage.app.config.naming_anime_pattern = naming_anime_pattern
-            sickrage.app.config.naming_anime_multi_ep = int(naming_anime_multi_ep)
-            sickrage.app.config.naming_anime = int(naming_anime)
+        if is_naming_pattern_valid(pattern=naming_anime_pattern, multi=MultiEpNaming[naming_anime_multi_ep], anime_type=naming_anime) != "invalid":
+            sickrage.app.config.general.naming_anime_pattern = naming_anime_pattern
+            sickrage.app.config.general.naming_anime_multi_ep = MultiEpNaming[naming_anime_multi_ep]
+            sickrage.app.config.general.naming_anime = int(naming_anime)
         else:
             results.append(_("You tried saving an invalid anime naming config, not saving your naming settings"))
 
         if is_naming_pattern_valid(pattern=naming_abd_pattern, abd=True) != "invalid":
-            sickrage.app.config.naming_abd_pattern = naming_abd_pattern
+            sickrage.app.config.general.naming_abd_pattern = naming_abd_pattern
         else:
             results.append(_("You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"))
 
-        if is_naming_pattern_valid(pattern=naming_sports_pattern, multi=naming_multi_ep, sports=True) != "invalid":
-            sickrage.app.config.naming_sports_pattern = naming_sports_pattern
+        if is_naming_pattern_valid(pattern=naming_sports_pattern, multi=MultiEpNaming[naming_multi_ep], sports=True) != "invalid":
+            sickrage.app.config.general.naming_sports_pattern = naming_sports_pattern
         else:
             results.append(_("You tried saving an invalid sports naming config, not saving your sports settings"))
 
@@ -216,7 +215,7 @@ class SavePostProcessingHandler(BaseHandler, ABC):
             [sickrage.app.log.warning(x) for x in results]
             sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.app.alerts.message(_('[POST-PROCESSING] Configuration Encrypted and Saved to disk'))
+            sickrage.app.alerts.message(_('[POST-PROCESSING] Configuration Saved to Database'))
 
         return self.redirect("/config/postProcessing/")
 
@@ -251,6 +250,9 @@ class IsNamingPatternValidHandler(BaseHandler, ABC):
         abd = self.get_argument('abd', None)
         sports = self.get_argument('sports', None)
         anime_type = self.get_argument('anime_type', None)
+
+        if multi:
+            multi = MultiEpNaming[multi]
 
         return self.write(is_naming_pattern_valid(pattern=pattern, multi=multi, abd=abd, sports=sports, anime_type=anime_type))
 

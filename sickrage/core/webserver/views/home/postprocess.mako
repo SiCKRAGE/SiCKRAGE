@@ -1,6 +1,7 @@
 <%inherit file="../layouts/main.mako"/>
 <%!
     import sickrage
+    from sickrage.core.enums import ProcessMethod
 %>
 <%block name="content">
     <div class="row">
@@ -22,7 +23,7 @@
                                         <span class="input-group-text"><span class="fas fa-folder-open"></span></span>
                                     </div>
                                     <input name="proc_dir" id="episodeDir" class="form-control" autocapitalize="off"
-                                           value="${sickrage.app.config.tv_download_dir}" title="directory"/>
+                                           value="${sickrage.app.config.general.tv_download_dir}" title="directory"/>
                                 </div>
                             </div>
                         </div>
@@ -38,9 +39,8 @@
                                     <select name="process_method" id="process_method"
                                             title="Choose post-processing method"
                                             class="form-control form-control-inline input-sm">
-                                        <% process_method_text = {'copy': _("Copy"), 'move': _("Move"), 'hardlink': _("Hard Link"), 'symlink' : _("Symbolic Link"),'symlink_reversed' : _("Symbolic Link Reversed")} %>
-                                        % for curAction in process_method_text:
-                                            <option value="${curAction}" ${('', 'selected')[sickrage.app.config.process_method == curAction]}>${process_method_text[curAction]}</option>
+                                        % for item in ProcessMethod:
+                                            <option value="${item.name}" ${('', 'selected')[sickrage.app.config.general.process_method == item]}>${item.display_name}</option>
                                         % endfor
                                     </select>
                                 </div>
@@ -51,7 +51,8 @@
                                 <b>${_('Force already Post Processed Dir/Files:')}</b>
                             </div>
                             <div class="col-md-6">
-                                <input id="force" name="force" type="checkbox" class="toggle color-primary is-material" title="">
+                                <input id="force" name="force" type="checkbox" class="toggle color-primary is-material"
+                                       title="">
                             </div>
                         </div>
                         <div class="row">
@@ -59,7 +60,8 @@
                                 <b>${_('Mark Dir/Files as priority download:')}</b>
                             </div>
                             <div class="col-md-6">
-                                <input id="is_priority" name="is_priority" type="checkbox" class="toggle color-primary is-material" title="">
+                                <input id="is_priority" name="is_priority" type="checkbox"
+                                       class="toggle color-primary is-material" title="">
                                 <span style="line-height: 0; font-size: 12px;">
                             <i>${_('(Check it to replace the file even if it exists at higher quality)')}</i>
                         </span>
@@ -70,7 +72,8 @@
                                 <b>${_('Delete files and folders:')}</b>
                             </div>
                             <div class="col-md-6">
-                                <input id="delete_on" name="delete_on" type="checkbox" class="toggle color-primary is-material" title="">
+                                <input id="delete_on" name="delete_on" type="checkbox"
+                                       class="toggle color-primary is-material" title="">
                                 <span style="line-height: 0; font-size: 12px;">
                             <i>${_('(Check it to delete files and folders like auto processing)')}</i>
                         </span>
@@ -81,7 +84,8 @@
                                 <b>${_('Don\'t use processing queue:')}</b>
                             </div>
                             <div class="col-md-6">
-                                <input id="force_next" name="force_next" type="checkbox" class="toggle color-primary is-material" title="">
+                                <input id="force_next" name="force_next" type="checkbox"
+                                       class="toggle color-primary is-material" title="">
                                 <span style="line-height: 0; font-size: 12px;">
                             <i>${_('(Check it to return the result of the process here, but may be slow!)')}</i>
                         </span>
@@ -92,7 +96,8 @@
                                 <b>${_('Mark download as failed:')}</b>
                             </div>
                             <div class="col-md-6">
-                                <input id="failed" name="failed" type="checkbox" class="toggle color-primary is-material" title="">
+                                <input id="failed" name="failed" type="checkbox"
+                                       class="toggle color-primary is-material" title="">
                             </div>
                         </div>
                     </div>

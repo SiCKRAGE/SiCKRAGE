@@ -21,10 +21,10 @@ def upgrade():
         scene_numbering = sa.Table('scene_numbering', meta, autoload=True)
         with op.get_context().begin_transaction():
             for row in conn.execute(scene_numbering.select()):
-                conn.execute('UPDATE tv_episodes SET scene_season = {} WHERE tv_episodes.showid = {}, tv_episodes.season = {}, tv_episodes.episode = {}'
-                             .format(row.scene_season, row.indexer_id, row.season, row.episode))
-                conn.execute('UPDATE tv_episodes SET scene_episode = {} WHERE tv_episodes.showid = {}, tv_episodes.season = {}, tv_episodes.episode = {}'
-                             .format(row.scene_episode, row.indexer_id, row.season, row.episode))
+                conn.execute(
+                    f'UPDATE tv_episodes SET scene_season = {row.scene_season} WHERE tv_episodes.showid = {row.indexer_id} and tv_episodes.season = {row.season} and tv_episodes.episode = {row.episode}')
+                conn.execute(
+                    f'UPDATE tv_episodes SET scene_episode = {row.scene_episode} WHERE tv_episodes.showid = {row.indexer_id} and tv_episodes.season = {row.season} and tv_episodes.episode = {row.episode}')
 
         op.drop_table('scene_numbering')
 

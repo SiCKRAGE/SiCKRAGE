@@ -25,7 +25,6 @@ import unittest
 
 import sickrage
 import tests
-from sickrage.core import scene_exceptions
 from sickrage.core.common import countryList
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.helpers import show_names
@@ -42,11 +41,11 @@ class SceneTests(tests.SiCKRAGETestDBCase):
         dot_expected = [x.replace(' ', '.') for x in expected]
         self.assertTrue(len(set(dot_expected).intersection(set(dot_result))) == len(dot_expected))
 
-    def _test_allPossibleShowNames(self, name, indexer_id=0, expected=None):
+    def _test_allPossibleShowNames(self, name, series_id=0, expected=None):
         if expected is None:
             expected = []
 
-        s = TVShow(indexer_id, 1)
+        s = TVShow(series_id, 1)
         s.name = name
 
         result = show_names.all_possible_show_names(s)
@@ -76,7 +75,7 @@ class SceneTests(tests.SiCKRAGETestDBCase):
         session = sickrage.app.cache_db.session()
 
         session.add(CacheDB.SceneException(**{
-            'indexer_id': 1,
+            'series_id': 1,
             'show_name': 'Exception Test',
             'season': -1
         }))

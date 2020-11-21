@@ -188,7 +188,7 @@ span.Proper {
   background-color: #c3e3c8;
 }
 
-.qual {
+.low-quality {
   background-color: #ffda8a;
 }
 
@@ -219,7 +219,7 @@ span.good {
   border: 1px solid #295730;
 }
 
-span.qual {
+span.low-quality {
   color: #765100;
   border: 1px solid #765100;
 }
@@ -242,7 +242,7 @@ span.missed {
 span.unaired b,
 span.skipped b,
 span.good b,
-span.qual b,
+span.low-quality b,
 span.wanted b,
 span.missed b,
 span.snatched b {

@@ -16,15 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
-from sqlalchemy import Column, Integer, Text, String, Boolean
-from sqlalchemy.ext.declarative import as_declarative
+from sqlalchemy import Column, Integer, Text, String, Boolean, MetaData, Enum
+from sqlalchemy.ext.declarative import declarative_base
 
 from sickrage.core.databases import SRDatabase, SRDatabaseBase
+from sickrage.core.enums import SeriesProviderID
 
-
-@as_declarative()
-class CacheDBBase(SRDatabaseBase):
-    pass
+CacheDBBase = declarative_base(cls=SRDatabaseBase)
 
 
 class CacheDB(SRDatabase):
@@ -54,11 +52,11 @@ class CacheDB(SRDatabase):
             session = self.session()
 
             for x in session.query(CacheDB.SceneName).all():
-                if (x.indexer_id, x.name) in found:
+                if (x.series_id, x.name) in found:
                     x.delete()
                     session.commit()
                 else:
-                    found.append((x.indexer_id, x.name))
+                    found.append((x.series_id, x.name))
 
         remove_duplicates_from_last_search_table()
         # remove_duplicates_from_scene_name_table()
@@ -79,7 +77,7 @@ class CacheDB(SRDatabase):
         __tablename__ = 'scene_names'
 
         id = Column(Integer, primary_key=True)
-        indexer_id = Column(Integer)
+        series_id = Column(Integer)
         name = Column(Text)
 
     class NetworkTimezone(CacheDBBase):
@@ -97,6 +95,7 @@ class CacheDB(SRDatabase):
         season = Column(Integer)
         episodes = Column(Text)
         series_id = Column(Integer)
+        series_provider_id = Column(Enum(SeriesProviderID))
         url = Column(String(256), index=True, unique=True)
         time = Column(Integer)
         quality = Column(Integer)

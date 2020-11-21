@@ -25,8 +25,9 @@ from tornado.escape import json_encode
 from tornado.web import authenticated
 
 import sickrage
+from sickrage.core.config.helpers import change_subtitle_searcher_freq
 from sickrage.core.helpers import checkbox_to_value
-from sickrage.core.webserver import ConfigHandler
+from sickrage.core.webserver import ConfigWebHandler
 from sickrage.core.webserver.handlers.base import BaseHandler
 from sickrage.subtitles import Subtitles
 
@@ -35,7 +36,7 @@ class ConfigSubtitlesHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
         return self.render('config/subtitles.mako',
-                           submenu=ConfigHandler.menu,
+                           submenu=ConfigWebHandler.menu,
                            title=_('Config - Subtitles Settings'),
                            header=_('Subtitles Settings'),
                            topmenu='config',
@@ -72,7 +73,7 @@ class SaveSubtitlesHandler(BaseHandler, ABC):
         subtitles_history = self.get_argument('subtitles_history', None)
         subtitles_finder_frequency = self.get_argument('subtitles_finder_frequency', None)
         subtitles_multi = self.get_argument('subtitles_multi', None)
-        embedded_subtitles_all = self.get_argument('embedded_subtitles_all', None)
+        enable_embedded_subtitles = self.get_argument('enable_embedded_subtitles', None)
         subtitles_extra_scripts = self.get_argument('subtitles_extra_scripts', '')
         subtitles_hearing_impaired = self.get_argument('subtitles_hearing_impaired', None)
         itasa_user = self.get_argument('itasa_user', None)
@@ -87,17 +88,18 @@ class SaveSubtitlesHandler(BaseHandler, ABC):
 
         results = []
 
-        sickrage.app.config.change_subtitle_searcher_freq(subtitles_finder_frequency)
-        sickrage.app.config.use_subtitles = checkbox_to_value(use_subtitles)
-        sickrage.app.config.subtitles_dir = subtitles_dir
-        sickrage.app.config.subtitles_history = checkbox_to_value(subtitles_history)
-        sickrage.app.config.embedded_subtitles_all = checkbox_to_value(embedded_subtitles_all)
-        sickrage.app.config.subtitles_hearing_impaired = checkbox_to_value(subtitles_hearing_impaired)
-        sickrage.app.config.subtitles_multi = checkbox_to_value(subtitles_multi)
-        sickrage.app.config.subtitles_extra_scripts = [x.strip() for x in subtitles_extra_scripts.split('|') if x.strip()]
+        change_subtitle_searcher_freq(subtitles_finder_frequency)
+
+        sickrage.app.config.subtitles.enable = checkbox_to_value(use_subtitles)
+        sickrage.app.config.subtitles.dir = subtitles_dir
+        sickrage.app.config.subtitles.history = checkbox_to_value(subtitles_history)
+        sickrage.app.config.subtitles.enable_embedded = checkbox_to_value(enable_embedded_subtitles)
+        sickrage.app.config.subtitles.hearing_impaired = checkbox_to_value(subtitles_hearing_impaired)
+        sickrage.app.config.subtitles.multi = checkbox_to_value(subtitles_multi)
+        sickrage.app.config.subtitles.extra_scripts = subtitles_extra_scripts
 
         # Subtitle languages
-        sickrage.app.config.subtitles_languages = subtitles_languages or ['eng']
+        sickrage.app.config.subtitles.languages = ','.join(subtitles_languages) or 'eng'
 
         # Subtitles services
         services_str_list = service_order.split()
@@ -106,19 +108,19 @@ class SaveSubtitlesHandler(BaseHandler, ABC):
         for curServiceStr in services_str_list:
             cur_service, cur_enabled = curServiceStr.split(':')
             subtitles_services_list.append(cur_service)
-            subtitles_services_enabled.append(int(cur_enabled))
+            subtitles_services_enabled.append(cur_enabled)
 
-        sickrage.app.config.subtitles_services_list = subtitles_services_list
-        sickrage.app.config.subtitles_services_enabled = subtitles_services_enabled
+        sickrage.app.config.subtitles.services_list = ','.join(subtitles_services_list)
+        sickrage.app.config.subtitles.services_enabled = ','.join(subtitles_services_enabled)
 
-        sickrage.app.config.addic7ed_user = addic7ed_user or ''
-        sickrage.app.config.addic7ed_pass = addic7ed_pass or ''
-        sickrage.app.config.legendastv_user = legendastv_user or ''
-        sickrage.app.config.legendastv_pass = legendastv_pass or ''
-        sickrage.app.config.itasa_user = itasa_user or ''
-        sickrage.app.config.itasa_pass = itasa_pass or ''
-        sickrage.app.config.opensubtitles_user = opensubtitles_user or ''
-        sickrage.app.config.opensubtitles_pass = opensubtitles_pass or ''
+        sickrage.app.config.subtitles.addic7ed_user = addic7ed_user or ''
+        sickrage.app.config.subtitles.addic7ed_pass = addic7ed_pass or ''
+        sickrage.app.config.subtitles.legendastv_user = legendastv_user or ''
+        sickrage.app.config.subtitles.legendastv_pass = legendastv_pass or ''
+        sickrage.app.config.subtitles.itasa_user = itasa_user or ''
+        sickrage.app.config.subtitles.itasa_pass = itasa_pass or ''
+        sickrage.app.config.subtitles.opensubtitles_user = opensubtitles_user or ''
+        sickrage.app.config.subtitles.opensubtitles_pass = opensubtitles_pass or ''
 
         sickrage.app.config.save()
 
@@ -126,6 +128,6 @@ class SaveSubtitlesHandler(BaseHandler, ABC):
             [sickrage.app.log.error(x) for x in results]
             sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.app.alerts.message(_('[SUBTITLES] Configuration Encrypted and Saved to disk'))
+            sickrage.app.alerts.message(_('[SUBTITLES] Configuration Saved to Database'))
 
         return self.redirect("/config/subtitles/")

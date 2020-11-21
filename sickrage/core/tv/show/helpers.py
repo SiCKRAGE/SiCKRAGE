@@ -20,13 +20,22 @@
 # ##############################################################################
 
 import sickrage
+from sickrage.core.enums import SeriesProviderID
 
 
-def find_show(indexer_id, indexer=1):
-    if not indexer_id:
+def find_show(series_id, series_provider_id=None):
+    if not series_id:
         return None
 
-    return sickrage.app.shows.get((int(indexer_id), int(indexer)), None)
+    if not series_provider_id:
+        series_provider_id = SeriesProviderID.THETVDB
+
+    return sickrage.app.shows.get((int(series_id), series_provider_id), None)
+
+
+def find_show_by_slug(slug):
+    series_id, series_provider_slug = slug.split('-')
+    return sickrage.app.shows.get((int(series_id), SeriesProviderID.by_slug(series_provider_slug)), None)
 
 
 def find_show_by_name(term):

@@ -27,8 +27,8 @@ import re
 from functools import partial
 
 import sickrage
-from sickrage.core import common
-from sickrage.core.common import SearchFormats
+from sickrage.core.common import EpisodeStatus, countryList
+from sickrage.core.enums import SearchFormat
 from sickrage.core.helpers import sanitize_scene_name, strip_accents
 from sickrage.core.tv.show.helpers import find_show
 
@@ -40,8 +40,8 @@ resultFilters = [
     "dub(bed)?"
 ]
 
-if hasattr('General', 'ignored_subs_list') and sickrage.app.config.ignored_subs_list:
-    resultFilters.append("(" + sickrage.app.config.ignored_subs_list.replace(",", "|") + ")sub(bed|ed|s)?")
+if hasattr('General', 'ignored_subs_list') and sickrage.app.config.general.ignored_subs_list:
+    resultFilters.append("(" + sickrage.app.config.general.ignored_subs_list.replace(",", "|") + ")sub(bed|ed|s)?")
 
 
 def contains_at_least_one_word(name, words):
@@ -94,8 +94,8 @@ def filter_bad_releases(name, parse=True):
 
     # if any of the bad strings are in the name then say no
     ignore_words = list(resultFilters)
-    if sickrage.app.config.ignore_words:
-        ignore_words.extend(sickrage.app.config.ignore_words.split(','))
+    if sickrage.app.config.general.ignore_words:
+        ignore_words.extend(sickrage.app.config.general.ignore_words.split(','))
 
     word = contains_at_least_one_word(name, ignore_words)
     if word:
@@ -103,8 +103,8 @@ def filter_bad_releases(name, parse=True):
         return False
 
     # if any of the good strings aren't in the name then say no
-    if sickrage.app.config.require_words:
-        require_words = sickrage.app.config.require_words
+    if sickrage.app.config.general.require_words:
+        require_words = sickrage.app.config.general.require_words
         if not contains_at_least_one_word(name, require_words):
             sickrage.app.log.debug("Release: " + name + " doesn't contain any of " +
                                    ', '.join(set(require_words)) + ", ignoring it")
@@ -141,7 +141,7 @@ def scene_to_normal_show_names(name):
         results.append(re.sub(r'(\D)(\d{4})$', '\\1(\\2)', cur_name))
 
         # add brackets around the country
-        country_match_str = '|'.join(common.countryList.values())
+        country_match_str = '|'.join(countryList.values())
         results.append(re.sub(r'(?i)([. _-])(' + country_match_str + ')$', '\\1(\\2)', cur_name))
 
     results += name_list
@@ -149,122 +149,7 @@ def scene_to_normal_show_names(name):
     return list(set(results))
 
 
-def make_scene_show_search_strings(show_id, season=-1, anime=False):
-    """
-    :rtype: list[unicode]
-    """
-    show_names = all_possible_show_names(show_id, season=season)
-
-    # scenify the names
-    if anime:
-        sanitize_scene_name_anime = partial(sanitize_scene_name, anime=True)
-        return map(sanitize_scene_name_anime, show_names)
-    else:
-        return map(sanitize_scene_name, show_names)
-
-
-def make_scene_season_search_string(show_id, season, episode, extraSearchType=None):  # TODO: remove as this is no longer needed
-    numseasons = 0
-
-    show_object = find_show(show_id)
-    if not show_object:
-        return []
-
-    episode_object = show_object.get_episode(season, episode)
-
-    if show_object.search_format in [SearchFormats.AIR_BY_DATE, SearchFormats.SPORTS]:
-        # the search string for air by date shows is just
-        seasonStrings = [str(episode_object.airdate).split('-')[0]]
-    elif show_object.search_format == SearchFormats.ANIME:
-        # get show qualities
-        anyQualities, bestQualities = common.Quality.split_quality(show_object.quality)
-
-        # compile a list of all the episode numbers we need in this 'season'
-        seasonStrings = []
-        for episode in (x for x in show_object.episodes if x.season == episode_object.season):
-            # get quality of the episode
-            curCompositeStatus = episode.status
-            curStatus, curQuality = common.Quality.split_composite_status(curCompositeStatus)
-
-            highestBestQuality = 0
-            if bestQualities:
-                highestBestQuality = max(bestQualities)
-
-            # if we need a better one then add it to the list of episodes to fetch
-            if (curStatus in (common.DOWNLOADED, common.SNATCHED) and curQuality < highestBestQuality) or curStatus == common.WANTED:
-                ab_number = episode.scene_absolute_number
-                if ab_number > -1:
-                    seasonStrings.append("%02d" % ab_number)
-    else:
-        numseasons = len(set([s.season for s in show_object.episodes if s.season > 0]))
-        seasonStrings = ["S%02d" % int(episode_object.scene_season)]
-
-    showNames = set(make_scene_show_search_strings(show_id, episode_object.scene_season))
-
-    toReturn = []
-
-    # search each show name
-    for curShow in showNames:
-        # most providers all work the same way
-        if not extraSearchType:
-            # if there's only one season then we can just use the show name straight up
-            if numseasons == 1:
-                toReturn.append(curShow)
-            # for providers that don't allow multiple searches in one request we only search for Sxx style stuff
-            else:
-                for cur_season in seasonStrings:
-                    if show_object.is_anime:
-                        if show_object.release_groups is not None:
-                            if len(show_object.release_groups.whitelist) > 0:
-                                for keyword in show_object.release_groups.whitelist:
-                                    toReturn.append(keyword + '.' + curShow + "." + cur_season)
-                    else:
-                        toReturn.append(curShow + "." + cur_season)
-
-    return toReturn
-
-
-def make_scene_search_string(show_id, season, episode):  # TODO: remove as this is no longer needed
-    toReturn = []
-
-    show_object = find_show(show_id)
-    show_object = show_object.get_episode(season, episode)
-
-    numseasons = len(set([s.season for s in show_object.episodes if s.season > 0]))
-
-    # see if we should use dates instead of episodes
-    if show_object.search_format in [SearchFormats.AIR_BY_DATE, SearchFormats.SPORTS] and show_object.airdate > datetime.date.min:
-        epStrings = [str(show_object.airdate)]
-    elif show_object.search_format == SearchFormats.ANIME:
-        epStrings = ["%02i" % int(show_object.scene_absolute_number if show_object.scene_absolute_number > 0 else show_object.scene_episode)]
-    else:
-        epStrings = ["S%02iE%02i" % (int(show_object.scene_season), int(show_object.scene_episode)),
-                     "%ix%02i" % (int(show_object.scene_season), int(show_object.scene_episode))]
-
-    # for single-season shows just search for the show name -- if total ep count (exclude s0) is less than 11
-    # due to the amount of qualities and releases, it is easy to go over the 50 result limit on rss feeds otherwise
-    if numseasons == 1 and not show_object.is_anime:
-        epStrings = []
-
-    for curShow in set(make_scene_show_search_strings(show_id, show_object.scene_season)):
-        for curEpString in epStrings:
-            if show_object.is_anime:
-                if show_object.release_groups is not None:
-                    if len(show_object.release_groups.whitelist) > 0:
-                        for keyword in show_object.release_groups.whitelist:
-                            toReturn.append(keyword + '.' + curShow + '.' + curEpString)
-                    elif len(show_object.release_groups.blacklist) == 0:
-                        # If we have neither whitelist or blacklist we just append what we have
-                        toReturn.append(curShow + '.' + curEpString)
-            else:
-                toReturn += [curShow + '.' + curEpString]
-        else:
-            toReturn += [curShow]
-
-    return toReturn
-
-
-def all_possible_show_names(show_id, season=-1):
+def all_possible_show_names(series_id, series_provider_id, season=-1):
     """
     Figures out every possible variation of the name for a particular show. Includes TVDB name, TVRage name,
     country codes on the end, eg. "Show Name (AU)", and any scene exception names.
@@ -275,7 +160,7 @@ def all_possible_show_names(show_id, season=-1):
     :rtype: list[unicode]
     """
 
-    show = find_show(show_id)
+    show = find_show(series_id, series_provider_id)
 
     show_names = show.get_scene_exceptions_by_season(season=season)[:]
     if not show_names:  # if we dont have any season specific exceptions fallback to generic exceptions
@@ -290,8 +175,8 @@ def all_possible_show_names(show_id, season=-1):
 
     if not show.is_anime:
         new_show_names = []
-        country_list = common.countryList
-        country_list.update(dict(zip(common.countryList.values(), common.countryList.keys())))
+        country_list = countryList
+        country_list.update(dict(zip(countryList.values(), countryList.keys())))
         for curName in set(show_names):
             if not curName:
                 continue

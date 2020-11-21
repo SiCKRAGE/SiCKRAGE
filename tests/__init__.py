@@ -29,6 +29,8 @@ import sys
 import threading
 import unittest
 
+from sickrage.core import Core, Logger
+
 PROG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, 'sickrage'))
 if not (PROG_DIR in sys.path):
     sys.path, remainder = sys.path[:1], sys.path[1:]
@@ -47,8 +49,7 @@ gettext.install('messages', LOCALE_DIR, codeset='UTF-8', names=["ngettext"])
 import sickrage
 
 from sickrage.core.tv import episode
-from sickrage.core import Core, Config, NameCache, Logger
-from sickrage.providers import SearchProviders
+from sickrage.search_providers import SearchProviders
 from sickrage.core.helpers import encryption
 from sickrage.core.databases.main import MainDB
 
@@ -77,7 +78,7 @@ class SiCKRAGETestCase(unittest.TestCase):
         sickrage.app = Core()
         sickrage.app.search_providers = SearchProviders()
         sickrage.app.log = Logger()
-        sickrage.app.config = Config()
+        # sickrage.app.config = Config()
 
         sickrage.app.web_host = '0.0.0.0'
         sickrage.app.data_dir = self.TESTDIR
@@ -93,8 +94,8 @@ class SiCKRAGETestCase(unittest.TestCase):
         encryption.initialize()
         sickrage.app.config.load()
 
-        sickrage.app.config.naming_pattern = 'Season.%0S/%S.N.S%0SE%0E.%E.N'
-        sickrage.app.config.tv_download_dir = os.path.join(self.TESTDIR, 'Downloads')
+        sickrage.app.config.general.naming_pattern = 'Season.%0S/%S.N.S%0SE%0E.%E.N'
+        sickrage.app.config.general.tv_download_dir = os.path.join(self.TESTDIR, 'Downloads')
 
         episode.TVEpisode.populate_episode = self._fake_specify_ep
 

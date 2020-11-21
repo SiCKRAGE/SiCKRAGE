@@ -205,10 +205,10 @@ class ItaSAProvider(Provider):
         # Looking for show in first page
         for show in root.findall('data/shows/show'):
             if sanitize(show.find('name').text).lower() == sanitize(series.lower()):
-                show_id = int(show.find('id').text)
-                logger.debug('Found show id %d', show_id)
+                series_id = int(show.find('id').text)
+                logger.debug('Found show id %d', series_id)
 
-                return show_id
+                return series_id
 
         # Not in the first page of result try next (if any)
         next_page = root.find('data/next')
@@ -223,10 +223,10 @@ class ItaSAProvider(Provider):
             # Looking for show in following pages
             for show in root.findall('data/shows/show'):
                 if sanitize(show.find('name').text).lower() == sanitize(series.lower()):
-                    show_id = int(show.find('id').text)
-                    logger.debug('Found show id %d', show_id)
+                    series_id = int(show.find('id').text)
+                    logger.debug('Found show id %d', series_id)
 
-                    return show_id
+                    return series_id
 
             next_page = root.find('data/next')
 
@@ -248,24 +248,24 @@ class ItaSAProvider(Provider):
         """
         series_sanitized = sanitize(series).lower()
         show_ids = self._get_show_ids()
-        show_id = None
+        series_id = None
 
         # attempt with country
-        if not show_id and country_code:
+        if not series_id and country_code:
             logger.debug('Getting show id with country')
-            show_id = show_ids.get('{0} {1}'.format(series_sanitized, country_code.lower()))
+            series_id = show_ids.get('{0} {1}'.format(series_sanitized, country_code.lower()))
 
         # attempt clean
-        if not show_id:
+        if not series_id:
             logger.debug('Getting show id')
-            show_id = show_ids.get(series_sanitized)
+            series_id = show_ids.get(series_sanitized)
 
         # search as last resort
-        if not show_id:
+        if not series_id:
             logger.warning('Series not found in show ids')
-            show_id = self._search_show_id(series)
+            series_id = self._search_show_id(series)
 
-        return show_id
+        return series_id
 
     @region.cache_on_arguments(expiration_time=EPISODE_EXPIRATION_TIME)
     def _download_zip(self, sub_id):
@@ -283,10 +283,10 @@ class ItaSAProvider(Provider):
 
         return r.content
 
-    def _get_season_subtitles(self, show_id, season, sub_format):
+    def _get_season_subtitles(self, series_id, season, sub_format):
         params = {
             'apikey': self.apikey,
-            'show_id': show_id,
+            'series_id': series_id,
             'q': 'Stagione %{}'.format(season),
             'version': sub_format
         }
@@ -350,13 +350,13 @@ class ItaSAProvider(Provider):
             raise ConfigurationError('Cannot query if not logged in')
 
         # get the show id
-        show_id = self.get_show_id(series, country)
-        if show_id is None:
+        series_id = self.get_show_id(series, country)
+        if series_id is None:
             logger.error('No show id found for %r ', series)
             return []
 
         # get the page of the season of the show
-        logger.info('Getting the subtitle of show id %d, season %d episode %d, format %r', show_id,
+        logger.info('Getting the subtitle of show id %d, season %d episode %d, format %r', series_id,
                     season, episode, video_format)
         subtitles = []
 
@@ -373,7 +373,7 @@ class ItaSAProvider(Provider):
         params = {
             'apikey': self.apikey
         }
-        r = self.session.get(self.server_url + 'shows/' + str(show_id), params=params, timeout=30)
+        r = self.session.get(self.server_url + 'shows/' + str(series_id), params=params, timeout=30)
         r.raise_for_status()
         root = etree.fromstring(r.content)
 
@@ -386,7 +386,7 @@ class ItaSAProvider(Provider):
 
         params = {
             'apikey': self.apikey,
-            'show_id': show_id,
+            'series_id': series_id,
             'q': '{0}x{1:02}'.format(season, episode),
             'version': sub_format
         }
@@ -405,7 +405,7 @@ class ItaSAProvider(Provider):
                 logger.warning('Subtitles not found, go season mode')
 
                 # If no subtitle are found for single episode try to download all season zip
-                subs = self._get_season_subtitles(show_id, season, sub_format)
+                subs = self._get_season_subtitles(series_id, season, sub_format)
                 if subs:
                     for subtitle in subs:
                         subtitle.format = video_format

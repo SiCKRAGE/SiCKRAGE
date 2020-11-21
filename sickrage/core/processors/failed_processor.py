@@ -20,12 +20,12 @@
 # ##############################################################################
 
 import sickrage
-from sickrage.core.common import Quality, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST
 from sickrage.core.exceptions import FailedPostProcessingFailedException, EpisodeNotFoundException
 from sickrage.core.helpers import show_names
-from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
-    NameParser
+from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
+from sickrage.core.common import Quality, EpisodeStatus
 from sickrage.core.queues.search import FailedSearchTask
+from sickrage.core.tv.show.helpers import find_show
 
 
 class FailedProcessor(object):
@@ -64,9 +64,12 @@ class FailedProcessor(object):
                       sickrage.app.log.DEBUG)
             raise FailedPostProcessingFailedException()
 
-        if parsed.show.paused:
-            self._log("Warning: skipping failed processing for {} because the show is paused".format(release_name),
-                      sickrage.app.log.DEBUG)
+        series = find_show(parsed.series_id, parsed.series_provider_id)
+        if not series:
+            raise FailedPostProcessingFailedException()
+
+        if series.paused:
+            self._log("Warning: skipping failed processing for {} because the show is paused".format(release_name), sickrage.app.log.DEBUG)
             raise FailedPostProcessingFailedException()
 
         sickrage.app.log.debug("name_parser info: ")
@@ -79,15 +82,15 @@ class FailedProcessor(object):
 
         for episode in parsed.episode_numbers:
             try:
-                episode_obj = parsed.show.get_episode(parsed.season_number, episode)
+                episode_obj = series.get_episode(parsed.season_number, episode)
             except EpisodeNotFoundException as e:
                 continue
 
             cur_status, cur_quality = Quality.split_composite_status(episode_obj.status)
-            if cur_status not in {SNATCHED, SNATCHED_BEST, SNATCHED_PROPER}:
+            if cur_status not in (EpisodeStatus.SNATCHED, EpisodeStatus.SNATCHED_BEST, EpisodeStatus.SNATCHED_PROPER):
                 continue
 
-            sickrage.app.search_queue.put(FailedSearchTask(parsed.show, episode_obj.season, episode_obj.episode))
+            sickrage.app.search_queue.put(FailedSearchTask(parsed.series_id, parsed.series_provider_id, episode_obj.season, episode_obj.episode))
 
         return True
 

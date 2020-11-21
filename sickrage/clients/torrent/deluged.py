@@ -57,7 +57,7 @@ class DelugeDAPI(TorrentClient):
         #     label = sickrage.TORRENT_LABEL_ANIME
 
         options = {
-            'add_paused': sickrage.app.config.torrent_paused
+            'add_paused': sickrage.app.config.torrent.paused
         }
 
         remote_torrent = self.drpc.add_torrent_magnet(result.url, options, result.hash)
@@ -79,7 +79,7 @@ class DelugeDAPI(TorrentClient):
             return None
 
         options = {
-            'add_paused': sickrage.app.config.torrent_paused
+            'add_paused': sickrage.app.config.torrent.paused
         }
 
         remote_torrent = self.drpc.add_torrent_file(result.name + '.torrent', result.content, options, result.hash)
@@ -92,12 +92,12 @@ class DelugeDAPI(TorrentClient):
         return remote_torrent
 
     def _set_torrent_label(self, result):
-        label = sickrage.app.config.torrent_label
+        label = sickrage.app.config.torrent.label
 
-        tv_show = find_show(result.show_id)
+        tv_show = find_show(result.series_id, result.series_provider_id)
 
         if tv_show.is_anime:
-            label = sickrage.app.config.torrent_label_anime
+            label = sickrage.app.config.torrent.label_anime
 
         if ' ' in label:
             sickrage.app.log.warning(self.name + ': Invalid label. Label must not contain a space')
@@ -121,14 +121,14 @@ class DelugeDAPI(TorrentClient):
 
     def _set_torrent_path(self, result):
 
-        path = sickrage.app.config.torrent_path
+        path = sickrage.app.config.torrent.path
         if path:
             return self.drpc.set_torrent_path(result.hash, path)
         return True
 
     def _set_torrent_pause(self, result):
 
-        if sickrage.app.config.torrent_paused:
+        if sickrage.app.config.torrent.paused:
             return self.drpc.pause_torrent(result.hash)
         return True
 

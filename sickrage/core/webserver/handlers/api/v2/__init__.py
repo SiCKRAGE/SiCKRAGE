@@ -24,11 +24,7 @@ import traceback
 from abc import ABC
 
 import sickrage
-from sickrage.core import WANTED, SKIPPED
-from sickrage.core.common import statusStrings, UNKNOWN, UNAIRED, SNATCHED, DOWNLOADED, ARCHIVED, IGNORED, SNATCHED_PROPER, SUBTITLED, FAILED, SNATCHED_BEST, \
-    MISSED, Overview, SearchFormats, qualityPresetStrings, Quality
 from sickrage.core.webserver.handlers.base import BaseHandler
-from sickrage.indexers import IndexerApi
 
 
 class APIv2BaseHandler(BaseHandler, ABC):
@@ -48,35 +44,35 @@ class APIv2BaseHandler(BaseHandler, ABC):
                     token = auth_header.strip('Bearer').strip()
                     decoded_auth_token = sickrage.app.auth_server.decode_token(token, certs)
 
-                    if not sickrage.app.config.sub_id:
-                        sickrage.app.config.sub_id = decoded_auth_token.get('sub')
+                    if not sickrage.app.config.user.sub_id:
+                        sickrage.app.config.user.sub_id = decoded_auth_token.get('sub')
                         sickrage.app.config.save()
 
-                    if sickrage.app.config.sub_id != decoded_auth_token.get('sub'):
+                    if sickrage.app.config.user.sub_id != decoded_auth_token.get('sub'):
                         return self.send_error(401, error='user is not authorized')
 
-                    if sickrage.app.config.enable_sickrage_api and not sickrage.app.api.token:
+                    if sickrage.app.config.general.enable_sickrage_api and not sickrage.app.api.token:
                         sickrage.app.api.exchange_token(token)
 
                     # internal_connections = "{}://{}:{}{}".format(self.request.protocol,
                     #                                              get_internal_ip(),
-                    #                                              sickrage.app.config.web_port,
-                    #                                              sickrage.app.config.web_root)
+                    #                                              sickrage.app.config.general.web_port,
+                    #                                              sickrage.app.config.general.web_root)
                     #
                     # external_connections = "{}://{}:{}{}".format(self.request.protocol,
                     #                                              get_external_ip(),
-                    #                                              sickrage.app.config.web_port,
-                    #                                              sickrage.app.config.web_root)
+                    #                                              sickrage.app.config.general.web_port,
+                    #                                              sickrage.app.config.general.web_root)
                     #
                     # connections = ','.join([internal_connections, external_connections])
                     #
-                    # if not re.match(r'[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}', sickrage.app.config.server_id or ""):
+                    # if not re.match(r'[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}', sickrage.app.config.general.server_id or ""):
                     #     server_id = sickrage.app.api.account.register_server(connections)
                     #     if server_id:
-                    #         sickrage.app.config.server_id = server_id
+                    #         sickrage.app.config.general.server_id = server_id
                     #         sickrage.app.config.save()
                     # else:
-                    #     sickrage.app.api.account.update_server(sickrage.app.config.server_id, connections)
+                    #     sickrage.app.api.account.update_server(sickrage.app.config.general.server_id, connections)
 
                     self.current_user = decoded_auth_token
                 except Exception:
@@ -102,7 +98,7 @@ class APIv2BaseHandler(BaseHandler, ABC):
 
             sickrage.app.log.debug(error_msg)
         else:
-            error_msg = kwargs.get('reason', '')
+            error_msg = kwargs.get('reason', '') or kwargs.get('error', '')
 
         self.write_json({'error': error_msg})
 
@@ -119,41 +115,6 @@ class PingHandler(APIv2BaseHandler, ABC):
         return self.write_json({'message': 'pong'})
 
 
-class ConfigStateHandler(APIv2BaseHandler, ABC):
-    def get(self, *args, **kwargs):
-        config_data = sickrage.app.config.config_data
-        config_data['constants'] = {
-            'episode_status_strings': statusStrings,
-            'episode_status_keys': {
-                'UNKNOWN': UNKNOWN,
-                'UNAIRED': UNAIRED,
-                'SNATCHED': SNATCHED,
-                'WANTED': WANTED,
-                'DOWNLOADED': DOWNLOADED,
-                'SKIPPED': SKIPPED,
-                'ARCHIVED': ARCHIVED,
-                'IGNORED': IGNORED,
-                'SNATCHED_PROPER': SNATCHED_PROPER,
-                'SUBTITLED': SUBTITLED,
-                'FAILED': FAILED,
-                'SNATCHED_BEST': SNATCHED_BEST,
-                'MISSED': MISSED
-            },
-            'overview_strings': Overview.overviewStrings,
-            'show_search_formats': SearchFormats.search_format_strings,
-            'qualities': {
-                'presets': qualityPresetStrings,
-                'strings': Quality.qualityStrings,
-                'combined': Quality.combinedQualityStrings,
-                'css': Quality.cssClassStrings,
-                'snatched': Quality.SNATCHED,
-                'downloaded': Quality.DOWNLOADED
-            }
-        }
-
-        return self.write_json(config_data)
-
-
 class RetrieveSeriesMetadataHandler(APIv2BaseHandler, ABC):
     def get(self):
         series_directory = self.get_argument('seriesDirectory', None)
@@ -165,11 +126,12 @@ class RetrieveSeriesMetadataHandler(APIv2BaseHandler, ABC):
             'seriesDirectory': series_directory,
             'seriesId': '',
             'seriesName': '',
-            'indexerSlug': ''
+            'seriesProviderSlug': '',
+            'seriesSlug': ''
         }
 
         for cur_provider in sickrage.app.metadata_providers.values():
-            series_id, series_name, indexer = cur_provider.retrieve_show_metadata(series_directory)
+            series_id, series_name, series_provider_id = cur_provider.retrieve_show_metadata(series_directory)
 
             if not json_data['seriesId'] and series_id:
                 json_data['seriesId'] = series_id
@@ -177,7 +139,10 @@ class RetrieveSeriesMetadataHandler(APIv2BaseHandler, ABC):
             if not json_data['seriesName'] and series_name:
                 json_data['seriesName'] = series_name
 
-            if not json_data['indexerSlug'] and indexer:
-                json_data['indexerSlug'] = IndexerApi(indexer).slug
+            if not json_data['seriesProviderSlug'] and series_provider_id:
+                json_data['seriesProviderSlug'] = series_provider_id.slug
+
+            if not json_data['seriesSlug'] and series_id and series_provider_id:
+                json_data['seriesSlug'] = f'{series_id}-{series_provider_id.slug}'
 
         self.write_json(json_data)

@@ -26,13 +26,13 @@ class TraktAPI(object):
     def __init__(self):
         # Set trakt app id
         Trakt.configuration.defaults.app(
-            id=sickrage.app.config.trakt_app_id
+            id=sickrage.app.trakt_app_id
         )
 
         # Set trakt client id/secret
         Trakt.configuration.defaults.client(
-            id=sickrage.app.config.trakt_api_key,
-            secret=sickrage.app.config.trakt_api_secret
+            id=sickrage.app.trakt_api_key,
+            secret=sickrage.app.trakt_api_secret
         )
 
         # Bind trakt events
@@ -42,19 +42,19 @@ class TraktAPI(object):
             refresh=True
         )
 
-        if sickrage.app.config.trakt_oauth_token:
+        if sickrage.app.config.trakt.oauth_token:
             Trakt.configuration.defaults.oauth.from_response(
-                sickrage.app.config.trakt_oauth_token
+                sickrage.app.config.trakt.oauth_token
             )
 
     @staticmethod
     def authenticate(pin):
         # Exchange `code` for `access_token`
-        sickrage.app.config.trakt_oauth_token = Trakt['oauth'].token_exchange(pin, 'urn:ietf:wg:oauth:2.0:oob')
-        if not sickrage.app.config.trakt_oauth_token:
+        sickrage.app.config.trakt.oauth_token = Trakt['oauth'].token_exchange(pin, 'urn:ietf:wg:oauth:2.0:oob')
+        if not sickrage.app.config.trakt.oauth_token:
             return False
 
-        sickrage.app.log.debug('Token exchanged - auth: %r' % sickrage.app.config.trakt_oauth_token)
+        sickrage.app.log.debug('Token exchanged - auth: %r' % sickrage.app.config.trakt.oauth_token)
         sickrage.app.config.save()
 
         return True
@@ -62,9 +62,9 @@ class TraktAPI(object):
     @staticmethod
     def on_token_refreshed(response):
         # OAuth token refreshed, save token for future calls
-        sickrage.app.config.trakt_oauth_token = response
+        sickrage.app.config.trakt.oauth_token = response
 
-        sickrage.app.log.debug('Token refreshed - auth: %r' % sickrage.app.config.trakt_oauth_token)
+        sickrage.app.log.debug('Token refreshed - auth: %r' % sickrage.app.config.trakt.oauth_token)
         sickrage.app.config.save()
 
     def __getattr__(self, name):

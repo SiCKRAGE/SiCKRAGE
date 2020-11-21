@@ -26,6 +26,7 @@ from bencode3 import bdecode, BencodeError, bencode
 
 import sickrage
 from sickrage.core.websession import WebSession
+from sickrage.search_providers import SearchProviderType
 
 _clients = {
     'utorrent': 'uTorrentAPI',
@@ -43,10 +44,10 @@ _clients = {
 class GenericClient(object):
     def __init__(self, name, host=None, username=None, password=None):
         self.name = name
-        self.username = sickrage.app.config.torrent_username if not username else username
-        self.password = sickrage.app.config.torrent_password if not password else password
-        self.host = sickrage.app.config.torrent_host if not host else host
-        self.rpcurl = sickrage.app.config.torrent_rpcurl
+        self.username = sickrage.app.config.torrent.username if not username else username
+        self.password = sickrage.app.config.torrent.password if not password else password
+        self.host = sickrage.app.config.torrent.host if not host else host
+        self.rpcurl = sickrage.app.config.torrent.rpc_url
 
         self.url = None
         self.auth = None
@@ -219,7 +220,7 @@ class TorrentClient(GenericClient):
             result = self._get_torrent_hash(result)
 
             # convert to magnetic url if result has info hash and is not a private provider
-            if sickrage.app.config.torrent_file_to_magnet:
+            if sickrage.app.config.general.torrent_file_to_magnet:
                 if result.hash and not result.provider.private and not result.url.startswith('magnet'):
                     result.url = "magnet:?xt=urn:btih:{}".format(result.hash)
 
@@ -273,9 +274,9 @@ class NZBClient(GenericClient):
         return False
 
     def send_nzb(self, result):
-        if result.resultType == 'nzb':
+        if result.provider_type == SearchProviderType.NZB:
             return self._add_nzb_uri(result)
-        elif result.resultType == 'nzbdata':
+        elif result.provider_type == SearchProviderType.NZBDATA:
             return self._add_nzb_file(result)
 
 

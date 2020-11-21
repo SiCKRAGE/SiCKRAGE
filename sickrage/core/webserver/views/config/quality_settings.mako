@@ -2,7 +2,7 @@
 <%def name='formaction()'><% return 'saveQualities' %></%def>
 <%!
     import sickrage
-    from sickrage.core.common import Quality
+    from sickrage.core.common import Qualities
 %>
 
 <%block name="menus">
@@ -18,15 +18,15 @@
                 <h3>${_('Quality Sizes')}</h3>
                 <small class="form-text text-muted">
                     ${_('Use default qualitiy sizes or specify custom ones per quality definition.')}<br/>
-                    ${_('Settings represent maximum size allowed per episode video file.')}
+                    ${_('Settings represent minimum and maximum size allowed per episode video file.')}
                 </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
-                % for qtype in Quality.qualitySizes.keys():
-                    % if qtype:
+                % for quality in sickrage.app.config.quality_sizes.keys():
+                    % if quality:
                         <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5">
-                                <label class="component-title">${renderQualityPill(qtype)}</label>
+                                <label class="component-title">${renderQualityPill(Qualities[quality])}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                 <div class="input-group">
@@ -37,18 +37,26 @@
                                     </div>
                                     <input class="form-control"
                                            type="number"
-                                           % if qtype in sickrage.app.config.quality_sizes:
-                                             value="${sickrage.app.config.quality_sizes[qtype]}"
-                                           % else:
-                                               value="${Quality.qualitySizes[qtype]}"
-                                           % endif
-                                           name="${qtype}"
-                                           id="${qtype}"
-                                           min="1"
-                                           title="Specify max quality size allowed in MB">
+                                           value="${sickrage.app.config.quality_sizes[quality]['min_size']}"
+                                           name="${quality}_min"
+                                           id="${quality}_min"
+                                           min="0"
+                                           title="Specify minimum quality size allowed in MB">
                                     <div class="input-group-append">
                                         <span class="input-group-text">
-                                            MB
+                                            MB Min
+                                        </span>
+                                    </div>
+                                    <input class="form-control"
+                                           type="number"
+                                           value="${sickrage.app.config.quality_sizes[quality]['max_size']}"
+                                           name="${quality}_max"
+                                           id="${quality}_max"
+                                           min="0"
+                                           title="Specify maximum quality size allowed in MB">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            MB Max
                                         </span>
                                     </div>
                                 </div>

@@ -150,8 +150,8 @@ module.exports = {
         new OptimizeCSSAssetsPlugin(),
         makeSprite('core'),
         makeSprite('network'),
-        makeSprite('notifiers'),
-        makeSprite('providers'),
+        makeSprite('notification-providers'),
+        makeSprite('search-providers'),
         makeSprite('subtitles'),
         makeSprite('flags')
     ]

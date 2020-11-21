@@ -21,6 +21,7 @@
 import locale
 
 import sickrage
+from sickrage.core.enums import TimezoneDisplay
 
 date_presets = (
     '%Y-%m-%d',
@@ -91,7 +92,7 @@ time_presets = ('%I:%M:%S %p', '%H:%M:%S')
 class SRDateTime(object):
     def __init__(self, dt, convert=False):
         self.dt = dt
-        if convert and sickrage.app.config.timezone_display == 'local':
+        if convert and sickrage.app.config.gui.timezone_display == TimezoneDisplay.LOCAL:
             try:
                 self.dt = dt.astimezone(sickrage.app.tz)
             except Exception as e:
@@ -119,7 +120,7 @@ class SRDateTime(object):
 
         try:
             if self.has_locale:
-                locale.setlocale(locale.LC_TIME, locale.normalize(sickrage.app.config.gui_lang))
+                locale.setlocale(locale.LC_TIME, locale.normalize(sickrage.app.config.gui.gui_lang))
         except Exception:
             try:
                 if self.has_locale:
@@ -131,9 +132,9 @@ class SRDateTime(object):
             if t_preset is not None:
                 strt = self.dt.strftime(t_preset)
             elif show_seconds:
-                strt = self.dt.strftime(sickrage.app.config.time_preset_w_seconds)
+                strt = self.dt.strftime(sickrage.app.config.gui.time_preset_w_seconds)
             else:
-                strt = self.dt.strftime(sickrage.app.config.time_preset)
+                strt = self.dt.strftime(sickrage.app.config.gui.time_preset)
         finally:
             try:
                 if self.has_locale:
@@ -161,7 +162,7 @@ class SRDateTime(object):
 
         try:
             if self.has_locale:
-                locale.setlocale(locale.LC_TIME, locale.normalize(sickrage.app.config.gui_lang))
+                locale.setlocale(locale.LC_TIME, locale.normalize(sickrage.app.config.gui.gui_lang))
         except Exception:
             try:
                 if self.has_locale:
@@ -173,7 +174,7 @@ class SRDateTime(object):
             if d_preset is not None:
                 strd = self.dt.strftime(d_preset)
             else:
-                strd = self.dt.strftime(sickrage.app.config.date_preset)
+                strd = self.dt.strftime(sickrage.app.config.gui.date_preset)
         finally:
             try:
                 locale.setlocale(locale.LC_TIME, '')
@@ -204,11 +205,11 @@ class SRDateTime(object):
             if d_preset is not None:
                 strd = self.dt.strftime(d_preset)
             else:
-                strd = self.dt.strftime(sickrage.app.config.date_preset)
+                strd = self.dt.strftime(sickrage.app.config.gui.date_preset)
 
             try:
                 if self.has_locale:
-                    locale.setlocale(locale.LC_TIME, locale.normalize(sickrage.app.config.gui_lang))
+                    locale.setlocale(locale.LC_TIME, locale.normalize(sickrage.app.config.gui.gui_lang))
             except Exception:
                 try:
                     if self.has_locale:
@@ -219,9 +220,9 @@ class SRDateTime(object):
             if t_preset is not None:
                 strd += ', {}'.format(self.dt.strftime(t_preset))
             elif show_seconds:
-                strd += ', {}'.format(self.dt.strftime(sickrage.app.config.time_preset_w_seconds))
+                strd += ', {}'.format(self.dt.strftime(sickrage.app.config.gui.time_preset_w_seconds))
             else:
-                strd += ', {}'.format(self.dt.strftime(sickrage.app.config.time_preset))
+                strd += ', {}'.format(self.dt.strftime(sickrage.app.config.gui.time_preset))
         finally:
             try:
                 if self.has_locale:

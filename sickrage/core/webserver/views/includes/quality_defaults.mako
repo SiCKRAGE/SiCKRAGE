@@ -1,7 +1,7 @@
 <%!
     import html
     import sickrage
-    from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings
+    from sickrage.core.common import Quality, Qualities
 %>
 <%def name="renderQualityPill(quality, showTitle=False, overrideClass=None)">
     <%
@@ -11,13 +11,13 @@
             title = _('Initial Quality:') + '\n'
             if iQuality:
                 for curQual in iQuality:
-                    title += "  " + Quality.qualityStrings[curQual] + "\n"
+                    title += "  " + curQual.display_name + "\n"
             else:
                 title += "  None\n"
             title += "\n" + _("Preferred Quality:") + "\n"
             if pQuality:
                 for curQual in pQuality:
-                    title += "  " + Quality.qualityStrings[curQual] + "\n"
+                    title += "  " + curQual.display_name + "\n"
             else:
                 title += "  None\n"
             title = ' title="' + html.escape(title.rstrip(), True) + '"'
@@ -31,15 +31,9 @@
         if iQuality == pQuality:
             quality = iQuality
 
-        if quality in qualityPresets:
-            cssClass = qualityPresetStrings[quality]
-            qualityString = qualityPresetStrings[quality]
-        elif quality in Quality.combinedQualityStrings:
-            cssClass = Quality.cssClassStrings[quality]
-            qualityString = Quality.combinedQualityStrings[quality]
-        elif quality in Quality.qualityStrings:
-            cssClass = Quality.cssClassStrings[quality]
-            qualityString = Quality.qualityStrings[quality]
+        if Qualities(quality):
+            cssClass = Qualities(quality).css_name
+            qualityString = Qualities(quality).display_name
         else:
             cssClass = "Custom"
             qualityString = "Custom"

@@ -42,10 +42,10 @@ class rTorrentAPI(TorrentClient):
             return
 
         tp_kwargs = {}
-        if sickrage.app.config.torrent_auth_type.lower() != 'none':
-            tp_kwargs['authtype'] = sickrage.app.config.torrent_auth_type
+        if sickrage.app.config.torrent.auth_type.lower() != 'none':
+            tp_kwargs['authtype'] = sickrage.app.config.torrent.auth_type
 
-        if not sickrage.app.config.torrent_verify_cert:
+        if not sickrage.app.config.torrent.verify_cert:
             tp_kwargs['check_ssl_cert'] = False
 
         if self.username and self.password:
@@ -70,16 +70,16 @@ class rTorrentAPI(TorrentClient):
                 return False
 
             # Set label
-            label = sickrage.app.config.torrent_label
-            show_object = find_show(result.show_id)
+            label = sickrage.app.config.torrent.label
+            show_object = find_show(result.series_id, result.series_provider_id)
 
             if show_object.is_anime:
-                label = sickrage.app.config.torrent_label_anime
+                label = sickrage.app.config.torrent.label_anime
             if label:
                 torrent.set_custom(1, label)
 
-            if sickrage.app.config.torrent_path:
-                torrent.set_directory(sickrage.app.config.torrent_path)
+            if sickrage.app.config.torrent.path:
+                torrent.set_directory(sickrage.app.config.torrent.path)
 
             # Start torrent
             torrent.start()
@@ -106,16 +106,16 @@ class rTorrentAPI(TorrentClient):
                 return False
 
             # Set label
-            label = sickrage.app.config.torrent_label
-            show_object = find_show(result.show_id)
+            label = sickrage.app.config.torrent.label
+            show_object = find_show(result.series_id, result.series_provider_id)
 
             if show_object.is_anime:
-                label = sickrage.app.config.torrent_label_anime
+                label = sickrage.app.config.torrent.label_anime
             if label:
                 torrent.set_custom(1, label)
 
-            if sickrage.app.config.torrent_path:
-                torrent.set_directory(sickrage.app.config.torrent_path)
+            if sickrage.app.config.torrent.path:
+                torrent.set_directory(sickrage.app.config.torrent.path)
 
             # Set Ratio Group
             # torrent.set_visible(group_name)

@@ -8,12 +8,11 @@ c<%inherit file="../layouts/config.mako"/>
     from oauthlib.oauth2 import MissingTokenError
 
     import sickrage
-    from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets
+    from sickrage.core.common import Quality, EpisodeStatus
     from sickrage.core.helpers.srdatetime import SRDateTime, date_presets, time_presets
     from sickrage.core.helpers import anon_url
-    from sickrage.indexers import IndexerApi
-    from sickrage.metadata import GenericMetadata
+    from sickrage.metadata_providers import MetadataProvider
+    from sickrage.core.enums import DefaultHomePage, UITheme, TimezoneDisplay,  SeriesProviderID, CpuPreset
 %>
 <%block name="menus">
     <li class="nav-item px-1">
@@ -30,16 +29,12 @@ c<%inherit file="../layouts/config.mako"/>
     </li>
 </%block>
 <%block name="pages">
-    <% indexer = 0 %>
-    % if sickrage.app.config.indexer_default:
-        <% indexer = sickrage.app.config.indexer_default %>
-    % endif
     <div id="misc" class="tab-pane active">
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>${_('Misc')}</h3>
                 <small class="form-text text-muted">
-                    ${_('Startup options. Indexer options. Log and show file locations.')}
+                    ${_('Startup options. Series provider options. Log and show file locations.')}
                     <p><b>${_('Some options may require a manual restart to take effect.')}</b></p>
                 </small>
             </div>
@@ -47,7 +42,7 @@ c<%inherit file="../layouts/config.mako"/>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5">
-                        <label class="component-title">${_('Default Indexer Language')}</label>
+                        <label class="component-title">${_('Default Series Provider Language')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
@@ -56,10 +51,10 @@ c<%inherit file="../layouts/config.mako"/>
                                     <span class="fas fa-language"></span>
                                 </span>
                             </div>
-                            <select name="indexerDefaultLang" id="indexerDefaultLang" class="form-control"
+                            <select name="series_provider_default_language" id="series_provider_default_language" class="form-control"
                                     title="${_('Choose language')}">
-                                % for language in IndexerApi().indexer().languages():
-                                    <option value="${language['abbreviation']}" ${('', 'selected')[sickrage.app.config.indexer_default_language == language['abbreviation']]}>
+                                % for language in sickrage.app.series_providers[sickrage.app.config.general.series_provider_default].languages():
+                                    <option value="${language['abbreviation']}" ${('', 'selected')[sickrage.app.config.general.series_provider_default_language == language['abbreviation']]}>
                                         ${language['englishname']}
                                     </option>
                                 % endfor
@@ -74,7 +69,7 @@ c<%inherit file="../layouts/config.mako"/>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="launch_browser">
                             <input type="checkbox" class="toggle color-primary is-material" name="launch_browser"
-                                   id="launch_browser" ${('', 'checked')[bool(sickrage.app.config.launch_browser)]}/>
+                                   id="launch_browser" ${('', 'checked')[bool(sickrage.app.config.general.launch_browser)]}/>
                             ${_('open the SickRage home page on startup')}
                         </label>
                     </div>
@@ -92,18 +87,9 @@ c<%inherit file="../layouts/config.mako"/>
                             </div>
                             <select id="default_page" name="default_page" class="form-control"
                                     title="${_('when launching SickRage interface')}">
-                                <option value="home" ${('', 'selected')[sickrage.app.config.default_page == 'home']}>
-                                    ${_('Shows')}
-                                </option>
-                                <option value="schedule" ${('', 'selected')[sickrage.app.config.default_page == 'schedule']}>
-                                    ${_('Schedule')}
-                                </option>
-                                <option value="history" ${('', 'selected')[sickrage.app.config.default_page == 'history']}>
-                                    ${_('History')}
-                                </option>
-                                <option value="IRC" ${('', 'selected')[sickrage.app.config.default_page == 'IRC']}>
-                                    ${_('IRC')}
-                                </option>
+                                % for item in DefaultHomePage:
+                                    <option value="${item.name}" ${('', 'selected')[sickrage.app.config.general.default_page == item]}>${item.display_name}</option>
+                                % endfor
                             </select>
                         </div>
                     </div>
@@ -120,8 +106,8 @@ c<%inherit file="../layouts/config.mako"/>
                                     <span class="fas fa-clock"></span>
                                 </span>
                             </div>
-                            <input name="showupdate_hour" id="showupdate_hour"
-                                   value="${sickrage.app.config.showupdate_hour}"
+                            <input name="show_update_hour" id="show_update_hour"
+                                   value="${sickrage.app.config.general.show_update_hour}"
                                    class="form-control"/>
                             <div class="input-group-append">
                                 <span class="input-group-text">
@@ -129,7 +115,7 @@ c<%inherit file="../layouts/config.mako"/>
                                 </span>
                             </div>
                         </div>
-                        <label class="text-info" for="showupdate_hour">
+                        <label class="text-info" for="show_update_hour">
                             ${_('with information such as next air dates, show ended, etc.')}<br/>
                             ${_('Use 15 for 3pm, 4 for 4am etc. Anything over 23 or under 0 will be set to 0 (12am)')}
                         </label>
@@ -141,9 +127,9 @@ c<%inherit file="../layouts/config.mako"/>
                         <label class="component-title">${_('Daily show updates stale shows')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                        <label for="showupdate_stale">
-                            <input type="checkbox" class="toggle color-primary is-material" name="showupdate_stale"
-                                   id="showupdate_stale" ${('', 'checked')[bool(sickrage.app.config.showupdate_stale)]}/>
+                        <label for="show_update_stale">
+                            <input type="checkbox" class="toggle color-primary is-material" name="show_update_stale"
+                                   id="show_update_stale" ${('', 'checked')[bool(sickrage.app.config.general.show_update_stale)]}/>
                             ${_('should ended shows last updated less then 90 days get updated and refreshed automatically ?')}
                         </label>
                     </div>
@@ -156,13 +142,13 @@ c<%inherit file="../layouts/config.mako"/>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="trash_remove_show">
                             <input type="checkbox" class="toggle color-primary is-material" name="trash_remove_show"
-                                   id="trash_remove_show" ${('', 'checked')[bool(sickrage.app.config.trash_remove_show)]}/>
+                                   id="trash_remove_show" ${('', 'checked')[bool(sickrage.app.config.general.trash_remove_show)]}/>
                             ${_('when using show "Remove" and delete files')}
                         </label>
                         <br/>
                         <label for="trash_rotate_logs">
                             <input type="checkbox" class="toggle color-primary is-material" name="trash_rotate_logs"
-                                   id="trash_rotate_logs" ${('', 'checked')[bool(sickrage.app.config.trash_rotate_logs)]}/>
+                                   id="trash_rotate_logs" ${('', 'checked')[bool(sickrage.app.config.general.trash_rotate_logs)]}/>
                             ${_('on scheduled deletes of the oldest log files')}
                         </label>
                         <br/>
@@ -185,7 +171,7 @@ c<%inherit file="../layouts/config.mako"/>
                                 </span>
                             </div>
                             <input name="log_nr" id="log_nr"
-                                   value="${sickrage.app.config.log_nr}"
+                                   value="${sickrage.app.config.general.log_nr}"
                                    placeholder="${_('default = 5')}"
                                    title="number of log files saved when rotating logs (REQUIRES RESTART)"
                                    class="form-control"/>
@@ -207,7 +193,7 @@ c<%inherit file="../layouts/config.mako"/>
                                 </span>
                             </div>
                             <input name="log_size" id="log_size"
-                                   value="${sickrage.app.config.log_size}"
+                                   value="${sickrage.app.config.general.log_size}"
                                    placeholder="${_('default = 1048576 (1MB)')}"
                                    title="maximum size of a log file saved (REQUIRES RESTART)"
                                    class="form-control"/>
@@ -219,7 +205,7 @@ c<%inherit file="../layouts/config.mako"/>
                 <div class="form-row form-group">
 
                     <div class="col-lg-3 col-md-4 col-sm-5">
-                        <label class="component-title">${_('Default indexer for adding shows')}</label>
+                        <label class="component-title">${_('Default series provider for adding shows')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
@@ -228,14 +214,11 @@ c<%inherit file="../layouts/config.mako"/>
                                     <span class="fas fa-list"></span>
                                 </span>
                             </div>
-                            <select id="indexer_default" name="indexer_default"
-                                    title="default indexer selection when adding new shows"
+                            <select id="series_provider_default" name="series_provider_default"
+                                    title="default series provider selection when adding new shows"
                                     class="form-control">
-                                <option value="0" ${('', 'selected')[indexer == 0]}>
-                                    ${_('All Indexers')}
-                                </option>
-                                % for indexer in IndexerApi().indexers:
-                                    <option value="${indexer['id']}" ${('', 'selected')[sickrage.app.config.indexer_default == indexer['id']]}>${indexer['name']}</option>
+                                % for item in SeriesProviderID:
+                                    <option value="${item.name}" ${('', 'selected')[sickrage.app.config.general.series_provider_default == item]}>${item.display_name}</option>
                                 % endfor
                             </select>
                         </div>
@@ -245,7 +228,7 @@ c<%inherit file="../layouts/config.mako"/>
 
                 <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5">
-                        <label class="component-title">${_('Show indexer timeout')}</label>
+                        <label class="component-title">${_('Series provider timeout')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
@@ -254,8 +237,8 @@ c<%inherit file="../layouts/config.mako"/>
                                     <span class="fas fa-clock"></span>
                                 </span>
                             </div>
-                            <input name="indexer_timeout" id="indexer_timeout"
-                                   value="${sickrage.app.config.indexer_timeout}"
+                            <input name="series_provider_timeout" id="series_provider_timeout"
+                                   value="${sickrage.app.config.general.series_provider_timeout}"
                                    placeholder="${_('default = 10')}"
                                    title="seconds of inactivity when finding new shows"
                                    class="form-control"/>
@@ -305,7 +288,7 @@ c<%inherit file="../layouts/config.mako"/>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="version_notify">
                             <input type="checkbox" class="toggle color-primary is-material" name="version_notify"
-                                   id="version_notify" ${('', 'checked')[bool(sickrage.app.config.version_notify)]}/>
+                                   id="version_notify" ${('', 'checked')[bool(sickrage.app.config.general.version_notify)]}/>
                             ${_('and display notifications when updates are available. Checks are run on startup and at '
                             'the frequency set below')}
                         </label>
@@ -320,7 +303,7 @@ c<%inherit file="../layouts/config.mako"/>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="auto_update">
                             <input type="checkbox" class="toggle color-primary is-material" name="auto_update"
-                                   id="auto_update" ${('', 'checked')[bool(sickrage.app.config.auto_update)]}/>
+                                   id="auto_update" ${('', 'checked')[bool(sickrage.app.config.general.auto_update)]}/>
                             ${_('fetch and install software updates.Updates are run on startupand in the background at '
                             'the frequency setbelow')}
                         </label>
@@ -339,7 +322,7 @@ c<%inherit file="../layouts/config.mako"/>
                                 </span>
                             </div>
                             <input name="update_frequency" id="update_frequency"
-                                   value="${sickrage.app.config.version_updater_freq}"
+                                   value="${sickrage.app.config.general.version_updater_freq}"
                                    placeholder="${_('default = 12 (hours)')}"
                                    title="hours between software updates"
                                    class="form-control"/>
@@ -359,8 +342,8 @@ c<%inherit file="../layouts/config.mako"/>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="notify_on_update">
                             <input type="checkbox" class="toggle color-primary is-material" name="notify_on_update"
-                                   id="notify_on_update" ${('', 'checked')[bool(sickrage.app.config.notify_on_update)]}/>
-                            ${_('send a message to all enabled notifiers when SiCKRAGE has been updated')}
+                                   id="notify_on_update" ${('', 'checked')[bool(sickrage.app.config.general.notify_on_update)]}/>
+                            ${_('send a message to all enabled notification providers when SiCKRAGE has been updated')}
                         </label>
                     </div>
                 </div>
@@ -372,7 +355,7 @@ c<%inherit file="../layouts/config.mako"/>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="backup_on_update">
                             <input type="checkbox" class="toggle color-primary is-material" name="backup_on_update"
-                                   id="backup_on_update" ${('', 'checked')[bool(sickrage.app.config.backup_on_update)]}/>
+                                   id="backup_on_update" ${('', 'checked')[bool(sickrage.app.config.general.backup_on_update)]}/>
                             ${_('backup SiCKRAGE config and databases before performing updates')}
                         </label>
                     </div>
@@ -412,11 +395,11 @@ c<%inherit file="../layouts/config.mako"/>
                                         </span>
                                     </div>
                                     <select id="gui_language" name="gui_language" class="form-control">
-                                        <option value="" ${('', 'selected')[sickrage.app.config.gui_lang == ""]}>
+                                        <option value="" ${('', 'selected')[sickrage.app.config.gui.gui_lang == ""]}>
                                             ${_('System Language')}
                                         </option>
                                         % for lang in sickrage.app.languages:
-                                            <option value="${lang}" ${('', 'selected')[sickrage.app.config.gui_lang == lang]}>${tornado.locale.get(lang).name}</option>
+                                            <option value="${lang}" ${('', 'selected')[sickrage.app.config.gui.gui_lang == lang]}>${tornado.locale.get(lang).name}</option>
                                         % endfor
                                     </select>
                                 </div>
@@ -445,12 +428,9 @@ c<%inherit file="../layouts/config.mako"/>
                             </div>
                             <select id="theme_name" name="theme_name" class="form-control"
                                     title="for appearance to take effect, save then refresh your browser">
-                                <option value="dark" ${('', 'selected')[sickrage.app.config.theme_name == 'dark']}>
-                                    ${_('Dark')}
-                                </option>
-                                <option value="light" ${('', 'selected')[sickrage.app.config.theme_name == 'light']}>
-                                    ${_('Light')}
-                                </option>
+                                % for item in UITheme:
+                                    <option value="${item.name}" ${('', 'selected')[sickrage.app.config.gui.theme_name == item]}>${item.display_name}</option>
+                                % endfor
                             </select>
                         </div>
                     </div>
@@ -463,7 +443,7 @@ c<%inherit file="../layouts/config.mako"/>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="display_all_seasons">
                             <input type="checkbox" class="toggle color-primary is-material" name="display_all_seasons"
-                                   id="display_all_seasons" ${('', 'checked')[bool(sickrage.app.config.display_all_seasons)]}>
+                                   id="display_all_seasons" ${('', 'checked')[bool(sickrage.app.config.general.display_all_seasons)]}>
                             ${_('on the show summary page')}
                         </label>
                     </div>
@@ -477,7 +457,7 @@ c<%inherit file="../layouts/config.mako"/>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="sort_article">
                             <input type="checkbox" class="toggle color-primary is-material" name="sort_article"
-                                   id="sort_article" ${('', 'checked')[bool(sickrage.app.config.sort_article)]}/>
+                                   id="sort_article" ${('', 'checked')[bool(sickrage.app.config.general.sort_article)]}/>
                             ${_('include articles ("The", "A", "An") when sorting show lists')}
                         </label>
                     </div>
@@ -491,7 +471,7 @@ c<%inherit file="../layouts/config.mako"/>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="filter_row">
                             <input type="checkbox" class="toggle color-primary is-material" name="filter_row"
-                                   id="filter_row" ${('', 'checked')[bool(sickrage.app.config.filter_row)]}/>
+                                   id="filter_row" ${('', 'checked')[bool(sickrage.app.config.gui.filter_row)]}/>
                             ${_('Add a filter form-row to the show display on the home page')}
                         </label>
                     </div>
@@ -510,7 +490,7 @@ c<%inherit file="../layouts/config.mako"/>
                             </div>
                             <input type="number" step="1" min="7" name="coming_eps_missed_range"
                                    id="coming_eps_missed_range"
-                                   value="${sickrage.app.config.coming_eps_missed_range}"
+                                   value="${sickrage.app.config.gui.coming_eps_missed_range}"
                                    placeholder="${_('# of days')}"
                                    title="Set the range in days of the missed episodes in the Schedule page"
                                    class="form-control"/>
@@ -526,20 +506,20 @@ c<%inherit file="../layouts/config.mako"/>
                         <label for="fuzzy_dating">
                             <input type="checkbox" class="toggle color-primary is-material" name="fuzzy_dating"
                                    id="fuzzy_dating"
-                                   class="viewIf datePresets" ${('', 'checked')[bool(sickrage.app.config.fuzzy_dating)]}/>
+                                   class="viewIf datePresets" ${('', 'checked')[bool(sickrage.app.config.gui.fuzzy_dating)]}/>
                             ${_('move absolute dates into tooltips and display e.g. "Last Thu", "On Tue"')}
                         </label>
                     </div>
 
                 </div>
-                <div class="form-row form-group show_if_fuzzy_dating ${(' metadataDiv', '')[not bool(sickrage.app.config.fuzzy_dating)]}">
+                <div class="form-row form-group show_if_fuzzy_dating ${(' metadataDiv', '')[not bool(sickrage.app.config.gui.fuzzy_dating)]}">
                     <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Trim zero padding')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="trim_zero">
                             <input type="checkbox" class="toggle color-primary is-material" name="trim_zero"
-                                   id="trim_zero" ${('', 'checked')[bool(sickrage.app.config.trim_zero)]}/>
+                                   id="trim_zero" ${('', 'checked')[bool(sickrage.app.config.gui.trim_zero)]}/>
                             ${_('remove the leading number "0" shown on hour of day, and date of month')}
                         </label>
                     </div>
@@ -556,14 +536,14 @@ c<%inherit file="../layouts/config.mako"/>
                                     <span class="fas fa-calendar"></span>
                                 </span>
                             </div>
-                            <select class="form-control ${(' metadataDiv', '')[not bool(sickrage.app.config.fuzzy_dating)]}"
-                                    id="date_presets${(' metadataDiv', '')[not bool(sickrage.app.config.fuzzy_dating)]}"
-                                    name="date_preset${('_na', '')[not bool(sickrage.app.config.fuzzy_dating)]}">
-                                <option value="%x" ${('', 'selected')[sickrage.app.config.date_preset == '%x']}>
+                            <select class="form-control ${(' metadataDiv', '')[not bool(sickrage.app.config.gui.fuzzy_dating)]}"
+                                    id="date_presets${(' metadataDiv', '')[not bool(sickrage.app.config.gui.fuzzy_dating)]}"
+                                    name="date_preset${('_na', '')[not bool(sickrage.app.config.gui.fuzzy_dating)]}">
+                                <option value="%x" ${('', 'selected')[sickrage.app.config.gui.date_preset == '%x']}>
                                     ${_('Use System Default')}
                                 </option>
                                 % for cur_preset in date_presets:
-                                    <option value="${cur_preset}" ${('', 'selected')[sickrage.app.config.date_preset == cur_preset]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset)}</option>
+                                    <option value="${cur_preset}" ${('', 'selected')[sickrage.app.config.gui.date_preset == cur_preset]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset)}</option>
                                 % endfor
                             </select>
                         </div>
@@ -584,7 +564,7 @@ c<%inherit file="../layouts/config.mako"/>
                             <select id="time_presets" name="time_preset" class="form-control"
                                     title="seconds are only shown on the History page">
                                 % for cur_preset in time_presets:
-                                    <option value="${cur_preset}" ${('', 'selected')[sickrage.app.config.time_preset_w_seconds == cur_preset]}>${SRDateTime(datetime.datetime.now()).srftime(show_seconds=True, t_preset=cur_preset)}</option>
+                                    <option value="${cur_preset}" ${('', 'selected')[sickrage.app.config.gui.time_preset_w_seconds == cur_preset]}>${SRDateTime(datetime.datetime.now()).srftime(show_seconds=True, t_preset=cur_preset)}</option>
                                 % endfor
                             </select>
                         </div>
@@ -597,12 +577,12 @@ c<%inherit file="../layouts/config.mako"/>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="radio" name="timezone_display" id="local"
-                               value="local" ${('', 'checked')[sickrage.app.config.timezone_display == "local"]} />
-                        <label for="local">${_('Local')}</label>
+                               value="${TimezoneDisplay.LOCAL.name}" ${('', 'checked')[sickrage.app.config.gui.timezone_display == TimezoneDisplay.LOCAL]} />
+                        <label for="local">${TimezoneDisplay.LOCAL.display_name}</label>
                         <br/>
                         <input type="radio" name="timezone_display" id="network"
-                               value="network" ${('', 'checked')[sickrage.app.config.timezone_display == "network"]} />
-                        <label for="network">${_('Network')}</label>
+                               value="${TimezoneDisplay.NETWORK.name}" ${('', 'checked')[sickrage.app.config.gui.timezone_display == TimezoneDisplay.NETWORK]} />
+                        <label for="network">${TimezoneDisplay.NETWORK.display_name}</label>
                         <div class="form-row">
                             <div class="col-md-12 text-info">
                                 ${_('display dates and times in either your timezone or the shows network timezone')}
@@ -625,7 +605,7 @@ c<%inherit file="../layouts/config.mako"/>
                                 </span>
                             </div>
                             <input name="download_url" id="download_url" class="form-control"
-                                   value="${sickrage.app.config.download_url}"
+                                   value="${sickrage.app.config.general.download_url}"
                                    title="URL where the shows can be downloaded."
                                    autocapitalize="off"/>
                         </div>
@@ -641,7 +621,7 @@ c<%inherit file="../layouts/config.mako"/>
                             <input type="checkbox" class="enabler toggle color-primary is-material"
                                    name="fanart_background"
 
-                                   id="fanart_background" ${('', 'checked')[bool(sickrage.app.config.fanart_background)]}>
+                                   id="fanart_background" ${('', 'checked')[bool(sickrage.app.config.gui.fanart_background)]}>
                             ${_('on the show summary page')}
                         </label>
                     </div>
@@ -660,7 +640,7 @@ c<%inherit file="../layouts/config.mako"/>
                             </div>
                             <input type="number" step="0.1" min="0.1" max="1.0"
                                    name="fanart_background_opacity" id="fanart_background_opacity"
-                                   value="${sickrage.app.config.fanart_background_opacity}"
+                                   value="${sickrage.app.config.gui.fanart_background_opacity}"
                                    title="transparency of the fanart in the background"
                                    class="form-control"/>
                         </div>
@@ -701,7 +681,7 @@ c<%inherit file="../layouts/config.mako"/>
                                             </span>
                                         </div>
                                         <input name="web_external_port" id="web_external_port"
-                                               value="${sickrage.app.config.web_external_port}"
+                                               value="${sickrage.app.config.general.web_external_port}"
                                                title="external web port to remotely access SiCKRAGE"
                                                class="form-control"/>
                                     </div>
@@ -732,7 +712,7 @@ c<%inherit file="../layouts/config.mako"/>
                                         </span>
                                     </div>
                                     <input name="web_port" id="web_port"
-                                           value="${sickrage.app.config.web_port}"
+                                           value="${sickrage.app.config.general.web_port}"
                                            placeholder="${_('8081')}"
                                            title="${_('Web port to browse and access WebUI')}"
                                            class="form-control"/>
@@ -763,7 +743,7 @@ c<%inherit file="../layouts/config.mako"/>
                                         </span>
                                     </div>
                                     <input name="web_host" id="web_host"
-                                           value="${sickrage.app.config.web_host}"
+                                           value="${sickrage.app.config.general.web_host}"
                                            placeholder="${'0.0.0.0'}"
                                            title="${_('Web host SiCKRAGE server listens on for WebUI requests')}"
                                            class="form-control"/>
@@ -787,7 +767,7 @@ c<%inherit file="../layouts/config.mako"/>
                                         </span>
                                     </div>
                                     <input name="web_root" id="web_root"
-                                           value="${sickrage.app.config.web_root}"
+                                           value="${sickrage.app.config.general.web_root}"
                                            placeholder="${'/'}"
                                            title="${_('Web root used in URL to browse and access WebUI')}"
                                            class="form-control"/>
@@ -820,7 +800,7 @@ c<%inherit file="../layouts/config.mako"/>
                                         </span>
                                     </div>
                                     <input name="api_key" id="api_key"
-                                           value="${sickrage.app.config.api_key}"
+                                           value="${sickrage.app.config.general.api_v1_key}"
                                            class="form-control"/>
                                     <div class="input-group-append">
                                         <span class="btn" id="generate_new_apikey">
@@ -853,10 +833,10 @@ c<%inherit file="../layouts/config.mako"/>
                                     </span>
                             </div>
                             <select id="web_auth_method" name="web_auth_method" class="form-control">
-                                <option value="sso_auth" ${('', 'selected="selected"')[sickrage.app.config.sso_auth_enabled]}>
+                                <option value="sso_auth" ${('', 'selected="selected"')[sickrage.app.config.general.sso_auth_enabled]}>
                                     SSO Authentication
                                 </option>
-                                <option value="local_auth" ${('', 'selected="selected"')[sickrage.app.config.local_auth_enabled]}>
+                                <option value="local_auth" ${('', 'selected="selected"')[sickrage.app.config.general.local_auth_enabled]}>
                                     Local Authentication
                                 </option>
                             </select>
@@ -877,7 +857,7 @@ c<%inherit file="../layouts/config.mako"/>
                                         </span>
                                 </div>
                                 <input name="web_username" id="web_username"
-                                       value="${sickrage.app.config.web_username}"
+                                       value="${sickrage.app.config.user.username}"
                                        class="form-control"/>
                                 <div class="invalid-tooltip">
                                     Please fill in a web username.
@@ -897,7 +877,7 @@ c<%inherit file="../layouts/config.mako"/>
                                         </span>
                                 </div>
                                 <input name="web_password" id="web_password"
-                                       value="${sickrage.app.config.web_password}"
+                                       value="${sickrage.app.config.user.password}"
                                        class="form-control"
                                        type="password"/>
                                 <div class="invalid-tooltip">
@@ -917,12 +897,12 @@ c<%inherit file="../layouts/config.mako"/>
                             <div class="col-md-12">
                                 <input type="checkbox" class="toggle color-primary is-material"
                                        name="ip_whitelist_localhost_enabled"
-                                       id="ip_whitelist_localhost_enabled" ${('', 'checked')[bool(sickrage.app.config.ip_whitelist_localhost_enabled)]}/>
+                                       id="ip_whitelist_localhost_enabled" ${('', 'checked')[bool(sickrage.app.config.general.ip_whitelist_localhost_enabled)]}/>
                                 ${_('bypass web authentication for clients on localhost')}
                                 <br/>
                                 <input type="checkbox" class="toggle color-primary is-material"
                                        name="ip_whitelist_enabled"
-                                       id="ip_whitelist_enabled" ${('', 'checked')[bool(sickrage.app.config.ip_whitelist_enabled)]}/>
+                                       id="ip_whitelist_enabled" ${('', 'checked')[bool(sickrage.app.config.general.ip_whitelist_enabled)]}/>
                                 ${_('bypass web authentication for clients in whitelisted IP list')}
                                 <br/>
                                 <div class="input-group">
@@ -932,7 +912,7 @@ c<%inherit file="../layouts/config.mako"/>
                                         </span>
                                     </div>
                                     <input name="ip_whitelist" id="ip_whitelist"
-                                           value="${sickrage.app.config.ip_whitelist}"
+                                           value="${sickrage.app.config.general.ip_whitelist}"
                                            title="${_('List of IP addresses and networks that are allowed without auth')}"
                                            placeholder="ex: 192.168.1.50 or 192.168.1.0/24"
                                            class="form-control"/>
@@ -956,7 +936,7 @@ c<%inherit file="../layouts/config.mako"/>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="web_log">
                             <input type="checkbox" class="toggle color-primary is-material" name="web_log"
-                                   id="web_log" ${('', 'checked')[bool(sickrage.app.config.web_log)]}/>
+                                   id="web_log" ${('', 'checked')[bool(sickrage.app.config.general.web_log)]}/>
                             ${_('enable logs from the internal Tornado web server')}
                         </label>
                     </div>
@@ -969,7 +949,7 @@ c<%inherit file="../layouts/config.mako"/>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="enable_upnp">
                             <input type="checkbox" class="enabler toggle color-primary is-material" name="enable_upnp"
-                                   id="enable_upnp" ${('', 'checked')[bool(sickrage.app.config.enable_upnp)]}/>
+                                   id="enable_upnp" ${('', 'checked')[bool(sickrage.app.config.general.enable_upnp)]}/>
                             ${_('automatically sets up port-forwarding from external IP to SiCKRAGE')}
                         </label>
                     </div>
@@ -982,7 +962,7 @@ c<%inherit file="../layouts/config.mako"/>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="web_ipv6">
                             <input type="checkbox" class="toggle color-primary is-material" name="web_ipv6"
-                                   id="web_ipv6" ${('', 'checked')[bool(sickrage.app.config.web_ipv6)]}/>
+                                   id="web_ipv6" ${('', 'checked')[bool(sickrage.app.config.general.web_ipv6)]}/>
                             ${_('attempt binding to any available IPv6 address')}
                         </label>
                     </div>
@@ -995,7 +975,7 @@ c<%inherit file="../layouts/config.mako"/>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="enable_https">
                             <input type="checkbox" class="enabler toggle color-primary is-material" name="enable_https"
-                                   id="enable_https" ${('', 'checked')[bool(sickrage.app.config.enable_https)]}/>
+                                   id="enable_https" ${('', 'checked')[bool(sickrage.app.config.general.enable_https)]}/>
                             ${_('enable access to the web interface using a HTTPS address')}
                         </label>
                     </div>
@@ -1011,7 +991,7 @@ c<%inherit file="../layouts/config.mako"/>
                             <div class="form-row">
                                 <div class="col-md-12">
                                     <input name="https_cert" id="https_cert"
-                                           value="${sickrage.app.config.https_cert}"
+                                           value="${sickrage.app.config.general.https_cert}"
                                            class="form-control"
                                            autocapitalize="off"/>
                                 </div>
@@ -1035,7 +1015,7 @@ c<%inherit file="../layouts/config.mako"/>
                             <div class="form-row">
                                 <div class="col-md-12">
                                     <input name="https_key" id="https_key"
-                                           value="${sickrage.app.config.https_key}"
+                                           value="${sickrage.app.config.general.https_key}"
                                            class="form-control" autocapitalize="off"/>
                                 </div>
                             </div>
@@ -1056,7 +1036,7 @@ c<%inherit file="../layouts/config.mako"/>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="handle_reverse_proxy">
                             <input type="checkbox" class="toggle color-primary is-material" name="handle_reverse_proxy"
-                                   id="handle_reverse_proxy" ${('', 'checked')[bool(sickrage.app.config.handle_reverse_proxy)]}/>
+                                   id="handle_reverse_proxy" ${('', 'checked')[bool(sickrage.app.config.general.handle_reverse_proxy)]}/>
                             ${_('accept the following reverse proxy headers (advanced) - (X-Forwarded-For, X-Forwarded-Host, and X-Forwarded-Proto)')}
                         </label>
                     </div>
@@ -1069,8 +1049,8 @@ c<%inherit file="../layouts/config.mako"/>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="notify_on_login">
                             <input type="checkbox" class="toggle color-primary is-material" name="notify_on_login"
-                                   id="notify_on_login" ${('', 'checked')[bool(sickrage.app.config.notify_on_login)]}/>
-                            ${_('send a message to all enabled notifiers when someone logs into SiCKRAGE from a public IP address')}
+                                   id="notify_on_login" ${('', 'checked')[bool(sickrage.app.config.general.notify_on_login)]}/>
+                            ${_('send a message to all enabled notification providers when someone logs into SiCKRAGE from a public IP address')}
                         </label>
                     </div>
                 </div>
@@ -1105,8 +1085,8 @@ c<%inherit file="../layouts/config.mako"/>
                             </div>
                             <select id="cpu_presets" name="cpu_preset" class="form-control"
                                     title="${_('Normal (default). High is lower and Low is higher CPU use')}">
-                                % for cur_preset in cpu_presets:
-                                    <option value="${cur_preset}" ${('', 'selected')[sickrage.app.config.cpu_preset == cur_preset]}>${cur_preset.capitalize()}</option>
+                                % for item in CpuPreset:
+                                    <option value="${item.name}" ${('', 'selected')[sickrage.app.config.general.cpu_preset == item]}>${item.display_name}</option>
                                 % endfor
                             </select>
                         </div>
@@ -1125,7 +1105,7 @@ c<%inherit file="../layouts/config.mako"/>
                                 </span>
                             </div>
                             <input id="max_queue_workers" name="max_queue_workers" type="number"
-                                   value="${sickrage.app.config.max_queue_workers}" min="1"
+                                   value="${sickrage.app.config.general.max_queue_workers}" min="1"
                                    title="${_('Maximum allowed items to be processed from queue at same time')}"
                                    class="form-control" autocapitalize="off"/>
                         </div>
@@ -1144,7 +1124,7 @@ c<%inherit file="../layouts/config.mako"/>
                                 </span>
                             </div>
                             <input id="anon_redirect" name="anon_redirect"
-                                   value="${sickrage.app.config.anon_redirect}"
+                                   value="${sickrage.app.config.general.anon_redirect}"
                                    title="${_('Backlink protection via anonymizer service, must end in ?')}"
                                    class="form-control" autocapitalize="off"/>
                         </div>
@@ -1159,7 +1139,7 @@ c<%inherit file="../layouts/config.mako"/>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="debug">
                             <input type="checkbox" class="toggle color-primary is-material" name="debug"
-                                   id="debug" ${('', 'checked')[bool(sickrage.app.config.debug)]}/>
+                                   id="debug" ${('', 'checked')[bool(sickrage.app.config.general.debug)]}/>
                             ${_('Enable debug logs')}
                         </label>
                     </div>
@@ -1172,7 +1152,7 @@ c<%inherit file="../layouts/config.mako"/>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="ssl_verify">
                             <input type="checkbox" class="toggle color-primary is-material" name="ssl_verify"
-                                   id="ssl_verify" ${('', 'checked')[bool(sickrage.app.config.ssl_verify)]}/>
+                                   id="ssl_verify" ${('', 'checked')[bool(sickrage.app.config.general.ssl_verify)]}/>
                             ${_('Verify SSL Certificates (Disable this for broken SSL installs (Like QNAP)')}
                         </label>
                     </div>
@@ -1188,7 +1168,7 @@ c<%inherit file="../layouts/config.mako"/>
                         <label for="no_restart">
                             <input type="checkbox" class="toggle color-primary is-material" name="no_restart"
                                    title="${_('Only select this when you have external software restarting SR automatically when it stops (like FireDaemon)')}"
-                                   id="no_restart" ${('', 'checked')[bool(sickrage.app.config.no_restart)]}/>
+                                   id="no_restart" ${('', 'checked')[bool(sickrage.app.config.general.no_restart)]}/>
                             ${_('Shutdown SiCKRAGE on restarts (external service must restart SiCKRAGE on its own).')}
                         </label>
                     </div>
@@ -1203,7 +1183,7 @@ c<%inherit file="../layouts/config.mako"/>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="calendar_unprotected">
                             <input type="checkbox" class="toggle color-primary is-material" name="calendar_unprotected"
-                                   id="calendar_unprotected" ${('', 'checked')[bool(sickrage.app.config.calendar_unprotected)]}/>
+                                   id="calendar_unprotected" ${('', 'checked')[bool(sickrage.app.config.general.calendar_unprotected)]}/>
                             ${_('allow subscribing to the calendar without user and password. Some services like Google Calendar only work this way')}
                         </label>
                     </div>
@@ -1216,7 +1196,7 @@ c<%inherit file="../layouts/config.mako"/>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="calendar_icons">
                             <input type="checkbox" class="toggle color-primary is-material" name="calendar_icons"
-                                   id="calendar_icons" ${('', 'checked')[bool(sickrage.app.config.calendar_icons)]}/>
+                                   id="calendar_icons" ${('', 'checked')[bool(sickrage.app.config.general.calendar_icons)]}/>
                             ${_('show an icon next to exported calendar events in Google Calendar.')}
                         </label>
                     </div>
@@ -1249,7 +1229,7 @@ c<%inherit file="../layouts/config.mako"/>
                                 </span>
                             </div>
                             <input id="proxy_setting" name="proxy_setting"
-                                   value="${sickrage.app.config.proxy_setting}"
+                                   value="${sickrage.app.config.general.proxy_setting}"
                                    title="${_('Proxy SiCKRAGE connections')}"
                                    class="form-control" autocapitalize="off"/>
                         </div>
@@ -1258,13 +1238,13 @@ c<%inherit file="../layouts/config.mako"/>
 
                 <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5">
-                        <label class="component-title">${_('Use proxy for indexers')}</label>
+                        <label class="component-title">${_('Use proxy for series providers')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label class="form-check-label">
-                            <input type="checkbox" class="toggle color-primary is-material" name="proxy_indexers"
-                                   id="proxy_indexers" ${('', 'checked')[bool(sickrage.app.config.proxy_indexers)]}/>
-                            ${_('use proxy host for connecting to indexers (TheTVDB)')}
+                            <input type="checkbox" class="toggle color-primary is-material" name="proxy_series_providers"
+                                   id="proxy_series_providers" ${('', 'checked')[bool(sickrage.app.config.general.proxy_series_providers)]}/>
+                            ${_('use proxy host for connecting to series providers (TheTVDB)')}
                         </label>
                     </div>
                 </div>
@@ -1276,7 +1256,7 @@ c<%inherit file="../layouts/config.mako"/>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label class="form-check-label">
                             <input type="checkbox" class="toggle color-primary is-material" name="skip_removed_files"
-                                   id="skip_removed_files" ${('', 'checked')[bool(sickrage.app.config.skip_removed_files)]}/>
+                                   id="skip_removed_files" ${('', 'checked')[bool(sickrage.app.config.general.skip_removed_files)]}/>
                             ${_('Skip detection of removed files. If disable it will set default deleted status')}<br/>
                             <div class="text-info">
                                 <b>${_('NOTE:')}</b> ${_('This may mean SiCKRAGE misses renames as well')}</div>
@@ -1297,22 +1277,20 @@ c<%inherit file="../layouts/config.mako"/>
                                             <span class="fas fa-eraser"></span>
                                         </span>
                                     </div>
-                                    % if not sickrage.app.config.skip_removed_files:
+                                    % if not sickrage.app.config.general.skip_removed_files:
                                         <select name="ep_default_deleted_status" id="ep_default_deleted_status"
                                                 class="form-control">
-                                            % for defStatus in [SKIPPED, IGNORED, ARCHIVED]:
-                                                <option value="${defStatus}" ${('', 'selected')[int(sickrage.app.config.ep_default_deleted_status) == defStatus]}>${statusStrings[defStatus]}</option>
+                                            % for item in [EpisodeStatus.SKIPPED, EpisodeStatus.IGNORED, EpisodeStatus.ARCHIVED]:
+                                                <option value="${item.name}" ${('', 'selected')[sickrage.app.config.general.ep_default_deleted_status == item]}>${item.display_name}</option>
                                             % endfor
                                         </select>
                                     % else:
                                         <select name="ep_default_deleted_status" id="ep_default_deleted_status"
                                                 class="form-control" disabled="disabled">
-                                            % for defStatus in [SKIPPED, IGNORED]:
-                                                <option value="${defStatus}" ${('', 'selected')[sickrage.app.config.ep_default_deleted_status == defStatus]}>${statusStrings[defStatus]}</option>
+                                            % for item in [EpisodeStatus.SKIPPED, EpisodeStatus.IGNORED]:
+                                                <option value="${item.name}" ${('', 'selected')[sickrage.app.config.general.ep_default_deleted_status == item]}>${item.display_name}</option>
                                             % endfor
                                         </select>
-                                        <input type="hidden" name="ep_default_deleted_status"
-                                               value="${sickrage.app.config.ep_default_deleted_status}"/>
                                     % endif
                                 </div>
                             </div>
@@ -1343,7 +1321,7 @@ c<%inherit file="../layouts/config.mako"/>
                                 </span>
                             </div>
                             <input name="allowed_video_file_exts" id="allowed_video_file_exts"
-                                   value="${','.join(sickrage.app.config.allowed_video_file_exts)}"
+                                   value="${sickrage.app.config.general.allowed_video_file_exts}"
                                    placeholder="${_('ex: avi,mp4,mkv')}"
                                    title="comma separated list of video file extensions you want to allow, do not include dots"
                                    class="form-control"/>
@@ -1359,7 +1337,7 @@ c<%inherit file="../layouts/config.mako"/>
                         <label class="form-check-label">
                             <input type="checkbox" class="toggle color-primary is-material"
                                    name="strip_special_file_bits"
-                                   id="strip_special_file_bits" ${('', 'checked')[bool(sickrage.app.config.strip_special_file_bits)]}/>
+                                   id="strip_special_file_bits" ${('', 'checked')[bool(sickrage.app.config.general.strip_special_file_bits)]}/>
                             ${_('Strips special filesystem bits from files, if disabled will leave special bits intact.')}
                             <br/>
                             <div class="text-info">
@@ -1393,7 +1371,7 @@ c<%inherit file="../layouts/config.mako"/>
                         <label for="enable_sickrage_api">
                             <input type="checkbox" class="enabler toggle color-primary is-material"
                                    name="enable_sickrage_api"
-                                   id="enable_sickrage_api" ${('', 'checked')[bool(sickrage.app.config.enable_sickrage_api)]}/>
+                                   id="enable_sickrage_api" ${('', 'checked')[bool(sickrage.app.config.general.enable_sickrage_api)]}/>
                             ${_('enable SiCKRAGE API extra features')}
                         </label>
                         <br/>
@@ -1468,7 +1446,7 @@ c<%inherit file="../layouts/config.mako"/>
                                             </span>
                                         </div>
                                         <input id="git_path" name="git_path"
-                                               value="${sickrage.app.config.git_path}"
+                                               value="${sickrage.app.config.general.git_path}"
                                                placeholder="${_('ex: /path/to/git')}"
                                                title="only needed if OS is unable to locate git from env"
                                                class="form-control" autocapitalize="off"/>
@@ -1491,33 +1469,16 @@ c<%inherit file="../layouts/config.mako"/>
                     </div>
 
                     <div class="form-row form-group d-none">
-
                         <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Git reset')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <label for="git_reset">
                                 <input type="checkbox" class="toggle color-primary is-material" name="git_reset"
-                                       id="git_reset" ${('', 'checked')[bool(sickrage.app.config.git_reset)]}/>
+                                       id="git_reset" ${('', 'checked')[bool(sickrage.app.config.general.git_reset)]}/>
                                 ${_('removes untracked files and performs a hard reset on git branch automatically to help resolve update issues')}
                             </label>
                         </div>
-
-                    </div>
-
-                    <div class="form-row form-group d-none">
-                        <div class="col-lg-3 col-md-4 col-sm-5">
-                            <label class="component-title">${_('Git auto-issues submit')}</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                            <input type="checkbox" class="toggle color-primary is-material" name="git_autoissues"
-                                   id="git_autoissues" ${('', 'checked')[bool(sickrage.app.config.git_autoissues)]}
-                                   disabled="disabled"/>
-                            <label for="git_autoissues">
-                                ${_('automatically submit bug/issue reports to our issue tracker when errors are logged')}
-                            </label>
-                        </div>
-
                     </div>
 
                     <div class="form-row">

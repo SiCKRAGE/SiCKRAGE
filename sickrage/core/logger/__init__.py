@@ -33,8 +33,9 @@ from raven.handlers.logging import SentryHandler
 from unidecode import unidecode
 
 import sickrage
-from sickrage.core import make_dir
 from sickrage.core.classes import ErrorViewer, WarningViewer
+from sickrage.core.helpers import make_dir
+from sickrage.search_providers import SearchProviderType
 
 
 class Logger(logging.getLoggerClass()):
@@ -59,8 +60,6 @@ class Logger(logging.getLoggerClass()):
         self.WARNING = WARNING
         self.INFO = INFO
         self.DB = 5
-
-        self.CENSORED_ITEMS = {}
 
         self.logLevels = {
             'CRITICAL': self.CRITICAL,
@@ -90,6 +89,61 @@ class Logger(logging.getLoggerClass()):
         # start logger
         self.start()
 
+    @property
+    def censored_items(self):
+        try:
+            items = [
+                sickrage.app.config.user.password,
+                sickrage.app.config.sabnzbd.password,
+                sickrage.app.config.sabnzbd.apikey,
+                sickrage.app.config.nzbget.password,
+                sickrage.app.config.synology.password,
+                sickrage.app.config.torrent.password,
+                sickrage.app.config.kodi.password,
+                sickrage.app.config.plex.password,
+                sickrage.app.config.plex.server_token,
+                sickrage.app.config.emby.apikey,
+                sickrage.app.config.growl.password,
+                sickrage.app.config.freemobile.apikey,
+                sickrage.app.config.telegram.apikey,
+                sickrage.app.config.join_app.apikey,
+                sickrage.app.config.prowl.apikey,
+                sickrage.app.config.twitter.password,
+                sickrage.app.config.twilio.auth_token,
+                sickrage.app.config.boxcar2.access_token,
+                sickrage.app.config.pushover.apikey,
+                sickrage.app.config.nma.api_keys,
+                sickrage.app.config.pushalot.auth_token,
+                sickrage.app.config.pushbullet.api_key,
+                sickrage.app.config.email.password,
+                sickrage.app.config.subtitles.addic7ed_pass,
+                sickrage.app.config.subtitles.legendastv_pass,
+                sickrage.app.config.subtitles.itasa_pass,
+                sickrage.app.config.subtitles.opensubtitles_pass,
+                sickrage.app.config.anidb.password
+            ]
+
+            for __, search_provider in sickrage.app.search_providers.all().items():
+                if search_provider.provider_type in [SearchProviderType.NZB, SearchProviderType.NEWZNAB]:
+                    items.append(search_provider.api_key)
+                elif search_provider.provider_type == SearchProviderType.TORRENT_RSS and not search_provider.default:
+                    items.append(search_provider.urls['base_url'])
+
+                items.append(search_provider.cookies)
+
+                [items.append(search_provider.custom_settings[item]) for item in [
+                    'digest',
+                    'hash',
+                    'api_key',
+                    'password',
+                    'passkey',
+                    'pin',
+                ] if item in search_provider.custom_settings]
+
+            return list(filter(None, items))
+        except AttributeError:
+            return []
+
     def start(self):
         # remove all handlers
         self.handlers.clear()
@@ -115,10 +169,10 @@ class Logger(logging.getLoggerClass()):
             'python': platform.python_version()
         }
 
-        if sickrage.app.config and sickrage.app.config.sub_id:
-            sentry_tags.update({'sub_id': sickrage.app.config.sub_id})
-        if sickrage.app.config and sickrage.app.config.server_id:
-            sentry_tags.update({'server_id': sickrage.app.config.server_id})
+        if sickrage.app.config.user and sickrage.app.config.user.sub_id:
+            sentry_tags.update({'sub_id': sickrage.app.config.user.sub_id})
+        if sickrage.app.config.user and sickrage.app.config.general.server_id:
+            sentry_tags.update({'server_id': sickrage.app.config.general.server_id})
 
         sentry_handler = SentryHandler(client=sentry_client, ignore_exceptions=sentry_ignore_exceptions, tags=sentry_tags)
 
@@ -170,17 +224,14 @@ class Logger(logging.getLoggerClass()):
             self.addHandler(rfh_errors)
 
     def makeRecord(self, name, level, fn, lno, msg, args, exc_info, func=None, extra=None, sinfo=None):
-        if (False, True)[name in self.loggers]:
+        if name in self.loggers:
             record = super(Logger, self).makeRecord(name, level, fn, lno, msg, args, exc_info, func, extra, sinfo)
 
             try:
-                record.msg = re.sub(
-                    r"(.*)\b({})\b(.*)".format(
-                        '|'.join([x for x in self.CENSORED_ITEMS.values() if len(x)])), r"\1\3",
-                    record.msg)
+                def repl(m):
+                    return '*' * len(m.group())
 
-                # needed because Newznab apikey isn't stored as key=value in a section.
-                record.msg = re.sub(r"([&?]r|[&?]apikey|[&?]api_key)=[^&]*([&\w]?)", r"\1=**********\2", record.msg)
+                record.msg = re.sub(fr"\b({'|'.join(self.censored_items)})\b", repl, record.msg)
                 record.msg = unidecode(record.msg)
             except:
                 pass
@@ -192,7 +243,7 @@ class Logger(logging.getLoggerClass()):
             return record
 
     def set_level(self):
-        self.debugLogging = sickrage.app.config.debug
+        self.debugLogging = sickrage.app.debug
         level = DEBUG if self.debugLogging else INFO
         for __, logger in self.loggers.items():
             logger.setLevel(level)

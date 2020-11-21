@@ -26,6 +26,7 @@ import sickrage
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.websession import WebSession
 from sickrage.core.databases.main import MainDB
+from sickrage.search_providers import SearchProviderType
 
 
 class SabNZBd(object):
@@ -36,46 +37,46 @@ class SabNZBd(object):
         :param nzb: The NZBSearchResult object to send to SAB
         """
 
-        show_object = find_show(nzb.show_id)
+        show_object = find_show(nzb.series_id, nzb.series_provider_id)
         if not show_object:
             return False
 
-        category = sickrage.app.config.sab_category
+        category = sickrage.app.config.sabnzbd.category
         if show_object.is_anime:
-            category = sickrage.app.config.sab_category_anime
+            category = sickrage.app.config.sabnzbd.category_anime
 
         # if it aired more than 7 days ago, override with the backlog category IDs
         for episode__number in nzb.episodes:
             episode_object = show_object.get_episode(nzb.season, episode__number)
             if datetime.date.today() - episode_object.airdate > datetime.timedelta(days=7):
-                category = sickrage.app.config.sab_category_anime_backlog if episode_object.show.is_anime else sickrage.app.config.sab_category_backlog
+                category = sickrage.app.config.sabnzbd.category_anime_backlog if episode_object.show.is_anime else sickrage.app.config.sabnzbd.category_backlog
 
         # set up a dict with the URL params in it
         params = {'output': 'json'}
-        if sickrage.app.config.sab_username:
-            params['ma_username'] = sickrage.app.config.sab_username
-        if sickrage.app.config.sab_password:
-            params['ma_password'] = sickrage.app.config.sab_password
-        if sickrage.app.config.sab_apikey:
-            params['apikey'] = sickrage.app.config.sab_apikey
+        if sickrage.app.config.sabnzbd.username:
+            params['ma_username'] = sickrage.app.config.sabnzbd.username
+        if sickrage.app.config.sabnzbd.password:
+            params['ma_password'] = sickrage.app.config.sabnzbd.password
+        if sickrage.app.config.sabnzbd.apikey:
+            params['apikey'] = sickrage.app.config.sabnzbd.apikey
 
         if category:
             params['cat'] = category
 
         if nzb.priority:
-            params['priority'] = 2 if sickrage.app.config.sab_forced else 1
+            params['priority'] = 2 if sickrage.app.config.sabnzbd.forced else 1
 
         sickrage.app.log.info('Sending NZB to SABnzbd')
-        url = urljoin(sickrage.app.config.sab_host, 'api')
+        url = urljoin(sickrage.app.config.sabnzbd.host, 'api')
 
         try:
             jdata = None
 
-            if nzb.type == 'nzb':
+            if nzb.provider_type == SearchProviderType.NZB:
                 params['mode'] = 'addurl'
                 params['name'] = nzb.url
                 jdata = WebSession().get(url, params=params, verify=False).json()
-            elif nzb.type == 'nzbdata':
+            elif nzb.provider_type == SearchProviderType.NZBDATA:
                 params['mode'] = 'addfile'
                 multiPartParams = {'nzbfile': (nzb.name + '.nzb', nzb.extraInfo[0])}
                 jdata = WebSession().get(url, params=params, file=multiPartParams, verify=False).json()
@@ -115,9 +116,9 @@ class SabNZBd(object):
         params = {
             'mode': 'auth',
             'output': 'json',
-            'ma_username': sickrage.app.config.sab_username,
-            'ma_password': sickrage.app.config.sab_username,
-            'apikey': sickrage.app.config.sab_apikey
+            'ma_username': sickrage.app.config.sabnzbd.username,
+            'ma_password': sickrage.app.config.sabnzbd.username,
+            'apikey': sickrage.app.config.sabnzbd.apikey
         }
 
         url = urljoin(host, 'api')

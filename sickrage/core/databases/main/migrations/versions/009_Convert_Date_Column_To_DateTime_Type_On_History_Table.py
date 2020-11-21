@@ -20,17 +20,16 @@ def upgrade():
     meta = sa.MetaData(bind=conn)
     history = sa.Table('history', meta, autoload=True)
 
-    op.alter_column('history', 'date', type=sa.String(32))
+    op.alter_column('history', 'date', type_=sa.String(32))
 
     date_format = '%Y%m%d%H%M%S'
 
     with op.get_context().begin_transaction():
         for row in conn.execute(history.select()):
             date = datetime.datetime.strptime(str(row.date), date_format)
-            conn.execute('UPDATE history SET date = {} WHERE history.id = {}'
-                         .format(date, row.id))
+            conn.execute(f'UPDATE history SET date = {date} WHERE history.id = {row.id}')
 
-    op.alter_column('history', 'date', type=sa.DateTime)
+    op.alter_column('history', 'date', type_=sa.DateTime)
 
 
 def downgrade():
@@ -38,12 +37,11 @@ def downgrade():
     meta = sa.MetaData(bind=conn)
     history = sa.Table('history', meta, autoload=True)
 
-    op.alter_column('history', 'date', type=sa.String(32))
+    op.alter_column('history', 'date', type_=sa.String(32))
 
     with op.get_context().begin_transaction():
         for row in conn.execute(history.select()):
             date = str(row.date.toordinal())
-            conn.execute('UPDATE history SET date = {} WHERE history.id = {}'
-                         .format(date, row.id))
+            conn.execute(f'UPDATE history SET date = {date} WHERE history.id = {row.id}')
 
-    op.alter_column('history', 'date', type=sa.Integer)
+    op.alter_column('history', 'date', type_=sa.Integer)
