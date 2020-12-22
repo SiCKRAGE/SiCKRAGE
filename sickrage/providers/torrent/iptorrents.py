@@ -115,8 +115,8 @@ class IPTorrentsProvider(TorrentProvider):
                         continue
 
                     size = convert_size(torrent('td')[5].text, -1)
-                    seeders = int(torrent('td')[8].text)
-                    leechers = int(torrent('td')[9].text)
+                    seeders = int(torrent('td')[7].contents[0])
+                    leechers = int(torrent('td')[8].contents[0])
 
                     results += [{
                         'title': title,
