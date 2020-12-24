@@ -343,35 +343,34 @@ class UpdateManager(object):
 
     def install_requirements(self, branch):
         requirements_url = "https://git.sickrage.ca/SiCKRAGE/sickrage/raw/{}/requirements.txt".format(branch)
-        requirements_file = tempfile.NamedTemporaryFile(delete=False)
 
         try:
-            requirements_file.write(WebSession().get(requirements_url).content)
-            requirements_file.close()
+            requirements = WebSession().get(requirements_url).text
         except Exception:
-            requirements_file.close()
-            os.unlink(requirements_file.name)
             return False
 
-        output, __, exit_status = self._pip_cmd('install --no-deps --no-cache-dir -r {}'.format(requirements_file.name))
-        if exit_status != 0:
-            __, __, exit_status = self._pip_cmd('install --no-deps --no-cache-dir --user -r {}'.format(requirements_file.name))
+        requirements_success = True
+        for requirement in requirements.split():
+            if requirement.startswith('#'):
+                continue
 
-        if exit_status == 0:
-            requirements_file.close()
-            os.unlink(requirements_file.name)
+            output, __, exit_status = self._pip_cmd(f'install --no-deps --no-cache-dir {requirement}')
+            if exit_status != 0:
+                __, __, exit_status = self._pip_cmd(f'install --no-deps --no-cache-dir --user {requirement}')
+
+            if exit_status != 0:
+                requirements_success = False
+
+            if output:
+                output = output.decode("utf-8", "ignore").strip() if isinstance(output, bytes) else output.strip()
+                sickrage.app.log.debug("PIP CMD OUTPUT: {}".format(output))
+
+        if requirements_success:
             return True
 
         sickrage.app.alerts.error(_('Updater'), _('Failed to update requirements'))
 
         sickrage.app.log.warning('Unable to update requirements')
-
-        if output:
-            output = output.decode("utf-8", "ignore").strip() if isinstance(output, bytes) else output.strip()
-            sickrage.app.log.debug("PIP CMD OUTPUT: {}".format(output))
-
-        requirements_file.close()
-        os.unlink(requirements_file.name)
 
         return False
 
