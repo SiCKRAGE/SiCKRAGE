@@ -2,12 +2,12 @@
 
 # 
 
-##Thu Dec 24 2020 00:52:29 GMT+0000 (Coordinated Universal Time)
+##Thu Dec 24 2020 01:27:33 GMT+0000 (Coordinated Universal Time)
 
 
-## Bug Fixes
-  - Fixed issues with installation of requirements.txt during version updates
-  ([cb0e3ee8](https://gitlab-ci-token:tDdzxvLUjfBkQFWZzMcx@git.sickrage.ca/SiCKRAGE/sickrage/commit/cb0e3ee825ddaea5fa3f230899d2363d1d5e2d04))
+## Refactor
+  - Refactored requirements to be installed one-by-one during version updates
+  ([4c337525](https://gitlab-ci-token:oaBCE34sr_bCxnetEVrw@git.sickrage.ca/SiCKRAGE/sickrage/commit/4c3375252f088c40e7053434b006c4fe7918f5a7))
 
 
 
