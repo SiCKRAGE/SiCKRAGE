@@ -318,6 +318,10 @@ class Core(object):
             self.log.info("Performing cleanup on {} database".format(db.name))
             db.cleanup()
 
+            # free up space
+            self.log.info("Performing vacuum on {} database".format(db.name))
+            db.vacuum()
+
         # load config
         self.config.load()
 

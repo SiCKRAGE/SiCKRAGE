@@ -217,6 +217,9 @@ class SRDatabase(object):
     def cleanup(self):
         pass
 
+    def vacuum(self):
+        self.engine.execute("VACUUM")
+
     def migrate(self):
         migration_table_column_mapper = {
             'main': {
