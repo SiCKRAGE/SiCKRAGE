@@ -556,7 +556,8 @@ class Config(object):
         self.general.log_nr = self._get_config_file_value(config_object, 'General', 'log_nr', field_type=int)
         self.general.log_size = self._get_config_file_value(config_object, 'General', 'log_size', field_type=int)
         self.general.socket_timeout = self._get_config_file_value(config_object, 'General', 'socket_timeout', field_type=int)
-        self.general.default_page = DefaultHomePage[self._get_config_file_value(config_object, 'General', 'default_page', field_type=str.upper)]
+        self.general.default_page = DefaultHomePage[self._get_config_file_value(config_object, 'General', 'default_page', default=DefaultHomePage.HOME.name,
+                                                                                field_type=str.upper)]
         self.general.pip3_path = self._get_config_file_value(config_object, 'General', 'pip3_path', field_type=str)
         self.general.git_path = self._get_config_file_value(config_object, 'General', 'git_path', field_type=str)
         self.general.git_reset = self._get_config_file_value(config_object, 'General', 'git_reset', field_type=bool)
@@ -620,8 +621,8 @@ class Config(object):
         self.general.naming_strip_year = self._get_config_file_value(config_object, 'General', 'naming_strip_year', field_type=bool)
         self.general.use_nzbs = self._get_config_file_value(config_object, 'General', 'use_nzbs', field_type=bool)
         self.general.use_torrents = self._get_config_file_value(config_object, 'General', 'use_torrents', field_type=bool)
-        self.general.nzb_method = NzbMethod[self._get_config_file_value(config_object, 'General', 'nzb_method', field_type=str.upper)]
-        self.general.torrent_method = TorrentMethod[self._get_config_file_value(config_object, 'General', 'torrent_method', field_type=str.upper)]
+        self.general.nzb_method = NzbMethod[self._get_config_file_value(config_object, 'General', 'nzb_method', default=NzbMethod.BLACKHOLE.name, field_type=str.upper)]
+        self.general.torrent_method = TorrentMethod[self._get_config_file_value(config_object, 'General', 'torrent_method', default=TorrentMethod.BLACKHOLE.name, field_type=str.upper)]
         self.general.download_propers = self._get_config_file_value(config_object, 'General', 'download_propers', field_type=bool)
         self.general.enable_rss_cache = self._get_config_file_value(config_object, 'General', 'enable_rss_cache', field_type=bool)
         self.general.torrent_file_to_magnet = self._get_config_file_value(config_object, 'General', 'torrent_file_to_magnet', field_type=bool)
@@ -648,10 +649,9 @@ class Config(object):
         self.general.unpack_dir = self._get_config_file_value(config_object, 'General', 'unpack_dir', field_type=str)
         self.general.rename_episodes = self._get_config_file_value(config_object, 'General', 'rename_episodes', field_type=bool)
         self.general.airdate_episodes = self._get_config_file_value(config_object, 'General', 'airdate_episodes', field_type=bool)
-        self.general.file_timestamp_timezone = FileTimestampTimezone[
-            self._get_config_file_value(config_object, 'General', 'file_timestamp_timezone', field_type=str.upper)]
+        self.general.file_timestamp_timezone = FileTimestampTimezone[self._get_config_file_value(config_object, 'General', 'file_timestamp_timezone', default=FileTimestampTimezone.NETWORK.name, field_type=str.upper)]
         self.general.keep_processed_dir = self._get_config_file_value(config_object, 'General', 'keep_processed_dir', field_type=bool)
-        self.general.process_method = ProcessMethod[self._get_config_file_value(config_object, 'General', 'process_method', field_type=str.upper)]
+        self.general.process_method = ProcessMethod[self._get_config_file_value(config_object, 'General', 'process_method', default=ProcessMethod.COPY.name, field_type=str.upper)]
         self.general.processor_follow_symlinks = self._get_config_file_value(config_object, 'General', 'processor_follow_symlinks', field_type=bool)
         self.general.del_rar_contents = self._get_config_file_value(config_object, 'General', 'del_rar_contents', field_type=bool)
         self.general.delete_non_associated_files = self._get_config_file_value(config_object, 'General', 'delete_non_associated_files', field_type=bool)
@@ -677,24 +677,24 @@ class Config(object):
 
         # GUI SETTINGS
         self.gui.gui_lang = self._get_config_file_value(config_object, 'GUI', 'gui_lang', field_type=str)
-        self.gui.theme_name = UITheme[self._get_config_file_value(config_object, 'GUI', 'theme_name', field_type=str.upper)]
+        self.gui.theme_name = UITheme[self._get_config_file_value(config_object, 'GUI', 'theme_name', default=UITheme.DARK.name, field_type=str.upper)]
         self.gui.fanart_background = self._get_config_file_value(config_object, 'GUI', 'fanart_background', field_type=bool)
         self.gui.fanart_background_opacity = self._get_config_file_value(config_object, 'GUI', 'fanart_background_opacity', field_type=float)
-        self.gui.home_layout = HomeLayout[self._get_config_file_value(config_object, 'GUI', 'home_layout', field_type=str.upper)]
-        self.gui.history_layout = HistoryLayout[self._get_config_file_value(config_object, 'GUI', 'history_layout', field_type=str.upper)]
+        self.gui.home_layout = HomeLayout[self._get_config_file_value(config_object, 'GUI', 'home_layout', default=HomeLayout.POSTER.name, field_type=str.upper)]
+        self.gui.history_layout = HistoryLayout[self._get_config_file_value(config_object, 'GUI', 'history_layout', default=HistoryLayout.DETAILED.name, field_type=str.upper)]
         self.gui.history_limit = self._get_config_file_value(config_object, 'GUI', 'history_limit', field_type=int)
         self.gui.display_show_specials = self._get_config_file_value(config_object, 'GUI', 'display_show_specials', field_type=bool)
-        self.gui.coming_eps_layout = ComingEpsLayout[self._get_config_file_value(config_object, 'GUI', 'coming_eps_layout', field_type=str.upper)]
+        self.gui.coming_eps_layout = ComingEpsLayout[self._get_config_file_value(config_object, 'GUI', 'coming_eps_layout', default=ComingEpsLayout.POSTER.name, field_type=str.upper)]
         self.gui.coming_eps_display_paused = self._get_config_file_value(config_object, 'GUI', 'coming_eps_display_paused', field_type=bool)
-        self.gui.coming_eps_sort = ComingEpsSortBy[self._get_config_file_value(config_object, 'GUI', 'coming_eps_sort', field_type=str.upper)]
+        self.gui.coming_eps_sort = ComingEpsSortBy[self._get_config_file_value(config_object, 'GUI', 'coming_eps_sort', default=ComingEpsSortBy.DATE.name, field_type=str.upper)]
         self.gui.coming_eps_missed_range = self._get_config_file_value(config_object, 'GUI', 'coming_eps_missed_range', field_type=int)
         self.gui.fuzzy_dating = self._get_config_file_value(config_object, 'GUI', 'fuzzy_dating', field_type=bool)
         self.gui.trim_zero = self._get_config_file_value(config_object, 'GUI', 'trim_zero', field_type=bool)
         self.gui.date_preset = self._get_config_file_value(config_object, 'GUI', 'date_preset', field_type=str)
         self.gui.time_preset_w_seconds = self._get_config_file_value(config_object, 'GUI', 'time_preset', field_type=str)
         self.gui.time_preset = self.gui.time_preset_w_seconds.replace(":%S", "")
-        self.gui.timezone_display = TimezoneDisplay[self._get_config_file_value(config_object, 'GUI', 'timezone_display', field_type=str.upper)]
-        self.gui.poster_sort_by = PosterSortBy[self._get_config_file_value(config_object, 'GUI', 'poster_sortby', field_type=str.upper)]
+        self.gui.timezone_display = TimezoneDisplay[self._get_config_file_value(config_object, 'GUI', 'timezone_display', default=TimezoneDisplay.NETWORK.name, field_type=str.upper)]
+        self.gui.poster_sort_by = PosterSortBy[self._get_config_file_value(config_object, 'GUI', 'poster_sortby', default=PosterSortBy.NAME.name, field_type=str.upper)]
         self.gui.poster_sort_dir = PosterSortDirection(self._get_config_file_value(config_object, 'GUI', 'poster_sortdir', field_type=int))
         self.gui.filter_row = self._get_config_file_value(config_object, 'GUI', 'filter_row', field_type=bool)
 
@@ -874,8 +874,7 @@ class Config(object):
         self.nmjv2.enable = self._get_config_file_value(config_object, 'NMJv2', 'use_nmjv2', field_type=bool)
         self.nmjv2.host = self._get_config_file_value(config_object, 'NMJv2', 'nmjv2_host', field_type=str)
         self.nmjv2.database = self._get_config_file_value(config_object, 'NMJv2', 'nmjv2_database', field_type=str)
-        self.nmjv2.db_loc = NMJv2Location[
-            self._get_config_file_value(config_object, 'NMJv2', 'nmjv2_dbloc', default=NMJv2Location.LOCAL.name, field_type=str.upper)]
+        self.nmjv2.db_loc = NMJv2Location[self._get_config_file_value(config_object, 'NMJv2', 'nmjv2_dbloc', default=NMJv2Location.LOCAL.name, field_type=str.upper)]
 
         # SYNOLOGY SETTINGS
         self.synology.host = self._get_config_file_value(config_object, 'SynologyDSM', 'syno_dsm_host', field_type=str)
@@ -1123,6 +1122,7 @@ class Config(object):
                     value = self.convert_value(section_object.get(key), field_type)
                     if not value:
                         return default
+                    return value
                 except Exception:
                     return default
 
