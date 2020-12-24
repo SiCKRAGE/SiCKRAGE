@@ -281,19 +281,23 @@ class TVCache(object):
                                                              season=season).filter(CacheDB.Provider.episodes.contains("|{}|".format(episode)))]
 
         for curResult in dbData:
+            result = self.provider.get_result()
+
+            result.series_id = int(curResult["series_id"])
+            result.series_provider_id = curResult["series_provider_id"]
+
+            # convert to series provider id enum
+            if not isinstance(result.series_provider_id, SeriesProviderID):
+                result.series_provider_id = SeriesProviderID[curResult["series_provider_id"]]
+
             # get series, if it's not one of our shows then ignore it
-            series = find_show(int(curResult["series_id"]), SeriesProviderID[curResult["series_provider_id"]])
+            series = find_show(result.series_id, result.series_provider_id)
             if not series or series.series_provider_id != series_provider_id:
                 continue
-
-            result = self.provider.get_result()
 
             # ignored/required words, and non-tv junk
             if not show_names.filter_bad_releases(curResult["name"]):
                 continue
-
-            result.series_id = int(curResult["series_id"])
-            result.series_provider_id = SeriesProviderID[curResult["series_provider_id"]]
 
             # skip if provider is anime only and show is not anime
             if self.provider.anime_only and not series.is_anime:
