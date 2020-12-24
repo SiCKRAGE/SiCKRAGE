@@ -347,6 +347,7 @@ class UpdateManager(object):
 
         try:
             requirements_file.write(WebSession().get(requirements_url).content)
+            requirements_file.close()
         except Exception:
             requirements_file.close()
             os.unlink(requirements_file.name)
