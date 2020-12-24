@@ -2,12 +2,12 @@
 
 # 
 
-##Thu Dec 24 2020 01:27:33 GMT+0000 (Coordinated Universal Time)
+##Thu Dec 24 2020 15:52:52 GMT+0000 (Coordinated Universal Time)
 
 
-## Refactor
-  - Refactored requirements to be installed one-by-one during version updates
-  ([4c337525](https://gitlab-ci-token:oaBCE34sr_bCxnetEVrw@git.sickrage.ca/SiCKRAGE/sickrage/commit/4c3375252f088c40e7053434b006c4fe7918f5a7))
+## Bug Fixes
+  - Fixed issue with configuration migration Added code to perform requirements check and install any missing requirements on startup of app
+  ([5780cfa0](https://gitlab-ci-token:dLp7ErGSkP-JBz-sy79V@git.sickrage.ca/SiCKRAGE/sickrage/commit/5780cfa0b59bfd7269e6b01b55817ec709818a24))
 
 
 
