@@ -2,12 +2,12 @@
 
 # 
 
-##Thu Dec 24 2020 15:52:52 GMT+0000 (Coordinated Universal Time)
+##Thu Dec 24 2020 23:32:38 GMT+0000 (Coordinated Universal Time)
 
 
 ## Bug Fixes
-  - Fixed issue with configuration migration Added code to perform requirements check and install any missing requirements on startup of app
-  ([5780cfa0](https://gitlab-ci-token:dLp7ErGSkP-JBz-sy79V@git.sickrage.ca/SiCKRAGE/sickrage/commit/5780cfa0b59bfd7269e6b01b55817ec709818a24))
+  - Fixed issue with provider cache and series provider id enum's
+  ([063405bd](https://gitlab-ci-token:NZxeMnVbFJC_PzZxYz4M@git.sickrage.ca/SiCKRAGE/sickrage/commit/063405bde90ba81435a29da297b9fac1bc932d44))
 
 
 
