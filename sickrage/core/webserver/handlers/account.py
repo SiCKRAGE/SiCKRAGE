@@ -19,6 +19,7 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 import json
+import os
 from abc import ABC
 
 from tornado.web import authenticated
@@ -74,7 +75,7 @@ class AccountLinkHandler(BaseHandler, ABC):
                 if server_id:
                     sickrage.app.config.general.server_id = server_id
 
-            sickrage.app.config.save()
+            sickrage.app.config.save(mark_dirty=True)
 
             sickrage.app.alerts.message(_('Linked SiCKRAGE account to SiCKRAGE API'))
         else:
@@ -92,8 +93,11 @@ class AccountUnlinkHandler(BaseHandler, ABC):
         #     return self.redirect("/{}/".format(sickrage.app.config.general.default_page.value))
 
         if not sickrage.app.config.general.server_id or sickrage.app.api.account.unregister_server(sickrage.app.config.general.server_id):
-            # sickrage.app.config.general.server_id = ""
-            # sickrage.app.config.user.sub_id = ""
+            if not sickrage.app.config.general.sso_auth_enabled:
+                sickrage.app.config.reset_encryption()
+                sickrage.app.config.general.server_id = ""
+                sickrage.app.config.user.sub_id = ""
+
             sickrage.app.api.logout()
 
             del sickrage.app.api.token

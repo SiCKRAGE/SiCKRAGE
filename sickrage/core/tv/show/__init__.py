@@ -26,7 +26,6 @@ import re
 import shutil
 import stat
 import threading
-import time
 import traceback
 
 import send2trash

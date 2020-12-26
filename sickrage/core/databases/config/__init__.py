@@ -18,14 +18,18 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
+import datetime
+import json
 import random
 
+import six
 from sqlalchemy import Column, Text, Integer, ForeignKey, Boolean, Enum, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.mutable import MutableDict
 from sqlalchemy_utils import JSONType
-from sqlalchemy_utils.types.encrypted.encrypted_type import StringEncryptedType
+from sqlalchemy_utils.types.encrypted.encrypted_type import StringEncryptedType, DatetimeHandler
 
+import sickrage
 from sickrage.core.common import Qualities, EpisodeStatus
 from sickrage.core.databases import SRDatabaseBase, SRDatabase, IntFlag
 from sickrage.core.enums import DefaultHomePage, MultiEpNaming, CpuPreset, CheckPropersInterval, \
@@ -39,18 +43,79 @@ from sickrage.search_providers import SearchProviderType
 ConfigDBBase = declarative_base(cls=SRDatabaseBase)
 
 
+def encryption_key():
+    try:
+        return getattr(sickrage.app.config.user, 'sub_id', None) or 'sickrage'
+    except Exception:
+        return 'sickrage'
+
+
 class CustomStringEncryptedType(StringEncryptedType):
+    reset = False
+
     def process_bind_param(self, value, dialect):
-        key = self._key() if callable(self._key) else self._key
-        if key:
-            return super(CustomStringEncryptedType, self).process_bind_param(value, dialect)
-        return value
+        """Encrypt a value on the way in."""
+        if value is not None:
+            if not self.reset:
+                self._update_key()
+            else:
+                self.engine._update_key('sickrage')
+
+            try:
+                value = self.underlying_type.process_bind_param(
+                    value, dialect
+                )
+            except AttributeError:
+                # Doesn't have 'process_bind_param'
+
+                # Handle 'boolean' and 'dates'
+                type_ = self.underlying_type.python_type
+                if issubclass(type_, bool):
+                    value = 'true' if value else 'false'
+
+                elif issubclass(type_, (datetime.date, datetime.time)):
+                    value = value.isoformat()
+
+                elif issubclass(type_, JSONType):
+                    value = six.text_type(json.dumps(value))
+
+            return self.engine.encrypt(value)
 
     def process_result_value(self, value, dialect):
-        key = self._key() if callable(self._key) else self._key
-        if key:
-            return super(CustomStringEncryptedType, self).process_result_value(value, dialect)
-        return value
+        """Decrypt value on the way out."""
+        if value is not None:
+            self._update_key()
+
+            try:
+                decrypted_value = self.engine.decrypt(value)
+            except ValueError:
+                self.engine._update_key('sickrage')
+                decrypted_value = self.engine.decrypt(value)
+
+            try:
+                return self.underlying_type.process_result_value(
+                    decrypted_value, dialect
+                )
+            except AttributeError:
+                # Doesn't have 'process_result_value'
+
+                # Handle 'boolean' and 'dates'
+                type_ = self.underlying_type.python_type
+                date_types = [datetime.datetime, datetime.time, datetime.date]
+
+                if issubclass(type_, bool):
+                    return decrypted_value == 'true'
+
+                elif type_ in date_types:
+                    return DatetimeHandler.process_value(
+                        decrypted_value, type_
+                    )
+
+                elif issubclass(type_, JSONType):
+                    return json.loads(decrypted_value)
+
+                # Handle all others
+                return self.underlying_type.python_type(decrypted_value)
 
 
 class ConfigDB(SRDatabase):
@@ -65,7 +130,7 @@ class ConfigDB(SRDatabase):
         __tablename__ = 'users'
         id = Column(Integer, primary_key=True, autoincrement=True)
         username = Column(Text, index=True, unique=True, nullable=False)
-        password = Column(CustomStringEncryptedType(Text, key='sickrage'), nullable=False, default='')
+        password = Column(Text, nullable=False, default='')
         email = Column(Text, default='', index=True)
         sub_id = Column(Text, default='')
         permissions = Column(Enum(UserPermission), default=UserPermission.GUEST)
@@ -236,8 +301,8 @@ class ConfigDB(SRDatabase):
         __tablename__ = 'sabnzbd'
         id = Column(Integer, primary_key=True, autoincrement=True)
         username = Column(Text, default='')
-        password = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
-        apikey = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        password = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
+        apikey = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         category = Column(Text, default='tv')
         category_backlog = Column(Text, default='tv')
         category_anime = Column(Text, default='anime')
@@ -249,7 +314,7 @@ class ConfigDB(SRDatabase):
         __tablename__ = 'nzbget'
         id = Column(Integer, primary_key=True, autoincrement=True)
         username = Column(Text, default='')
-        password = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        password = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         category = Column(Text, default='tv')
         category_backlog = Column(Text, default='tv')
         category_anime = Column(Text, default='anime')
@@ -262,7 +327,7 @@ class ConfigDB(SRDatabase):
         __tablename__ = 'synology'
         id = Column(Integer, primary_key=True, autoincrement=True)
         username = Column(Text, default='')
-        password = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        password = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         host = Column(Text, default='')
         path = Column(Text, default='')
         enable_index = Column(Boolean, default=False)
@@ -275,7 +340,7 @@ class ConfigDB(SRDatabase):
         __tablename__ = 'torrent'
         id = Column(Integer, primary_key=True, autoincrement=True)
         username = Column(Text, default='')
-        password = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        password = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         host = Column(Text, default='')
         path = Column(Text, default='')
         seed_time = Column(Integer, default=0)
@@ -291,7 +356,7 @@ class ConfigDB(SRDatabase):
         __tablename__ = 'kodi'
         id = Column(Integer, primary_key=True, autoincrement=True)
         username = Column(Text, default='')
-        password = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        password = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         host = Column(Text, default='')
         enable = Column(Boolean, default=False)
         notify_on_snatch = Column(Boolean, default=False)
@@ -306,12 +371,12 @@ class ConfigDB(SRDatabase):
         __tablename__ = 'plex'
         id = Column(Integer, primary_key=True, autoincrement=True)
         username = Column(Text, default='')
-        password = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        password = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         client_username = Column(Text, default='')
         client_password = Column(Text, default='')
         host = Column(Text, default='')
         server_host = Column(Text, default='')
-        server_token = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        server_token = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         enable = Column(Boolean, default=False)
         enable_client = Column(Boolean, default=False)
         notify_on_snatch = Column(Boolean, default=False)
@@ -323,7 +388,7 @@ class ConfigDB(SRDatabase):
         __tablename__ = 'emby'
         id = Column(Integer, primary_key=True, autoincrement=True)
         host = Column(Text, default='')
-        apikey = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        apikey = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         notify_on_download = Column(Boolean, default=False)
         notify_on_subtitle_download = Column(Boolean, default=False)
         notify_on_snatch = Column(Boolean, default=False)
@@ -333,7 +398,7 @@ class ConfigDB(SRDatabase):
         __tablename__ = 'growl'
         id = Column(Integer, primary_key=True, autoincrement=True)
         host = Column(Text, default='')
-        password = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        password = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         notify_on_download = Column(Boolean, default=False)
         notify_on_subtitle_download = Column(Boolean, default=False)
         notify_on_snatch = Column(Boolean, default=False)
@@ -343,7 +408,7 @@ class ConfigDB(SRDatabase):
         __tablename__ = 'freemobile'
         id = Column(Integer, primary_key=True, autoincrement=True)
         user_id = Column(Text, default='')
-        apikey = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        apikey = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         notify_on_download = Column(Boolean, default=False)
         notify_on_subtitle_download = Column(Boolean, default=False)
         notify_on_snatch = Column(Boolean, default=False)
@@ -353,7 +418,7 @@ class ConfigDB(SRDatabase):
         __tablename__ = 'telegram'
         id = Column(Integer, primary_key=True, autoincrement=True)
         user_id = Column(Text, default='')
-        apikey = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        apikey = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         notify_on_download = Column(Boolean, default=False)
         notify_on_subtitle_download = Column(Boolean, default=False)
         notify_on_snatch = Column(Boolean, default=False)
@@ -363,7 +428,7 @@ class ConfigDB(SRDatabase):
         __tablename__ = 'join'
         id = Column(Integer, primary_key=True, autoincrement=True)
         user_id = Column(Text, default='')
-        apikey = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        apikey = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         notify_on_download = Column(Boolean, default=False)
         notify_on_subtitle_download = Column(Boolean, default=False)
         notify_on_snatch = Column(Boolean, default=False)
@@ -372,7 +437,7 @@ class ConfigDB(SRDatabase):
     class Prowl(ConfigDBBase):
         __tablename__ = 'prowl'
         id = Column(Integer, primary_key=True, autoincrement=True)
-        apikey = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        apikey = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         priority = Column(Integer, default=0)
         notify_on_download = Column(Boolean, default=False)
         notify_on_subtitle_download = Column(Boolean, default=False)
@@ -383,7 +448,7 @@ class ConfigDB(SRDatabase):
         __tablename__ = 'twitter'
         id = Column(Integer, primary_key=True, autoincrement=True)
         username = Column(Text, default='')
-        password = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        password = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         prefix = Column(Text, default='')
         dm_to = Column(Text, default='')
         notify_on_download = Column(Boolean, default=False)
@@ -397,7 +462,7 @@ class ConfigDB(SRDatabase):
         id = Column(Integer, primary_key=True, autoincrement=True)
         phone_sid = Column(Text, default='')
         account_sid = Column(Text, default='')
-        auth_token = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        auth_token = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         to_number = Column(Text, default='')
         notify_on_download = Column(Boolean, default=False)
         notify_on_subtitle_download = Column(Boolean, default=False)
@@ -407,7 +472,7 @@ class ConfigDB(SRDatabase):
     class Boxcar2(ConfigDBBase):
         __tablename__ = 'boxcar2'
         id = Column(Integer, primary_key=True, autoincrement=True)
-        access_token = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        access_token = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         notify_on_download = Column(Boolean, default=False)
         notify_on_subtitle_download = Column(Boolean, default=False)
         notify_on_snatch = Column(Boolean, default=False)
@@ -417,7 +482,7 @@ class ConfigDB(SRDatabase):
         __tablename__ = 'pushover'
         id = Column(Integer, primary_key=True, autoincrement=True)
         user_key = Column(Text, default='')
-        apikey = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        apikey = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         device = Column(Text, default='')
         sound = Column(Text, default='pushover')
         notify_on_download = Column(Boolean, default=False)
@@ -475,7 +540,7 @@ class ConfigDB(SRDatabase):
         id = Column(Integer, primary_key=True, autoincrement=True)
         username = Column(Text, default='')
         blacklist_name = Column(Text, default='')
-        oauth_token = Column(MutableDict.as_mutable(JSONType))
+        oauth_token = Column(MutableDict.as_mutable(CustomStringEncryptedType(JSONType, key=encryption_key)), default={})
         remove_watchlist = Column(Boolean, default=False)
         remove_serieslist = Column(Boolean, default=False)
         remove_show_from_sickrage = Column(Boolean, default=False)
@@ -507,7 +572,7 @@ class ConfigDB(SRDatabase):
         notify_on_download = Column(Boolean, default=False)
         notify_on_subtitle_download = Column(Boolean, default=False)
         notify_on_snatch = Column(Boolean, default=False)
-        api_keys = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        api_keys = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         priority = Column(Integer, default=0)
         enable = Column(Boolean, default=False)
 
@@ -517,7 +582,7 @@ class ConfigDB(SRDatabase):
         notify_on_download = Column(Boolean, default=False)
         notify_on_subtitle_download = Column(Boolean, default=False)
         notify_on_snatch = Column(Boolean, default=False)
-        auth_token = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        auth_token = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         enable = Column(Boolean, default=False)
 
     class Pushbullet(ConfigDBBase):
@@ -526,7 +591,7 @@ class ConfigDB(SRDatabase):
         notify_on_download = Column(Boolean, default=False)
         notify_on_subtitle_download = Column(Boolean, default=False)
         notify_on_snatch = Column(Boolean, default=False)
-        api_key = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        api_key = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         device = Column(Text, default='')
         enable = Column(Boolean, default=False)
 
@@ -540,7 +605,7 @@ class ConfigDB(SRDatabase):
         port = Column(Text, default='')
         tls = Column(Boolean, default=False)
         username = Column(Text, default='')
-        password = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        password = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         send_from = Column(Text, default='')
         send_to_list = Column(Text, default='')
         enable = Column(Boolean, default=False)
@@ -567,13 +632,13 @@ class ConfigDB(SRDatabase):
         services_enabled = Column(Text, default='')
         extra_scripts = Column(Text, default='')
         addic7ed_user = Column(Text, default='')
-        addic7ed_pass = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        addic7ed_pass = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         legendastv_user = Column(Text, default='')
-        legendastv_pass = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        legendastv_pass = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         itasa_user = Column(Text, default='')
-        itasa_pass = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        itasa_pass = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         opensubtitles_user = Column(Text, default='')
-        opensubtitles_pass = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        opensubtitles_pass = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         enable = Column(Boolean, default=False)
 
     class FailedDownloads(ConfigDBBase):
@@ -591,7 +656,7 @@ class ConfigDB(SRDatabase):
         __tablename__ = 'anidb'
         id = Column(Integer, primary_key=True, autoincrement=True)
         username = Column(Text, default='')
-        password = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        password = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         use_my_list = Column(Boolean, default=False)
         split_home = Column(Boolean, default=False)
         enable = Column(Boolean, default=False)
@@ -619,7 +684,7 @@ class ConfigDB(SRDatabase):
         enable_daily = Column(Boolean, default=True)
         enable_backlog = Column(Boolean, default=True)
         enable_cookies = Column(Boolean, default=False)
-        custom_settings = Column(MutableDict.as_mutable(CustomStringEncryptedType(JSONType, key=ConfigDBBase.encryption_key)), default={})
+        custom_settings = Column(MutableDict.as_mutable(CustomStringEncryptedType(JSONType, key=encryption_key)), default={})
         enable = Column(Boolean, default=False)
 
     class SearchProvidersTorrent(SearchProvidersMixin, ConfigDBBase):
@@ -630,7 +695,7 @@ class ConfigDB(SRDatabase):
     class SearchProvidersNzb(SearchProvidersMixin, ConfigDBBase):
         __tablename__ = 'search_providers_nzb'
         provider_type = Column(Enum(SearchProviderType), default=SearchProviderType.NZB)
-        api_key = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        api_key = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         username = Column(Text, default='')
 
     class SearchProvidersTorrentRss(SearchProvidersMixin, ConfigDBBase):
@@ -648,7 +713,7 @@ class ConfigDB(SRDatabase):
         url = Column(Text, default='')
         key = Column(Text, default='')
         cat_ids = Column(Text, default='')
-        api_key = Column(CustomStringEncryptedType(Text, key=ConfigDBBase.encryption_key), default='')
+        api_key = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         username = Column(Text, default='')
 
     class MetadataProviders(ConfigDBBase):

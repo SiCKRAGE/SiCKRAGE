@@ -46,8 +46,8 @@ class SaveQualitiesHandler(BaseHandler, ABC):
         for quality in sickrage.app.config.quality_sizes.keys():
             quality_size_min = self.get_argument(f"{quality}_min")
             quality_size_max = self.get_argument(f"{quality}_max")
-            sickrage.app.config.quality_sizes[quality]['min_size'] = int(quality_size_min)
-            sickrage.app.config.quality_sizes[quality]['max_size'] = int(quality_size_max)
+            sickrage.app.config.quality_sizes[quality].min_size = int(quality_size_min)
+            sickrage.app.config.quality_sizes[quality].max_size = int(quality_size_max)
 
         sickrage.app.config.save()
 

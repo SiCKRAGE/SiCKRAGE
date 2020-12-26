@@ -20,12 +20,13 @@
 # ##############################################################################
 import os
 
-from sqlalchemy import exc, orm
+from sqlalchemy import orm
+from sqlalchemy.orm.attributes import flag_modified
 
 import sickrage
 from sickrage.core.common import Qualities, EpisodeStatus
 from sickrage.core.config.helpers import decrypt_config
-from sickrage.core.databases.config import ConfigDB
+from sickrage.core.databases.config import ConfigDB, CustomStringEncryptedType
 from sickrage.core.databases.config.schemas import GeneralSchema, GUISchema, BlackholeSchema, SABnzbdSchema, NZBgetSchema, SynologySchema, \
     TorrentSchema, KodiSchema, PlexSchema, EmbySchema, GrowlSchema, FreeMobileSchema, TelegramSchema, JoinSchema, ProwlSchema, TwitterSchema, TwilioSchema, \
     Boxcar2Schema, PushoverSchema, LibnotifySchema, NMJSchema, NMJv2Schema, SlackSchema, DiscordSchema, TraktSchema, PyTivoSchema, NMASchema, PushalotSchema, \
@@ -44,263 +45,344 @@ from sickrage.search_providers import SearchProviderType, TorrentRssProvider, Ne
 class Config(object):
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
         self.db = ConfigDB(db_type, db_prefix, db_host, db_port, db_username, db_password)
-        self.session = self.db.session()
 
-        # sections
-        self.user = None
-        self.general = None
-        self.gui = None
-        self.blackhole = None
-        self.sabnzbd = None
-        self.nzbget = None
-        self.synology = None
-        self.torrent = None
-        self.kodi = None
-        self.plex = None
-        self.emby = None
-        self.growl = None
-        self.freemobile = None
-        self.telegram = None
-        self.join_app = None
-        self.prowl = None
-        self.twitter = None
-        self.twilio = None
-        self.boxcar2 = None
-        self.pushover = None
-        self.libnotify = None
-        self.nmj = None
-        self.nmjv2 = None
-        self.slack = None
-        self.discord = None
-        self.trakt = None
-        self.pytivo = None
-        self.nma = None
-        self.pushalot = None
-        self.pushbullet = None
-        self.email = None
-        self.alexa = None
-        self.subtitles = None
-        self.failed_downloads = None
-        self.failed_snatches = None
-        self.anidb = None
+        self._config_data = {}
+
         self.quality_sizes = {}
 
+    @property
+    def user(self):
+        return self._config_data.get(self.db.Users)
+
+    @property
+    def general(self):
+        return self._config_data.get(self.db.General)
+
+    @property
+    def gui(self):
+        return self._config_data.get(self.db.GUI)
+
+    @property
+    def blackhole(self):
+        return self._config_data.get(self.db.Blackhole)
+
+    @property
+    def sabnzbd(self):
+        return self._config_data.get(self.db.SABnzbd)
+
+    @property
+    def nzbget(self):
+        return self._config_data.get(self.db.NZBget)
+
+    @property
+    def synology(self):
+        return self._config_data.get(self.db.Synology)
+
+    @property
+    def torrent(self):
+        return self._config_data.get(self.db.Torrent)
+
+    @property
+    def kodi(self):
+        return self._config_data.get(self.db.Kodi)
+
+    @property
+    def plex(self):
+        return self._config_data.get(self.db.Plex)
+
+    @property
+    def emby(self):
+        return self._config_data.get(self.db.Emby)
+
+    @property
+    def growl(self):
+        return self._config_data.get(self.db.Growl)
+
+    @property
+    def freemobile(self):
+        return self._config_data.get(self.db.FreeMobile)
+
+    @property
+    def telegram(self):
+        return self._config_data.get(self.db.Telegram)
+
+    @property
+    def join_app(self):
+        return self._config_data.get(self.db.Join)
+
+    @property
+    def prowl(self):
+        return self._config_data.get(self.db.Prowl)
+
+    @property
+    def twitter(self):
+        return self._config_data.get(self.db.Twitter)
+
+    @property
+    def twilio(self):
+        return self._config_data.get(self.db.Twilio)
+
+    @property
+    def boxcar2(self):
+        return self._config_data.get(self.db.Boxcar2)
+
+    @property
+    def pushover(self):
+        return self._config_data.get(self.db.Pushover)
+
+    @property
+    def libnotify(self):
+        return self._config_data.get(self.db.Libnotify)
+
+    @property
+    def nmj(self):
+        return self._config_data.get(self.db.NMJ)
+
+    @property
+    def nmjv2(self):
+        return self._config_data.get(self.db.NMJv2)
+
+    @property
+    def slack(self):
+        return self._config_data.get(self.db.Slack)
+
+    @property
+    def discord(self):
+        return self._config_data.get(self.db.Discord)
+
+    @property
+    def trakt(self):
+        return self._config_data.get(self.db.Trakt)
+
+    @property
+    def pytivo(self):
+        return self._config_data.get(self.db.PyTivo)
+
+    @property
+    def nma(self):
+        return self._config_data.get(self.db.NMA)
+
+    @property
+    def pushalot(self):
+        return self._config_data.get(self.db.Pushalot)
+
+    @property
+    def pushbullet(self):
+        return self._config_data.get(self.db.Pushbullet)
+
+    @property
+    def email(self):
+        return self._config_data.get(self.db.Email)
+
+    @property
+    def alexa(self):
+        return self._config_data.get(self.db.Alexa)
+
+    @property
+    def subtitles(self):
+        return self._config_data.get(self.db.Subtitles)
+
+    @property
+    def failed_downloads(self):
+        return self._config_data.get(self.db.FailedDownloads)
+
+    @property
+    def failed_snatches(self):
+        return self._config_data.get(self.db.FailedSnatches)
+
+    @property
+    def anidb(self):
+        return self._config_data.get(self.db.AniDB)
+
     def load(self):
-        self.user = self.session.query(self.db.Users).first()
-        if not self.user:
-            self.user = self.db.Users(username='admin', permissions=UserPermission.SUPERUSER)
-            self.session.add(self.user)
-            self.session.commit()
+        # USERS SECTION
+        if not self.db.session().query(self.db.Users).first():
+            self.db.session().add(self.db.Users(username='admin', permissions=UserPermission.SUPERUSER))
+            self.db.session().commit()
+        self._config_data[self.db.Users] = self.db.session().query(self.db.Users).first().as_attrdict()
 
-        self.general = self.session.query(self.db.General).first()
-        if not self.general:
-            self.general = self.db.General()
-            self.session.add(self.general)
-            self.session.commit()
+        # GENERAL SECTION
+        if not self.db.session().query(self.db.General).first():
+            self.db.session().add(self.db.General())
+            self.db.session().commit()
+        self._config_data[self.db.General] = self.db.session().query(self.db.General).first().as_attrdict()
 
-        self.gui = self.session.query(self.db.GUI).first()
-        if not self.gui:
-            self.gui = self.db.GUI(user_id=self.user.id)
-            self.session.add(self.gui)
-            self.session.commit()
+        # GUI SECTION
+        if not self.db.session().query(self.db.GUI).filter_by(user_id=self.user.id).one_or_none():
+            self.db.session().add(self.db.GUI(user_id=self.user.id))
+            self.db.session().commit()
+        self._config_data[self.db.GUI] = self.db.session().query(self.db.GUI).filter_by(user_id=self.user.id).one().as_attrdict()
 
-        self.blackhole = self.session.query(self.db.Blackhole).first()
-        if not self.blackhole:
-            self.blackhole = self.db.Blackhole()
-            self.session.add(self.blackhole)
-            self.session.commit()
+        # BLACKHOLE SECTION
+        if not self.db.session().query(self.db.Blackhole).first():
+            self.db.session().add(self.db.Blackhole())
+            self.db.session().commit()
+        self._config_data[self.db.Blackhole] = self.db.session().query(self.db.Blackhole).first().as_attrdict()
 
-        self.sabnzbd = self.session.query(self.db.SABnzbd).first()
-        if not self.sabnzbd:
-            self.sabnzbd = self.db.SABnzbd()
-            self.session.add(self.sabnzbd)
-            self.session.commit()
+        # SABNZBD SECTION
+        if not self.db.session().query(self.db.SABnzbd).first():
+            self.db.session().add(self.db.SABnzbd())
+            self.db.session().commit()
+        self._config_data[self.db.SABnzbd] = self.db.session().query(self.db.SABnzbd).first().as_attrdict()
 
-        self.nzbget = self.session.query(self.db.NZBget).first()
-        if not self.nzbget:
-            self.nzbget = self.db.NZBget()
-            self.session.add(self.nzbget)
-            self.session.commit()
+        # NZBGET SECTION
+        if not self.db.session().query(self.db.NZBget).first():
+            self.db.session().add(self.db.NZBget())
+            self.db.session().commit()
+        self._config_data[self.db.NZBget] = self.db.session().query(self.db.NZBget).first().as_attrdict()
 
-        self.synology = self.session.query(self.db.Synology).first()
-        if not self.synology:
-            self.synology = self.db.Synology()
-            self.session.add(self.synology)
-            self.session.commit()
+        # SYNOLOGY SECTION
+        if not self.db.session().query(self.db.Synology).first():
+            self.db.session().add(self.db.Synology())
+            self.db.session().commit()
+        self._config_data[self.db.Synology] = self.db.session().query(self.db.Synology).first().as_attrdict()
 
-        self.torrent = self.session.query(self.db.Torrent).first()
-        if not self.torrent:
-            self.torrent = self.db.Torrent()
-            self.session.add(self.torrent)
-            self.session.commit()
+        # TORRENT SECTION
+        if not self.db.session().query(self.db.Torrent).first():
+            self.db.session().add(self.db.Torrent())
+            self.db.session().commit()
+        self._config_data[self.db.Torrent] = self.db.session().query(self.db.Torrent).first().as_attrdict()
 
-        self.kodi = self.session.query(self.db.Kodi).first()
-        if not self.kodi:
-            self.kodi = self.db.Kodi()
-            self.session.add(self.kodi)
-            self.session.commit()
+        # KODI SECTION
+        if not self.db.session().query(self.db.Kodi).first():
+            self.db.session().add(self.db.Kodi())
+            self.db.session().commit()
+        self._config_data[self.db.Kodi] = self.db.session().query(self.db.Kodi).first().as_attrdict()
 
-        self.plex = self.session.query(self.db.Plex).first()
-        if not self.plex:
-            self.plex = self.db.Plex()
-            self.session.add(self.plex)
-            self.session.commit()
+        if not self.db.session().query(self.db.Plex).first():
+            self.db.session().add(self.db.Plex())
+            self.db.session().commit()
+        self._config_data[self.db.Plex] = self.db.session().query(self.db.Plex).first().as_attrdict()
 
-        self.emby = self.session.query(self.db.Emby).first()
-        if not self.emby:
-            self.emby = self.db.Emby()
-            self.session.add(self.emby)
-            self.session.commit()
+        if not self.db.session().query(self.db.Emby).first():
+            self.db.session().add(self.db.Emby())
+            self.db.session().commit()
+        self._config_data[self.db.Emby] = self.db.session().query(self.db.Emby).first().as_attrdict()
 
-        self.growl = self.session.query(self.db.Growl).first()
-        if not self.growl:
-            self.growl = self.db.Growl()
-            self.session.add(self.growl)
-            self.session.commit()
+        if not self.db.session().query(self.db.Growl).first():
+            self.db.session().add(self.db.Growl())
+            self.db.session().commit()
+        self._config_data[self.db.Growl] = self.db.session().query(self.db.Growl).first().as_attrdict()
 
-        self.freemobile = self.session.query(self.db.FreeMobile).first()
-        if not self.freemobile:
-            self.freemobile = self.db.FreeMobile()
-            self.session.add(self.freemobile)
-            self.session.commit()
+        if not self.db.session().query(self.db.FreeMobile).first():
+            self.db.session().add(self.db.FreeMobile())
+            self.db.session().commit()
+        self._config_data[self.db.FreeMobile] = self.db.session().query(self.db.FreeMobile).first().as_attrdict()
 
-        self.telegram = self.session.query(self.db.Telegram).first()
-        if not self.telegram:
-            self.telegram = self.db.Telegram()
-            self.session.add(self.telegram)
-            self.session.commit()
+        if not self.db.session().query(self.db.Telegram).first():
+            self.db.session().add(self.db.Telegram())
+            self.db.session().commit()
+        self._config_data[self.db.Telegram] = self.db.session().query(self.db.Telegram).first().as_attrdict()
 
-        self.join_app = self.session.query(self.db.Join).first()
-        if not self.join_app:
-            self.join_app = self.db.Join()
-            self.session.add(self.join_app)
-            self.session.commit()
+        if not self.db.session().query(self.db.Join).first():
+            self.db.session().add(self.db.Join())
+            self.db.session().commit()
+        self._config_data[self.db.Join] = self.db.session().query(self.db.Join).first().as_attrdict()
 
-        self.prowl = self.session.query(self.db.Prowl).first()
-        if not self.prowl:
-            self.prowl = self.db.Prowl()
-            self.session.add(self.prowl)
-            self.session.commit()
+        if not self.db.session().query(self.db.Prowl).first():
+            self.db.session().add(self.db.Prowl())
+            self.db.session().commit()
+        self._config_data[self.db.Prowl] = self.db.session().query(self.db.Prowl).first().as_attrdict()
 
-        self.twitter = self.session.query(self.db.Twitter).first()
-        if not self.twitter:
-            self.twitter = self.db.Twitter()
-            self.session.add(self.twitter)
-            self.session.commit()
+        if not self.db.session().query(self.db.Twitter).first():
+            self.db.session().add(self.db.Twitter())
+            self.db.session().commit()
+        self._config_data[self.db.Twitter] = self.db.session().query(self.db.Twitter).first().as_attrdict()
 
-        self.twilio = self.session.query(self.db.Twilio).first()
-        if not self.twilio:
-            self.twilio = self.db.Twilio()
-            self.session.add(self.twilio)
-            self.session.commit()
+        if not self.db.session().query(self.db.Twilio).first():
+            self.db.session().add(self.db.Twilio())
+            self.db.session().commit()
+        self._config_data[self.db.Twilio] = self.db.session().query(self.db.Twilio).first().as_attrdict()
 
-        self.boxcar2 = self.session.query(self.db.Boxcar2).first()
-        if not self.boxcar2:
-            self.boxcar2 = self.db.Boxcar2()
-            self.session.add(self.boxcar2)
-            self.session.commit()
+        if not self.db.session().query(self.db.Boxcar2).first():
+            self.db.session().add(self.db.Boxcar2())
+            self.db.session().commit()
+        self._config_data[self.db.Boxcar2] = self.db.session().query(self.db.Boxcar2).first().as_attrdict()
 
-        self.pushover = self.session.query(self.db.Pushover).first()
-        if not self.pushover:
-            self.pushover = self.db.Pushover()
-            self.session.add(self.pushover)
-            self.session.commit()
+        if not self.db.session().query(self.db.Pushover).first():
+            self.db.session().add(self.db.Pushover())
+            self.db.session().commit()
+        self._config_data[self.db.Pushover] = self.db.session().query(self.db.Pushover).first().as_attrdict()
 
-        self.libnotify = self.session.query(self.db.Libnotify).first()
-        if not self.libnotify:
-            self.libnotify = self.db.Libnotify()
-            self.session.add(self.libnotify)
-            self.session.commit()
+        if not self.db.session().query(self.db.Libnotify).first():
+            self.db.session().add(self.db.Libnotify())
+            self.db.session().commit()
+        self._config_data[self.db.Libnotify] = self.db.session().query(self.db.Libnotify).first().as_attrdict()
 
-        self.nmj = self.session.query(self.db.NMJ).first()
-        if not self.nmj:
-            self.nmj = self.db.NMJ()
-            self.session.add(self.nmj)
-            self.session.commit()
+        if not self.db.session().query(self.db.NMJ).first():
+            self.db.session().add(self.db.NMJ())
+            self.db.session().commit()
+        self._config_data[self.db.NMJ] = self.db.session().query(self.db.NMJ).first().as_attrdict()
 
-        self.nmjv2 = self.session.query(self.db.NMJv2).first()
-        if not self.nmjv2:
-            self.nmjv2 = self.db.NMJv2()
-            self.session.add(self.nmjv2)
-            self.session.commit()
+        if not self.db.session().query(self.db.NMJv2).first():
+            self.db.session().add(self.db.NMJv2())
+            self.db.session().commit()
+        self._config_data[self.db.NMJv2] = self.db.session().query(self.db.NMJv2).first().as_attrdict()
 
-        self.slack = self.session.query(self.db.Slack).first()
-        if not self.slack:
-            self.slack = self.db.Slack()
-            self.session.add(self.slack)
-            self.session.commit()
+        if not self.db.session().query(self.db.Slack).first():
+            self.db.session().add(self.db.Slack())
+            self.db.session().commit()
+        self._config_data[self.db.Slack] = self.db.session().query(self.db.Slack).first().as_attrdict()
 
-        self.discord = self.session.query(self.db.Discord).first()
-        if not self.discord:
-            self.discord = self.db.Discord()
-            self.session.add(self.discord)
-            self.session.commit()
+        if not self.db.session().query(self.db.Discord).first():
+            self.db.session().add(self.db.Discord())
+            self.db.session().commit()
+        self._config_data[self.db.Discord] = self.db.session().query(self.db.Discord).first().as_attrdict()
 
-        self.trakt = self.session.query(self.db.Trakt).first()
-        if not self.trakt:
-            self.trakt = self.db.Trakt()
-            self.session.add(self.trakt)
-            self.session.commit()
+        if not self.db.session().query(self.db.Trakt).first():
+            self.db.session().add(self.db.Trakt())
+            self.db.session().commit()
+        self._config_data[self.db.Trakt] = self.db.session().query(self.db.Trakt).first().as_attrdict()
 
-        self.pytivo = self.session.query(self.db.PyTivo).first()
-        if not self.pytivo:
-            self.pytivo = self.db.PyTivo()
-            self.session.add(self.pytivo)
-            self.session.commit()
+        if not self.db.session().query(self.db.PyTivo).first():
+            self.db.session().add(self.db.PyTivo())
+            self.db.session().commit()
+        self._config_data[self.db.PyTivo] = self.db.session().query(self.db.PyTivo).first().as_attrdict()
 
-        self.nma = self.session.query(self.db.NMA).first()
-        if not self.nma:
-            self.nma = self.db.NMA()
-            self.session.add(self.nma)
-            self.session.commit()
+        if not self.db.session().query(self.db.NMA).first():
+            self.db.session().add(self.db.NMA())
+            self.db.session().commit()
+        self._config_data[self.db.NMA] = self.db.session().query(self.db.NMA).first().as_attrdict()
 
-        self.pushalot = self.session.query(self.db.Pushalot).first()
-        if not self.pushalot:
-            self.pushalot = self.db.Pushalot()
-            self.session.add(self.pushalot)
-            self.session.commit()
+        if not self.db.session().query(self.db.Pushalot).first():
+            self.db.session().add(self.db.Pushalot())
+            self.db.session().commit()
+        self._config_data[self.db.Pushalot] = self.db.session().query(self.db.Pushalot).first().as_attrdict()
 
-        self.pushbullet = self.session.query(self.db.Pushbullet).first()
-        if not self.pushbullet:
-            self.pushbullet = self.db.Pushbullet()
-            self.session.add(self.pushbullet)
-            self.session.commit()
+        if not self.db.session().query(self.db.Pushbullet).first():
+            self.db.session().add(self.db.Pushbullet())
+            self.db.session().commit()
+        self._config_data[self.db.Pushbullet] = self.db.session().query(self.db.Pushbullet).first().as_attrdict()
 
-        self.email = self.session.query(self.db.Email).first()
-        if not self.email:
-            self.email = self.db.Email()
-            self.session.add(self.email)
-            self.session.commit()
+        if not self.db.session().query(self.db.Email).first():
+            self.db.session().add(self.db.Email())
+            self.db.session().commit()
+        self._config_data[self.db.Email] = self.db.session().query(self.db.Email).first().as_attrdict()
 
-        self.alexa = self.session.query(self.db.Alexa).first()
-        if not self.alexa:
-            self.alexa = self.db.Alexa()
-            self.session.add(self.alexa)
-            self.session.commit()
+        if not self.db.session().query(self.db.Alexa).first():
+            self.db.session().add(self.db.Alexa())
+            self.db.session().commit()
+        self._config_data[self.db.Alexa] = self.db.session().query(self.db.Alexa).first().as_attrdict()
 
-        self.subtitles = self.session.query(self.db.Subtitles).first()
-        if not self.subtitles:
-            self.subtitles = self.db.Subtitles()
-            self.session.add(self.subtitles)
-            self.session.commit()
+        if not self.db.session().query(self.db.Subtitles).first():
+            self.db.session().add(self.db.Subtitles())
+            self.db.session().commit()
+        self._config_data[self.db.Subtitles] = self.db.session().query(self.db.Subtitles).first().as_attrdict()
 
-        self.failed_downloads = self.session.query(self.db.FailedDownloads).first()
-        if not self.failed_downloads:
-            self.failed_downloads = self.db.FailedDownloads()
-            self.session.add(self.failed_downloads)
-            self.session.commit()
+        if not self.db.session().query(self.db.FailedDownloads).first():
+            self.db.session().add(self.db.FailedDownloads())
+            self.db.session().commit()
+        self._config_data[self.db.FailedDownloads] = self.db.session().query(self.db.FailedDownloads).first().as_attrdict()
 
-        self.failed_snatches = self.session.query(self.db.FailedSnatches).first()
-        if not self.failed_snatches:
-            self.failed_snatches = self.db.FailedSnatches()
-            self.session.add(self.failed_snatches)
-            self.session.commit()
+        if not self.db.session().query(self.db.FailedSnatches).first():
+            self.db.session().add(self.db.FailedSnatches())
+            self.db.session().commit()
+        self._config_data[self.db.FailedSnatches] = self.db.session().query(self.db.FailedSnatches).first().as_attrdict()
 
-        self.anidb = self.session.query(self.db.AniDB).first()
-        if not self.anidb:
-            self.anidb = self.db.AniDB()
-            self.session.add(self.anidb)
-            self.session.commit()
+        if not self.db.session().query(self.db.AniDB).first():
+            self.db.session().add(self.db.AniDB())
+            self.db.session().commit()
+        self._config_data[self.db.AniDB] = self.db.session().query(self.db.AniDB).first().as_attrdict()
 
         # QUALITY SIZES
         for quality in Qualities:
@@ -310,20 +392,15 @@ class Config(object):
             if quality in [Qualities.NONE, Qualities.UNKNOWN]:
                 continue
 
-            try:
-                quality_size = self.session.query(self.db.QualitySizes).filter_by(quality=quality).one()
-            except orm.exc.NoResultFound:
-                quality_size = self.db.QualitySizes(quality=quality, min_size=0, max_size=0)
-                self.session.add(quality_size)
-                self.session.commit()
+            if not self.db.session().query(self.db.QualitySizes).filter_by(quality=quality).one_or_none():
+                self.db.session().add(self.db.QualitySizes(quality=quality, min_size=0, max_size=0))
+                self.db.session().commit()
 
-            self.quality_sizes[quality_size.quality.name] = {
-                'min_size': quality_size.min_size,
-                'max_size': quality_size.max_size,
-            }
+            db_item = self.db.session().query(self.db.QualitySizes).filter_by(quality=quality).one()
+            self.quality_sizes[quality.name] = db_item.as_attrdict()
 
         # CUSTOM SEARCH PROVIDERS
-        for search_providers in self.session.query(self.db.SearchProvidersTorrentRss, self.db.SearchProvidersNewznab):
+        for search_providers in self.db.session().query(self.db.SearchProvidersTorrentRss, self.db.SearchProvidersNewznab):
             for search_provider in search_providers:
                 if search_provider.provider_id in sickrage.app.search_providers.all():
                     continue
@@ -348,13 +425,13 @@ class Config(object):
 
             try:
                 if _search_provider.provider_type == SearchProviderType.TORRENT:
-                    search_provider = self.session.query(self.db.SearchProvidersTorrent).filter_by(provider_id=search_provider_id).one()
+                    search_provider = self.db.session().query(self.db.SearchProvidersTorrent).filter_by(provider_id=search_provider_id).one()
                 elif _search_provider.provider_type == SearchProviderType.NZB:
-                    search_provider = self.session.query(self.db.SearchProvidersNzb).filter_by(provider_id=search_provider_id).one()
+                    search_provider = self.db.session().query(self.db.SearchProvidersNzb).filter_by(provider_id=search_provider_id).one()
                 elif _search_provider.provider_type == SearchProviderType.TORRENT_RSS:
-                    search_provider = self.session.query(self.db.SearchProvidersTorrentRss).filter_by(provider_id=search_provider_id).one()
+                    search_provider = self.db.session().query(self.db.SearchProvidersTorrentRss).filter_by(provider_id=search_provider_id).one()
                 elif _search_provider.provider_type == SearchProviderType.NEWZNAB:
-                    search_provider = self.session.query(self.db.SearchProvidersNewznab).filter_by(provider_id=search_provider_id).one()
+                    search_provider = self.db.session().query(self.db.SearchProvidersNewznab).filter_by(provider_id=search_provider_id).one()
 
                 if search_provider:
                     if search_provider.provider_type in [SearchProviderType.TORRENT, SearchProviderType.TORRENT_RSS]:
@@ -379,12 +456,12 @@ class Config(object):
                     sickrage.app.search_providers.all()[search_provider.provider_id].sort_order = search_provider.sort_order
                     sickrage.app.search_providers.all()[search_provider.provider_id].custom_settings = search_provider.custom_settings
             except orm.exc.NoResultFound:
-                continue
+                pass
 
         # METADATA PROVIDERS
         for metadata_provider_id in sickrage.app.metadata_providers:
             try:
-                metadata_provider = self.session.query(self.db.MetadataProviders).filter_by(provider_id=metadata_provider_id).one()
+                metadata_provider = self.db.session().query(self.db.MetadataProviders).filter_by(provider_id=metadata_provider_id).one()
 
                 sickrage.app.metadata_providers[metadata_provider.provider_id].show_metadata = metadata_provider.show_metadata
                 sickrage.app.metadata_providers[metadata_provider.provider_id].episode_metadata = metadata_provider.episode_metadata
@@ -398,16 +475,27 @@ class Config(object):
                 sickrage.app.metadata_providers[metadata_provider.provider_id].season_all_banner = metadata_provider.season_all_banner
                 sickrage.app.metadata_providers[metadata_provider.provider_id].enabled = metadata_provider.enable
             except orm.exc.NoResultFound:
-                continue
+                pass
 
-    def save(self):
+    def save(self, mark_dirty=False):
         try:
-            # QUALITY SIZES
-            for quality_size in self.session.query(self.db.QualitySizes):
-                quality_size.min_size = self.quality_sizes[quality_size.quality.name]['min_size']
-                quality_size.max_size = self.quality_sizes[quality_size.quality.name]['max_size']
+            # CONFIG SETTINGS
+            for table_name, table_data in self._config_data.items():
+                db_item = self.db.session().query(table_name).one()
+                db_item.update(**table_data)
+                if mark_dirty:
+                    for column_name in table_data:
+                        flag_modified(db_item, column_name)
+                self.db.session().commit()
 
-                self.session.commit()
+            # QUALITY SIZES
+            for quality_size_name, quality_size_data in self.quality_sizes.items():
+                db_item = self.db.session().query(self.db.QualitySizes).filter_by(quality=Qualities[quality_size_name].value).one()
+                db_item.update(**quality_size_data)
+                if mark_dirty:
+                    for column_name in quality_size_data:
+                        flag_modified(db_item, column_name)
+                self.db.session().commit()
 
             # SEARCH PROVIDERS
             for _search_provider_id, _search_provider in sickrage.app.search_providers.all().copy().items():
@@ -415,46 +503,46 @@ class Config(object):
 
                 if _search_provider.provider_type == SearchProviderType.TORRENT:
                     try:
-                        search_provider = self.session.query(self.db.SearchProvidersTorrent).filter_by(provider_id=_search_provider_id).one()
+                        search_provider = self.db.session().query(self.db.SearchProvidersTorrent).filter_by(provider_id=_search_provider_id).one()
                     except orm.exc.NoResultFound:
-                        search_provider = self.db.SearchProvidersTorrent(provider_id=_search_provider_id, provider_type=_search_provider.provider_type)
-                        self.session.add(search_provider)
-                        self.session.commit()
+                        self.db.session().add(self.db.SearchProvidersTorrent(provider_id=_search_provider_id, provider_type=_search_provider.provider_type))
+                        self.db.session().commit()
+                        search_provider = self.db.session().query(self.db.SearchProvidersTorrent).filter_by(provider_id=_search_provider_id).one()
                 elif _search_provider.provider_type == SearchProviderType.NZB:
                     try:
-                        search_provider = self.session.query(self.db.SearchProvidersNzb).filter_by(provider_id=_search_provider_id).one()
+                        search_provider = self.db.session().query(self.db.SearchProvidersNzb).filter_by(provider_id=_search_provider_id).one()
                     except orm.exc.NoResultFound:
-                        search_provider = self.db.SearchProvidersNzb(provider_id=_search_provider_id, provider_type=_search_provider.provider_type)
-                        self.session.add(search_provider)
-                        self.session.commit()
+                        self.db.session().add(self.db.SearchProvidersNzb(provider_id=_search_provider_id, provider_type=_search_provider.provider_type))
+                        self.db.session().commit()
+                        search_provider = self.db.session().query(self.db.SearchProvidersNzb).filter_by(provider_id=_search_provider_id).one()
                 elif _search_provider.provider_type == SearchProviderType.TORRENT_RSS:
                     try:
-                        search_provider = self.session.query(self.db.SearchProvidersTorrentRss).filter_by(provider_id=_search_provider_id).one()
+                        search_provider = self.db.session().query(self.db.SearchProvidersTorrentRss).filter_by(provider_id=_search_provider_id).one()
                         if _search_provider.provider_deleted:
                             del sickrage.app.search_providers[_search_provider.provider_type.name][_search_provider_id]
-                            self.session.query(self.db.SearchProvidersTorrentRss).filter_by(provider_id=_search_provider_id).delete()
-                            self.session.commit()
+                            self.db.session().query(self.db.SearchProvidersTorrentRss).filter_by(provider_id=_search_provider_id).delete()
+                            self.db.session().commit()
                             continue
                     except orm.exc.NoResultFound:
-                        search_provider = self.db.SearchProvidersTorrentRss(provider_id=_search_provider_id, provider_type=_search_provider.provider_type)
-                        self.session.add(search_provider)
-                        self.session.commit()
+                        self.db.session().add(self.db.SearchProvidersTorrentRss(provider_id=_search_provider_id, provider_type=_search_provider.provider_type))
+                        self.db.session().commit()
+                        search_provider = self.db.session().query(self.db.SearchProvidersTorrentRss).filter_by(provider_id=_search_provider_id).one()
 
                     search_provider.name = sickrage.app.search_providers.all()[search_provider.provider_id].name
                     search_provider.url = sickrage.app.search_providers.all()[search_provider.provider_id].urls['base_url']
                     search_provider.title_tag = sickrage.app.search_providers.all()[search_provider.provider_id].titleTAG
                 elif _search_provider.provider_type == SearchProviderType.NEWZNAB:
                     try:
-                        search_provider = self.session.query(self.db.SearchProvidersNewznab).filter_by(provider_id=_search_provider_id).one()
+                        search_provider = self.db.session().query(self.db.SearchProvidersNewznab).filter_by(provider_id=_search_provider_id).one()
                         if _search_provider.provider_deleted:
                             del sickrage.app.search_providers[_search_provider.provider_type.name][_search_provider_id]
-                            self.session.query(self.db.SearchProvidersNewznab).filter_by(provider_id=_search_provider_id).delete()
-                            self.session.commit()
+                            self.db.session().query(self.db.SearchProvidersNewznab).filter_by(provider_id=_search_provider_id).delete()
+                            self.db.session().commit()
                             continue
                     except orm.exc.NoResultFound:
-                        search_provider = self.db.SearchProvidersNewznab(provider_id=_search_provider_id, provider_type=_search_provider.provider_type)
-                        self.session.add(search_provider)
-                        self.session.commit()
+                        self.db.session().add(self.db.SearchProvidersNewznab(provider_id=_search_provider_id, provider_type=_search_provider.provider_type))
+                        self.db.session().commit()
+                        search_provider = self.db.session().query(self.db.SearchProvidersNewznab).filter_by(provider_id=_search_provider_id).one()
 
                     search_provider.name = sickrage.app.search_providers.all()[search_provider.provider_id].name
                     search_provider.url = sickrage.app.search_providers.all()[search_provider.provider_id].urls['base_url']
@@ -484,16 +572,20 @@ class Config(object):
                     search_provider.sort_order = sickrage.app.search_providers.all()[search_provider.provider_id].sort_order
                     search_provider.custom_settings = sickrage.app.search_providers.all()[search_provider.provider_id].custom_settings
 
-                    self.session.commit()
+                    if mark_dirty:
+                        for column_name in search_provider.as_dict():
+                            flag_modified(search_provider, column_name)
+
+                    self.db.session().commit()
 
             # METADATA PROVIDERS
             for metadata_provider_id in sickrage.app.metadata_providers:
                 try:
-                    metadata_provider = self.session.query(self.db.MetadataProviders).filter_by(provider_id=metadata_provider_id).one()
+                    metadata_provider = self.db.session().query(self.db.MetadataProviders).filter_by(provider_id=metadata_provider_id).one()
                 except orm.exc.NoResultFound:
-                    metadata_provider = self.db.MetadataProviders(provider_id=metadata_provider_id)
-                    self.session.add(metadata_provider)
-                    self.session.commit()
+                    self.db.session().add(self.db.MetadataProviders(provider_id=metadata_provider_id))
+                    self.db.session().commit()
+                    metadata_provider = self.db.session().query(self.db.MetadataProviders).filter_by(provider_id=metadata_provider_id).one()
 
                 metadata_provider.show_metadata = sickrage.app.metadata_providers[metadata_provider.provider_id].show_metadata
                 metadata_provider.episode_metadata = sickrage.app.metadata_providers[metadata_provider.provider_id].episode_metadata
@@ -507,12 +599,21 @@ class Config(object):
                 metadata_provider.season_all_banner = sickrage.app.metadata_providers[metadata_provider.provider_id].season_all_banner
                 metadata_provider.enable = sickrage.app.metadata_providers[metadata_provider.provider_id].enabled
 
-                self.session.commit()
+                if mark_dirty:
+                    for column_name in metadata_provider.as_dict():
+                        flag_modified(metadata_provider, column_name)
+
+                self.db.session().commit()
 
             sickrage.app.log.info("Config saved to database successfully!")
-        except exc.StatementError as e:
+        except Exception as e:
             sickrage.app.log.warning("Failed to save config to database")
             sickrage.app.log.debug(f"Failed to save config to database: {e}")
+
+    def reset_encryption(self):
+        CustomStringEncryptedType.reset = True
+        self.save(mark_dirty=True)
+        CustomStringEncryptedType.reset = False
 
     def migrate_config_file(self, filename):
         try:
@@ -621,8 +722,10 @@ class Config(object):
         self.general.naming_strip_year = self._get_config_file_value(config_object, 'General', 'naming_strip_year', field_type=bool)
         self.general.use_nzbs = self._get_config_file_value(config_object, 'General', 'use_nzbs', field_type=bool)
         self.general.use_torrents = self._get_config_file_value(config_object, 'General', 'use_torrents', field_type=bool)
-        self.general.nzb_method = NzbMethod[self._get_config_file_value(config_object, 'General', 'nzb_method', default=NzbMethod.BLACKHOLE.name, field_type=str.upper)]
-        self.general.torrent_method = TorrentMethod[self._get_config_file_value(config_object, 'General', 'torrent_method', default=TorrentMethod.BLACKHOLE.name, field_type=str.upper)]
+        self.general.nzb_method = NzbMethod[
+            self._get_config_file_value(config_object, 'General', 'nzb_method', default=NzbMethod.BLACKHOLE.name, field_type=str.upper)]
+        self.general.torrent_method = TorrentMethod[
+            self._get_config_file_value(config_object, 'General', 'torrent_method', default=TorrentMethod.BLACKHOLE.name, field_type=str.upper)]
         self.general.download_propers = self._get_config_file_value(config_object, 'General', 'download_propers', field_type=bool)
         self.general.enable_rss_cache = self._get_config_file_value(config_object, 'General', 'enable_rss_cache', field_type=bool)
         self.general.torrent_file_to_magnet = self._get_config_file_value(config_object, 'General', 'torrent_file_to_magnet', field_type=bool)
@@ -649,9 +752,12 @@ class Config(object):
         self.general.unpack_dir = self._get_config_file_value(config_object, 'General', 'unpack_dir', field_type=str)
         self.general.rename_episodes = self._get_config_file_value(config_object, 'General', 'rename_episodes', field_type=bool)
         self.general.airdate_episodes = self._get_config_file_value(config_object, 'General', 'airdate_episodes', field_type=bool)
-        self.general.file_timestamp_timezone = FileTimestampTimezone[self._get_config_file_value(config_object, 'General', 'file_timestamp_timezone', default=FileTimestampTimezone.NETWORK.name, field_type=str.upper)]
+        self.general.file_timestamp_timezone = FileTimestampTimezone[
+            self._get_config_file_value(config_object, 'General', 'file_timestamp_timezone', default=FileTimestampTimezone.NETWORK.name,
+                                        field_type=str.upper)]
         self.general.keep_processed_dir = self._get_config_file_value(config_object, 'General', 'keep_processed_dir', field_type=bool)
-        self.general.process_method = ProcessMethod[self._get_config_file_value(config_object, 'General', 'process_method', default=ProcessMethod.COPY.name, field_type=str.upper)]
+        self.general.process_method = ProcessMethod[
+            self._get_config_file_value(config_object, 'General', 'process_method', default=ProcessMethod.COPY.name, field_type=str.upper)]
         self.general.processor_follow_symlinks = self._get_config_file_value(config_object, 'General', 'processor_follow_symlinks', field_type=bool)
         self.general.del_rar_contents = self._get_config_file_value(config_object, 'General', 'del_rar_contents', field_type=bool)
         self.general.delete_non_associated_files = self._get_config_file_value(config_object, 'General', 'delete_non_associated_files', field_type=bool)
@@ -680,21 +786,27 @@ class Config(object):
         self.gui.theme_name = UITheme[self._get_config_file_value(config_object, 'GUI', 'theme_name', default=UITheme.DARK.name, field_type=str.upper)]
         self.gui.fanart_background = self._get_config_file_value(config_object, 'GUI', 'fanart_background', field_type=bool)
         self.gui.fanart_background_opacity = self._get_config_file_value(config_object, 'GUI', 'fanart_background_opacity', field_type=float)
-        self.gui.home_layout = HomeLayout[self._get_config_file_value(config_object, 'GUI', 'home_layout', default=HomeLayout.POSTER.name, field_type=str.upper)]
-        self.gui.history_layout = HistoryLayout[self._get_config_file_value(config_object, 'GUI', 'history_layout', default=HistoryLayout.DETAILED.name, field_type=str.upper)]
+        self.gui.home_layout = HomeLayout[
+            self._get_config_file_value(config_object, 'GUI', 'home_layout', default=HomeLayout.POSTER.name, field_type=str.upper)]
+        self.gui.history_layout = HistoryLayout[
+            self._get_config_file_value(config_object, 'GUI', 'history_layout', default=HistoryLayout.DETAILED.name, field_type=str.upper)]
         self.gui.history_limit = self._get_config_file_value(config_object, 'GUI', 'history_limit', field_type=int)
         self.gui.display_show_specials = self._get_config_file_value(config_object, 'GUI', 'display_show_specials', field_type=bool)
-        self.gui.coming_eps_layout = ComingEpsLayout[self._get_config_file_value(config_object, 'GUI', 'coming_eps_layout', default=ComingEpsLayout.POSTER.name, field_type=str.upper)]
+        self.gui.coming_eps_layout = ComingEpsLayout[
+            self._get_config_file_value(config_object, 'GUI', 'coming_eps_layout', default=ComingEpsLayout.POSTER.name, field_type=str.upper)]
         self.gui.coming_eps_display_paused = self._get_config_file_value(config_object, 'GUI', 'coming_eps_display_paused', field_type=bool)
-        self.gui.coming_eps_sort = ComingEpsSortBy[self._get_config_file_value(config_object, 'GUI', 'coming_eps_sort', default=ComingEpsSortBy.DATE.name, field_type=str.upper)]
+        self.gui.coming_eps_sort = ComingEpsSortBy[
+            self._get_config_file_value(config_object, 'GUI', 'coming_eps_sort', default=ComingEpsSortBy.DATE.name, field_type=str.upper)]
         self.gui.coming_eps_missed_range = self._get_config_file_value(config_object, 'GUI', 'coming_eps_missed_range', field_type=int)
         self.gui.fuzzy_dating = self._get_config_file_value(config_object, 'GUI', 'fuzzy_dating', field_type=bool)
         self.gui.trim_zero = self._get_config_file_value(config_object, 'GUI', 'trim_zero', field_type=bool)
         self.gui.date_preset = self._get_config_file_value(config_object, 'GUI', 'date_preset', field_type=str)
         self.gui.time_preset_w_seconds = self._get_config_file_value(config_object, 'GUI', 'time_preset', field_type=str)
         self.gui.time_preset = self.gui.time_preset_w_seconds.replace(":%S", "")
-        self.gui.timezone_display = TimezoneDisplay[self._get_config_file_value(config_object, 'GUI', 'timezone_display', default=TimezoneDisplay.NETWORK.name, field_type=str.upper)]
-        self.gui.poster_sort_by = PosterSortBy[self._get_config_file_value(config_object, 'GUI', 'poster_sortby', default=PosterSortBy.NAME.name, field_type=str.upper)]
+        self.gui.timezone_display = TimezoneDisplay[
+            self._get_config_file_value(config_object, 'GUI', 'timezone_display', default=TimezoneDisplay.NETWORK.name, field_type=str.upper)]
+        self.gui.poster_sort_by = PosterSortBy[
+            self._get_config_file_value(config_object, 'GUI', 'poster_sortby', default=PosterSortBy.NAME.name, field_type=str.upper)]
         self.gui.poster_sort_dir = PosterSortDirection(self._get_config_file_value(config_object, 'GUI', 'poster_sortdir', field_type=int))
         self.gui.filter_row = self._get_config_file_value(config_object, 'GUI', 'filter_row', field_type=bool)
 
@@ -874,7 +986,8 @@ class Config(object):
         self.nmjv2.enable = self._get_config_file_value(config_object, 'NMJv2', 'use_nmjv2', field_type=bool)
         self.nmjv2.host = self._get_config_file_value(config_object, 'NMJv2', 'nmjv2_host', field_type=str)
         self.nmjv2.database = self._get_config_file_value(config_object, 'NMJv2', 'nmjv2_database', field_type=str)
-        self.nmjv2.db_loc = NMJv2Location[self._get_config_file_value(config_object, 'NMJv2', 'nmjv2_dbloc', default=NMJv2Location.LOCAL.name, field_type=str.upper)]
+        self.nmjv2.db_loc = NMJv2Location[
+            self._get_config_file_value(config_object, 'NMJv2', 'nmjv2_dbloc', default=NMJv2Location.LOCAL.name, field_type=str.upper)]
 
         # SYNOLOGY SETTINGS
         self.synology.host = self._get_config_file_value(config_object, 'SynologyDSM', 'syno_dsm_host', field_type=str)
@@ -1078,7 +1191,7 @@ class Config(object):
                 search_provider.sort_order = idx
 
         # METADATA PROVIDER SETTINGS
-        for metadata_provider in self.session.query(self.db.MetadataProviders):
+        for metadata_provider in self.db.session().query(self.db.MetadataProviders):
             config_values = self._get_config_file_value(config_object, 'MetadataProviders', metadata_provider.provider_id, field_type=str)
             if not config_values:
                 continue
@@ -1177,10 +1290,10 @@ class Config(object):
             'failedDownloads': FailedDownloadsSchema().dump(self.failed_downloads),
             'failedSnatches': FailedSnatchesSchema().dump(self.failed_snatches),
             'anidb': AniDBSchema().dump(self.anidb),
-            'qualitySizes': QualitySizesSchema().dump(self.session.query(self.db.QualitySizes), many=True),
-            'searchProvidersTorrent': SearchProvidersTorrentSchema().dump(self.session.query(self.db.SearchProvidersTorrent), many=True),
-            'searchProvidersNzb': SearchProvidersNzbSchema().dump(self.session.query(self.db.SearchProvidersNzb), many=True),
-            'searchProvidersTorrentRss': SearchProvidersTorrentRssSchema().dump(self.session.query(self.db.SearchProvidersTorrentRss), many=True),
-            'searchProvidersNewznab': SearchProvidersNewznabSchema().dump(self.session.query(self.db.SearchProvidersNewznab), many=True),
-            'metadataProviders': MetadataProvidersSchema().dump(self.session.query(self.db.MetadataProviders), many=True),
+            'qualitySizes': QualitySizesSchema().dump(self.db.session().query(self.db.QualitySizes), many=True),
+            'searchProvidersTorrent': SearchProvidersTorrentSchema().dump(self.db.session().query(self.db.SearchProvidersTorrent), many=True),
+            'searchProvidersNzb': SearchProvidersNzbSchema().dump(self.db.session().query(self.db.SearchProvidersNzb), many=True),
+            'searchProvidersTorrentRss': SearchProvidersTorrentRssSchema().dump(self.db.session().query(self.db.SearchProvidersTorrentRss), many=True),
+            'searchProvidersNewznab': SearchProvidersNewznabSchema().dump(self.db.session().query(self.db.SearchProvidersNewznab), many=True),
+            'metadataProviders': MetadataProvidersSchema().dump(self.db.session().query(self.db.MetadataProviders), many=True),
         }

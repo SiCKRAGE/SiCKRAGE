@@ -31,6 +31,7 @@ import alembic.script
 import sqlalchemy
 from alembic.runtime.migration import MigrationContext
 from alembic.script import ScriptDirectory
+from attrdict import AttrDict
 from sqlalchemy import create_engine, event, inspect, MetaData, Index, TypeDecorator
 from sqlalchemy.engine import Engine, reflection
 from sqlalchemy.exc import OperationalError
@@ -124,13 +125,11 @@ class ContextSession(sqlalchemy.orm.Session):
 
 
 class SRDatabaseBase(object):
-    @staticmethod
-    def encryption_key(*args, **kwargs):
-        if hasattr(sickrage.app.config.user, 'sub_id'):
-            return sickrage.app.config.user.sub_id
-
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+    def as_attrdict(self):
+        return AttrDict(self.as_dict())
 
     def update(self, **kwargs):
         primary_keys = [pk.name for pk in self.__table__.primary_key]

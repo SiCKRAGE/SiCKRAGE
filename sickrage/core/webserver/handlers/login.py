@@ -62,7 +62,7 @@ class LoginHandler(BaseHandler, ABC):
 
         if not sickrage.app.config.user.sub_id:
             sickrage.app.config.user.sub_id = decoded_auth_token.get('sub')
-            sickrage.app.config.save()
+            sickrage.app.config.save(mark_dirty=True)
 
         if sickrage.app.config.user.sub_id != decoded_auth_token.get('sub'):
             return
@@ -119,7 +119,7 @@ class LoginHandler(BaseHandler, ABC):
 
                 if not sickrage.app.config.user.sub_id:
                     sickrage.app.config.user.sub_id = decoded_token.get('sub')
-                    sickrage.app.config.save()
+                    sickrage.app.config.save(mark_dirty=True)
 
                 if sickrage.app.config.user.sub_id != decoded_token.get('sub'):
                     if sickrage.app.api.token:

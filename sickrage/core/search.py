@@ -207,8 +207,8 @@ def pick_best_result(results, season_pack=False):
             # quality definition video file size constraints check
             try:
                 if cur_result.size:
-                    quality_size_min = sickrage.app.config.quality_sizes[cur_result.quality.name]['min_size']
-                    quality_size_max = sickrage.app.config.quality_sizes[cur_result.quality.name]['max_size']
+                    quality_size_min = sickrage.app.config.quality_sizes[cur_result.quality.name].min_size
+                    quality_size_max = sickrage.app.config.quality_sizes[cur_result.quality.name].max_size
 
                     if quality_size_min != 0 and quality_size_max != 0:
                         if season_pack and not len(cur_result.episodes):

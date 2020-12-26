@@ -37,7 +37,7 @@
                                     </div>
                                     <input class="form-control"
                                            type="number"
-                                           value="${sickrage.app.config.quality_sizes[quality]['min_size']}"
+                                           value="${sickrage.app.config.quality_sizes[quality].min_size}"
                                            name="${quality}_min"
                                            id="${quality}_min"
                                            min="0"
@@ -49,7 +49,7 @@
                                     </div>
                                     <input class="form-control"
                                            type="number"
-                                           value="${sickrage.app.config.quality_sizes[quality]['max_size']}"
+                                           value="${sickrage.app.config.quality_sizes[quality].max_size}"
                                            name="${quality}_max"
                                            id="${quality}_max"
                                            min="0"

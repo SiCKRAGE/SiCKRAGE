@@ -225,9 +225,11 @@ class SaveGeneralHandler(BaseHandler, ABC):
         sickrage.app.config.general.ip_whitelist = ip_whitelist
 
         if web_auth_method == 'sso_auth':
+            auth_method_changed = not sickrage.app.config.general.sso_auth_enabled
             sickrage.app.config.general.sso_auth_enabled = True
             sickrage.app.config.general.local_auth_enabled = False
         else:
+            auth_method_changed = not sickrage.app.config.general.local_auth_enabled
             sickrage.app.config.general.sso_auth_enabled = False
             sickrage.app.config.general.local_auth_enabled = True
             sickrage.app.config.user.username = web_username
@@ -271,6 +273,9 @@ class SaveGeneralHandler(BaseHandler, ABC):
         sickrage.app.config.general.max_queue_workers = try_int(max_queue_workers)
 
         sickrage.app.config.save()
+
+        if auth_method_changed:
+            return self.redirect('/logout')
 
         if len(results) > 0:
             [sickrage.app.log.error(x) for x in results]
