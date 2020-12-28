@@ -698,7 +698,7 @@ class PostProcessor(object):
                 sickrage.app.log.debug("Unable to parse, skipping: {}".format(e))
                 continue
 
-            if not cur_show_id or not series_provider_id:
+            if not cur_show_id or not cur_series_provider_id:
                 continue
 
             series_id = cur_show_id
@@ -783,8 +783,7 @@ class PostProcessor(object):
 
         :param ep_obj: The object to use when calling the extra script
         """
-        for curScriptName in sickrage.app.config.general.extra_scripts.split('|'):
-
+        for curScriptName in [x for x in sickrage.app.config.general.extra_scripts.split('|') if x]:
             # generate a safe command line string to execute the script and provide all the parameters
             script_cmd = [piece for piece in re.split("( |\\\".*?\\\"|'.*?')", curScriptName) if piece.strip()]
             script_cmd[0] = os.path.abspath(script_cmd[0])

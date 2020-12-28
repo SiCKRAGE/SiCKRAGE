@@ -527,10 +527,8 @@ class ProcessResult(object):
             if self.result:
                 self.log("Processing succeeded for " + cur_video_file_path)
             else:
-                self.log("Processing failed for {0}: {1}".format(cur_video_file_path, process_fail_message),
-                         sickrage.app.log.WARNING)
-                self.missed_files.append(
-                    "{0} : Processing failed: {1}".format(cur_video_file_path, process_fail_message))
+                self.log("Processing failed for {0}: {1}".format(cur_video_file_path, process_fail_message), sickrage.app.log.WARNING)
+                self.missed_files.append("{0} : Processing failed: {1}".format(cur_video_file_path, process_fail_message))
                 self.succeeded = False
 
     def process_failed(self, dirName, nzbName):

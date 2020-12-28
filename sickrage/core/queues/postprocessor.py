@@ -19,12 +19,13 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 import os
+import time
 import traceback
 from enum import Enum
 
 import sickrage
 from sickrage.core.process_tv import ProcessResult
-from sickrage.core.queues import Queue, Task, TaskPriority
+from sickrage.core.queues import Queue, Task, TaskPriority, TaskStatus
 
 
 class PostProcessorTaskActions(Enum):
@@ -117,8 +118,10 @@ class PostProcessorQueue(Queue):
                 PostProcessorTask(dirName, nzbName, process_method, force, is_priority, delete_on, failed, proc_type))
 
             if force_next:
-                result = self.get_result(task_id) or ""
-                return result
+                while self.check_status(task_id) not in [TaskStatus.FINISHED, TaskStatus.FAILED]:
+                    time.sleep(1)
+
+                return self.get_result(task_id)
 
             self.log("{} post-processing job for {} has been added to the queue".format(proc_type.title(), dirName))
             return self.output + "<p><span class='hidden'>Processing succeeded</span></p>"

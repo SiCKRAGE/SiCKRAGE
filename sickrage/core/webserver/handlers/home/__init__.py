@@ -34,7 +34,7 @@ import sickrage
 from sickrage.clients import get_client_instance
 from sickrage.clients.nzb.sabnzbd import SabNZBd
 from sickrage.core.common import Overview, Quality, Qualities
-from sickrage.core.enums import SeriesProviderID
+from sickrage.core.enums import SeriesProviderID, TorrentMethod, NzbMethod
 from sickrage.core.exceptions import (
     AnidbAdbaConnectionException,
     CantRefreshShowException,
@@ -195,7 +195,7 @@ class TestSynologyDSMHandler(BaseHandler, ABC):
         username = self.get_argument('username')
         password = self.get_argument('password')
 
-        client = get_client_instance(nzb_method, client_type='nzb')
+        client = get_client_instance(NzbMethod[nzb_method].value, client_type='nzb')
         __, access_msg = client(host, username, password).test_authentication()
         return self.write(access_msg)
 
@@ -208,7 +208,7 @@ class TestTorrentHandler(BaseHandler, ABC):
         username = self.get_argument('username')
         password = self.get_argument('password')
 
-        client = get_client_instance(torrent_method, client_type='torrent')
+        client = get_client_instance(TorrentMethod[torrent_method].value, client_type='torrent')
         __, access_msg = client(host, username, password).test_authentication()
         return self.write(access_msg)
 
