@@ -214,7 +214,7 @@ class ConfigDB(SRDatabase):
         naming_custom_anime = Column(Boolean, default=False)
         naming_anime_pattern = Column(Text, default='Season %0S/%SN - S%0SE%0E - %EN')
         randomize_providers = Column(Boolean, default=False)
-        web_host = Column(Text, default=get_lan_ip())
+        web_host = Column(Text, default='0.0.0.0')
         process_automatically = Column(Boolean, default=False)
         git_path = Column(Text, default='git')
         sync_files = Column(Text, default=','.join(['!sync', 'lftp-pget-status', 'part', 'bts', '!qb']))

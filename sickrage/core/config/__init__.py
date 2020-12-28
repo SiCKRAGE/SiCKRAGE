@@ -35,7 +35,7 @@ from sickrage.core.databases.config.schemas import GeneralSchema, GUISchema, Bla
 from sickrage.core.enums import UserPermission, CheckPropersInterval, NzbMethod, ProcessMethod, FileTimestampTimezone, MultiEpNaming, \
     DefaultHomePage, TorrentMethod, SearchFormat, PosterSortDirection, HomeLayout, PosterSortBy, \
     TimezoneDisplay, HistoryLayout, UITheme, TraktAddMethod, SeriesProviderID, CpuPreset
-from sickrage.core.helpers import backup_versioned_file, arg_to_bool, auto_type
+from sickrage.core.helpers import arg_to_bool, auto_type
 from sickrage.core.helpers.encryption import load_private_key
 from sickrage.core.tv.show.coming_episodes import ComingEpsLayout, ComingEpsSortBy
 from sickrage.notification_providers.nmjv2 import NMJv2Location
@@ -633,381 +633,482 @@ class Config(object):
             sickrage.app.log.warning(f"Unable to decrypt config file {filename}, config can not be migrated to database")
             return
 
-        config_version = self._get_config_file_value(config_object, 'General', 'config_version', field_type=int)
-
-        sickrage.app.log.info("Backing up config and private key files before performing migration to database")
-
-        if not backup_versioned_file(filename, config_version):
-            sickrage.app.log.fatal("Failed to backup config, aborting migration of config file to database")
-            return
-
-        if not backup_versioned_file(private_key_filename, config_version):
-            sickrage.app.log.fatal("Failed to backup config private key, aborting migration of config file to database")
-            return
-
         sickrage.app.log.info("Migrating config file to database")
 
         # USER SETTINGS
-        self.user.username = self._get_config_file_value(config_object, 'General', 'web_username', field_type=str)
-        self.user.password = self._get_config_file_value(config_object, 'General', 'web_password', field_type=str)
-        self.user.sub_id = self._get_config_file_value(config_object, 'General', 'sub_id', field_type=str)
+        self.user.username = self._get_config_file_value(config_object, 'General', 'web_username', default=self.user.username, field_type=str)
+        self.user.password = self._get_config_file_value(config_object, 'General', 'web_password', default=self.user.password, field_type=str)
+        self.user.sub_id = self._get_config_file_value(config_object, 'General', 'sub_id', default=self.user.sub_id, field_type=str)
 
         # GENERAL SETTINGS
-        self.general.server_id = self._get_config_file_value(config_object, 'General', 'server_id', field_type=str)
-        self.general.sso_auth_enabled = self._get_config_file_value(config_object, 'General', 'sso_auth_enabled', field_type=bool)
-        self.general.local_auth_enabled = self._get_config_file_value(config_object, 'General', 'local_auth_enabled', field_type=bool)
-        self.general.ip_whitelist_enabled = self._get_config_file_value(config_object, 'General', 'ip_whitelist_enabled', field_type=bool)
-        self.general.ip_whitelist_localhost_enabled = self._get_config_file_value(config_object, 'General', 'ip_whitelist_localhost_enabled', field_type=bool)
-        self.general.ip_whitelist = self._get_config_file_value(config_object, 'General', 'ip_whitelist', field_type=str)
+        self.general.server_id = self._get_config_file_value(config_object, 'General', 'server_id', default=self.general.server_id, field_type=str)
+        self.general.sso_auth_enabled = self._get_config_file_value(config_object, 'General', 'sso_auth_enabled', default=self.general.sso_auth_enabled, field_type=bool)
+        self.general.local_auth_enabled = self._get_config_file_value(config_object, 'General', 'local_auth_enabled', default=self.general.local_auth_enabled, field_type=bool)
+        self.general.ip_whitelist_enabled = self._get_config_file_value(config_object, 'General', 'ip_whitelist_enabled', default=self.general.ip_whitelist_enabled,
+                                                                        field_type=bool)
+        self.general.ip_whitelist_localhost_enabled = self._get_config_file_value(config_object, 'General', 'ip_whitelist_localhost_enabled',
+                                                                                  default=self.general.ip_whitelist_localhost_enabled, field_type=bool)
+        self.general.ip_whitelist = self._get_config_file_value(config_object, 'General', 'ip_whitelist', default=self.general.ip_whitelist, field_type=str)
         if not any([self.general.sso_auth_enabled, self.general.local_auth_enabled, self.general.ip_whitelist_enabled]):
             self.general.sso_auth_enabled = True
 
-        self.general.enable_sickrage_api = self._get_config_file_value(config_object, 'General', 'enable_sickrage_api', field_type=bool)
-        self.general.debug = self._get_config_file_value(config_object, 'General', 'debug', field_type=bool)
-        self.general.log_nr = self._get_config_file_value(config_object, 'General', 'log_nr', field_type=int)
-        self.general.log_size = self._get_config_file_value(config_object, 'General', 'log_size', field_type=int)
-        self.general.socket_timeout = self._get_config_file_value(config_object, 'General', 'socket_timeout', field_type=int)
+        self.general.enable_sickrage_api = self._get_config_file_value(config_object, 'General', 'enable_sickrage_api',
+                                                                       default=self.general.enable_sickrage_api,
+                                                                       field_type=bool)
+        self.general.debug = self._get_config_file_value(config_object, 'General', 'debug', default=self.general.debug,
+                                                         field_type=bool)
+        self.general.log_nr = self._get_config_file_value(config_object, 'General', 'log_nr', default=self.general.log_nr,
+                                                          field_type=int)
+        self.general.log_size = self._get_config_file_value(config_object, 'General', 'log_size', default=self.general.log_size,
+                                                            field_type=int)
+        self.general.socket_timeout = self._get_config_file_value(config_object, 'General', 'socket_timeout', default=self.general.socket_timeout, field_type=int)
         self.general.default_page = DefaultHomePage[self._get_config_file_value(config_object, 'General', 'default_page', default=DefaultHomePage.HOME.name,
                                                                                 field_type=str.upper)]
-        self.general.pip3_path = self._get_config_file_value(config_object, 'General', 'pip3_path', field_type=str)
-        self.general.git_path = self._get_config_file_value(config_object, 'General', 'git_path', field_type=str)
-        self.general.git_reset = self._get_config_file_value(config_object, 'General', 'git_reset', field_type=bool)
-        self.general.web_port = self._get_config_file_value(config_object, 'General', 'web_port', default=8081, field_type=int)
-        self.general.web_host = self._get_config_file_value(config_object, 'General', 'web_host', default='0.0.0.0', field_type=str)
-        self.general.web_log = self._get_config_file_value(config_object, 'General', 'web_log', field_type=str)
-        self.general.web_external_port = self._get_config_file_value(config_object, 'General', 'web_external_port', default=8081, field_type=int)
-        self.general.web_ipv6 = self._get_config_file_value(config_object, 'General', 'web_ipv6', field_type=bool)
-        self.general.web_root = self._get_config_file_value(config_object, 'General', 'web_root', field_type=str).lstrip('/').rstrip('/')
-        self.general.web_cookie_secret = self._get_config_file_value(config_object, 'General', 'web_cookie_secret', field_type=str)
-        self.general.web_use_gzip = self._get_config_file_value(config_object, 'General', 'web_use_gzip', field_type=bool)
-        self.general.ssl_verify = self._get_config_file_value(config_object, 'General', 'ssl_verify', field_type=bool)
-        self.general.launch_browser = self._get_config_file_value(config_object, 'General', 'launch_browser', field_type=bool)
-        self.general.series_provider_default_language = self._get_config_file_value(config_object, 'General', 'indexer_default_lang', field_type=str)
+        self.general.pip3_path = self._get_config_file_value(config_object, 'General', 'pip3_path', default=self.general.pip3_path, field_type=str)
+        self.general.git_path = self._get_config_file_value(config_object, 'General', 'git_path', default=self.general.git_path,
+                                                            field_type=str)
+        self.general.git_reset = self._get_config_file_value(config_object, 'General', 'git_reset', default=self.general.git_reset, field_type=bool)
+        self.general.web_port = self._get_config_file_value(config_object, 'General', 'web_port', default=self.general.web_port, field_type=int)
+        self.general.web_host = self._get_config_file_value(config_object, 'General', 'web_host',  default=self.general.web_host, field_type=str)
+        self.general.web_log = self._get_config_file_value(config_object, 'General', 'web_log', default=self.general.web_log, field_type=str)
+        self.general.web_external_port = self._get_config_file_value(config_object, 'General', 'web_external_port', default=self.general.web_external_port, field_type=int)
+        self.general.web_ipv6 = self._get_config_file_value(config_object, 'General', 'web_ipv6', default=self.general.web_ipv6, field_type=bool)
+        self.general.web_root = self._get_config_file_value(config_object, 'General', 'web_root', default=self.general.web_root, field_type=str).lstrip('/').rstrip('/')
+        self.general.web_cookie_secret = self._get_config_file_value(config_object, 'General', 'web_cookie_secret', default=self.general.web_cookie_secret, field_type=str)
+        self.general.web_use_gzip = self._get_config_file_value(config_object, 'General', 'web_use_gzip', default=self.general.web_use_gzip, field_type=bool)
+        self.general.ssl_verify = self._get_config_file_value(config_object, 'General', 'ssl_verify', default=self.general.ssl_verify, field_type=bool)
+        self.general.launch_browser = self._get_config_file_value(config_object, 'General', 'launch_browser', default=self.general.launch_browser, field_type=bool)
+        self.general.series_provider_default_language = self._get_config_file_value(config_object, 'General', 'indexer_default_lang',
+                                                                                    default=self.general.series_provider_default_language, field_type=str)
         self.general.ep_default_deleted_status = EpisodeStatus(
             self._get_config_file_value(config_object, 'General', 'ep_default_deleted_status', default=EpisodeStatus.WANTED.value, field_type=int))
-        self.general.download_url = self._get_config_file_value(config_object, 'General', 'download_url', field_type=str)
+        self.general.download_url = self._get_config_file_value(config_object, 'General', 'download_url', default=self.general.download_url, field_type=str)
         self.general.cpu_preset = CpuPreset[
             self._get_config_file_value(config_object, 'General', 'cpu_preset', default=CpuPreset.NORMAL.name, field_type=str.upper)]
-        self.general.max_queue_workers = self._get_config_file_value(config_object, 'General', 'max_queue_workers', field_type=int)
-        self.general.anon_redirect = self._get_config_file_value(config_object, 'General', 'anon_redirect', field_type=str)
-        self.general.proxy_setting = self._get_config_file_value(config_object, 'General', 'proxy_setting', field_type=str)
-        self.general.proxy_series_providers = self._get_config_file_value(config_object, 'General', 'proxy_indexers', field_type=bool)
-        self.general.trash_remove_show = self._get_config_file_value(config_object, 'General', 'trash_remove_show', field_type=bool)
-        self.general.trash_rotate_logs = self._get_config_file_value(config_object, 'General', 'trash_rotate_logs', field_type=bool)
-        self.general.sort_article = self._get_config_file_value(config_object, 'General', 'sort_article', field_type=bool)
-        self.general.api_v1_key = self._get_config_file_value(config_object, 'General', 'api_key', field_type=str)
-        self.general.enable_https = self._get_config_file_value(config_object, 'General', 'enable_https', field_type=bool)
-        self.general.https_cert = self._get_config_file_value(config_object, 'General', 'https_cert', field_type=str)
-        self.general.https_key = self._get_config_file_value(config_object, 'General', 'https_key', field_type=str)
-        self.general.handle_reverse_proxy = self._get_config_file_value(config_object, 'General', 'handle_reverse_proxy', field_type=bool)
-        self.general.root_dirs = self._get_config_file_value(config_object, 'General', 'root_dirs', field_type=str)
-        self.general.quality_default = Qualities(self._get_config_file_value(config_object, 'General', 'quality_default', field_type=int))
+        self.general.max_queue_workers = self._get_config_file_value(config_object, 'General', 'max_queue_workers', default=self.general.max_queue_workers, field_type=int)
+        self.general.anon_redirect = self._get_config_file_value(config_object, 'General', 'anon_redirect', default=self.general.anon_redirect, field_type=str)
+        self.general.proxy_setting = self._get_config_file_value(config_object, 'General', 'proxy_setting', default=self.general.proxy_setting, field_type=str)
+        self.general.proxy_series_providers = self._get_config_file_value(config_object, 'General', 'proxy_indexers',
+                                                                          default=self.general.proxy_series_providers, field_type=bool)
+        self.general.trash_remove_show = self._get_config_file_value(config_object, 'General', 'trash_remove_show', default=self.general.trash_remove_show, field_type=bool)
+        self.general.trash_rotate_logs = self._get_config_file_value(config_object, 'General', 'trash_rotate_logs', default=self.general.trash_rotate_logs, field_type=bool)
+        self.general.sort_article = self._get_config_file_value(config_object, 'General', 'sort_article', default=self.general.sort_article, field_type=bool)
+        self.general.api_v1_key = self._get_config_file_value(config_object, 'General', 'api_key', default=self.general.api_v1_key, field_type=str)
+        self.general.enable_https = self._get_config_file_value(config_object, 'General', 'enable_https', default=self.general.enable_https, field_type=bool)
+        self.general.https_cert = self._get_config_file_value(config_object, 'General', 'https_cert', default=self.general.https_cert, field_type=str)
+        self.general.https_key = self._get_config_file_value(config_object, 'General', 'https_key', default=self.general.https_key, field_type=str)
+        self.general.handle_reverse_proxy = self._get_config_file_value(config_object, 'General', 'handle_reverse_proxy',
+                                                                        default=self.general.handle_reverse_proxy, field_type=bool)
+        self.general.root_dirs = self._get_config_file_value(config_object, 'General', 'root_dirs', default=self.general.root_dirs, field_type=str)
+        self.general.quality_default = Qualities(
+            self._get_config_file_value(config_object, 'General', 'quality_default', default=self.general.quality_default, field_type=int))
         self.general.status_default = EpisodeStatus(
             self._get_config_file_value(config_object, 'General', 'status_default', default=EpisodeStatus.SKIPPED.value, field_type=int))
         self.general.status_default_after = EpisodeStatus(
             self._get_config_file_value(config_object, 'General', 'status_default_after', default=EpisodeStatus.WANTED.value, field_type=int))
-        self.general.enable_upnp = self._get_config_file_value(config_object, 'General', 'enable_upnp', field_type=bool)
-        self.general.version_notify = self._get_config_file_value(config_object, 'General', 'version_notify', field_type=bool)
-        self.general.auto_update = self._get_config_file_value(config_object, 'General', 'auto_update', field_type=bool)
-        self.general.notify_on_update = self._get_config_file_value(config_object, 'General', 'notify_on_update', field_type=bool)
-        self.general.backup_on_update = self._get_config_file_value(config_object, 'General', 'backup_on_update', field_type=bool)
-        self.general.notify_on_login = self._get_config_file_value(config_object, 'General', 'notify_on_login', field_type=bool)
-        self.general.flatten_folders_default = self._get_config_file_value(config_object, 'General', 'flatten_folders_default', field_type=bool)
+        self.general.enable_upnp = self._get_config_file_value(config_object, 'General', 'enable_upnp', default=self.general.enable_upnp, field_type=bool)
+        self.general.version_notify = self._get_config_file_value(config_object, 'General', 'version_notify', default=self.general.version_notify, field_type=bool)
+        self.general.auto_update = self._get_config_file_value(config_object, 'General', 'auto_update', default=self.general.auto_update, field_type=bool)
+        self.general.notify_on_update = self._get_config_file_value(config_object, 'General', 'notify_on_update', default=self.general.notify_on_update, field_type=bool)
+        self.general.backup_on_update = self._get_config_file_value(config_object, 'General', 'backup_on_update', default=self.general.backup_on_update, field_type=bool)
+        self.general.notify_on_login = self._get_config_file_value(config_object, 'General', 'notify_on_login', default=self.general.notify_on_login, field_type=bool)
+        self.general.flatten_folders_default = self._get_config_file_value(config_object, 'General', 'flatten_folders_default',
+                                                                           default=self.general.flatten_folders_default, field_type=bool)
         self.general.series_provider_default = SeriesProviderID.THETVDB
-        self.general.series_provider_timeout = self._get_config_file_value(config_object, 'General', 'indexer_timeout', field_type=int)
-        self.general.anime_default = self._get_config_file_value(config_object, 'General', 'anime_default', field_type=bool)
+        self.general.series_provider_timeout = self._get_config_file_value(config_object, 'General', 'indexer_timeout',
+                                                                           default=self.general.series_provider_timeout, field_type=int)
+        self.general.anime_default = self._get_config_file_value(config_object, 'General', 'anime_default', default=self.general.anime_default, field_type=bool)
         self.general.search_format_default = SearchFormat(
             self._get_config_file_value(config_object, 'General', 'search_format_default', field_type=int) or SearchFormat.STANDARD)
-        self.general.scene_default = self._get_config_file_value(config_object, 'General', 'scene_default', field_type=bool)
-        self.general.skip_downloaded_default = self._get_config_file_value(config_object, 'General', 'skip_downloaded_default', field_type=bool)
-        self.general.add_show_year_default = self._get_config_file_value(config_object, 'General', 'add_show_year_default', field_type=bool)
-        self.general.naming_pattern = self._get_config_file_value(config_object, 'General', 'naming_pattern', field_type=str)
-        self.general.naming_abd_pattern = self._get_config_file_value(config_object, 'General', 'naming_abd_pattern', field_type=str)
-        self.general.naming_custom_abd = self._get_config_file_value(config_object, 'General', 'naming_custom_abd', field_type=bool)
-        self.general.naming_sports_pattern = self._get_config_file_value(config_object, 'General', 'naming_sports_pattern', field_type=str)
-        self.general.naming_anime_pattern = self._get_config_file_value(config_object, 'General', 'naming_anime_pattern', field_type=str)
-        self.general.naming_anime = self._get_config_file_value(config_object, 'General', 'naming_anime', field_type=int)
-        self.general.naming_custom_sports = self._get_config_file_value(config_object, 'General', 'naming_custom_sports', field_type=bool)
-        self.general.naming_custom_anime = self._get_config_file_value(config_object, 'General', 'naming_custom_anime', field_type=bool)
-        self.general.naming_multi_ep = MultiEpNaming(self._get_config_file_value(config_object, 'General', 'naming_multi_ep', default=MultiEpNaming.REPEAT.value, field_type=int))
-        self.general.naming_anime_multi_ep = MultiEpNaming(self._get_config_file_value(config_object, 'General', 'naming_anime_multi_ep', default=MultiEpNaming.REPEAT.value, field_type=int))
-        self.general.naming_strip_year = self._get_config_file_value(config_object, 'General', 'naming_strip_year', field_type=bool)
-        self.general.use_nzbs = self._get_config_file_value(config_object, 'General', 'use_nzbs', field_type=bool)
-        self.general.use_torrents = self._get_config_file_value(config_object, 'General', 'use_torrents', field_type=bool)
+        self.general.scene_default = self._get_config_file_value(config_object, 'General', 'scene_default', default=self.general.scene_default, field_type=bool)
+        self.general.skip_downloaded_default = self._get_config_file_value(config_object, 'General', 'skip_downloaded_default',
+                                                                           default=self.general.skip_downloaded_default, field_type=bool)
+        self.general.add_show_year_default = self._get_config_file_value(config_object, 'General', 'add_show_year_default',
+                                                                         default=self.general.add_show_year_default, field_type=bool)
+        self.general.naming_pattern = self._get_config_file_value(config_object, 'General', 'naming_pattern', default=self.general.naming_pattern, field_type=str)
+        self.general.naming_abd_pattern = self._get_config_file_value(config_object, 'General', 'naming_abd_pattern', default=self.general.naming_abd_pattern, field_type=str)
+        self.general.naming_custom_abd = self._get_config_file_value(config_object, 'General', 'naming_custom_abd', default=self.general.naming_custom_abd, field_type=bool)
+        self.general.naming_sports_pattern = self._get_config_file_value(config_object, 'General', 'naming_sports_pattern',
+                                                                         default=self.general.naming_sports_pattern, field_type=str)
+        self.general.naming_anime_pattern = self._get_config_file_value(config_object, 'General', 'naming_anime_pattern',
+                                                                        default=self.general.naming_anime_pattern, field_type=str)
+        self.general.naming_anime = self._get_config_file_value(config_object, 'General', 'naming_anime', default=self.general.naming_anime, field_type=int)
+        self.general.naming_custom_sports = self._get_config_file_value(config_object, 'General', 'naming_custom_sports',
+                                                                        default=self.general.naming_custom_sports, field_type=bool)
+        self.general.naming_custom_anime = self._get_config_file_value(config_object, 'General', 'naming_custom_anime',
+                                                                       default=self.general.naming_custom_anime, field_type=bool)
+        self.general.naming_multi_ep = MultiEpNaming(
+            self._get_config_file_value(config_object, 'General', 'naming_multi_ep', default=MultiEpNaming.REPEAT.value, field_type=int))
+        self.general.naming_anime_multi_ep = MultiEpNaming(
+            self._get_config_file_value(config_object, 'General', 'naming_anime_multi_ep', default=MultiEpNaming.REPEAT.value, field_type=int))
+        self.general.naming_strip_year = self._get_config_file_value(config_object, 'General', 'naming_strip_year', default=self.general.naming_strip_year, field_type=bool)
+        self.general.use_nzbs = self._get_config_file_value(config_object, 'General', 'use_nzbs', default=self.general.use_nzbs, field_type=bool)
+        self.general.use_torrents = self._get_config_file_value(config_object, 'General', 'use_torrents', default=self.general.use_torrents, field_type=bool)
         self.general.nzb_method = NzbMethod[
             self._get_config_file_value(config_object, 'General', 'nzb_method', default=NzbMethod.BLACKHOLE.name, field_type=str.upper)]
         self.general.torrent_method = TorrentMethod[
             self._get_config_file_value(config_object, 'General', 'torrent_method', default=TorrentMethod.BLACKHOLE.name, field_type=str.upper)]
-        self.general.download_propers = self._get_config_file_value(config_object, 'General', 'download_propers', field_type=bool)
-        self.general.enable_rss_cache = self._get_config_file_value(config_object, 'General', 'enable_rss_cache', field_type=bool)
-        self.general.torrent_file_to_magnet = self._get_config_file_value(config_object, 'General', 'torrent_file_to_magnet', field_type=bool)
-        self.general.torrent_magnet_to_file = self._get_config_file_value(config_object, 'General', 'torrent_magnet_to_file', field_type=bool)
+        self.general.download_propers = self._get_config_file_value(config_object, 'General', 'download_propers', default=self.general.download_propers,
+                                                                    field_type=bool)
+        self.general.enable_rss_cache = self._get_config_file_value(config_object, 'General', 'enable_rss_cache', default=self.general.enable_rss_cache,
+                                                                    field_type=bool)
+        self.general.torrent_file_to_magnet = self._get_config_file_value(config_object, 'General', 'torrent_file_to_magnet',
+                                                                          default=self.general.torrent_file_to_magnet, field_type=bool)
+        self.general.torrent_magnet_to_file = self._get_config_file_value(config_object, 'General', 'torrent_magnet_to_file',
+                                                                          default=self.general.torrent_magnet_to_file, field_type=bool)
         self.general.download_unverified_magnet_link = self._get_config_file_value(config_object, 'General', 'download_unverified_magnet_link',
                                                                                    field_type=bool)
         self.general.proper_searcher_interval = CheckPropersInterval.DAILY
-        self.general.randomize_providers = self._get_config_file_value(config_object, 'General', 'randomize_providers', field_type=bool)
-        self.general.allow_high_priority = self._get_config_file_value(config_object, 'General', 'allow_high_priority', field_type=bool)
-        self.general.skip_removed_files = self._get_config_file_value(config_object, 'General', 'skip_removed_files', field_type=bool)
-        self.general.usenet_retention = self._get_config_file_value(config_object, 'General', 'usenet_retention', field_type=int)
-        self.general.daily_searcher_freq = self._get_config_file_value(config_object, 'General', 'dailysearch_frequency', field_type=int)
-        self.general.backlog_searcher_freq = self._get_config_file_value(config_object, 'General', 'backlog_frequency', field_type=int)
-        self.general.version_updater_freq = self._get_config_file_value(config_object, 'General', 'update_frequency', field_type=int)
-        self.general.subtitle_searcher_freq = self._get_config_file_value(config_object, 'Subtitles', 'subtitles_finder_frequency', field_type=int)
-        self.general.show_update_stale = self._get_config_file_value(config_object, 'General', 'showupdate_stale', field_type=bool)
-        self.general.show_update_hour = self._get_config_file_value(config_object, 'General', 'showupdate_hour', field_type=int)
-        self.general.backlog_days = self._get_config_file_value(config_object, 'General', 'backlog_days', field_type=int)
-        self.general.auto_postprocessor_freq = self._get_config_file_value(config_object, 'General', 'autopostprocessor_frequency', field_type=int)
-        self.general.tv_download_dir = self._get_config_file_value(config_object, 'General', 'tv_download_dir', field_type=str)
-        self.general.process_automatically = self._get_config_file_value(config_object, 'General', 'process_automatically', field_type=bool)
-        self.general.no_delete = self._get_config_file_value(config_object, 'General', 'no_delete', field_type=bool)
-        self.general.unpack = self._get_config_file_value(config_object, 'General', 'unpack', field_type=bool)
-        self.general.unpack_dir = self._get_config_file_value(config_object, 'General', 'unpack_dir', field_type=str)
-        self.general.rename_episodes = self._get_config_file_value(config_object, 'General', 'rename_episodes', field_type=bool)
-        self.general.airdate_episodes = self._get_config_file_value(config_object, 'General', 'airdate_episodes', field_type=bool)
+        self.general.randomize_providers = self._get_config_file_value(config_object, 'General', 'randomize_providers',
+                                                                       default=self.general.randomize_providers, field_type=bool)
+        self.general.allow_high_priority = self._get_config_file_value(config_object, 'General', 'allow_high_priority',
+                                                                       default=self.general.allow_high_priority, field_type=bool)
+        self.general.skip_removed_files = self._get_config_file_value(config_object, 'General', 'skip_removed_files', default=self.general.skip_removed_files,
+                                                                      field_type=bool)
+        self.general.usenet_retention = self._get_config_file_value(config_object, 'General', 'usenet_retention', default=self.general.usenet_retention,
+                                                                    field_type=int)
+        self.general.daily_searcher_freq = self._get_config_file_value(config_object, 'General', 'dailysearch_frequency',
+                                                                       default=self.general.daily_searcher_freq, field_type=int)
+        self.general.backlog_searcher_freq = self._get_config_file_value(config_object, 'General', 'backlog_frequency',
+                                                                         default=self.general.backlog_searcher_freq, field_type=int)
+        self.general.version_updater_freq = self._get_config_file_value(config_object, 'General', 'update_frequency', default=self.general.version_updater_freq,
+                                                                        field_type=int)
+        self.general.subtitle_searcher_freq = self._get_config_file_value(config_object, 'Subtitles', 'subtitles_finder_frequency',
+                                                                          default=self.general.subtitle_searcher_freq, field_type=int)
+        self.general.show_update_stale = self._get_config_file_value(config_object, 'General', 'showupdate_stale', default=self.general.show_update_stale,
+                                                                     field_type=bool)
+        self.general.show_update_hour = self._get_config_file_value(config_object, 'General', 'showupdate_hour', default=self.general.show_update_hour,
+                                                                    field_type=int)
+        self.general.backlog_days = self._get_config_file_value(config_object, 'General', 'backlog_days', default=self.general.backlog_days, field_type=int)
+        self.general.auto_postprocessor_freq = self._get_config_file_value(config_object, 'General', 'autopostprocessor_frequency',
+                                                                           default=self.general.auto_postprocessor_freq, field_type=int)
+        self.general.tv_download_dir = self._get_config_file_value(config_object, 'General', 'tv_download_dir', default=self.general.tv_download_dir,
+                                                                   field_type=str)
+        self.general.process_automatically = self._get_config_file_value(config_object, 'General', 'process_automatically',
+                                                                         default=self.general.process_automatically, field_type=bool)
+        self.general.no_delete = self._get_config_file_value(config_object, 'General', 'no_delete', default=self.general.no_delete, field_type=bool)
+        self.general.unpack = self._get_config_file_value(config_object, 'General', 'unpack', default=self.general.unpack, field_type=bool)
+        self.general.unpack_dir = self._get_config_file_value(config_object, 'General', 'unpack_dir', default=self.general.unpack_dir, field_type=str)
+        self.general.rename_episodes = self._get_config_file_value(config_object, 'General', 'rename_episodes', default=self.general.rename_episodes,
+                                                                   field_type=bool)
+        self.general.airdate_episodes = self._get_config_file_value(config_object, 'General', 'airdate_episodes', default=self.general.airdate_episodes,
+                                                                    field_type=bool)
         self.general.file_timestamp_timezone = FileTimestampTimezone[
             self._get_config_file_value(config_object, 'General', 'file_timestamp_timezone', default=FileTimestampTimezone.NETWORK.name,
                                         field_type=str.upper)]
-        self.general.keep_processed_dir = self._get_config_file_value(config_object, 'General', 'keep_processed_dir', field_type=bool)
+        self.general.keep_processed_dir = self._get_config_file_value(config_object, 'General', 'keep_processed_dir', default=self.general.keep_processed_dir,
+                                                                      field_type=bool)
         self.general.process_method = ProcessMethod[
             self._get_config_file_value(config_object, 'General', 'process_method', default=ProcessMethod.COPY.name, field_type=str.upper)]
-        self.general.processor_follow_symlinks = self._get_config_file_value(config_object, 'General', 'processor_follow_symlinks', field_type=bool)
-        self.general.del_rar_contents = self._get_config_file_value(config_object, 'General', 'del_rar_contents', field_type=bool)
-        self.general.delete_non_associated_files = self._get_config_file_value(config_object, 'General', 'delete_non_associated_files', field_type=bool)
-        self.general.move_associated_files = self._get_config_file_value(config_object, 'General', 'move_associated_files', field_type=bool)
-        self.general.postpone_if_sync_files = self._get_config_file_value(config_object, 'General', 'postpone_if_sync_files', field_type=bool)
-        self.general.sync_files = self._get_config_file_value(config_object, 'General', 'sync_files', field_type=str)
-        self.general.nfo_rename = self._get_config_file_value(config_object, 'General', 'nfo_rename', field_type=bool)
-        self.general.create_missing_show_dirs = self._get_config_file_value(config_object, 'General', 'create_missing_show_dirs', field_type=bool)
-        self.general.add_shows_wo_dir = self._get_config_file_value(config_object, 'General', 'add_shows_wo_dir', field_type=bool)
-        self.general.require_words = self._get_config_file_value(config_object, 'General', 'require_words', field_type=str)
-        self.general.ignore_words = self._get_config_file_value(config_object, 'General', 'ignore_words', field_type=str)
-        self.general.ignored_subs_list = self._get_config_file_value(config_object, 'General', 'ignored_subs_list', field_type=str)
-        self.general.calendar_unprotected = self._get_config_file_value(config_object, 'General', 'calendar_unprotected', field_type=bool)
-        self.general.calendar_icons = self._get_config_file_value(config_object, 'General', 'calendar_icons', field_type=bool)
-        self.general.no_restart = self._get_config_file_value(config_object, 'General', 'no_restart', field_type=bool)
-        self.general.allowed_video_file_exts = ','.join(self._get_config_file_value(config_object, 'General', 'allowed_video_file_exts', field_type=list))
-        self.general.extra_scripts = self._get_config_file_value(config_object, 'General', 'extra_scripts', field_type=str)
-        self.general.display_all_seasons = self._get_config_file_value(config_object, 'General', 'display_all_seasons', field_type=bool)
-        self.general.random_user_agent = self._get_config_file_value(config_object, 'General', 'random_user_agent', field_type=bool)
-        self.general.allowed_extensions = self._get_config_file_value(config_object, 'General', 'allowed_extensions', field_type=str)
-        self.general.view_changelog = self._get_config_file_value(config_object, 'General', 'view_changelog', field_type=bool)
-        self.general.strip_special_file_bits = self._get_config_file_value(config_object, 'General', 'strip_special_file_bits', field_type=bool)
+        self.general.processor_follow_symlinks = self._get_config_file_value(config_object, 'General', 'processor_follow_symlinks',
+                                                                             default=self.general.processor_follow_symlinks, field_type=bool)
+        self.general.del_rar_contents = self._get_config_file_value(config_object, 'General', 'del_rar_contents', default=self.general.del_rar_contents,
+                                                                    field_type=bool)
+        self.general.delete_non_associated_files = self._get_config_file_value(config_object, 'General', 'delete_non_associated_files',
+                                                                               default=self.general.delete_non_associated_files, field_type=bool)
+        self.general.move_associated_files = self._get_config_file_value(config_object, 'General', 'move_associated_files',
+                                                                         default=self.general.move_associated_files, field_type=bool)
+        self.general.postpone_if_sync_files = self._get_config_file_value(config_object, 'General', 'postpone_if_sync_files',
+                                                                          default=self.general.postpone_if_sync_files, field_type=bool)
+        self.general.sync_files = self._get_config_file_value(config_object, 'General', 'sync_files', default=self.general.sync_files, field_type=str)
+        self.general.nfo_rename = self._get_config_file_value(config_object, 'General', 'nfo_rename', default=self.general.nfo_rename, field_type=bool)
+        self.general.create_missing_show_dirs = self._get_config_file_value(config_object, 'General', 'create_missing_show_dirs',
+                                                                            default=self.general.create_missing_show_dirs, field_type=bool)
+        self.general.add_shows_wo_dir = self._get_config_file_value(config_object, 'General', 'add_shows_wo_dir', default=self.general.add_shows_wo_dir,
+                                                                    field_type=bool)
+        self.general.require_words = self._get_config_file_value(config_object, 'General', 'require_words', default=self.general.require_words, field_type=str)
+        self.general.ignore_words = self._get_config_file_value(config_object, 'General', 'ignore_words', default=self.general.ignore_words, field_type=str)
+        self.general.ignored_subs_list = self._get_config_file_value(config_object, 'General', 'ignored_subs_list', default=self.general.ignored_subs_list,
+                                                                     field_type=str)
+        self.general.calendar_unprotected = self._get_config_file_value(config_object, 'General', 'calendar_unprotected',
+                                                                        default=self.general.calendar_unprotected, field_type=bool)
+        self.general.calendar_icons = self._get_config_file_value(config_object, 'General', 'calendar_icons', default=self.general.calendar_icons,
+                                                                  field_type=bool)
+        self.general.no_restart = self._get_config_file_value(config_object, 'General', 'no_restart', default=self.general.no_restart, field_type=bool)
+        self.general.allowed_video_file_exts = ','.join(
+            self._get_config_file_value(config_object, 'General', 'allowed_video_file_exts', default=self.general.allowed_video_file_exts, field_type=list))
+        self.general.extra_scripts = self._get_config_file_value(config_object, 'General', 'extra_scripts', default=self.general.extra_scripts, field_type=str)
+        self.general.display_all_seasons = self._get_config_file_value(config_object, 'General', 'display_all_seasons',
+                                                                       default=self.general.display_all_seasons, field_type=bool)
+        self.general.random_user_agent = self._get_config_file_value(config_object, 'General', 'random_user_agent', default=self.general.random_user_agent,
+                                                                     field_type=bool)
+        self.general.allowed_extensions = self._get_config_file_value(config_object, 'General', 'allowed_extensions', default=self.general.allowed_extensions,
+                                                                      field_type=str)
+        self.general.view_changelog = self._get_config_file_value(config_object, 'General', 'view_changelog', default=self.general.view_changelog,
+                                                                  field_type=bool)
+        self.general.strip_special_file_bits = self._get_config_file_value(config_object, 'General', 'strip_special_file_bits',
+                                                                           default=self.general.strip_special_file_bits, field_type=bool)
 
         # GUI SETTINGS
-        self.gui.gui_lang = self._get_config_file_value(config_object, 'GUI', 'gui_lang', field_type=str)
-        self.gui.theme_name = UITheme[self._get_config_file_value(config_object, 'GUI', 'theme_name', default=UITheme.DARK.name, field_type=str.upper)]
-        self.gui.fanart_background = self._get_config_file_value(config_object, 'GUI', 'fanart_background', field_type=bool)
-        self.gui.fanart_background_opacity = self._get_config_file_value(config_object, 'GUI', 'fanart_background_opacity', field_type=float)
+        self.gui.gui_lang = self._get_config_file_value(config_object, 'GUI', 'gui_lang', default=self.gui.gui_lang, field_type=str)
+        self.gui.theme_name = UITheme[
+            self._get_config_file_value(config_object, 'GUI', 'theme_name', default=UITheme.DARK.name, field_type=str.upper)]
+        self.gui.fanart_background = self._get_config_file_value(config_object, 'GUI', 'fanart_background', default=self.gui.fanart_background, field_type=bool)
+        self.gui.fanart_background_opacity = self._get_config_file_value(config_object, 'GUI', 'fanart_background_opacity',
+                                                                         default=self.gui.fanart_background_opacity, field_type=float)
         self.gui.home_layout = HomeLayout[
             self._get_config_file_value(config_object, 'GUI', 'home_layout', default=HomeLayout.POSTER.name, field_type=str.upper)]
         self.gui.history_layout = HistoryLayout[
             self._get_config_file_value(config_object, 'GUI', 'history_layout', default=HistoryLayout.DETAILED.name, field_type=str.upper)]
-        self.gui.history_limit = self._get_config_file_value(config_object, 'GUI', 'history_limit', field_type=int)
-        self.gui.display_show_specials = self._get_config_file_value(config_object, 'GUI', 'display_show_specials', field_type=bool)
+        self.gui.history_limit = self._get_config_file_value(config_object, 'GUI', 'history_limit', default=self.gui.history_limit, field_type=int)
+        self.gui.display_show_specials = self._get_config_file_value(config_object, 'GUI', 'display_show_specials', default=self.gui.display_show_specials,
+                                                                     field_type=bool)
         self.gui.coming_eps_layout = ComingEpsLayout[
             self._get_config_file_value(config_object, 'GUI', 'coming_eps_layout', default=ComingEpsLayout.POSTER.name, field_type=str.upper)]
-        self.gui.coming_eps_display_paused = self._get_config_file_value(config_object, 'GUI', 'coming_eps_display_paused', field_type=bool)
+        self.gui.coming_eps_display_paused = self._get_config_file_value(config_object, 'GUI', 'coming_eps_display_paused',
+                                                                         default=self.gui.coming_eps_display_paused, field_type=bool)
         self.gui.coming_eps_sort = ComingEpsSortBy[
             self._get_config_file_value(config_object, 'GUI', 'coming_eps_sort', default=ComingEpsSortBy.DATE.name, field_type=str.upper)]
-        self.gui.coming_eps_missed_range = self._get_config_file_value(config_object, 'GUI', 'coming_eps_missed_range', field_type=int)
-        self.gui.fuzzy_dating = self._get_config_file_value(config_object, 'GUI', 'fuzzy_dating', field_type=bool)
-        self.gui.trim_zero = self._get_config_file_value(config_object, 'GUI', 'trim_zero', field_type=bool)
-        self.gui.date_preset = self._get_config_file_value(config_object, 'GUI', 'date_preset', field_type=str)
-        self.gui.time_preset_w_seconds = self._get_config_file_value(config_object, 'GUI', 'time_preset', field_type=str)
+        self.gui.coming_eps_missed_range = self._get_config_file_value(config_object, 'GUI', 'coming_eps_missed_range',
+                                                                       default=self.gui.coming_eps_missed_range, field_type=int)
+        self.gui.fuzzy_dating = self._get_config_file_value(config_object, 'GUI', 'fuzzy_dating', default=self.gui.fuzzy_dating, field_type=bool)
+        self.gui.trim_zero = self._get_config_file_value(config_object, 'GUI', 'trim_zero', default=self.gui.trim_zero, field_type=bool)
+        self.gui.date_preset = self._get_config_file_value(config_object, 'GUI', 'date_preset', default=self.gui.date_preset, field_type=str)
+        self.gui.time_preset_w_seconds = self._get_config_file_value(config_object, 'GUI', 'time_preset', default=self.gui.time_preset_w_seconds,
+                                                                     field_type=str)
         self.gui.time_preset = self.gui.time_preset_w_seconds.replace(":%S", "")
         self.gui.timezone_display = TimezoneDisplay[
             self._get_config_file_value(config_object, 'GUI', 'timezone_display', default=TimezoneDisplay.NETWORK.name, field_type=str.upper)]
         self.gui.poster_sort_by = PosterSortBy[
             self._get_config_file_value(config_object, 'GUI', 'poster_sortby', default=PosterSortBy.NAME.name, field_type=str.upper)]
-        self.gui.poster_sort_dir = PosterSortDirection(self._get_config_file_value(config_object, 'GUI', 'poster_sortdir', field_type=int))
-        self.gui.filter_row = self._get_config_file_value(config_object, 'GUI', 'filter_row', field_type=bool)
+        self.gui.poster_sort_dir = PosterSortDirection(
+            self._get_config_file_value(config_object, 'GUI', 'poster_sortdir', default=self.gui.poster_sort_dir, field_type=int))
+        self.gui.filter_row = self._get_config_file_value(config_object, 'GUI', 'filter_row', default=self.gui.filter_row, field_type=bool)
 
         # BLACKHOLE SETTINGS
-        self.blackhole.nzb_dir = self._get_config_file_value(config_object, 'Blackhole', 'nzb_dir', field_type=str)
-        self.blackhole.torrent_dir = self._get_config_file_value(config_object, 'Blackhole', 'torrent_dir', field_type=str)
+        self.blackhole.nzb_dir = self._get_config_file_value(config_object, 'Blackhole', 'nzb_dir', default=self.blackhole.nzb_dir, field_type=str)
+        self.blackhole.torrent_dir = self._get_config_file_value(config_object, 'Blackhole', 'torrent_dir', default=self.blackhole.torrent_dir, field_type=str)
 
         # SABNZBD SETTINGS
-        self.sabnzbd.username = self._get_config_file_value(config_object, 'SABnzbd', 'sab_username', field_type=str)
-        self.sabnzbd.password = self._get_config_file_value(config_object, 'SABnzbd', 'sab_password', field_type=str)
-        self.sabnzbd.apikey = self._get_config_file_value(config_object, 'SABnzbd', 'sab_apikey', field_type=str)
-        self.sabnzbd.category = self._get_config_file_value(config_object, 'SABnzbd', 'sab_category', field_type=str)
-        self.sabnzbd.category_backlog = self._get_config_file_value(config_object, 'SABnzbd', 'sab_category_backlog', field_type=str)
-        self.sabnzbd.category_anime = self._get_config_file_value(config_object, 'SABnzbd', 'sab_category_anime', field_type=str)
-        self.sabnzbd.category_anime_backlog = self._get_config_file_value(config_object, 'SABnzbd', 'sab_category_anime_backlog', field_type=str)
-        self.sabnzbd.host = self._get_config_file_value(config_object, 'SABnzbd', 'sab_host', field_type=str)
-        self.sabnzbd.forced = self._get_config_file_value(config_object, 'SABnzbd', 'sab_forced', field_type=bool)
+        self.sabnzbd.username = self._get_config_file_value(config_object, 'SABnzbd', 'sab_username', default=self.sabnzbd.username, field_type=str)
+        self.sabnzbd.password = self._get_config_file_value(config_object, 'SABnzbd', 'sab_password', default=self.sabnzbd.password, field_type=str)
+        self.sabnzbd.apikey = self._get_config_file_value(config_object, 'SABnzbd', 'sab_apikey', default=self.sabnzbd.apikey, field_type=str)
+        self.sabnzbd.category = self._get_config_file_value(config_object, 'SABnzbd', 'sab_category', default=self.sabnzbd.category, field_type=str)
+        self.sabnzbd.category_backlog = self._get_config_file_value(config_object, 'SABnzbd', 'sab_category_backlog', default=self.sabnzbd.category_backlog,
+                                                                    field_type=str)
+        self.sabnzbd.category_anime = self._get_config_file_value(config_object, 'SABnzbd', 'sab_category_anime', default=self.sabnzbd.category_anime,
+                                                                  field_type=str)
+        self.sabnzbd.category_anime_backlog = self._get_config_file_value(config_object, 'SABnzbd', 'sab_category_anime_backlog',
+                                                                          default=self.sabnzbd.category_anime_backlog, field_type=str)
+        self.sabnzbd.host = self._get_config_file_value(config_object, 'SABnzbd', 'sab_host', default=self.sabnzbd.host, field_type=str)
+        self.sabnzbd.forced = self._get_config_file_value(config_object, 'SABnzbd', 'sab_forced', default=self.sabnzbd.forced, field_type=bool)
 
         # NZBGET SETTINGS
-        self.nzbget.username = self._get_config_file_value(config_object, 'NZBget', 'nzbget_username', field_type=str)
-        self.nzbget.password = self._get_config_file_value(config_object, 'NZBget', 'nzbget_password', field_type=str)
-        self.nzbget.category = self._get_config_file_value(config_object, 'NZBget', 'nzbget_category', field_type=str)
-        self.nzbget.category_backlog = self._get_config_file_value(config_object, 'NZBget', 'nzbget_category_backlog', field_type=str)
-        self.nzbget.category_anime = self._get_config_file_value(config_object, 'NZBget', 'nzbget_category_anime', field_type=str)
-        self.nzbget.category_anime_backlog = self._get_config_file_value(config_object, 'NZBget', 'nzbget_category_anime_backlog', field_type=str)
-        self.nzbget.host = self._get_config_file_value(config_object, 'NZBget', 'nzbget_host', field_type=str)
-        self.nzbget.use_https = self._get_config_file_value(config_object, 'NZBget', 'nzbget_use_https', field_type=bool)
-        self.nzbget.priority = self._get_config_file_value(config_object, 'NZBget', 'nzbget_priority', field_type=int)
+        self.nzbget.username = self._get_config_file_value(config_object, 'NZBget', 'nzbget_username', default=self.nzbget.username, field_type=str)
+        self.nzbget.password = self._get_config_file_value(config_object, 'NZBget', 'nzbget_password', default=self.nzbget.password, field_type=str)
+        self.nzbget.category = self._get_config_file_value(config_object, 'NZBget', 'nzbget_category', default=self.nzbget.category, field_type=str)
+        self.nzbget.category_backlog = self._get_config_file_value(config_object, 'NZBget', 'nzbget_category_backlog', default=self.nzbget.category_backlog,
+                                                                   field_type=str)
+        self.nzbget.category_anime = self._get_config_file_value(config_object, 'NZBget', 'nzbget_category_anime', default=self.nzbget.category_anime,
+                                                                 field_type=str)
+        self.nzbget.category_anime_backlog = self._get_config_file_value(config_object, 'NZBget', 'nzbget_category_anime_backlog',
+                                                                         default=self.nzbget.category_anime_backlog, field_type=str)
+        self.nzbget.host = self._get_config_file_value(config_object, 'NZBget', 'nzbget_host', default=self.nzbget.host, field_type=str)
+        self.nzbget.use_https = self._get_config_file_value(config_object, 'NZBget', 'nzbget_use_https', default=self.nzbget.use_https, field_type=bool)
+        self.nzbget.priority = self._get_config_file_value(config_object, 'NZBget', 'nzbget_priority', default=self.nzbget.priority, field_type=int)
 
         # TORRENT SETTINGS
-        self.torrent.username = self._get_config_file_value(config_object, 'TORRENT', 'torrent_username', field_type=str)
-        self.torrent.password = self._get_config_file_value(config_object, 'TORRENT', 'torrent_password', field_type=str)
-        self.torrent.host = self._get_config_file_value(config_object, 'TORRENT', 'torrent_host', field_type=str)
-        self.torrent.path = self._get_config_file_value(config_object, 'TORRENT', 'torrent_path', field_type=str)
-        self.torrent.seed_time = self._get_config_file_value(config_object, 'TORRENT', 'torrent_seed_time', field_type=int)
-        self.torrent.paused = self._get_config_file_value(config_object, 'TORRENT', 'torrent_paused', field_type=bool)
-        self.torrent.high_bandwidth = self._get_config_file_value(config_object, 'TORRENT', 'torrent_high_bandwidth', field_type=bool)
-        self.torrent.label = self._get_config_file_value(config_object, 'TORRENT', 'torrent_label', field_type=str)
-        self.torrent.label_anime = self._get_config_file_value(config_object, 'TORRENT', 'torrent_label_anime', field_type=str)
-        self.torrent.verify_cert = self._get_config_file_value(config_object, 'TORRENT', 'torrent_verify_cert', field_type=bool)
-        self.torrent.rpc_url = self._get_config_file_value(config_object, 'TORRENT', 'torrent_rpcurl', field_type=str)
-        self.torrent.auth_type = self._get_config_file_value(config_object, 'TORRENT', 'torrent_auth_type', field_type=str)
+        self.torrent.username = self._get_config_file_value(config_object, 'TORRENT', 'torrent_username', default=self.torrent.username, field_type=str)
+        self.torrent.password = self._get_config_file_value(config_object, 'TORRENT', 'torrent_password', default=self.torrent.password, field_type=str)
+        self.torrent.host = self._get_config_file_value(config_object, 'TORRENT', 'torrent_host', default=self.torrent.host, field_type=str)
+        self.torrent.path = self._get_config_file_value(config_object, 'TORRENT', 'torrent_path', default=self.torrent.path, field_type=str)
+        self.torrent.seed_time = self._get_config_file_value(config_object, 'TORRENT', 'torrent_seed_time', default=self.torrent.seed_time, field_type=int)
+        self.torrent.paused = self._get_config_file_value(config_object, 'TORRENT', 'torrent_paused', default=self.torrent.paused, field_type=bool)
+        self.torrent.high_bandwidth = self._get_config_file_value(config_object, 'TORRENT', 'torrent_high_bandwidth', default=self.torrent.high_bandwidth,
+                                                                  field_type=bool)
+        self.torrent.label = self._get_config_file_value(config_object, 'TORRENT', 'torrent_label', default=self.torrent.label, field_type=str)
+        self.torrent.label_anime = self._get_config_file_value(config_object, 'TORRENT', 'torrent_label_anime', default=self.torrent.label_anime,
+                                                               field_type=str)
+        self.torrent.verify_cert = self._get_config_file_value(config_object, 'TORRENT', 'torrent_verify_cert', default=self.torrent.verify_cert,
+                                                               field_type=bool)
+        self.torrent.rpc_url = self._get_config_file_value(config_object, 'TORRENT', 'torrent_rpcurl', default=self.torrent.rpc_url, field_type=str)
+        self.torrent.auth_type = self._get_config_file_value(config_object, 'TORRENT', 'torrent_auth_type', default=self.torrent.auth_type, field_type=str)
 
         # KODI SETTINGS
-        self.kodi.enable = self._get_config_file_value(config_object, 'KODI', 'use_kodi', field_type=bool)
-        self.kodi.always_on = self._get_config_file_value(config_object, 'KODI', 'kodi_always_on', field_type=bool)
-        self.kodi.notify_on_snatch = self._get_config_file_value(config_object, 'KODI', 'kodi_notify_onsnatch', field_type=bool)
-        self.kodi.notify_on_download = self._get_config_file_value(config_object, 'KODI', 'kodi_notify_ondownload', field_type=bool)
-        self.kodi.notify_on_subtitle_download = self._get_config_file_value(config_object, 'KODI', 'kodi_notify_onsubtitledownload', field_type=bool)
-        self.kodi.update_library = self._get_config_file_value(config_object, 'KODI', 'kodi_update_library', field_type=bool)
-        self.kodi.update_full = self._get_config_file_value(config_object, 'KODI', 'kodi_update_full', field_type=bool)
-        self.kodi.update_only_first = self._get_config_file_value(config_object, 'KODI', 'kodi_update_onlyfirst', field_type=bool)
-        self.kodi.host = self._get_config_file_value(config_object, 'KODI', 'kodi_host', field_type=str)
-        self.kodi.username = self._get_config_file_value(config_object, 'KODI', 'kodi_username', field_type=str)
-        self.kodi.password = self._get_config_file_value(config_object, 'KODI', 'kodi_password', field_type=str)
+        self.kodi.enable = self._get_config_file_value(config_object, 'KODI', 'use_kodi', default=self.kodi.enable, field_type=bool)
+        self.kodi.always_on = self._get_config_file_value(config_object, 'KODI', 'kodi_always_on', default=self.kodi.always_on, field_type=bool)
+        self.kodi.notify_on_snatch = self._get_config_file_value(config_object, 'KODI', 'kodi_notify_onsnatch', default=self.kodi.notify_on_snatch,
+                                                                 field_type=bool)
+        self.kodi.notify_on_download = self._get_config_file_value(config_object, 'KODI', 'kodi_notify_ondownload', default=self.kodi.notify_on_download,
+                                                                   field_type=bool)
+        self.kodi.notify_on_subtitle_download = self._get_config_file_value(config_object, 'KODI', 'kodi_notify_onsubtitledownload',
+                                                                            default=self.kodi.notify_on_subtitle_download, field_type=bool)
+        self.kodi.update_library = self._get_config_file_value(config_object, 'KODI', 'kodi_update_library', default=self.kodi.update_library, field_type=bool)
+        self.kodi.update_full = self._get_config_file_value(config_object, 'KODI', 'kodi_update_full', default=self.kodi.update_full, field_type=bool)
+        self.kodi.update_only_first = self._get_config_file_value(config_object, 'KODI', 'kodi_update_onlyfirst', default=self.kodi.update_only_first,
+                                                                  field_type=bool)
+        self.kodi.host = self._get_config_file_value(config_object, 'KODI', 'kodi_host', default=self.kodi.host, field_type=str)
+        self.kodi.username = self._get_config_file_value(config_object, 'KODI', 'kodi_username', default=self.kodi.username, field_type=str)
+        self.kodi.password = self._get_config_file_value(config_object, 'KODI', 'kodi_password', default=self.kodi.password, field_type=str)
 
         # PLEX SETTINGS
-        self.plex.enable = self._get_config_file_value(config_object, 'Plex', 'use_plex', field_type=bool)
-        self.plex.notify_on_snatch = self._get_config_file_value(config_object, 'Plex', 'plex_notify_onsnatch', field_type=bool)
-        self.plex.notify_on_download = self._get_config_file_value(config_object, 'Plex', 'plex_notify_ondownload', field_type=bool)
-        self.plex.notify_on_subtitle_download = self._get_config_file_value(config_object, 'Plex', 'plex_notify_onsubtitledownload', field_type=bool)
-        self.plex.update_library = self._get_config_file_value(config_object, 'Plex', 'plex_update_library', field_type=bool)
-        self.plex.server_host = self._get_config_file_value(config_object, 'Plex', 'plex_server_host', field_type=str)
-        self.plex.server_token = self._get_config_file_value(config_object, 'Plex', 'plex_server_token', field_type=str)
-        self.plex.host = self._get_config_file_value(config_object, 'Plex', 'plex_host', field_type=str)
-        self.plex.username = self._get_config_file_value(config_object, 'Plex', 'plex_username', field_type=str)
-        self.plex.password = self._get_config_file_value(config_object, 'Plex', 'plex_password', field_type=str)
-        self.plex.enable_client = self._get_config_file_value(config_object, 'Plex', 'use_plex_client', field_type=bool)
-        self.plex.client_username = self._get_config_file_value(config_object, 'Plex', 'plex_client_username', field_type=str)
-        self.plex.client_password = self._get_config_file_value(config_object, 'Plex', 'plex_client_password', field_type=str)
+        self.plex.enable = self._get_config_file_value(config_object, 'Plex', 'use_plex', default=self.plex.enable, field_type=bool)
+        self.plex.notify_on_snatch = self._get_config_file_value(config_object, 'Plex', 'plex_notify_onsnatch', default=self.plex.notify_on_snatch,
+                                                                 field_type=bool)
+        self.plex.notify_on_download = self._get_config_file_value(config_object, 'Plex', 'plex_notify_ondownload', default=self.plex.notify_on_download,
+                                                                   field_type=bool)
+        self.plex.notify_on_subtitle_download = self._get_config_file_value(config_object, 'Plex', 'plex_notify_onsubtitledownload',
+                                                                            default=self.plex.notify_on_subtitle_download, field_type=bool)
+        self.plex.update_library = self._get_config_file_value(config_object, 'Plex', 'plex_update_library', default=self.plex.update_library, field_type=bool)
+        self.plex.server_host = self._get_config_file_value(config_object, 'Plex', 'plex_server_host', default=self.plex.server_host, field_type=str)
+        self.plex.server_token = self._get_config_file_value(config_object, 'Plex', 'plex_server_token', default=self.plex.server_token, field_type=str)
+        self.plex.host = self._get_config_file_value(config_object, 'Plex', 'plex_host', default=self.plex.host, field_type=str)
+        self.plex.username = self._get_config_file_value(config_object, 'Plex', 'plex_username', default=self.plex.username, field_type=str)
+        self.plex.password = self._get_config_file_value(config_object, 'Plex', 'plex_password', default=self.plex.password, field_type=str)
+        self.plex.enable_client = self._get_config_file_value(config_object, 'Plex', 'use_plex_client', default=self.plex.enable_client, field_type=bool)
+        self.plex.client_username = self._get_config_file_value(config_object, 'Plex', 'plex_client_username', default=self.plex.client_username,
+                                                                field_type=str)
+        self.plex.client_password = self._get_config_file_value(config_object, 'Plex', 'plex_client_password', default=self.plex.client_password,
+                                                                field_type=str)
 
         # EMBY SETTINGS
-        self.emby.enable = self._get_config_file_value(config_object, 'Emby', 'use_emby', field_type=bool)
-        self.emby.notify_on_snatch = self._get_config_file_value(config_object, 'Emby', 'emby_notify_onsnatch', field_type=bool)
-        self.emby.notify_on_download = self._get_config_file_value(config_object, 'Emby', 'emby_notify_ondownload', field_type=bool)
-        self.emby.notify_on_subtitle_download = self._get_config_file_value(config_object, 'Emby', 'emby_notify_onsubtitledownload', field_type=bool)
-        self.emby.host = self._get_config_file_value(config_object, 'Emby', 'emby_host', field_type=str)
-        self.emby.apikey = self._get_config_file_value(config_object, 'Emby', 'emby_apikey', field_type=str)
+        self.emby.enable = self._get_config_file_value(config_object, 'Emby', 'use_emby', default=self.emby.enable, field_type=bool)
+        self.emby.notify_on_snatch = self._get_config_file_value(config_object, 'Emby', 'emby_notify_onsnatch', default=self.emby.notify_on_snatch,
+                                                                 field_type=bool)
+        self.emby.notify_on_download = self._get_config_file_value(config_object, 'Emby', 'emby_notify_ondownload', default=self.emby.notify_on_download,
+                                                                   field_type=bool)
+        self.emby.notify_on_subtitle_download = self._get_config_file_value(config_object, 'Emby', 'emby_notify_onsubtitledownload',
+                                                                            default=self.emby.notify_on_subtitle_download, field_type=bool)
+        self.emby.host = self._get_config_file_value(config_object, 'Emby', 'emby_host', default=self.emby.host, field_type=str)
+        self.emby.apikey = self._get_config_file_value(config_object, 'Emby', 'emby_apikey', default=self.emby.apikey, field_type=str)
 
         # GROWL SETTINGS
-        self.growl.enable = self._get_config_file_value(config_object, 'Growl', 'use_growl', field_type=bool)
-        self.growl.notify_on_snatch = self._get_config_file_value(config_object, 'Growl', 'growl_notify_onsnatch', field_type=bool)
-        self.growl.notify_on_download = self._get_config_file_value(config_object, 'Growl', 'growl_notify_ondownload', field_type=bool)
-        self.growl.notify_on_subtitle_download = self._get_config_file_value(config_object, 'Growl', 'growl_notify_onsubtitledownload', field_type=bool)
-        self.growl.host = self._get_config_file_value(config_object, 'Growl', 'growl_host', field_type=str)
-        self.growl.password = self._get_config_file_value(config_object, 'Growl', 'growl_password', field_type=str)
+        self.growl.enable = self._get_config_file_value(config_object, 'Growl', 'use_growl', default=self.growl.enable, field_type=bool)
+        self.growl.notify_on_snatch = self._get_config_file_value(config_object, 'Growl', 'growl_notify_onsnatch', default=self.growl.notify_on_snatch,
+                                                                  field_type=bool)
+        self.growl.notify_on_download = self._get_config_file_value(config_object, 'Growl', 'growl_notify_ondownload', default=self.growl.notify_on_download,
+                                                                    field_type=bool)
+        self.growl.notify_on_subtitle_download = self._get_config_file_value(config_object, 'Growl', 'growl_notify_onsubtitledownload',
+                                                                             default=self.growl.notify_on_subtitle_download, field_type=bool)
+        self.growl.host = self._get_config_file_value(config_object, 'Growl', 'growl_host', default=self.growl.host, field_type=str)
+        self.growl.password = self._get_config_file_value(config_object, 'Growl', 'growl_password', default=self.growl.password, field_type=str)
 
         # FREEMOBILE SETTINGS
-        self.freemobile.enable = self._get_config_file_value(config_object, 'FreeMobile', 'use_freemobile', field_type=bool)
-        self.freemobile.notify_on_snatch = self._get_config_file_value(config_object, 'FreeMobile', 'freemobile_notify_onsnatch', field_type=bool)
-        self.freemobile.notify_on_download = self._get_config_file_value(config_object, 'FreeMobile', 'freemobile_notify_ondownload', field_type=bool)
+        self.freemobile.enable = self._get_config_file_value(config_object, 'FreeMobile', 'use_freemobile', default=self.freemobile.enable, field_type=bool)
+        self.freemobile.notify_on_snatch = self._get_config_file_value(config_object, 'FreeMobile', 'freemobile_notify_onsnatch',
+                                                                       default=self.freemobile.notify_on_snatch, field_type=bool)
+        self.freemobile.notify_on_download = self._get_config_file_value(config_object, 'FreeMobile', 'freemobile_notify_ondownload',
+                                                                         default=self.freemobile.notify_on_download, field_type=bool)
         self.freemobile.notify_on_subtitle_download = self._get_config_file_value(config_object, 'FreeMobile', 'freemobile_notify_onsubtitledownload',
                                                                                   field_type=bool)
-        self.freemobile.user_id = self._get_config_file_value(config_object, 'FreeMobile', 'freemobile_id', field_type=str)
-        self.freemobile.apikey = self._get_config_file_value(config_object, 'FreeMobile', 'freemobile_apikey', field_type=str)
+        self.freemobile.user_id = self._get_config_file_value(config_object, 'FreeMobile', 'freemobile_id', default=self.freemobile.user_id, field_type=str)
+        self.freemobile.apikey = self._get_config_file_value(config_object, 'FreeMobile', 'freemobile_apikey', default=self.freemobile.apikey, field_type=str)
 
         # TELEGRAM SETTINGS
-        self.telegram.enable = self._get_config_file_value(config_object, 'TELEGRAM', 'use_telegram', field_type=bool)
-        self.telegram.notify_on_snatch = self._get_config_file_value(config_object, 'TELEGRAM', 'telegram_notify_onsnatch', field_type=bool)
-        self.telegram.notify_on_download = self._get_config_file_value(config_object, 'TELEGRAM', 'telegram_notify_ondownload', field_type=bool)
+        self.telegram.enable = self._get_config_file_value(config_object, 'TELEGRAM', 'use_telegram', default=self.telegram.enable, field_type=bool)
+        self.telegram.notify_on_snatch = self._get_config_file_value(config_object, 'TELEGRAM', 'telegram_notify_onsnatch',
+                                                                     default=self.telegram.notify_on_snatch, field_type=bool)
+        self.telegram.notify_on_download = self._get_config_file_value(config_object, 'TELEGRAM', 'telegram_notify_ondownload',
+                                                                       default=self.telegram.notify_on_download, field_type=bool)
         self.telegram.notify_on_subtitle_download = self._get_config_file_value(config_object, 'TELEGRAM', 'telegram_notify_on_subtitledownload',
                                                                                 field_type=bool)
-        self.telegram.user_id = self._get_config_file_value(config_object, 'TELEGRAM', 'telegram_id', field_type=str)
-        self.telegram.apikey = self._get_config_file_value(config_object, 'TELEGRAM', 'telegram_apikey', field_type=str)
+        self.telegram.user_id = self._get_config_file_value(config_object, 'TELEGRAM', 'telegram_id', default=self.telegram.user_id, field_type=str)
+        self.telegram.apikey = self._get_config_file_value(config_object, 'TELEGRAM', 'telegram_apikey', default=self.telegram.apikey, field_type=str)
 
         # JOIN SETTINGS
-        self.join_app.enable = self._get_config_file_value(config_object, 'JOIN', 'use_join', field_type=bool)
-        self.join_app.notify_on_snatch = self._get_config_file_value(config_object, 'JOIN', 'join_notify_onsnatch', field_type=bool)
-        self.join_app.notify_on_download = self._get_config_file_value(config_object, 'JOIN', 'join_notify_ondownload', field_type=bool)
-        self.join_app.notify_on_subtitle_download = self._get_config_file_value(config_object, 'JOIN', 'join_notify_onsubtitledownload', field_type=bool)
-        self.join_app.user_id = self._get_config_file_value(config_object, 'JOIN', 'join_id', field_type=str)
-        self.join_app.apikey = self._get_config_file_value(config_object, 'JOIN', 'join_apikey', field_type=str)
+        self.join_app.enable = self._get_config_file_value(config_object, 'JOIN', 'use_join', default=self.join_app.enable, field_type=bool)
+        self.join_app.notify_on_snatch = self._get_config_file_value(config_object, 'JOIN', 'join_notify_onsnatch', default=self.join_app.notify_on_snatch,
+                                                                     field_type=bool)
+        self.join_app.notify_on_download = self._get_config_file_value(config_object, 'JOIN', 'join_notify_ondownload',
+                                                                       default=self.join_app.notify_on_download, field_type=bool)
+        self.join_app.notify_on_subtitle_download = self._get_config_file_value(config_object, 'JOIN', 'join_notify_onsubtitledownload',
+                                                                                default=self.join_app.notify_on_subtitle_download, field_type=bool)
+        self.join_app.user_id = self._get_config_file_value(config_object, 'JOIN', 'join_id', default=self.join_app.user_id, field_type=str)
+        self.join_app.apikey = self._get_config_file_value(config_object, 'JOIN', 'join_apikey', default=self.join_app.apikey, field_type=str)
 
         # PROWL SETTINGS
-        self.prowl.enable = self._get_config_file_value(config_object, 'Prowl', 'use_prowl', field_type=bool)
-        self.prowl.notify_on_snatch = self._get_config_file_value(config_object, 'Prowl', 'prowl_notify_onsnatch', field_type=bool)
-        self.prowl.notify_on_download = self._get_config_file_value(config_object, 'Prowl', 'prowl_notify_ondownload', field_type=bool)
-        self.prowl.notify_on_subtitle_download = self._get_config_file_value(config_object, 'Prowl', 'prowl_notify_onsubtitledownload', field_type=bool)
-        self.prowl.apikey = self._get_config_file_value(config_object, 'Prowl', 'prowl_api', field_type=str)
-        self.prowl.priority = self._get_config_file_value(config_object, 'Prowl', 'prowl_priority', field_type=int)
+        self.prowl.enable = self._get_config_file_value(config_object, 'Prowl', 'use_prowl', default=self.prowl.enable, field_type=bool)
+        self.prowl.notify_on_snatch = self._get_config_file_value(config_object, 'Prowl', 'prowl_notify_onsnatch', default=self.prowl.notify_on_snatch,
+                                                                  field_type=bool)
+        self.prowl.notify_on_download = self._get_config_file_value(config_object, 'Prowl', 'prowl_notify_ondownload', default=self.prowl.notify_on_download,
+                                                                    field_type=bool)
+        self.prowl.notify_on_subtitle_download = self._get_config_file_value(config_object, 'Prowl', 'prowl_notify_onsubtitledownload',
+                                                                             default=self.prowl.notify_on_subtitle_download, field_type=bool)
+        self.prowl.apikey = self._get_config_file_value(config_object, 'Prowl', 'prowl_api', default=self.prowl.apikey, field_type=str)
+        self.prowl.priority = self._get_config_file_value(config_object, 'Prowl', 'prowl_priority', default=self.prowl.priority, field_type=int)
 
         # TWITTER SETTINGS
-        self.twitter.enable = self._get_config_file_value(config_object, 'Twitter', 'use_twitter', field_type=bool)
-        self.twitter.notify_on_snatch = self._get_config_file_value(config_object, 'Twitter', 'twitter_notify_onsnatch', field_type=bool)
-        self.twitter.notify_on_download = self._get_config_file_value(config_object, 'Twitter', 'twitter_notify_ondownload', field_type=bool)
+        self.twitter.enable = self._get_config_file_value(config_object, 'Twitter', 'use_twitter', default=self.twitter.enable, field_type=bool)
+        self.twitter.notify_on_snatch = self._get_config_file_value(config_object, 'Twitter', 'twitter_notify_onsnatch', default=self.twitter.notify_on_snatch,
+                                                                    field_type=bool)
+        self.twitter.notify_on_download = self._get_config_file_value(config_object, 'Twitter', 'twitter_notify_ondownload',
+                                                                      default=self.twitter.notify_on_download, field_type=bool)
         self.twitter.notify_on_subtitle_download = self._get_config_file_value(config_object, 'Twitter', 'twitter_notify_onsubtitledownload',
                                                                                field_type=bool)
-        self.twitter.username = self._get_config_file_value(config_object, 'Twitter', 'twitter_username', field_type=str)
-        self.twitter.password = self._get_config_file_value(config_object, 'Twitter', 'twitter_password', field_type=str)
-        self.twitter.prefix = self._get_config_file_value(config_object, 'Twitter', 'twitter_prefix', field_type=str)
-        self.twitter.dm_to = self._get_config_file_value(config_object, 'Twitter', 'twitter_dmto', field_type=str)
-        self.twitter.use_dm = self._get_config_file_value(config_object, 'Twitter', 'twitter_usedm', field_type=bool)
+        self.twitter.username = self._get_config_file_value(config_object, 'Twitter', 'twitter_username', default=self.twitter.username, field_type=str)
+        self.twitter.password = self._get_config_file_value(config_object, 'Twitter', 'twitter_password', default=self.twitter.password, field_type=str)
+        self.twitter.prefix = self._get_config_file_value(config_object, 'Twitter', 'twitter_prefix', default=self.twitter.prefix, field_type=str)
+        self.twitter.dm_to = self._get_config_file_value(config_object, 'Twitter', 'twitter_dmto', default=self.twitter.dm_to, field_type=str)
+        self.twitter.use_dm = self._get_config_file_value(config_object, 'Twitter', 'twitter_usedm', default=self.twitter.use_dm, field_type=bool)
 
         # TWIILIO SETTINGS
-        self.twilio.enable = self._get_config_file_value(config_object, 'Twilio', 'use_twilio', field_type=bool)
-        self.twilio.notify_on_snatch = self._get_config_file_value(config_object, 'Twilio', 'twilio_notify_onsnatch', field_type=bool)
-        self.twilio.notify_on_download = self._get_config_file_value(config_object, 'Twilio', 'twilio_notify_ondownload', field_type=bool)
+        self.twilio.enable = self._get_config_file_value(config_object, 'Twilio', 'use_twilio', default=self.twilio.enable, field_type=bool)
+        self.twilio.notify_on_snatch = self._get_config_file_value(config_object, 'Twilio', 'twilio_notify_onsnatch', default=self.twilio.notify_on_snatch,
+                                                                   field_type=bool)
+        self.twilio.notify_on_download = self._get_config_file_value(config_object, 'Twilio', 'twilio_notify_ondownload',
+                                                                     default=self.twilio.notify_on_download, field_type=bool)
         self.twilio.notify_on_subtitle_download = self._get_config_file_value(config_object, 'Twilio', 'twilio_notify_onsubtitledownload',
                                                                               field_type=bool)
-        self.twilio.phone_sid = self._get_config_file_value(config_object, 'Twilio', 'twilio_phone_sid', field_type=str)
-        self.twilio.account_sid = self._get_config_file_value(config_object, 'Twilio', 'twilio_account_sid', field_type=str)
-        self.twilio.auth_token = self._get_config_file_value(config_object, 'Twilio', 'twilio_auth_token', field_type=str)
-        self.twilio.to_number = self._get_config_file_value(config_object, 'Twilio', 'twilio_to_number', field_type=str)
+        self.twilio.phone_sid = self._get_config_file_value(config_object, 'Twilio', 'twilio_phone_sid', default=self.twilio.phone_sid, field_type=str)
+        self.twilio.account_sid = self._get_config_file_value(config_object, 'Twilio', 'twilio_account_sid', default=self.twilio.account_sid, field_type=str)
+        self.twilio.auth_token = self._get_config_file_value(config_object, 'Twilio', 'twilio_auth_token', default=self.twilio.auth_token, field_type=str)
+        self.twilio.to_number = self._get_config_file_value(config_object, 'Twilio', 'twilio_to_number', default=self.twilio.to_number, field_type=str)
 
         # BOXCAR2 SETTINGS
-        self.boxcar2.enable = self._get_config_file_value(config_object, 'Boxcar2', 'use_boxcar2', field_type=bool)
-        self.boxcar2.notify_on_snatch = self._get_config_file_value(config_object, 'Boxcar2', 'boxcar2_notify_onsnatch', field_type=bool)
-        self.boxcar2.notify_on_download = self._get_config_file_value(config_object, 'Boxcar2', 'boxcar2_notify_ondownload', field_type=bool)
-        self.boxcar2.notify_on_subtitle_download = self._get_config_file_value(config_object, 'Boxcar2', 'boxcar2_notify_onsubtitledownload', field_type=bool)
-        self.boxcar2.access_token = self._get_config_file_value(config_object, 'Boxcar2', 'boxcar2_accesstoken', field_type=str)
+        self.boxcar2.enable = self._get_config_file_value(config_object, 'Boxcar2', 'use_boxcar2', default=self.boxcar2.enable, field_type=bool)
+        self.boxcar2.notify_on_snatch = self._get_config_file_value(config_object, 'Boxcar2', 'boxcar2_notify_onsnatch', default=self.boxcar2.notify_on_snatch,
+                                                                    field_type=bool)
+        self.boxcar2.notify_on_download = self._get_config_file_value(config_object, 'Boxcar2', 'boxcar2_notify_ondownload',
+                                                                      default=self.boxcar2.notify_on_download, field_type=bool)
+        self.boxcar2.notify_on_subtitle_download = self._get_config_file_value(config_object, 'Boxcar2', 'boxcar2_notify_onsubtitledownload',
+                                                                               default=self.boxcar2.notify_on_subtitle_download, field_type=bool)
+        self.boxcar2.access_token = self._get_config_file_value(config_object, 'Boxcar2', 'boxcar2_accesstoken', default=self.boxcar2.access_token,
+                                                                field_type=str)
 
         # PUSHOVER SETTINGS
-        self.pushover.enable = self._get_config_file_value(config_object, 'Pushover', 'use_pushover', field_type=bool)
-        self.pushover.notify_on_snatch = self._get_config_file_value(config_object, 'Pushover', 'pushover_notify_onsnatch', field_type=bool)
-        self.pushover.notify_on_download = self._get_config_file_value(config_object, 'Pushover', 'pushover_notify_ondownload', field_type=bool)
+        self.pushover.enable = self._get_config_file_value(config_object, 'Pushover', 'use_pushover', default=self.pushover.enable, field_type=bool)
+        self.pushover.notify_on_snatch = self._get_config_file_value(config_object, 'Pushover', 'pushover_notify_onsnatch',
+                                                                     default=self.pushover.notify_on_snatch, field_type=bool)
+        self.pushover.notify_on_download = self._get_config_file_value(config_object, 'Pushover', 'pushover_notify_ondownload',
+                                                                       default=self.pushover.notify_on_download, field_type=bool)
         self.pushover.notify_on_subtitle_download = self._get_config_file_value(config_object, 'Pushover', 'pushover_notify_onsubtitledownload',
                                                                                 field_type=bool)
-        self.pushover.user_key = self._get_config_file_value(config_object, 'Pushover', 'pushover_userkey', field_type=str)
-        self.pushover.apikey = self._get_config_file_value(config_object, 'Pushover', 'pushover_apikey', field_type=str)
-        self.pushover.device = self._get_config_file_value(config_object, 'Pushover', 'pushover_device', field_type=str)
-        self.pushover.sound = self._get_config_file_value(config_object, 'Pushover', 'pushover_sound', field_type=str)
+        self.pushover.user_key = self._get_config_file_value(config_object, 'Pushover', 'pushover_userkey', default=self.pushover.user_key, field_type=str)
+        self.pushover.apikey = self._get_config_file_value(config_object, 'Pushover', 'pushover_apikey', default=self.pushover.apikey, field_type=str)
+        self.pushover.device = self._get_config_file_value(config_object, 'Pushover', 'pushover_device', default=self.pushover.device, field_type=str)
+        self.pushover.sound = self._get_config_file_value(config_object, 'Pushover', 'pushover_sound', default=self.pushover.sound, field_type=str)
 
         # LIBNOTIFY SETTINGS
-        self.libnotify.enable = self._get_config_file_value(config_object, 'Libnotify', 'use_libnotify', field_type=bool)
-        self.libnotify.notify_on_snatch = self._get_config_file_value(config_object, 'Libnotify', 'libnotify_notify_onsnatch', field_type=bool)
-        self.libnotify.notify_on_download = self._get_config_file_value(config_object, 'Libnotify', 'libnotify_notify_ondownload', field_type=bool)
+        self.libnotify.enable = self._get_config_file_value(config_object, 'Libnotify', 'use_libnotify', default=self.libnotify.enable, field_type=bool)
+        self.libnotify.notify_on_snatch = self._get_config_file_value(config_object, 'Libnotify', 'libnotify_notify_onsnatch',
+                                                                      default=self.libnotify.notify_on_snatch, field_type=bool)
+        self.libnotify.notify_on_download = self._get_config_file_value(config_object, 'Libnotify', 'libnotify_notify_ondownload',
+                                                                        default=self.libnotify.notify_on_download, field_type=bool)
         self.libnotify.notify_on_subtitle_download = self._get_config_file_value(config_object, 'Libnotify', 'libnotify_notify_onsubtitledownload',
                                                                                  field_type=bool)
 
         # NMJ SETTINGS
-        self.nmj.enable = self._get_config_file_value(config_object, 'NMJ', 'use_nmj', field_type=bool)
-        self.nmj.host = self._get_config_file_value(config_object, 'NMJ', 'nmj_host', field_type=str)
-        self.nmj.database = self._get_config_file_value(config_object, 'NMJ', 'nmj_database', field_type=str)
-        self.nmj.mount = self._get_config_file_value(config_object, 'NMJ', 'nmj_mount', field_type=str)
+        self.nmj.enable = self._get_config_file_value(config_object, 'NMJ', 'use_nmj', default=self.nmj.enable, field_type=bool)
+        self.nmj.host = self._get_config_file_value(config_object, 'NMJ', 'nmj_host', default=self.nmj.host, field_type=str)
+        self.nmj.database = self._get_config_file_value(config_object, 'NMJ', 'nmj_database', default=self.nmj.database, field_type=str)
+        self.nmj.mount = self._get_config_file_value(config_object, 'NMJ', 'nmj_mount', default=self.nmj.mount, field_type=str)
 
         # NMJV2 SETTINGS
-        self.nmjv2.enable = self._get_config_file_value(config_object, 'NMJv2', 'use_nmjv2', field_type=bool)
-        self.nmjv2.host = self._get_config_file_value(config_object, 'NMJv2', 'nmjv2_host', field_type=str)
-        self.nmjv2.database = self._get_config_file_value(config_object, 'NMJv2', 'nmjv2_database', field_type=str)
+        self.nmjv2.enable = self._get_config_file_value(config_object, 'NMJv2', 'use_nmjv2', default=self.nmjv2.enable, field_type=bool)
+        self.nmjv2.host = self._get_config_file_value(config_object, 'NMJv2', 'nmjv2_host', default=self.nmjv2.host, field_type=str)
+        self.nmjv2.database = self._get_config_file_value(config_object, 'NMJv2', 'nmjv2_database', default=self.nmjv2.database, field_type=str)
         self.nmjv2.db_loc = NMJv2Location[
             self._get_config_file_value(config_object, 'NMJv2', 'nmjv2_dbloc', default=NMJv2Location.LOCAL.name, field_type=str.upper)]
 
         # SYNOLOGY SETTINGS
-        self.synology.host = self._get_config_file_value(config_object, 'SynologyDSM', 'syno_dsm_host', field_type=str)
-        self.synology.username = self._get_config_file_value(config_object, 'SynologyDSM', 'syno_dsm_username', field_type=str)
-        self.synology.password = self._get_config_file_value(config_object, 'SynologyDSM', 'syno_dsm_password', field_type=str)
-        self.synology.path = self._get_config_file_value(config_object, 'SynologyDSM', 'syno_dsm_path', field_type=str)
-        self.synology.enable_index = self._get_config_file_value(config_object, 'Synology', 'use_synoindex', field_type=bool)
-        self.synology.enable_notifications = self._get_config_file_value(config_object, 'SynologyNotifier', 'use_synologynotifier', field_type=bool)
+        self.synology.host = self._get_config_file_value(config_object, 'SynologyDSM', 'syno_dsm_host', default=self.synology.host, field_type=str)
+        self.synology.username = self._get_config_file_value(config_object, 'SynologyDSM', 'syno_dsm_username', default=self.synology.username, field_type=str)
+        self.synology.password = self._get_config_file_value(config_object, 'SynologyDSM', 'syno_dsm_password', default=self.synology.password, field_type=str)
+        self.synology.path = self._get_config_file_value(config_object, 'SynologyDSM', 'syno_dsm_path', default=self.synology.path, field_type=str)
+        self.synology.enable_index = self._get_config_file_value(config_object, 'Synology', 'use_synoindex', default=self.synology.enable_index,
+                                                                 field_type=bool)
+        self.synology.enable_notifications = self._get_config_file_value(config_object, 'SynologyNotifier', 'use_synologynotifier',
+                                                                         default=self.synology.enable_notifications, field_type=bool)
         self.synology.notify_on_snatch = self._get_config_file_value(config_object, 'SynologyNotifier', 'synologynotifier_notify_onsnatch',
                                                                      field_type=bool)
         self.synology.notify_on_download = self._get_config_file_value(config_object, 'SynologyNotifier', 'synologynotifier_notify_ondownload',
@@ -1016,128 +1117,171 @@ class Config(object):
                                                                                 'synologynotifier_notify_onsubtitledownload', field_type=bool)
 
         # SLACK SETTINGS
-        self.slack.enable = self._get_config_file_value(config_object, 'Slack', 'use_slack', field_type=bool)
-        self.slack.notify_on_snatch = self._get_config_file_value(config_object, 'Slack', 'slack_notify_onsnatch', field_type=bool)
-        self.slack.notify_on_download = self._get_config_file_value(config_object, 'Slack', 'slack_notify_ondownload', field_type=bool)
-        self.slack.notify_on_subtitle_download = self._get_config_file_value(config_object, 'Slack', 'slack_notify_onsubtitledownload', field_type=bool)
-        self.slack.webhook = self._get_config_file_value(config_object, 'Slack', 'slack_webhook', field_type=str)
+        self.slack.enable = self._get_config_file_value(config_object, 'Slack', 'use_slack', default=self.slack.enable, field_type=bool)
+        self.slack.notify_on_snatch = self._get_config_file_value(config_object, 'Slack', 'slack_notify_onsnatch', default=self.slack.notify_on_snatch,
+                                                                  field_type=bool)
+        self.slack.notify_on_download = self._get_config_file_value(config_object, 'Slack', 'slack_notify_ondownload', default=self.slack.notify_on_download,
+                                                                    field_type=bool)
+        self.slack.notify_on_subtitle_download = self._get_config_file_value(config_object, 'Slack', 'slack_notify_onsubtitledownload',
+                                                                             default=self.slack.notify_on_subtitle_download, field_type=bool)
+        self.slack.webhook = self._get_config_file_value(config_object, 'Slack', 'slack_webhook', default=self.slack.webhook, field_type=str)
 
         # DISCORD SETTINGS
-        self.discord.enable = self._get_config_file_value(config_object, 'Discord', 'use_discord', field_type=bool)
-        self.discord.notify_on_snatch = self._get_config_file_value(config_object, 'Discord', 'discord_notify_onsnatch', field_type=bool)
-        self.discord.notify_on_download = self._get_config_file_value(config_object, 'Discord', 'discord_notify_ondownload', field_type=bool)
+        self.discord.enable = self._get_config_file_value(config_object, 'Discord', 'use_discord', default=self.discord.enable, field_type=bool)
+        self.discord.notify_on_snatch = self._get_config_file_value(config_object, 'Discord', 'discord_notify_onsnatch', default=self.discord.notify_on_snatch,
+                                                                    field_type=bool)
+        self.discord.notify_on_download = self._get_config_file_value(config_object, 'Discord', 'discord_notify_ondownload',
+                                                                      default=self.discord.notify_on_download, field_type=bool)
         self.discord.notify_on_subtitle_download = self._get_config_file_value(config_object, 'Discord', 'discord_notify_onsubtitledownload',
                                                                                field_type=bool)
-        self.discord.webhook = self._get_config_file_value(config_object, 'Discord', 'discord_webhook', field_type=str)
-        self.discord.avatar_url = self._get_config_file_value(config_object, 'Discord', 'discord_avatar_url', field_type=str)
-        self.discord.name = self._get_config_file_value(config_object, 'Discord', 'discord_name', field_type=str)
-        self.discord.tts = self._get_config_file_value(config_object, 'Discord', 'discord_tts', field_type=bool)
+        self.discord.webhook = self._get_config_file_value(config_object, 'Discord', 'discord_webhook', default=self.discord.webhook, field_type=str)
+        self.discord.avatar_url = self._get_config_file_value(config_object, 'Discord', 'discord_avatar_url', default=self.discord.avatar_url, field_type=str)
+        self.discord.name = self._get_config_file_value(config_object, 'Discord', 'discord_name', default=self.discord.name, field_type=str)
+        self.discord.tts = self._get_config_file_value(config_object, 'Discord', 'discord_tts', default=self.discord.tts, field_type=bool)
 
         # TRAKT SETTINGS
-        self.trakt.enable = self._get_config_file_value(config_object, 'Trakt', 'use_trakt', field_type=bool)
-        self.trakt.username = self._get_config_file_value(config_object, 'Trakt', 'trakt_username', field_type=str)
-        self.trakt.remove_watchlist = self._get_config_file_value(config_object, 'Trakt', 'trakt_remove_watchlist', field_type=bool)
-        self.trakt.remove_serieslist = self._get_config_file_value(config_object, 'Trakt', 'trakt_remove_serieslist', field_type=bool)
-        self.trakt.remove_show_from_sickrage = self._get_config_file_value(config_object, 'Trakt', 'trakt_remove_show_from_sickrage', field_type=bool)
-        self.trakt.sync_watchlist = self._get_config_file_value(config_object, 'Trakt', 'trakt_sync_watchlist', field_type=bool)
-        self.trakt.method_add = TraktAddMethod(self._get_config_file_value(config_object, 'Trakt', 'trakt_method_add', field_type=int))
-        self.trakt.start_paused = self._get_config_file_value(config_object, 'Trakt', 'trakt_start_paused', field_type=bool)
-        self.trakt.use_recommended = self._get_config_file_value(config_object, 'Trakt', 'trakt_use_recommended', field_type=bool)
-        self.trakt.sync = self._get_config_file_value(config_object, 'Trakt', 'trakt_sync', field_type=bool)
-        self.trakt.sync_remove = self._get_config_file_value(config_object, 'Trakt', 'trakt_sync_remove', field_type=bool)
+        self.trakt.enable = self._get_config_file_value(config_object, 'Trakt', 'use_trakt', default=self.trakt.enable, field_type=bool)
+        self.trakt.username = self._get_config_file_value(config_object, 'Trakt', 'trakt_username', default=self.trakt.username, field_type=str)
+        self.trakt.remove_watchlist = self._get_config_file_value(config_object, 'Trakt', 'trakt_remove_watchlist', default=self.trakt.remove_watchlist,
+                                                                  field_type=bool)
+        self.trakt.remove_serieslist = self._get_config_file_value(config_object, 'Trakt', 'trakt_remove_serieslist', default=self.trakt.remove_serieslist,
+                                                                   field_type=bool)
+        self.trakt.remove_show_from_sickrage = self._get_config_file_value(config_object, 'Trakt', 'trakt_remove_show_from_sickrage',
+                                                                           default=self.trakt.remove_show_from_sickrage, field_type=bool)
+        self.trakt.sync_watchlist = self._get_config_file_value(config_object, 'Trakt', 'trakt_sync_watchlist', default=self.trakt.sync_watchlist,
+                                                                field_type=bool)
+        self.trakt.method_add = TraktAddMethod(
+            self._get_config_file_value(config_object, 'Trakt', 'trakt_method_add', default=self.trakt.method_add, field_type=int))
+        self.trakt.start_paused = self._get_config_file_value(config_object, 'Trakt', 'trakt_start_paused', default=self.trakt.start_paused, field_type=bool)
+        self.trakt.use_recommended = self._get_config_file_value(config_object, 'Trakt', 'trakt_use_recommended', default=self.trakt.use_recommended,
+                                                                 field_type=bool)
+        self.trakt.sync = self._get_config_file_value(config_object, 'Trakt', 'trakt_sync', default=self.trakt.sync, field_type=bool)
+        self.trakt.sync_remove = self._get_config_file_value(config_object, 'Trakt', 'trakt_sync_remove', default=self.trakt.sync_remove, field_type=bool)
         self.trakt.series_provider_default = SeriesProviderID.THETVDB
-        self.trakt.timeout = self._get_config_file_value(config_object, 'Trakt', 'trakt_timeout', field_type=int)
-        self.trakt.blacklist_name = self._get_config_file_value(config_object, 'Trakt', 'trakt_blacklist_name', field_type=str)
+        self.trakt.timeout = self._get_config_file_value(config_object, 'Trakt', 'trakt_timeout', default=self.trakt.timeout, field_type=int)
+        self.trakt.blacklist_name = self._get_config_file_value(config_object, 'Trakt', 'trakt_blacklist_name', default=self.trakt.blacklist_name,
+                                                                field_type=str)
 
         # PYTIVO SETTINGS
-        self.pytivo.enable = self._get_config_file_value(config_object, 'pyTivo', 'use_pytivo', field_type=bool)
-        self.pytivo.notify_on_snatch = self._get_config_file_value(config_object, 'pyTivo', 'pytivo_notify_onsnatch', field_type=bool)
-        self.pytivo.notify_on_download = self._get_config_file_value(config_object, 'pyTivo', 'pytivo_notify_ondownload', field_type=bool)
+        self.pytivo.enable = self._get_config_file_value(config_object, 'pyTivo', 'use_pytivo', default=self.pytivo.enable, field_type=bool)
+        self.pytivo.notify_on_snatch = self._get_config_file_value(config_object, 'pyTivo', 'pytivo_notify_onsnatch', default=self.pytivo.notify_on_snatch,
+                                                                   field_type=bool)
+        self.pytivo.notify_on_download = self._get_config_file_value(config_object, 'pyTivo', 'pytivo_notify_ondownload',
+                                                                     default=self.pytivo.notify_on_download, field_type=bool)
         self.pytivo.notify_on_subtitle_download = self._get_config_file_value(config_object, 'pyTivo', 'pytivo_notify_onsubtitledownload',
                                                                               field_type=bool)
-        self.pytivo.update_library = self._get_config_file_value(config_object, 'pyTivo', 'pyTivo_update_library', field_type=bool)
-        self.pytivo.host = self._get_config_file_value(config_object, 'pyTivo', 'pytivo_host', field_type=str)
-        self.pytivo.share_name = self._get_config_file_value(config_object, 'pyTivo', 'pytivo_share_name', field_type=str)
-        self.pytivo.tivo_name = self._get_config_file_value(config_object, 'pyTivo', 'pytivo_tivo_name', field_type=str)
+        self.pytivo.update_library = self._get_config_file_value(config_object, 'pyTivo', 'pyTivo_update_library', default=self.pytivo.update_library,
+                                                                 field_type=bool)
+        self.pytivo.host = self._get_config_file_value(config_object, 'pyTivo', 'pytivo_host', default=self.pytivo.host, field_type=str)
+        self.pytivo.share_name = self._get_config_file_value(config_object, 'pyTivo', 'pytivo_share_name', default=self.pytivo.share_name, field_type=str)
+        self.pytivo.tivo_name = self._get_config_file_value(config_object, 'pyTivo', 'pytivo_tivo_name', default=self.pytivo.tivo_name, field_type=str)
 
         # NMA SETTINGS
-        self.nma.enable = self._get_config_file_value(config_object, 'NMA', 'use_nma', field_type=bool)
-        self.nma.notify_on_snatch = self._get_config_file_value(config_object, 'NMA', 'nma_notify_onsnatch', field_type=bool)
-        self.nma.notify_on_download = self._get_config_file_value(config_object, 'NMA', 'nma_notify_ondownload', field_type=bool)
-        self.nma.notify_on_subtitle_download = self._get_config_file_value(config_object, 'NMA', 'nma_notify_onsubtitledownload', field_type=bool)
-        self.nma.api_keys = self._get_config_file_value(config_object, 'NMA', 'nma_api', field_type=str)
-        self.nma.priority = self._get_config_file_value(config_object, 'NMA', 'nma_priority', field_type=str)
+        self.nma.enable = self._get_config_file_value(config_object, 'NMA', 'use_nma', default=self.nma.enable, field_type=bool)
+        self.nma.notify_on_snatch = self._get_config_file_value(config_object, 'NMA', 'nma_notify_onsnatch', default=self.nma.notify_on_snatch, field_type=bool)
+        self.nma.notify_on_download = self._get_config_file_value(config_object, 'NMA', 'nma_notify_ondownload', default=self.nma.notify_on_download,
+                                                                  field_type=bool)
+        self.nma.notify_on_subtitle_download = self._get_config_file_value(config_object, 'NMA', 'nma_notify_onsubtitledownload',
+                                                                           default=self.nma.notify_on_subtitle_download, field_type=bool)
+        self.nma.api_keys = self._get_config_file_value(config_object, 'NMA', 'nma_api', default=self.nma.api_keys, field_type=str)
+        self.nma.priority = self._get_config_file_value(config_object, 'NMA', 'nma_priority', default=self.nma.priority, field_type=str)
 
         # PUSHALOT SETTINGS
-        self.pushalot.enable = self._get_config_file_value(config_object, 'Pushalot', 'use_pushalot', field_type=bool)
-        self.pushalot.notify_on_snatch = self._get_config_file_value(config_object, 'Pushalot', 'pushalot_notify_onsnatch', field_type=bool)
-        self.pushalot.notify_on_download = self._get_config_file_value(config_object, 'Pushalot', 'pushalot_notify_ondownload', field_type=bool)
+        self.pushalot.enable = self._get_config_file_value(config_object, 'Pushalot', 'use_pushalot', default=self.pushalot.enable, field_type=bool)
+        self.pushalot.notify_on_snatch = self._get_config_file_value(config_object, 'Pushalot', 'pushalot_notify_onsnatch',
+                                                                     default=self.pushalot.notify_on_snatch, field_type=bool)
+        self.pushalot.notify_on_download = self._get_config_file_value(config_object, 'Pushalot', 'pushalot_notify_ondownload',
+                                                                       default=self.pushalot.notify_on_download, field_type=bool)
         self.pushalot.notify_on_subtitle_download = self._get_config_file_value(config_object, 'Pushalot', 'pushalot_notify_onsubtitledownload',
                                                                                 field_type=bool)
-        self.pushalot.auth_token = self._get_config_file_value(config_object, 'Pushalot', 'pushalot_authorizationtoken', field_type=str)
+        self.pushalot.auth_token = self._get_config_file_value(config_object, 'Pushalot', 'pushalot_authorizationtoken', default=self.pushalot.auth_token,
+                                                               field_type=str)
 
         # PUSHBULLET SETTINGS
-        self.pushbullet.enable = self._get_config_file_value(config_object, 'Pushbullet', 'use_pushbullet', field_type=bool)
-        self.pushbullet.notify_on_snatch = self._get_config_file_value(config_object, 'Pushbullet', 'pushbullet_notify_onsnatch', field_type=bool)
-        self.pushbullet.notify_on_download = self._get_config_file_value(config_object, 'Pushbullet', 'pushbullet_notify_ondownload', field_type=bool)
+        self.pushbullet.enable = self._get_config_file_value(config_object, 'Pushbullet', 'use_pushbullet', default=self.pushbullet.enable, field_type=bool)
+        self.pushbullet.notify_on_snatch = self._get_config_file_value(config_object, 'Pushbullet', 'pushbullet_notify_onsnatch',
+                                                                       default=self.pushbullet.notify_on_snatch, field_type=bool)
+        self.pushbullet.notify_on_download = self._get_config_file_value(config_object, 'Pushbullet', 'pushbullet_notify_ondownload',
+                                                                         default=self.pushbullet.notify_on_download, field_type=bool)
         self.pushbullet.notify_on_subtitle_download = self._get_config_file_value(config_object, 'Pushbullet', 'pushbullet_notify_onsubtitledownload',
                                                                                   field_type=bool)
-        self.pushbullet.api_key = self._get_config_file_value(config_object, 'Pushbullet', 'pushbullet_api', field_type=str)
-        self.pushbullet.device = self._get_config_file_value(config_object, 'Pushbullet', 'pushbullet_device', field_type=str)
+        self.pushbullet.api_key = self._get_config_file_value(config_object, 'Pushbullet', 'pushbullet_api', default=self.pushbullet.api_key, field_type=str)
+        self.pushbullet.device = self._get_config_file_value(config_object, 'Pushbullet', 'pushbullet_device', default=self.pushbullet.device, field_type=str)
 
         # EMAIL SETTINGS
-        self.email.enable = self._get_config_file_value(config_object, 'Email', 'use_email', field_type=bool)
-        self.email.notify_on_snatch = self._get_config_file_value(config_object, 'Email', 'email_notify_onsnatch', field_type=bool)
-        self.email.notify_on_download = self._get_config_file_value(config_object, 'Email', 'email_notify_ondownload', field_type=bool)
-        self.email.notify_on_subtitle_download = self._get_config_file_value(config_object, 'Email', 'email_notify_onsubtitledownload', field_type=bool)
-        self.email.host = self._get_config_file_value(config_object, 'Email', 'email_host', field_type=str)
-        self.email.port = self._get_config_file_value(config_object, 'Email', 'email_port', field_type=int)
-        self.email.tls = self._get_config_file_value(config_object, 'Email', 'email_tls', field_type=bool)
-        self.email.username = self._get_config_file_value(config_object, 'Email', 'email_user', field_type=str)
-        self.email.password = self._get_config_file_value(config_object, 'Email', 'email_password', field_type=str)
-        self.email.send_from = self._get_config_file_value(config_object, 'Email', 'email_from', field_type=str)
-        self.email.send_to_list = self._get_config_file_value(config_object, 'Email', 'email_list', field_type=str)
+        self.email.enable = self._get_config_file_value(config_object, 'Email', 'use_email', default=self.email.enable, field_type=bool)
+        self.email.notify_on_snatch = self._get_config_file_value(config_object, 'Email', 'email_notify_onsnatch', default=self.email.notify_on_snatch,
+                                                                  field_type=bool)
+        self.email.notify_on_download = self._get_config_file_value(config_object, 'Email', 'email_notify_ondownload', default=self.email.notify_on_download,
+                                                                    field_type=bool)
+        self.email.notify_on_subtitle_download = self._get_config_file_value(config_object, 'Email', 'email_notify_onsubtitledownload',
+                                                                             default=self.email.notify_on_subtitle_download, field_type=bool)
+        self.email.host = self._get_config_file_value(config_object, 'Email', 'email_host', default=self.email.host, field_type=str)
+        self.email.port = self._get_config_file_value(config_object, 'Email', 'email_port', default=self.email.port, field_type=int)
+        self.email.tls = self._get_config_file_value(config_object, 'Email', 'email_tls', default=self.email.tls, field_type=bool)
+        self.email.username = self._get_config_file_value(config_object, 'Email', 'email_user', default=self.email.username, field_type=str)
+        self.email.password = self._get_config_file_value(config_object, 'Email', 'email_password', default=self.email.password, field_type=str)
+        self.email.send_from = self._get_config_file_value(config_object, 'Email', 'email_from', default=self.email.send_from, field_type=str)
+        self.email.send_to_list = self._get_config_file_value(config_object, 'Email', 'email_list', default=self.email.send_to_list, field_type=str)
 
         # ALEXA SETTINGS
-        self.alexa.enable = self._get_config_file_value(config_object, 'Alexa', 'use_alexa', field_type=bool)
-        self.alexa.notify_on_snatch = self._get_config_file_value(config_object, 'Alexa', 'alexa_notify_onsnatch', field_type=bool)
-        self.alexa.notify_on_download = self._get_config_file_value(config_object, 'Alexa', 'alexa_notify_ondownload', field_type=bool)
-        self.alexa.notify_on_subtitle_download = self._get_config_file_value(config_object, 'Alexa', 'alexa_notify_onsubtitledownload', field_type=bool)
+        self.alexa.enable = self._get_config_file_value(config_object, 'Alexa', 'use_alexa', default=self.alexa.enable, field_type=bool)
+        self.alexa.notify_on_snatch = self._get_config_file_value(config_object, 'Alexa', 'alexa_notify_onsnatch', default=self.alexa.notify_on_snatch,
+                                                                  field_type=bool)
+        self.alexa.notify_on_download = self._get_config_file_value(config_object, 'Alexa', 'alexa_notify_ondownload', default=self.alexa.notify_on_download,
+                                                                    field_type=bool)
+        self.alexa.notify_on_subtitle_download = self._get_config_file_value(config_object, 'Alexa', 'alexa_notify_onsubtitledownload',
+                                                                             default=self.alexa.notify_on_subtitle_download, field_type=bool)
 
         # SUBTITLE SETTINGS
-        self.subtitles.enable = self._get_config_file_value(config_object, 'Subtitles', 'use_subtitles', field_type=bool)
-        self.subtitles.languages = ','.join(self._get_config_file_value(config_object, 'Subtitles', 'subtitles_languages', field_type=list))
-        self.subtitles.services_list = ','.join(self._get_config_file_value(config_object, 'Subtitles', 'subtitles_services_list', field_type=list))
-        self.subtitles.dir = self._get_config_file_value(config_object, 'Subtitles', 'subtitles_dir', field_type=str)
-        self.subtitles.default = self._get_config_file_value(config_object, 'Subtitles', 'subtitles_default', field_type=bool)
-        self.subtitles.history = self._get_config_file_value(config_object, 'Subtitles', 'subtitles_history', field_type=bool)
-        self.subtitles.hearing_impaired = self._get_config_file_value(config_object, 'Subtitles', 'subtitles_hearing_impaired', field_type=bool)
-        self.subtitles.enable_embedded = self._get_config_file_value(config_object, 'Subtitles', 'embedded_subtitles_all', field_type=bool)
-        self.subtitles.multi = self._get_config_file_value(config_object, 'Subtitles', 'subtitles_multi', field_type=bool)
-        self.subtitles.services_enabled = self._get_config_file_value(config_object, 'Subtitles', 'subtitles_services_enabled', field_type=str)
-        self.subtitles.extra_scripts = self._get_config_file_value(config_object, 'Subtitles', 'subtitles_extra_scripts', field_type=str)
-        self.subtitles.addic7ed_user = self._get_config_file_value(config_object, 'Subtitles', 'addic7ed_username', field_type=str)
-        self.subtitles.addic7ed_pass = self._get_config_file_value(config_object, 'Subtitles', 'addic7ed_password', field_type=str)
-        self.subtitles.legendastv_user = self._get_config_file_value(config_object, 'Subtitles', 'legendastv_username', field_type=str)
-        self.subtitles.legendastv_pass = self._get_config_file_value(config_object, 'Subtitles', 'legendastv_password', field_type=str)
-        self.subtitles.itasa_user = self._get_config_file_value(config_object, 'Subtitles', 'itasa_username', field_type=str)
-        self.subtitles.itasa_pass = self._get_config_file_value(config_object, 'Subtitles', 'itasa_password', field_type=str)
-        self.subtitles.opensubtitles_user = self._get_config_file_value(config_object, 'Subtitles', 'opensubtitles_username', field_type=str)
-        self.subtitles.opensubtitles_pass = self._get_config_file_value(config_object, 'Subtitles', 'opensubtitles_password', field_type=str)
+        self.subtitles.enable = self._get_config_file_value(config_object, 'Subtitles', 'use_subtitles', default=self.subtitles.enable, field_type=bool)
+        self.subtitles.languages = ','.join(
+            self._get_config_file_value(config_object, 'Subtitles', 'subtitles_languages', default=self.subtitles.languages, field_type=list))
+        self.subtitles.services_list = ','.join(
+            self._get_config_file_value(config_object, 'Subtitles', 'subtitles_services_list', default=self.subtitles.services_list, field_type=list))
+        self.subtitles.dir = self._get_config_file_value(config_object, 'Subtitles', 'subtitles_dir', default=self.subtitles.dir, field_type=str)
+        self.subtitles.default = self._get_config_file_value(config_object, 'Subtitles', 'subtitles_default', default=self.subtitles.default, field_type=bool)
+        self.subtitles.history = self._get_config_file_value(config_object, 'Subtitles', 'subtitles_history', default=self.subtitles.history, field_type=bool)
+        self.subtitles.hearing_impaired = self._get_config_file_value(config_object, 'Subtitles', 'subtitles_hearing_impaired',
+                                                                      default=self.subtitles.hearing_impaired, field_type=bool)
+        self.subtitles.enable_embedded = self._get_config_file_value(config_object, 'Subtitles', 'embedded_subtitles_all',
+                                                                     default=self.subtitles.enable_embedded, field_type=bool)
+        self.subtitles.multi = self._get_config_file_value(config_object, 'Subtitles', 'subtitles_multi', default=self.subtitles.multi, field_type=bool)
+        self.subtitles.services_enabled = self._get_config_file_value(config_object, 'Subtitles', 'subtitles_services_enabled',
+                                                                      default=self.subtitles.services_enabled, field_type=str)
+        self.subtitles.extra_scripts = self._get_config_file_value(config_object, 'Subtitles', 'subtitles_extra_scripts', default=self.subtitles.extra_scripts,
+                                                                   field_type=str)
+        self.subtitles.addic7ed_user = self._get_config_file_value(config_object, 'Subtitles', 'addic7ed_username', default=self.subtitles.addic7ed_user,
+                                                                   field_type=str)
+        self.subtitles.addic7ed_pass = self._get_config_file_value(config_object, 'Subtitles', 'addic7ed_password', default=self.subtitles.addic7ed_pass,
+                                                                   field_type=str)
+        self.subtitles.legendastv_user = self._get_config_file_value(config_object, 'Subtitles', 'legendastv_username', default=self.subtitles.legendastv_user,
+                                                                     field_type=str)
+        self.subtitles.legendastv_pass = self._get_config_file_value(config_object, 'Subtitles', 'legendastv_password', default=self.subtitles.legendastv_pass,
+                                                                     field_type=str)
+        self.subtitles.itasa_user = self._get_config_file_value(config_object, 'Subtitles', 'itasa_username', default=self.subtitles.itasa_user, field_type=str)
+        self.subtitles.itasa_pass = self._get_config_file_value(config_object, 'Subtitles', 'itasa_password', default=self.subtitles.itasa_pass, field_type=str)
+        self.subtitles.opensubtitles_user = self._get_config_file_value(config_object, 'Subtitles', 'opensubtitles_username',
+                                                                        default=self.subtitles.opensubtitles_user, field_type=str)
+        self.subtitles.opensubtitles_pass = self._get_config_file_value(config_object, 'Subtitles', 'opensubtitles_password',
+                                                                        default=self.subtitles.opensubtitles_pass, field_type=str)
 
         # FAILED DOWNLOAD SETTINGS
-        self.failed_downloads.enable = self._get_config_file_value(config_object, 'FailedDownloads', 'delete_failed', field_type=bool)
+        self.failed_downloads.enable = self._get_config_file_value(config_object, 'FailedDownloads', 'delete_failed', default=self.failed_downloads.enable,
+                                                                   field_type=bool)
 
         # FAILED SNATCH SETTINGS
-        self.failed_snatches.enable = self._get_config_file_value(config_object, 'FailedSnatches', 'use_failed_snatcher', field_type=bool)
-        self.failed_snatches.age = self._get_config_file_value(config_object, 'FailedSnatches', 'failed_snatch_age', field_type=int)
+        self.failed_snatches.enable = self._get_config_file_value(config_object, 'FailedSnatches', 'use_failed_snatcher', default=self.failed_snatches.enable,
+                                                                  field_type=bool)
+        self.failed_snatches.age = self._get_config_file_value(config_object, 'FailedSnatches', 'failed_snatch_age', default=self.failed_snatches.age,
+                                                               field_type=int)
 
         # ANIDB SETTINGS
-        self.anidb.enable = self._get_config_file_value(config_object, 'ANIDB', 'use_anidb', field_type=bool)
-        self.anidb.username = self._get_config_file_value(config_object, 'ANIDB', 'anidb_username', field_type=str)
-        self.anidb.password = self._get_config_file_value(config_object, 'ANIDB', 'anidb_password', field_type=str)
-        self.anidb.use_my_list = self._get_config_file_value(config_object, 'ANIDB', 'anidb_use_mylist', field_type=bool)
-        self.anidb.split_home = self._get_config_file_value(config_object, 'ANIME', 'anime_split_home', field_type=bool)
+        self.anidb.enable = self._get_config_file_value(config_object, 'ANIDB', 'use_anidb', default=self.anidb.enable, field_type=bool)
+        self.anidb.username = self._get_config_file_value(config_object, 'ANIDB', 'anidb_username', default=self.anidb.username, field_type=str)
+        self.anidb.password = self._get_config_file_value(config_object, 'ANIDB', 'anidb_password', default=self.anidb.password, field_type=str)
+        self.anidb.use_my_list = self._get_config_file_value(config_object, 'ANIDB', 'anidb_use_mylist', default=self.anidb.use_my_list, field_type=bool)
+        self.anidb.split_home = self._get_config_file_value(config_object, 'ANIME', 'anime_split_home', default=self.anidb.split_home, field_type=bool)
 
         # CUSTOM SEARCH PROVIDERS
         custom_providers = self._get_config_file_value(config_object, 'Providers', 'custom_providers', field_type=str)
