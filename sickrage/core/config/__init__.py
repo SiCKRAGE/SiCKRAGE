@@ -692,8 +692,10 @@ class Config(object):
         self.general.handle_reverse_proxy = self._get_config_file_value(config_object, 'General', 'handle_reverse_proxy', field_type=bool)
         self.general.root_dirs = self._get_config_file_value(config_object, 'General', 'root_dirs', field_type=str)
         self.general.quality_default = Qualities(self._get_config_file_value(config_object, 'General', 'quality_default', field_type=int))
-        self.general.status_default = EpisodeStatus(self._get_config_file_value(config_object, 'General', 'status_default', field_type=int))
-        self.general.status_default_after = EpisodeStatus(self._get_config_file_value(config_object, 'General', 'status_default_after', field_type=int))
+        self.general.status_default = EpisodeStatus(
+            self._get_config_file_value(config_object, 'General', 'status_default', default=EpisodeStatus.SKIPPED.value, field_type=int))
+        self.general.status_default_after = EpisodeStatus(
+            self._get_config_file_value(config_object, 'General', 'status_default_after', default=EpisodeStatus.WANTED.value, field_type=int))
         self.general.enable_upnp = self._get_config_file_value(config_object, 'General', 'enable_upnp', field_type=bool)
         self.general.version_notify = self._get_config_file_value(config_object, 'General', 'version_notify', field_type=bool)
         self.general.auto_update = self._get_config_file_value(config_object, 'General', 'auto_update', field_type=bool)

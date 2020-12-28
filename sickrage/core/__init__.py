@@ -326,7 +326,7 @@ class Core(object):
         self.config.load()
 
         # migrate config
-        if os.path.exists(self.config_file):
+        if os.path.exists(self.config_file) and not os.path.exists(self.config.db.db_path):
             self.config.migrate_config_file(self.config_file)
 
         # set language
