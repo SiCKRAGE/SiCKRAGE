@@ -642,14 +642,17 @@ class Config(object):
 
         # GENERAL SETTINGS
         self.general.server_id = self._get_config_file_value(config_object, 'General', 'server_id', default=self.general.server_id, field_type=str)
-        self.general.sso_auth_enabled = self._get_config_file_value(config_object, 'General', 'sso_auth_enabled', default=self.general.sso_auth_enabled, field_type=bool)
-        self.general.local_auth_enabled = self._get_config_file_value(config_object, 'General', 'local_auth_enabled', default=self.general.local_auth_enabled, field_type=bool)
-        self.general.ip_whitelist_enabled = self._get_config_file_value(config_object, 'General', 'ip_whitelist_enabled', default=self.general.ip_whitelist_enabled,
+        self.general.sso_auth_enabled = self._get_config_file_value(config_object, 'General', 'sso_auth_enabled', default=self.general.sso_auth_enabled,
+                                                                    field_type=bool)
+        self.general.local_auth_enabled = self._get_config_file_value(config_object, 'General', 'local_auth_enabled', default=self.general.local_auth_enabled,
+                                                                      field_type=bool)
+        self.general.ip_whitelist_enabled = self._get_config_file_value(config_object, 'General', 'ip_whitelist_enabled',
+                                                                        default=self.general.ip_whitelist_enabled,
                                                                         field_type=bool)
         self.general.ip_whitelist_localhost_enabled = self._get_config_file_value(config_object, 'General', 'ip_whitelist_localhost_enabled',
                                                                                   default=self.general.ip_whitelist_localhost_enabled, field_type=bool)
         self.general.ip_whitelist = self._get_config_file_value(config_object, 'General', 'ip_whitelist', default=self.general.ip_whitelist, field_type=str)
-        if not any([self.general.sso_auth_enabled, self.general.local_auth_enabled, self.general.ip_whitelist_enabled]):
+        if not any([self.general.sso_auth_enabled, self.general.local_auth_enabled]):
             self.general.sso_auth_enabled = True
 
         self.general.enable_sickrage_api = self._get_config_file_value(config_object, 'General', 'enable_sickrage_api',
@@ -661,7 +664,8 @@ class Config(object):
                                                           field_type=int)
         self.general.log_size = self._get_config_file_value(config_object, 'General', 'log_size', default=self.general.log_size,
                                                             field_type=int)
-        self.general.socket_timeout = self._get_config_file_value(config_object, 'General', 'socket_timeout', default=self.general.socket_timeout, field_type=int)
+        self.general.socket_timeout = self._get_config_file_value(config_object, 'General', 'socket_timeout', default=self.general.socket_timeout,
+                                                                  field_type=int)
         self.general.default_page = DefaultHomePage[self._get_config_file_value(config_object, 'General', 'default_page', default=DefaultHomePage.HOME.name,
                                                                                 field_type=str.upper)]
         self.general.pip3_path = self._get_config_file_value(config_object, 'General', 'pip3_path', default=self.general.pip3_path, field_type=str)
@@ -669,15 +673,19 @@ class Config(object):
                                                             field_type=str)
         self.general.git_reset = self._get_config_file_value(config_object, 'General', 'git_reset', default=self.general.git_reset, field_type=bool)
         self.general.web_port = self._get_config_file_value(config_object, 'General', 'web_port', default=self.general.web_port, field_type=int)
-        self.general.web_host = self._get_config_file_value(config_object, 'General', 'web_host',  default=self.general.web_host, field_type=str)
+        self.general.web_host = self._get_config_file_value(config_object, 'General', 'web_host', default=self.general.web_host, field_type=str)
         self.general.web_log = self._get_config_file_value(config_object, 'General', 'web_log', default=self.general.web_log, field_type=str)
-        self.general.web_external_port = self._get_config_file_value(config_object, 'General', 'web_external_port', default=self.general.web_external_port, field_type=int)
+        self.general.web_external_port = self._get_config_file_value(config_object, 'General', 'web_external_port', default=self.general.web_external_port,
+                                                                     field_type=int)
         self.general.web_ipv6 = self._get_config_file_value(config_object, 'General', 'web_ipv6', default=self.general.web_ipv6, field_type=bool)
-        self.general.web_root = self._get_config_file_value(config_object, 'General', 'web_root', default=self.general.web_root, field_type=str).lstrip('/').rstrip('/')
-        self.general.web_cookie_secret = self._get_config_file_value(config_object, 'General', 'web_cookie_secret', default=self.general.web_cookie_secret, field_type=str)
+        self.general.web_root = self._get_config_file_value(config_object, 'General', 'web_root', default=self.general.web_root, field_type=str).lstrip(
+            '/').rstrip('/')
+        self.general.web_cookie_secret = self._get_config_file_value(config_object, 'General', 'web_cookie_secret', default=self.general.web_cookie_secret,
+                                                                     field_type=str)
         self.general.web_use_gzip = self._get_config_file_value(config_object, 'General', 'web_use_gzip', default=self.general.web_use_gzip, field_type=bool)
         self.general.ssl_verify = self._get_config_file_value(config_object, 'General', 'ssl_verify', default=self.general.ssl_verify, field_type=bool)
-        self.general.launch_browser = self._get_config_file_value(config_object, 'General', 'launch_browser', default=self.general.launch_browser, field_type=bool)
+        self.general.launch_browser = self._get_config_file_value(config_object, 'General', 'launch_browser', default=self.general.launch_browser,
+                                                                  field_type=bool)
         self.general.series_provider_default_language = self._get_config_file_value(config_object, 'General', 'indexer_default_lang',
                                                                                     default=self.general.series_provider_default_language, field_type=str)
         self.general.ep_default_deleted_status = EpisodeStatus(
@@ -685,13 +693,16 @@ class Config(object):
         self.general.download_url = self._get_config_file_value(config_object, 'General', 'download_url', default=self.general.download_url, field_type=str)
         self.general.cpu_preset = CpuPreset[
             self._get_config_file_value(config_object, 'General', 'cpu_preset', default=CpuPreset.NORMAL.name, field_type=str.upper)]
-        self.general.max_queue_workers = self._get_config_file_value(config_object, 'General', 'max_queue_workers', default=self.general.max_queue_workers, field_type=int)
+        self.general.max_queue_workers = self._get_config_file_value(config_object, 'General', 'max_queue_workers', default=self.general.max_queue_workers,
+                                                                     field_type=int)
         self.general.anon_redirect = self._get_config_file_value(config_object, 'General', 'anon_redirect', default=self.general.anon_redirect, field_type=str)
         self.general.proxy_setting = self._get_config_file_value(config_object, 'General', 'proxy_setting', default=self.general.proxy_setting, field_type=str)
         self.general.proxy_series_providers = self._get_config_file_value(config_object, 'General', 'proxy_indexers',
                                                                           default=self.general.proxy_series_providers, field_type=bool)
-        self.general.trash_remove_show = self._get_config_file_value(config_object, 'General', 'trash_remove_show', default=self.general.trash_remove_show, field_type=bool)
-        self.general.trash_rotate_logs = self._get_config_file_value(config_object, 'General', 'trash_rotate_logs', default=self.general.trash_rotate_logs, field_type=bool)
+        self.general.trash_remove_show = self._get_config_file_value(config_object, 'General', 'trash_remove_show', default=self.general.trash_remove_show,
+                                                                     field_type=bool)
+        self.general.trash_rotate_logs = self._get_config_file_value(config_object, 'General', 'trash_rotate_logs', default=self.general.trash_rotate_logs,
+                                                                     field_type=bool)
         self.general.sort_article = self._get_config_file_value(config_object, 'General', 'sort_article', default=self.general.sort_article, field_type=bool)
         self.general.api_v1_key = self._get_config_file_value(config_object, 'General', 'api_key', default=self.general.api_v1_key, field_type=str)
         self.general.enable_https = self._get_config_file_value(config_object, 'General', 'enable_https', default=self.general.enable_https, field_type=bool)
@@ -707,11 +718,15 @@ class Config(object):
         self.general.status_default_after = EpisodeStatus(
             self._get_config_file_value(config_object, 'General', 'status_default_after', default=EpisodeStatus.WANTED.value, field_type=int))
         self.general.enable_upnp = self._get_config_file_value(config_object, 'General', 'enable_upnp', default=self.general.enable_upnp, field_type=bool)
-        self.general.version_notify = self._get_config_file_value(config_object, 'General', 'version_notify', default=self.general.version_notify, field_type=bool)
+        self.general.version_notify = self._get_config_file_value(config_object, 'General', 'version_notify', default=self.general.version_notify,
+                                                                  field_type=bool)
         self.general.auto_update = self._get_config_file_value(config_object, 'General', 'auto_update', default=self.general.auto_update, field_type=bool)
-        self.general.notify_on_update = self._get_config_file_value(config_object, 'General', 'notify_on_update', default=self.general.notify_on_update, field_type=bool)
-        self.general.backup_on_update = self._get_config_file_value(config_object, 'General', 'backup_on_update', default=self.general.backup_on_update, field_type=bool)
-        self.general.notify_on_login = self._get_config_file_value(config_object, 'General', 'notify_on_login', default=self.general.notify_on_login, field_type=bool)
+        self.general.notify_on_update = self._get_config_file_value(config_object, 'General', 'notify_on_update', default=self.general.notify_on_update,
+                                                                    field_type=bool)
+        self.general.backup_on_update = self._get_config_file_value(config_object, 'General', 'backup_on_update', default=self.general.backup_on_update,
+                                                                    field_type=bool)
+        self.general.notify_on_login = self._get_config_file_value(config_object, 'General', 'notify_on_login', default=self.general.notify_on_login,
+                                                                   field_type=bool)
         self.general.flatten_folders_default = self._get_config_file_value(config_object, 'General', 'flatten_folders_default',
                                                                            default=self.general.flatten_folders_default, field_type=bool)
         self.general.series_provider_default = SeriesProviderID.THETVDB
@@ -719,15 +734,18 @@ class Config(object):
                                                                            default=self.general.series_provider_timeout, field_type=int)
         self.general.anime_default = self._get_config_file_value(config_object, 'General', 'anime_default', default=self.general.anime_default, field_type=bool)
         self.general.search_format_default = SearchFormat(
-            self._get_config_file_value(config_object, 'General', 'search_format_default', field_type=int) or SearchFormat.STANDARD)
+            self._get_config_file_value(config_object, 'General', 'search_format_default', default=SearchFormat.STANDARD.value, field_type=int))
         self.general.scene_default = self._get_config_file_value(config_object, 'General', 'scene_default', default=self.general.scene_default, field_type=bool)
         self.general.skip_downloaded_default = self._get_config_file_value(config_object, 'General', 'skip_downloaded_default',
                                                                            default=self.general.skip_downloaded_default, field_type=bool)
         self.general.add_show_year_default = self._get_config_file_value(config_object, 'General', 'add_show_year_default',
                                                                          default=self.general.add_show_year_default, field_type=bool)
-        self.general.naming_pattern = self._get_config_file_value(config_object, 'General', 'naming_pattern', default=self.general.naming_pattern, field_type=str)
-        self.general.naming_abd_pattern = self._get_config_file_value(config_object, 'General', 'naming_abd_pattern', default=self.general.naming_abd_pattern, field_type=str)
-        self.general.naming_custom_abd = self._get_config_file_value(config_object, 'General', 'naming_custom_abd', default=self.general.naming_custom_abd, field_type=bool)
+        self.general.naming_pattern = self._get_config_file_value(config_object, 'General', 'naming_pattern', default=self.general.naming_pattern,
+                                                                  field_type=str)
+        self.general.naming_abd_pattern = self._get_config_file_value(config_object, 'General', 'naming_abd_pattern', default=self.general.naming_abd_pattern,
+                                                                      field_type=str)
+        self.general.naming_custom_abd = self._get_config_file_value(config_object, 'General', 'naming_custom_abd', default=self.general.naming_custom_abd,
+                                                                     field_type=bool)
         self.general.naming_sports_pattern = self._get_config_file_value(config_object, 'General', 'naming_sports_pattern',
                                                                          default=self.general.naming_sports_pattern, field_type=str)
         self.general.naming_anime_pattern = self._get_config_file_value(config_object, 'General', 'naming_anime_pattern',
@@ -741,7 +759,8 @@ class Config(object):
             self._get_config_file_value(config_object, 'General', 'naming_multi_ep', default=MultiEpNaming.REPEAT.value, field_type=int))
         self.general.naming_anime_multi_ep = MultiEpNaming(
             self._get_config_file_value(config_object, 'General', 'naming_anime_multi_ep', default=MultiEpNaming.REPEAT.value, field_type=int))
-        self.general.naming_strip_year = self._get_config_file_value(config_object, 'General', 'naming_strip_year', default=self.general.naming_strip_year, field_type=bool)
+        self.general.naming_strip_year = self._get_config_file_value(config_object, 'General', 'naming_strip_year', default=self.general.naming_strip_year,
+                                                                     field_type=bool)
         self.general.use_nzbs = self._get_config_file_value(config_object, 'General', 'use_nzbs', default=self.general.use_nzbs, field_type=bool)
         self.general.use_torrents = self._get_config_file_value(config_object, 'General', 'use_torrents', default=self.general.use_torrents, field_type=bool)
         self.general.nzb_method = NzbMethod[
