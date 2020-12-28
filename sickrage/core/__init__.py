@@ -284,8 +284,9 @@ class Core(object):
             success = restore_app_data(os.path.abspath(os.path.join(self.data_dir, 'restore')), self.data_dir)
             self.log.info("Restoring SiCKRAGE backup: %s!" % ("FAILED", "SUCCESSFUL")[success])
             if success:
-                # self.main_db = MainDB(self.db_type, self.db_prefix, self.db_host, self.db_port, self.db_username, self.db_password)
-                # self.cache_db = CacheDB(self.db_type, self.db_prefix, self.db_host, self.db_port, self.db_username, self.db_password)
+                self.config = Config(self.db_type, self.db_prefix, self.db_host, self.db_port, self.db_username, self.db_password)
+                self.main_db = MainDB(self.db_type, self.db_prefix, self.db_host, self.db_port, self.db_username, self.db_password)
+                self.cache_db = CacheDB(self.db_type, self.db_prefix, self.db_host, self.db_port, self.db_username, self.db_password)
                 shutil.rmtree(os.path.abspath(os.path.join(self.data_dir, 'restore')), ignore_errors=True)
 
         # migrate old database file names to new ones
@@ -591,8 +592,7 @@ class Core(object):
         self.log.info("SiCKRAGE :: DATABASE TYPE:[{}]".format(self.db_type))
         self.log.info("SiCKRAGE :: URL:[{}://{}:{}/{}]".format(('http', 'https')[self.config.general.enable_https],
                                                                (self.config.general.web_host, get_lan_ip())[self.config.general.web_host == '0.0.0.0'],
-                                                               self.config.general.web_port,
-                                                               self.config.general.web_root))
+                                                               self.config.general.web_port, self.config.general.web_root))
 
     def load_shows(self):
         threading.currentThread().setName('CORE')
