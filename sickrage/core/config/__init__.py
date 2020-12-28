@@ -618,10 +618,12 @@ class Config(object):
     def migrate_config_file(self, filename):
         # no config.ini is present to migrate
         if not os.path.exists(filename):
+            sickrage.app.log.debug(f'{filename} does not exist, skipping config.ini migration')
             return
 
         # config.ini has already been migrated
         if os.path.exists(f'{filename}.migrated'):
+            sickrage.app.log.debug(f'{filename} has already been migrated, skipping config.ini migration')
             return
 
         try:
@@ -1226,7 +1228,7 @@ class Config(object):
         os.rename(filename, f'{filename}.migrated')
 
         # rename old config private key
-        if not os.path.exists(private_key_filename):
+        if os.path.exists(private_key_filename):
             os.rename(private_key_filename, f'{private_key_filename}.migrated')
 
         sickrage.app.log.info("Migrating config file to database was successful!")
