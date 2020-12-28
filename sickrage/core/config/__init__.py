@@ -616,6 +616,14 @@ class Config(object):
         CustomStringEncryptedType.reset = False
 
     def migrate_config_file(self, filename):
+        # no config.ini is present to migrate
+        if not os.path.exists(filename):
+            return
+
+        # config.ini has already been migrated
+        if os.path.exists(f'{filename}.migrated'):
+            return
+
         try:
             private_key_filename = os.path.join(sickrage.app.data_dir, 'privatekey.pem')
             config_object = decrypt_config(filename, load_private_key(private_key_filename))
@@ -719,8 +727,8 @@ class Config(object):
         self.general.naming_anime = self._get_config_file_value(config_object, 'General', 'naming_anime', field_type=int)
         self.general.naming_custom_sports = self._get_config_file_value(config_object, 'General', 'naming_custom_sports', field_type=bool)
         self.general.naming_custom_anime = self._get_config_file_value(config_object, 'General', 'naming_custom_anime', field_type=bool)
-        self.general.naming_multi_ep = MultiEpNaming(self._get_config_file_value(config_object, 'General', 'naming_multi_ep', field_type=int))
-        self.general.naming_anime_multi_ep = MultiEpNaming(self._get_config_file_value(config_object, 'General', 'naming_anime_multi_ep', field_type=int))
+        self.general.naming_multi_ep = MultiEpNaming(self._get_config_file_value(config_object, 'General', 'naming_multi_ep', default=MultiEpNaming.REPEAT.value, field_type=int))
+        self.general.naming_anime_multi_ep = MultiEpNaming(self._get_config_file_value(config_object, 'General', 'naming_anime_multi_ep', default=MultiEpNaming.REPEAT.value, field_type=int))
         self.general.naming_strip_year = self._get_config_file_value(config_object, 'General', 'naming_strip_year', field_type=bool)
         self.general.use_nzbs = self._get_config_file_value(config_object, 'General', 'use_nzbs', field_type=bool)
         self.general.use_torrents = self._get_config_file_value(config_object, 'General', 'use_torrents', field_type=bool)
@@ -1214,12 +1222,12 @@ class Config(object):
 
         self.save()
 
-        # delete old config
-        os.remove(filename)
+        # rename old config
+        os.rename(filename, f'{filename}.migrated')
 
-        # delete old config private key
-        if os.path.exists(private_key_filename):
-            os.remove(private_key_filename)
+        # rename old config private key
+        if not os.path.exists(private_key_filename):
+            os.rename(private_key_filename, f'{private_key_filename}.migrated')
 
         sickrage.app.log.info("Migrating config file to database was successful!")
 

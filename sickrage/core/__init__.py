@@ -326,8 +326,15 @@ class Core(object):
         self.config.load()
 
         # migrate config
-        if os.path.exists(self.config_file) and not os.path.exists(self.config.db.db_path):
-            self.config.migrate_config_file(self.config_file)
+        self.config.migrate_config_file(self.config_file)
+
+        # config overrides
+        if self.web_port:
+            self.config.general.web_port = self.web_port
+        if self.web_root:
+            self.config.general.web_root = self.web_root
+        if self.web_host:
+            self.config.general.web_host = self.web_host
 
         # set language
         change_gui_lang(self.config.gui.gui_lang)
@@ -373,23 +380,23 @@ class Core(object):
         if self.config.general.torrent_method not in TorrentMethod:
             self.config.general.torrent_method = TorrentMethod.BLACKHOLE
 
-        # if self.config.general.auto_postprocessor_freq < self.sickrage.app.min_auto_postprocessor_freq:
-        #     self.config.general.auto_postprocessor_freq = self.sickrage.app.min_auto_postprocessor_freq
-        #
-        # if self.config.general.daily_searcher_freq < self.config.min_daily_searcher_freq:
-        #     self.config.general.daily_searcher_freq = self.config.min_daily_searcher_freq
-        #
-        # if self.config.general.backlog_searcher_freq < self.config.min_backlog_searcher_freq:
-        #     self.config.general.backlog_searcher_freq = self.config.min_backlog_searcher_freq
-        #
-        # if self.config.general.version_updater_freq < self.config.min_version_updater_freq:
-        #     self.config.general.version_updater_freq = self.config.min_version_updater_freq
-        #
-        # if self.config.general.subtitle_searcher_freq < self.config.min_subtitle_searcher_freq:
-        #     self.config.general.subtitle_searcher_freq = self.config.min_subtitle_searcher_freq
-        #
-        # if self.config.failed_snatches.age < self.config.min_failed_snatch_age:
-        #     self.config.failed_snatches.age = self.config.min_failed_snatch_age
+        if self.config.general.auto_postprocessor_freq < self.min_auto_postprocessor_freq:
+            self.config.general.auto_postprocessor_freq = self.min_auto_postprocessor_freq
+
+        if self.config.general.daily_searcher_freq < self.min_daily_searcher_freq:
+            self.config.general.daily_searcher_freq = self.min_daily_searcher_freq
+
+        if self.config.general.backlog_searcher_freq < self.min_backlog_searcher_freq:
+            self.config.general.backlog_searcher_freq = self.min_backlog_searcher_freq
+
+        if self.config.general.version_updater_freq < self.min_version_updater_freq:
+            self.config.general.version_updater_freq = self.min_version_updater_freq
+
+        if self.config.general.subtitle_searcher_freq < self.min_subtitle_searcher_freq:
+            self.config.general.subtitle_searcher_freq = self.min_subtitle_searcher_freq
+
+        if self.config.failed_snatches.age < self.min_failed_snatch_age:
+            self.config.failed_snatches.age = self.min_failed_snatch_age
 
         if self.config.general.proper_searcher_interval not in CheckPropersInterval:
             self.config.general.proper_searcher_interval = CheckPropersInterval.DAILY
