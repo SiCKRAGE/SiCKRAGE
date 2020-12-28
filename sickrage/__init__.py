@@ -347,7 +347,7 @@ def main():
         app = Core()
 
         app.quiet = args.quiet
-        app.host = args.host
+        app.web_host = args.host
         app.web_port = int(args.port)
         app.web_root = args.web_root.lstrip('/').rstrip('/')
         app.no_launch = args.nolaunch

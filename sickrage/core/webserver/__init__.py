@@ -479,7 +479,7 @@ class WebServer(threading.Thread):
         self.server = HTTPServer(self.app, ssl_options=ssl_ctx, xheaders=sickrage.app.config.general.handle_reverse_proxy)
 
         try:
-            self.server.listen(sickrage.app.config.general.web_port)
+            self.server.listen(sickrage.app.config.general.web_port, sickrage.app.config.general.web_host)
         except socket.error as e:
             sickrage.app.log.warning(e.strerror)
             raise SystemExit
