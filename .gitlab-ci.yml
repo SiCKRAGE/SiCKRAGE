@@ -98,7 +98,7 @@ stages:
 #  only:
 #    - merge_requests@SiCKRAGE/sickrage
 
-release:build:master:
+release_build_master:
   stage: release_build
   image:
     name: nikolaik/python-nodejs:python3.8-nodejs10-alpine
@@ -137,7 +137,7 @@ release:build:master:
     variables:
       - $CI_COMMIT_MESSAGE =~ /\[TASK\] Releasing/
 
-release:build:develop:
+release_build_develop:
   stage: release_build
   image:
     name: nikolaik/python-nodejs:python3.8-nodejs10-alpine
@@ -172,7 +172,7 @@ release:build:develop:
       - $CI_COMMIT_MESSAGE =~ /\[TASK\] Pre-Releasing/
       - $CI_COMMIT_MESSAGE =~ /\[TASK\] Bump/
 
-release:sentry:master:
+release_sentry_master:
   stage: release_sentry
   image:
     name: getsentry/sentry-cli
@@ -192,7 +192,7 @@ release:sentry:master:
     - branches
     - triggers
 
-release:sentry:develop:
+release_sentry_develop:
   stage: release_sentry
   image:
     name: getsentry/sentry-cli
@@ -212,7 +212,7 @@ release:sentry:develop:
     - branches
     - triggers
 
-deploy:pypi:
+deploy_pypi:
   stage: release_deploy
   image: python:3.8-alpine3.12
   script:
@@ -227,7 +227,7 @@ deploy:pypi:
     - branches
     - triggers
 
-deploy:docker:master:
+deploy_docker_master:
   stage: release_deploy
   trigger:
     project: sickrage/sickrage-docker
@@ -238,7 +238,7 @@ deploy:docker:master:
     - branches
     - triggers
 
-deploy:docker:develop:
+deploy_docker_develop:
   stage: release_deploy
   trigger:
     project: sickrage/sickrage-docker
@@ -249,7 +249,7 @@ deploy:docker:develop:
     - branches
     - triggers
 
-deploy:synology:master:
+deploy_synology_master:
   stage: release_deploy
   trigger:
     project: sickrage/sickrage-synology
@@ -260,7 +260,7 @@ deploy:synology:master:
     - branches
     - triggers
 
-deploy:synology:develop:
+deploy_synology_develop:
   stage: release_deploy
   trigger:
     project: sickrage/sickrage-synology
@@ -271,7 +271,7 @@ deploy:synology:develop:
     - branches
     - triggers
 
-deploy:readynas:master:
+deploy_readynas_master:
   stage: release_deploy
   variables:
     UPSTREAM_COMMIT_TAG: $CI_COMMIT_TAG
@@ -287,7 +287,7 @@ deploy:readynas:master:
     - branches
     - triggers
 
-deploy:qnap:master:
+deploy_qnap_master:
   stage: release_deploy
   variables:
     UPSTREAM_COMMIT_TAG: $CI_COMMIT_TAG
