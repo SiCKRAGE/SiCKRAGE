@@ -67,12 +67,11 @@ class BacklogSearcher(object):
 
         show_list = [find_show(series_id, series_provider_id)] if series_id and series_provider_id else get_show_list()
 
-        cur_date = datetime.datetime.now()
-        from_date = datetime.datetime.min
+        from_date = datetime.date.min
 
         if not series_id and self.forced:
             sickrage.app.log.info("Running limited backlog on missed episodes " + str(sickrage.app.config.general.backlog_days) + " day(s) old")
-            from_date = datetime.datetime.now() - datetime.timedelta(days=sickrage.app.config.general.backlog_days)
+            from_date = datetime.date.today() - datetime.timedelta(days=sickrage.app.config.general.backlog_days)
         else:
             sickrage.app.log.info('Running full backlog search on missed episodes for all shows')
 
@@ -93,8 +92,8 @@ class BacklogSearcher(object):
 
                 sickrage.app.search_queue.put(BacklogSearchTask(curShow.series_id, curShow.series_provider_id, season, episode))
 
-            if from_date == datetime.datetime.min and not series_id:
-                self._set_last_backlog_search(curShow, cur_date)
+            if from_date == datetime.date.min and not series_id:
+                self._set_last_backlog_search(curShow, datetime.datetime.now())
                 curShow.save()
 
     @staticmethod

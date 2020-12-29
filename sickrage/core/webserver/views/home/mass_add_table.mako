@@ -22,7 +22,7 @@
 
                     if curDir['existing_info'][0]:
                         series_id = "{}|{}|{}".format(series_id, curDir['existing_info'][0], curDir['existing_info'][1])
-                        series_provider_id = SeriesProviderID[curDir['existing_info'][2]]
+                        series_provider_id = curDir['existing_info'][2]
                 %>
 
                 <tr>

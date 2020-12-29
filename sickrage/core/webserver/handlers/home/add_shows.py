@@ -525,7 +525,7 @@ class AddExistingShowsHandler(BaseHandler, ABC):
 
             if series_provider_id is not None and series_id is not None:
                 # add the show
-                sickrage.app.show_queue.add_show(series_provider_id,
+                sickrage.app.show_queue.add_show(SeriesProviderID[series_provider_id],
                                                  series_id,
                                                  show_dir,
                                                  default_status=sickrage.app.config.general.status_default,
