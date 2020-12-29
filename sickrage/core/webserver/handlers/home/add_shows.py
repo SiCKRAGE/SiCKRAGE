@@ -29,11 +29,11 @@ from tornado.httputil import url_concat
 from tornado.web import authenticated
 
 import sickrage
+from sickrage.core.common import Quality, Qualities, EpisodeStatus
 from sickrage.core.enums import SearchFormat, SeriesProviderID
 from sickrage.core.helpers import sanitize_file_name, make_dir, chmod_as_parent, checkbox_to_value
 from sickrage.core.helpers.anidb import short_group_names
 from sickrage.core.imdb_popular import imdbPopular
-from sickrage.core.common import Quality, Qualities, EpisodeStatus
 from sickrage.core.traktapi import TraktAPI
 from sickrage.core.tv.show import TVShow
 from sickrage.core.tv.show.helpers import find_show, get_show_list, find_show_by_location
@@ -215,7 +215,7 @@ class NewShowHandler(BaseHandler, ABC):
                            provided_show_dir=show_dir,
                            provided_series_id=provided_series_id,
                            provided_series_name=provided_series_name,
-                           provided_series_provider_id=provided_series_provider_id,
+                           provided_series_provider_id=provided_series_provider_id.name,
                            series_providers=SeriesProviderID,
                            quality=sickrage.app.config.general.quality_default,
                            whitelist=[],
@@ -335,9 +335,11 @@ class AddShowByIDHandler(BaseHandler, ABC):
         show_dir = os.path.join(location, sanitize_file_name(show_name))
 
         return self.redirect(url_concat("/home/addShows/newShow",
-                                        {'show_to_add': '1|{show_dir}|{series_id}|{show_name}'.format(**{'show_dir': show_dir,
-                                                                                                         'series_id': series_id,
-                                                                                                         'show_name': show_name})}))
+                                        {'show_to_add': '{series_provider_id}|{show_dir}|{series_id}|{show_name}'.format(
+                                            **{'series_provider_id': SeriesProviderID.THETVDB.name,
+                                               'show_dir': show_dir,
+                                               'series_id': series_id,
+                                               'show_name': show_name})}))
 
 
 class AddNewShowHandler(BaseHandler, ABC):

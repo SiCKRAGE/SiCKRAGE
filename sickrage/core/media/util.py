@@ -57,9 +57,8 @@ def series_image(series_id=None, series_provider_id=None, which=None):
 def series_provider_image(series_id=None, series_provider_id=None, which=None):
     media_format = ('normal', 'thumb')[which in (SeriesImageType.BANNER_THUMB, SeriesImageType.POSTER_THUMB, SeriesImageType.SMALL)]
 
-    if which not in (SeriesImageType.FANART, SeriesImageType.POSTER, SeriesImageType.BANNER):
-        sickrage.app.log.error(
-            f"Invalid image type {which}, couldn't find it in the {sickrage.app.series_providers[SeriesProviderID.THETVDB].name} object")
+    if which not in (SeriesImageType.FANART, SeriesImageType.POSTER, SeriesImageType.BANNER, SeriesImageType.BANNER_THUMB, SeriesImageType.POSTER_THUMB):
+        sickrage.app.log.error(f"Invalid image type {which}, couldn't find it in the {sickrage.app.series_providers[SeriesProviderID.THETVDB].name} object")
         return
 
     try:
@@ -82,9 +81,9 @@ def series_provider_image(series_id=None, series_provider_id=None, which=None):
     except (KeyError, IndexError):
         pass
 
-    if which == SeriesImageType.BANNER:
+    if which in [SeriesImageType.BANNER, SeriesImageType.BANNER_THUMB]:
         return Banner(int(series_id), series_provider_id, media_format)
     elif which == SeriesImageType.FANART:
         return FanArt(int(series_id), series_provider_id, media_format)
-    elif which == SeriesImageType.POSTER:
+    elif which in [SeriesImageType.POSTER, SeriesImageType.POSTER_THUMB]:
         return Poster(int(series_id), series_provider_id, media_format)

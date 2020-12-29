@@ -5,7 +5,7 @@
 
     import sickrage
     from sickrage.core.helpers import anon_url, srdatetime
-    from sickrage.core.media.util import series_provider_image
+    from sickrage.core.media.util import series_provider_image, SeriesImageType
     from sickrage.core.enums import SeriesProviderID
 %>
 
@@ -90,7 +90,7 @@
                                         <div class="card-header p-0">
                                             <a href="${anon_url(show_url)}" target="_blank">
                                                 <img class="card-img-top"
-                                                     src="${srWebRoot}${series_provider_image(series_id=series_id, series_provider_id=SeriesProviderID.THETVDB, which="poster_thumb").url}"/>
+                                                     src="${srWebRoot}${series_provider_image(series_id=series_id, series_provider_id=SeriesProviderID.THETVDB, which=SeriesImageType.POSTER_THUMB).url}"/>
                                             </a>
                                         </div>
                                         <div class="card-body text-truncate py-1 px-1 small">
