@@ -295,7 +295,8 @@ class TheTVDB(SeriesProvider):
             sickrage.app.log.debug("Searching for show by imdbId: {}".format(series))
             resp = self._request('get', self.api['getSeriesIMDB'].format(id=series), language=language)
             if resp and 'data' in resp:
-                search_result = resp['data']
+                if len(resp['data']) == 1:
+                    search_result = resp['data'][0]
 
         if not search_result:
             sickrage.app.log.debug(f'Series search for {series} returned zero results, cannot find series on TheTVDB')

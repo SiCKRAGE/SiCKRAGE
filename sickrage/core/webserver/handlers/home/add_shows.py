@@ -315,9 +315,12 @@ class AddShowByIDHandler(BaseHandler, ABC):
         show_name = self.get_argument('showName')
 
         if re.search(r'tt\d+', series_id):
-            series_id = sickrage.app.series_providers[SeriesProviderID.THETVDB].search(series_id)['id']
+            result = sickrage.app.series_providers[SeriesProviderID.THETVDB].search(series_id)
+            if result and 'id' in result:
+                series_id = int(result['id'])
 
         if find_show(int(series_id), SeriesProviderID.THETVDB):
+            sickrage.app.log.debug(f"{series_id} already exists in your show library, skipping!")
             return
 
         location = None
