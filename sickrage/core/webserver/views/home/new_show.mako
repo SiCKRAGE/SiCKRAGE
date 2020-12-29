@@ -48,7 +48,7 @@
                         <input type="hidden" id="whichSeries" name="whichSeries"
                                value="${provided_series_id}"/>
                         <input type="hidden" id="providedSeriesProviderID" name="providedSeriesProviderID"
-                               value="${provided_series_provider_id}"/>
+                               value="${provided_series_provider_id.name}"/>
                         <input type="hidden" id="providedSeriesName" name="providedSeriesName"
                                value="${provided_series_name}"/>
                     % endif

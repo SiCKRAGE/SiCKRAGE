@@ -382,8 +382,7 @@ class TVShow(object):
         if not self._episodes:
             with sickrage.app.main_db.session() as session:
                 for x in session.query(MainDB.TVEpisode).filter_by(series_id=self.series_id, series_provider_id=self.series_provider_id):
-                    self._episodes[x.episode_id] = TVEpisode(series_id=x.series_id, series_provider_id=x.series_provider_id, season=x.season,
-                                                             episode=x.episode)
+                    self._episodes[x.episode_id] = TVEpisode(series_id=x.series_id, series_provider_id=x.series_provider_id, season=x.season, episode=x.episode)
         return list(self._episodes.values())
 
     @property

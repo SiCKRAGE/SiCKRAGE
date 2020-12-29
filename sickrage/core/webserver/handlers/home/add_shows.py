@@ -215,7 +215,7 @@ class NewShowHandler(BaseHandler, ABC):
                            provided_show_dir=show_dir,
                            provided_series_id=provided_series_id,
                            provided_series_name=provided_series_name,
-                           provided_series_provider_id=provided_series_provider_id.name,
+                           provided_series_provider_id=provided_series_provider_id,
                            series_providers=SeriesProviderID,
                            quality=sickrage.app.config.general.quality_default,
                            whitelist=[],

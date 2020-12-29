@@ -97,7 +97,7 @@
                                         <% whichStr = '{}x{}'.format(curResult.season, curResult.episode) %>
                                         <% overview = showCats[curShow.series_id][whichStr] %>
                                         % if overview in (Overview.LOW_QUALITY, Overview.WANTED):
-                                            <tr class="seasonstyle ${Overview.overviewStrings[showCats[curShow.series_id][whichStr]]}">
+                                            <tr class="seasonstyle ${overview.css_name}">
                                                 <td class="tableleft" align="center">${whichStr}</td>
                                                 <td class="tableright" align="center" class="text-nowrap">
                                                     ${curResult.name}
