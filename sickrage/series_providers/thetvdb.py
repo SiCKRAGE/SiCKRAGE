@@ -322,7 +322,7 @@ class TheTVDB(SeriesProvider):
                 sickrage.app.log.debug("[{}]: Unable to locate show on TheTVDB".format(sid))
                 return None
 
-            series_info.update((k, v) for k, v in resp['data'].items() if v)
+            series_info.update((k, v) for k, v in resp['data'].items() if v != '')
 
         # get series data
         for k, v in series_info.items():
@@ -357,7 +357,7 @@ class TheTVDB(SeriesProvider):
                     if result['id'] not in episode_info:
                         episode_info[result['id']] = {}
 
-                    episode_info[result['id']].update((k, v) for k, v in result.items() if v)
+                    episode_info[result['id']].update((k, v) for k, v in result.items() if v != '')
 
             page += 1
 

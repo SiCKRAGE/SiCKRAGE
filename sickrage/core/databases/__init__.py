@@ -188,7 +188,7 @@ class SRDatabase(object):
         if db_version < alembic_version:
             sickrage.app.log.info('Upgrading {} database to v{}'.format(self.name, alembic_version))
 
-            # self.backup(backup_filename)
+            self.backup(backup_filename)
 
             alembic.command.upgrade(self.get_alembic_config(), 'head')
 
