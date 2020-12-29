@@ -2919,6 +2919,7 @@ $(document).ready(function ($) {
 
                     $.get(SICKRAGE.srWebRoot + '/config/general/saveAddShowDefaults', {
                         defaultStatus: $('#statusSelect').val(),
+                        qualityPreset: $('#qualityPreset').val(),
                         anyQualities: anyQualArray.join(','),
                         bestQualities: bestQualArray.join(','),
                         defaultFlattenFolders: $('#flatten_folders').prop('checked'),

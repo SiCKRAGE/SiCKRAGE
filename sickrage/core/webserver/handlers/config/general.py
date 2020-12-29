@@ -63,6 +63,7 @@ class SaveAddShowDefaultsHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
         default_status = self.get_argument('defaultStatus', '5')
+        quality_preset = self.get_argument('qualityPreset', '')
         any_qualities = self.get_argument('anyQualities', '')
         best_qualities = self.get_argument('bestQualities', '')
         default_flatten_folders = self.get_argument('defaultFlattenFolders', None)
@@ -77,11 +78,14 @@ class SaveAddShowDefaultsHandler(BaseHandler, ABC):
         any_qualities = any_qualities.split(',') if len(any_qualities) else []
         best_qualities = best_qualities.split(',') if len(best_qualities) else []
 
-        new_quality = Quality.combine_qualities([Qualities[x] for x in any_qualities], [Qualities[x] for x in best_qualities])
+        try:
+            new_quality = Qualities[quality_preset]
+        except KeyError:
+            new_quality = Quality.combine_qualities([Qualities[x] for x in any_qualities], [Qualities[x] for x in best_qualities])
 
-        sickrage.app.config.general.status_default = int(default_status)
-        sickrage.app.config.general.status_default_after = int(default_status_after)
-        sickrage.app.config.general.quality_default = int(new_quality)
+        sickrage.app.config.general.status_default = EpisodeStatus[default_status]
+        sickrage.app.config.general.status_default_after = EpisodeStatus[default_status_after]
+        sickrage.app.config.general.quality_default = new_quality
 
         sickrage.app.config.general.flatten_folders_default = not checkbox_to_value(default_flatten_folders)
         sickrage.app.config.subtitles.default = checkbox_to_value(subtitles)
