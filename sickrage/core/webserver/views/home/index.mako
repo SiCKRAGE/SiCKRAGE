@@ -72,11 +72,11 @@
                         % endif
                     </button>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=${HomeLayout.POSTER.name}}">Poster</a>
-                        <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=${HomeLayout.SMALL.name}}">Small Poster</a>
-                        <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=${HomeLayout.BANNER.name}}">Banner</a>
-                        <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=${HomeLayout.DETAILED.name}}">Detailed</a>
-                        <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=${HomeLayout.SIMPLE.name}}">Simple</a>
+                        <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=${HomeLayout.POSTER.name}">Poster</a>
+                        <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=${HomeLayout.SMALL.name}">Small Poster</a>
+                        <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=${HomeLayout.BANNER.name}">Banner</a>
+                        <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=${HomeLayout.DETAILED.name}">Detailed</a>
+                        <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=${HomeLayout.SIMPLE.name}">Simple</a>
                     </div>
                 </div>
             </div>

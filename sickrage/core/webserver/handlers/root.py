@@ -109,6 +109,7 @@ class SetHomeLayoutHandler(BaseHandler, ABC):
             layout = 'POSTER'
 
         sickrage.app.config.gui.home_layout = HomeLayout[layout]
+        sickrage.app.config.save()
 
         # Don't redirect to default page so user can see new layout
         return self.redirect("/home/")
