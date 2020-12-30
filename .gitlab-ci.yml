@@ -234,7 +234,6 @@ deploy_pypi:
 
 deploy_docker_master:
   stage: release_deploy
-  retry: 2
   trigger:
     project: sickrage/sickrage-docker
     branch: master
@@ -246,7 +245,6 @@ deploy_docker_master:
 
 deploy_docker_develop:
   stage: release_deploy
-  retry: 2
   trigger:
     project: sickrage/sickrage-docker
     branch: develop
@@ -258,7 +256,6 @@ deploy_docker_develop:
 
 deploy_synology_master:
   stage: release_deploy
-  retry: 2
   trigger:
     project: sickrage/sickrage-synology
     branch: master
@@ -270,7 +267,6 @@ deploy_synology_master:
 
 deploy_synology_develop:
   stage: release_deploy
-  retry: 2
   trigger:
     project: sickrage/sickrage-synology
     branch: develop
@@ -282,7 +278,6 @@ deploy_synology_develop:
 
 deploy_readynas_master:
   stage: release_deploy
-  retry: 2
   variables:
     UPSTREAM_COMMIT_TAG: $CI_COMMIT_TAG
     UPSTREAM_PROJECT_NAME: $CI_PROJECT_NAME
@@ -299,7 +294,6 @@ deploy_readynas_master:
 
 deploy_qnap_master:
   stage: release_deploy
-  retry: 2
   variables:
     UPSTREAM_COMMIT_TAG: $CI_COMMIT_TAG
     UPSTREAM_PROJECT_NAME: $CI_PROJECT_NAME
