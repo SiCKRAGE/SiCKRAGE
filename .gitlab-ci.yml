@@ -100,6 +100,7 @@ stages:
 
 release_build_master:
   stage: release_build
+  retry: 2
   image:
     name: nikolaik/python-nodejs:python3.8-nodejs10-alpine
   variables:
@@ -139,6 +140,7 @@ release_build_master:
 
 release_build_develop:
   stage: release_build
+  retry: 2
   image:
     name: nikolaik/python-nodejs:python3.8-nodejs10-alpine
   variables:
@@ -174,6 +176,7 @@ release_build_develop:
 
 release_sentry_master:
   stage: release_sentry
+  retry: 2
   image:
     name: getsentry/sentry-cli
     entrypoint: [""]
@@ -194,6 +197,7 @@ release_sentry_master:
 
 release_sentry_develop:
   stage: release_sentry
+  retry: 2
   image:
     name: getsentry/sentry-cli
     entrypoint: [""]
@@ -214,6 +218,7 @@ release_sentry_develop:
 
 deploy_pypi:
   stage: release_deploy
+  retry: 2
   image: python:3.8-alpine3.12
   script:
     - apk add --no-cache py-pip gcc libffi-dev python3-dev musl-dev openssl-dev
@@ -229,6 +234,7 @@ deploy_pypi:
 
 deploy_docker_master:
   stage: release_deploy
+  retry: 2
   trigger:
     project: sickrage/sickrage-docker
     branch: master
@@ -240,6 +246,7 @@ deploy_docker_master:
 
 deploy_docker_develop:
   stage: release_deploy
+  retry: 2
   trigger:
     project: sickrage/sickrage-docker
     branch: develop
@@ -251,6 +258,7 @@ deploy_docker_develop:
 
 deploy_synology_master:
   stage: release_deploy
+  retry: 2
   trigger:
     project: sickrage/sickrage-synology
     branch: master
@@ -262,6 +270,7 @@ deploy_synology_master:
 
 deploy_synology_develop:
   stage: release_deploy
+  retry: 2
   trigger:
     project: sickrage/sickrage-synology
     branch: develop
@@ -273,6 +282,7 @@ deploy_synology_develop:
 
 deploy_readynas_master:
   stage: release_deploy
+  retry: 2
   variables:
     UPSTREAM_COMMIT_TAG: $CI_COMMIT_TAG
     UPSTREAM_PROJECT_NAME: $CI_PROJECT_NAME
@@ -289,6 +299,7 @@ deploy_readynas_master:
 
 deploy_qnap_master:
   stage: release_deploy
+  retry: 2
   variables:
     UPSTREAM_COMMIT_TAG: $CI_COMMIT_TAG
     UPSTREAM_PROJECT_NAME: $CI_PROJECT_NAME
