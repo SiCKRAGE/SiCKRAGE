@@ -80,7 +80,7 @@
                                                     <span class="badge qual">${_('Low Quality:')}
                                                         <b>${showCounts[curShow.series_id][Overview.LOW_QUALITY]}</b></span>
                                                     <a class="btn forceBacklog"
-                                                       href="${srWebRoot}/manage/backlogShow?series_id=${curShow.series_id}&series_provider_id=${curShow.series_provider_id}"><i
+                                                       href="${srWebRoot}/manage/backlogShow?series_id=${curShow.series_id}&series_provider_id=${curShow.series_provider_id.name}"><i
                                                             class="icon-play-circle icon-white"></i> ${_('Force Backlog')}
                                                     </a>
                                                 </div>
