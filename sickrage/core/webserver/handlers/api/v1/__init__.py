@@ -106,13 +106,13 @@ class ApiHandler(RequestHandler):
                 out_dict = self.route(_call_dispatcher, **self.request.arguments)
             except Exception as e:
                 sickrage.app.log.error(str(e))
-                error_data = {"error_msg": e, "request arguments": self.request.arguments}
+                error_data = {"error_msg": e, "request arguments": recursive_unicode(self.request.arguments)}
                 out_dict = _responds(RESULT_FATAL, error_data, "SiCKRAGE encountered an internal error! Please report to the Devs")
         else:
             access_msg = "IP:{} - ACCESS DENIED".format(self.request.remote_ip)
             sickrage.app.log.debug(access_msg)
 
-            error_data = {"error_msg": access_msg, "request arguments": self.request.arguments}
+            error_data = {"error_msg": access_msg, "request arguments": recursive_unicode(self.request.arguments)}
             out_dict = _responds(RESULT_DENIED, error_data, access_msg)
 
         output_callback = output_callback_dict['default']
