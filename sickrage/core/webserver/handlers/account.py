@@ -100,7 +100,7 @@ class AccountUnlinkHandler(BaseHandler, ABC):
                 sickrage.app.config.general.server_id = ""
                 sickrage.app.config.user.sub_id = ""
 
-            sickrage.app.api.logout()
+            # sickrage.app.api.logout()
 
             del sickrage.app.api.token
 

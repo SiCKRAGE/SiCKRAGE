@@ -63,6 +63,6 @@
     "webpack-spritesmith": "~1.1.0"
   },
   "dependencies": {
-    "git-changelog": "~1.2.0"
+    "auto-changelog": "~2.2.1"
   }
 }
