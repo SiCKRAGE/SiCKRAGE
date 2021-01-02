@@ -2,12 +2,12 @@
 
 # 
 
-##Sat Jan 02 2021 06:48:18 GMT+0000 (Coordinated Universal Time)
+##Sat Jan 02 2021 08:35:14 GMT+0000 (Coordinated Universal Time)
 
 
 ## Refactor
-  - Refactored SSO to use public access type instead of confidential, removed client secrets. Fixed issues with updating app server id through SR API.
-  ([a80d4200](https://gitlab-ci-token:A_NYv1XsgheXbDRPr7Kp@git.sickrage.ca/SiCKRAGE/sickrage/commit/a80d4200a44479f086f79163c7e0a822f416cf03))
+  - Refactored offline tokens to be created by exchanging UI login tokens either on first login or when linking app to API
+  ([f9bf51cc](https://gitlab-ci-token:dQGP3yUgDsXBCs-38GZL@git.sickrage.ca/SiCKRAGE/sickrage/commit/f9bf51ccf3350bdb0a64fa7eb8ed3fcd6dca2bcb))
 
 
 
