@@ -7,6 +7,7 @@ import errno
 import oauthlib.oauth2
 import requests
 import requests.exceptions
+from jose import ExpiredSignatureError
 from requests_oauthlib import OAuth2Session
 from sqlalchemy import orm
 
@@ -113,6 +114,23 @@ class API(object):
         session.commit()
 
     @property
+    def token_expiration(self):
+        try:
+            certs = sickrage.app.auth_server.certs()
+            decoded_token = sickrage.app.auth_server.decode_token(self.token['access_token'], certs)
+            return decoded_token.get('exp', time.time())
+        except ExpiredSignatureError:
+            return time.time()
+
+    @property
+    def token_time_remaining(self):
+        return max(self.token_expiration - time.time(), 0)
+
+    @property
+    def token_is_expired(self):
+        return self.token_expiration <= time.time()
+
+    @property
     def token_url(self):
         return sickrage.app.auth_server.get_url('token_endpoint')
 
@@ -182,6 +200,9 @@ class API(object):
                     if i > 3:
                         return None
                     continue
+
+                if self.token_time_remaining < (int(self.token['expires_in']) / 2):
+                    self.refresh_token()
 
                 resp = self.session.request(method, url, timeout=timeout, verify=False, hooks={'response': self.throttle_hook}, **kwargs)
 
