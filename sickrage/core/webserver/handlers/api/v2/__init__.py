@@ -54,7 +54,9 @@ class APIv2BaseHandler(BaseHandler, ABC):
                         return self.send_error(401, error='user is not authorized')
 
                     if sickrage.app.config.general.enable_sickrage_api and not sickrage.app.api.token:
-                        sickrage.app.api.exchange_token(token)
+                        exchanged_token = sickrage.app.auth_server.token_exchange(token)
+                        if exchanged_token:
+                            sickrage.app.api.token = exchanged_token
 
                     internal_connections = "{}://{}:{}{}".format(self.request.protocol,
                                                                  get_internal_ip(),

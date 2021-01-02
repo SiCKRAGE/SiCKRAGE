@@ -100,11 +100,12 @@ class AuthServer(object):
 
         return self.client.authorization_url(**kwargs)
 
-    def token_exchange(self, **kwargs):
+    def token_exchange(self, access_token, scope='offline_access'):
         if not self.health:
             return
 
-        return self.client.token_exchange(**kwargs)
+        exchange = {'scope': scope, 'subject_token': access_token}
+        return self.client.token_exchange(**exchange)
 
     def __get_client(self) -> KeycloakOpenidConnect:
         client = self.__client.get('client', None)

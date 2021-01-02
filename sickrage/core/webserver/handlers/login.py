@@ -67,10 +67,10 @@ class LoginHandler(BaseHandler, ABC):
         if sickrage.app.config.user.sub_id != decoded_auth_token.get('sub'):
             return
 
-        if sickrage.app.config.general.enable_sickrage_api:
-            # if sickrage.app.api.token:
-            #     sickrage.app.api.logout()
-            sickrage.app.api.exchange_token(auth_token)
+        if sickrage.app.config.general.enable_sickrage_api and not sickrage.app.api.token:
+            exchanged_token = sickrage.app.auth_server.token_exchange(auth_token)
+            if exchanged_token:
+                sickrage.app.api.token = exchanged_token
 
         internal_connections = "{}://{}:{}{}".format(self.request.protocol,
                                                      get_internal_ip(),
@@ -131,10 +131,10 @@ class LoginHandler(BaseHandler, ABC):
                             return self.redirect('/logout')
                     else:
                         return self.redirect('/logout')
-                elif sickrage.app.config.general.enable_sickrage_api:
-                    if sickrage.app.api.token:
-                        sickrage.app.api.logout()
-                    sickrage.app.api.token = token
+                elif sickrage.app.config.general.enable_sickrage_api and not sickrage.app.api.token:
+                    exchanged_token = sickrage.app.auth_server.token_exchange(token['access_token'])
+                    if exchanged_token:
+                        sickrage.app.api.token = exchanged_token
             except Exception as e:
                 sickrage.app.log.debug('{!r}'.format(e))
                 return self.redirect('/logout')
@@ -163,7 +163,7 @@ class LoginHandler(BaseHandler, ABC):
             redirect_uri = self.get_argument('next', "/{}/".format(sickrage.app.config.general.default_page.value))
             return self.redirect("{}".format(redirect_uri))
         else:
-            authorization_url = sickrage.app.auth_server.authorization_url(redirect_uri=redirect_uri, scope="profile email offline_access")
+            authorization_url = sickrage.app.auth_server.authorization_url(redirect_uri=redirect_uri, scope="profile email")
             if authorization_url:
                 return super(BaseHandler, self).redirect(authorization_url)
 
