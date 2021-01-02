@@ -84,13 +84,14 @@ class LoginHandler(BaseHandler, ABC):
 
         connections = ','.join([internal_connections, external_connections])
 
-        if not re.match(r'[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}', sickrage.app.config.general.server_id or ""):
+        if sickrage.app.config.general.server_id and not sickrage.app.api.account.update_server(sickrage.app.config.general.server_id, connections):
+            sickrage.app.config.general.server_id = ''
+
+        if not sickrage.app.config.general.server_id:
             server_id = sickrage.app.api.account.register_server(connections)
             if server_id:
                 sickrage.app.config.general.server_id = server_id
                 sickrage.app.config.save()
-        else:
-            sickrage.app.api.account.update_server(sickrage.app.config.general.server_id, connections)
 
     def handle_sso_auth_get(self):
         code = self.get_argument('code', None)
@@ -150,13 +151,14 @@ class LoginHandler(BaseHandler, ABC):
 
             connections = ','.join([internal_connections, external_connections])
 
-            if not re.match(r'[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}', sickrage.app.config.general.server_id or ""):
+            if sickrage.app.config.general.server_id and not sickrage.app.api.account.update_server(sickrage.app.config.general.server_id, connections):
+                sickrage.app.config.general.server_id = ''
+
+            if not sickrage.app.config.general.server_id:
                 server_id = sickrage.app.api.account.register_server(connections)
                 if server_id:
                     sickrage.app.config.general.server_id = server_id
                     sickrage.app.config.save()
-            else:
-                sickrage.app.api.account.update_server(sickrage.app.config.general.server_id, connections)
 
             redirect_uri = self.get_argument('next', "/{}/".format(sickrage.app.config.general.default_page.value))
             return self.redirect("{}".format(redirect_uri))

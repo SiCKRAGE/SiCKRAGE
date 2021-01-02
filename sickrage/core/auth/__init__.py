@@ -35,7 +35,6 @@ class AuthServer(object):
         self.server_url = 'https://auth.sickrage.ca'
         self.server_realm = 'sickrage'
         self.client_id = 'sickrage-app'
-        self.client_secret = '5d4710b2-ca70-4d39-b5a3-0705e2c5e703'
         self._certs = None
 
     @property
@@ -110,7 +109,7 @@ class AuthServer(object):
     def __get_client(self) -> KeycloakOpenidConnect:
         client = self.__client.get('client', None)
         if client is None:
-            self.__client.update({'client': self.__get_server().open_id_connect(self.client_id, self.client_secret)})
+            self.__client.update({'client': self.__get_server().open_id_connect(self.client_id, '')})
             client = self.__client.get('client', None)
         return client
 

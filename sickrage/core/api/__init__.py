@@ -66,7 +66,6 @@ class API(object):
     def session(self):
         extra = {
             'client_id': sickrage.app.auth_server.client_id,
-            'client_secret': sickrage.app.auth_server.client_secret
         }
 
         if not self._session and self.token_url:
@@ -148,7 +147,6 @@ class API(object):
     def refresh_token(self):
         extra = {
             'client_id': sickrage.app.auth_server.client_id,
-            'client_secret': sickrage.app.auth_server.client_secret,
         }
 
         if self.token_url:

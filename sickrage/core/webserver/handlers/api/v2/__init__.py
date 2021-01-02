@@ -20,10 +20,12 @@
 # ##############################################################################
 import json
 import os
+import re
 import traceback
 from abc import ABC
 
 import sickrage
+from sickrage.core.helpers import get_internal_ip, get_external_ip
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
@@ -54,25 +56,26 @@ class APIv2BaseHandler(BaseHandler, ABC):
                     if sickrage.app.config.general.enable_sickrage_api and not sickrage.app.api.token:
                         sickrage.app.api.exchange_token(token)
 
-                    # internal_connections = "{}://{}:{}{}".format(self.request.protocol,
-                    #                                              get_internal_ip(),
-                    #                                              sickrage.app.config.general.web_port,
-                    #                                              sickrage.app.config.general.web_root)
-                    #
-                    # external_connections = "{}://{}:{}{}".format(self.request.protocol,
-                    #                                              get_external_ip(),
-                    #                                              sickrage.app.config.general.web_port,
-                    #                                              sickrage.app.config.general.web_root)
-                    #
-                    # connections = ','.join([internal_connections, external_connections])
-                    #
-                    # if not re.match(r'[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}', sickrage.app.config.general.server_id or ""):
-                    #     server_id = sickrage.app.api.account.register_server(connections)
-                    #     if server_id:
-                    #         sickrage.app.config.general.server_id = server_id
-                    #         sickrage.app.config.save()
-                    # else:
-                    #     sickrage.app.api.account.update_server(sickrage.app.config.general.server_id, connections)
+                    internal_connections = "{}://{}:{}{}".format(self.request.protocol,
+                                                                 get_internal_ip(),
+                                                                 sickrage.app.config.general.web_port,
+                                                                 sickrage.app.config.general.web_root)
+
+                    external_connections = "{}://{}:{}{}".format(self.request.protocol,
+                                                                 get_external_ip(),
+                                                                 sickrage.app.config.general.web_port,
+                                                                 sickrage.app.config.general.web_root)
+
+                    connections = ','.join([internal_connections, external_connections])
+
+                    if sickrage.app.config.general.server_id and not sickrage.app.api.account.update_server(sickrage.app.config.general.server_id, connections):
+                        sickrage.app.config.general.server_id = ''
+
+                    if not sickrage.app.config.general.server_id:
+                        server_id = sickrage.app.api.account.register_server(connections)
+                        if server_id:
+                            sickrage.app.config.general.server_id = server_id
+                            sickrage.app.config.save()
 
                     self.current_user = decoded_auth_token
                 except Exception:
