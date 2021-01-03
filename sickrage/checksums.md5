@@ -1,5 +1,5 @@
 sickrage/__init__.py = 7dd3768d4b1099aa04d42ad271a91d68
-sickrage/version.txt = e956df4ee6103934779cdf0a6f1508ad
+sickrage/version.txt = 0ec3243e486b0538abe294839c5fd8bb
 sickrage/clients/__init__.py = abafc862109398700c9fee676cdeef6b
 sickrage/clients/nzb/nzbget.py = 2a23083d4915fed22c73f4966588cac8
 sickrage/clients/nzb/sabnzbd.py = f76666e47017abaf366f4a3e8b71c47b
@@ -296,7 +296,7 @@ sickrage/core/databases/config/__init__.py = 343da39267d0656d4513f7a7e7542f25
 sickrage/core/databases/config/migrations/script.py.mako = 55bff267625bd1f0799d24848df6c3e8
 sickrage/core/databases/config/migrations/env.py = 5cdd195b4adf08a9eda769316ffcc57d
 sickrage/core/databases/config/migrations/versions/001_Add_Initial_Tables.py = 6416c418e06ad47834a3f6bdfe8ca4f1
-sickrage/core/caches/tv_cache.py = 588b06dbc6e05635743338d7dec75f57
+sickrage/core/caches/tv_cache.py = 175670e9ac651542e5dab51fbc901849
 sickrage/core/caches/image_cache.py = e97a0b7f9d95ad22813b9c2b5f1f9ffd
 sickrage/core/caches/name_cache.py = 8cceca1983838af2e581c6187912b2cc
 sickrage/core/caches/__init__.py = bf0bdb641ddd7af015537ca503e49977
