@@ -233,7 +233,7 @@ class TVCache(object):
                         'season': season,
                         'episodes': episode_text,
                         'series_id': parse_result.series_id,
-                        'series_provider_id': parse_result.series_provider_id,
+                        'series_provider_id': parse_result.series_provider_id.name,
                         'url': url,
                         'time': int(time.mktime(datetime.datetime.today().timetuple())),
                         'quality': quality,
