@@ -1175,7 +1175,7 @@ class CMD_PostProcess(ApiCall):
         self.path, args = self.check_params("path", None, False, "string", [], *args, **kwargs)
         self.force_replace, args = self.check_params("force_replace", False, False, "bool", [], *args, **kwargs)
         self.return_data, args = self.check_params("return_data", False, False, "bool", [], *args, **kwargs)
-        self.process_method, args = self.check_params("process_method", ProcessMethod.COPY.name, False, "string", [x.name for x in ProcessMethod], *args, **kwargs)
+        self.process_method, args = self.check_params("process_method", ProcessMethod.COPY.name, False, "string", [x.name.lower() for x in ProcessMethod], *args, **kwargs)
         self.is_priority, args = self.check_params("is_priority", False, False, "bool", [], *args, **kwargs)
         self.delete, args = self.check_params("delete", False, False, "bool", [], *args, **kwargs)
         self.failed, args = self.check_params("failed", False, False, "bool", [], *args, **kwargs)
