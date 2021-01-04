@@ -1,5 +1,5 @@
 sickrage/__init__.py = 7dd3768d4b1099aa04d42ad271a91d68
-sickrage/version.txt = 0ec3243e486b0538abe294839c5fd8bb
+sickrage/version.txt = 5463c17a50667c128264234d38ed2c2b
 sickrage/clients/__init__.py = abafc862109398700c9fee676cdeef6b
 sickrage/clients/nzb/nzbget.py = 2a23083d4915fed22c73f4966588cac8
 sickrage/clients/nzb/sabnzbd.py = f76666e47017abaf366f4a3e8b71c47b
@@ -332,7 +332,7 @@ sickrage/core/webserver/handlers/irc.py = 99a2c37797660014ac6a2c0cfbd80745
 sickrage/core/webserver/handlers/manage/queues.py = a01c1e7473ae96eec0144137cbf0761a
 sickrage/core/webserver/handlers/manage/__init__.py = 1150454544f432da6fdc0216e8082156
 sickrage/core/webserver/handlers/api/__init__.py = 014e84083401e6b05a9626cb29bd8467
-sickrage/core/webserver/handlers/api/v1/__init__.py = dbcd717b97aa9148c40c52b6eb886659
+sickrage/core/webserver/handlers/api/v1/__init__.py = d5607226959f5eb409375b5fc1735caa
 sickrage/core/webserver/handlers/api/v2/file_browser.py = a46da6a611412b2177c9e267b3700be8
 sickrage/core/webserver/handlers/api/v2/episode.py = 3d220815335e28c4c55e0b0d9b133202
 sickrage/core/webserver/handlers/api/v2/series_provider.py = d23aadc7701e3e7cdd8331a5050ab21b
