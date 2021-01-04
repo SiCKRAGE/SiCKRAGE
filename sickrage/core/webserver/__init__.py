@@ -37,7 +37,7 @@ from sickrage.core.helpers import create_https_certificates
 from sickrage.core.webserver.handlers.account import AccountLinkHandler, AccountUnlinkHandler, AccountIsLinkedHandler
 from sickrage.core.webserver.handlers.announcements import AnnouncementsHandler, MarkAnnouncementSeenHandler, AnnouncementCountHandler
 from sickrage.core.webserver.handlers.api.v1 import ApiHandler
-from sickrage.core.webserver.handlers.api.v2 import PingHandler, RetrieveSeriesMetadataHandler
+from sickrage.core.webserver.handlers.api.v2 import PingHandler, RetrieveSeriesMetadataHandler, PostProcessHandler
 from sickrage.core.webserver.handlers.api.v2.config import ConfigHandler
 from sickrage.core.webserver.handlers.api.v2.episode import EpisodesRenameHandler, EpisodesManualSearchHandler
 from sickrage.core.webserver.handlers.api.v2.file_browser import FileBrowserHandler
@@ -232,6 +232,7 @@ class WebServer(threading.Thread):
             (r'%s/api/config' % sickrage.app.config.general.web_root, ConfigHandler),
             (r'%s/api/ping' % sickrage.app.config.general.web_root, PingHandler),
             (r'%s/api/file-browser' % sickrage.app.config.general.web_root, FileBrowserHandler),
+            (r'%s/api/postprocess' % sickrage.app.config.general.web_root, PostProcessHandler),
             (r'%s/api/retrieve-series-metadata' % sickrage.app.config.general.web_root, RetrieveSeriesMetadataHandler),
             (r'%s/api/series-providers' % sickrage.app.config.general.web_root, SeriesProvidersHandler),
             (r'%s/api/series-providers/([a-z]+)/search' % sickrage.app.config.general.web_root, SeriesProvidersSearchHandler),

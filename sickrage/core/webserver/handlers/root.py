@@ -250,7 +250,7 @@ class QuicksearchDotJsonHandler(BaseHandler, ABC):
                 'category': 'episodes',
                 'series_id': result.series_id,
                 'series_provider_id': result.series_provider_id,
-                'episode__id': result.episode__id,
+                'episode_id': result.episode_id,
                 'season': result.season,
                 'episode': result.episode,
                 'name': result.name,

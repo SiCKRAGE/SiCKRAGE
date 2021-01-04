@@ -20,11 +20,11 @@
 # ##############################################################################
 import json
 import os
-import re
 import traceback
 from abc import ABC
 
 import sickrage
+from sickrage.core.enums import ProcessMethod
 from sickrage.core.helpers import get_internal_ip, get_external_ip
 from sickrage.core.webserver.handlers.base import BaseHandler
 
@@ -151,3 +151,24 @@ class RetrieveSeriesMetadataHandler(APIv2BaseHandler, ABC):
                 json_data['seriesSlug'] = f'{series_id}-{series_provider_id.slug}'
 
         self.write_json(json_data)
+
+
+class PostProcessHandler(APIv2BaseHandler, ABC):
+    def get(self):
+        path = self.get_argument("path", sickrage.app.config.general.tv_download_dir)
+        force_replace = self.get_argument("force_replace", None) or False
+        return_data = self.get_argument("return_data", None) or False
+        process_method = self.get_argument("process_method", ProcessMethod.COPY.name)
+        is_priority = self.get_argument("is_priority", None) or False
+        delete = self.get_argument("delete", None) or False
+        failed = self.get_argument("failed", None) or False
+        proc_type = self.get_argument("type", 'manual')
+        force_next = self.get_argument("force_next", None) or False
+
+        if not path and not sickrage.app.config.general.tv_download_dir:
+            return self.send_error(400, error="You need to provide a path or set TV Download Dir")
+
+        json_data = sickrage.app.postprocessor_queue.put(path, process_method=ProcessMethod[process_method.upper()], force=force_replace,
+                                                         is_priority=is_priority, delete_on=delete, failed=failed, proc_type=proc_type, force_next=force_next)
+
+        self.write_json({'data': json_data if return_data else '', 'msg': f'Started postprocess for {path}'})
