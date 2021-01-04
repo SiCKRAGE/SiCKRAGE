@@ -638,7 +638,7 @@ class CMD_ComingEpisodes(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ComingEpisodes, self).__init__(application, request, *args, **kwargs)
-        self.sort, args = self.check_params("sort", ComingEpsSortBy.DATE, False, "string", [x.name for x in ComingEpsSortBy], *args, **kwargs)
+        self.sort, args = self.check_params("sort", ComingEpsSortBy.DATE, False, "string", [x.name.lower() for x in ComingEpsSortBy], *args, **kwargs)
         self.type, args = self.check_params("type", '|'.join(ComingEpisodes.categories), False, "list", ComingEpisodes.categories, *args, **kwargs)
         self.paused, args = self.check_params("paused", bool(sickrage.app.config.gui.coming_eps_display_paused), False, "bool", [], *args, **kwargs)
 
@@ -690,7 +690,7 @@ class CMD_Episode(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_Episode, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
         self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
         self.e, args = self.check_params("episode", None, True, "int", [], *args, **kwargs)
         self.fullPath, args = self.check_params("full_path", False, False, "bool", [], *args, **kwargs)
@@ -699,7 +699,7 @@ class CMD_Episode(ApiCall):
         """ Get detailed information about an episode """
         session = sickrage.app.main_db.session()
 
-        show_obj = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id])
+        show_obj = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id.upper()])
         if not show_obj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -755,13 +755,13 @@ class CMD_EpisodeSearch(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_EpisodeSearch, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
         self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
         self.e, args = self.check_params("episode", None, True, "int", [], *args, **kwargs)
 
     def run(self):
         """ Search for an episode """
-        show_object = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id])
+        show_object = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id.upper()])
         if not show_object:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -806,7 +806,7 @@ class CMD_EpisodeSetStatus(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_EpisodeSetStatus, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
         self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
         self.status, args = self.check_params("status", None, True, "string", ["WANTED", "SKIPPED", "IGNORED", "FAILED"], *args, **kwargs)
         self.e, args = self.check_params("episode", None, False, "int", [], *args, **kwargs)
@@ -814,7 +814,7 @@ class CMD_EpisodeSetStatus(ApiCall):
 
     def run(self):
         """ Set the status of an episode or a season (when no episode is provided) """
-        show_obj = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id])
+        show_obj = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id.upper()])
         if not show_obj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -897,13 +897,13 @@ class CMD_SubtitleSearch(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_SubtitleSearch, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
         self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
         self.e, args = self.check_params("episode", None, True, "int", [], *args, **kwargs)
 
     def run(self):
         """ Search for an episode subtitles """
-        show_object = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id])
+        show_object = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id.upper()])
         if not show_object:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -949,7 +949,7 @@ class CMD_Exceptions(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_Exceptions, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, False, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
 
     def run(self):
         """ Get the scene exceptions for all or a given show """
@@ -961,7 +961,7 @@ class CMD_Exceptions(ApiCall):
                     scene_exceptions[series_id] = []
                 scene_exceptions[series_id].append(show.name)
         else:
-            show = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id])
+            show = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id.upper()])
             if not show:
                 return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -1499,14 +1499,14 @@ class CMD_SiCKRAGESearchSeriesProvider(ApiCall):
         self.name, args = self.check_params("name", None, False, "string", [], *args, **kwargs)
         self.lang, args = self.check_params("lang", sickrage.app.config.general.series_provider_default_language, False, "string", [], *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, False, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
 
     def run(self):
         """ Search for a show with a given name on a specific series provider, in a specific language """
 
         results = []
 
-        series_provider = sickrage.app.series_providers[self.series_provider_id]
+        series_provider = sickrage.app.series_providers[self.series_provider_id.upper()]
         series_provider_language = self.lang or sickrage.app.config.general.series_provider_default_language
 
         if self.name and not self.series_id:  # only name was given
@@ -1687,11 +1687,11 @@ class CMD_Show(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_Show, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
 
     def run(self):
         """ Get detailed information about a show """
-        show_object = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id])
+        show_object = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id.upper()])
         if not show_object:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -1778,7 +1778,7 @@ class CMD_ShowAddExisting(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowAddExisting, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
         self.location, args = self.check_params("location", None, True, "string", [], *args, **kwargs)
         self.initial, args = self.check_params("initial", None, False, "list", any_quality_list, *args, **kwargs)
         self.archive, args = self.check_params("archive", None, False, "list", best_quality_list, *args, **kwargs)
@@ -1791,7 +1791,7 @@ class CMD_ShowAddExisting(ApiCall):
 
     def run(self):
         """ Add an existing show in SiCKRAGE """
-        show_object = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id])
+        show_object = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id.upper()])
         if show_object:
             return _responds(RESULT_FAILURE, msg="An existing series_id already exists in the database")
 
@@ -1874,7 +1874,7 @@ class CMD_ShowAddNew(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowAddNew, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
         self.location, args = self.check_params("location", None, False, "string", [], *args, **kwargs)
         self.initial, args = self.check_params("initial", None, False, "list", any_quality_list, *args, **kwargs)
         self.archive, args = self.check_params("archive", None, False, "list", best_quality_list, *args, **kwargs)
@@ -1894,7 +1894,7 @@ class CMD_ShowAddNew(ApiCall):
 
     def run(self):
         """ Add a new show to SiCKRAGE """
-        show_obj = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id])
+        show_obj = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id.upper()])
         if show_obj:
             return _responds(RESULT_FAILURE, msg="An existing series_id already exists in database")
 
@@ -2002,11 +2002,11 @@ class CMD_ShowCache(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowCache, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
 
     def run(self):
         """ Check SiCKRAGE's cache to see if the images (poster, banner, fanart) for a show are valid """
-        show_object = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id])
+        show_object = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id.upper()])
         if not show_object:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2044,12 +2044,12 @@ class CMD_ShowDelete(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowDelete, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
         self.removefiles, args = self.check_params("removefiles", False, False, "bool", [], *args, **kwargs)
 
     def run(self):
         """ Delete a show in SiCKRAGE """
-        show_object = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id])
+        show_object = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id.upper()])
         if not show_object:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2076,11 +2076,11 @@ class CMD_ShowGetQuality(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowGetQuality, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
 
     def run(self):
         """ Get the quality setting of a show """
-        show_object = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id])
+        show_object = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id.upper()])
         if not show_object:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2104,12 +2104,14 @@ class CMD_ShowGetPoster(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowGetPoster, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
+                                                          **kwargs)
 
     def run(self):
         """ Get the poster a show """
         return {
             'outputType': 'image',
-            'image': Poster(self.series_id),
+            'image': Poster(self.series_id, SeriesProviderID[self.series_provider_id.upper()]),
         }
 
 
@@ -2128,12 +2130,13 @@ class CMD_ShowGetBanner(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowGetBanner, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
 
     def run(self):
         """ Get the banner of a show """
         return {
             'outputType': 'image',
-            'image': Banner(self.series_id),
+            'image': Banner(self.series_id, SeriesProviderID[self.series_provider_id.upper()]),
         }
 
 
@@ -2152,6 +2155,7 @@ class CMD_ShowGetNetworkLogo(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowGetNetworkLogo, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
 
     def run(self):
         """
@@ -2159,7 +2163,7 @@ class CMD_ShowGetNetworkLogo(ApiCall):
         """
         return {
             'outputType': 'image',
-            'image': Network(self.series_id),
+            'image': Network(self.series_id, SeriesProviderID[self.series_provider_id.upper()]),
         }
 
 
@@ -2178,12 +2182,14 @@ class CMD_ShowGetFanArt(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowGetFanArt, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
+                                                          **kwargs)
 
     def run(self):
         """ Get the fan art of a show """
         return {
             'outputType': 'image',
-            'image': FanArt(self.series_id),
+            'image': FanArt(self.series_id, SeriesProviderID[self.series_provider_id.upper()]),
         }
 
 
@@ -2203,12 +2209,12 @@ class CMD_ShowPause(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowPause, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
         self.pause, args = self.check_params("pause", False, False, "bool", [], *args, **kwargs)
 
     def run(self):
         """ Pause or unpause a show """
-        show_object = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id])
+        show_object = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id.upper()])
         if not show_object:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2237,11 +2243,11 @@ class CMD_ShowRefresh(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowRefresh, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
 
     def run(self):
         """ Refresh a show in SiCKRAGE """
-        show_object = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id])
+        show_object = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id.upper()])
         if not show_object:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2269,12 +2275,12 @@ class CMD_ShowSeasonList(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowSeasonList, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
         self.sort, args = self.check_params("sort", "desc", False, "string", ["asc", "desc"], *args, **kwargs)
 
     def run(self):
         """ Get the list of seasons of a show """
-        show_obj = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id])
+        show_obj = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id.upper()])
         if not show_obj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2301,7 +2307,7 @@ class CMD_ShowSeasons(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowSeasons, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
         self.season, args = self.check_params("season", None, False, "int", [], *args, **kwargs)
 
     def run(self):
@@ -2311,7 +2317,7 @@ class CMD_ShowSeasons(ApiCall):
 
         seasons = {}
 
-        show_obj = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id])
+        show_obj = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id.upper()])
         if not show_obj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2362,14 +2368,14 @@ class CMD_ShowSetQuality(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowSetQuality, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
         # self.archive, args = self.check_params("archive", None, False, "list", _getQualityMap().values()[1:], *args, **kwargs)
         self.initial, args = self.check_params("initial", None, False, "list", any_quality_list, *args, **kwargs)
         self.archive, args = self.check_params("archive", None, False, "list", best_quality_list, *args, **kwargs)
 
     def run(self):
         """ Set the quality setting of a show. If no quality is provided, the default user setting is used. """
-        show_object = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id])
+        show_object = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id.upper()])
         if not show_object:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2409,11 +2415,11 @@ class CMD_ShowStats(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowStats, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
 
     def run(self):
         """ Get episode statistics for a given show """
-        show_object = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id])
+        show_object = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id.upper()])
         if not show_object:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2520,11 +2526,11 @@ class CMD_ShowUpdate(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowUpdate, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
 
     def run(self):
         """ Update a show in SiCKRAGE """
-        show_object = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id])
+        show_object = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id.lower()])
         if not show_object:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
