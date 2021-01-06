@@ -193,17 +193,6 @@ def check_requirements(install_requirements=False):
                 except ValueError:
                     continue
 
-    try:
-        import OpenSSL
-
-        v = OpenSSL.__version__
-        v_needed = '0.15'
-
-        if not v >= v_needed:
-            print('OpenSSL installed but {} is needed while {} is installed. Run `pip3 install -U pyopenssl`'.format(v_needed, v))
-    except ImportError:
-        print('OpenSSL not available, please install for better requests validation: `https://pyopenssl.readthedocs.org/en/latest/install.html`')
-
 
 def file_cleanup(remove=False):
     valid_files = []

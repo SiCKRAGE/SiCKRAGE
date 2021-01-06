@@ -51,6 +51,11 @@ import errno
 import rarfile
 import requests
 from bs4 import BeautifulSoup
+from cryptography import x509
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.x509.oid import NameOID
 
 import sickrage
 from sickrage.core.enums import TorrentMethod
@@ -746,41 +751,60 @@ def create_https_certificates(ssl_cert, ssl_key):
     domain name(replacing dots by underscores), finally signing the certificate using specified CA and
     returns the path of key and cert files. If you are yet to generate a CA then check the top comments"""
 
-    try:
-        import OpenSSL
-    except ImportError:
-        sickrage.app.log.warning("OpenSSL not available, please install for better requests validation: "
-                                 "`https://pyopenssl.readthedocs.org/en/latest/install.html`")
-        return False
-
     # Check happens if the certificate and key pair already exists for a domain
     if not os.path.exists(ssl_key) and not os.path.exists(ssl_cert):
-        # Serial Generation - Serial number must be unique for each certificate,
-        serial = int(time.time())
+        # Generate our key
+        key = rsa.generate_private_key(
+            public_exponent=65537,
+            key_size=2048,
+            backend=default_backend(),
+        )
 
-        # Generate self-signed certificate
-        key = OpenSSL.crypto.PKey()
-        key.generate_key(OpenSSL.crypto.TYPE_RSA, 2048)
-        cert = OpenSSL.crypto.X509()
-        cert.get_subject().CN = "SiCKRAGE"
-        cert.gmtime_adj_notBefore(0)
-        cert.gmtime_adj_notAfter(365 * 24 * 60 * 60)
-        cert.set_serial_number(serial)
-        cert.set_issuer(cert.get_subject())
-        cert.set_pubkey(key)
-        cert.sign(key, "sha1")
+        name = x509.Name([
+            x509.NameAttribute(NameOID.COMMON_NAME, 'SiCKRAGE')
+        ])
 
-        # Save the key and certificate to disk
-        try:
-            # pylint: disable=E1101
-            # Module has no member
-            with open(ssl_key, 'wb') as keyout:
-                keyout.write(OpenSSL.crypto.dump_privatekey(OpenSSL.crypto.FILETYPE_PEM, key))
-            with open(ssl_cert, 'wb') as certout:
-                certout.write(OpenSSL.crypto.dump_certificate(OpenSSL.crypto.FILETYPE_PEM, cert))
-        except Exception:
-            sickrage.app.log.warning("Error creating SSL key and certificate")
-            return False
+        # # best practice seem to be to include the hostname in the SAN, which *SHOULD* mean COMMON_NAME is ignored.
+        # alt_names = [x509.DNSName(hostname)]
+        #
+        # # allow addressing by IP, for when you don't have real DNS (common in most testing scenarios
+        # if ip_addresses:
+        #     for addr in ip_addresses:
+        #         # openssl wants DNSnames for ips...
+        #         alt_names.append(x509.DNSName(addr))
+        #         # ... whereas golang's crypto/tls is stricter, and needs IPAddresses
+        #         # note: older versions of cryptography do not understand ip_address objects
+        #         alt_names.append(x509.IPAddress(ipaddress.ip_address(addr)))
+        #
+        # san = x509.SubjectAlternativeName(alt_names)
+
+        # path_len=0 means this cert can only sign itself, not other certs.
+        basic_contraints = x509.BasicConstraints(ca=True, path_length=0)
+        now = datetime.datetime.utcnow()
+        cert = (
+            x509.CertificateBuilder()
+                .subject_name(name)
+                .issuer_name(name)
+                .public_key(key.public_key())
+                .serial_number(1000)
+                .not_valid_before(now)
+                .not_valid_after(now + datetime.timedelta(days=10 * 365))
+                .add_extension(basic_contraints, False)
+                # .add_extension(san, False)
+                .sign(key, hashes.SHA256(), default_backend())
+        )
+        cert_pem = cert.public_bytes(encoding=serialization.Encoding.PEM)
+        key_pem = key.private_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PrivateFormat.TraditionalOpenSSL,
+            encryption_algorithm=serialization.NoEncryption(),
+        )
+
+        with open(ssl_key, 'wb') as key_out:
+            key_out.write(key_pem)
+
+        with open(ssl_cert, 'wb') as cert_out:
+            cert_out.write(cert_pem)
 
     return True
 
