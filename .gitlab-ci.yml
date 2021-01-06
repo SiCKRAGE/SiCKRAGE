@@ -150,7 +150,7 @@ release_build_develop:
     - yarn install --pure-lockfile --cache-folder .yarn-cache
     - pip install bumpversion
     - pip install -r requirements-dev.txt
-    - npx auto-changelog --hide-credit --unreleased --package --commit-limit false
+    - npx auto-changelog --hide-credit --unreleased --package --commit-limit false --ignore-commit-pattern \[TASK\].*
     - bumpversion --allow-dirty dev package.json sickrage/version.txt
     - yarn run build
     - python checksum-generator.py
