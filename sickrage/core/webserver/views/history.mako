@@ -33,9 +33,9 @@
                             </select>
 
                             <select name="HistoryLayout" class="form-control"
-                                    onchange="location = `${srWebRoot}/history?layout=this.options[this.selectedIndex].value;`">
+                                    onchange="location = this.options[this.selectedIndex].value;">
                                 % for item in HistoryLayout:
-                                    <option value="${item.name}" ${('', 'selected')[sickrage.app.config.gui.history_layout == item]}>${item.display_name}</option>
+                                    <option value="${srWebRoot}/setHistoryLayout/?layout=${item.name}" ${('', 'selected')[sickrage.app.config.gui.history_layout == item]}>${item.display_name}</option>
                                 % endfor
                             </select>
                         </div>

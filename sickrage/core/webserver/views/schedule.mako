@@ -26,7 +26,7 @@
                             <select id="sortby" name="sort" class="form-control mr-1"
                                     onchange="location = this.options[this.selectedIndex].value;">
                                 % for item in ComingEpsSortBy:
-                                    <option value="${item.name}" ${('', 'selected')[sickrage.app.config.gui.coming_eps_sort == item]}>${item.display_name}</option>
+                                    <option value="${srWebRoot}/setScheduleSort/?sort=${item.name}" ${('', 'selected')[sickrage.app.config.gui.coming_eps_sort == item]}>${item.display_name}</option>
                                 % endfor
                             </select>
                         % endif
@@ -42,9 +42,9 @@
                         </select>
 
                         <select id="layout" name="layout" class="form-control mr-1"
-                                onchange="location = `${srWebRoot}/schedule?layout=this.options[this.selectedIndex].value;`">
+                                onchange="location = this.options[this.selectedIndex].value;">
                             % for item in ComingEpsLayout:
-                                <option value="${item.name}" ${('', 'selected')[sickrage.app.config.gui.coming_eps_layout == item]}>${item.display_name}</option>
+                                <option value="${srWebRoot}/setScheduleLayout/?layout=${item.name}" ${('', 'selected')[sickrage.app.config.gui.coming_eps_layout == item]}>${item.display_name}</option>
                             % endfor
                         </select>
 
