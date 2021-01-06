@@ -57,8 +57,7 @@
                     <div style="width: 100px" id="posterSizeSlider"></div>
                 % endif
                 <div class="dropdown ml-4">
-                    <button type="button" class="btn bg-transparent dropdown-toggle" data-toggle="dropdown"
-                            style="border: none;">
+                    <a type="button" class="btn bg-transparent dropdown-toggle" href="#" data-toggle="dropdown" style="border: none;">
                         % if sickrage.app.config.gui.home_layout == HomeLayout.POSTER:
                             <i class="fas fa-2x fa-th-large"></i>
                         % elif sickrage.app.config.gui.home_layout == HomeLayout.SMALL:
@@ -70,7 +69,7 @@
                         % elif sickrage.app.config.gui.home_layout == HomeLayout.SIMPLE:
                             <i class="fas fa-2x fa-list"></i>
                         % endif
-                    </button>
+                    </a>
                     <div class="dropdown-menu dropdown-menu-right">
                         <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=${HomeLayout.POSTER.name}">Poster</a>
                         <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=${HomeLayout.SMALL.name}">Small Poster</a>
