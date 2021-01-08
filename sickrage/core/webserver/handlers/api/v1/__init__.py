@@ -1738,7 +1738,8 @@ class CMD_Show(ApiCall):
         showDict["skip_downloaded"] = (0, 1)[show_object.skip_downloaded]
 
         showDict["series_id"] = show_object.series_id
-        showDict["tvdbid"] = map_series_providers(show_object.series_provider_id, show_object.series_id, show_object.name)[1]
+        showDict["series_provider_id"] = show_object.series_provider.name
+        showDict["tvdbid"] = map_series_providers(show_object.series_provider_id, show_object.series_id, show_object.name)[SeriesProviderID.THETVDB.name]
         showDict["imdbid"] = show_object.imdb_id
 
         showDict["network"] = show_object.network
@@ -2564,8 +2565,6 @@ class CMD_Shows(ApiCall):
             if self.paused is not None and bool(self.paused) != bool(curShow.paused):
                 continue
 
-            series_provider_show = map_series_providers(curShow.series_provider_id, curShow.series_id, curShow.name)
-
             showDict = {
                 "paused": (0, 1)[curShow.paused],
                 "quality": Qualities(curShow.quality).display_name,
@@ -2573,7 +2572,7 @@ class CMD_Shows(ApiCall):
                 "search_format": curShow.search_format,
                 "anime": (0, 1)[curShow.anime],
                 "series_id": curShow.series_id,
-                "series_provider_series_id": series_provider_show[1],
+                "series_provider_id": curShow.series_provider.name,
                 "network": curShow.network,
                 "show_name": curShow.name,
                 "status": curShow.status,

@@ -31,6 +31,8 @@ def map_series_providers(series_provider_id, series_id, name):
     session = sickrage.app.main_db.session()
 
     mapped = {}
+    for series_provider_id in SeriesProviderID:
+        mapped[series_provider_id.name] = None
 
     # init mapped series_provider_ids object
     for mapped_series_provider_id in SeriesProviderID:
@@ -57,8 +59,7 @@ def map_series_providers(series_provider_id, series_id, name):
                 continue
 
             if mapped_show and len(mapped_show) == 1:
-                sickrage.app.log.debug(
-                    "Mapping " + sickrage.app.series_providers[series_provider_id].name + "->" + mapped_series_provider + " for show: " + name)
+                sickrage.app.log.debug(f"Mapping {sickrage.app.series_providers[series_provider_id].name} -> {mapped_series_provider} for show: {name}")
 
                 mapped[mapped_series_provider_id.name] = int(mapped_show['id'])
 

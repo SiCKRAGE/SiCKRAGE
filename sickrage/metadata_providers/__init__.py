@@ -743,7 +743,7 @@ class MetadataProvider(object):
         sickrage.app.log.debug("Searching for any " + img_type + " images on Fanart.tv for " + show.name)
 
         try:
-            series_id = map_series_providers(show.series_provider_id, show.series_id, show.name)[1]
+            series_id = map_series_providers(show.series_provider_id, show.series_id, show.name)[SeriesProviderID.THETVDB.name]
             if series_id:
                 request = fanart.Request(
                     apikey=sickrage.app.fanart_api_key,
