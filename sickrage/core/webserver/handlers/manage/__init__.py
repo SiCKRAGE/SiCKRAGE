@@ -352,11 +352,14 @@ class EpisodeStatusesHandler(BaseHandler, ABC):
         sorted_show_ids = []
         status_list = []
 
+        if which_status:
+            which_status = EpisodeStatus[which_status]
+
         # if we have no status then this is as far as we need to go
-        if len(status_list):
+        if which_status:
             for show in sorted(get_show_list(), key=lambda d: d.name):
                 for episode in show.episodes:
-                    if episode.season != 0 and episode.status == EpisodeStatus[which_status]:
+                    if episode.season != 0 and episode.status == which_status:
                         if show.series_id not in ep_counts:
                             ep_counts[show.series_id] = 1
                         else:

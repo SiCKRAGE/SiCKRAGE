@@ -235,11 +235,11 @@ class NameParser(object):
             if not self.naming_pattern:
                 # try and create a show object for this result
                 result = self.get_show(best_result.series_name)
-                if result:
-                    best_result.series_id, best_result.series_provider_id = self.get_show(best_result.series_name)
+                if result and len(result) == 2:
+                    best_result.series_id, best_result.series_provider_id = result
 
-                show_obj = find_show(best_result.series_id,
-                                     best_result.series_provider_id) if best_result.series_id and best_result.series_provider_id else None
+                if best_result.series_id and best_result.series_provider_id:
+                    show_obj = find_show(best_result.series_id, best_result.series_provider_id)
 
             # if this is a naming pattern test or result doesn't have a show object then return best result
             if not show_obj or self.naming_pattern:

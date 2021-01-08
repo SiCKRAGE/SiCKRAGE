@@ -29,7 +29,7 @@
                                 <select name="whichStatus" id="whichStatus" class="form-control shadow">
                                     % for curStatus in flatten([EpisodeStatus.SKIPPED, EpisodeStatus.SNATCHED, EpisodeStatus.WANTED, EpisodeStatus.IGNORED, EpisodeStatus.FAILED, EpisodeStatus.composites(EpisodeStatus.DOWNLOADED), EpisodeStatus.composites(EpisodeStatus.ARCHIVED)]):
                                         %if curStatus not in [EpisodeStatus.ARCHIVED, EpisodeStatus.DOWNLOADED]:
-                                            <option value="${curStatus}">
+                                            <option value="${curStatus.name}">
                                                 ${curStatus.display_name}
                                             </option>
                                         %endif
@@ -49,7 +49,7 @@
                         </div>
                         <br/>
                         <form action="${srWebRoot}/manage/changeEpisodeStatuses" method="post">
-                            <input type="hidden" id="oldStatus" name="oldStatus" value="${whichStatus}"/>
+                            <input type="hidden" id="oldStatus" name="oldStatus" value="${whichStatus.name}"/>
                             <div class="row">
                                 <div class="col-md-12">
                                     <h2>
@@ -64,7 +64,7 @@
                                         if whichStatus in flatten([EpisodeStatus.IGNORED, EpisodeStatus.SNATCHED, EpisodeStatus.composites(EpisodeStatus.DOWNLOADED), EpisodeStatus.composites(EpisodeStatus.ARCHIVED)]):
                                             row_class = "good"
                                         else:
-                                            row_class = Overview(whichStatus).display_name
+                                            row_class = Overview(whichStatus).css_name
                                     %>
 
                                     <input type="hidden" id="row_class" value="${row_class}"/>
@@ -87,7 +87,7 @@
                                             %>
 
                                             % for curStatus in statusList:
-                                                <option value="${curStatus}">${curStatus.display_name}</option>
+                                                <option value="${curStatus.name}">${curStatus.display_name}</option>
                                             % endfor
                                         </select>
                                         <div class="input-group-append">
