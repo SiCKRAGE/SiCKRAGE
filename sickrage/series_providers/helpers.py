@@ -25,6 +25,7 @@ from sqlalchemy import orm
 import sickrage
 from sickrage.core.databases.main import MainDB
 from sickrage.core.enums import SeriesProviderID
+from sickrage.core.tv.show.helpers import find_show
 
 
 def map_series_providers(series_provider_id, series_id, name):
@@ -106,7 +107,7 @@ def search_series_provider_for_series_id(show_name, series_provider_id):
         if not series_id:
             continue
 
-        if int(series_id) in sickrage.app.shows:
+        if find_show(int(series_id), series_provider_id):
             return series_id
 
     return series_provider_data[0].get('id', None)
