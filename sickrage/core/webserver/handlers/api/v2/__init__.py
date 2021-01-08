@@ -186,8 +186,7 @@ class PostProcessHandler(APIv2BaseHandler, ABC):
         json_data = sickrage.app.postprocessor_queue.put(path, process_method=ProcessMethod[process_method.upper()], force=force_replace,
                                                          is_priority=is_priority, delete_on=delete, failed=failed, proc_type=proc_type, force_next=force_next)
 
-        success = False
-        if 'Processing succeeded' in json_data:
-            success = True
+        if 'Processing succeeded' not in json_data:
+            return self.send_error(400, error=json_data)
 
-        self.write_json({'data': json_data if return_data else '', 'success': success})
+        self.write_json({'data': json_data if return_data else ''})
