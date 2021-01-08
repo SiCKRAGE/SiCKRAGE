@@ -75,7 +75,7 @@ class Subtitles(object):
                 newList.append({'name': curService,
                                 'url': self.PROVIDER_URLS[curService] if curService in self.PROVIDER_URLS else lmgtfy % curService,
                                 'image': curService + '.png',
-                                'enabled': [int(x) for x in sickrage.app.config.subtitles.services_enabled.split(',') if x][curIndex] == 1
+                                'enabled': [int(x) for x in sickrage.app.config.subtitles.services_enabled.split('|') if x][curIndex] == 1
                                 })
             curIndex += 1
 
@@ -295,7 +295,7 @@ class Subtitles(object):
         return self.from_code(code).opensubtitles
 
     def run_subs_extra_scripts(self, episode_object, found_subtitles, video, single=False):
-        for curScriptName in sickrage.app.config.subtitles.extra_scripts.split(','):
+        for curScriptName in sickrage.app.config.subtitles.extra_scripts.split('|'):
             script_cmd = [piece for piece in re.split("( |\\\".*?\\\"|'.*?')", curScriptName) if piece.strip()]
             script_cmd[0] = os.path.abspath(script_cmd[0])
             sickrage.app.log.debug("Absolute path to script: " + script_cmd[0])

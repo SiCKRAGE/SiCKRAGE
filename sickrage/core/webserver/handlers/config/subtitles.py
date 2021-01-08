@@ -111,7 +111,7 @@ class SaveSubtitlesHandler(BaseHandler, ABC):
             subtitles_services_enabled.append(cur_enabled)
 
         sickrage.app.config.subtitles.services_list = ','.join(subtitles_services_list)
-        sickrage.app.config.subtitles.services_enabled = ','.join(subtitles_services_enabled)
+        sickrage.app.config.subtitles.services_enabled = '|'.join(subtitles_services_enabled)
 
         sickrage.app.config.subtitles.addic7ed_user = addic7ed_user or ''
         sickrage.app.config.subtitles.addic7ed_pass = addic7ed_pass or ''
