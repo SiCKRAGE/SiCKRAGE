@@ -22,7 +22,8 @@
                         <label class="m-1">
                             <select name="minLevel" id="minLevel"
                                     class="form-control form-control-inline">
-                                <% levels = [x for x in sickrage.app.log.logLevels.keys() if any([sickrage.app.debug and x in ['DEBUG','DB'], x not in ['DEBUG','DB']])]%>
+                                <% levels = [x for x in sickrage.app.log.logLevels.keys() if x not in ['DEBUG','DB']]%>
+                                <% levels += [x for x in sickrage.app.log.logLevels.keys() if (sickrage.app.debug or sickrage.app.config.general.debug) and x in ['DEBUG','DB']]%>
                                 <% levels.sort(key=cmp_to_key(lambda x,y: sickrage.app.log.logLevels[x] < sickrage.app.log.logLevels[y])) %>
                                 % for level in levels:
                                     <option value="${sickrage.app.log.logLevels[level]}" ${('', 'selected')[minLevel == sickrage.app.log.logLevels[level]]}>${level.title()}</option>
