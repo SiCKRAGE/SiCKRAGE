@@ -157,7 +157,9 @@ class RetrieveSeriesMetadataHandler(APIv2BaseHandler, ABC):
 
 class PostProcessHandler(APIv2BaseHandler, ABC):
     def post(self):
-        data = json_decode(self.request.body)
+        data = {}
+        if self.request.body:
+            data = json_decode(self.request.body)
 
         path = data.get("path", sickrage.app.config.general.tv_download_dir)
         force_replace = data.get("force_replace", False)
