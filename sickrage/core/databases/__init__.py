@@ -180,23 +180,18 @@ class SRDatabase(object):
         current_rev = context.get_current_revision()
         return current_rev
 
-    def initialize(self):
-        pass
-
     def upgrade(self):
         db_version = int(self.version)
         alembic_version = int(ScriptDirectory.from_config(self.get_alembic_config()).get_current_head())
 
-        backup_filename = os.path.join(sickrage.app.data_dir, '{}_db_backup_{}.json'.format(self.name, datetime.datetime.now().strftime('%Y%m%d_%H%M%S')))
+        backup_filename = os.path.join(sickrage.app.data_dir, f'{self.name}_db_backup_{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}.json')
 
         if db_version < alembic_version:
-            sickrage.app.log.info('Upgrading {} database to v{}'.format(self.name, alembic_version))
-
+            sickrage.app.log.info(f'Backing up {self.name} database')
             self.backup(backup_filename)
 
+            sickrage.app.log.info(f'Upgrading {self.name} database to v{alembic_version}')
             alembic.command.upgrade(self.get_alembic_config(), 'head')
-
-            self.initialize()
 
     def get_alembic_config(self):
         config = alembic.config.Config()
@@ -216,8 +211,8 @@ class SRDatabase(object):
     def integrity_check(self):
         if self.db_type == 'sqlite':
             if self.session().scalar("PRAGMA integrity_check") != "ok":
-                sickrage.app.log.fatal("{} database file {} is damaged, please restore a backup"
-                                       " or delete the database file and restart SiCKRAGE".format(self.name.capitalize(), self.db_path))
+                sickrage.app.log.fatal(
+                    f"{self.name.capitalize()} database file {self.db_path} is damaged, please restore a backup or delete the database file and restart SiCKRAGE")
 
     def cleanup(self):
         pass
@@ -238,14 +233,12 @@ class SRDatabase(object):
             'cache': {}
         }
 
-        backup_file = os.path.join(sickrage.app.data_dir, '{}_{}.codernitydb.bak'.format(self.name,
-                                                                                         datetime.datetime.now().strftime(
-                                                                                             '%Y%m%d_%H%M%S')))
+        backup_file = os.path.join(sickrage.app.data_dir, f'{self.name}_{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}.codernitydb.bak')
 
-        migrate_file = os.path.join(sickrage.app.data_dir, '{}.codernitydb'.format(self.name))
+        migrate_file = os.path.join(sickrage.app.data_dir, f'{self.name}.codernitydb')
         if os.path.exists(migrate_file):
             # self.backup(backup_file)
-            sickrage.app.log.info('Migrating {} database using {}'.format(self.name, migrate_file))
+            sickrage.app.log.info(f'Migrating {self.name} database using {migrate_file}')
             with open(migrate_file, 'rb') as f:
                 rows = pickle.load(f, encoding='bytes')
 
@@ -292,7 +285,7 @@ class SRDatabase(object):
                 if not len(rows):
                     continue
 
-                sickrage.app.log.info('Migrating {} database table {}'.format(self.name, table))
+                sickrage.app.log.info(f'Migrating {self.name} database table {table}')
 
                 try:
                     session.query(self.tables[table]).delete()
@@ -328,6 +321,7 @@ class SRDatabase(object):
         }
 
         for table_name, table_object in meta.tables.items():
+            sickrage.app.log.info(f'Backing up {self.name} database table {table_name} schema')
             backup_dict['indexes'].update({table_name: []})
             backup_dict['schema'].update({table_name: str(CreateTable(table_object))})
             backup_dict['data'].update({table_name: dumps(self.session().query(table_object).all(), protocol=pickle.DEFAULT_PROTOCOL)})
@@ -351,14 +345,14 @@ class SRDatabase(object):
             # restore schema
             if backup_dict.get('schema', None):
                 for table_name, schema in backup_dict['schema'].items():
-                    sickrage.app.log.info('Restoring {} database table {} schema'.format(self.name, table_name))
+                    sickrage.app.log.info(f'Restoring {self.name} database table {table_name} schema')
                     session.execute(schema)
                 session.commit()
 
             # restore indexes
             if backup_dict.get('indexes', None):
                 for table_name, indexes in backup_dict['indexes'].items():
-                    sickrage.app.log.info('Restoring {} database table {} indexes'.format(self.name, table_name))
+                    sickrage.app.log.info(f'Restoring {self.name} database table {table_name} indexes')
                     for index in indexes:
                         session.execute(index)
                 session.commit()
@@ -368,7 +362,7 @@ class SRDatabase(object):
                 base = self.get_base()
                 meta = self.get_metadata()
                 for table_name, data in backup_dict['data'].items():
-                    sickrage.app.log.info('Restoring {} database table {} data'.format(self.name, table_name))
+                    sickrage.app.log.info(f'Restoring {self.name} database table {table_name} data')
                     table = base.classes[table_name]
                     session.query(table).delete()
 

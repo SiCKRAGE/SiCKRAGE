@@ -1,10 +1,3 @@
-"""Initial migration
-
-Revision ID: 18
-Revises:
-Create Date: 2017-12-29 14:39:27.854291
-
-"""
 # ##############################################################################
 #  Author: echel0n <echel0n@sickrage.ca>
 #  URL: https://sickrage.ca/
@@ -25,6 +18,15 @@ Create Date: 2017-12-29 14:39:27.854291
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
+
+"""Initial migration
+
+Revision ID: 21
+Revises:
+Create Date: 2017-12-29 14:39:27.854291
+
+"""
+
 import datetime
 import enum
 
@@ -125,6 +127,7 @@ def upgrade():
     op.drop_table('failed_snatch_history')
     op.drop_table('failed_snatches')
 
+    sa.Table('series_provider_mapping', maindb_meta, autoload=True).create()
     sa.Table('tv_episodes', maindb_meta, autoload=True).create()
     sa.Table('imdb_info', maindb_meta, autoload=True).create()
     sa.Table('blacklist', maindb_meta, autoload=True).create()

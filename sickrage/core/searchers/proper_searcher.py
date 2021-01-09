@@ -241,7 +241,7 @@ class ProperSearcher(object):
             # make sure the episode has been downloaded before
             history_results = [x for x in
                                session.query(MainDB.History).filter_by(series_id=curProper.series_id, season=curProper.season, episode=curProper.episode,
-                                                                       quality=curProper.quality).filter(MainDB.History.date >= history_limit.toordinal(),
+                                                                       quality=curProper.quality).filter(MainDB.History.date >= history_limit,
                                                                                                          MainDB.History.action.in_(flatten(
                                                                                                              [EpisodeStatus.composites(EpisodeStatus.SNATCHED),
                                                                                                               EpisodeStatus.composites(

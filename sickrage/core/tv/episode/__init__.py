@@ -414,7 +414,7 @@ class TVEpisode(object):
 
         self.subtitles = ','.join(subtitles)
         self.subtitles_searchcount += 1 if self.subtitles_searchcount else 1
-        self.subtitles_lastsearch = datetime.datetime.now().toordinal()
+        self.subtitles_lastsearch = datetime.datetime.now()
 
         if new_subtitles:
             subtitle_list = ", ".join([Subtitles().name_from_code(newSub) for newSub in new_subtitles])
