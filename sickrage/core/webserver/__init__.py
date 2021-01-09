@@ -36,8 +36,10 @@ import sickrage
 from sickrage.core.helpers import create_https_certificates
 from sickrage.core.webserver.handlers.account import AccountLinkHandler, AccountUnlinkHandler, AccountIsLinkedHandler
 from sickrage.core.webserver.handlers.announcements import AnnouncementsHandler, MarkAnnouncementSeenHandler, AnnouncementCountHandler
+from sickrage.core.webserver.handlers.api import SwaggerDotJsonHandler, PingHandler
 from sickrage.core.webserver.handlers.api.v1 import ApiHandler
-from sickrage.core.webserver.handlers.api.v2 import PingHandler, RetrieveSeriesMetadataHandler, PostProcessHandler
+from sickrage.core.webserver.handlers.api.v2 import RetrieveSeriesMetadataHandler
+from sickrage.core.webserver.handlers.api.v2.postprocess import PostProcessHandler
 from sickrage.core.webserver.handlers.api.v2.config import ConfigHandler
 from sickrage.core.webserver.handlers.api.v2.episode import EpisodesRenameHandler, EpisodesManualSearchHandler
 from sickrage.core.webserver.handlers.api.v2.file_browser import FileBrowserHandler
@@ -123,6 +125,7 @@ class WebServer(threading.Thread):
         self.name = "TORNADO"
         self.daemon = True
         self.started = False
+        self.handlers = {}
         self.video_root = None
         self.api_v1_root = None
         self.api_v2_root = None
@@ -193,43 +196,24 @@ class WebServer(threading.Thread):
                 filename = '{}/{}'.format('/'.join(path), file).lstrip('/')
                 templates[filename] = mako_lookup.get_template(filename)
 
-        # Load the app
-        self.app = Application(
-            debug=True,
-            autoreload=False,
-            gzip=sickrage.app.config.general.web_use_gzip,
-            cookie_secret=sickrage.app.config.general.web_cookie_secret,
-            login_url='%s/login/' % sickrage.app.config.general.web_root,
-            templates=templates,
-            default_handler_class=NotFoundHandler
-        )
-
         # Websocket handler
-        self.app.add_handlers('.*$', [
+        self.handlers['websocket_handlers'] = [
             (fr'{sickrage.app.config.general.web_root}/ws/ui', WebSocketUIHandler)
-        ])
+        ]
 
-        # GUI App Static File Handlers
-        self.app.add_handlers('.*$', [
-            # media
-            (fr'{sickrage.app.config.general.web_root}/app/static/media/(.*)', StaticImageHandler,
-             {"path": os.path.join(sickrage.app.gui_app_dir, 'static', 'media')}),
+        # API v1 Handlers
+        self.handlers['api_v1_handlers'] = [
+            # api
+            (fr'{self.api_v1_root}(/?.*)', ApiHandler),
 
-            # css
-            (fr'{sickrage.app.config.general.web_root}/app/static/css/(.*)', StaticNoCacheFileHandler,
-             {"path": os.path.join(sickrage.app.gui_app_dir, 'static', 'css')}),
-
-            # js
-            (fr'{sickrage.app.config.general.web_root}/app/static/js/(.*)', StaticNoCacheFileHandler,
-             {"path": os.path.join(sickrage.app.gui_app_dir, 'static', 'js')}),
-
-            # base
-            (fr"{sickrage.app.config.general.web_root}/app/(.*)", tornado.web.StaticFileHandler,
-             {"path": sickrage.app.gui_app_dir, "default_filename": "index.html"})
-        ])
+            # api builder
+            (fr'{sickrage.app.config.general.web_root}/api/builder', RedirectHandler,
+             {"url": sickrage.app.config.general.web_root + '/apibuilder/'}),
+        ]
 
         # API v2 Handlers
-        self.app.add_handlers('.*$', [
+        self.handlers['api_v2_handlers'] = [
+            (fr'{self.api_v2_root}/swagger.json', SwaggerDotJsonHandler, {'api_handlers': 'api_v2_handlers', 'api_version': '2.0.0'}),
             (fr'{self.api_v2_root}/config', ConfigHandler),
             (fr'{self.api_v2_root}/ping', PingHandler),
             (fr'{self.api_v2_root}/file-browser', FileBrowserHandler),
@@ -249,20 +233,32 @@ class WebServer(threading.Thread):
             (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/update', SeriesUpdateHandler),
             (fr'{self.api_v2_root}/episodes/rename', EpisodesRenameHandler),
             (fr'{self.api_v2_root}/episodes/(\d+[-][a-z]+)/search', EpisodesManualSearchHandler),
-        ])
+        ]
+
+        # New UI Static File Handlers
+        self.handlers['new_ui_static_file_handlers'] = [
+            # media
+            (fr'{sickrage.app.config.general.web_root}/app/static/media/(.*)', StaticImageHandler,
+             {"path": os.path.join(sickrage.app.gui_app_dir, 'static', 'media')}),
+
+            # css
+            (fr'{sickrage.app.config.general.web_root}/app/static/css/(.*)', StaticNoCacheFileHandler,
+             {"path": os.path.join(sickrage.app.gui_app_dir, 'static', 'css')}),
+
+            # js
+            (fr'{sickrage.app.config.general.web_root}/app/static/js/(.*)', StaticNoCacheFileHandler,
+             {"path": os.path.join(sickrage.app.gui_app_dir, 'static', 'js')}),
+
+            # base
+            (fr"{sickrage.app.config.general.web_root}/app/(.*)", tornado.web.StaticFileHandler,
+             {"path": sickrage.app.gui_app_dir, "default_filename": "index.html"})
+        ]
 
         # Static File Handlers
-        self.app.add_handlers('.*$', [
-            # api
-            (fr'{self.api_v1_root}(/?.*)', ApiHandler),
-
+        self.handlers['static_file_handlers'] = [
             # redirect to home
             (fr"({sickrage.app.config.general.web_root})(/?)", RedirectHandler,
              {"url": f"{sickrage.app.config.general.web_root}/home"}),
-
-            # api builder
-            (fr'{sickrage.app.config.general.web_root}/api/builder', RedirectHandler,
-             {"url": sickrage.app.config.general.web_root + '/apibuilder/'}),
 
             # login
             (fr'{sickrage.app.config.general.web_root}/login(/?)', LoginHandler),
@@ -297,10 +293,10 @@ class WebServer(threading.Thread):
             # videos
             (fr'{sickrage.app.config.general.web_root}/videos/(.*)', StaticNoCacheFileHandler,
              {"path": self.video_root}),
-        ])
+        ]
 
         # Handlers
-        self.app.add_handlers('.*$', [
+        self.handlers['web_handlers'] = [
             (fr'{sickrage.app.config.general.web_root}/robots.txt', RobotsDotTxtHandler),
             (fr'{sickrage.app.config.general.web_root}/messages.po', MessagesDotPoHandler),
             (fr'{sickrage.app.config.general.web_root}/quicksearch.json', QuicksearchDotJsonHandler),
@@ -469,7 +465,19 @@ class WebServer(threading.Thread):
             (fr'{sickrage.app.config.general.web_root}/config/subtitles/get_code(/?)', ConfigSubtitleGetCodeHandler),
             (fr'{sickrage.app.config.general.web_root}/config/subtitles/wanted_languages(/?)', ConfigSubtitlesWantedLanguagesHandler),
             (fr'{sickrage.app.config.general.web_root}/config/subtitles/saveSubtitles(/?)', SaveSubtitlesHandler),
-        ])
+        ]
+
+        # Initialize Tornado application
+        self.app = Application(
+            handlers=sum(self.handlers.values(), []),
+            debug=True,
+            autoreload=False,
+            gzip=sickrage.app.config.general.web_use_gzip,
+            cookie_secret=sickrage.app.config.general.web_cookie_secret,
+            login_url='%s/login/' % sickrage.app.config.general.web_root,
+            templates=templates,
+            default_handler_class=NotFoundHandler
+        )
 
         # HTTPS Cert/Key object
         ssl_ctx = None

@@ -21,10 +21,10 @@
 import os
 from abc import ABC
 
-from sickrage.core.webserver.handlers.api.v2 import APIv2BaseHandler
+from sickrage.core.webserver.handlers.api import APIBaseHandler
 
 
-class FileBrowserHandler(APIv2BaseHandler, ABC):
+class FileBrowserHandler(APIBaseHandler, ABC):
     def get(self):
         path = self.get_argument('path', None)
         include_files = self.get_argument('includeFiles', None)

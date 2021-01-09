@@ -34,11 +34,47 @@ from sickrage.core.helpers.anidb import short_group_names
 from sickrage.core.media.util import series_image, SeriesImageType
 from sickrage.core.common import Quality, Qualities, EpisodeStatus
 from sickrage.core.tv.show.helpers import get_show_list, find_show, find_show_by_slug
-from sickrage.core.webserver.handlers.api.v2 import APIv2BaseHandler
+from sickrage.core.webserver.handlers.api import APIBaseHandler
 
 
-class SeriesHandler(APIv2BaseHandler, ABC):
-    def get(self, series_slug=None, *args, **kwargs):
+class SeriesHandler(APIBaseHandler, ABC):
+    def get(self, series_slug=None):
+        """Get list of series or specific series information"
+        ---
+        tags: [Series]
+        summary: Manually search for episodes on search providers
+        description: Manually search for episodes on search providers
+        parameters:
+        - in: path
+          schema:
+            SeriesPath
+        responses:
+          200:
+            description: Success payload
+            content:
+              application/json:
+                schema:
+                  SeriesSuccessSchema
+          400:
+            description: Bad request; Check `errors` for any validation errors
+            content:
+              application/json:
+                schema:
+                  BadRequestSchema
+          401:
+            description: Returned if your JWT token is missing or expired
+            content:
+              application/json:
+                schema:
+                  NotAuthorizedSchema
+          404:
+            description: Returned if the given series slug does not exist or no series results.
+            content:
+              application/json:
+                schema:
+                  NotFoundSchema
+        """
+
         if not series_slug:
             all_series = {}
 
@@ -59,7 +95,7 @@ class SeriesHandler(APIv2BaseHandler, ABC):
     def post(self):
         data = json_decode(self.request.body)
 
-        is_existing = data.get('isExisting', None)
+        is_existing = data.get('isExisting', 'false')
 
         root_directory = data.get('rootDirectory', None)
         series_id = data.get('seriesId', None)
@@ -67,21 +103,21 @@ class SeriesHandler(APIv2BaseHandler, ABC):
         series_directory = data.get('seriesDirectory', None)
         first_aired = data.get('firstAired', None)
         series_provider_slug = data.get('seriesProviderSlug', None)
-        series_provider_langauge = data.get('seriesProviderLanguage', None)
+        series_provider_language = data.get('seriesProviderLanguage', None)
         default_status = data.get('defaultStatus', None)
         default_status_after = data.get('defaultStatusAfter', None)
         quality_preset = data.get('qualityPreset', None)
         allowed_qualities = data.get('allowedQualities', [])
         preferred_qualities = data.get('preferredQualities', [])
-        subtitles = data.get('subtitles', None)
-        sub_use_sr_metadata = data.get('subUseSrMetadata', None)
-        flatten_folders = data.get('flattenFolders', None)
-        is_anime = data.get('isAnime', None)
-        is_scene = data.get('isScene', None)
-        search_format = data.get('searchFormat', None)
-        dvd_order = data.get('dvdOrder', None)
-        skip_downloaded = data.get('skipDownloaded', None)
-        add_show_year = data.get('addShowYear', None)
+        subtitles = self._parse_boolean(data.get('subtitles', sickrage.app.config.subtitles.default))
+        sub_use_sr_metadata = self._parse_boolean(data.get('subUseSrMetadata', 'false'))
+        flatten_folders = self._parse_boolean(data.get('flattenFolders', sickrage.app.config.general.flatten_folders_default))
+        is_anime = self._parse_boolean(data.get('isAnime', sickrage.app.config.general.anime_default))
+        is_scene = self._parse_boolean(data.get('isScene', sickrage.app.config.general.scene_default))
+        search_format = data.get('searchFormat', sickrage.app.config.general.search_format_default.name)
+        dvd_order = self._parse_boolean(data.get('dvdOrder', 'false'))
+        skip_downloaded = self._parse_boolean(data.get('skipDownloaded', sickrage.app.config.general.skip_downloaded_default))
+        add_show_year = self._parse_boolean(data.get('addShowYear', 'false'))
 
         if not series_id:
             return self.send_error(400, error=f"Missing seriesId parameter: {series_id}")
@@ -117,28 +153,28 @@ class SeriesHandler(APIv2BaseHandler, ABC):
         chmod_as_parent(series_directory)
 
         try:
-            new_quality = Qualities[quality_preset]
+            new_quality = Qualities[quality_preset.upper()]
         except KeyError:
-            new_quality = Quality.combine_qualities([Qualities[x] for x in allowed_qualities], [Qualities[x] for x in preferred_qualities])
+            new_quality = Quality.combine_qualities([Qualities[x.upper()] for x in allowed_qualities], [Qualities[x.upper()] for x in preferred_qualities])
 
         sickrage.app.show_queue.add_show(series_provider_id=series_provider_id,
                                          series_id=int(series_id),
                                          showDir=series_directory,
-                                         default_status=EpisodeStatus[default_status],
-                                         default_status_after=EpisodeStatus[default_status_after],
+                                         default_status=EpisodeStatus[default_status.upper()],
+                                         default_status_after=EpisodeStatus[default_status_after.upper()],
                                          quality=new_quality,
-                                         flatten_folders=checkbox_to_value(flatten_folders),
-                                         lang=series_provider_langauge,
-                                         subtitles=checkbox_to_value(subtitles),
-                                         sub_use_sr_metadata=checkbox_to_value(sub_use_sr_metadata),
-                                         anime=checkbox_to_value(is_anime),
-                                         dvd_order=checkbox_to_value(dvd_order),
-                                         search_format=SearchFormat[search_format],
+                                         flatten_folders=flatten_folders,
+                                         lang=series_provider_language,
+                                         subtitles=subtitles,
+                                         sub_use_sr_metadata=sub_use_sr_metadata,
+                                         anime=is_anime,
+                                         dvd_order=dvd_order,
+                                         search_format=SearchFormat[search_format.upper()],
                                          paused=False,
                                          # blacklist=blacklist,
                                          # whitelist=whitelist,
-                                         scene=checkbox_to_value(is_scene),
-                                         skip_downloaded=checkbox_to_value(skip_downloaded))
+                                         scene=is_scene,
+                                         skip_downloaded=skip_downloaded)
 
         sickrage.app.alerts.message(_('Adding Show'), _(f'Adding the specified show into {series_directory}'))
 
@@ -282,7 +318,7 @@ class SeriesHandler(APIv2BaseHandler, ABC):
         return self.write_json({'message': 'successful'})
 
 
-class SeriesEpisodesHandler(APIv2BaseHandler, ABC):
+class SeriesEpisodesHandler(APIBaseHandler, ABC):
     def get(self, series_slug, *args, **kwargs):
         series = find_show_by_slug(series_slug)
         if series is None:
@@ -295,7 +331,7 @@ class SeriesEpisodesHandler(APIv2BaseHandler, ABC):
         return self.write_json(episodes)
 
 
-class SeriesImagesHandler(APIv2BaseHandler, ABC):
+class SeriesImagesHandler(APIBaseHandler, ABC):
     def get(self, series_slug, *args, **kwargs):
         series = find_show_by_slug(series_slug)
         if series is None:
@@ -305,7 +341,7 @@ class SeriesImagesHandler(APIv2BaseHandler, ABC):
         return self.write_json({'poster': image.url})
 
 
-class SeriesImdbInfoHandler(APIv2BaseHandler, ABC):
+class SeriesImdbInfoHandler(APIBaseHandler, ABC):
     def get(self, series_slug, *args, **kwargs):
         series = find_show_by_slug(series_slug)
         if series is None:
@@ -318,7 +354,7 @@ class SeriesImdbInfoHandler(APIv2BaseHandler, ABC):
         return self.write_json(json_data)
 
 
-class SeriesBlacklistHandler(APIv2BaseHandler, ABC):
+class SeriesBlacklistHandler(APIBaseHandler, ABC):
     def get(self, series_slug, *args, **kwargs):
         series = find_show_by_slug(series_slug)
         if series is None:
@@ -331,7 +367,7 @@ class SeriesBlacklistHandler(APIv2BaseHandler, ABC):
         return self.write_json(json_data)
 
 
-class SeriesWhitelistHandler(APIv2BaseHandler, ABC):
+class SeriesWhitelistHandler(APIBaseHandler, ABC):
     def get(self, series_slug, *args, **kwargs):
         series = find_show_by_slug(series_slug)
         if series is None:
@@ -344,7 +380,7 @@ class SeriesWhitelistHandler(APIv2BaseHandler, ABC):
         return self.write_json(json_data)
 
 
-class SeriesRefreshHandler(APIv2BaseHandler, ABC):
+class SeriesRefreshHandler(APIBaseHandler, ABC):
     def get(self, series_slug):
         force = self.get_argument('force', None)
 
@@ -358,7 +394,7 @@ class SeriesRefreshHandler(APIv2BaseHandler, ABC):
             return self.send_error(400, error=_(f"Unable to refresh this show, error: {e}"))
 
 
-class SeriesUpdateHandler(APIv2BaseHandler, ABC):
+class SeriesUpdateHandler(APIBaseHandler, ABC):
     def get(self, series_slug):
         force = self.get_argument('force', None)
 

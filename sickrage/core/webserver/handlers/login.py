@@ -96,7 +96,7 @@ class LoginHandler(BaseHandler, ABC):
     def handle_sso_auth_get(self):
         code = self.get_argument('code', None)
 
-        redirect_uri = "{}://{}{}/login".format(self.request.protocol, self.request.host, sickrage.app.config.general.web_root)
+        redirect_uri = f"{self.request.protocol}://{self.request.host}{sickrage.app.config.general.web_root}/login"
 
         if code:
             try:

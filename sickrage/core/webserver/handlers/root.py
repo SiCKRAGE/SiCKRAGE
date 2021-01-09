@@ -61,7 +61,6 @@ class MessagesDotPoHandler(BaseHandler, ABC):
                 with open(locale_file, 'r', encoding='utf8') as f:
                     return self.write(f.read())
 
-
 class APIBulderHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):

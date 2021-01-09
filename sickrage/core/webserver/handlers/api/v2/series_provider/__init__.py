@@ -22,15 +22,15 @@ from abc import ABC
 
 import sickrage
 from sickrage.core.enums import SeriesProviderID
-from sickrage.core.webserver.handlers.api.v2 import APIv2BaseHandler
+from sickrage.core.webserver.handlers.api import APIBaseHandler
 
 
-class SeriesProvidersHandler(APIv2BaseHandler, ABC):
+class SeriesProvidersHandler(APIBaseHandler, ABC):
     def get(self):
         self.write_json([{'displayName': x.display_name, 'slug': x.slug} for x in SeriesProviderID])
 
 
-class SeriesProvidersSearchHandler(APIv2BaseHandler, ABC):
+class SeriesProvidersSearchHandler(APIBaseHandler, ABC):
     def get(self, series_provider_slug):
         search_term = self.get_argument('searchTerm', None)
         lang = self.get_argument('seriesProviderLanguage', None)
@@ -49,7 +49,7 @@ class SeriesProvidersSearchHandler(APIv2BaseHandler, ABC):
         return self.write_json(results)
 
 
-class SeriesProvidersLanguagesHandler(APIv2BaseHandler, ABC):
+class SeriesProvidersLanguagesHandler(APIBaseHandler, ABC):
     def get(self, series_provider_slug):
         series_provider_id = SeriesProviderID.by_slug(series_provider_slug)
         if not series_provider_id:

@@ -27,13 +27,60 @@ import sickrage
 from sickrage.core.queues.search import ManualSearchTask
 from sickrage.core.tv.episode.helpers import find_episode_by_slug, find_episode
 from sickrage.core.tv.show.helpers import find_show_by_slug
-from sickrage.core.webserver.handlers.api.v2 import APIv2BaseHandler
+from sickrage.core.webserver.handlers.api import APIBaseHandler
+from sickrage.core.webserver.handlers.api.v2.episode.schemas import EpisodesManualSearchSchema, EpisodesRenameSchema, EpisodesManualSearchPath
 from sickrage.core.websocket import WebSocketMessage
 
 
-class EpisodesManualSearchHandler(APIv2BaseHandler, ABC):
+class EpisodesManualSearchHandler(APIBaseHandler, ABC):
     def get(self, episode_slug):
-        use_existing_quality = self.get_argument('useExistingQuality')
+        """Episode Manual Search"
+        ---
+        tags: [Episodes]
+        summary: Manually search for episode on search providers
+        description: Manually search for episode on search providers
+        parameters:
+        - in: path
+          schema:
+            EpisodesManualSearchPath
+        - in: query
+          schema:
+            EpisodesManualSearchSchema
+        responses:
+          200:
+            description: Success payload
+            content:
+              application/json:
+                schema:
+                  EpisodesManualSearchSuccessSchema
+          400:
+            description: Bad request; Check `errors` for any validation errors
+            content:
+              application/json:
+                schema:
+                  BadRequestSchema
+          401:
+            description: Returned if your JWT token is missing or expired
+            content:
+              application/json:
+                schema:
+                  NotAuthorizedSchema
+          404:
+            description: Returned if the given episode slug does not exist or the search returns no results.
+            content:
+              application/json:
+                schema:
+                  NotFoundSchema
+        """
+        use_existing_quality = self.get_argument('useExistingQuality', None) or False
+
+        validation_errors = self._validate_schema(EpisodesManualSearchPath, self.request.path)
+        if validation_errors:
+            return self.send_error(400, errors=validation_errors)
+
+        validation_errors = self._validate_schema(EpisodesManualSearchSchema, self.request.arguments)
+        if validation_errors:
+            return self.send_error(400, errors=validation_errors)
 
         episode = find_episode_by_slug(episode_slug)
         if episode is None:
@@ -48,14 +95,51 @@ class EpisodesManualSearchHandler(APIv2BaseHandler, ABC):
 
         sickrage.app.search_queue.put(ep_queue_item)
         if not all([ep_queue_item.started, ep_queue_item.success]):
-            return self.write_json({'result': 'success'})
+            return self.write_json({'success': True})
 
-        return self.send_error(404, error=_("Unable to find season {} episode {} for show {}".format(episode.season, episode.episode, episode.show.name)))
+        return self.send_error(
+            status_code=404,
+            error=_(f"Unable to find season {episode.season} episode {episode.episode} for show {episode.show.name} on search providers")
+        )
 
 
-class EpisodesRenameHandler(APIv2BaseHandler, ABC):
+class EpisodesRenameHandler(APIBaseHandler, ABC):
     def get(self):
+        """Get list of episodes to rename"
+        ---
+        tags: [Episodes]
+        summary: Get list of episodes to rename
+        description: Get list of episodes to rename
+        parameters:
+        - in: query
+          schema:
+            EpisodesRenameSchema
+        responses:
+          200:
+            description: Success payload
+            content:
+              application/json:
+                schema:
+                  EpisodesRenameSuccessSchema
+          400:
+            description: Bad request; Check `errors` for any validation errors
+            content:
+              application/json:
+                schema:
+                  BadRequestSchema
+          401:
+            description: Returned if your JWT token is missing or expired
+            content:
+              application/json:
+                schema:
+                  NotAuthorizedSchema
+        """
         series_slug = self.get_argument('seriesSlug', None)
+
+        validation_errors = self._validate_schema(EpisodesRenameSchema, self.request.arguments)
+        if validation_errors:
+            return self.send_error(400, error=validation_errors)
+
         if not series_slug:
             return self.send_error(400, error="Missing series slug")
 
@@ -87,6 +171,35 @@ class EpisodesRenameHandler(APIv2BaseHandler, ABC):
         return self.write_json(rename_data)
 
     def post(self):
+        """Rename list of episodes"
+        ---
+        tags: [Episodes]
+        summary: Rename list of episodes
+        description: Rename list of episodes
+        # parameters:
+        # - in: query
+        #   schema:
+        #     EpisodesRenameSchema
+        responses:
+          200:
+            description: Success payload
+            content:
+              application/json:
+                schema:
+                  EpisodesRenameSuccessSchema
+          400:
+            description: Bad request; Check `errors` for any validation errors
+            content:
+              application/json:
+                schema:
+                  BadRequestSchema
+          401:
+            description: Returned if your JWT token is missing or expired
+            content:
+              application/json:
+                schema:
+                  NotAuthorizedSchema
+        """
         data = json_decode(self.request.body)
 
         renamed_episodes = []

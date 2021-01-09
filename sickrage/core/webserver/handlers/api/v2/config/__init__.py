@@ -24,10 +24,10 @@ import sickrage
 from sickrage.core.common import Overview
 from sickrage.core.common import Qualities, EpisodeStatus
 from sickrage.core.enums import SearchFormat
-from sickrage.core.webserver.handlers.api.v2 import APIv2BaseHandler
+from sickrage.core.webserver.handlers.api import APIBaseHandler
 
 
-class ConfigHandler(APIv2BaseHandler, ABC):
+class ConfigHandler(APIBaseHandler, ABC):
     def get(self, *args, **kwargs):
         config_data = sickrage.app.config.to_json()
 

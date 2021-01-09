@@ -21,6 +21,7 @@
 ######################
 *.db*
 *.ini
+swagger.json
 privatekey.pem
 autoProcessTV.cfg
 /.imdbpie_cache/

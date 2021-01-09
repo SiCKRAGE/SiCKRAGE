@@ -1,5 +1,7 @@
 aenum==2.2.4
 alembic==1.4.2
+apispec==4.0.0
+apispec-webframeworks==0.5.2
 appdirs==1.4.4
 APScheduler==3.6.3
 arrow==0.15.8

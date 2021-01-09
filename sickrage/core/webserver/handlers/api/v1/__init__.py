@@ -1165,8 +1165,7 @@ class CMD_PostProcess(ApiCall):
             "delete": {"desc": "Delete processed files and folders"},
             "failed": {"desc": "Mark download as failed"},
             "type": {"desc": "The type of post-process being requested"},
-            "force_next": {"desc": "Waits for the current processing queue item to finish and returns result of this "
-                                   "request"},
+            "force_next": {"desc": "Waits for the current processing queue item to finish and returns result of this request"},
         }
     }
 
