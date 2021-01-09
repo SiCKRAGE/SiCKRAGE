@@ -165,6 +165,7 @@ release_build_develop:
     - npx auto-changelog --hide-credit --unreleased --package --commit-limit false --ignore-commit-pattern \[TASK\].*
     - git add CHANGELOG.md
     - git commit --amend --no-edit
+    - git tag -f -a $(cat sickrage/version.txt)
     - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME --follow-tags
   only:
     - develop@SiCKRAGE/sickrage
