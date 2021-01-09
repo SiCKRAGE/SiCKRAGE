@@ -3,7 +3,6 @@ stages:
 #  - review_docker
 #  - review_deploy
   - release_build
-  - release_changelog
   - release_sentry
   - release_deploy
 
