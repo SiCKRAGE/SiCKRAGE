@@ -33,7 +33,7 @@ from alembic import op
 
 from sickrage.core.common import Qualities, EpisodeStatus
 from sickrage.core.databases import IntFlag
-from sickrage.core.databases.main import MainDBBase
+from sickrage.core.databases.main import MainDB
 
 # revision identifiers, used by Alembic.
 revision = '21'
@@ -46,7 +46,7 @@ class SeriesProviderID(enum.Enum):
 
 def upgrade():
     conn = op.get_bind()
-    maindb_meta = MainDBBase.metadata
+    maindb_meta = MainDB.base.metadata
     maindb_meta.bind = conn
 
     op.alter_column('tv_shows', 'indexer_id', new_column_name='series_id')

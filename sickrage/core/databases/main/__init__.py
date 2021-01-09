@@ -26,13 +26,17 @@ from sickrage.core.common import Qualities, EpisodeStatus
 from sickrage.core.databases import SRDatabase, SRDatabaseBase, IntFlag
 from sickrage.core.enums import SearchFormat, SeriesProviderID
 
-MainDBBase = declarative_base(cls=SRDatabaseBase)
 
 class MainDB(SRDatabase):
+    base = declarative_base(cls=SRDatabaseBase)
+
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
         super(MainDB, self).__init__('main', db_type, db_prefix, db_host, db_port, db_username, db_password)
-        MainDBBase.metadata.create_all(self.engine)
-        for model in MainDBBase._decl_class_registry.values():
+        self.initialize()
+
+    def initialize(self):
+        self.base.metadata.create_all(self.engine)
+        for model in self.base._decl_class_registry.values():
             if hasattr(model, '__tablename__'):
                 self.tables[model.__tablename__] = model
 
@@ -50,7 +54,7 @@ class MainDB(SRDatabase):
 
             for cur_duplicate in duplicates:
                 sickrage.app.log.debug("Duplicate show detected! series_id: {dupe_id} count: {dupe_count}".format(dupe_id=cur_duplicate.series_id,
-                                                                                                                   dupe_count=cur_duplicate.count))
+                                                                                                                  dupe_count=cur_duplicate.count))
 
                 for result in session.query(self.TVShow).filter_by(series_id=cur_duplicate.series_id).limit(cur_duplicate.count - 1):
                     session.query(self.TVShow).filter_by(series_id=result.series_id).delete()
@@ -231,7 +235,7 @@ class MainDB(SRDatabase):
         fix_duplicate_episode_scene_absolute_numbering()
         fix_tvshow_table_columns()
 
-    class TVShow(MainDBBase):
+    class TVShow(base):
         __tablename__ = 'tv_shows'
 
         series_id = Column(Integer, index=True, primary_key=True)
@@ -274,7 +278,7 @@ class MainDB(SRDatabase):
         episodes = relationship('TVEpisode', uselist=True, backref='tv_shows', lazy='dynamic')
         imdb_info = relationship('IMDbInfo', uselist=False, backref='tv_shows')
 
-    class TVEpisode(MainDBBase):
+    class TVEpisode(base):
         __tablename__ = 'tv_episodes'
         __table_args__ = (
             ForeignKeyConstraint(['series_id', 'series_provider_id'], ['tv_shows.series_id', 'tv_shows.series_provider_id'], ondelete='CASCADE',
@@ -316,7 +320,7 @@ class MainDB(SRDatabase):
 
         show = relationship('TVShow', uselist=False, backref='tv_episodes')
 
-    class IMDbInfo(MainDBBase):
+    class IMDbInfo(base):
         __tablename__ = 'imdb_info'
         __table_args__ = (
             ForeignKeyConstraint(['series_id', 'imdb_id'], ['tv_shows.series_id', 'tv_shows.imdb_id'], ondelete='CASCADE',
@@ -348,7 +352,7 @@ class MainDB(SRDatabase):
         plot = Column(Text)
         last_update = Column(DateTime(timezone=True), default=datetime.datetime.now())
 
-    class SeriesProviderMapping(MainDBBase):
+    class SeriesProviderMapping(base):
         __tablename__ = 'series_provider_mapping'
         __table_args__ = (
             ForeignKeyConstraint(['series_id', 'series_provider_id'], ['tv_shows.series_id', 'tv_shows.series_provider_id'], ondelete='CASCADE',
@@ -360,7 +364,7 @@ class MainDB(SRDatabase):
         mapped_series_id = Column(Integer, nullable=False)
         mapped_series_provider_id = Column(Enum(SeriesProviderID), primary_key=True)
 
-    class Blacklist(MainDBBase):
+    class Blacklist(base):
         __tablename__ = 'blacklist'
         __table_args__ = (
             ForeignKeyConstraint(['series_id', 'series_provider_id'], ['tv_shows.series_id', 'tv_shows.series_provider_id'], ondelete='CASCADE',
@@ -372,7 +376,7 @@ class MainDB(SRDatabase):
         series_provider_id = Column(Enum(SeriesProviderID), nullable=False)
         keyword = Column(Text, nullable=False)
 
-    class Whitelist(MainDBBase):
+    class Whitelist(base):
         __tablename__ = 'whitelist'
         __table_args__ = (
             ForeignKeyConstraint(['series_id', 'series_provider_id'], ['tv_shows.series_id', 'tv_shows.series_provider_id'], ondelete='CASCADE',
@@ -384,7 +388,7 @@ class MainDB(SRDatabase):
         series_provider_id = Column(Enum(SeriesProviderID), nullable=False)
         keyword = Column(Text, nullable=False)
 
-    class History(MainDBBase):
+    class History(base):
         __tablename__ = 'history'
         __table_args__ = (
             ForeignKeyConstraint(['series_id', 'series_provider_id'], ['tv_shows.series_id', 'tv_shows.series_provider_id'], ondelete='CASCADE',
@@ -404,7 +408,7 @@ class MainDB(SRDatabase):
         quality = Column(IntFlag(Qualities), nullable=False)
         release_group = Column(Text, nullable=False)
 
-    class FailedSnatchHistory(MainDBBase):
+    class FailedSnatchHistory(base):
         __tablename__ = 'failed_snatch_history'
         __table_args__ = (
             ForeignKeyConstraint(['series_id', 'series_provider_id'], ['tv_shows.series_id', 'tv_shows.series_provider_id'], ondelete='CASCADE',
@@ -422,7 +426,7 @@ class MainDB(SRDatabase):
         episode = Column(Integer, nullable=False)
         old_status = Column(Enum(EpisodeStatus), nullable=False)
 
-    class FailedSnatch(MainDBBase):
+    class FailedSnatch(base):
         __tablename__ = 'failed_snatches'
         __table_args__ = (
             ForeignKeyConstraint(['series_id', 'series_provider_id'], ['tv_shows.series_id', 'tv_shows.series_provider_id'], ondelete='CASCADE',

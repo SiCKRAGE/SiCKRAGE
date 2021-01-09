@@ -22,17 +22,19 @@ from sqlalchemy.ext.declarative import declarative_base
 from sickrage.core.databases import SRDatabase, SRDatabaseBase
 from sickrage.core.enums import SeriesProviderID
 
-CacheDBBase = declarative_base(cls=SRDatabaseBase)
-
-
 class CacheDB(SRDatabase):
+    base = declarative_base(cls=SRDatabaseBase)
+
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
         super(CacheDB, self).__init__('cache', db_type, db_prefix, db_host, db_port, db_username, db_password)
-        CacheDBBase.metadata.create_all(self.engine)
-        for model in CacheDBBase._decl_class_registry.values():
+        self.initialize()
+
+    def initialize(self):
+        self.base.metadata.create_all(self.engine)
+        for model in self.base._decl_class_registry.values():
             if hasattr(model, '__tablename__'):
                 self.tables[model.__tablename__] = model
-
+                
     def cleanup(self):
         def remove_duplicates_from_last_search_table():
             found = []
@@ -61,32 +63,32 @@ class CacheDB(SRDatabase):
         remove_duplicates_from_last_search_table()
         # remove_duplicates_from_scene_name_table()
 
-    class LastUpdate(CacheDBBase):
+    class LastUpdate(base):
         __tablename__ = 'last_update'
 
         provider = Column(String(32), primary_key=True)
         time = Column(Integer)
 
-    class LastSearch(CacheDBBase):
+    class LastSearch(base):
         __tablename__ = 'last_search'
 
         provider = Column(String(32), primary_key=True)
         time = Column(Integer)
 
-    class SceneName(CacheDBBase):
+    class SceneName(base):
         __tablename__ = 'scene_names'
 
         id = Column(Integer, primary_key=True)
         series_id = Column(Integer)
         name = Column(Text)
 
-    class NetworkTimezone(CacheDBBase):
+    class NetworkTimezone(base):
         __tablename__ = 'network_timezones'
 
         network_name = Column(String(256), primary_key=True)
         timezone = Column(Text)
 
-    class Provider(CacheDBBase):
+    class Provider(base):
         __tablename__ = 'providers'
 
         id = Column(Integer, primary_key=True)
@@ -105,7 +107,7 @@ class CacheDB(SRDatabase):
         leechers = Column(Integer)
         size = Column(Integer)
 
-    class OAuth2Token(CacheDBBase):
+    class OAuth2Token(base):
         __tablename__ = 'oauth2_token'
 
         id = Column(Integer, primary_key=True)
@@ -117,7 +119,7 @@ class CacheDB(SRDatabase):
         session_state = Column(Text, default="")
         token_type = Column(Text, default="bearer")
 
-    class Announcements(CacheDBBase):
+    class Announcements(base):
         __tablename__ = 'announcements'
 
         id = Column(Integer, primary_key=True)

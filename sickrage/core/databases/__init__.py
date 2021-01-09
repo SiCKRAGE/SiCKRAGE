@@ -36,6 +36,7 @@ from sqlalchemy import create_engine, event, inspect, MetaData, Index, TypeDecor
 from sqlalchemy.engine import Engine, reflection
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.ext.automap import automap_base
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.serializer import loads, dumps
 from sqlalchemy.orm import sessionmaker, mapper, scoped_session
 from sqlalchemy.sql.ddl import CreateTable, CreateIndex
@@ -179,6 +180,9 @@ class SRDatabase(object):
         current_rev = context.get_current_revision()
         return current_rev
 
+    def initialize(self):
+        pass
+
     def upgrade(self):
         db_version = int(self.version)
         alembic_version = int(ScriptDirectory.from_config(self.get_alembic_config()).get_current_head())
@@ -191,6 +195,8 @@ class SRDatabase(object):
             self.backup(backup_filename)
 
             alembic.command.upgrade(self.get_alembic_config(), 'head')
+
+            self.initialize()
 
     def get_alembic_config(self):
         config = alembic.config.Config()

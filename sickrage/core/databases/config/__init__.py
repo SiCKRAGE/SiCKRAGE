@@ -40,9 +40,6 @@ from sickrage.core.tv.show.coming_episodes import ComingEpsLayout, ComingEpsSort
 from sickrage.notification_providers.nmjv2 import NMJv2Location
 from sickrage.search_providers import SearchProviderType
 
-ConfigDBBase = declarative_base(cls=SRDatabaseBase)
-
-
 def encryption_key():
     try:
         return getattr(sickrage.app.config.user, 'sub_id', None) or 'sickrage'
@@ -119,14 +116,19 @@ class CustomStringEncryptedType(StringEncryptedType):
 
 
 class ConfigDB(SRDatabase):
+    base = declarative_base(cls=SRDatabaseBase)
+    
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
         super(ConfigDB, self).__init__('config', db_type, db_prefix, db_host, db_port, db_username, db_password)
-        ConfigDBBase.metadata.create_all(self.engine)
-        for model in ConfigDBBase._decl_class_registry.values():
+        self.initialize()
+
+    def initialize(self):
+        self.base.metadata.create_all(self.engine)
+        for model in self.base._decl_class_registry.values():
             if hasattr(model, '__tablename__'):
                 self.tables[model.__tablename__] = model
-
-    class Users(ConfigDBBase):
+                
+    class Users(base):
         __tablename__ = 'users'
         id = Column(Integer, primary_key=True, autoincrement=True)
         username = Column(Text, index=True, unique=True, nullable=False)
@@ -136,7 +138,7 @@ class ConfigDB(SRDatabase):
         permissions = Column(Enum(UserPermission), default=UserPermission.GUEST)
         enable = Column(Boolean, default=True)
 
-    class General(ConfigDBBase):
+    class General(base):
         __tablename__ = 'general'
         id = Column(Integer, primary_key=True, autoincrement=True)
         server_id = Column(Text, default='')
@@ -265,7 +267,7 @@ class ConfigDB(SRDatabase):
         strip_special_file_bits = Column(Boolean, default=True)
         max_queue_workers = Column(Integer, default=5)
 
-    class GUI(ConfigDBBase):
+    class GUI(base):
         __tablename__ = 'gui'
         id = Column(Integer, primary_key=True, autoincrement=True)
         user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
@@ -291,13 +293,13 @@ class ConfigDB(SRDatabase):
         timezone_display = Column(Enum(TimezoneDisplay), default=TimezoneDisplay.LOCAL)
         theme_name = Column(Enum(UITheme), default=UITheme.DARK)
 
-    class Blackhole(ConfigDBBase):
+    class Blackhole(base):
         __tablename__ = 'blackhole'
         id = Column(Integer, primary_key=True, autoincrement=True)
         nzb_dir = Column(Text, default='')
         torrent_dir = Column(Text, default='')
 
-    class SABnzbd(ConfigDBBase):
+    class SABnzbd(base):
         __tablename__ = 'sabnzbd'
         id = Column(Integer, primary_key=True, autoincrement=True)
         username = Column(Text, default='')
@@ -310,7 +312,7 @@ class ConfigDB(SRDatabase):
         host = Column(Text, default='')
         forced = Column(Boolean, default=False)
 
-    class NZBget(ConfigDBBase):
+    class NZBget(base):
         __tablename__ = 'nzbget'
         id = Column(Integer, primary_key=True, autoincrement=True)
         username = Column(Text, default='')
@@ -323,7 +325,7 @@ class ConfigDB(SRDatabase):
         use_https = Column(Boolean, default=False)
         priority = Column(Integer, default=100)
 
-    class Synology(ConfigDBBase):
+    class Synology(base):
         __tablename__ = 'synology'
         id = Column(Integer, primary_key=True, autoincrement=True)
         username = Column(Text, default='')
@@ -336,7 +338,7 @@ class ConfigDB(SRDatabase):
         notify_on_download = Column(Boolean, default=False)
         notify_on_subtitle_download = Column(Boolean, default=False)
 
-    class Torrent(ConfigDBBase):
+    class Torrent(base):
         __tablename__ = 'torrent'
         id = Column(Integer, primary_key=True, autoincrement=True)
         username = Column(Text, default='')
@@ -352,7 +354,7 @@ class ConfigDB(SRDatabase):
         rpc_url = Column(Text, default='')
         auth_type = Column(Text, default='')
 
-    class Kodi(ConfigDBBase):
+    class Kodi(base):
         __tablename__ = 'kodi'
         id = Column(Integer, primary_key=True, autoincrement=True)
         username = Column(Text, default='')
@@ -367,7 +369,7 @@ class ConfigDB(SRDatabase):
         update_only_first = Column(Boolean, default=False)
         always_on = Column(Boolean, default=False)
 
-    class Plex(ConfigDBBase):
+    class Plex(base):
         __tablename__ = 'plex'
         id = Column(Integer, primary_key=True, autoincrement=True)
         username = Column(Text, default='')
@@ -384,7 +386,7 @@ class ConfigDB(SRDatabase):
         notify_on_subtitle_download = Column(Boolean, default=False)
         update_library = Column(Boolean, default=False)
 
-    class Emby(ConfigDBBase):
+    class Emby(base):
         __tablename__ = 'emby'
         id = Column(Integer, primary_key=True, autoincrement=True)
         host = Column(Text, default='')
@@ -394,7 +396,7 @@ class ConfigDB(SRDatabase):
         notify_on_snatch = Column(Boolean, default=False)
         enable = Column(Boolean, default=False)
 
-    class Growl(ConfigDBBase):
+    class Growl(base):
         __tablename__ = 'growl'
         id = Column(Integer, primary_key=True, autoincrement=True)
         host = Column(Text, default='')
@@ -404,7 +406,7 @@ class ConfigDB(SRDatabase):
         notify_on_snatch = Column(Boolean, default=False)
         enable = Column(Boolean, default=False)
 
-    class FreeMobile(ConfigDBBase):
+    class FreeMobile(base):
         __tablename__ = 'freemobile'
         id = Column(Integer, primary_key=True, autoincrement=True)
         user_id = Column(Text, default='')
@@ -414,7 +416,7 @@ class ConfigDB(SRDatabase):
         notify_on_snatch = Column(Boolean, default=False)
         enable = Column(Boolean, default=False)
 
-    class Telegram(ConfigDBBase):
+    class Telegram(base):
         __tablename__ = 'telegram'
         id = Column(Integer, primary_key=True, autoincrement=True)
         user_id = Column(Text, default='')
@@ -424,7 +426,7 @@ class ConfigDB(SRDatabase):
         notify_on_snatch = Column(Boolean, default=False)
         enable = Column(Boolean, default=False)
 
-    class Join(ConfigDBBase):
+    class Join(base):
         __tablename__ = 'join'
         id = Column(Integer, primary_key=True, autoincrement=True)
         user_id = Column(Text, default='')
@@ -434,7 +436,7 @@ class ConfigDB(SRDatabase):
         notify_on_snatch = Column(Boolean, default=False)
         enable = Column(Boolean, default=False)
 
-    class Prowl(ConfigDBBase):
+    class Prowl(base):
         __tablename__ = 'prowl'
         id = Column(Integer, primary_key=True, autoincrement=True)
         apikey = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
@@ -444,7 +446,7 @@ class ConfigDB(SRDatabase):
         notify_on_snatch = Column(Boolean, default=False)
         enable = Column(Boolean, default=False)
 
-    class Twitter(ConfigDBBase):
+    class Twitter(base):
         __tablename__ = 'twitter'
         id = Column(Integer, primary_key=True, autoincrement=True)
         username = Column(Text, default='')
@@ -457,7 +459,7 @@ class ConfigDB(SRDatabase):
         use_dm = Column(Boolean, default=False)
         enable = Column(Boolean, default=False)
 
-    class Twilio(ConfigDBBase):
+    class Twilio(base):
         __tablename__ = 'twilio'
         id = Column(Integer, primary_key=True, autoincrement=True)
         phone_sid = Column(Text, default='')
@@ -469,7 +471,7 @@ class ConfigDB(SRDatabase):
         notify_on_snatch = Column(Boolean, default=False)
         enable = Column(Boolean, default=False)
 
-    class Boxcar2(ConfigDBBase):
+    class Boxcar2(base):
         __tablename__ = 'boxcar2'
         id = Column(Integer, primary_key=True, autoincrement=True)
         access_token = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
@@ -478,7 +480,7 @@ class ConfigDB(SRDatabase):
         notify_on_snatch = Column(Boolean, default=False)
         enable = Column(Boolean, default=False)
 
-    class Pushover(ConfigDBBase):
+    class Pushover(base):
         __tablename__ = 'pushover'
         id = Column(Integer, primary_key=True, autoincrement=True)
         user_key = Column(Text, default='')
@@ -490,7 +492,7 @@ class ConfigDB(SRDatabase):
         notify_on_snatch = Column(Boolean, default=False)
         enable = Column(Boolean, default=False)
 
-    class Libnotify(ConfigDBBase):
+    class Libnotify(base):
         __tablename__ = 'libnotify'
         id = Column(Integer, primary_key=True, autoincrement=True)
         notify_on_download = Column(Boolean, default=False)
@@ -498,7 +500,7 @@ class ConfigDB(SRDatabase):
         notify_on_snatch = Column(Boolean, default=False)
         enable = Column(Boolean, default=False)
 
-    class NMJ(ConfigDBBase):
+    class NMJ(base):
         __tablename__ = 'nmj'
         id = Column(Integer, primary_key=True, autoincrement=True)
         host = Column(Text, default='')
@@ -506,7 +508,7 @@ class ConfigDB(SRDatabase):
         mount = Column(Text, default='')
         enable = Column(Boolean, default=False)
 
-    class NMJv2(ConfigDBBase):
+    class NMJv2(base):
         __tablename__ = 'nmjv2'
         id = Column(Integer, primary_key=True, autoincrement=True)
         host = Column(Text, default='')
@@ -514,7 +516,7 @@ class ConfigDB(SRDatabase):
         db_loc = Column(Enum(NMJv2Location), default=NMJv2Location.LOCAL)
         enable = Column(Boolean, default=False)
 
-    class Slack(ConfigDBBase):
+    class Slack(base):
         __tablename__ = 'slack'
         id = Column(Integer, primary_key=True, autoincrement=True)
         webhook = Column(Text, default='')
@@ -523,7 +525,7 @@ class ConfigDB(SRDatabase):
         notify_on_snatch = Column(Boolean, default=False)
         enable = Column(Boolean, default=False)
 
-    class Discord(ConfigDBBase):
+    class Discord(base):
         __tablename__ = 'discord'
         id = Column(Integer, primary_key=True, autoincrement=True)
         webhook = Column(Text, default='')
@@ -535,7 +537,7 @@ class ConfigDB(SRDatabase):
         tts = Column(Boolean, default=False)
         enable = Column(Boolean, default=False)
 
-    class Trakt(ConfigDBBase):
+    class Trakt(base):
         __tablename__ = 'trakt'
         id = Column(Integer, primary_key=True, autoincrement=True)
         username = Column(Text, default='')
@@ -554,7 +556,7 @@ class ConfigDB(SRDatabase):
         timeout = Column(Integer, default=30)
         enable = Column(Boolean, default=False)
 
-    class PyTivo(ConfigDBBase):
+    class PyTivo(base):
         __tablename__ = 'pytivo'
         id = Column(Integer, primary_key=True, autoincrement=True)
         notify_on_download = Column(Boolean, default=False)
@@ -566,7 +568,7 @@ class ConfigDB(SRDatabase):
         tivo_name = Column(Text, default='')
         enable = Column(Boolean, default=False)
 
-    class NMA(ConfigDBBase):
+    class NMA(base):
         __tablename__ = 'nma'
         id = Column(Integer, primary_key=True, autoincrement=True)
         notify_on_download = Column(Boolean, default=False)
@@ -576,7 +578,7 @@ class ConfigDB(SRDatabase):
         priority = Column(Integer, default=0)
         enable = Column(Boolean, default=False)
 
-    class Pushalot(ConfigDBBase):
+    class Pushalot(base):
         __tablename__ = 'pushalot'
         id = Column(Integer, primary_key=True, autoincrement=True)
         notify_on_download = Column(Boolean, default=False)
@@ -585,7 +587,7 @@ class ConfigDB(SRDatabase):
         auth_token = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         enable = Column(Boolean, default=False)
 
-    class Pushbullet(ConfigDBBase):
+    class Pushbullet(base):
         __tablename__ = 'pushbullet'
         id = Column(Integer, primary_key=True, autoincrement=True)
         notify_on_download = Column(Boolean, default=False)
@@ -595,7 +597,7 @@ class ConfigDB(SRDatabase):
         device = Column(Text, default='')
         enable = Column(Boolean, default=False)
 
-    class Email(ConfigDBBase):
+    class Email(base):
         __tablename__ = 'email'
         id = Column(Integer, primary_key=True, autoincrement=True)
         notify_on_download = Column(Boolean, default=False)
@@ -610,7 +612,7 @@ class ConfigDB(SRDatabase):
         send_to_list = Column(Text, default='')
         enable = Column(Boolean, default=False)
 
-    class Alexa(ConfigDBBase):
+    class Alexa(base):
         __tablename__ = 'alexa'
         id = Column(Integer, primary_key=True, autoincrement=True)
         notify_on_download = Column(Boolean, default=False)
@@ -618,7 +620,7 @@ class ConfigDB(SRDatabase):
         notify_on_snatch = Column(Boolean, default=False)
         enable = Column(Boolean, default=False)
 
-    class Subtitles(ConfigDBBase):
+    class Subtitles(base):
         __tablename__ = 'subtitles'
         id = Column(Integer, primary_key=True, autoincrement=True)
         languages = Column(Text, default='')
@@ -641,18 +643,18 @@ class ConfigDB(SRDatabase):
         opensubtitles_pass = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         enable = Column(Boolean, default=False)
 
-    class FailedDownloads(ConfigDBBase):
+    class FailedDownloads(base):
         __tablename__ = 'failed_downloads'
         id = Column(Integer, primary_key=True, autoincrement=True)
         enable = Column(Boolean, default=False)
 
-    class FailedSnatches(ConfigDBBase):
+    class FailedSnatches(base):
         __tablename__ = 'failed_snatches'
         id = Column(Integer, primary_key=True, autoincrement=True)
         age = Column(Integer, default=1)
         enable = Column(Boolean, default=False)
 
-    class AniDB(ConfigDBBase):
+    class AniDB(base):
         __tablename__ = 'anidb'
         id = Column(Integer, primary_key=True, autoincrement=True)
         username = Column(Text, default='')
@@ -661,7 +663,7 @@ class ConfigDB(SRDatabase):
         split_home = Column(Boolean, default=False)
         enable = Column(Boolean, default=False)
 
-    class QualitySizes(ConfigDBBase):
+    class QualitySizes(base):
         __tablename__ = 'quality_sizes'
         id = Column(Integer, primary_key=True, autoincrement=True)
         quality = Column(IntFlag(Qualities))
@@ -687,18 +689,18 @@ class ConfigDB(SRDatabase):
         custom_settings = Column(MutableDict.as_mutable(CustomStringEncryptedType(JSONType, key=encryption_key)), default={})
         enable = Column(Boolean, default=False)
 
-    class SearchProvidersTorrent(SearchProvidersMixin, ConfigDBBase):
+    class SearchProvidersTorrent(SearchProvidersMixin, base):
         __tablename__ = 'search_providers_torrent'
         provider_type = Column(Enum(SearchProviderType), default=SearchProviderType.TORRENT)
         ratio = Column(Integer, default=0)
 
-    class SearchProvidersNzb(SearchProvidersMixin, ConfigDBBase):
+    class SearchProvidersNzb(SearchProvidersMixin, base):
         __tablename__ = 'search_providers_nzb'
         provider_type = Column(Enum(SearchProviderType), default=SearchProviderType.NZB)
         api_key = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         username = Column(Text, default='')
 
-    class SearchProvidersTorrentRss(SearchProvidersMixin, ConfigDBBase):
+    class SearchProvidersTorrentRss(SearchProvidersMixin, base):
         __tablename__ = 'search_providers_torrent_rss'
         provider_type = Column(Enum(SearchProviderType), default=SearchProviderType.TORRENT_RSS)
         name = Column(Text, default='')
@@ -706,7 +708,7 @@ class ConfigDB(SRDatabase):
         title_tag = Column(Text, default='')
         ratio = Column(Integer, default=0)
 
-    class SearchProvidersNewznab(SearchProvidersMixin, ConfigDBBase):
+    class SearchProvidersNewznab(SearchProvidersMixin, base):
         __tablename__ = 'search_providers_newznab'
         provider_type = Column(Enum(SearchProviderType), default=SearchProviderType.NEWZNAB)
         name = Column(Text, default='')
@@ -716,7 +718,7 @@ class ConfigDB(SRDatabase):
         api_key = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         username = Column(Text, default='')
 
-    class MetadataProviders(ConfigDBBase):
+    class MetadataProviders(base):
         __tablename__ = 'metadata_providers'
         id = Column(Integer, primary_key=True, autoincrement=True)
         provider_id = Column(Text, unique=True)

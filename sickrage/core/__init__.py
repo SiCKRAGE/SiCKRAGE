@@ -49,7 +49,7 @@ from sickrage.core.common import Quality, Qualities, EpisodeStatus
 from sickrage.core.config import Config
 from sickrage.core.config.helpers import change_gui_lang
 from sickrage.core.databases.cache import CacheDB
-from sickrage.core.databases.config import ConfigDB, ConfigDBBase, CustomStringEncryptedType
+from sickrage.core.databases.config import ConfigDB, CustomStringEncryptedType
 from sickrage.core.databases.main import MainDB
 from sickrage.core.enums import MultiEpNaming, DefaultHomePage, NzbMethod, TorrentMethod, CheckPropersInterval
 from sickrage.core.helpers import generate_secret, make_dir, get_lan_ip, restore_app_data, get_disk_space_usage, get_free_space, launch_browser, \
@@ -284,9 +284,9 @@ class Core(object):
             success = restore_app_data(os.path.abspath(os.path.join(self.data_dir, 'restore')), self.data_dir)
             self.log.info("Restoring SiCKRAGE backup: %s!" % ("FAILED", "SUCCESSFUL")[success])
             if success:
-                self.config = Config(self.db_type, self.db_prefix, self.db_host, self.db_port, self.db_username, self.db_password)
-                self.main_db = MainDB(self.db_type, self.db_prefix, self.db_host, self.db_port, self.db_username, self.db_password)
-                self.cache_db = CacheDB(self.db_type, self.db_prefix, self.db_host, self.db_port, self.db_username, self.db_password)
+                # self.config = Config(self.db_type, self.db_prefix, self.db_host, self.db_port, self.db_username, self.db_password)
+                # self.main_db = MainDB(self.db_type, self.db_prefix, self.db_host, self.db_port, self.db_username, self.db_password)
+                # self.cache_db = CacheDB(self.db_type, self.db_prefix, self.db_host, self.db_port, self.db_username, self.db_password)
                 shutil.rmtree(os.path.abspath(os.path.join(self.data_dir, 'restore')), ignore_errors=True)
 
         # migrate old database file names to new ones
