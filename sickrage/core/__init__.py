@@ -20,6 +20,8 @@
 # ##############################################################################
 import asyncio
 import datetime
+import locale
+import logging
 import os
 import platform
 import re
@@ -34,11 +36,13 @@ from urllib.parse import uses_netloc
 from urllib.request import FancyURLopener
 
 import rarfile
+import sentry_sdk
 from apscheduler.schedulers import SchedulerNotRunningError
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from dateutil import tz
 from fake_useragent import UserAgent
+from sentry_sdk.integrations.logging import LoggingIntegration
 from tornado.platform.asyncio import AnyThreadEventLoopPolicy
 
 import sickrage
@@ -233,6 +237,9 @@ class Core(object):
         # event loop policy that allows loop creation on any thread.
         asyncio.set_event_loop_policy(AnyThreadEventLoopPolicy())
 
+        # init sentry
+        self.init_sentry()
+
         # scheduler
         self.scheduler = BackgroundScheduler({'apscheduler.timezone': 'UTC'})
 
@@ -325,6 +332,12 @@ class Core(object):
 
         # migrate config
         self.config.migrate_config_file(self.config_file)
+
+        # add extra sentry tags
+        if sickrage.app.config.user and sickrage.app.config.user.sub_id:
+            sentry_sdk.set_tag('sub_id', sickrage.app.config.user.sub_id)
+        if sickrage.app.config.general and sickrage.app.config.general.server_id:
+            sentry_sdk.set_tag('server_id', sickrage.app.config.general.server_id)
 
         # config overrides
         if self.web_port:
@@ -590,6 +603,38 @@ class Core(object):
         self.log.info("SiCKRAGE :: URL:[{}://{}:{}/{}]".format(('http', 'https')[self.config.general.enable_https],
                                                                (self.config.general.web_host, get_lan_ip())[self.config.general.web_host == '0.0.0.0'],
                                                                self.config.general.web_port, self.config.general.web_root))
+
+    def init_sentry(self):
+        # sentry log handler
+        sentry_logging = LoggingIntegration(
+            level=logging.INFO,  # Capture info and above as breadcrumbs
+            event_level=logging.ERROR  # Send errors as events
+        )
+
+        # init sentry logging
+        sentry_sdk.init(
+            dsn="https://d4bf4ed225c946c8972c7238ad07d124@sentry.sickrage.ca/2?verify_ssl=0",
+            integrations=[sentry_logging],
+            release=sickrage.version(),
+            environment=('master', 'develop')['dev' in sickrage.version()],
+            ignore_errors=[
+                'KeyboardInterrupt',
+                'PermissionError',
+                'FileNotFoundError',
+                'EpisodeNotFoundException'
+            ]
+        )
+
+        # sentry tags
+        sentry_tags = {
+            'platform': platform.platform(),
+            'locale': repr(locale.getdefaultlocale()),
+            'python': platform.python_version()
+        }
+
+        # set sentry tags
+        for tag_key, tag_value in sentry_tags.items():
+            sentry_sdk.set_tag(tag_key, tag_value)
 
     def load_shows(self):
         threading.currentThread().setName('CORE')

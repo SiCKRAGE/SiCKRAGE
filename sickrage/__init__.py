@@ -404,7 +404,14 @@ def main():
     except (SystemExit, KeyboardInterrupt):
         if app:
             app.shutdown()
-    except Exception:
+    except Exception as e:
+        # attempt to send exception to sentry
+        try:
+            import sentry_sdk
+            sentry_sdk.capture_exception(e)
+        except ImportError:
+            pass
+
         traceback.print_exc()
 
 

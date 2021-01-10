@@ -18,18 +18,14 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-import locale
 import logging
 import os
 import pkgutil
-import platform
 import re
 import sys
 from logging import FileHandler, CRITICAL, DEBUG, ERROR, INFO, WARNING
 from logging.handlers import RotatingFileHandler
 
-import raven
-from raven.handlers.logging import SentryHandler
 from unidecode import unidecode
 
 import sickrage
@@ -147,38 +143,6 @@ class Logger(logging.getLoggerClass()):
     def start(self):
         # remove all handlers
         self.handlers.clear()
-
-        sentry_ignore_exceptions = [
-            'KeyboardInterrupt',
-            'PermissionError',
-            'FileNotFoundError',
-            'EpisodeNotFoundException'
-        ]
-
-        # sentry log handler
-        sentry_client = raven.Client(
-            'https://d4bf4ed225c946c8972c7238ad07d124@sentry.sickrage.ca/2?verify_ssl=0',
-            release=sickrage.version(),
-            repos={'sickrage': {'name': 'sickrage/sickrage'}},
-            ignore_exceptions=sentry_ignore_exceptions
-        )
-
-        sentry_tags = {
-            'platform': platform.platform(),
-            'locale': locale.getdefaultlocale(),
-            'python': platform.python_version()
-        }
-
-        if sickrage.app.config.user and sickrage.app.config.user.sub_id:
-            sentry_tags.update({'sub_id': sickrage.app.config.user.sub_id})
-        if sickrage.app.config.general and sickrage.app.config.general.server_id:
-            sentry_tags.update({'server_id': sickrage.app.config.general.server_id})
-
-        sentry_handler = SentryHandler(client=sentry_client, ignore_exceptions=sentry_ignore_exceptions, tags=sentry_tags)
-
-        sentry_handler.setLevel(self.logLevels['ERROR'])
-        sentry_handler.set_name('sentry')
-        self.addHandler(sentry_handler)
 
         # console log handler
         if self.consoleLogging:
