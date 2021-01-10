@@ -48,33 +48,31 @@ class BaseHandler(RequestHandler, ABC):
         return locale.get(sickrage.app.config.gui.gui_lang)
 
     def write_error(self, status_code, **kwargs):
-        if self.settings.get("debug") and "exc_info" in kwargs:
+        if "exc_info" in kwargs:
             exc_info = kwargs["exc_info"]
-            trace_info = ''.join(["%s<br>" % line for line in traceback.format_exception(*exc_info)])
-            request_info = ''.join(["<strong>%s</strong>: %s<br>" % (k, self.request.__dict__[k]) for k in self.request.__dict__.keys()])
-            error = exc_info[1]
+            error = repr(exc_info[1])
 
-            sickrage.app.log.debug(''.join(traceback.format_exception(*exc_info)))
+            sickrage.app.log.error(error)
 
-            self.set_header('Content-Type', 'text/html')
-            return self.write("""<html>
-                             <title>{error}</title>
-                             <body>
-                                <button onclick="window.location='{webroot}/logs/';">View Log(Errors)</button>
-                                <button onclick="window.location='{webroot}/home/restart?pid={pid}&force=1';">Restart SiCKRAGE</button>
-                                <button onclick="window.location='{webroot}/logout';">Logout</button>
-                                <h2>Error</h2>
-                                <p>{error}</p>
-                                <h2>Traceback</h2>
-                                <p>{traceback}</p>
-                                <h2>Request Info</h2>
-                                <p>{request}</p>
-                             </body>
-                           </html>""".format(pid=sickrage.app.pid,
-                                             error=error,
-                                             traceback=trace_info,
-                                             request=request_info,
-                                             webroot=sickrage.app.config.general.web_root))
+            if self.settings.get("debug"):
+                trace_info = ''.join([f"{line}<br>" for line in traceback.format_exception(*exc_info)])
+                request_info = ''.join([f"<strong>{k}</strong>: {v}<br>" for k, v in self.request.__dict__.items()])
+
+                self.set_header('Content-Type', 'text/html')
+                return self.write(f"""<html>
+                                 <title>{error}</title>
+                                 <body>
+                                    <button onclick="window.location='{sickrage.app.config.general.web_root}/logs/';">View Log(Errors)</button>
+                                    <button onclick="window.location='{sickrage.app.config.general.web_root}/home/restart?pid={sickrage.app.pid}&force=1';">Restart SiCKRAGE</button>
+                                    <button onclick="window.location='{sickrage.app.config.general.web_root}/logout';">Logout</button>
+                                    <h2>Error</h2>
+                                    <p>{error}</p>
+                                    <h2>Traceback</h2>
+                                    <p>{trace_info}</p>
+                                    <h2>Request Info</h2>
+                                    <p>{request_info}</p>
+                                 </body>
+                               </html>""")
 
     def get_current_user(self):
         if is_ip_whitelisted(self.request.remote_ip):

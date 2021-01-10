@@ -105,10 +105,10 @@ class APIBaseHandler(BaseHandler, ABC):
             stack = traceback.extract_tb(tb)
             clean_stack = [i for i in stack if i[0][-6:] != 'gen.py' and i[0][-13:] != 'concurrent.py']
             error_msg = '{}\n  Exception: {}'.format(''.join(traceback.format_list(clean_stack)), excp)
-
-            sickrage.app.log.debug(error_msg)
         else:
             error_msg = kwargs.get('reason', '') or kwargs.get('error', '')
+
+        sickrage.app.log.error(error_msg)
 
         self.write_json({'error': error_msg})
 
