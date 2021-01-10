@@ -440,12 +440,10 @@ class AddNewShowHandler(BaseHandler, ABC):
         if blacklist:
             blacklist = short_group_names(blacklist)
 
-        newQuality = None
-        if quality_preset:
-            newQuality = Qualities[quality_preset]
-
-        if not newQuality:
-            newQuality = Quality.combine_qualities(map(int, anyQualities), map(int, bestQualities))
+        try:
+            new_quality = Qualities[quality_preset.upper()]
+        except KeyError:
+            new_quality = Quality.combine_qualities([Qualities[x.upper()] for x in anyQualities], [Qualities[x.upper()] for x in bestQualities])
 
         # add the show
         sickrage.app.show_queue.add_show(series_provider_id=SeriesProviderID[series_provider_id],
@@ -453,7 +451,7 @@ class AddNewShowHandler(BaseHandler, ABC):
                                          showDir=show_dir,
                                          default_status=EpisodeStatus[defaultStatus],
                                          default_status_after=EpisodeStatus[defaultStatusAfter],
-                                         quality=newQuality,
+                                         quality=new_quality,
                                          flatten_folders=checkbox_to_value(flatten_folders),
                                          lang=series_provider_language or sickrage.app.config.general.series_provider_default_language,
                                          subtitles=checkbox_to_value(subtitles),
