@@ -1,5 +1,5 @@
 sickrage/__init__.py = ee31957103672bcc905eba42109fbc90
-sickrage/version.txt = daa6265efafa15c8c1117cd2aa4c15e1
+sickrage/version.txt = 0e20700500b87c0859984e92218cac35
 sickrage/clients/__init__.py = abafc862109398700c9fee676cdeef6b
 sickrage/clients/nzb/nzbget.py = 2a23083d4915fed22c73f4966588cac8
 sickrage/clients/nzb/sabnzbd.py = f76666e47017abaf366f4a3e8b71c47b
