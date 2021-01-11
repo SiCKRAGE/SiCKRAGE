@@ -86,9 +86,7 @@ class FailedSnatchSearcher(object):
                 session.query(MainDB.History).filter(MainDB.History.action.in_(flatten(
                     [EpisodeStatus.composites(EpisodeStatus.SNATCHED), EpisodeStatus.composites(EpisodeStatus.SNATCHED_BEST),
                      EpisodeStatus.composites(EpisodeStatus.SNATCHED_PROPER)]))) if
-                24 >= int(
-                    (datetime.datetime.now() - datetime.datetime.fromordinal(x.date)).total_seconds() / 3600) >= sickrage.app.config.failed_snatches.age
-                )
+                24 >= (datetime.datetime.now() - x.date).days >= sickrage.app.config.failed_snatches.age)
 
     def downloaded_releases(self):
         session = sickrage.app.main_db.session()
