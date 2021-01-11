@@ -254,7 +254,8 @@ class Logger(logging.getLoggerClass()):
         super(Logger, self).exception(msg, *args, **kwargs)
 
     def error(self, msg, *args, **kwargs):
-        super(Logger, self).error(msg, exc_info=1, *args, **kwargs)
+        kwargs['exc_info'] = True
+        super(Logger, self).error(msg, *args, **kwargs)
 
     def warning(self, msg, *args, **kwargs):
         super(Logger, self).warning(msg, *args, **kwargs)

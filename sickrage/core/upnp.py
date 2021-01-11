@@ -75,9 +75,9 @@ class UPNPClient(object):
                 # https://tools.ietf.org/id/draft-ietf-pcp-upnp-igd-interworking-07.html#errors
                 sickrage.app.log.debug("UPnP port mapping already configured, not overriding it")
             else:
-                sickrage.app.log.exception("Failed to add UPnP portmap")
+                sickrage.app.log.debug("Failed to add UPnP portmap")
         except Exception:
-            sickrage.app.log.exception("Failed to add UPnP portmap")
+            sickrage.app.log.debug("Failed to add UPnP portmap")
 
     def _add_nat_portmap(self, upnp_dev):
         # internal_ip = self._find_internal_ip_on_device_network(upnp_dev)

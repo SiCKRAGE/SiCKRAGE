@@ -167,6 +167,6 @@ class SpeedCDProvider(TorrentProvider):
                         sickrage.app.log.debug("Found result: {}".format(title))
 
                 except (AttributeError, TypeError, KeyError, ValueError, IndexError):
-                    sickrage.app.log.exception('Failed parsing provider.')
+                    sickrage.app.log.error('Failed parsing provider.')
 
         return results
