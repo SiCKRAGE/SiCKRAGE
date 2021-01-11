@@ -230,7 +230,7 @@ class TestNamingHandler(BaseHandler, ABC):
         anime_type = self.get_argument('anime_type', None)
 
         if multi is not None:
-            multi = int(multi)
+            multi = MultiEpNaming[multi]
 
         if anime_type is not None:
             anime_type = int(anime_type)
@@ -253,6 +253,9 @@ class IsNamingPatternValidHandler(BaseHandler, ABC):
 
         if multi:
             multi = MultiEpNaming[multi]
+
+        if anime_type is not None:
+            anime_type = int(anime_type)
 
         return self.write(is_naming_pattern_valid(pattern=pattern, multi=multi, abd=abd, sports=sports, anime_type=anime_type))
 
