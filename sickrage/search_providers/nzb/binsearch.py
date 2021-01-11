@@ -80,9 +80,9 @@ class BinSearchCache(TVCache):
 
         return title, url
 
-    def update(self):
+    def update(self, force=False):
         # check if we should update
-        if self.should_update():
+        if self.should_update() or force:
             # clear cache
             self.clear()
 
