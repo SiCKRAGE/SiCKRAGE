@@ -2,7 +2,15 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.1.dev1](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.0...v10.0.1.dev1)
+#### [v10.0.2.dev1](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.1...v10.0.2.dev1)
+
+- Fixed issue with multi-episode naming [`dad674a`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/dad674ace8c9b04bffa042ea2ef289c37c10f1b3)
+- Fixed issue with failed snatched episodes [`f5f44bc`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/f5f44bc47fd6105ed28f07a99322b3da1d00a207)
+- Fixed issue with sorting poster view by name [`6c5adf0`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/6c5adf0d402ce514df99c012536241730806f5c1)
+
+#### [10.0.1](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.0...10.0.1)
+
+> 11 January 2021
 
 - Fixed issue with database upgrades, refactored database initialization to happen after migrations and upgrades are performed [`bcd24c3`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/bcd24c38683de82c3fbf733c3a99ce3761a28cff)
 
