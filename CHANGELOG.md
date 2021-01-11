@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.0.dev35](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/9.4.223...v10.0.0.dev35)
+#### [v10.0.1.dev1](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.0...v10.0.1.dev1)
+
+- Fixed issue with database upgrades, refactored database initialization to happen after migrations and upgrades are performed [`bcd24c3`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/bcd24c38683de82c3fbf733c3a99ce3761a28cff)
+
+### [10.0.0](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/9.4.223...10.0.0)
+
+> 11 January 2021
 
 - Config settings are now stored and encrypted into a sqlite database [`acd1757`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/acd175780cb5d948eb3fba7ceb6092e9c8c8b33a)
 - Refactored config and how it handles database sessions [`574f983`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/574f983270aae904224d550e22145c3bd4f26c8e)
