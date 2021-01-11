@@ -311,13 +311,17 @@ class Core(object):
             self.log.info("Performing integrity check on {} database".format(db.name))
             db.integrity_check()
 
-            # migrate database
-            self.log.info("Performing migrations on {} database".format(db.name))
-            db.migrate()
-
             # upgrade database
             self.log.info("Performing upgrades on {} database".format(db.name))
             db.upgrade()
+
+            # upgrade database
+            self.log.info("Performing initialization on {} database".format(db.name))
+            db.initialize()
+
+            # migrate database
+            self.log.info("Performing migrations on {} database".format(db.name))
+            db.migrate()
 
             # cleanup
             self.log.info("Performing cleanup on {} database".format(db.name))

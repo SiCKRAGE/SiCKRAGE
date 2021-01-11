@@ -120,7 +120,6 @@ class ConfigDB(SRDatabase):
     
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
         super(ConfigDB, self).__init__('config', db_type, db_prefix, db_host, db_port, db_username, db_password)
-        self.initialize()
 
     def initialize(self):
         self.base.metadata.create_all(self.engine)

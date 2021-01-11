@@ -36,7 +36,6 @@ from sqlalchemy import create_engine, event, inspect, MetaData, Index, TypeDecor
 from sqlalchemy.engine import Engine, reflection
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.ext.automap import automap_base
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.serializer import loads, dumps
 from sqlalchemy.orm import sessionmaker, mapper, scoped_session
 from sqlalchemy.sql.ddl import CreateTable, CreateIndex

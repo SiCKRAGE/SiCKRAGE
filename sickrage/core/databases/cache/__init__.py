@@ -27,7 +27,6 @@ class CacheDB(SRDatabase):
 
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
         super(CacheDB, self).__init__('cache', db_type, db_prefix, db_host, db_port, db_username, db_password)
-        self.initialize()
 
     def initialize(self):
         self.base.metadata.create_all(self.engine)
