@@ -291,6 +291,7 @@ class Core(object):
             success = restore_app_data(os.path.abspath(os.path.join(self.data_dir, 'restore')), self.data_dir)
             self.log.info("Restoring SiCKRAGE backup: %s!" % ("FAILED", "SUCCESSFUL")[success])
             if success:
+                # remove restore files
                 shutil.rmtree(os.path.abspath(os.path.join(self.data_dir, 'restore')), ignore_errors=True)
 
         # migrate old database file names to new ones
@@ -305,31 +306,10 @@ class Core(object):
             helpers.move_file(os.path.abspath(os.path.join(self.data_dir, 'sickbeard.db')),
                               os.path.abspath(os.path.join(self.data_dir, 'sickrage.db')))
 
-        # perform database startup actions
-        for db in [self.config.db, self.main_db, self.cache_db]:
-            # perform integrity check
-            self.log.info("Performing integrity check on {} database".format(db.name))
-            db.integrity_check()
-
-            # upgrade database
-            self.log.info("Performing upgrades on {} database".format(db.name))
-            db.upgrade()
-
-            # upgrade database
-            self.log.info("Performing initialization on {} database".format(db.name))
-            db.initialize()
-
-            # migrate database
-            self.log.info("Performing migrations on {} database".format(db.name))
-            db.migrate()
-
-            # cleanup
-            self.log.info("Performing cleanup on {} database".format(db.name))
-            db.cleanup()
-
-            # free up space
-            self.log.info("Performing vacuum on {} database".format(db.name))
-            db.vacuum()
+        # setup databases
+        self.main_db.setup()
+        self.config.db.setup()
+        self.cache_db.setup()
 
         # load config
         self.config.load()

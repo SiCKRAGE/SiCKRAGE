@@ -123,10 +123,7 @@ class ConfigDB(SRDatabase):
 
     def initialize(self):
         self.base.metadata.create_all(self.engine)
-        for model in self.base._decl_class_registry.values():
-            if hasattr(model, '__tablename__'):
-                self.tables[model.__tablename__] = model
-                
+
     class Users(base):
         __tablename__ = 'users'
         id = Column(Integer, primary_key=True, autoincrement=True)

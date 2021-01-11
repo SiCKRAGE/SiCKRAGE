@@ -19,10 +19,8 @@ import datetime
 import os
 import pickle
 import random
-import shutil
 import sqlite3
 import threading
-from collections import OrderedDict
 from time import sleep
 
 import alembic.command
@@ -137,6 +135,7 @@ class SRDatabaseBase(object):
             if key not in primary_keys:
                 setattr(self, key, value)
 
+
 class SRDatabase(object):
     def __init__(self, name, db_type='sqlite', db_prefix='sickrage', db_host='localhost', db_port='3306', db_username='sickrage', db_password='sickrage'):
         self.name = name
@@ -147,20 +146,10 @@ class SRDatabase(object):
         self.db_username = db_username
         self.db_password = db_password
 
-        self.tables = {}
-
         self.db_path = os.path.join(sickrage.app.data_dir, '{}.db'.format(self.name))
         self.db_migrations_path = os.path.join(os.path.dirname(__file__), self.name, 'migrations')
 
         self.session = scoped_session(sessionmaker(class_=ContextSession, bind=self.engine))
-
-        if self.engine.dialect.has_table(self.engine, 'migrate_version'):
-            migrate_version = self.engine.execute("select version from migrate_version").fetchone().version
-            alembic.command.stamp(self.get_alembic_config(), str(migrate_version))
-            self.engine.execute("drop table migrate_version")
-
-        if not self.engine.dialect.has_table(self.engine, 'alembic_version'):
-            alembic.command.stamp(self.get_alembic_config(), 'head')
 
     @property
     def engine(self):
@@ -178,6 +167,36 @@ class SRDatabase(object):
         context = MigrationContext.configure(self.engine)
         current_rev = context.get_current_revision()
         return current_rev
+
+    def setup(self):
+        if self.engine.dialect.has_table(self.engine, 'migrate_version'):
+            migrate_version = self.engine.execute("select version from migrate_version").fetchone().version
+            alembic.command.stamp(self.get_alembic_config(), str(migrate_version))
+            self.engine.execute("drop table migrate_version")
+
+        if not self.engine.dialect.has_table(self.engine, 'alembic_version'):
+            alembic.command.stamp(self.get_alembic_config(), 'head')
+            sickrage.app.log.info("Performing initialization on {} database".format(self.name))
+            self.initialize()
+
+        # perform integrity check
+        sickrage.app.log.info("Performing integrity check on {} database".format(self.name))
+        self.integrity_check()
+
+        # upgrade database
+        sickrage.app.log.info("Performing upgrades on {} database".format(self.name))
+        self.upgrade()
+
+        # cleanup
+        sickrage.app.log.info("Performing cleanup on {} database".format(self.name))
+        self.cleanup()
+
+        # free up space
+        sickrage.app.log.info("Performing vacuum on {} database".format(self.name))
+        self.vacuum()
+
+    def initialize(self):
+        pass
 
     def upgrade(self):
         db_version = int(self.version)
@@ -218,96 +237,6 @@ class SRDatabase(object):
 
     def vacuum(self):
         self.engine.execute("VACUUM")
-
-    def migrate(self):
-        migration_table_column_mapper = {
-            'main': {
-                'tv_shows': {
-                    'show_name': 'name'
-                },
-                'tv_episodes': {
-                    'indexerid': 'series_id'
-                },
-            },
-            'cache': {}
-        }
-
-        backup_file = os.path.join(sickrage.app.data_dir, f'{self.name}_{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}.codernitydb.bak')
-
-        migrate_file = os.path.join(sickrage.app.data_dir, f'{self.name}.codernitydb')
-        if os.path.exists(migrate_file):
-            # self.backup(backup_file)
-            sickrage.app.log.info(f'Migrating {self.name} database using {migrate_file}')
-            with open(migrate_file, 'rb') as f:
-                rows = pickle.load(f, encoding='bytes')
-
-            migrate_tables = OrderedDict({
-                'tv_shows': [],
-                'tv_episodes': [],
-                'scene_numbering': [],
-                'blacklist': [],
-                'whitelist': [],
-                'scene_exceptions': [],
-                'scene_names': []
-            })
-
-            for row in rows:
-                table = row.pop('_t')
-                if table not in self.tables:
-                    continue
-
-                if table not in migrate_tables:
-                    continue
-
-                for column in row.copy():
-                    if column not in self.tables[table].__table__.columns:
-                        if table in migration_table_column_mapper[self.name]:
-                            if column in migration_table_column_mapper[self.name][table]:
-                                new_column = migration_table_column_mapper[self.name][table][column]
-                                row[new_column] = row[column]
-
-                        del row[column]
-
-                    if table == 'tv_shows':
-                        if column == 'runtime':
-                            row[column] = int(row[column] or 0)
-                    elif table == 'tv_episodes':
-                        if column == 'airdate':
-                            row[column] = datetime.date.fromordinal(row[column])
-                        elif column == 'subtitles_lastsearch':
-                            row[column] = 0
-
-                migrate_tables[table] += [row]
-
-            session = self.session()
-            for table, rows in migrate_tables.items():
-                if not len(rows):
-                    continue
-
-                sickrage.app.log.info(f'Migrating {self.name} database table {table}')
-
-                try:
-                    session.query(self.tables[table]).delete()
-                    session.commit()
-                except Exception:
-                    pass
-
-                try:
-                    session.bulk_insert_mappings(self.tables[table], rows)
-                    session.commit()
-                except Exception:
-                    for row in rows:
-                        try:
-                            session.add(self.tables[table](**row))
-                            session.commit()
-                        except Exception:
-                            continue
-
-            shutil.move(migrate_file, backup_file)
-
-            # cleanup
-            del migrate_tables
-            del rows
 
     def backup(self, filename):
         meta = self.get_metadata()
