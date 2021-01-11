@@ -21,6 +21,8 @@
 ######################
 *.db*
 *.ini
+*.torrent
+*.magnet
 swagger.json
 privatekey.pem
 autoProcessTV.cfg
@@ -70,7 +72,6 @@ Vagrantfile
 desktop.ini
 ehthumbs.db
 Thumbs.db
-*.torrent
 .Spotlight-V100
 /.Trashes
 /.directory
