@@ -639,6 +639,7 @@ class Config(object):
         self.user.username = self._get_config_file_value(config_object, 'General', 'web_username', default=self.user.username, field_type=str)
         self.user.password = self._get_config_file_value(config_object, 'General', 'web_password', default=self.user.password, field_type=str)
         self.user.sub_id = self._get_config_file_value(config_object, 'General', 'sub_id', default=self.user.sub_id, field_type=str)
+        self.user.permissions = UserPermission.SUPERUSER
 
         # GENERAL SETTINGS
         self.general.server_id = self._get_config_file_value(config_object, 'General', 'server_id', default=self.general.server_id, field_type=str)
