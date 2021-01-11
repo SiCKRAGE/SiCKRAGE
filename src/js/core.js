@@ -1880,7 +1880,7 @@ $(document).ready(function ($) {
                             isFitWidth: true
                         },
                         getSortData: {
-                            name: function (itemElem) {
+                            NAME: function (itemElem) {
                                 var name = $(itemElem).attr('data-name') || '';
                                 return (SICKRAGE.metaToBool('sickrage.SORT_ARTICLE') ? name : name.replace(/^((?:The|A|An)\s)/i, '')).toLowerCase();
                             }
