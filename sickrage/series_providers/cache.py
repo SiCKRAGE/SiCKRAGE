@@ -121,6 +121,7 @@ class SeriesProviderShow(dict):
         Search terms are converted to lower case (unicode) strings.
         """
         results = []
+
         for cur_season in self.values():
             searchresult = cur_season.search(term=term, key=key)
             if len(searchresult) != 0:

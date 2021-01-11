@@ -86,22 +86,24 @@ class SearchSeriesProviderForShowNameHandler(BaseHandler, ABC):
         sickrage.app.log.debug(f"Searching for Show with term: {search_term} on series provider: {series_provider.name}")
 
         # search via series name
-        for series in series_provider.search(search_term, language=series_provider_language):
-            if not series.get('seriesname', None):
-                continue
+        search_results = series_provider.search(search_term, language=series_provider_language)
+        if search_results:
+            for series in series_provider.search(search_term, language=series_provider_language):
+                if not series.get('seriesname', None):
+                    continue
 
-            if not series.get('firstaired', None):
-                continue
+                if not series.get('firstaired', None):
+                    continue
 
-            search_results.append((
-                series_provider.name,
-                series_provider_id,
-                series_provider.show_url,
-                int(series['id']),
-                series['seriesname'],
-                series['firstaired'],
-                ('', 'disabled')[isinstance(find_show(int(series['id']), SeriesProviderID[series_provider_id]), TVShow)]
-            ))
+                search_results.append((
+                    series_provider.name,
+                    series_provider_id,
+                    series_provider.show_url,
+                    int(series['id']),
+                    series['seriesname'],
+                    series['firstaired'],
+                    ('', 'disabled')[isinstance(find_show(int(series['id']), SeriesProviderID[series_provider_id]), TVShow)]
+                ))
 
         return self.write(json_encode({'results': search_results, 'langid': lang}))
 

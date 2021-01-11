@@ -133,7 +133,7 @@ class SubsceneProvider(Provider):
             cells = row('td')
 
             language = Language.fromsubscene(cells[0].find_all('span')[0].get_text(strip=True))
-            hearing_impaired = (False, True)[cells[2].attrs.values()[0] == 41]
+            hearing_impaired = (False, True)[list(cells[2].attrs.values())[0] == 41]
             page_link = cells[0].find('a')['href']
             release = cells[0].find_all('span')[1].get_text(strip=True)
 
