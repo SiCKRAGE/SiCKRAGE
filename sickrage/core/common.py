@@ -405,6 +405,123 @@ class Quality(object):
         quality = Quality.name_quality(name, anime)
         return Quality.composite_status(EpisodeStatus.DOWNLOADED, quality)
 
+    @staticmethod
+    def from_guessit(guess):
+        """
+        Return a Quality from a guessit dict.
+        :param guess: guessit dict
+        :type guess: dict
+        :return: quality
+        :rtype: int
+        """
+        guessit_map = {
+            '720p': {
+                'HDTV': Qualities.HDTV,
+                'Web': Qualities.HDWEBDL,
+                'Blu-ray': Qualities.HDBLURAY,
+            },
+            '1080i': Qualities.RAWHDTV,
+            '1080p': {
+                'HDTV': Qualities.FULLHDTV,
+                'Web': Qualities.FULLHDWEBDL,
+                'Blu-ray': Qualities.FULLHDBLURAY
+            },
+            '2160p': {
+                'HDTV': Qualities.UHD_4K_TV,
+                'Web': Qualities.UHD_4K_WEBDL,
+                'Blu-ray': Qualities.UHD_4K_BLURAY
+            },
+            '4320p': {
+                'HDTV': Qualities.UHD_8K_TV,
+                'Web': Qualities.UHD_8K_WEBDL,
+                'Blu-ray': Qualities.UHD_8K_BLURAY
+            }
+        }
+
+        screen_size = guess.get('screen_size')
+        source = guess.get('source')
+
+        if not screen_size or isinstance(screen_size, list):
+            return Qualities.UNKNOWN
+
+        source_map = guessit_map.get(screen_size)
+        if not source_map:
+            return Qualities.UNKNOWN
+
+        if isinstance(source_map, int):
+            return source_map
+
+        if not source or isinstance(source, list):
+            return Qualities.UNKNOWN
+
+        quality = source_map.get(source)
+        return quality if quality is not None else Qualities.UNKNOWN
+
+    @staticmethod
+    def to_guessit(quality):
+        """
+        Return a guessit dict containing 'screen_size and source' from a Quality.
+        :param quality: a quality
+        :type quality: int
+        :return: dict {'screen_size': <screen_size>, 'source': <source>}
+        :rtype: dict (str, str)
+        """
+        if quality not in Qualities:
+            quality = Qualities.UNKNOWN
+
+        screen_size = Quality.to_guessit_screen_size(quality)
+        source = Quality.to_guessit_source(quality)
+
+        result = {}
+        if screen_size:
+            result['screen_size'] = screen_size
+        if source:
+            result['source'] = source
+
+        return result
+
+    @staticmethod
+    def to_guessit_source(quality):
+        """
+        Return a guessit source from a Quality.
+        :param quality: the quality
+        :type quality: int
+        :return: guessit source
+        :rtype: str
+        """
+
+        source_map = {
+            Qualities.ANYHDTV | Qualities.UHD_4K_TV | Qualities.UHD_8K_TV: 'HDTV',
+            Qualities.ANYWEBDL | Qualities.UHD_4K_WEBDL | Qualities.UHD_8K_WEBDL: 'Web',
+            Qualities.ANYBLURAY | Qualities.UHD_4K_BLURAY | Qualities.UHD_8K_BLURAY: 'Blu-ray'
+        }
+
+        for quality_set, source in source_map.items():
+            if quality_set & quality:
+                return source
+
+    @staticmethod
+    def to_guessit_screen_size(quality):
+        """
+        Return a guessit screen_size from a Quality.
+        :param quality: the quality
+        :type quality: int
+        :return: guessit screen_size
+        :rtype: str
+        """
+
+        screen_size_map = {
+            Qualities.HDTV | Qualities.HDWEBDL | Qualities.HDBLURAY: '720p',
+            Qualities.RAWHDTV: '1080i',
+            Qualities.FULLHDTV | Qualities.FULLHDWEBDL | Qualities.FULLHDBLURAY: '1080p',
+            Qualities.UHD_4K_TV | Qualities.UHD_4K_WEBDL | Qualities.UHD_4K_BLURAY: '2160p',
+            Qualities.UHD_8K_TV | Qualities.UHD_8K_WEBDL | Qualities.UHD_8K_BLURAY: '4320p',
+        }
+
+        for quality_set, screen_size in screen_size_map.items():
+            if quality_set & quality:
+                return screen_size
+
 
 class Qualities(enum.IntFlag):
     NONE = 0  # 0

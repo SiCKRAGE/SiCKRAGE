@@ -65,8 +65,21 @@ class Subtitles(object):
             'subscene': 'https://subscene.com'
         }
 
-        self.subtitle_extensions = ['srt', 'sub', 'ass', 'idx', 'ssa']
-        self.episode_refiners = ('metadata', 'release', 'tvepisode', 'tvdb', 'omdb')
+        self.subtitle_extensions = [
+            'srt',
+            'sub',
+            'ass',
+            'idx',
+            'ssa'
+        ]
+
+        self.episode_refiners = (
+            'metadata',
+            'release',
+            'tvepisode',
+            'tvdb',
+            'omdb'
+        )
 
     def sortedServiceList(self):
         newList = []

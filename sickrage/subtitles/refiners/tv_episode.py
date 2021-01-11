@@ -24,6 +24,7 @@ import re
 from subliminal.video import Episode
 
 import sickrage
+from sickrage.core.common import Quality
 
 SHOW_MAPPING = {
     'series_tvdb_id': 'tvdb_id',
