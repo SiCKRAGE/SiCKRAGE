@@ -21,9 +21,11 @@
 import re
 from abc import ABC
 
+import sentry_sdk
 from jose import ExpiredSignatureError
 
 import sickrage
+from sickrage.core.enums import UserPermission
 from sickrage.core.helpers import is_ip_whitelisted, get_internal_ip, get_external_ip
 from sickrage.core.webserver.handlers.base import BaseHandler
 
@@ -55,16 +57,30 @@ class LoginHandler(BaseHandler, ABC):
         auth_token = self.request.headers['Authorization'].strip('Bearer').strip()
 
         try:
-            decoded_auth_token = sickrage.app.auth_server.decode_token(auth_token, certs)
+            decoded_token = sickrage.app.auth_server.decode_token(auth_token, certs)
         except ExpiredSignatureError:
             self.set_status(401)
             return self.write({'error': 'Token expired'})
 
         if not sickrage.app.config.user.sub_id:
-            sickrage.app.config.user.sub_id = decoded_auth_token.get('sub')
-            sickrage.app.config.save(mark_dirty=True)
+            sickrage.app.config.user.sub_id = decoded_token.get('sub')
+            sickrage.app.config.save()
 
-        if sickrage.app.config.user.sub_id != decoded_auth_token.get('sub'):
+        if sickrage.app.config.user.sub_id == decoded_token.get('sub'):
+            if not sickrage.app.config.user.username:
+                sickrage.app.config.user.username = decoded_token.get('preferred_username')
+            sickrage.app.config.user.email = decoded_token.get('email')
+            sickrage.app.config.user.permissions = UserPermission.SUPERUSER
+            sickrage.app.config.save()
+
+        if sickrage.app.config.user.sub_id == decoded_token.get('sub'):
+            sentry_sdk.set_user({
+                'id': sickrage.app.config.user.sub_id,
+                'username': sickrage.app.config.user.username,
+                'email': sickrage.app.config.user.email
+            })
+
+        if sickrage.app.config.user.sub_id != decoded_token.get('sub'):
             return
 
         if sickrage.app.config.general.enable_sickrage_api and not sickrage.app.api.token:
@@ -91,6 +107,7 @@ class LoginHandler(BaseHandler, ABC):
             server_id = sickrage.app.api.account.register_server(connections)
             if server_id:
                 sickrage.app.config.general.server_id = server_id
+                sentry_sdk.set_tag('server_id', sickrage.app.config.general.server_id)
                 sickrage.app.config.save()
 
     def handle_sso_auth_get(self):
@@ -120,7 +137,21 @@ class LoginHandler(BaseHandler, ABC):
 
                 if not sickrage.app.config.user.sub_id:
                     sickrage.app.config.user.sub_id = decoded_token.get('sub')
-                    sickrage.app.config.save(mark_dirty=True)
+                    sickrage.app.config.save()
+
+                if sickrage.app.config.user.sub_id == decoded_token.get('sub'):
+                    if not sickrage.app.config.user.username:
+                        sickrage.app.config.user.username = decoded_token.get('preferred_username')
+                    sickrage.app.config.user.email = decoded_token.get('email')
+                    sickrage.app.config.user.permissions = UserPermission.SUPERUSER
+                    sickrage.app.config.save()
+
+                if sickrage.app.config.user.sub_id == decoded_token.get('sub'):
+                    sentry_sdk.set_user({
+                        'id': sickrage.app.config.user.sub_id,
+                        'username': sickrage.app.config.user.username,
+                        'email': sickrage.app.config.user.email
+                    })
 
                 if sickrage.app.config.user.sub_id != decoded_token.get('sub'):
                     if sickrage.app.api.token:
@@ -158,6 +189,7 @@ class LoginHandler(BaseHandler, ABC):
                 server_id = sickrage.app.api.account.register_server(connections)
                 if server_id:
                     sickrage.app.config.general.server_id = server_id
+                    sentry_sdk.set_tag('server_id', sickrage.app.config.general.server_id)
                     sickrage.app.config.save()
 
             redirect_uri = self.get_argument('next', "/{}/".format(sickrage.app.config.general.default_page.value))

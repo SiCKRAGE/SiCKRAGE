@@ -22,9 +22,11 @@ import json
 import os
 from abc import ABC
 
+import sentry_sdk
 from tornado.web import authenticated
 
 import sickrage
+from sickrage.core.enums import UserPermission
 from sickrage.core.helpers import get_internal_ip, get_external_ip
 from sickrage.core.webserver.handlers.base import BaseHandler
 
@@ -58,9 +60,19 @@ class AccountLinkHandler(BaseHandler, ABC):
 
             sickrage.app.config.general.enable_sickrage_api = True
 
-            if not sickrage.app.config.user.sub_id or not sickrage.app.config.general.server_id:
-                sickrage.app.config.user.sub_id = decoded_token.get('sub')
+            if not sickrage.app.config.user.sub_id:
+                sickrage.app.config.user.sub_id = decoded_token.get('sub_id')
+                sickrage.app.config.user.username = decoded_token.get('preferred_username')
+                sickrage.app.config.user.email = decoded_token.get('email')
+                sickrage.app.config.user.permissions = UserPermission.SUPERUSER
 
+                sentry_sdk.set_user({
+                    'id': sickrage.app.config.user.sub_id,
+                    'username': sickrage.app.config.user.username,
+                    'email': sickrage.app.config.user.email
+                })
+
+            if not sickrage.app.config.general.server_id:
                 internal_connections = "{}://{}:{}{}".format(self.request.protocol,
                                                              get_internal_ip(),
                                                              sickrage.app.config.general.web_port,
@@ -76,6 +88,7 @@ class AccountLinkHandler(BaseHandler, ABC):
                 server_id = sickrage.app.api.account.register_server(connections)
                 if server_id:
                     sickrage.app.config.general.server_id = server_id
+                    sentry_sdk.set_tag('server_id', sickrage.app.config.general.server_id)
 
             sickrage.app.config.save(mark_dirty=True)
 

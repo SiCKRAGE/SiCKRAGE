@@ -130,8 +130,8 @@ class ConfigDB(SRDatabase):
     class Users(base):
         __tablename__ = 'users'
         id = Column(Integer, primary_key=True, autoincrement=True)
-        username = Column(Text, index=True, unique=True, nullable=False)
-        password = Column(Text, nullable=False, default='')
+        username = Column(Text, default='', index=True, unique=True)
+        password = Column(Text, default='')
         email = Column(Text, default='', index=True)
         sub_id = Column(Text, default='')
         permissions = Column(Enum(UserPermission), default=UserPermission.GUEST)

@@ -22,6 +22,7 @@ import json
 import traceback
 from abc import ABC
 
+import sentry_sdk
 from apispec import APISpec
 from apispec.exceptions import APISpecError
 from apispec.ext.marshmallow import MarshmallowPlugin
@@ -30,6 +31,7 @@ from tornado.escape import to_basestring
 from tornado.web import HTTPError
 
 import sickrage
+from sickrage.core.enums import UserPermission
 from sickrage.core.helpers import get_external_ip, get_internal_ip
 from sickrage.core.webserver.handlers.base import BaseHandler
 
@@ -49,13 +51,27 @@ class APIBaseHandler(BaseHandler, ABC):
             if 'bearer' in auth_header.lower():
                 try:
                     token = auth_header.strip('Bearer').strip()
-                    decoded_auth_token = sickrage.app.auth_server.decode_token(token, certs)
+                    decoded_token = sickrage.app.auth_server.decode_token(token, certs)
 
                     if not sickrage.app.config.user.sub_id:
-                        sickrage.app.config.user.sub_id = decoded_auth_token.get('sub')
+                        sickrage.app.config.user.sub_id = decoded_token.get('sub')
                         sickrage.app.config.save()
 
-                    if sickrage.app.config.user.sub_id != decoded_auth_token.get('sub'):
+                    if sickrage.app.config.user.sub_id == decoded_token.get('sub'):
+                        if not sickrage.app.config.user.username:
+                            sickrage.app.config.user.username = decoded_token.get('preferred_username')
+                        sickrage.app.config.user.email = decoded_token.get('email')
+                        sickrage.app.config.user.permissions = UserPermission.SUPERUSER
+                        sickrage.app.config.save()
+
+                    if sickrage.app.config.user.sub_id == decoded_token.get('sub'):
+                        sentry_sdk.set_user({
+                            'id': sickrage.app.config.user.sub_id,
+                            'username': sickrage.app.config.user.username,
+                            'email': sickrage.app.config.user.email
+                        })
+
+                    if sickrage.app.config.user.sub_id != decoded_token.get('sub'):
                         return self.send_error(401, error='user is not authorized')
 
                     if sickrage.app.config.general.enable_sickrage_api and not sickrage.app.api.token:
@@ -82,9 +98,10 @@ class APIBaseHandler(BaseHandler, ABC):
                         server_id = sickrage.app.api.account.register_server(connections)
                         if server_id:
                             sickrage.app.config.general.server_id = server_id
+                            sentry_sdk.set_tag('server_id', sickrage.app.config.general.server_id)
                             sickrage.app.config.save()
 
-                    self.current_user = decoded_auth_token
+                    self.current_user = decoded_token
                 except Exception:
                     return self.send_error(401, error='failed to decode token')
             else:

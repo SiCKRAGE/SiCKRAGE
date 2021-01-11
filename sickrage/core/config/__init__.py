@@ -197,7 +197,7 @@ class Config(object):
     def load(self):
         # USERS SECTION
         if not self.db.session().query(self.db.Users).first():
-            self.db.session().add(self.db.Users(username='admin', permissions=UserPermission.SUPERUSER))
+            self.db.session().add(self.db.Users())
             self.db.session().commit()
         self._config_data[self.db.Users] = self.db.session().query(self.db.Users).first().as_attrdict()
 

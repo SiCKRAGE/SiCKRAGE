@@ -337,11 +337,17 @@ class Core(object):
         # migrate config
         self.config.migrate_config_file(self.config_file)
 
-        # add extra sentry tags
-        if sickrage.app.config.user and sickrage.app.config.user.sub_id:
-            sentry_sdk.set_tag('sub_id', sickrage.app.config.user.sub_id)
+        # add server id tag to sentry
         if sickrage.app.config.general and sickrage.app.config.general.server_id:
             sentry_sdk.set_tag('server_id', sickrage.app.config.general.server_id)
+
+        # add user to sentry
+        if sickrage.app.config.user and sickrage.app.config.user.sub_id:
+            sentry_sdk.set_user({
+                'id': sickrage.app.config.user.sub_id,
+                'username': sickrage.app.config.user.username,
+                'email': sickrage.app.config.user.email
+            })
 
         # config overrides
         if self.web_port:
