@@ -234,7 +234,7 @@ class QuicksearchDotJsonHandler(BaseHandler, ABC):
             shows.append({
                 'category': 'shows',
                 'series_id': result.series_id,
-                'series_provider_id': result.series_provider_id,
+                'series_provider_id': result.series_provider_id.name,
                 'seasons': len(set([s.season for s in result.episodes])),
                 'name': result.name,
                 'img': sickrage.app.config.general.web_root + series_image(result.series_id, result.series_provider_id, SeriesImageType.POSTER_THUMB).url
@@ -248,7 +248,7 @@ class QuicksearchDotJsonHandler(BaseHandler, ABC):
             episodes.append({
                 'category': 'episodes',
                 'series_id': result.series_id,
-                'series_provider_id': result.series_provider_id,
+                'series_provider_id': result.series_provider_id.name,
                 'episode_id': result.episode_id,
                 'season': result.season,
                 'episode': result.episode,
