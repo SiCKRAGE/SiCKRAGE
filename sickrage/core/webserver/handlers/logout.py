@@ -18,15 +18,13 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-from abc import ABC
 
-from tornado.concurrent import run_on_executor
 
 import sickrage
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class LogoutHandler(BaseHandler, ABC):
+class LogoutHandler(BaseHandler):
     def get(self, *args, **kwargs):
         logout_uri = sickrage.app.auth_server.get_url('end_session_endpoint') if sickrage.app.config.general.sso_auth_enabled else ""
         redirect_uri = "{}://{}{}/login".format(self.request.protocol, self.request.host, sickrage.app.config.general.web_root)

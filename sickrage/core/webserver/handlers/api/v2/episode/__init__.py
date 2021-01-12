@@ -19,7 +19,6 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 import os
-from abc import ABC
 
 from tornado.escape import json_decode
 
@@ -32,7 +31,7 @@ from sickrage.core.webserver.handlers.api.v2.episode.schemas import EpisodesManu
 from sickrage.core.websocket import WebSocketMessage
 
 
-class EpisodesManualSearchHandler(APIBaseHandler, ABC):
+class EpisodesManualSearchHandler(APIBaseHandler):
     def get(self, episode_slug):
         """Episode Manual Search"
         ---
@@ -103,7 +102,7 @@ class EpisodesManualSearchHandler(APIBaseHandler, ABC):
         )
 
 
-class EpisodesRenameHandler(APIBaseHandler, ABC):
+class EpisodesRenameHandler(APIBaseHandler):
     def get(self):
         """Get list of episodes to rename"
         ---

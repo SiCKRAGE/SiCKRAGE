@@ -18,7 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-from abc import ABC
+
 
 import sickrage
 from sickrage.core.enums import ProcessMethod
@@ -26,7 +26,7 @@ from sickrage.core.webserver.handlers.api import APIBaseHandler
 from sickrage.core.webserver.handlers.api.v2.postprocess.schemas import PostProcessSchema
 
 
-class PostProcessHandler(APIBaseHandler, ABC):
+class PostProcessHandler(APIBaseHandler):
     def get(self):
         """Postprocess TV show video files"
         ---

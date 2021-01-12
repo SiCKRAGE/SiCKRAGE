@@ -21,7 +21,6 @@
 
 import datetime
 import os
-from abc import ABC
 from collections import OrderedDict
 from time import sleep
 from urllib.parse import unquote_plus, quote_plus
@@ -64,7 +63,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 from sickrage.subtitles import Subtitles
 
 
-class HomeHandler(BaseHandler, ABC):
+class HomeHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         show_list = [x for x in get_show_list() if not sickrage.app.show_queue.is_being_removed(x.series_id)]
@@ -129,7 +128,7 @@ class HomeHandler(BaseHandler, ABC):
         return show_stat, overall_stats
 
 
-class ShowProgressHandler(BaseHandler, ABC):
+class ShowProgressHandler(BaseHandler):
     def get(self, *args, **kwargs):
         series_id = self.get_argument('show-id')
 
@@ -157,7 +156,7 @@ class ShowProgressHandler(BaseHandler, ABC):
         return self.write(json_encode({'progress_text': progress_text, 'progress_tip': progress_tip, 'progressbar_percent': progressbar_percent}))
 
 
-class IsAliveHandler(BaseHandler, ABC):
+class IsAliveHandler(BaseHandler):
     def get(self, *args, **kwargs):
         self.set_header('Content-Type', 'text/javascript')
 
@@ -169,7 +168,7 @@ class IsAliveHandler(BaseHandler, ABC):
         return self.write("{}({})".format(srcallback, {'msg': str(sickrage.app.pid) if sickrage.app.started else 'nope'}))
 
 
-class TestSABnzbdHandler(BaseHandler, ABC):
+class TestSABnzbdHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         host = clean_url(self.get_argument('host'))
@@ -187,7 +186,7 @@ class TestSABnzbdHandler(BaseHandler, ABC):
         return self.write(_('Unable to connect to host'))
 
 
-class TestSynologyDSMHandler(BaseHandler, ABC):
+class TestSynologyDSMHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         host = clean_url(self.get_argument('host'))
@@ -200,7 +199,7 @@ class TestSynologyDSMHandler(BaseHandler, ABC):
         return self.write(access_msg)
 
 
-class TestTorrentHandler(BaseHandler, ABC):
+class TestTorrentHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         host = clean_url(self.get_argument('host'))
@@ -213,7 +212,7 @@ class TestTorrentHandler(BaseHandler, ABC):
         return self.write(access_msg)
 
 
-class TestFreeMobileHandler(BaseHandler, ABC):
+class TestFreeMobileHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         freemobile_id = self.get_argument('freemobile_id')
@@ -225,7 +224,7 @@ class TestFreeMobileHandler(BaseHandler, ABC):
         return self.write(_('Problem sending SMS: ') + message)
 
 
-class TestTelegramHandler(BaseHandler, ABC):
+class TestTelegramHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         telegram_id = self.get_argument('telegram_id')
@@ -237,7 +236,7 @@ class TestTelegramHandler(BaseHandler, ABC):
         return self.write(_('Error sending Telegram notification: {message}').format(message=message))
 
 
-class TestJoinHandler(BaseHandler, ABC):
+class TestJoinHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         join_id = self.get_argument('join_id')
@@ -249,7 +248,7 @@ class TestJoinHandler(BaseHandler, ABC):
         return self.write(_('Error sending Join notification: {message}').format(message=message))
 
 
-class TestGrowlHandler(BaseHandler, ABC):
+class TestGrowlHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         host = clean_host(self.get_argument('host'), default_port=23053)
@@ -266,7 +265,7 @@ class TestGrowlHandler(BaseHandler, ABC):
         return self.write(_('Registration and testing of Growl failed ') + unquote_plus(host) + pw_append)
 
 
-class TestProwlHandler(BaseHandler, ABC):
+class TestProwlHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         prowl_apikey = self.get_argument('prowl_apikey')
@@ -278,7 +277,7 @@ class TestProwlHandler(BaseHandler, ABC):
         return self.write(_('Test prowl notice failed'))
 
 
-class TestBoxcar2Handler(BaseHandler, ABC):
+class TestBoxcar2Handler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         accesstoken = self.get_argument('accesstoken')
@@ -289,7 +288,7 @@ class TestBoxcar2Handler(BaseHandler, ABC):
         return self.write(_('Error sending Boxcar2 notification'))
 
 
-class TestPushoverHandler(BaseHandler, ABC):
+class TestPushoverHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         user_key = self.get_argument('userKey')
@@ -301,13 +300,13 @@ class TestPushoverHandler(BaseHandler, ABC):
         return self.write(_('Error sending Pushover notification'))
 
 
-class TwitterStep1Handler(BaseHandler, ABC):
+class TwitterStep1Handler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         return self.write(sickrage.app.notification_providers['twitter']._get_authorization())
 
 
-class TwitterStep2Handler(BaseHandler, ABC):
+class TwitterStep2Handler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         key = self.get_argument('key')
@@ -319,7 +318,7 @@ class TwitterStep2Handler(BaseHandler, ABC):
         return self.write(_('Unable to verify key'))
 
 
-class TestTwitterHandler(BaseHandler, ABC):
+class TestTwitterHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         result = sickrage.app.notification_providers['twitter'].test_notify()
@@ -328,7 +327,7 @@ class TestTwitterHandler(BaseHandler, ABC):
         return self.write(_('Error sending tweet'))
 
 
-class TestTwilioHandler(BaseHandler, ABC):
+class TestTwilioHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         account_sid = self.get_argument('account_sid')
@@ -354,7 +353,7 @@ class TestTwilioHandler(BaseHandler, ABC):
         return self.write(_('Error sending sms'))
 
 
-class TestAlexaHandler(BaseHandler, ABC):
+class TestAlexaHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         result = sickrage.app.notification_providers['alexa'].test_notify()
@@ -363,7 +362,7 @@ class TestAlexaHandler(BaseHandler, ABC):
         return self.write(_('Alexa notification failed'))
 
 
-class TestSlackHandler(BaseHandler, ABC):
+class TestSlackHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         result = sickrage.app.notification_providers['slack'].test_notify()
@@ -372,7 +371,7 @@ class TestSlackHandler(BaseHandler, ABC):
         return self.write(_('Slack message failed'))
 
 
-class TestDiscordHandler(BaseHandler, ABC):
+class TestDiscordHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         result = sickrage.app.notification_providers['discord'].test_notify()
@@ -381,7 +380,7 @@ class TestDiscordHandler(BaseHandler, ABC):
         return self.write(_('Discord message failed'))
 
 
-class TestKODIHandler(BaseHandler, ABC):
+class TestKODIHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         host = clean_hosts(self.get_argument('host'))
@@ -400,7 +399,7 @@ class TestKODIHandler(BaseHandler, ABC):
         return self.write(final_result)
 
 
-class TestPMCHandler(BaseHandler, ABC):
+class TestPMCHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         host = clean_hosts(self.get_argument('host'))
@@ -426,7 +425,7 @@ class TestPMCHandler(BaseHandler, ABC):
         return self.write(final_result)
 
 
-class TestPMSHandler(BaseHandler, ABC):
+class TestPMSHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         host = clean_hosts(self.get_argument('host'))
@@ -457,7 +456,7 @@ class TestPMSHandler(BaseHandler, ABC):
         return self.write(final_result)
 
 
-class TestLibnotifyHandler(BaseHandler, ABC):
+class TestLibnotifyHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         if sickrage.app.notification_providers['libnotify'].test_notify():
@@ -465,7 +464,7 @@ class TestLibnotifyHandler(BaseHandler, ABC):
         return self.write(sickrage.app.notification_providers['libnotify'].diagnose())
 
 
-class TestEMBYHandler(BaseHandler, ABC):
+class TestEMBYHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         host = clean_host(self.get_argument('host'))
@@ -477,7 +476,7 @@ class TestEMBYHandler(BaseHandler, ABC):
         return self.write(_('Test notice failed to ') + unquote_plus(host))
 
 
-class TestNMJHandler(BaseHandler, ABC):
+class TestNMJHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         host = clean_host(self.get_argument('host'))
@@ -490,7 +489,7 @@ class TestNMJHandler(BaseHandler, ABC):
         return self.write(_('Test failed to start the scan update'))
 
 
-class SettingsNMJHandler(BaseHandler, ABC):
+class SettingsNMJHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         host = clean_host(self.get_argument('host'))
@@ -510,7 +509,7 @@ class SettingsNMJHandler(BaseHandler, ABC):
         return self.write('{"message": {}, "database": "", "mount": ""}'.format(message))
 
 
-class TestNMJv2Handler(BaseHandler, ABC):
+class TestNMJv2Handler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         host = clean_host(self.get_argument('host'))
@@ -521,7 +520,7 @@ class TestNMJv2Handler(BaseHandler, ABC):
         return self.write(_('Test notice failed to ') + unquote_plus(host))
 
 
-class SettingsNMJv2Handler(BaseHandler, ABC):
+class SettingsNMJv2Handler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         host = clean_host(self.get_argument('host'))
@@ -540,7 +539,7 @@ class SettingsNMJv2Handler(BaseHandler, ABC):
         )
 
 
-class GetTraktTokenHandler(BaseHandler, ABC):
+class GetTraktTokenHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         trakt_pin = self.get_argument('trakt_pin')
@@ -550,7 +549,7 @@ class GetTraktTokenHandler(BaseHandler, ABC):
         return self.write(_('Trakt Not Authorized!'))
 
 
-class TestTraktHandler(BaseHandler, ABC):
+class TestTraktHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         username = self.get_argument('username')
@@ -559,7 +558,7 @@ class TestTraktHandler(BaseHandler, ABC):
         return self.write(sickrage.app.notification_providers['trakt'].test_notify(username, blacklist_name))
 
 
-class LoadShowNotifyListsHandler(BaseHandler, ABC):
+class LoadShowNotifyListsHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         data = {'_size': 0}
@@ -569,7 +568,7 @@ class LoadShowNotifyListsHandler(BaseHandler, ABC):
         return self.write(json_encode(data))
 
 
-class SaveShowNotifyListHandler(BaseHandler, ABC):
+class SaveShowNotifyListHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
@@ -582,7 +581,7 @@ class SaveShowNotifyListHandler(BaseHandler, ABC):
             return self.write('ERROR')
 
 
-class TestEmailHandler(BaseHandler, ABC):
+class TestEmailHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         host = clean_host(self.get_argument('host'))
@@ -598,7 +597,7 @@ class TestEmailHandler(BaseHandler, ABC):
         return self.write(_('ERROR: %s') % sickrage.app.notification_providers['email'].last_err)
 
 
-class TestNMAHandler(BaseHandler, ABC):
+class TestNMAHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         nma_api = self.get_argument('nma_api')
@@ -610,7 +609,7 @@ class TestNMAHandler(BaseHandler, ABC):
         return self.write(_('Test NMA notice failed'))
 
 
-class TestPushalotHandler(BaseHandler, ABC):
+class TestPushalotHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         authorization_token = self.get_argument('authorizationToken')
@@ -621,7 +620,7 @@ class TestPushalotHandler(BaseHandler, ABC):
         return self.write(_('Error sending Pushalot notification'))
 
 
-class TestPushbulletHandler(BaseHandler, ABC):
+class TestPushbulletHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         api = self.get_argument('api')
@@ -632,7 +631,7 @@ class TestPushbulletHandler(BaseHandler, ABC):
         return self.write(_('Error sending Pushbullet notification'))
 
 
-class GetPushbulletDevicesHandler(BaseHandler, ABC):
+class GetPushbulletDevicesHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         api = self.get_argument('api')
@@ -643,7 +642,7 @@ class GetPushbulletDevicesHandler(BaseHandler, ABC):
         return self.write(_('Error getting Pushbullet devices'))
 
 
-class ServerStatusHandler(BaseHandler, ABC):
+class ServerStatusHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         tvdir_free = get_disk_space_usage(sickrage.app.config.general.tv_download_dir)
@@ -668,7 +667,7 @@ class ServerStatusHandler(BaseHandler, ABC):
                            action='server_status')
 
 
-class ProviderStatusHandler(BaseHandler, ABC):
+class ProviderStatusHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         return self.render('home/provider_status.mako',
@@ -679,7 +678,7 @@ class ProviderStatusHandler(BaseHandler, ABC):
                            action='provider_status')
 
 
-class ShutdownHandler(BaseHandler, ABC):
+class ShutdownHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         pid = self.get_argument('pid')
@@ -691,7 +690,7 @@ class ShutdownHandler(BaseHandler, ABC):
         sickrage.app.shutdown()
 
 
-class RestartHandler(BaseHandler, ABC):
+class RestartHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         pid = self.get_argument('pid')
@@ -722,7 +721,7 @@ class RestartHandler(BaseHandler, ABC):
                            action="restart")
 
 
-class UpdateCheckHandler(BaseHandler, ABC):
+class UpdateCheckHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         pid = self.get_argument('pid')
@@ -739,7 +738,7 @@ class UpdateCheckHandler(BaseHandler, ABC):
         return self.redirect(self.previous_url())
 
 
-class UpdateHandler(BaseHandler, ABC):
+class UpdateHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         pid = self.get_argument('pid')
@@ -754,7 +753,7 @@ class UpdateHandler(BaseHandler, ABC):
         return self.redirect(self.previous_url())
 
 
-class VerifyPathHandler(BaseHandler, ABC):
+class VerifyPathHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         path = self.get_argument('path')
@@ -764,7 +763,7 @@ class VerifyPathHandler(BaseHandler, ABC):
         return self.write(_('Failed to find {path}'.format(path=path)))
 
 
-class InstallRequirementsHandler(BaseHandler, ABC):
+class InstallRequirementsHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         sickrage.app.alerts.message(_('Upgrading PIP'))
@@ -782,7 +781,7 @@ class InstallRequirementsHandler(BaseHandler, ABC):
         return self.redirect(self.previous_url())
 
 
-class BranchCheckoutHandler(BaseHandler, ABC):
+class BranchCheckoutHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         branch = self.get_argument('branch')
@@ -798,7 +797,7 @@ class BranchCheckoutHandler(BaseHandler, ABC):
         return self.redirect(self.previous_url())
 
 
-class DisplayShowHandler(BaseHandler, ABC):
+class DisplayShowHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
@@ -998,7 +997,7 @@ class DisplayShowHandler(BaseHandler, ABC):
         return sickrage.app.config.emby.enable
 
 
-class TogglePauseHandler(BaseHandler, ABC):
+class TogglePauseHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
@@ -1018,7 +1017,7 @@ class TogglePauseHandler(BaseHandler, ABC):
         return self.redirect("/home/displayShow?show=%i" % show_obj.series_id)
 
 
-class DeleteShowHandler(BaseHandler, ABC):
+class DeleteShowHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
@@ -1048,7 +1047,7 @@ class DeleteShowHandler(BaseHandler, ABC):
         return self.redirect('/home/')
 
 
-class RefreshShowHandler(BaseHandler, ABC):
+class RefreshShowHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
@@ -1068,7 +1067,7 @@ class RefreshShowHandler(BaseHandler, ABC):
         return self.redirect("/home/displayShow?show=" + str(show_obj.series_id))
 
 
-class UpdateShowHandler(BaseHandler, ABC):
+class UpdateShowHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
@@ -1091,7 +1090,7 @@ class UpdateShowHandler(BaseHandler, ABC):
         return self.redirect("/home/displayShow?show=" + str(show_obj.series_id))
 
 
-class SubtitleShowHandler(BaseHandler, ABC):
+class SubtitleShowHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
@@ -1109,7 +1108,7 @@ class SubtitleShowHandler(BaseHandler, ABC):
         return self.redirect("/home/displayShow?show=" + str(show_obj.series_id))
 
 
-class UpdateKODIHandler(BaseHandler, ABC):
+class UpdateKODIHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
@@ -1137,7 +1136,7 @@ class UpdateKODIHandler(BaseHandler, ABC):
             return self.redirect('/home/')
 
 
-class UpdatePLEXHandler(BaseHandler, ABC):
+class UpdatePLEXHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         if not sickrage.app.notification_providers['plex'].update_library():
@@ -1151,7 +1150,7 @@ class UpdatePLEXHandler(BaseHandler, ABC):
         return self.redirect('/home/')
 
 
-class UpdateEMBYHandler(BaseHandler, ABC):
+class UpdateEMBYHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
@@ -1171,7 +1170,7 @@ class UpdateEMBYHandler(BaseHandler, ABC):
             return self.redirect('/home/')
 
 
-class SyncTraktHandler(BaseHandler, ABC):
+class SyncTraktHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         sickrage.app.log.info("Syncing Trakt with SiCKRAGE")
@@ -1185,7 +1184,7 @@ class SyncTraktHandler(BaseHandler, ABC):
         return self.redirect("/home/")
 
 
-class DeleteEpisodeHandler(BaseHandler, ABC):
+class DeleteEpisodeHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
@@ -1228,7 +1227,7 @@ class DeleteEpisodeHandler(BaseHandler, ABC):
             return self.redirect("/home/displayShow?show=" + show)
 
 
-class TestRenameHandler(BaseHandler, ABC):
+class TestRenameHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
@@ -1270,7 +1269,7 @@ class TestRenameHandler(BaseHandler, ABC):
                            action="test_renaming")
 
 
-class DoRenameHandler(BaseHandler, ABC):
+class DoRenameHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
@@ -1303,7 +1302,7 @@ class DoRenameHandler(BaseHandler, ABC):
         return self.redirect("/home/displayShow?show=" + show)
 
 
-class SearchEpisodeHandler(BaseHandler, ABC):
+class SearchEpisodeHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
@@ -1322,7 +1321,7 @@ class SearchEpisodeHandler(BaseHandler, ABC):
         return self.write(json_encode({'result': 'failure'}))
 
 
-class GetManualSearchStatusHandler(BaseHandler, ABC):
+class GetManualSearchStatusHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
@@ -1381,7 +1380,7 @@ class GetManualSearchStatusHandler(BaseHandler, ABC):
         return quality_class
 
 
-class SearchEpisodeSubtitlesHandler(BaseHandler, ABC):
+class SearchEpisodeSubtitlesHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
@@ -1410,7 +1409,7 @@ class SearchEpisodeSubtitlesHandler(BaseHandler, ABC):
             return self.write(json_encode({'result': 'failure'}))
 
 
-class SetSceneNumberingHandler(BaseHandler, ABC):
+class SetSceneNumberingHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
@@ -1497,7 +1496,7 @@ class SetSceneNumberingHandler(BaseHandler, ABC):
         return self.write(json_encode(result))
 
 
-class RetryEpisodeHandler(BaseHandler, ABC):
+class RetryEpisodeHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
@@ -1517,7 +1516,7 @@ class RetryEpisodeHandler(BaseHandler, ABC):
         return self.write(json_encode({'result': 'failure'}))
 
 
-class FetchReleasegroupsHandler(BaseHandler, ABC):
+class FetchReleasegroupsHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         show_name = self.get_argument('show_name')

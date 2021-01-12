@@ -20,7 +20,6 @@
 # ##############################################################################
 
 import os
-from abc import ABC
 
 from tornado.web import authenticated
 
@@ -30,7 +29,7 @@ from sickrage.core.webserver import ConfigWebHandler
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class ConfigBackupRestoreHandler(BaseHandler, ABC):
+class ConfigBackupRestoreHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         return self.render('config/backup_restore.mako',
@@ -42,7 +41,7 @@ class ConfigBackupRestoreHandler(BaseHandler, ABC):
                            action='backup_restore')
 
 
-class ConfigBackupHandler(BaseHandler, ABC):
+class ConfigBackupHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         backup_dir = self.get_argument('backupDir')
@@ -62,7 +61,7 @@ class ConfigBackupHandler(BaseHandler, ABC):
         return self.write(final_result)
 
 
-class ConfigRestoreHandler(BaseHandler, ABC):
+class ConfigRestoreHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         backup_file = self.get_argument('backupFile')
@@ -93,7 +92,7 @@ class ConfigRestoreHandler(BaseHandler, ABC):
         return self.write(final_result)
 
 
-class SaveBackupRestoreHandler(BaseHandler, ABC):
+class SaveBackupRestoreHandler(BaseHandler):
     @authenticated
     def post(self, *args, **kwargs):
         return self.redirect("/config/backuprestore/")

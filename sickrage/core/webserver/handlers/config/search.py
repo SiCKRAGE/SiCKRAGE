@@ -20,7 +20,6 @@
 # ##############################################################################
 
 import os
-from abc import ABC
 
 from tornado.web import authenticated
 
@@ -33,7 +32,7 @@ from sickrage.core.webserver import ConfigWebHandler
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class ConfigSearchHandler(BaseHandler, ABC):
+class ConfigSearchHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         return self.render('config/search.mako',
@@ -45,7 +44,7 @@ class ConfigSearchHandler(BaseHandler, ABC):
                            action='search')
 
 
-class SaveSearchHandler(BaseHandler, ABC):
+class SaveSearchHandler(BaseHandler):
     @authenticated
     def post(self, *args, **kwargs):
         use_nzbs = self.get_argument('use_nzbs', None)

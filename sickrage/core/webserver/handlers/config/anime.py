@@ -18,7 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-from abc import ABC
+
 
 from tornado.web import authenticated
 
@@ -28,7 +28,7 @@ from sickrage.core.webserver import ConfigWebHandler
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class ConfigAnimeHandler(BaseHandler, ABC):
+class ConfigAnimeHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         return self.render('config/anime.mako',
@@ -40,7 +40,7 @@ class ConfigAnimeHandler(BaseHandler, ABC):
                            action='anime')
 
 
-class ConfigSaveAnimeHandler(BaseHandler, ABC):
+class ConfigSaveAnimeHandler(BaseHandler):
     @authenticated
     def post(self, *args, **kwargs):
         use_anidb = self.get_argument('use_anidb', '')

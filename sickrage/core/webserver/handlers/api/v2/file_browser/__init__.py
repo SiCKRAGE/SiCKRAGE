@@ -19,12 +19,11 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 import os
-from abc import ABC
 
 from sickrage.core.webserver.handlers.api import APIBaseHandler
 
 
-class FileBrowserHandler(APIBaseHandler, ABC):
+class FileBrowserHandler(APIBaseHandler):
     def get(self):
         path = self.get_argument('path', None)
         include_files = self.get_argument('includeFiles', None)

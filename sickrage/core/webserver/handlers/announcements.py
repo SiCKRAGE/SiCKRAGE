@@ -19,14 +19,13 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 import json
-from abc import ABC
 
 import sickrage
 from sickrage.core.webserver.handlers.base import BaseHandler
 from sickrage.libs.trakt.interfaces.base import authenticated
 
 
-class AnnouncementsHandler(BaseHandler, ABC):
+class AnnouncementsHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         return self.render('announcements.mako',
@@ -38,7 +37,7 @@ class AnnouncementsHandler(BaseHandler, ABC):
                            action='announcements')
 
 
-class MarkAnnouncementSeenHandler(BaseHandler, ABC):
+class MarkAnnouncementSeenHandler(BaseHandler):
     @authenticated
     def post(self, *args, **kwargs):
         ahash = self.get_argument('ahash')
@@ -50,7 +49,7 @@ class MarkAnnouncementSeenHandler(BaseHandler, ABC):
         return self.write(json.dumps({'success': True}))
 
 
-class AnnouncementCountHandler(BaseHandler, ABC):
+class AnnouncementCountHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         return self.write(json.dumps({'count': sickrage.app.announcements.count()}))

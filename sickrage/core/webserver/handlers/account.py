@@ -19,8 +19,6 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 import json
-import os
-from abc import ABC
 
 import sentry_sdk
 from tornado.web import authenticated
@@ -31,7 +29,7 @@ from sickrage.core.helpers import get_internal_ip, get_external_ip
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class AccountLinkHandler(BaseHandler, ABC):
+class AccountLinkHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         code = self.get_argument('code', None)
@@ -101,7 +99,7 @@ class AccountLinkHandler(BaseHandler, ABC):
         return self.redirect('/account/link')
 
 
-class AccountUnlinkHandler(BaseHandler, ABC):
+class AccountUnlinkHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         if not sickrage.app.config.general.server_id or sickrage.app.api.account.unregister_server(sickrage.app.config.general.server_id):
@@ -118,7 +116,7 @@ class AccountUnlinkHandler(BaseHandler, ABC):
             sickrage.app.alerts.message(_('Unlinked SiCKRAGE account from SiCKRAGE API'))
 
 
-class AccountIsLinkedHandler(BaseHandler, ABC):
+class AccountIsLinkedHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         return self.write(json.dumps({'linked': ('true', 'false')[not sickrage.app.api.userinfo]}))

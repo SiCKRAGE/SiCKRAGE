@@ -21,7 +21,6 @@
 
 import os
 import re
-from abc import ABC
 from urllib.parse import unquote_plus, urlencode
 
 from tornado.escape import json_encode
@@ -60,7 +59,7 @@ def split_extra_show(extra_show):
     return series_provider_id, show_dir, series_id, show_name
 
 
-class HomeAddShowsHandler(BaseHandler, ABC):
+class HomeAddShowsHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         return self.render('home/add_shows.mako',
@@ -71,7 +70,7 @@ class HomeAddShowsHandler(BaseHandler, ABC):
                            action='add_shows')
 
 
-class SearchSeriesProviderForShowNameHandler(BaseHandler, ABC):
+class SearchSeriesProviderForShowNameHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         search_term = self.get_argument('search_term')
@@ -108,7 +107,7 @@ class SearchSeriesProviderForShowNameHandler(BaseHandler, ABC):
         return self.write(json_encode({'results': search_results, 'langid': lang}))
 
 
-class MassAddTableHandler(BaseHandler, ABC):
+class MassAddTableHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         root_dir = self.get_arguments('rootDir')
@@ -180,7 +179,7 @@ class MassAddTableHandler(BaseHandler, ABC):
                            action="mass_add_table")
 
 
-class NewShowHandler(BaseHandler, ABC):
+class NewShowHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         """
@@ -230,7 +229,7 @@ class NewShowHandler(BaseHandler, ABC):
                            action="new_show")
 
 
-class TraktShowsHandler(BaseHandler, ABC):
+class TraktShowsHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         """
@@ -260,7 +259,7 @@ class TraktShowsHandler(BaseHandler, ABC):
                            action="trakt_shows")
 
 
-class PopularShowsHandler(BaseHandler, ABC):
+class PopularShowsHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         """
@@ -284,7 +283,7 @@ class PopularShowsHandler(BaseHandler, ABC):
                            action="popular_shows")
 
 
-class AddShowToBlacklistHandler(BaseHandler, ABC):
+class AddShowToBlacklistHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         series_id = self.get_argument('series_id')
@@ -294,7 +293,7 @@ class AddShowToBlacklistHandler(BaseHandler, ABC):
         return self.redirect('/home/addShows/trendingShows/')
 
 
-class ExistingShowsHandler(BaseHandler, ABC):
+class ExistingShowsHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         """
@@ -310,7 +309,7 @@ class ExistingShowsHandler(BaseHandler, ABC):
                            action="add_existing_shows")
 
 
-class AddShowByIDHandler(BaseHandler, ABC):
+class AddShowByIDHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         series_id = self.get_argument('series_id')
@@ -344,7 +343,7 @@ class AddShowByIDHandler(BaseHandler, ABC):
                                                'show_name': show_name})}))
 
 
-class AddNewShowHandler(BaseHandler, ABC):
+class AddNewShowHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         return self.redirect("/home/")
@@ -484,7 +483,7 @@ class AddNewShowHandler(BaseHandler, ABC):
         return self.redirect("/home/addShows/newShow?" + urlencode({'show_to_add': next_show_dir, 'other_shows': rest_of_show_dirs}, True))
 
 
-class AddExistingShowsHandler(BaseHandler, ABC):
+class AddExistingShowsHandler(BaseHandler):
     @authenticated
     def post(self, *args, **kwargs):
         """

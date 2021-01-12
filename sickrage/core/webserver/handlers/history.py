@@ -18,7 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-from abc import ABC
+
 
 from tornado.web import authenticated
 
@@ -27,7 +27,7 @@ from sickrage.core.tv.show.history import History
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class HistoryHandler(BaseHandler, ABC):
+class HistoryHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         limit = self.get_argument('limit', None)
@@ -102,7 +102,7 @@ class HistoryHandler(BaseHandler, ABC):
                            action='history')
 
 
-class HistoryClearHandler(BaseHandler, ABC):
+class HistoryClearHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         History().clear()
@@ -110,7 +110,7 @@ class HistoryClearHandler(BaseHandler, ABC):
         return self.redirect("/history/")
 
 
-class HistoryTrimHandler(BaseHandler, ABC):
+class HistoryTrimHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         History().trim()

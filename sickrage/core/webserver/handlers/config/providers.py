@@ -18,7 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-from abc import ABC
+
 
 from tornado.escape import json_encode
 from tornado.web import authenticated
@@ -30,7 +30,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 from sickrage.search_providers import NewznabProvider, TorrentRssProvider, SearchProviderType
 
 
-class ConfigProvidersHandler(BaseHandler, ABC):
+class ConfigProvidersHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         return self.render('config/providers.mako',
@@ -42,7 +42,7 @@ class ConfigProvidersHandler(BaseHandler, ABC):
                            action='providers')
 
 
-class CanAddNewznabProviderHandler(BaseHandler, ABC):
+class CanAddNewznabProviderHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         name = self.get_argument('name')
@@ -53,7 +53,7 @@ class CanAddNewznabProviderHandler(BaseHandler, ABC):
         return self.write(json_encode({'error': 'Provider Name already exists as ' + name}))
 
 
-class CanAddTorrentRssProviderHandler(BaseHandler, ABC):
+class CanAddTorrentRssProviderHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         name = self.get_argument('name')
@@ -70,7 +70,7 @@ class CanAddTorrentRssProviderHandler(BaseHandler, ABC):
         return self.write(json_encode({'error': 'Provider name already exists as {}'.format(name)}))
 
 
-class GetNewznabCategoriesHandler(BaseHandler, ABC):
+class GetNewznabCategoriesHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         """
@@ -88,7 +88,7 @@ class GetNewznabCategoriesHandler(BaseHandler, ABC):
         return self.write(json_encode({'success': success, 'tv_categories': tv_categories, 'error': error}))
 
 
-class SaveProvidersHandler(BaseHandler, ABC):
+class SaveProvidersHandler(BaseHandler):
     @authenticated
     def post(self, *args, **kwargs):
         results = []

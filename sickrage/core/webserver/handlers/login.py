@@ -18,8 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-import re
-from abc import ABC
+
 
 import sentry_sdk
 from jose import ExpiredSignatureError
@@ -30,7 +29,7 @@ from sickrage.core.helpers import is_ip_whitelisted, get_internal_ip, get_extern
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class LoginHandler(BaseHandler, ABC):
+class LoginHandler(BaseHandler):
     def get(self, *args, **kwargs):
         if is_ip_whitelisted(self.request.remote_ip):
             return self.redirect("{}".format(self.get_argument('next', "/{}/".format(sickrage.app.config.general.default_page.value))))

@@ -18,17 +18,16 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-from abc import ABC
+
 
 from tornado.web import authenticated
 
 import sickrage
-from sickrage.core.common import Quality
 from sickrage.core.webserver import ConfigWebHandler
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class ConfigQualitySettingsHandler(BaseHandler, ABC):
+class ConfigQualitySettingsHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         return self.render('config/quality_settings.mako',
@@ -40,7 +39,7 @@ class ConfigQualitySettingsHandler(BaseHandler, ABC):
                            action='quality_settings')
 
 
-class SaveQualitiesHandler(BaseHandler, ABC):
+class SaveQualitiesHandler(BaseHandler):
     @authenticated
     def post(self, *args, **kwargs):
         for quality in sickrage.app.config.quality_sizes.keys():

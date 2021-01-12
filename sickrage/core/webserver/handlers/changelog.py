@@ -18,17 +18,16 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-from abc import ABC
+
 
 import markdown2
-from tornado.concurrent import run_on_executor
 from tornado.web import authenticated
 
 import sickrage
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class ChangelogHandler(BaseHandler, ABC):
+class ChangelogHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         try:

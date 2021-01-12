@@ -20,7 +20,6 @@
 # ##############################################################################
 import json
 import traceback
-from abc import ABC
 
 import sentry_sdk
 from apispec import APISpec
@@ -36,7 +35,7 @@ from sickrage.core.helpers import get_external_ip, get_internal_ip
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class APIBaseHandler(BaseHandler, ABC):
+class APIBaseHandler(BaseHandler):
     def prepare(self):
         super(APIBaseHandler, self).prepare()
 
@@ -183,12 +182,12 @@ class APIBaseHandler(BaseHandler, ABC):
         return spec.to_dict()
 
 
-class PingHandler(APIBaseHandler, ABC):
+class PingHandler(APIBaseHandler):
     def get(self):
         return self.write_json({'message': 'pong'})
 
 
-class SwaggerDotJsonHandler(APIBaseHandler, ABC):
+class SwaggerDotJsonHandler(APIBaseHandler):
     def initialize(self, api_handlers, api_version):
         super(SwaggerDotJsonHandler, self).initialize()
         self.api_handlers = sickrage.app.wserver.handlers[api_handlers]

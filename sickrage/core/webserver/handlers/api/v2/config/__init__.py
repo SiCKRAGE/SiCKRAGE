@@ -18,7 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-from abc import ABC
+
 
 import sickrage
 from sickrage.core.common import Overview
@@ -27,7 +27,7 @@ from sickrage.core.enums import SearchFormat
 from sickrage.core.webserver.handlers.api import APIBaseHandler
 
 
-class ConfigHandler(APIBaseHandler, ABC):
+class ConfigHandler(APIBaseHandler):
     def get(self, *args, **kwargs):
         config_data = sickrage.app.config.to_json()
 

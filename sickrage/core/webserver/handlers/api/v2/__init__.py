@@ -19,13 +19,12 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 import os
-from abc import ABC
 
 import sickrage
 from sickrage.core.webserver.handlers.api import APIBaseHandler
 
 
-class RetrieveSeriesMetadataHandler(APIBaseHandler, ABC):
+class RetrieveSeriesMetadataHandler(APIBaseHandler):
     def get(self):
         series_directory = self.get_argument('seriesDirectory', None)
         if not series_directory:

@@ -20,9 +20,7 @@
 # ##############################################################################
 
 import os
-from abc import ABC
 
-from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode
 from tornado.web import authenticated
 
@@ -30,7 +28,7 @@ from sickrage.core.helpers.browser import foldersAtPath
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class WebFileBrowserHandler(BaseHandler, ABC):
+class WebFileBrowserHandler(BaseHandler):
     def initialize(self):
         self.set_header('Content-Type', 'application/json')
 
@@ -43,7 +41,7 @@ class WebFileBrowserHandler(BaseHandler, ABC):
         return self.write(json_encode(foldersAtPath(path, True, bool(int(include_files) if include_files else False), file_types.split(','))))
 
 
-class WebFileBrowserCompleteHandler(BaseHandler, ABC):
+class WebFileBrowserCompleteHandler(BaseHandler):
     def initialize(self):
         self.set_header('Content-Type', 'application/json')
 

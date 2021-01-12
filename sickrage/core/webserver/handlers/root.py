@@ -22,7 +22,6 @@ import base64
 import datetime
 import json
 import os
-from abc import ABC
 from functools import cmp_to_key
 
 from tornado.httputil import url_concat
@@ -39,7 +38,7 @@ from sickrage.core.webserver import ApiHandler
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class RobotsDotTxtHandler(BaseHandler, ABC):
+class RobotsDotTxtHandler(BaseHandler):
     def initialize(self):
         self.set_header('Content-Type', 'text/plain')
 
@@ -48,7 +47,7 @@ class RobotsDotTxtHandler(BaseHandler, ABC):
         return self.write("User-agent: *\nDisallow: /")
 
 
-class MessagesDotPoHandler(BaseHandler, ABC):
+class MessagesDotPoHandler(BaseHandler):
     def initialize(self):
         self.set_header('Content-Type', 'text/plain')
 
@@ -61,7 +60,7 @@ class MessagesDotPoHandler(BaseHandler, ABC):
                 with open(locale_file, 'r', encoding='utf8') as f:
                     return self.write(f.read())
 
-class APIBulderHandler(BaseHandler, ABC):
+class APIBulderHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         def titler(x):
@@ -99,7 +98,7 @@ class APIBulderHandler(BaseHandler, ABC):
                            action='api_builder')
 
 
-class SetHomeLayoutHandler(BaseHandler, ABC):
+class SetHomeLayoutHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         layout = self.get_argument('layout', 'POSTER')
@@ -114,7 +113,7 @@ class SetHomeLayoutHandler(BaseHandler, ABC):
         return self.redirect("/home/")
 
 
-class SetPosterSortByHandler(BaseHandler, ABC):
+class SetPosterSortByHandler(BaseHandler):
     @authenticated
     def post(self, *args, **kwargs):
         sort = self.get_argument('sort', 'NAME')
@@ -126,7 +125,7 @@ class SetPosterSortByHandler(BaseHandler, ABC):
         sickrage.app.config.save()
 
 
-class SetPosterSortDirHandler(BaseHandler, ABC):
+class SetPosterSortDirHandler(BaseHandler):
     @authenticated
     def post(self, *args, **kwargs):
         direction = self.get_argument('direction', 'ASCENDING')
@@ -135,7 +134,7 @@ class SetPosterSortDirHandler(BaseHandler, ABC):
         sickrage.app.config.save()
 
 
-class SetHistoryLayoutHandler(BaseHandler, ABC):
+class SetHistoryLayoutHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         layout = self.get_argument('layout', 'DETAILED')
@@ -148,7 +147,7 @@ class SetHistoryLayoutHandler(BaseHandler, ABC):
         return self.redirect("/history/")
 
 
-class ToggleDisplayShowSpecialsHandler(BaseHandler, ABC):
+class ToggleDisplayShowSpecialsHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
@@ -157,7 +156,7 @@ class ToggleDisplayShowSpecialsHandler(BaseHandler, ABC):
         return self.redirect(url_concat("/home/displayShow", {'show': show}))
 
 
-class SetScheduleLayoutHandler(BaseHandler, ABC):
+class SetScheduleLayoutHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         layout = self.get_argument('layout', 'BANNER')
@@ -173,14 +172,14 @@ class SetScheduleLayoutHandler(BaseHandler, ABC):
         return self.redirect("/schedule/")
 
 
-class ToggleScheduleDisplayPausedHandler(BaseHandler, ABC):
+class ToggleScheduleDisplayPausedHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         sickrage.app.config.gui.coming_eps_display_paused = not sickrage.app.config.gui.coming_eps_display_paused
         self.redirect("/schedule/")
 
 
-class SetScheduleSortHandler(BaseHandler, ABC):
+class SetScheduleSortHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         sort = self.get_argument('sort', 'DATE')
@@ -196,7 +195,7 @@ class SetScheduleSortHandler(BaseHandler, ABC):
         return self.redirect("/schedule/")
 
 
-class ScheduleHandler(BaseHandler, ABC):
+class ScheduleHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         layout = self.get_argument('layout', None)
@@ -220,7 +219,7 @@ class ScheduleHandler(BaseHandler, ABC):
                            action='schedule')
 
 
-class QuicksearchDotJsonHandler(BaseHandler, ABC):
+class QuicksearchDotJsonHandler(BaseHandler):
     @authenticated
     def post(self, *args, **kwargs):
         term = self.get_argument('term')
@@ -270,7 +269,7 @@ class QuicksearchDotJsonHandler(BaseHandler, ABC):
         return self.write(json.dumps(shows + episodes))
 
 
-class ForceSchedulerJobHandler(BaseHandler, ABC):
+class ForceSchedulerJobHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         name = self.get_argument('name')

@@ -20,21 +20,20 @@
 # ##############################################################################
 
 import os
-from abc import ABC
 
 from tornado.web import authenticated
 
 import sickrage
 from sickrage.core.common import Quality, Qualities, EpisodeStatus
-from sickrage.core.enums import UITheme, DefaultHomePage, TimezoneDisplay, SearchFormat, SeriesProviderID, CpuPreset
-from sickrage.core.helpers import generate_api_key, checkbox_to_value, try_int
 from sickrage.core.config.helpers import change_gui_lang, change_https_key, change_https_cert, change_updater_freq, change_show_update_hour, \
     change_version_notify
+from sickrage.core.enums import UITheme, DefaultHomePage, TimezoneDisplay, SearchFormat, SeriesProviderID, CpuPreset
+from sickrage.core.helpers import generate_api_key, checkbox_to_value, try_int
 from sickrage.core.webserver import ConfigWebHandler
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class ConfigGeneralHandler(BaseHandler, ABC):
+class ConfigGeneralHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         return self.render('config/general.mako',
@@ -46,20 +45,20 @@ class ConfigGeneralHandler(BaseHandler, ABC):
                            action='general', )
 
 
-class GenerateApiKeyHandler(BaseHandler, ABC):
+class GenerateApiKeyHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         return self.write(generate_api_key())
 
 
-class SaveRootDirsHandler(BaseHandler, ABC):
+class SaveRootDirsHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         sickrage.app.config.general.root_dirs = self.get_argument('rootDirString', '')
         sickrage.app.config.save()
 
 
-class SaveAddShowDefaultsHandler(BaseHandler, ABC):
+class SaveAddShowDefaultsHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         default_status = self.get_argument('defaultStatus', '5')
@@ -99,7 +98,7 @@ class SaveAddShowDefaultsHandler(BaseHandler, ABC):
         sickrage.app.config.save()
 
 
-class SaveGeneralHandler(BaseHandler, ABC):
+class SaveGeneralHandler(BaseHandler):
     @authenticated
     def post(self, *args, **kwargs):
         log_nr = self.get_argument('log_nr', '5')
