@@ -121,6 +121,10 @@ release_build_master:
     - git fetch . release-$(cat sickrage/version.txt):master
     - git fetch . release-$(cat sickrage/version.txt):develop
     - git tag -a $(cat sickrage/version.txt) -m "Release v$(cat sickrage/version.txt) master"
+    - npx auto-changelog --hide-credit --package --commit-limit false --ignore-commit-pattern \[TASK\].*
+    - git add CHANGELOG.md
+    - git commit --amend --no-edit
+    - git tag -f -a $(cat sickrage/version.txt) -m "Release v$(cat sickrage/version.txt) master"
     - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:master --follow-tags
     - git checkout develop
     - bumpversion --allow-dirty patch package.json sickrage/version.txt
