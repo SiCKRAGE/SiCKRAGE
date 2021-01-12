@@ -58,11 +58,21 @@ class APIBaseHandler(BaseHandler, ABC):
                         sickrage.app.config.save(mark_dirty=True)
 
                     if sickrage.app.config.user.sub_id == decoded_token.get('sub'):
+                        save_config = False
                         if not sickrage.app.config.user.username:
                             sickrage.app.config.user.username = decoded_token.get('preferred_username')
-                        sickrage.app.config.user.email = decoded_token.get('email')
-                        sickrage.app.config.user.permissions = UserPermission.SUPERUSER
-                        sickrage.app.config.save()
+                            save_config = True
+
+                        if not sickrage.app.config.user.email:
+                            sickrage.app.config.user.email = decoded_token.get('email')
+                            save_config = True
+
+                        if not sickrage.app.config.user.permissions == UserPermission.SUPERUSER:
+                            sickrage.app.config.user.permissions = UserPermission.SUPERUSER
+                            save_config = True
+
+                        if save_config:
+                            sickrage.app.config.save()
 
                     if sickrage.app.config.user.sub_id == decoded_token.get('sub'):
                         sentry_sdk.set_user({
