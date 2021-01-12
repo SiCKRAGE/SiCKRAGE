@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.3.dev1](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.2...v10.0.3.dev1)
+#### [v10.0.3](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.3...v10.0.3)
+
+#### [10.0.3](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.2...10.0.3)
+
+> 12 January 2021
 
 - Database code for migrating py2 codernitydb files is now depreciated and removed [`88b4cdf`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/88b4cdff8eb95937bcbd013bc182245e9b3445ad)
 - Further work done to subtitle refiners [`a25c7df`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/a25c7df114ba831972aae9d5d9d58aa91dd3d258)
