@@ -583,8 +583,6 @@ class Core(object):
             self.scheduler.add_job(launch_browser, args=[('http', 'https')[sickrage.app.config.general.enable_https],
                                                          sickrage.app.config.general.web_host, sickrage.app.config.general.web_port])
 
-        self.config.save()
-
         self.log.info("SiCKRAGE :: STARTED")
         self.log.info("SiCKRAGE :: APP VERSION:[{}]".format(sickrage.version()))
         self.log.info("SiCKRAGE :: CONFIG VERSION:[v{}]".format(self.config.db.version))
