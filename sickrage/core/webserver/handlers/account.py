@@ -104,16 +104,11 @@ class AccountLinkHandler(BaseHandler, ABC):
 class AccountUnlinkHandler(BaseHandler, ABC):
     @authenticated
     def get(self, *args, **kwargs):
-        # if not sickrage.app.config.user.sub_id == self.get_current_user().get('sub'):
-        #     return self.redirect("/{}/".format(sickrage.app.config.general.default_page.value))
-
         if not sickrage.app.config.general.server_id or sickrage.app.api.account.unregister_server(sickrage.app.config.general.server_id):
             if not sickrage.app.config.general.sso_auth_enabled:
                 sickrage.app.config.reset_encryption()
                 sickrage.app.config.general.server_id = ""
                 sickrage.app.config.user.sub_id = ""
-
-            # sickrage.app.api.logout()
 
             del sickrage.app.api.token
 

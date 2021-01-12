@@ -55,7 +55,7 @@ class APIBaseHandler(BaseHandler, ABC):
 
                     if not sickrage.app.config.user.sub_id:
                         sickrage.app.config.user.sub_id = decoded_token.get('sub')
-                        sickrage.app.config.save()
+                        sickrage.app.config.save(mark_dirty=True)
 
                     if sickrage.app.config.user.sub_id == decoded_token.get('sub'):
                         if not sickrage.app.config.user.username:
