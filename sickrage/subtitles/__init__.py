@@ -240,7 +240,10 @@ class Subtitles(object):
                 embedded_subtitles = bool(
                     not sickrage.app.config.subtitles.enable_embedded and video_path.endswith('.mkv'))
 
-            subliminal.refine(video, episode_refiners=self.episode_refiners, embedded_subtitles=embedded_subtitles, release_name=episode_object.name,
+            subliminal.refine(video,
+                              episode_refiners=self.episode_refiners,
+                              embedded_subtitles=embedded_subtitles,
+                              release_name=episode_object.name,
                               tv_episode=episode_object)
 
             video.alternative_series = [x.split('|')[0] for x in episode_object.show.scene_exceptions]
