@@ -2,7 +2,18 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.2.dev1](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.1...v10.0.2.dev1)
+#### [v10.0.3.dev1](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.2...v10.0.3.dev1)
+
+- Database code for migrating py2 codernitydb files is now depreciated and removed [`88b4cdf`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/88b4cdff8eb95937bcbd013bc182245e9b3445ad)
+- Further work done to subtitle refiners [`a25c7df`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/a25c7df114ba831972aae9d5d9d58aa91dd3d258)
+- When updating sub_id, mark config database dirty before saving [`db592df`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/db592df88a08ec26eeb1242190928ae5647d729d)
+- Misc cleanup [`b162bac`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/b162bac49b5a12a99fbdfd4ae28d280dfadf81d1)
+- Removed left over code from testing [`619a0b2`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/619a0b2e60101c818e7e69a2debcdc9ed229a94f)
+- During config file migration to config database, initial user is granted superuser permissions now [`c484e5e`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/c484e5e387cf77c288c56525084c2aa564f1ed5e)
+
+#### [10.0.2](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.1...10.0.2)
+
+> 11 January 2021
 
 - Fixed issue with multi-episode naming [`dad674a`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/dad674ace8c9b04bffa042ea2ef289c37c10f1b3)
 - Fixed issue with failed snatched episodes [`f5f44bc`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/f5f44bc47fd6105ed28f07a99322b3da1d00a207)
