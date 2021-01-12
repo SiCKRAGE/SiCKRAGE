@@ -77,7 +77,7 @@ class SearchSeriesProviderForShowNameHandler(BaseHandler):
         series_provider_id = self.get_argument('series_provider_id', None)
         lang = self.get_argument('lang', None)
 
-        search_results = []
+        results = []
 
         series_provider = sickrage.app.series_providers[SeriesProviderID[series_provider_id]]
         series_provider_language = lang if not lang or lang == 'null' else sickrage.app.config.general.series_provider_default_language
@@ -85,16 +85,16 @@ class SearchSeriesProviderForShowNameHandler(BaseHandler):
         sickrage.app.log.debug(f"Searching for Show with term: {search_term} on series provider: {series_provider.name}")
 
         # search via series name
-        search_results = series_provider.search(search_term, language=series_provider_language)
-        if search_results:
-            for series in series_provider.search(search_term, language=series_provider_language):
+        series_results = series_provider.search(search_term, language=series_provider_language)
+        if series_results:
+            for series in series_results:
                 if not series.get('seriesname', None):
                     continue
 
                 if not series.get('firstaired', None):
                     continue
 
-                search_results.append((
+                results.append((
                     series_provider.name,
                     series_provider_id,
                     series_provider.show_url,
@@ -104,7 +104,7 @@ class SearchSeriesProviderForShowNameHandler(BaseHandler):
                     ('', 'disabled')[isinstance(find_show(int(series['id']), SeriesProviderID[series_provider_id]), TVShow)]
                 ))
 
-        return self.write(json_encode({'results': search_results, 'langid': lang}))
+        return self.write(json_encode({'results': results, 'langid': lang}))
 
 
 class MassAddTableHandler(BaseHandler):

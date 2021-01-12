@@ -158,46 +158,26 @@ class ComingEpisodes:
                                   EpisodeStatus.composites(EpisodeStatus.SNATCHED_BEST), EpisodeStatus.composites(EpisodeStatus.SNATCHED_PROPER),
                                   EpisodeStatus.composites(EpisodeStatus.ARCHIVED), EpisodeStatus.composites(EpisodeStatus.IGNORED)])
 
-        for show in get_show_list():
-            with sickrage.app.main_db.session() as session:
-                [add_result(show, episode, grouped=group) for episode in session.query(
-                    MainDB.TVEpisode
-                ).filter_by(
-                    series_id=show.series_id,
-                    series_provider_id=show.series_provider_id
-                ).filter(
-                    MainDB.TVEpisode.airdate < next_week,
-                    MainDB.TVEpisode.airdate >= today,
-                    MainDB.TVEpisode.season != 0,
-                    ~MainDB.TVEpisode.status.in_(qualities_list)
-                )]
+        with sickrage.app.main_db.session() as session:
+            [add_result(episode.show, episode, grouped=group) for episode in session.query(
+                MainDB.TVEpisode
+            ).filter(
+                MainDB.TVEpisode.airdate <= next_week,
+                MainDB.TVEpisode.airdate >= today,
+                MainDB.TVEpisode.season != 0,
+                ~MainDB.TVEpisode.status.in_(qualities_list)
+            )]
 
-                if show.series_id not in [int(r['series_id']) for r in results]:
-                    [add_result(show, episode, grouped=group) for episode in session.query(
-                        MainDB.TVEpisode
-                    ).filter_by(
-                        series_id=show.series_id,
-                        series_provider_id=show.series_provider_id
-                    ).filter(
-                        MainDB.TVEpisode.airdate >= next_week,
-                        MainDB.TVEpisode.season != 0,
-                        ~MainDB.TVEpisode.status.in_(flatten(
-                            [EpisodeStatus.composites(EpisodeStatus.DOWNLOADED), EpisodeStatus.composites(EpisodeStatus.SNATCHED),
-                             EpisodeStatus.composites(EpisodeStatus.SNATCHED_BEST), EpisodeStatus.composites(EpisodeStatus.SNATCHED_PROPER)]))
-                    )]
 
-                [add_result(show, episode, grouped=group) for episode in session.query(
-                    MainDB.TVEpisode
-                ).filter_by(
-                    series_id=show.series_id,
-                    series_provider_id=show.series_provider_id
-                ).filter(
-                    MainDB.TVEpisode.airdate >= recently,
-                    MainDB.TVEpisode.airdate < today,
-                    MainDB.TVEpisode.season != 0,
-                    MainDB.TVEpisode.status.in_([EpisodeStatus.WANTED, EpisodeStatus.UNAIRED]),
-                    ~MainDB.TVEpisode.status.in_(qualities_list)
-                )]
+            [add_result(episode.show, episode, grouped=group) for episode in session.query(
+                MainDB.TVEpisode
+            ).filter(
+                MainDB.TVEpisode.airdate >= recently,
+                MainDB.TVEpisode.airdate < today,
+                MainDB.TVEpisode.season != 0,
+                MainDB.TVEpisode.status.in_([EpisodeStatus.WANTED, EpisodeStatus.UNAIRED]),
+                ~MainDB.TVEpisode.status.in_(qualities_list)
+            )]
 
         if group:
             for category in categories:

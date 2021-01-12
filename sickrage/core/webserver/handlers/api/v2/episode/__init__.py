@@ -31,7 +31,7 @@ from sickrage.core.webserver.handlers.api.v2.episode.schemas import EpisodesManu
 from sickrage.core.websocket import WebSocketMessage
 
 
-class EpisodesManualSearchHandler(APIBaseHandler):
+class ApiV2EpisodesManualSearchHandler(APIBaseHandler):
     def get(self, episode_slug):
         """Episode Manual Search"
         ---
@@ -102,7 +102,7 @@ class EpisodesManualSearchHandler(APIBaseHandler):
         )
 
 
-class EpisodesRenameHandler(APIBaseHandler):
+class ApiV2EpisodesRenameHandler(APIBaseHandler):
     def get(self):
         """Get list of episodes to rename"
         ---

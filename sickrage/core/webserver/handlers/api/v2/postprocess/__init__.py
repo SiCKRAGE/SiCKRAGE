@@ -26,7 +26,7 @@ from sickrage.core.webserver.handlers.api import APIBaseHandler
 from sickrage.core.webserver.handlers.api.v2.postprocess.schemas import PostProcessSchema
 
 
-class PostProcessHandler(APIBaseHandler):
+class Apiv2PostProcessHandler(APIBaseHandler):
     def get(self):
         """Postprocess TV show video files"
         ---

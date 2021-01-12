@@ -18,20 +18,20 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
+import datetime
+
+import sickrage
+from sickrage.core.tv.show.coming_episodes import ComingEpisodes
 from sickrage.core.webserver.handlers.api import APIBaseHandler
 
 
-class ScheduleHandler(APIBaseHandler):
+class ApiV2ScheduleHandler(APIBaseHandler):
     def get(self):
         """Get TV show schedule information"
         ---
         tags: [Schedule]
         summary: Get TV show schedule information
         description: Get TV show schedule information
-        parameters:
-        - in: path
-          schema:
-            SeriesPath
         responses:
           200:
             description: Success payload
@@ -58,3 +58,18 @@ class ScheduleHandler(APIBaseHandler):
                 schema:
                   NotFoundSchema
         """
+
+        next_week = datetime.datetime.combine(datetime.date.today() + datetime.timedelta(days=7),
+                                              datetime.datetime.now().time().replace(tzinfo=sickrage.app.tz))
+
+        today = datetime.datetime.now().replace(tzinfo=sickrage.app.tz)
+
+        results = ComingEpisodes.get_coming_episodes(ComingEpisodes.categories, sickrage.app.config.gui.coming_eps_sort, group=False)
+
+        for i, result in enumerate(results.copy()):
+            results[i]['airdate'] = datetime.datetime.fromordinal(result['airdate'].toordinal()).timestamp()
+            results[i]['series_provider_id'] = result['series_provider_id'].name
+            results[i]['quality'] = result['quality'].name
+            results[i]['localtime'] = result['localtime'].timestamp()
+
+        return self.write_json({'data': results, 'today': today.timestamp(), 'nextWeek': next_week.timestamp()})

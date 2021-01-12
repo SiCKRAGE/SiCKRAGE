@@ -33,19 +33,21 @@ from tornado.ioloop import IOLoop
 from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 import sickrage
-from sickrage.core.helpers import create_https_certificates
+from sickrage.core.helpers import create_https_certificates, get_lan_ip, launch_browser
 from sickrage.core.webserver.handlers.account import AccountLinkHandler, AccountUnlinkHandler, AccountIsLinkedHandler
 from sickrage.core.webserver.handlers.announcements import AnnouncementsHandler, MarkAnnouncementSeenHandler, AnnouncementCountHandler
-from sickrage.core.webserver.handlers.api import SwaggerDotJsonHandler, PingHandler
+from sickrage.core.webserver.handlers.api import ApiSwaggerDotJsonHandler, ApiPingHandler
 from sickrage.core.webserver.handlers.api.v1 import ApiHandler
-from sickrage.core.webserver.handlers.api.v2 import RetrieveSeriesMetadataHandler
-from sickrage.core.webserver.handlers.api.v2.postprocess import PostProcessHandler
-from sickrage.core.webserver.handlers.api.v2.config import ConfigHandler
-from sickrage.core.webserver.handlers.api.v2.episode import EpisodesRenameHandler, EpisodesManualSearchHandler
-from sickrage.core.webserver.handlers.api.v2.file_browser import FileBrowserHandler
-from sickrage.core.webserver.handlers.api.v2.series import SeriesHandler, SeriesEpisodesHandler, SeriesImagesHandler, SeriesImdbInfoHandler, \
-    SeriesBlacklistHandler, SeriesWhitelistHandler, SeriesRefreshHandler, SeriesUpdateHandler
-from sickrage.core.webserver.handlers.api.v2.series_provider import SeriesProvidersHandler, SeriesProvidersSearchHandler, SeriesProvidersLanguagesHandler
+from sickrage.core.webserver.handlers.api.v2 import ApiV2RetrieveSeriesMetadataHandler
+from sickrage.core.webserver.handlers.api.v2.config import ApiV2ConfigHandler
+from sickrage.core.webserver.handlers.api.v2.episode import ApiV2EpisodesRenameHandler, ApiV2EpisodesManualSearchHandler
+from sickrage.core.webserver.handlers.api.v2.file_browser import ApiV2FileBrowserHandler
+from sickrage.core.webserver.handlers.api.v2.postprocess import Apiv2PostProcessHandler
+from sickrage.core.webserver.handlers.api.v2.schedule import ApiV2ScheduleHandler
+from sickrage.core.webserver.handlers.api.v2.series import ApiV2SeriesHandler, ApiV2SeriesEpisodesHandler, ApiV2SeriesImagesHandler, ApiV2SeriesImdbInfoHandler, \
+    ApiV2SeriesBlacklistHandler, ApiV2SeriesWhitelistHandler, ApiV2SeriesRefreshHandler, ApiV2SeriesUpdateHandler
+from sickrage.core.webserver.handlers.api.v2.series_provider import ApiV2SeriesProvidersHandler, ApiV2SeriesProvidersSearchHandler, \
+    ApiV2SeriesProvidersLanguagesHandler
 from sickrage.core.webserver.handlers.calendar import CalendarHandler
 from sickrage.core.webserver.handlers.changelog import ChangelogHandler
 from sickrage.core.webserver.handlers.config import ConfigWebHandler, ConfigResetHandler
@@ -213,26 +215,27 @@ class WebServer(threading.Thread):
 
         # API v2 Handlers
         self.handlers['api_v2_handlers'] = [
-            (fr'{self.api_v2_root}/swagger.json', SwaggerDotJsonHandler, {'api_handlers': 'api_v2_handlers', 'api_version': '2.0.0'}),
-            (fr'{self.api_v2_root}/config', ConfigHandler),
-            (fr'{self.api_v2_root}/ping', PingHandler),
-            (fr'{self.api_v2_root}/file-browser', FileBrowserHandler),
-            (fr'{self.api_v2_root}/postprocess', PostProcessHandler),
-            (fr'{self.api_v2_root}/retrieve-series-metadata', RetrieveSeriesMetadataHandler),
-            (fr'{self.api_v2_root}/series-providers', SeriesProvidersHandler),
-            (fr'{self.api_v2_root}/series-providers/([a-z]+)/search', SeriesProvidersSearchHandler),
-            (fr'{self.api_v2_root}/series-providers/([a-z]+)/languages', SeriesProvidersLanguagesHandler),
-            (fr'{self.api_v2_root}/series', SeriesHandler),
-            (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)', SeriesHandler),
-            (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/episodes', SeriesEpisodesHandler),
-            (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/images', SeriesImagesHandler),
-            (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/imdb-info', SeriesImdbInfoHandler),
-            (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/blacklist', SeriesBlacklistHandler),
-            (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/whitelist', SeriesWhitelistHandler),
-            (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/refresh', SeriesRefreshHandler),
-            (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/update', SeriesUpdateHandler),
-            (fr'{self.api_v2_root}/episodes/rename', EpisodesRenameHandler),
-            (fr'{self.api_v2_root}/episodes/(\d+[-][a-z]+)/search', EpisodesManualSearchHandler),
+            (fr'{self.api_v2_root}/ping', ApiPingHandler),
+            (fr'{self.api_v2_root}/swagger.json', ApiSwaggerDotJsonHandler, {'api_handlers': 'api_v2_handlers', 'api_version': '2.0.0'}),
+            (fr'{self.api_v2_root}/config', ApiV2ConfigHandler),
+            (fr'{self.api_v2_root}/file-browser', ApiV2FileBrowserHandler),
+            (fr'{self.api_v2_root}/postprocess', Apiv2PostProcessHandler),
+            (fr'{self.api_v2_root}/retrieve-series-metadata', ApiV2RetrieveSeriesMetadataHandler),
+            (fr'{self.api_v2_root}/schedule', ApiV2ScheduleHandler),
+            (fr'{self.api_v2_root}/series-providers', ApiV2SeriesProvidersHandler),
+            (fr'{self.api_v2_root}/series-providers/([a-z]+)/search', ApiV2SeriesProvidersSearchHandler),
+            (fr'{self.api_v2_root}/series-providers/([a-z]+)/languages', ApiV2SeriesProvidersLanguagesHandler),
+            (fr'{self.api_v2_root}/series', ApiV2SeriesHandler),
+            (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)', ApiV2SeriesHandler),
+            (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/episodes', ApiV2SeriesEpisodesHandler),
+            (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/images', ApiV2SeriesImagesHandler),
+            (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/imdb-info', ApiV2SeriesImdbInfoHandler),
+            (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/blacklist', ApiV2SeriesBlacklistHandler),
+            (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/whitelist', ApiV2SeriesWhitelistHandler),
+            (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/refresh', ApiV2SeriesRefreshHandler),
+            (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/update', ApiV2SeriesUpdateHandler),
+            (fr'{self.api_v2_root}/episodes/rename', ApiV2EpisodesRenameHandler),
+            (fr'{self.api_v2_root}/episodes/(\d+[-][a-z]+)/search', ApiV2EpisodesManualSearchHandler),
         ]
 
         # New UI Static File Handlers
@@ -493,6 +496,20 @@ class WebServer(threading.Thread):
         except socket.error as e:
             sickrage.app.log.warning(e.strerror)
             raise SystemExit
+
+        # launch browser window
+        if not sickrage.app.no_launch and sickrage.app.config.general.launch_browser:
+            sickrage.app.add_job(launch_browser, args=[('http', 'https')[sickrage.app.config.general.enable_https],
+                                                       (sickrage.app.config.general.web_host, get_lan_ip())[sickrage.app.config.general.web_host == '0.0.0.0'],
+                                                       sickrage.app.config.general.web_port])
+
+        sickrage.app.log.info("SiCKRAGE :: STARTED")
+        sickrage.app.log.info(f"SiCKRAGE :: APP VERSION:[{sickrage.version()}]")
+        sickrage.app.log.info(f"SiCKRAGE :: CONFIG VERSION:[v{sickrage.app.config.db.version}]")
+        sickrage.app.log.info(f"SiCKRAGE :: DATABASE VERSION:[v{sickrage.app.main_db.version}]")
+        sickrage.app.log.info(f"SiCKRAGE :: DATABASE TYPE:[{sickrage.app.db_type}]")
+        sickrage.app.log.info(
+            f"SiCKRAGE :: URL:[{('http', 'https')[sickrage.app.config.general.enable_https]}://{(sickrage.app.config.general.web_host, get_lan_ip())[sickrage.app.config.general.web_host == '0.0.0.0']}:{sickrage.app.config.general.web_port}/{sickrage.app.config.general.web_root}]")
 
         self.io_loop.start()
 

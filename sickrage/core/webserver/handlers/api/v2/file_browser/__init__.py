@@ -23,7 +23,7 @@ import os
 from sickrage.core.webserver.handlers.api import APIBaseHandler
 
 
-class FileBrowserHandler(APIBaseHandler):
+class ApiV2FileBrowserHandler(APIBaseHandler):
     def get(self):
         path = self.get_argument('path', None)
         include_files = self.get_argument('includeFiles', None)

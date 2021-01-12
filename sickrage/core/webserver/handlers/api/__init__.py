@@ -88,16 +88,8 @@ class APIBaseHandler(BaseHandler):
                         if exchanged_token:
                             sickrage.app.api.token = exchanged_token
 
-                    internal_connections = "{}://{}:{}{}".format(self.request.protocol,
-                                                                 get_internal_ip(),
-                                                                 sickrage.app.config.general.web_port,
-                                                                 sickrage.app.config.general.web_root)
-
-                    external_connections = "{}://{}:{}{}".format(self.request.protocol,
-                                                                 get_external_ip(),
-                                                                 sickrage.app.config.general.web_port,
-                                                                 sickrage.app.config.general.web_root)
-
+                    internal_connections = f"{self.request.protocol}://{get_internal_ip()}:{sickrage.app.config.general.web_port}{sickrage.app.config.general.web_root}"
+                    external_connections = f"{self.request.protocol}://{get_external_ip()}:{sickrage.app.config.general.web_port}{sickrage.app.config.general.web_root}"
                     connections = ','.join([internal_connections, external_connections])
 
                     if sickrage.app.config.general.server_id and not sickrage.app.api.account.update_server(sickrage.app.config.general.server_id, connections):
@@ -182,14 +174,14 @@ class APIBaseHandler(BaseHandler):
         return spec.to_dict()
 
 
-class PingHandler(APIBaseHandler):
+class ApiPingHandler(APIBaseHandler):
     def get(self):
         return self.write_json({'message': 'pong'})
 
 
-class SwaggerDotJsonHandler(APIBaseHandler):
+class ApiSwaggerDotJsonHandler(APIBaseHandler):
     def initialize(self, api_handlers, api_version):
-        super(SwaggerDotJsonHandler, self).initialize()
+        super(ApiSwaggerDotJsonHandler, self).initialize()
         self.api_handlers = sickrage.app.wserver.handlers[api_handlers]
         self.api_version = api_version
 

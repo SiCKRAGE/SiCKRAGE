@@ -27,7 +27,7 @@ from sickrage.core.enums import SearchFormat
 from sickrage.core.webserver.handlers.api import APIBaseHandler
 
 
-class ConfigHandler(APIBaseHandler):
+class ApiV2ConfigHandler(APIBaseHandler):
     def get(self, *args, **kwargs):
         config_data = sickrage.app.config.to_json()
 

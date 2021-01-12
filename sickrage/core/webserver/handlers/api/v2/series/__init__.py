@@ -36,7 +36,7 @@ from sickrage.core.tv.show.helpers import get_show_list, find_show, find_show_by
 from sickrage.core.webserver.handlers.api import APIBaseHandler
 
 
-class SeriesHandler(APIBaseHandler):
+class ApiV2SeriesHandler(APIBaseHandler):
     def get(self, series_slug=None):
         """Get list of series or specific series information"
         ---
@@ -177,7 +177,7 @@ class SeriesHandler(APIBaseHandler):
 
         sickrage.app.alerts.message(_('Adding Show'), _(f'Adding the specified show into {series_directory}'))
 
-        return self.write_json({'message': 'successful'})
+        return self.write_json({'message': True})
 
     def patch(self, series_slug):
         warnings, errors = [], []
@@ -314,10 +314,10 @@ class SeriesHandler(APIBaseHandler):
 
         sickrage.app.show_queue.remove_show(series.series_id, series.series_provider_id, checkbox_to_value(data.get('delete')))
 
-        return self.write_json({'message': 'successful'})
+        return self.write_json({'message': True})
 
 
-class SeriesEpisodesHandler(APIBaseHandler):
+class ApiV2SeriesEpisodesHandler(APIBaseHandler):
     def get(self, series_slug, *args, **kwargs):
         series = find_show_by_slug(series_slug)
         if series is None:
@@ -330,7 +330,7 @@ class SeriesEpisodesHandler(APIBaseHandler):
         return self.write_json(episodes)
 
 
-class SeriesImagesHandler(APIBaseHandler):
+class ApiV2SeriesImagesHandler(APIBaseHandler):
     def get(self, series_slug, *args, **kwargs):
         series = find_show_by_slug(series_slug)
         if series is None:
@@ -340,7 +340,7 @@ class SeriesImagesHandler(APIBaseHandler):
         return self.write_json({'poster': image.url})
 
 
-class SeriesImdbInfoHandler(APIBaseHandler):
+class ApiV2SeriesImdbInfoHandler(APIBaseHandler):
     def get(self, series_slug, *args, **kwargs):
         series = find_show_by_slug(series_slug)
         if series is None:
@@ -353,7 +353,7 @@ class SeriesImdbInfoHandler(APIBaseHandler):
         return self.write_json(json_data)
 
 
-class SeriesBlacklistHandler(APIBaseHandler):
+class ApiV2SeriesBlacklistHandler(APIBaseHandler):
     def get(self, series_slug, *args, **kwargs):
         series = find_show_by_slug(series_slug)
         if series is None:
@@ -366,7 +366,7 @@ class SeriesBlacklistHandler(APIBaseHandler):
         return self.write_json(json_data)
 
 
-class SeriesWhitelistHandler(APIBaseHandler):
+class ApiV2SeriesWhitelistHandler(APIBaseHandler):
     def get(self, series_slug, *args, **kwargs):
         series = find_show_by_slug(series_slug)
         if series is None:
@@ -379,7 +379,7 @@ class SeriesWhitelistHandler(APIBaseHandler):
         return self.write_json(json_data)
 
 
-class SeriesRefreshHandler(APIBaseHandler):
+class ApiV2SeriesRefreshHandler(APIBaseHandler):
     def get(self, series_slug):
         force = self.get_argument('force', None)
 
@@ -393,7 +393,7 @@ class SeriesRefreshHandler(APIBaseHandler):
             return self.send_error(400, error=_(f"Unable to refresh this show, error: {e}"))
 
 
-class SeriesUpdateHandler(APIBaseHandler):
+class ApiV2SeriesUpdateHandler(APIBaseHandler):
     def get(self, series_slug):
         force = self.get_argument('force', None)
 
