@@ -35,7 +35,7 @@ from sickrage.core.common import Overview
 from sickrage.core.common import Quality, EpisodeStatus
 from sickrage.core.databases.main import MainDB
 from sickrage.core.databases.main.schemas import TVEpisodeSchema
-from sickrage.core.enums import MultiEpNaming
+from sickrage.core.enums import MultiEpNaming, SeriesProviderID
 from sickrage.core.enums import SearchFormat, FileTimestampTimezone
 from sickrage.core.exceptions import EpisodeNotFoundException, EpisodeDeletedException, NoNFOException
 from sickrage.core.helpers import replace_extension, modify_file_timestamp, sanitize_scene_name, remove_non_release_groups, \
@@ -95,6 +95,11 @@ class TVEpisode(object):
     @series_provider_id.setter
     def series_provider_id(self, value):
         self._data_local['series_provider_id'] = value
+
+    @property
+    def tvdb_id(self):
+        if self.series_provider_id == SeriesProviderID.THETVDB:
+            return self.episode_id
 
     @property
     def season(self):
@@ -239,6 +244,16 @@ class TVEpisode(object):
     @status.setter
     def status(self, value):
         self._data_local['status'] = value
+
+    @property
+    def quality(self):
+        _, quality = Quality.split_composite_status(self.status)
+        return quality
+        # return self._data_local['quality']
+
+    @quality.setter
+    def quality(self, value):
+        self._data_local['quality'] = value
 
     @property
     def location(self):
@@ -1359,6 +1374,7 @@ class TVEpisode(object):
         to_return += "hasnfo: %r\n" % self.hasnfo
         to_return += "hastbn: %r\n" % self.hastbn
         to_return += "status: %r\n" % self.status
+        to_return += "quality: %r\n" % self.quality
         return to_return
 
     def to_json(self):

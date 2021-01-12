@@ -29,7 +29,7 @@ from sickrage.core.common import Quality
 SHOW_MAPPING = {
     'series_tvdb_id': 'tvdb_id',
     'series_imdb_id': 'imdb_id',
-    'year': 'start_year'
+    'year': 'startyear'
 }
 
 EPISODE_MAPPING = {
@@ -68,11 +68,11 @@ def refine(video, tv_episode=None, **kwargs):
         sickrage.app.log.debug(f'Video {video.name!r} is not an episode. Skipping refiner...')
         return
 
-    if tv_episode.series:
+    if tv_episode.show:
         sickrage.app.log.debug('Refining using Series information.')
-        series, year, _ = series_re.match(tv_episode.series.name).groups()
+        series, year, _ = series_re.match(tv_episode.show.name).groups()
         enrich({'series': series, 'year': int(year) if year else None}, video)
-        enrich(SHOW_MAPPING, video, tv_episode.series)
+        enrich(SHOW_MAPPING, video, tv_episode.show)
 
     sickrage.app.log.debug('Refining using Episode information.')
     enrich(EPISODE_MAPPING, video, tv_episode)

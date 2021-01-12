@@ -38,6 +38,7 @@ from sickrage.subtitles.providers.utils import hash_itasa
 
 class Subtitles(object):
     def __init__(self):
+        # add subtitle providers
         for provider in ('itasa = sickrage.subtitles.providers.itasa:ItaSAProvider',
                          'legendastv = subliminal.providers.legendastv:LegendasTVProvider',
                          'wizdom = sickrage.subtitles.providers.wizdom:WizdomProvider',
@@ -46,9 +47,13 @@ class Subtitles(object):
             if provider not in subliminal.provider_manager.registered_extensions + subliminal.provider_manager.internal_extensions:
                 subliminal.provider_manager.register(str(provider))
 
-        subliminal.refiner_manager.register('release = sickrage.subtitles.refiners.release:refine')
-        subliminal.refiner_manager.register('tvepisode = sickrage.subtitles.refiners.tv_episode:refine')
+        # add subtitle refiners
+        for refiner in ('release = sickrage.subtitles.refiners.release:refine',
+                        'tvepisode = sickrage.subtitles.refiners.tv_episode:refine'):
+            if refiner not in subliminal.refiner_manager.registered_extensions + subliminal.refiner_manager.internal_extensions:
+                subliminal.refiner_manager.register(str(refiner))
 
+        # configure subtitle cache
         subliminal.region.configure('dogpile.cache.memory', replace_existing_backend=True)
 
         self.PROVIDER_URLS = {

@@ -40,6 +40,7 @@ from sickrage.core.caches.image_cache import ImageCache
 from sickrage.core.common import Quality, Qualities, EpisodeStatus
 from sickrage.core.databases.main import MainDB
 from sickrage.core.databases.main.schemas import TVShowSchema, IMDbInfoSchema, BlacklistSchema, WhitelistSchema
+from sickrage.core.enums import SeriesProviderID
 from sickrage.core.exceptions import ShowNotFoundException, EpisodeNotFoundException, EpisodeDeletedException, MultipleEpisodesInDatabaseException
 from sickrage.core.helpers import list_media_files, is_media_file, try_int, safe_getattr, flatten
 from sickrage.core.media.util import series_image, SeriesImageType
@@ -98,6 +99,11 @@ class TVShow(object):
     @series_provider_id.setter
     def series_provider_id(self, value):
         self._data_local['series_provider_id'] = value
+
+    @property
+    def tvdb_id(self):
+        if self.series_provider_id == SeriesProviderID.THETVDB:
+            return self.series_id
 
     @property
     def name(self):
