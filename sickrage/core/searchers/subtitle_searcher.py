@@ -87,7 +87,7 @@ class SubtitleSearcher(object):
                         'searchcount': e.subtitles_searchcount,
                         'lastsearch': e.subtitles_lastsearch,
                         'location': e.location,
-                        'airdate_daydiff': (datetime.date.today() - e.airdate)
+                        'airdate_daydiff': (datetime.date.today() - e.airdate).days
                     }]
 
             if len(results) == 0:
