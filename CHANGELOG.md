@@ -2,13 +2,14 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.4.dev3](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.3...v10.0.4.dev3)
+#### [v10.0.4.dev4](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.3...v10.0.4.dev4)
 
 - Fixed issue with searching for new shows [`4d571f8`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/4d571f8636feb1269705fc829721ac1fc7ef5860)
 - Implemented abstract class in web base handler [`e9812be`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/e9812be71593a35b0987e30ec7135f51b98afcae)
 - Fixed issues with cascade database deletions [`4e8421c`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/4e8421c376baedd4c2e751b435916e1e71fa85de)
 - Decreased noise of saving config during auth methods [`5322d50`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/5322d507dd26c57d7ccb701241ec7380d56adcc0)
 - Refactored CI script to update changelog in separate stage [`18f98b0`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/18f98b04ac7ca43867752c5c6b1a2ccce72c783d)
+- Moved changelog creation to happen in release branch [`506bac0`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/506bac022497ac9c0d1c28f24dea5df2796931b4)
 - Fixed unterminated string in CI script [`4ab3dbd`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/4ab3dbd401afe04015c95eb27eae503b892dd9b1)
 
 #### [10.0.3](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.2...10.0.3)
