@@ -24,9 +24,9 @@ from sickrage.core.webserver.handlers.api.schemas import BaseSchema, BaseSuccess
 
 
 class ScheduleSuccessSchema(BaseSuccessSchema):
-    data = fields.String(
+    episodes = fields.String(
         required=True,
-        description="Validated and schedule information",
+        description="Scheduled episodes information",
     )
     today = fields.Integer(
         required=True,

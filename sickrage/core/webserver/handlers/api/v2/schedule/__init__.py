@@ -72,4 +72,4 @@ class ApiV2ScheduleHandler(APIBaseHandler):
             results[i]['quality'] = result['quality'].name
             results[i]['localtime'] = result['localtime'].timestamp()
 
-        return self.write_json({'data': results, 'today': today.timestamp(), 'nextWeek': next_week.timestamp()})
+        return self.write_json({'episodes': results, 'today': today.timestamp(), 'nextWeek': next_week.timestamp()})
