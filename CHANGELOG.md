@@ -2,7 +2,15 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.3.dev1](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.2...v10.0.3.dev1)
+#### [v10.0.4.dev1](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.3...v10.0.4.dev1)
+
+- Fixed issue with searching for new shows [`4d571f8`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/4d571f8636feb1269705fc829721ac1fc7ef5860)
+- Implemented abstract class in web base handler [`e9812be`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/e9812be71593a35b0987e30ec7135f51b98afcae)
+- Decreased noise of saving config during auth methods [`5322d50`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/5322d507dd26c57d7ccb701241ec7380d56adcc0)
+
+#### [10.0.3](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.2...10.0.3)
+
+> 12 January 2021
 
 - Database code for migrating py2 codernitydb files is now depreciated and removed [`88b4cdf`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/88b4cdff8eb95937bcbd013bc182245e9b3445ad)
 - Further work done to subtitle refiners [`a25c7df`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/a25c7df114ba831972aae9d5d9d58aa91dd3d258)
