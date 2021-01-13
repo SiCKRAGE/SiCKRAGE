@@ -3,7 +3,6 @@ stages:
 #  - review_docker
 #  - review_deploy
   - release_build
-  - release_changelog
   - release_sentry
   - release_deploy
 
@@ -114,6 +113,7 @@ release_build_master:
     - pip install bumpversion
     - pip install -r requirements-dev.txt
     - bumpversion --allow-dirty release package.json sickrage/version.txt
+    - npx auto-changelog -v $(cat sickrage/version.txt)" --hide-credit --package --commit-limit false --ignore-commit-pattern \[TASK\].*
     - git checkout -b release-$(cat sickrage/version.txt)
     - yarn run build
     - python checksum-generator.py
@@ -138,7 +138,6 @@ release_build_master:
       - triggers
     variables:
       - $CI_COMMIT_MESSAGE =~ /\[TASK\] Releasing/
-      - $CI_COMMIT_MESSAGE =~ /\[TASK\] Changelog/
 
 release_build_develop:
   stage: release_build
@@ -153,6 +152,7 @@ release_build_develop:
     - pip install bumpversion
     - pip install -r requirements-dev.txt
     - bumpversion --allow-dirty dev package.json sickrage/version.txt
+    - npx auto-changelog -v $(cat sickrage/version.txt)" --hide-credit --unreleased --package --commit-limit false --ignore-commit-pattern \[TASK\].*
     - yarn run build
     - python checksum-generator.py
     #    - python setup.py extract_messages
@@ -173,25 +173,7 @@ release_build_develop:
       - triggers
     variables:
       - $CI_COMMIT_MESSAGE =~ /\[TASK\] Pre-Releasing/
-      - $CI_COMMIT_MESSAGE =~ /\[TASK\] Changelog/
       - $CI_COMMIT_MESSAGE =~ /\[TASK\] Bump/
-
-release_changelog:
-  stage: release_changelog
-  retry: 2
-  image: nikolaik/python-nodejs:python3.8-nodejs10-alpine
-  script:
-    - apk add --no-cache git
-    - npx auto-changelog --hide-credit --unreleased --package --commit-limit false --ignore-commit-pattern \[TASK\].*
-    - git add CHANGELOG.md
-    - git commit -m "[TASK] Changelog updated for v$(cat sickrage/version.txt)"
-    - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME
-  only:
-    - /^[0-9.]+$/@SiCKRAGE/sickrage
-    - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage
-  except:
-    - branches
-    - triggers
 
 release_sentry_master:
   stage: release_sentry
