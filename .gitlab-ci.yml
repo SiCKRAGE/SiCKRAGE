@@ -3,8 +3,8 @@ stages:
 #  - review_docker
 #  - review_deploy
   - release_build
-  - release_sentry
-  - release_deploy
+#  - release_sentry
+#  - release_deploy
 
 #review:webpack:
 #  stage: review_webpack
@@ -131,7 +131,7 @@ release_build_master:
     - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:develop --follow-tags
   when: manual
   only:
-    - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage
+    - /^[0-9.]+dev[0-9]+$/@echel0n/sickrage
   except:
     refs:
       - branches
@@ -166,7 +166,7 @@ release_build_develop:
     - git tag -a $(cat sickrage/version.txt) -m "Pre-release v$(cat sickrage/version.txt)"
     - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME --follow-tags
   only:
-    - develop@SiCKRAGE/sickrage
+    - develop@echel0n/sickrage
   except:
     refs:
       - tags
