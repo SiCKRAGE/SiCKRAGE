@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.4.dev2](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.3...v10.0.4.dev2)
+#### [v10.0.4.dev3](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.3...v10.0.4.dev3)
 
 - Fixed issue with searching for new shows [`4d571f8`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/4d571f8636feb1269705fc829721ac1fc7ef5860)
 - Implemented abstract class in web base handler [`e9812be`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/e9812be71593a35b0987e30ec7135f51b98afcae)
