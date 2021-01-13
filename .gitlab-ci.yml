@@ -113,7 +113,7 @@ release_build_master:
     - pip install bumpversion
     - pip install -r requirements-dev.txt
     - bumpversion --allow-dirty release package.json sickrage/version.txt
-    - npx auto-changelog -v $(cat sickrage/version.txt)" --hide-credit --package --commit-limit false --ignore-commit-pattern \[TASK\].*
+    - npx auto-changelog -v $(cat sickrage/version.txt) --hide-credit --package --commit-limit false --ignore-commit-pattern \[TASK\].*
     - git checkout -b release-$(cat sickrage/version.txt)
     - yarn run build
     - python checksum-generator.py
@@ -152,7 +152,7 @@ release_build_develop:
     - pip install bumpversion
     - pip install -r requirements-dev.txt
     - bumpversion --allow-dirty dev package.json sickrage/version.txt
-    - npx auto-changelog -v $(cat sickrage/version.txt)" --hide-credit --unreleased --package --commit-limit false --ignore-commit-pattern \[TASK\].*
+    - npx auto-changelog -v $(cat sickrage/version.txt) --hide-credit --unreleased --package --commit-limit false --ignore-commit-pattern \[TASK\].*
     - yarn run build
     - python checksum-generator.py
     #    - python setup.py extract_messages
