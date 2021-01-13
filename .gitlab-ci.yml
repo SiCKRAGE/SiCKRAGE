@@ -12,13 +12,13 @@ release_build_master:
     - apk add --no-cache git gcc libffi-dev python3-dev musl-dev openssl-dev
     - git config --global user.email $(git --no-pager show -s --format='%ae' HEAD)
     - git config --global user.name $(git --no-pager show -s --format='%an' HEAD)
-#    - yarn install --pure-lockfile --cache-folder .yarn-cache
+    - yarn install --pure-lockfile --cache-folder .yarn-cache
     - pip install bumpversion
     - pip install -r requirements-dev.txt
     - bumpversion --allow-dirty release package.json sickrage/version.txt
     - git checkout -b release-$(cat sickrage/version.txt)
     - npx auto-changelog -v $(cat sickrage/version.txt) --hide-credit --package --commit-limit false --ignore-commit-pattern \[TASK\].*
-#    - yarn run build
+    - yarn run build
     - python checksum-generator.py
     - git add --all
     - git commit -m "[TASK] Releasing v$(cat sickrage/version.txt)"
@@ -34,7 +34,7 @@ release_build_master:
     - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:develop --follow-tags
   when: manual
   only:
-    - /^[0-9.]+dev[0-9]+$/@echel0n/sickrage
+    - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage-testing
   except:
     refs:
       - branches
@@ -51,12 +51,12 @@ release_build_develop:
     NODE_ENV: "development"
   script:
     - apk add --no-cache git gcc libffi-dev python3-dev musl-dev openssl-dev
-#    - yarn install --pure-lockfile --cache-folder .yarn-cache
+    - yarn install --pure-lockfile --cache-folder .yarn-cache
     - pip install bumpversion
     - pip install -r requirements-dev.txt
     - bumpversion --allow-dirty dev package.json sickrage/version.txt
     - npx auto-changelog -v $(cat sickrage/version.txt) --hide-credit --unreleased --package --commit-limit false --ignore-commit-pattern \[TASK\].*
-#    - yarn run build
+    - yarn run build
     - python checksum-generator.py
     #    - python setup.py extract_messages
     #    - crowdin-cli-py upload sources
@@ -69,7 +69,7 @@ release_build_develop:
     - git tag -a $(cat sickrage/version.txt) -m "Pre-release v$(cat sickrage/version.txt)"
     - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME --follow-tags
   only:
-    - develop@echel0n/sickrage
+    - develop@SiCKRAGE/sickrage-testing
   except:
     refs:
       - tags
