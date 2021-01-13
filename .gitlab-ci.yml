@@ -122,12 +122,14 @@ release_build_master:
     - git fetch . release-$(cat sickrage/version.txt):master
     - git fetch . release-$(cat sickrage/version.txt):develop
     - git tag -a $(cat sickrage/version.txt) -m "Release v$(cat sickrage/version.txt) master"
+    - git pull
     - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:master --follow-tags
     - git checkout develop
     - bumpversion --allow-dirty patch package.json sickrage/version.txt
     - python checksum-generator.py
     - git add --all
     - git commit -m "[TASK] Bump develop branch to v$(cat sickrage/version.txt)"
+    - git pull
     - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:develop --follow-tags
   when: manual
   only:
