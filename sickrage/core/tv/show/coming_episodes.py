@@ -27,7 +27,6 @@ from sickrage.core.common import timeFormat, dateFormat
 from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import flatten
 from sickrage.core.helpers.srdatetime import SRDateTime
-from sickrage.core.tv.show.helpers import get_show_list
 
 
 class ComingEpsLayout(enum.Enum):
@@ -159,25 +158,28 @@ class ComingEpisodes:
                                   EpisodeStatus.composites(EpisodeStatus.ARCHIVED), EpisodeStatus.composites(EpisodeStatus.IGNORED)])
 
         with sickrage.app.main_db.session() as session:
-            [add_result(episode.show, episode, grouped=group) for episode in session.query(
-                MainDB.TVEpisode
-            ).filter(
-                MainDB.TVEpisode.airdate <= next_week,
-                MainDB.TVEpisode.airdate >= today,
-                MainDB.TVEpisode.season != 0,
-                ~MainDB.TVEpisode.status.in_(qualities_list)
-            )]
+            for episode in session.query(MainDB.TVEpisode).filter(
+                    MainDB.TVEpisode.airdate <= next_week,
+                    MainDB.TVEpisode.airdate >= today,
+                    MainDB.TVEpisode.season != 0,
+                    ~MainDB.TVEpisode.status.in_(qualities_list)):
 
+                # if not episode.show:
+                #     continue
 
-            [add_result(episode.show, episode, grouped=group) for episode in session.query(
-                MainDB.TVEpisode
-            ).filter(
-                MainDB.TVEpisode.airdate >= recently,
-                MainDB.TVEpisode.airdate < today,
-                MainDB.TVEpisode.season != 0,
-                MainDB.TVEpisode.status.in_([EpisodeStatus.WANTED, EpisodeStatus.UNAIRED]),
-                ~MainDB.TVEpisode.status.in_(qualities_list)
-            )]
+                add_result(episode.show, episode, grouped=group)
+
+            for episode in session.query(MainDB.TVEpisode).filter(
+                    MainDB.TVEpisode.airdate >= recently,
+                    MainDB.TVEpisode.airdate < today,
+                    MainDB.TVEpisode.season != 0,
+                    MainDB.TVEpisode.status.in_([EpisodeStatus.WANTED, EpisodeStatus.UNAIRED]),
+                    ~MainDB.TVEpisode.status.in_(qualities_list)):
+
+                # if not episode.show:
+                #     continue
+
+                add_result(episode.show, episode, grouped=group)
 
         if group:
             for category in categories:

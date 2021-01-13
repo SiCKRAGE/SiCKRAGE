@@ -17,7 +17,7 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 import datetime
 
-from sqlalchemy import Column, Integer, Text, ForeignKeyConstraint, String, DateTime, Boolean, Index, Date, BigInteger, func, literal_column, Enum
+from sqlalchemy import Column, Integer, Text, ForeignKeyConstraint, String, DateTime, Boolean, Index, Date, BigInteger, func, literal_column, Enum, exists
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -37,6 +37,65 @@ class MainDB(SRDatabase):
         self.base.metadata.create_all(self.engine)
 
     def cleanup(self):
+        def remove_orphaned():
+            session = self.session()
+
+            # orphaned episode entries
+            for orphaned_result in session.query(self.TVEpisode).filter(~exists().where(self.TVEpisode.series_id == self.TVShow.series_id)):
+                sickrage.app.log.debug(f"Orphaned episode detected! episode_id: {orphaned_result.episode_id}")
+                sickrage.app.log.info(f"Deleting orphaned episode with episode_id: {orphaned_result.episode_id}")
+                session.delete(orphaned_result)
+                session.commit()
+
+            # orphaned imdb info entries
+            for orphaned_result in session.query(self.IMDbInfo).filter(~exists().where(self.IMDbInfo.series_id == self.TVShow.series_id)):
+                sickrage.app.log.debug(f"Orphaned imdb info detected! series_id: {orphaned_result.series_id}")
+                sickrage.app.log.info(f"Deleting orphaned imdb info with series_id: {orphaned_result.series_id}")
+                session.delete(orphaned_result)
+                session.commit()
+
+            # orphaned series provider mapping entries
+            for orphaned_result in session.query(self.SeriesProviderMapping).filter(~exists().where(self.SeriesProviderMapping.series_id == self.TVShow.series_id)):
+                sickrage.app.log.debug(f"Orphaned series provider mapper detected! series_id: {orphaned_result.series_id}")
+                sickrage.app.log.info(f"Deleting orphaned series provider mapper with series_id: {orphaned_result.series_id}")
+                session.delete(orphaned_result)
+                session.commit()
+
+            # orphaned whitelist entries
+            for orphaned_result in session.query(self.Whitelist).filter(~exists().where(self.Whitelist.series_id == self.TVShow.series_id)):
+                sickrage.app.log.debug(f"Orphaned whitelist detected! series_id: {orphaned_result.series_id}")
+                sickrage.app.log.info(f"Deleting orphaned whitelist with series_id: {orphaned_result.series_id}")
+                session.delete(orphaned_result)
+                session.commit()
+
+            # orphaned blacklist entries
+            for orphaned_result in session.query(self.Blacklist).filter(~exists().where(self.Blacklist.series_id == self.TVShow.series_id)):
+                sickrage.app.log.debug(f"Orphaned blacklist detected! series_id: {orphaned_result.series_id}")
+                sickrage.app.log.info(f"Deleting orphaned blacklist with series_id: {orphaned_result.series_id}")
+                session.delete(orphaned_result)
+                session.commit()
+
+            # orphaned history entries
+            for orphaned_result in session.query(self.History).filter(~exists().where(self.History.series_id == self.TVShow.series_id)):
+                sickrage.app.log.debug(f"Orphaned history detected! series_id: {orphaned_result.series_id}")
+                sickrage.app.log.info(f"Deleting orphaned history with series_id: {orphaned_result.series_id}")
+                session.delete(orphaned_result)
+                session.commit()
+
+            # orphaned failed snatch history entries
+            for orphaned_result in session.query(self.FailedSnatchHistory).filter(~exists().where(self.FailedSnatchHistory.series_id == self.TVShow.series_id)):
+                sickrage.app.log.debug(f"Orphaned failed snatch history detected! series_id: {orphaned_result.series_id}")
+                sickrage.app.log.info(f"Deleting orphaned failed snatch history with series_id: {orphaned_result.series_id}")
+                session.delete(orphaned_result)
+                session.commit()
+
+            # orphaned failed snatch entries
+            for orphaned_result in session.query(self.FailedSnatch).filter(~exists().where(self.FailedSnatch.series_id == self.TVShow.series_id)):
+                sickrage.app.log.debug(f"Orphaned failed snatch detected! series_id: {orphaned_result.series_id}")
+                sickrage.app.log.info(f"Deleting orphaned failed snatch with series_id: {orphaned_result.series_id}")
+                session.delete(orphaned_result)
+                session.commit()
+
         def remove_duplicate_shows():
             session = self.session()
 
@@ -223,6 +282,7 @@ class MainDB(SRDatabase):
 
             session.commit()
 
+        remove_orphaned()
         remove_duplicate_shows()
         remove_duplicate_episodes()
         remove_invalid_episodes()
@@ -271,8 +331,14 @@ class MainDB(SRDatabase):
         last_backlog_search = Column(DateTime(timezone=True), default=datetime.datetime.now())
         last_proper_search = Column(DateTime(timezone=True), default=datetime.datetime.now())
 
-        episodes = relationship('TVEpisode', uselist=True, backref='tv_shows', lazy='dynamic')
-        imdb_info = relationship('IMDbInfo', uselist=False, backref='tv_shows')
+        episodes = relationship('TVEpisode', uselist=True, backref='tv_shows', cascade="all, delete-orphan", lazy='dynamic')
+        imdb_info = relationship('IMDbInfo', uselist=False, backref='tv_shows', cascade="all, delete-orphan")
+        series_provider_mapping = relationship('SeriesProviderMapping', uselist=False, backref='tv_shows', cascade="all, delete-orphan")
+        blacklist = relationship('Blacklist', uselist=False, backref='tv_shows', cascade="all, delete-orphan")
+        whitelist = relationship('Whitelist', uselist=False, backref='tv_shows', cascade="all, delete-orphan")
+        history = relationship('History', uselist=False, backref='tv_shows', cascade="all, delete-orphan")
+        failed_snatch_history = relationship('FailedSnatchHistory', uselist=False, backref='tv_shows', cascade="all, delete-orphan")
+        failed_snatches = relationship('FailedSnatch', uselist=False, backref='tv_shows', cascade="all, delete-orphan")
 
     class TVEpisode(base):
         __tablename__ = 'tv_episodes'
