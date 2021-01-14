@@ -21,7 +21,6 @@
 import json
 import os
 import re
-from abc import ABC
 
 from tornado.web import authenticated
 
@@ -49,7 +48,7 @@ def get_logs(log_search, log_filter, min_level, max_lines):
     return "\n".join(log_regex.findall("\n".join(data)))
 
 
-class LogsHandler(BaseHandler, ABC):
+class LogsHandler(BaseHandler):
     def initialize(self):
         self.logs_menu = [
             {'title': _('Clear Warnings'), 'path': '/logs/clearWarnings/',
@@ -82,21 +81,21 @@ class LogsHandler(BaseHandler, ABC):
             return True
 
 
-class LogsClearWarningsHanlder(BaseHandler, ABC):
+class LogsClearWarningsHanlder(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         sickrage.app.log.warning_viewer.clear()
         self.redirect("/logs/view/")
 
 
-class LogsClearErrorsHanlder(BaseHandler, ABC):
+class LogsClearErrorsHanlder(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         sickrage.app.log.error_viewer.clear()
         self.redirect("/logs/view/")
 
 
-class LogsClearAllHanlder(BaseHandler, ABC):
+class LogsClearAllHanlder(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         sickrage.app.log.warning_viewer.clear()
@@ -104,7 +103,7 @@ class LogsClearAllHanlder(BaseHandler, ABC):
         self.redirect("/logs/view/")
 
 
-class LogsViewHandler(BaseHandler, ABC):
+class LogsViewHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         min_level = self.get_argument('minLevel', None) or sickrage.app.log.INFO
@@ -148,13 +147,13 @@ class LogsViewHandler(BaseHandler, ABC):
                            action='view')
 
 
-class ErrorCountHandler(BaseHandler, ABC):
+class ErrorCountHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         return self.write(json.dumps({'count': sickrage.app.log.error_viewer.count()}))
 
 
-class WarningCountHandler(BaseHandler, ABC):
+class WarningCountHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         return self.write(json.dumps({'count': sickrage.app.log.warning_viewer.count()}))

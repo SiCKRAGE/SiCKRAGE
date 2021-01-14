@@ -578,20 +578,6 @@ class Core(object):
         # load shows
         self.scheduler.add_job(self.load_shows)
 
-        # launch browser window
-        if not sickrage.app.no_launch and sickrage.app.config.general.launch_browser:
-            self.scheduler.add_job(launch_browser, args=[('http', 'https')[sickrage.app.config.general.enable_https],
-                                                         sickrage.app.config.general.web_host, sickrage.app.config.general.web_port])
-
-        self.log.info("SiCKRAGE :: STARTED")
-        self.log.info("SiCKRAGE :: APP VERSION:[{}]".format(sickrage.version()))
-        self.log.info("SiCKRAGE :: CONFIG VERSION:[v{}]".format(self.config.db.version))
-        self.log.info("SiCKRAGE :: DATABASE VERSION:[v{}]".format(self.main_db.version))
-        self.log.info("SiCKRAGE :: DATABASE TYPE:[{}]".format(self.db_type))
-        self.log.info("SiCKRAGE :: URL:[{}://{}:{}/{}]".format(('http', 'https')[self.config.general.enable_https],
-                                                               (self.config.general.web_host, get_lan_ip())[self.config.general.web_host == '0.0.0.0'],
-                                                               self.config.general.web_port, self.config.general.web_root))
-
     def init_sentry(self):
         # sentry log handler
         sentry_logging = LoggingIntegration(

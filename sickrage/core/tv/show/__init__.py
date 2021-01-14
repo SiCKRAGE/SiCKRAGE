@@ -1111,9 +1111,8 @@ class TVShow(object):
 
         # remove from database
         with sickrage.app.main_db.session() as session:
-            session.query(MainDB.TVShow).filter_by(series_id=self.series_id).delete()
-            # session.query(MainDB.TVEpisode).filter_by(series_id=self.series_id).delete()
-            # session.query(MainDB.IMDbInfo).filter_by(series_id=self.series_id).delete()
+            series = session.query(MainDB.TVShow).filter_by(series_id=self.series_id, series_provider_id=self.series_provider_id).one()
+            session.delete(series)
             session.commit()
 
         # remove episodes from show episode cache

@@ -20,7 +20,6 @@
 # ##############################################################################
 
 import os
-from abc import ABC
 
 from tornado.web import authenticated
 
@@ -28,7 +27,7 @@ import sickrage
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class ConfigWebHandler(BaseHandler, ABC):
+class ConfigWebHandler(BaseHandler):
     menu = [
         {'title': _('Help and Info'), 'path': '/config/', 'icon': 'fas fa-info'},
         {'title': _('General'), 'path': '/config/general/', 'icon': 'fas fa-cogs'},
@@ -53,7 +52,7 @@ class ConfigWebHandler(BaseHandler, ABC):
                            action='index')
 
 
-class ConfigResetHandler(BaseHandler, ABC):
+class ConfigResetHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         sickrage.app.config.load(defaults=True)

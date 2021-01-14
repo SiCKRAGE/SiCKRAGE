@@ -18,7 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-from abc import ABC
+
 
 from tornado.web import authenticated
 
@@ -30,7 +30,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 from sickrage.notification_providers.nmjv2 import NMJv2Location
 
 
-class ConfigNotificationsHandler(BaseHandler, ABC):
+class ConfigNotificationsHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         return self.render('config/notifications.mako',
@@ -42,7 +42,7 @@ class ConfigNotificationsHandler(BaseHandler, ABC):
                            action='notifications')
 
 
-class SaveNotificationsHandler(BaseHandler, ABC):
+class SaveNotificationsHandler(BaseHandler):
     @authenticated
     def post(self, *args, **kwargs):
         use_kodi = self.get_argument('use_kodi', None)

@@ -18,7 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-from abc import ABC
+
 
 from tornado.web import authenticated
 
@@ -28,7 +28,7 @@ from sickrage.core.helpers import arg_to_bool
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class HomePostProcessHandler(BaseHandler, ABC):
+class HomePostProcessHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         return self.render('home/postprocess.mako',
@@ -39,7 +39,7 @@ class HomePostProcessHandler(BaseHandler, ABC):
                            action='postprocess')
 
 
-class HomeProcessEpisodeHandler(BaseHandler, ABC):
+class HomeProcessEpisodeHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         return self.write("Please use our API instead for post-processing")

@@ -20,7 +20,6 @@
 # ##############################################################################
 import json
 import traceback
-from abc import ABC
 
 import sentry_sdk
 from apispec import APISpec
@@ -36,7 +35,7 @@ from sickrage.core.helpers import get_external_ip, get_internal_ip
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class APIBaseHandler(BaseHandler, ABC):
+class APIBaseHandler(BaseHandler):
     def prepare(self):
         super(APIBaseHandler, self).prepare()
 
@@ -58,11 +57,21 @@ class APIBaseHandler(BaseHandler, ABC):
                         sickrage.app.config.save(mark_dirty=True)
 
                     if sickrage.app.config.user.sub_id == decoded_token.get('sub'):
+                        save_config = False
                         if not sickrage.app.config.user.username:
                             sickrage.app.config.user.username = decoded_token.get('preferred_username')
-                        sickrage.app.config.user.email = decoded_token.get('email')
-                        sickrage.app.config.user.permissions = UserPermission.SUPERUSER
-                        sickrage.app.config.save()
+                            save_config = True
+
+                        if not sickrage.app.config.user.email:
+                            sickrage.app.config.user.email = decoded_token.get('email')
+                            save_config = True
+
+                        if not sickrage.app.config.user.permissions == UserPermission.SUPERUSER:
+                            sickrage.app.config.user.permissions = UserPermission.SUPERUSER
+                            save_config = True
+
+                        if save_config:
+                            sickrage.app.config.save()
 
                     if sickrage.app.config.user.sub_id == decoded_token.get('sub'):
                         sentry_sdk.set_user({
@@ -79,16 +88,8 @@ class APIBaseHandler(BaseHandler, ABC):
                         if exchanged_token:
                             sickrage.app.api.token = exchanged_token
 
-                    internal_connections = "{}://{}:{}{}".format(self.request.protocol,
-                                                                 get_internal_ip(),
-                                                                 sickrage.app.config.general.web_port,
-                                                                 sickrage.app.config.general.web_root)
-
-                    external_connections = "{}://{}:{}{}".format(self.request.protocol,
-                                                                 get_external_ip(),
-                                                                 sickrage.app.config.general.web_port,
-                                                                 sickrage.app.config.general.web_root)
-
+                    internal_connections = f"{self.request.protocol}://{get_internal_ip()}:{sickrage.app.config.general.web_port}{sickrage.app.config.general.web_root}"
+                    external_connections = f"{self.request.protocol}://{get_external_ip()}:{sickrage.app.config.general.web_port}{sickrage.app.config.general.web_root}"
                     connections = ','.join([internal_connections, external_connections])
 
                     if sickrage.app.config.general.server_id and not sickrage.app.api.account.update_server(sickrage.app.config.general.server_id, connections):
@@ -173,14 +174,14 @@ class APIBaseHandler(BaseHandler, ABC):
         return spec.to_dict()
 
 
-class PingHandler(APIBaseHandler, ABC):
+class ApiPingHandler(APIBaseHandler):
     def get(self):
         return self.write_json({'message': 'pong'})
 
 
-class SwaggerDotJsonHandler(APIBaseHandler, ABC):
+class ApiSwaggerDotJsonHandler(APIBaseHandler):
     def initialize(self, api_handlers, api_version):
-        super(SwaggerDotJsonHandler, self).initialize()
+        super(ApiSwaggerDotJsonHandler, self).initialize()
         self.api_handlers = sickrage.app.wserver.handlers[api_handlers]
         self.api_version = api_version
 

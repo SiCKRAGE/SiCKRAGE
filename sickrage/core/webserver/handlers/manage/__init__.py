@@ -19,7 +19,6 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 import os
-from abc import ABC
 from functools import cmp_to_key
 
 from tornado.escape import json_encode, json_decode
@@ -314,13 +313,13 @@ def edit_show(series_id, any_qualities, best_qualities, exceptions_list, locatio
     return True, ""
 
 
-class ManageHandler(BaseHandler, ABC):
+class ManageHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         return self.redirect('/manage/massUpdate')
 
 
-class ShowEpisodeStatusesHandler(BaseHandler, ABC):
+class ShowEpisodeStatusesHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         series_id = self.get_argument('series_id')
@@ -342,7 +341,7 @@ class ShowEpisodeStatusesHandler(BaseHandler, ABC):
         return self.write(json_encode(result))
 
 
-class EpisodeStatusesHandler(BaseHandler, ABC):
+class EpisodeStatusesHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         which_status = self.get_argument('whichStatus', None)
@@ -381,7 +380,7 @@ class EpisodeStatusesHandler(BaseHandler, ABC):
                            action='episode_statuses')
 
 
-class ChangeEpisodeStatusesHandler(BaseHandler, ABC):
+class ChangeEpisodeStatusesHandler(BaseHandler):
     @authenticated
     def post(self, *args, **kwargs):
         old_status = self.get_argument('oldStatus')
@@ -412,7 +411,7 @@ class ChangeEpisodeStatusesHandler(BaseHandler, ABC):
         return self.redirect('/manage/episodeStatuses/')
 
 
-class SetEpisodeStatusHandler(BaseHandler, ABC):
+class SetEpisodeStatusHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
@@ -428,7 +427,7 @@ class SetEpisodeStatusHandler(BaseHandler, ABC):
         return self.redirect("/home/displayShow?show=" + show) if status is True else self._genericMessage(_("Error"), message)
 
 
-class ShowSubtitleMissedHandler(BaseHandler, ABC):
+class ShowSubtitleMissedHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         series_id = self.get_argument('series_id')
@@ -462,7 +461,7 @@ class ShowSubtitleMissedHandler(BaseHandler, ABC):
         return self.write(json_encode(result))
 
 
-class SubtitleMissedHandler(BaseHandler, ABC):
+class SubtitleMissedHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         which_subs = self.get_argument('whichSubs', None)
@@ -515,7 +514,7 @@ class SubtitleMissedHandler(BaseHandler, ABC):
                            action='subtitles_missed')
 
 
-class DownloadSubtitleMissedHandler(BaseHandler, ABC):
+class DownloadSubtitleMissedHandler(BaseHandler):
     @authenticated
     def post(self, *args, **kwargs):
         session = sickrage.app.main_db.session()
@@ -545,7 +544,7 @@ class DownloadSubtitleMissedHandler(BaseHandler, ABC):
         return self.redirect('/manage/subtitleMissed/')
 
 
-class BacklogShowHandler(BaseHandler, ABC):
+class BacklogShowHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         series_id = self.get_argument('series_id')
@@ -556,7 +555,7 @@ class BacklogShowHandler(BaseHandler, ABC):
         return self.redirect("/manage/backlogOverview/")
 
 
-class BacklogOverviewHandler(BaseHandler, ABC):
+class BacklogOverviewHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         show_counts = {}
@@ -604,7 +603,7 @@ class BacklogOverviewHandler(BaseHandler, ABC):
                            action='backlog_overview')
 
 
-class EditShowHandler(BaseHandler, ABC):
+class EditShowHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
@@ -688,7 +687,7 @@ class EditShowHandler(BaseHandler, ABC):
         return self.redirect("/home/displayShow?show=" + show) if status is True else self._genericMessage(_("Error"), message)
 
 
-class MassEditHandler(BaseHandler, ABC):
+class MassEditHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         to_edit = self.get_argument('toEdit')
@@ -955,7 +954,7 @@ class MassEditHandler(BaseHandler, ABC):
         return self.redirect("/manage/")
 
 
-class MassUpdateHandler(BaseHandler, ABC):
+class MassUpdateHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         shows_list = sorted([x for x in get_show_list() if not sickrage.app.show_queue.is_being_removed(x.series_id)],
@@ -1065,7 +1064,7 @@ class MassUpdateHandler(BaseHandler, ABC):
         return self.redirect('/manage/massUpdate')
 
 
-class FailedDownloadsHandler(BaseHandler, ABC):
+class FailedDownloadsHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         limit = self.get_argument('limit', None) or 100

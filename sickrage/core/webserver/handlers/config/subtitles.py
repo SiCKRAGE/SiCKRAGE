@@ -19,7 +19,7 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 
-from abc import ABC
+
 
 from tornado.escape import json_encode
 from tornado.web import authenticated
@@ -32,7 +32,7 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 from sickrage.subtitles import Subtitles
 
 
-class ConfigSubtitlesHandler(BaseHandler, ABC):
+class ConfigSubtitlesHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         return self.render('config/subtitles.mako',
@@ -44,7 +44,7 @@ class ConfigSubtitlesHandler(BaseHandler, ABC):
                            action='subtitles')
 
 
-class ConfigSubtitleGetCodeHandler(BaseHandler, ABC):
+class ConfigSubtitleGetCodeHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         q = self.get_argument('q')
@@ -55,7 +55,7 @@ class ConfigSubtitleGetCodeHandler(BaseHandler, ABC):
         return self.write(json_encode(codes))
 
 
-class ConfigSubtitlesWantedLanguagesHandler(BaseHandler, ABC):
+class ConfigSubtitlesWantedLanguagesHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         codes = [{"id": code, "name": Subtitles().name_from_code(code)} for code in Subtitles().subtitle_code_filter()]
@@ -64,7 +64,7 @@ class ConfigSubtitlesWantedLanguagesHandler(BaseHandler, ABC):
         return self.write(json_encode(codes))
 
 
-class SaveSubtitlesHandler(BaseHandler, ABC):
+class SaveSubtitlesHandler(BaseHandler):
     @authenticated
     def post(self, *args, **kwargs):
         use_subtitles = self.get_argument('use_subtitles', None)

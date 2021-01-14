@@ -19,7 +19,6 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 import datetime
-from abc import ABC
 
 from tornado.web import authenticated
 
@@ -27,7 +26,7 @@ import sickrage
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class ManageQueuesHandler(BaseHandler, ABC):
+class ManageQueuesHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         return self.render('manage/queues.mako',
@@ -47,7 +46,7 @@ class ManageQueuesHandler(BaseHandler, ABC):
                            action='queues')
 
 
-class ForceBacklogSearchHandler(BaseHandler, ABC):
+class ForceBacklogSearchHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         # force it to run the next time it looks
@@ -62,7 +61,7 @@ class ForceBacklogSearchHandler(BaseHandler, ABC):
         return self.redirect("/manage/manageQueues/")
 
 
-class ForceDailySearchHandler(BaseHandler, ABC):
+class ForceDailySearchHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         # force it to run the next time it looks
@@ -77,7 +76,7 @@ class ForceDailySearchHandler(BaseHandler, ABC):
         return self.redirect("/manage/manageQueues/")
 
 
-class ForceFindPropersHandler(BaseHandler, ABC):
+class ForceFindPropersHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         # force it to run the next time it looks
@@ -91,7 +90,7 @@ class ForceFindPropersHandler(BaseHandler, ABC):
         return self.redirect("/manage/manageQueues/")
 
 
-class PauseDailySearcherHandler(BaseHandler, ABC):
+class PauseDailySearcherHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         paused = self.get_argument('paused')
@@ -104,7 +103,7 @@ class PauseDailySearcherHandler(BaseHandler, ABC):
         return self.redirect("/manage/manageQueues/")
 
 
-class PauseBacklogSearcherHandler(BaseHandler, ABC):
+class PauseBacklogSearcherHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         paused = self.get_argument('paused')
@@ -117,7 +116,7 @@ class PauseBacklogSearcherHandler(BaseHandler, ABC):
         return self.redirect("/manage/manageQueues/")
 
 
-class PausePostProcessorHandler(BaseHandler, ABC):
+class PausePostProcessorHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         paused = self.get_argument('paused')

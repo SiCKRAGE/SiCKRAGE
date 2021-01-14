@@ -18,8 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-import re
-from abc import ABC
+
 
 import sentry_sdk
 from jose import ExpiredSignatureError
@@ -30,7 +29,7 @@ from sickrage.core.helpers import is_ip_whitelisted, get_internal_ip, get_extern
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class LoginHandler(BaseHandler, ABC):
+class LoginHandler(BaseHandler):
     def get(self, *args, **kwargs):
         if is_ip_whitelisted(self.request.remote_ip):
             return self.redirect("{}".format(self.get_argument('next', "/{}/".format(sickrage.app.config.general.default_page.value))))
@@ -67,11 +66,21 @@ class LoginHandler(BaseHandler, ABC):
             sickrage.app.config.save(mark_dirty=True)
 
         if sickrage.app.config.user.sub_id == decoded_token.get('sub'):
+            save_config = False
             if not sickrage.app.config.user.username:
                 sickrage.app.config.user.username = decoded_token.get('preferred_username')
-            sickrage.app.config.user.email = decoded_token.get('email')
-            sickrage.app.config.user.permissions = UserPermission.SUPERUSER
-            sickrage.app.config.save()
+                save_config = True
+
+            if not sickrage.app.config.user.email:
+                sickrage.app.config.user.email = decoded_token.get('email')
+                save_config = True
+
+            if not sickrage.app.config.user.permissions == UserPermission.SUPERUSER:
+                sickrage.app.config.user.permissions = UserPermission.SUPERUSER
+                save_config = True
+
+            if save_config:
+                sickrage.app.config.save()
 
         if sickrage.app.config.user.sub_id == decoded_token.get('sub'):
             sentry_sdk.set_user({
@@ -140,11 +149,21 @@ class LoginHandler(BaseHandler, ABC):
                     sickrage.app.config.save(mark_dirty=True)
 
                 if sickrage.app.config.user.sub_id == decoded_token.get('sub'):
+                    save_config = False
                     if not sickrage.app.config.user.username:
                         sickrage.app.config.user.username = decoded_token.get('preferred_username')
-                    sickrage.app.config.user.email = decoded_token.get('email')
-                    sickrage.app.config.user.permissions = UserPermission.SUPERUSER
-                    sickrage.app.config.save()
+                        save_config = True
+
+                    if not sickrage.app.config.user.email:
+                        sickrage.app.config.user.email = decoded_token.get('email')
+                        save_config = True
+
+                    if not sickrage.app.config.user.permissions == UserPermission.SUPERUSER:
+                        sickrage.app.config.user.permissions = UserPermission.SUPERUSER
+                        save_config = True
+
+                    if save_config:
+                        sickrage.app.config.save()
 
                 if sickrage.app.config.user.sub_id == decoded_token.get('sub'):
                     sentry_sdk.set_user({

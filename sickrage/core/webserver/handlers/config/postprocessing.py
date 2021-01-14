@@ -20,7 +20,6 @@
 # ##############################################################################
 
 import os
-from abc import ABC
 
 from tornado.web import authenticated
 
@@ -79,7 +78,7 @@ def is_rar_supported():
     return ('not supported', 'supported')[check]
 
 
-class ConfigPostProcessingHandler(BaseHandler, ABC):
+class ConfigPostProcessingHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         return self.render('config/postprocessing.mako',
@@ -91,7 +90,7 @@ class ConfigPostProcessingHandler(BaseHandler, ABC):
                            action='postprocessing')
 
 
-class SavePostProcessingHandler(BaseHandler, ABC):
+class SavePostProcessingHandler(BaseHandler):
     @authenticated
     def post(self, *args, **kwargs):
         naming_pattern = self.get_argument('naming_pattern', '')
@@ -220,7 +219,7 @@ class SavePostProcessingHandler(BaseHandler, ABC):
         return self.redirect("/config/postProcessing/")
 
 
-class TestNamingHandler(BaseHandler, ABC):
+class TestNamingHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         pattern = self.get_argument('pattern', None)
@@ -242,7 +241,7 @@ class TestNamingHandler(BaseHandler, ABC):
         return self.write(result)
 
 
-class IsNamingPatternValidHandler(BaseHandler, ABC):
+class IsNamingPatternValidHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         pattern = self.get_argument('pattern', None)
@@ -260,7 +259,7 @@ class IsNamingPatternValidHandler(BaseHandler, ABC):
         return self.write(is_naming_pattern_valid(pattern=pattern, multi=multi, abd=abd, sports=sports, anime_type=anime_type))
 
 
-class IsRarSupportedHandler(BaseHandler, ABC):
+class IsRarSupportedHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         return self.write(is_rar_supported())

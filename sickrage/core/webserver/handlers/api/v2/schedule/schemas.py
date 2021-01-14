@@ -18,22 +18,21 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
+from marshmallow import fields
+
+from sickrage.core.webserver.handlers.api.schemas import BaseSchema, BaseSuccessSchema
 
 
-import sickrage
-from sickrage.core.webserver.handlers.base import BaseHandler
-
-
-class LogoutHandler(BaseHandler):
-    def get(self, *args, **kwargs):
-        logout_uri = sickrage.app.auth_server.get_url('end_session_endpoint') if sickrage.app.config.general.sso_auth_enabled else ""
-        redirect_uri = "{}://{}{}/login".format(self.request.protocol, self.request.host, sickrage.app.config.general.web_root)
-
-        self.clear_cookie('_sr')
-        self.clear_cookie('_sr_access_token')
-        self.clear_cookie('_sr_refresh_token')
-
-        if logout_uri:
-            return super(BaseHandler, self).redirect('{}?redirect_uri={}'.format(logout_uri, redirect_uri))
-        else:
-            return super(BaseHandler, self).redirect('{}'.format(redirect_uri))
+class ScheduleSuccessSchema(BaseSuccessSchema):
+    episodes = fields.String(
+        required=True,
+        description="Scheduled episodes information",
+    )
+    today = fields.Integer(
+        required=True,
+        description="Timestamp representing today",
+    )
+    nextWeek = fields.Integer(
+        required=True,
+        description="Timestamp representing next week",
+    )

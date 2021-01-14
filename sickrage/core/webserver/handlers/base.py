@@ -22,8 +22,8 @@ import functools
 import time
 import traceback
 import types
-from abc import ABC
 from concurrent.futures.thread import ThreadPoolExecutor
+from typing import Optional, Awaitable
 from urllib.parse import urlparse, urljoin
 
 from jose import ExpiredSignatureError
@@ -36,13 +36,16 @@ import sickrage
 from sickrage.core.helpers import is_ip_whitelisted, torrent_webui_url
 
 
-class BaseHandler(RequestHandler, ABC):
+class BaseHandler(RequestHandler):
     def __init__(self, application, request, **kwargs):
         super(BaseHandler, self).__init__(application, request, **kwargs)
 
         self.executor = ThreadPoolExecutor(thread_name_prefix='TORNADO-Thread')
 
         self.startTime = time.time()
+
+    def data_received(self, chunk: bytes) -> Optional[Awaitable[None]]:
+        pass
 
     def get_user_locale(self):
         return locale.get(sickrage.app.config.gui.gui_lang)
