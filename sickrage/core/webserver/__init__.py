@@ -499,9 +499,10 @@ class WebServer(threading.Thread):
 
         # launch browser window
         if not sickrage.app.no_launch and sickrage.app.config.general.launch_browser:
-            sickrage.app.add_job(launch_browser, args=[('http', 'https')[sickrage.app.config.general.enable_https],
-                                                       (sickrage.app.config.general.web_host, get_lan_ip())[sickrage.app.config.general.web_host == '0.0.0.0'],
-                                                       sickrage.app.config.general.web_port])
+            sickrage.app.scheduler.add_job(launch_browser,
+                                           args=[('http', 'https')[sickrage.app.config.general.enable_https],
+                                                 (sickrage.app.config.general.web_host, get_lan_ip())[sickrage.app.config.general.web_host == '0.0.0.0'],
+                                                 sickrage.app.config.general.web_port])
 
         sickrage.app.log.info("SiCKRAGE :: STARTED")
         sickrage.app.log.info(f"SiCKRAGE :: APP VERSION:[{sickrage.version()}]")
