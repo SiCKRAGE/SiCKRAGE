@@ -100,7 +100,6 @@ stages:
 
 release_build_master:
   stage: release_build
-  retry: 2
   image:
     name: nikolaik/python-nodejs:python3.8-nodejs10-alpine
   variables:
@@ -109,7 +108,6 @@ release_build_master:
     - apk add --no-cache git gcc libffi-dev python3-dev musl-dev openssl-dev
     - git config --global user.email $(git --no-pager show -s --format='%ae' HEAD)
     - git config --global user.name $(git --no-pager show -s --format='%an' HEAD)
-    - git reset --hard
     - pip install bumpversion
     - pip install -r requirements-dev.txt
     - RELEASE_VERSION=$(bumpversion --dry-run --list release | awk -F= '/new_version=/ { print $2 }')
@@ -124,10 +122,11 @@ release_build_master:
     - git commit -m "[TASK] Releasing v$RELEASE_VERSION"
     - git checkout master
     - git fetch --all
-    - git merge --ff-only release/$RELEASE_VERSION
+    - git merge release/$RELEASE_VERSION
     - git tag -a $RELEASE_VERSION -m "Release v$RELEASE_VERSION master"
     - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:master --follow-tags
     - git checkout develop
+    - git merge --ff-only release/$RELEASE_VERSION
     - bumpversion --allow-dirty patch package.json sickrage/version.txt
     - python checksum-generator.py
     - git add --all
