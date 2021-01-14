@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.5](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.4...v10.0.5)
+#### [v10.0.6.dev1](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.5...v10.0.6.dev1)
+
+- Fixed issue with launching browser after app starts up via scheduler [`f554180`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/f5541800645d5b78fb4723a9a194269fde283378)
+
+#### [10.0.5](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.4...10.0.5)
+
+> 14 January 2021
 
 - Minor changes to CI script [`b9dd99c`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/b9dd99c21200368d4a1a11eb663cd1de5beeb044)
 
