@@ -109,19 +109,23 @@ release_build_master:
     - apk add --no-cache git gcc libffi-dev python3-dev musl-dev openssl-dev
     - git config --global user.email $(git --no-pager show -s --format='%ae' HEAD)
     - git config --global user.name $(git --no-pager show -s --format='%an' HEAD)
-    - yarn install --pure-lockfile --cache-folder .yarn-cache
+    - git reset --hard
     - pip install bumpversion
     - pip install -r requirements-dev.txt
+    - RELEASE_VERSION=$(bumpversion --dry-run --list release | awk -F= '/new_version=/ { print $2 }')
     - bumpversion --allow-dirty release package.json sickrage/version.txt
-    - git checkout -b release-$(cat sickrage/version.txt)
-    - npx auto-changelog -v $(cat sickrage/version.txt) --hide-credit --package --commit-limit false --ignore-commit-pattern \[TASK\].*
+    - npx auto-changelog -v $RELEASE_VERSION --hide-credit --package --commit-limit false --ignore-commit-pattern \[TASK\].*
+    - yarn install --pure-lockfile --cache-folder .yarn-cache
     - yarn run build
     - python checksum-generator.py
+    - git checkout -b release/$RELEASE_VERSION
+    - git fetch --all
     - git add --all
-    - git commit -m "[TASK] Releasing v$(cat sickrage/version.txt)"
-    - git fetch . release-$(cat sickrage/version.txt):master
-    - git fetch . release-$(cat sickrage/version.txt):develop
-    - git tag -a $(cat sickrage/version.txt) -m "Release v$(cat sickrage/version.txt) master"
+    - git commit -m "[TASK] Releasing v$RELEASE_VERSION"
+    - git checkout master
+    - git fetch --all
+    - git merge --ff-only release/$RELEASE_VERSION
+    - git tag -a $RELEASE_VERSION -m "Release v$RELEASE_VERSION master"
     - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:master --follow-tags
     - git checkout develop
     - bumpversion --allow-dirty patch package.json sickrage/version.txt
