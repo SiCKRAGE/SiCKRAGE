@@ -128,6 +128,7 @@ release_build_master:
     - git tag -a $RELEASE_VERSION -m "Release v$RELEASE_VERSION master"
     - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:master --follow-tags
     - git checkout develop
+    - git merge --ff-only release/$RELEASE_VERSION
     - bumpversion --allow-dirty patch package.json sickrage/version.txt
     - python checksum-generator.py
     - git add --all
