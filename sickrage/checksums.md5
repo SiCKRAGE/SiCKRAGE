@@ -1,5 +1,5 @@
 sickrage/__init__.py = ee31957103672bcc905eba42109fbc90
-sickrage/version.txt = 2b11cd0acd78eb2e04b4bfd70779be0e
+sickrage/version.txt = 021238f8f26a23cdf07ea7ba40a25ec2
 sickrage/clients/__init__.py = abafc862109398700c9fee676cdeef6b
 sickrage/clients/nzb/nzbget.py = 2a23083d4915fed22c73f4966588cac8
 sickrage/clients/nzb/sabnzbd.py = f76666e47017abaf366f4a3e8b71c47b
@@ -315,7 +315,7 @@ sickrage/core/api/__init__.py = 02a25b3f5690cb529b142f172d3110f9
 sickrage/core/exceptions/__init__.py = bb106687a1cb41cf0da10e125e0c82c7
 sickrage/core/config/helpers.py = 05a4053d5848be7eeb7eeaf8f770d861
 sickrage/core/config/__init__.py = 6fbff1e549d981ecaf39bd694258a9cb
-sickrage/core/webserver/__init__.py = 1e3449311357a84fdfc3ba4f0a7f1161
+sickrage/core/webserver/__init__.py = 9e8783187bd30017765361b8f6d3afb5
 sickrage/core/webserver/handlers/announcements.py = 7c15af0ca9f88c7b6beb239e1ff0da1c
 sickrage/core/webserver/handlers/web_file_browser.py = 4361bcc88688f7f6f9e616905aca72b2
 sickrage/core/webserver/handlers/logout.py = 4abe5196987ac8bf58b00f05e9d4a4c4
