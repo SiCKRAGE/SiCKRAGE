@@ -810,13 +810,13 @@ class TorrentProvider(SearchProvider):
         title, download_url = '', ''
         if isinstance(item, (dict, FeedParserDict)):
             title = item.get('title', '')
-            download_url = item.get('url', item.get('link', ''))
+            download_url = item.get('url', '') or item.get('link', '')
         elif isinstance(item, (list, tuple)) and len(item) > 1:
             title = item[0]
             download_url = item[1]
 
         # Temp global block `DIAMOND` releases
-        if title.endswith('DIAMOND'):
+        if title and title.endswith('DIAMOND'):
             sickrage.app.log.info('Skipping DIAMOND release for mass fake releases.')
             title = download_url = 'FAKERELEASE'
         else:
