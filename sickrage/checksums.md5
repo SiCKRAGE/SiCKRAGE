@@ -1,5 +1,5 @@
 sickrage/__init__.py = ee31957103672bcc905eba42109fbc90
-sickrage/version.txt = 4abbea662bf29bc302cf4529d5ac7c8c
+sickrage/version.txt = 0666560d51b288579204ed435a2a55bc
 sickrage/clients/__init__.py = abafc862109398700c9fee676cdeef6b
 sickrage/clients/nzb/nzbget.py = 2a23083d4915fed22c73f4966588cac8
 sickrage/clients/nzb/sabnzbd.py = f76666e47017abaf366f4a3e8b71c47b
@@ -255,7 +255,7 @@ sickrage/core/websocket/__init__.py = 5425db61e032458c0bba655014322d86
 sickrage/core/nameparser/validator.py = f40f97984b47eefa927fedcaaa314a6c
 sickrage/core/nameparser/regexes.py = fbfb89e90f012a287266be8db0e2faf9
 sickrage/core/nameparser/__init__.py = 27c01e5b187d2197b6fdaa418d178f4f
-sickrage/core/databases/__init__.py = f72f9bc569312e3bb3dee5868c3aa372
+sickrage/core/databases/__init__.py = 1b7f8c6008bfddd5ff46fdd7d3ae6712
 sickrage/core/databases/cache/__init__.py = 10d9d660b502d32bc3f8c99b7d5a3b27
 sickrage/core/databases/cache/migrations/script.py.mako = 55bff267625bd1f0799d24848df6c3e8
 sickrage/core/databases/cache/migrations/env.py = 5cdd195b4adf08a9eda769316ffcc57d
