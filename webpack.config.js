@@ -1,5 +1,5 @@
 const path = require('path');
-const fs = require('fs');
+const fs = require('graceful-fs').gracefulify(require('fs'));
 const packageJson = fs.readFileSync('./package.json');
 const version = JSON.parse(packageJson).version;
 const webpack = require('webpack');
