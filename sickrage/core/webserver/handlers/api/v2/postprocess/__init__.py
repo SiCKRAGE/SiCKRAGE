@@ -58,6 +58,7 @@ class Apiv2PostProcessHandler(APIBaseHandler):
                   NotAuthorizedSchema
         """
         path = self.get_argument("path", sickrage.app.config.general.tv_download_dir)
+        nzb_name = self.get_argument("nzbName", None)
         process_method = self.get_argument("processMethod", ProcessMethod.COPY.name)
         proc_type = self.get_argument("type", 'manual')
         delete = self._parse_boolean(self.get_argument("delete", 'false'))
@@ -74,7 +75,7 @@ class Apiv2PostProcessHandler(APIBaseHandler):
         if not path and not sickrage.app.config.general.tv_download_dir:
             return self.send_error(400, error={"path": "You need to provide a path or set TV Download Dir"})
 
-        json_data = sickrage.app.postprocessor_queue.put(path, process_method=ProcessMethod[process_method.upper()], force=force_replace,
+        json_data = sickrage.app.postprocessor_queue.put(path, nzbName=nzb_name, process_method=ProcessMethod[process_method.upper()], force=force_replace,
                                                          is_priority=is_priority, delete_on=delete, failed=failed, proc_type=proc_type, force_next=force_next)
 
         if 'Processing succeeded' not in json_data:

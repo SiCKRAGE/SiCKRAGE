@@ -1,6 +1,6 @@
 {
   "name": "sickrage",
-  "version": "10.0.6",
+  "version": "10.0.7",
   "private": true,
   "repository": {
     "type": "git",
@@ -34,6 +34,7 @@
     "eslint-loader": "~4.0.0",
     "file-loader": "~6.0.0",
     "gettext-parser": "~2.1.0",
+    "graceful-fs": "~4.2.4",
     "imagesloaded": "~4.1.4",
     "isotope-layout": "~3.0.6",
     "jquery": "~3.5.1",

@@ -205,6 +205,14 @@ class SRDatabase(object):
         backup_filename = os.path.join(sickrage.app.data_dir, f'{self.name}_db_backup_{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}.json')
 
         if db_version < alembic_version:
+            # temp code to resolve a migration bug introduced from v10.0.0, fixed in v10.0.2+
+            if db_version < 21 and self.name == 'main':
+                if self.engine.dialect.has_table(self.engine, 'indexer_mapping') and self.engine.dialect.has_table(self.engine, 'series_provider_mapping'):
+                    sickrage.app.log.debug('Found offending series_provider_mapping table, removing!')
+                    metadata = MetaData(self.engine, reflect=True)
+                    table = metadata.tables.get('series_provider_mapping')
+                    table.drop(self.engine)
+
             sickrage.app.log.info(f'Backing up {self.name} database')
             self.backup(backup_filename)
 

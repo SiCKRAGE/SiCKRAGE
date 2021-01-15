@@ -32,6 +32,10 @@ class PostProcessSchema(BaseSchema):
         required=False,
         description="The path to the folder to post-process",
     )
+    nzbName = fields.String(
+        required=False,
+        description="Release / NZB name if available",
+    )
     processMethod = fields.String(
         required=False,
         default="copy",
