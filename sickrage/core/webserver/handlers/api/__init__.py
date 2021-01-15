@@ -124,7 +124,7 @@ class APIBaseHandler(BaseHandler):
             clean_stack = [i for i in stack if i[0][-6:] != 'gen.py' and i[0][-13:] != 'concurrent.py']
             error_msg = '{}\n  Exception: {}'.format(''.join(traceback.format_list(clean_stack)), excp)
         else:
-            error_msg = kwargs.get('reason', '') or kwargs.get('error', '')
+            error_msg = kwargs.get('reason', '') or kwargs.get('error', '') or kwargs.get('errors', '')
 
         sickrage.app.log.error(error_msg)
 
