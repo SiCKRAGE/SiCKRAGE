@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.7](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.6...v10.0.7)
+#### [v10.0.8.dev1](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.7...v10.0.8.dev1)
+
+- Fixed `invalid literal for int() with base 10` when attempting to mass edit default episode statuses [`a7dd0d7`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/a7dd0d7d8999ca6554a33dc5d4b3a3b0c4ca2033)
+
+#### [10.0.7](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.6...10.0.7)
+
+> 15 January 2021
 
 #### [10.0.6](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.5...10.0.6)
 
