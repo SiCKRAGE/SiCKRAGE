@@ -21,7 +21,7 @@
 
 
 import sentry_sdk
-from jose import ExpiredSignatureError
+from jose import ExpiredSignatureError, JWTError
 
 import sickrage
 from sickrage.core.enums import UserPermission
@@ -60,6 +60,9 @@ class LoginHandler(BaseHandler):
         except ExpiredSignatureError:
             self.set_status(401)
             return self.write({'error': 'Token expired'})
+        except JWTError as e:
+            self.set_status(401)
+            return self.write({'error': f'Improper JWT token supplied, {e!r}'})
 
         if not sickrage.app.config.user.sub_id:
             sickrage.app.config.user.sub_id = decoded_token.get('sub')
