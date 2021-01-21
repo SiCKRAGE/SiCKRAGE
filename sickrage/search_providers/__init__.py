@@ -1413,8 +1413,7 @@ class NewznabProvider(NZBProvider):
             cls('NZB.Cat', 'https://nzb.cat', '', '5030,5040,5010', 'eponly', True, True, True, True),
             cls('NZBGeek', 'https://api.nzbgeek.info', '', '5030,5040', 'eponly', False, False, False, True),
             cls('NZBs.org', 'https://nzbs.org', '', '5030,5040', 'eponly', False, False, False, True),
-            cls('Usenet-Crawler', 'https://www.usenet-crawler.com', '', '5030,5040', 'eponly', False, False, False,
-                True)
+            cls('Usenet-Crawler', 'https://www.usenet-crawler.com', '', '5030,5040', 'eponly', False, False, False, True)
         ]
 
 

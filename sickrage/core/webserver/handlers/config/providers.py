@@ -136,6 +136,7 @@ class SaveProvidersHandler(BaseHandler):
             elif provider_obj.provider_type in [SearchProviderType.NZB, SearchProviderType.NEWZNAB]:
                 provider_obj.username = self.get_argument(providerID + '_username', '').strip()
                 provider_obj.api_key = self.get_argument(providerID + '_api_key', '').strip()
+                provider_obj.key = self.get_argument(providerID + '_key', '').strip()
 
             custom_settings = {
                 'minseed': int(self.get_argument(providerID + '_minseed', None) or 0),
