@@ -674,7 +674,6 @@ class Config(object):
                                                             field_type=str)
         self.general.git_reset = self._get_config_file_value(config_object, 'General', 'git_reset', default=self.general.git_reset, field_type=bool)
         self.general.web_port = self._get_config_file_value(config_object, 'General', 'web_port', default=self.general.web_port, field_type=int)
-        self.general.web_host = self._get_config_file_value(config_object, 'General', 'web_host', default=self.general.web_host, field_type=str)
         self.general.web_log = self._get_config_file_value(config_object, 'General', 'web_log', default=self.general.web_log, field_type=str)
         self.general.web_external_port = self._get_config_file_value(config_object, 'General', 'web_external_port', default=self.general.web_external_port,
                                                                      field_type=int)

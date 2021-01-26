@@ -492,7 +492,7 @@ class WebServer(threading.Thread):
         self.server = HTTPServer(self.app, ssl_options=ssl_ctx, xheaders=sickrage.app.config.general.handle_reverse_proxy)
 
         try:
-            self.server.listen(sickrage.app.config.general.web_port, sickrage.app.config.general.web_host)
+            self.server.listen(sickrage.app.config.general.web_port, sickrage.app.web_host)
         except socket.error as e:
             sickrage.app.log.warning(e.strerror)
             raise SystemExit
@@ -501,7 +501,7 @@ class WebServer(threading.Thread):
         if not sickrage.app.no_launch and sickrage.app.config.general.launch_browser:
             sickrage.app.scheduler.add_job(launch_browser,
                                            args=[('http', 'https')[sickrage.app.config.general.enable_https],
-                                                 (sickrage.app.config.general.web_host, get_lan_ip())[sickrage.app.config.general.web_host == '0.0.0.0'],
+                                                 (get_lan_ip(), sickrage.app.web_host)[sickrage.app.web_host != ''],
                                                  sickrage.app.config.general.web_port])
 
         sickrage.app.log.info("SiCKRAGE :: STARTED")
@@ -510,7 +510,7 @@ class WebServer(threading.Thread):
         sickrage.app.log.info(f"SiCKRAGE :: DATABASE VERSION:[v{sickrage.app.main_db.version}]")
         sickrage.app.log.info(f"SiCKRAGE :: DATABASE TYPE:[{sickrage.app.db_type}]")
         sickrage.app.log.info(
-            f"SiCKRAGE :: URL:[{('http', 'https')[sickrage.app.config.general.enable_https]}://{(sickrage.app.config.general.web_host, get_lan_ip())[sickrage.app.config.general.web_host == '0.0.0.0']}:{sickrage.app.config.general.web_port}/{sickrage.app.config.general.web_root}]")
+            f"SiCKRAGE :: URL:[{('http', 'https')[sickrage.app.config.general.enable_https]}://{(get_lan_ip(), sickrage.app.web_host)[sickrage.app.web_host != '']}:{sickrage.app.config.general.web_port}/{sickrage.app.config.general.web_root}]")
 
         self.io_loop.start()
 

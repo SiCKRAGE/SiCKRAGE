@@ -213,7 +213,7 @@ class SRDatabase(object):
                     table = metadata.tables.get('series_provider_mapping')
                     table.drop(self.engine)
 
-            sickrage.app.log.info(f'Backing up {self.name} database')
+            sickrage.app.log.info(f'Backing up {self.name} database v{db_version}')
             self.backup(backup_filename)
 
             sickrage.app.log.info(f'Upgrading {self.name} database to v{alembic_version}')

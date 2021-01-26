@@ -1587,8 +1587,7 @@ def torrent_webui_url(reset=False):
         sickrage.app.client_web_urls['torrent'] = ''
         return sickrage.app.client_web_urls['torrent']
 
-    torrent_ui_url = re.sub('localhost|127.0.0.1', sickrage.app.config.general.web_host or get_lan_ip(),
-                            sickrage.app.config.torrent.host or '', re.I)
+    torrent_ui_url = re.sub('localhost|127.0.0.1', sickrage.app.web_host or get_lan_ip(), sickrage.app.config.torrent.host or '', re.I)
 
     def test_exists(url):
         try:

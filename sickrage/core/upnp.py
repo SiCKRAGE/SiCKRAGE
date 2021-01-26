@@ -91,7 +91,7 @@ class UPNPClient(object):
                 NewExternalPort=sickrage.app.config.general.web_external_port,
                 NewProtocol=protocol,
                 NewInternalPort=sickrage.app.config.general.web_port,
-                NewInternalClient=sickrage.app.config.general.web_host,
+                NewInternalClient=sickrage.app.web_host or '0.0.0.0',
                 NewEnabled='1',
                 NewPortMappingDescription=description,
                 NewLeaseDuration=self._nat_portmap_lifetime,

@@ -332,8 +332,6 @@ class Core(object):
             self.config.general.web_port = self.web_port
         if self.web_root:
             self.config.general.web_root = self.web_root
-        if self.web_host:
-            self.config.general.web_host = self.web_host
 
         # set language
         change_gui_lang(self.config.gui.gui_lang)

@@ -26,12 +26,4 @@ def upgrade():
 
 
 def downgrade():
-    conn = op.get_bind()
-    meta = sa.MetaData(bind=conn)
-    tv_shows = sa.Table('tv_shows', meta, autoload=True)
-
-    if hasattr(tv_shows.c, 'scene_exceptions'):
-        op.drop_column('tv_shows', 'scene_exceptions')
-
-    if hasattr(tv_shows.c, 'last_scene_exceptions_refresh'):
-        op.drop_column('tv_shows', 'last_scene_exceptions_refresh')
+    pass
