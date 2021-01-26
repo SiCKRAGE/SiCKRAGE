@@ -19,7 +19,7 @@ import uuid
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.enums import SearchFormat
+from sickrage.core.enums import SearchFormat, SeriesProviderID
 from sickrage.core.helpers import sanitize_scene_name, episode_num, try_int
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.search_providers import TorrentProvider
@@ -178,7 +178,7 @@ class BTNProvider(TorrentProvider):
         }
 
         # Search
-        if show_object.series_provider_id == 1:
+        if show_object.series_provider_id == SeriesProviderID.THETVDB:
             params['tvdb'] = show_object.series_id
             params['series'] = show_object.name
             searches.append(params)

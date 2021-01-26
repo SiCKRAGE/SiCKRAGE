@@ -90,7 +90,7 @@
                     % for providerID, providerObj in sickrage.app.search_providers.sort().items():
                         % if (providerObj.provider_type in [SearchProviderType.NZB, SearchProviderType.NEWZNAB] and sickrage.app.config.general.use_nzbs) or (providerObj.provider_type in [SearchProviderType.TORRENT, SearchProviderType.TORRENT_RSS] and sickrage.app.config.general.use_torrents):
                         <% provider_url = providerObj.urls.get('base_url', '') %>
-                        % if providerObj.custom_settings.get('custom_url', None) and validate_url(providerObj.custom_settings['custom_url']):
+                        % if 'custom_url' in providerObj.custom_settings and validate_url(providerObj.custom_settings['custom_url']):
                             <% provider_url = providerObj.custom_settings['custom_url'] %>
                         % endif
                             <div class="list-group-item list-group-item-action ${('list-group-item-dark', 'list-group-item-secondary')[bool(providerObj.provider_type in [SearchProviderType.TORRENT, SearchProviderType.TORRENT_RSS])]} rounded mb-1 p-2"
@@ -290,7 +290,7 @@
 
                 % for providerID, providerObj in sickrage.app.search_providers.nzb().items():
                     <div class="providerDiv" id="${providerID}Div">
-                        % if providerObj.custom_settings.get('username', None):
+                        % if 'username' in providerObj.custom_settings:
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Username:')}</label>
@@ -309,7 +309,7 @@
                             </div>
                         % endif
 
-                        % if providerObj.custom_settings.get('api_key', None):
+                        % if 'api_key' in providerObj.custom_settings:
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('API key:')}</label>
@@ -420,7 +420,7 @@
 
                 % for providerID, providerObj in sickrage.app.search_providers.all_torrent().items():
                     <div class="providerDiv" id="${providerID}Div">
-                        % if providerObj.custom_settings.get('custom_url', None):
+                        % if 'custom_url' in providerObj.custom_settings:
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Custom URL:')}</label>
@@ -441,7 +441,7 @@
                             </div>
                         % endif
 
-                        % if providerObj.custom_settings.get('api_key', None):
+                        % if 'api_key' in providerObj.custom_settings:
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Api key:')}</label>
@@ -462,7 +462,7 @@
                             </div>
                         % endif
 
-                        % if providerObj.custom_settings.get('digest', None):
+                        % if 'digest' in providerObj.custom_settings:
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Digest:')}</label>
@@ -482,7 +482,7 @@
                             </div>
                         % endif
 
-                        % if providerObj.custom_settings.get('hash', None):
+                        % if 'hash' in providerObj.custom_settings:
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Hash:')}</label>
@@ -504,7 +504,7 @@
                             </div>
                         % endif
 
-                        % if providerObj.custom_settings.get('username', None):
+                        % if 'username' in providerObj.custom_settings:
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Username:')}</label>
@@ -525,7 +525,7 @@
                             </div>
                         % endif
 
-                        % if providerObj.custom_settings.get('password', None):
+                        % if 'password' in providerObj.custom_settings:
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Password:')}</label>
@@ -545,7 +545,7 @@
                             </div>
                         % endif
 
-                        % if providerObj.custom_settings.get('passkey', None):
+                        % if 'passkey' in providerObj.custom_settings:
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Passkey:')}</label>
@@ -595,7 +595,7 @@
                             </div>
                         % endif
 
-                        % if providerObj.custom_settings.get('pin', None):
+                        % if 'pin' in providerObj.custom_settings:
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Pin:')}</label>
@@ -638,7 +638,7 @@
                             </div>
                         % endif
 
-                        % if providerObj.custom_settings.get('minseed', None):
+                        % if 'minseed' in providerObj.custom_settings:
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Minimum seeders:')}</label>
@@ -660,7 +660,7 @@
                             </div>
                         % endif
 
-                        % if providerObj.custom_settings.get('minleech', None):
+                        % if 'minleech' in providerObj.custom_settings:
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Minimum leechers:')}</label>
@@ -682,7 +682,7 @@
                             </div>
                         % endif
 
-                        % if providerObj.custom_settings.get('confirmed', None):
+                        % if 'confirmed' in providerObj.custom_settings:
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Confirmed download')}</label>
@@ -698,7 +698,7 @@
                             </div>
                         % endif
 
-                        % if providerObj.custom_settings.get('ranked', None):
+                        % if 'ranked' in providerObj.custom_settings:
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Ranked torrents')}</label>
@@ -714,7 +714,7 @@
                             </div>
                         % endif
 
-                        % if providerObj.custom_settings.get('engrelease', None):
+                        % if 'engrelease' in providerObj.custom_settings:
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('English torrents')}</label>
@@ -730,7 +730,7 @@
                             </div>
                         % endif
 
-                        % if providerObj.custom_settings.get('onlyspasearch', None):
+                        % if 'onlyspasearch' in providerObj.custom_settings:
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('For Spanish torrents')}</label>
@@ -749,7 +749,7 @@
                             </div>
                         % endif
 
-                        % if providerObj.custom_settings.get('sorting', None):
+                        % if 'sorting' in providerObj.custom_settings:
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Sort results by')}</label>
@@ -772,7 +772,7 @@
                             </div>
                         % endif
 
-                        % if providerObj.custom_settings.get('freeleech', None):
+                        % if 'freeleech' in providerObj.custom_settings:
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Freeleech')}</label>
@@ -804,7 +804,7 @@
                             </div>
                         % endif
 
-                        % if providerObj.custom_settings.get('reject_m2ts', None):
+                        % if 'reject_m2ts' in providerObj.custom_settings:
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Reject Blu-ray M2TS releases')}</label>
@@ -914,7 +914,7 @@
 ##                             </div>
 ##                         % endif
 
-                        % if providerObj.custom_settings.get('subtitle', None) and providerID == 'tntvillage':
+                        % if 'subtitle' in providerObj.custom_settings and providerID == 'tntvillage':
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Subtitled')}</label>

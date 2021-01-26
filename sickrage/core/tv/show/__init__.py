@@ -1354,7 +1354,7 @@ class TVShow(object):
             else:
                 self.scene_exceptions = set(self.scene_exceptions + scene_exceptions['data']['exceptions'].split(','))
 
-            if get_anidb and self.is_anime and self.series_provider_id == 1:
+            if get_anidb and self.is_anime and self.series_provider_id == SeriesProviderID.THETVDB:
                 try:
                     sickrage.app.log.info("Retrieving AniDB scene exceptions for show: {}".format(self.name))
                     anime = Anime(None, name=self.name, tvdbid=self.series_id, autoCorrectName=True)
