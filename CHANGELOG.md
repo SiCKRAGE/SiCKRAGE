@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.8.dev3](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.7...v10.0.8.dev3)
+#### [v10.0.8](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.7...v10.0.8)
 
 - Removed ability to set web host from settings in UI, constrained to only setting from cli. [`c17dc55`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/c17dc551de4d6df4f4b20b96fb3d94bba086966e)
 - Removed IRC from main layout [`87a989d`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/87a989dc9f05308ea9fd6c23aad53d0249219624)
