@@ -221,7 +221,6 @@ class SaveGeneralHandler(BaseHandler):
         sickrage.app.config.general.strip_special_file_bits = checkbox_to_value(strip_special_file_bits)
 
         sickrage.app.config.general.web_root = web_root
-        sickrage.app.config.general.web_host = web_host
 
         sickrage.app.config.general.ip_whitelist_enabled = checkbox_to_value(ip_whitelist_enabled)
         sickrage.app.config.general.ip_whitelist_localhost_enabled = checkbox_to_value(ip_whitelist_localhost_enabled)

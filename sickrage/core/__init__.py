@@ -56,8 +56,8 @@ from sickrage.core.databases.cache import CacheDB
 from sickrage.core.databases.config import ConfigDB, CustomStringEncryptedType
 from sickrage.core.databases.main import MainDB
 from sickrage.core.enums import MultiEpNaming, DefaultHomePage, NzbMethod, TorrentMethod, CheckPropersInterval
-from sickrage.core.helpers import generate_secret, make_dir, get_lan_ip, restore_app_data, get_disk_space_usage, get_free_space, launch_browser, \
-    torrent_webui_url, encryption, md5_file_hash, flatten
+from sickrage.core.helpers import generate_secret, make_dir, restore_app_data, get_disk_space_usage, get_free_space, launch_browser, torrent_webui_url, \
+    encryption, md5_file_hash, flatten
 from sickrage.core.logger import Logger
 from sickrage.core.nameparser.validator import check_force_season_folders
 from sickrage.core.processors import auto_postprocessor
@@ -332,8 +332,6 @@ class Core(object):
             self.config.general.web_port = self.web_port
         if self.web_root:
             self.config.general.web_root = self.web_root
-        if self.web_host:
-            self.config.general.web_host = self.web_host
 
         # set language
         change_gui_lang(self.config.gui.gui_lang)

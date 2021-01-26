@@ -23,9 +23,4 @@ def upgrade():
 
 
 def downgrade():
-    conn = op.get_bind()
-    meta = sa.MetaData(bind=conn)
-    history = sa.Table('history', meta, autoload=True)
-
-    if hasattr(history.c, 'release_group'):
-        op.drop_column('history', 'release_group')
+    pass

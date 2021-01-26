@@ -33,7 +33,7 @@ from tornado.ioloop import IOLoop
 from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 import sickrage
-from sickrage.core.helpers import create_https_certificates, get_lan_ip, launch_browser
+from sickrage.core.helpers import create_https_certificates, launch_browser, get_internal_ip
 from sickrage.core.webserver.handlers.account import AccountLinkHandler, AccountUnlinkHandler, AccountIsLinkedHandler
 from sickrage.core.webserver.handlers.announcements import AnnouncementsHandler, MarkAnnouncementSeenHandler, AnnouncementCountHandler
 from sickrage.core.webserver.handlers.api import ApiSwaggerDotJsonHandler, ApiPingHandler
@@ -83,7 +83,6 @@ from sickrage.core.webserver.handlers.home.add_shows import HomeAddShowsHandler,
     MassAddTableHandler, NewShowHandler, TraktShowsHandler, PopularShowsHandler, AddShowToBlacklistHandler, \
     ExistingShowsHandler, AddShowByIDHandler, AddNewShowHandler, AddExistingShowsHandler
 from sickrage.core.webserver.handlers.home.postprocess import HomePostProcessHandler, HomeProcessEpisodeHandler
-from sickrage.core.webserver.handlers.irc import IRCHandler
 from sickrage.core.webserver.handlers.login import LoginHandler
 from sickrage.core.webserver.handlers.logout import LogoutHandler
 from sickrage.core.webserver.handlers.logs import LogsHandler, LogsClearAllHanlder, LogsViewHandler, \
@@ -325,7 +324,6 @@ class WebServer(threading.Thread):
             (fr'{sickrage.app.config.general.web_root}/history(/?)', HistoryHandler),
             (fr'{sickrage.app.config.general.web_root}/history/clear(/?)', HistoryClearHandler),
             (fr'{sickrage.app.config.general.web_root}/history/trim(/?)', HistoryTrimHandler),
-            (fr'{sickrage.app.config.general.web_root}/irc(/?)', IRCHandler),
             (fr'{sickrage.app.config.general.web_root}/logs(/?)', LogsHandler),
             (fr'{sickrage.app.config.general.web_root}/logs/errorCount(/?)', ErrorCountHandler),
             (fr'{sickrage.app.config.general.web_root}/logs/warningCount(/?)', WarningCountHandler),
@@ -492,7 +490,7 @@ class WebServer(threading.Thread):
         self.server = HTTPServer(self.app, ssl_options=ssl_ctx, xheaders=sickrage.app.config.general.handle_reverse_proxy)
 
         try:
-            self.server.listen(sickrage.app.config.general.web_port, sickrage.app.config.general.web_host)
+            self.server.listen(sickrage.app.config.general.web_port, sickrage.app.web_host)
         except socket.error as e:
             sickrage.app.log.warning(e.strerror)
             raise SystemExit
@@ -501,7 +499,7 @@ class WebServer(threading.Thread):
         if not sickrage.app.no_launch and sickrage.app.config.general.launch_browser:
             sickrage.app.scheduler.add_job(launch_browser,
                                            args=[('http', 'https')[sickrage.app.config.general.enable_https],
-                                                 (sickrage.app.config.general.web_host, get_lan_ip())[sickrage.app.config.general.web_host == '0.0.0.0'],
+                                                 (get_internal_ip(), sickrage.app.web_host)[sickrage.app.web_host != ''],
                                                  sickrage.app.config.general.web_port])
 
         sickrage.app.log.info("SiCKRAGE :: STARTED")
@@ -509,8 +507,8 @@ class WebServer(threading.Thread):
         sickrage.app.log.info(f"SiCKRAGE :: CONFIG VERSION:[v{sickrage.app.config.db.version}]")
         sickrage.app.log.info(f"SiCKRAGE :: DATABASE VERSION:[v{sickrage.app.main_db.version}]")
         sickrage.app.log.info(f"SiCKRAGE :: DATABASE TYPE:[{sickrage.app.db_type}]")
-        sickrage.app.log.info(
-            f"SiCKRAGE :: URL:[{('http', 'https')[sickrage.app.config.general.enable_https]}://{(sickrage.app.config.general.web_host, get_lan_ip())[sickrage.app.config.general.web_host == '0.0.0.0']}:{sickrage.app.config.general.web_port}/{sickrage.app.config.general.web_root}]")
+
+        sickrage.app.log.info(f"SiCKRAGE :: URL:[{('http', 'https')[sickrage.app.config.general.enable_https]}://{(get_internal_ip(), sickrage.app.web_host)[sickrage.app.web_host != '']}:{sickrage.app.config.general.web_port}/{sickrage.app.config.general.web_root}]")
 
         self.io_loop.start()
 

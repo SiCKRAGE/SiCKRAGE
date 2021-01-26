@@ -23,9 +23,4 @@ def upgrade():
 
 
 def downgrade():
-    conn = op.get_bind()
-    meta = sa.MetaData(bind=conn)
-    tv_shows = sa.Table('tv_shows', meta, autoload=True)
-
-    if hasattr(tv_shows.c, 'last_proper_search'):
-        op.drop_column('tv_shows', 'last_proper_search')
+    pass

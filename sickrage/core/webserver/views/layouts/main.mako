@@ -279,9 +279,6 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarSystem">
-                                <a class="dropdown-item" href="${srWebRoot}/IRC/">
-                                    <i class="fas fa-fw fa-hashtag"></i>&nbsp;${_('IRC')}
-                                </a>
                                 <a class="dropdown-item" href="#" id="changelog">
                                     <i class="fas fa-fw fa-globe"></i>&nbsp;${_('Changelog')}
                                 </a>

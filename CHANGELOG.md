@@ -2,7 +2,17 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.7](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.6...v10.0.7)
+#### [v10.0.8](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.7...v10.0.8)
+
+- Removed ability to set web host from settings in UI, constrained to only setting from cli. [`c17dc55`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/c17dc551de4d6df4f4b20b96fb3d94bba086966e)
+- Removed IRC from main layout [`87a989d`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/87a989dc9f05308ea9fd6c23aad53d0249219624)
+- Fixed issue with provider options not appearing in settings [`256e1df`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/256e1df2636a8810cfa85120ce323f5967a7e4da)
+- Replaced get_lan_ip with get_internal_ip [`fa55c2c`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/fa55c2c97f156755ece800e46632bb7feb36977b)
+- Fixed `invalid literal for int() with base 10` when attempting to mass edit default episode statuses [`a7dd0d7`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/a7dd0d7d8999ca6554a33dc5d4b3a3b0c4ca2033)
+
+#### [10.0.7](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.6...10.0.7)
+
+> 15 January 2021
 
 #### [10.0.6](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.5...10.0.6)
 

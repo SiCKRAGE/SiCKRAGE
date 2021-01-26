@@ -890,7 +890,7 @@ class MassEditHandler(BaseHandler):
             if default_ep_status == 'keep':
                 new_default_ep_status = show_obj.default_ep_status
             else:
-                new_default_ep_status = int(default_ep_status)
+                new_default_ep_status = default_ep_status
 
             if anime == 'keep':
                 new_anime = show_obj.anime
@@ -918,14 +918,11 @@ class MassEditHandler(BaseHandler):
 
             if quality_preset == 'keep':
                 any_qualities, best_qualities = Quality.split_quality(show_obj.quality)
-            elif try_int(quality_preset, None):
-                best_qualities = []
 
             status, message = edit_show(series_id=curShow, location=new_show_dir, any_qualities=any_qualities, best_qualities=best_qualities,
-                                        exceptions_list=[],
-                                        default_ep_status=new_default_ep_status, skip_downloaded=new_skip_downloaded, flatten_folders=new_flatten_folders,
-                                        paused=new_paused, search_format=new_search_format, subtitles=new_subtitles, anime=new_anime,
-                                        scene=new_scene, direct_call=True)
+                                        exceptions_list=[], default_ep_status=new_default_ep_status, skip_downloaded=new_skip_downloaded,
+                                        flatten_folders=new_flatten_folders, paused=new_paused, search_format=new_search_format, subtitles=new_subtitles,
+                                        anime=new_anime, scene=new_scene, direct_call=True)
 
             if status is False:
                 cur_warnings += json_decode(message)['warnings']

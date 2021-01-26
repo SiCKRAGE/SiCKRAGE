@@ -35,7 +35,7 @@ from sickrage.core.databases import SRDatabaseBase, SRDatabase, IntFlag
 from sickrage.core.enums import DefaultHomePage, MultiEpNaming, CpuPreset, CheckPropersInterval, \
     FileTimestampTimezone, ProcessMethod, NzbMethod, TorrentMethod, SearchFormat, UserPermission, PosterSortDirection, HomeLayout, PosterSortBy, \
     HistoryLayout, TimezoneDisplay, UITheme, TraktAddMethod, SeriesProviderID
-from sickrage.core.helpers import generate_api_key, generate_secret, get_lan_ip
+from sickrage.core.helpers import generate_api_key, generate_secret
 from sickrage.core.tv.show.coming_episodes import ComingEpsLayout, ComingEpsSortBy
 from sickrage.notification_providers.nmjv2 import NMJv2Location
 from sickrage.search_providers import SearchProviderType
@@ -212,7 +212,6 @@ class ConfigDB(SRDatabase):
         naming_custom_anime = Column(Boolean, default=False)
         naming_anime_pattern = Column(Text, default='Season %0S/%SN - S%0SE%0E - %EN')
         randomize_providers = Column(Boolean, default=False)
-        web_host = Column(Text, default='0.0.0.0')
         process_automatically = Column(Boolean, default=False)
         git_path = Column(Text, default='git')
         sync_files = Column(Text, default=','.join(['!sync', 'lftp-pget-status', 'part', 'bts', '!qb']))
