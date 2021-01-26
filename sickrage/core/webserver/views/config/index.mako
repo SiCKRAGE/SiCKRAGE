@@ -200,16 +200,6 @@
                                    onclick="window.open(this.href, '_blank'); return false;">https://git.sickrage.ca/SiCKRAGE/sickrage/</a>
                             </div>
                         </div>
-                        <br/>
-                        <div class="form-row">
-                            <div class="col-lg-3 col-md-3 col-sm-3">
-                                <i class="sickrage-core sickrage-core-irc"></i> ${_('IRChat')}
-                            </div>
-                            <div class="col-lg-9 col-md-9 col-sm-9">
-                                <a href="irc://irc.freenode.net/#sickrage" rel="noreferrer"><i>#sickrage</i>
-                                    ${_('on')} <i>irc.freenode.net</i></a>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

@@ -83,7 +83,6 @@ from sickrage.core.webserver.handlers.home.add_shows import HomeAddShowsHandler,
     MassAddTableHandler, NewShowHandler, TraktShowsHandler, PopularShowsHandler, AddShowToBlacklistHandler, \
     ExistingShowsHandler, AddShowByIDHandler, AddNewShowHandler, AddExistingShowsHandler
 from sickrage.core.webserver.handlers.home.postprocess import HomePostProcessHandler, HomeProcessEpisodeHandler
-from sickrage.core.webserver.handlers.irc import IRCHandler
 from sickrage.core.webserver.handlers.login import LoginHandler
 from sickrage.core.webserver.handlers.logout import LogoutHandler
 from sickrage.core.webserver.handlers.logs import LogsHandler, LogsClearAllHanlder, LogsViewHandler, \
@@ -325,7 +324,6 @@ class WebServer(threading.Thread):
             (fr'{sickrage.app.config.general.web_root}/history(/?)', HistoryHandler),
             (fr'{sickrage.app.config.general.web_root}/history/clear(/?)', HistoryClearHandler),
             (fr'{sickrage.app.config.general.web_root}/history/trim(/?)', HistoryTrimHandler),
-            (fr'{sickrage.app.config.general.web_root}/irc(/?)', IRCHandler),
             (fr'{sickrage.app.config.general.web_root}/logs(/?)', LogsHandler),
             (fr'{sickrage.app.config.general.web_root}/logs/errorCount(/?)', ErrorCountHandler),
             (fr'{sickrage.app.config.general.web_root}/logs/warningCount(/?)', WarningCountHandler),
