@@ -1,4 +1,4 @@
-sickrage/version.txt = f00c55438f503493cdfad6826867e1af
+sickrage/version.txt = 6f4b9f698235f172be2bd918d4b273cb
 sickrage/__init__.py = ee31957103672bcc905eba42109fbc90
 sickrage/autoProcessTV/mediaToSiCKRAGE.py = f88a6679a211b1f97126c116e2c33b9c
 sickrage/autoProcessTV/hellaToSiCKRAGE.py = 9bc477abfd456aaba8d6bf46f2c59b1f
@@ -337,7 +337,7 @@ sickrage/core/webserver/static/fonts/fa-solid-900.woff = ee09ad7553b8ad3d81150d6
 sickrage/core/webserver/static/fonts/fa-regular-400.ttf = 1a78af4105d4d56e6c34f76dc70bf1bc
 sickrage/core/webserver/static/fonts/fa-brands-400.eot = 0fabb6606be4c45acfeedd115d0caca4
 sickrage/core/webserver/static/fonts/fa-solid-900.svg = 03ba7cb710104df27f1c9c46d64bee4e
-sickrage/core/webserver/static/css/core.min.css = 05ca1e9c48f013d71d97ecec458b9f76
+sickrage/core/webserver/static/css/core.min.css = 19d8690102d3cc9c88889a11d68ebcc7
 sickrage/core/webserver/static/js/core.js.map = 7e281da1286eadb7762caceffa00d95b
 sickrage/core/webserver/static/js/core.min.js = 1169702eeded08007b43f9f97bc82b3e
 sickrage/core/webserver/views/schedule.mako = 1492940accef5afe80d9cbd14be1c078
