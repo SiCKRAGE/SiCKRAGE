@@ -35,7 +35,7 @@ from sickrage.core.databases import SRDatabaseBase, SRDatabase, IntFlag
 from sickrage.core.enums import DefaultHomePage, MultiEpNaming, CpuPreset, CheckPropersInterval, \
     FileTimestampTimezone, ProcessMethod, NzbMethod, TorrentMethod, SearchFormat, UserPermission, PosterSortDirection, HomeLayout, PosterSortBy, \
     HistoryLayout, TimezoneDisplay, UITheme, TraktAddMethod, SeriesProviderID
-from sickrage.core.helpers import generate_api_key, generate_secret, get_lan_ip
+from sickrage.core.helpers import generate_api_key, generate_secret
 from sickrage.core.tv.show.coming_episodes import ComingEpsLayout, ComingEpsSortBy
 from sickrage.notification_providers.nmjv2 import NMJv2Location
 from sickrage.search_providers import SearchProviderType

@@ -809,13 +809,6 @@ def create_https_certificates(ssl_cert, ssl_key):
     return True
 
 
-def get_lan_ip():
-    """Return IP of system."""
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(('8.8.8.8', 1))
-    return s.getsockname()[0]
-
-
 def anon_url(*url):
     """
     Return a URL string consisting of the Anonymous redirect URL and an arbitrary number of values appended.
@@ -1587,7 +1580,7 @@ def torrent_webui_url(reset=False):
         sickrage.app.client_web_urls['torrent'] = ''
         return sickrage.app.client_web_urls['torrent']
 
-    torrent_ui_url = re.sub('localhost|127.0.0.1', sickrage.app.web_host or get_lan_ip(), sickrage.app.config.torrent.host or '', re.I)
+    torrent_ui_url = re.sub('localhost|127.0.0.1', sickrage.app.web_host or get_internal_ip(), sickrage.app.config.torrent.host or '', re.I)
 
     def test_exists(url):
         try:

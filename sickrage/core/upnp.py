@@ -27,7 +27,7 @@ from urllib.parse import urlparse
 import upnpclient
 
 import sickrage
-from sickrage.core.helpers import get_lan_ip
+from sickrage.core.helpers import get_internal_ip
 
 
 class UPNPClient(object):
@@ -129,7 +129,7 @@ class UPNPClient(object):
                 return device
 
     def _find_internal_ip_on_device_network(self, upnp_dev):
-        lan_ip = get_lan_ip()
+        lan_ip = get_internal_ip()
         parsed_url = urlparse(upnp_dev.location)
         upnp_dev_net = ipaddress.ip_network(parsed_url.hostname + '/24', strict=False)
 

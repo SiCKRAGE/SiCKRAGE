@@ -33,7 +33,7 @@ from tornado.ioloop import IOLoop
 from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 import sickrage
-from sickrage.core.helpers import create_https_certificates, get_lan_ip, launch_browser
+from sickrage.core.helpers import create_https_certificates, launch_browser, get_internal_ip
 from sickrage.core.webserver.handlers.account import AccountLinkHandler, AccountUnlinkHandler, AccountIsLinkedHandler
 from sickrage.core.webserver.handlers.announcements import AnnouncementsHandler, MarkAnnouncementSeenHandler, AnnouncementCountHandler
 from sickrage.core.webserver.handlers.api import ApiSwaggerDotJsonHandler, ApiPingHandler
@@ -499,7 +499,7 @@ class WebServer(threading.Thread):
         if not sickrage.app.no_launch and sickrage.app.config.general.launch_browser:
             sickrage.app.scheduler.add_job(launch_browser,
                                            args=[('http', 'https')[sickrage.app.config.general.enable_https],
-                                                 (get_lan_ip(), sickrage.app.web_host)[sickrage.app.web_host != ''],
+                                                 (get_internal_ip(), sickrage.app.web_host)[sickrage.app.web_host != ''],
                                                  sickrage.app.config.general.web_port])
 
         sickrage.app.log.info("SiCKRAGE :: STARTED")
@@ -507,8 +507,8 @@ class WebServer(threading.Thread):
         sickrage.app.log.info(f"SiCKRAGE :: CONFIG VERSION:[v{sickrage.app.config.db.version}]")
         sickrage.app.log.info(f"SiCKRAGE :: DATABASE VERSION:[v{sickrage.app.main_db.version}]")
         sickrage.app.log.info(f"SiCKRAGE :: DATABASE TYPE:[{sickrage.app.db_type}]")
-        sickrage.app.log.info(
-            f"SiCKRAGE :: URL:[{('http', 'https')[sickrage.app.config.general.enable_https]}://{(get_lan_ip(), sickrage.app.web_host)[sickrage.app.web_host != '']}:{sickrage.app.config.general.web_port}/{sickrage.app.config.general.web_root}]")
+
+        sickrage.app.log.info(f"SiCKRAGE :: URL:[{('http', 'https')[sickrage.app.config.general.enable_https]}://{(get_internal_ip(), sickrage.app.web_host)[sickrage.app.web_host != '']}:{sickrage.app.config.general.web_port}/{sickrage.app.config.general.web_root}]")
 
         self.io_loop.start()
 
