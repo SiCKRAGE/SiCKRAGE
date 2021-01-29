@@ -638,7 +638,7 @@ class CMD_ComingEpisodes(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ComingEpisodes, self).__init__(application, request, *args, **kwargs)
-        self.sort, args = self.check_params("sort", ComingEpsSortBy.DATE, False, "string", [x.name.lower() for x in ComingEpsSortBy], *args, **kwargs)
+        self.sort, args = self.check_params("sort", ComingEpsSortBy.DATE.name, False, "string", [x.name.lower() for x in ComingEpsSortBy], *args, **kwargs)
         self.type, args = self.check_params("type", '|'.join(ComingEpisodes.categories), False, "list", ComingEpisodes.categories, *args, **kwargs)
         self.paused, args = self.check_params("paused", bool(sickrage.app.config.gui.coming_eps_display_paused), False, "bool", [], *args, **kwargs)
 
