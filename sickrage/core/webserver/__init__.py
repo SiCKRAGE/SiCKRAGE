@@ -160,7 +160,7 @@ class WebServer(threading.Thread):
             sickrage.app.config.general.web_root = sickrage.app.config.general.web_root = ('/' + sickrage.app.config.general.web_root.lstrip('/').strip('/'))
 
         # api root
-        self.api_v1_root = fr'{sickrage.app.config.general.web_root}/api/(?:v1/)?{sickrage.app.config.general.api_v1_key}'
+        self.api_v1_root = fr'{sickrage.app.config.general.web_root}/api/(?:v1/)?({sickrage.app.config.general.api_v1_key})'
         self.api_v2_root = fr'{sickrage.app.config.general.web_root}/api/v2'
 
         # tornado setup
