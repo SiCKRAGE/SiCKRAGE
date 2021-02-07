@@ -101,7 +101,7 @@ stages:
 release_build_master:
   stage: release_build
   image:
-    name: nikolaik/python-nodejs:python3.8-nodejs10-alpine
+    name: nikolaik/python-nodejs:python3.9-nodejs10-alpine
   variables:
     NODE_ENV: "development"
   script:
@@ -147,7 +147,7 @@ release_build_develop:
   stage: release_build
   retry: 2
   image:
-    name: nikolaik/python-nodejs:python3.8-nodejs10-alpine
+    name: nikolaik/python-nodejs:python3.9-nodejs10-alpine
   variables:
     NODE_ENV: "development"
   script:
