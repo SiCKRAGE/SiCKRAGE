@@ -108,6 +108,7 @@ release_build_master:
     - apk add --no-cache git gcc libffi-dev python3-dev musl-dev openssl-dev
     - git config --global user.email $(git --no-pager show -s --format='%ae' HEAD)
     - git config --global user.name $(git --no-pager show -s --format='%an' HEAD)
+    - pip install -U pip
     - pip install bumpversion
     - pip install -r requirements-dev.txt
     - RELEASE_VERSION=$(bumpversion --dry-run --list release | awk -F= '/new_version=/ { print $2 }')
@@ -152,6 +153,7 @@ release_build_develop:
   script:
     - apk add --no-cache git gcc libffi-dev python3-dev musl-dev openssl-dev
     - yarn install --pure-lockfile --cache-folder .yarn-cache
+    - pip install -U pip
     - pip install bumpversion
     - pip install -r requirements-dev.txt
     - bumpversion --allow-dirty dev package.json sickrage/version.txt
@@ -226,6 +228,7 @@ deploy_pypi:
   image: python:3.8-alpine3.12
   script:
     - apk add --no-cache py-pip gcc libffi-dev python3-dev musl-dev openssl-dev
+    - pip install -U pip
     - pip install -U twine
     - python setup.py sdist bdist_wheel
     - twine upload dist/*
