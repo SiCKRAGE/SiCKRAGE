@@ -1379,9 +1379,12 @@ class TVEpisode(object):
 
     def to_json(self):
         with sickrage.app.main_db.session() as session:
-            episode = session.query(MainDB.TVEpisode).filter_by(series_id=self.series_id, episode_id=self.episode_id).one_or_none()
-            json_data = TVEpisodeSchema().dump(episode)
+            episode = session.query(MainDB.TVEpisode).filter_by(series_provider_id=self.series_provider_id,
+                                                                series_id=self.series_id,
+                                                                season=self.season,
+                                                                episode=self.episode).one_or_none()
 
+            json_data = TVEpisodeSchema().dump(episode)
             json_data['seriesId'] = self.series_id
             json_data['episodeSlug'] = self.slug
             json_data['overview'] = self.overview.name

@@ -2,7 +2,16 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.8](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.7...v10.0.8)
+#### [v10.0.9](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.8...v10.0.9)
+
+- Performed webpack [`03897ba`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/03897baf59f8bbf2f73449905b5c1de93be821d7)
+- Fixed "Multiple rows were found for one_or_none()" exception when getting json object of episode object [`5761806`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/5761806f6896148c6250c236faa489ba847258fc)
+- Fixed issue with deploy of PyPi image [`18c3cbf`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/18c3cbf43db10e234c3d544c0854abf614dd3ef2)
+- Updated CI to use python 3.9 [`58ab668`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/58ab668fb584cc95a7534c83f3faa33be1e2308a)
+
+#### [10.0.8](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.7...10.0.8)
+
+> 26 January 2021
 
 - Removed ability to set web host from settings in UI, constrained to only setting from cli. [`c17dc55`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/c17dc551de4d6df4f4b20b96fb3d94bba086966e)
 - Removed IRC from main layout [`87a989d`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/87a989dc9f05308ea9fd6c23aad53d0249219624)

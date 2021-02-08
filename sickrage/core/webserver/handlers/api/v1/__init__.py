@@ -638,7 +638,7 @@ class CMD_ComingEpisodes(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ComingEpisodes, self).__init__(application, request, *args, **kwargs)
-        self.sort, args = self.check_params("sort", ComingEpsSortBy.DATE, False, "string", [x.name.lower() for x in ComingEpsSortBy], *args, **kwargs)
+        self.sort, args = self.check_params("sort", ComingEpsSortBy.DATE.name.lower(), False, "string", [x.name.lower() for x in ComingEpsSortBy], *args, **kwargs)
         self.type, args = self.check_params("type", '|'.join(ComingEpisodes.categories), False, "list", ComingEpisodes.categories, *args, **kwargs)
         self.paused, args = self.check_params("paused", bool(sickrage.app.config.gui.coming_eps_display_paused), False, "bool", [], *args, **kwargs)
 
@@ -1174,7 +1174,7 @@ class CMD_PostProcess(ApiCall):
         self.path, args = self.check_params("path", None, False, "string", [], *args, **kwargs)
         self.force_replace, args = self.check_params("force_replace", False, False, "bool", [], *args, **kwargs)
         self.return_data, args = self.check_params("return_data", False, False, "bool", [], *args, **kwargs)
-        self.process_method, args = self.check_params("process_method", ProcessMethod.COPY.name, False, "string", [x.name.lower() for x in ProcessMethod], *args, **kwargs)
+        self.process_method, args = self.check_params("process_method", ProcessMethod.COPY.name.lower(), False, "string", [x.name.lower() for x in ProcessMethod], *args, **kwargs)
         self.is_priority, args = self.check_params("is_priority", False, False, "bool", [], *args, **kwargs)
         self.delete, args = self.check_params("delete", False, False, "bool", [], *args, **kwargs)
         self.failed, args = self.check_params("failed", False, False, "bool", [], *args, **kwargs)
