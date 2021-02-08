@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.9.dev2](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.8...v10.0.9.dev2)
+#### [v10.0.9](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.8...v10.0.9)
 
 - Performed webpack [`03897ba`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/03897baf59f8bbf2f73449905b5c1de93be821d7)
 - Fixed "Multiple rows were found for one_or_none()" exception when getting json object of episode object [`5761806`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/5761806f6896148c6250c236faa489ba847258fc)
