@@ -232,8 +232,12 @@ deploy_pypi:
   stage: release_deploy
   retry: 2
   image: python:3.8-alpine3.12
+  variables:
+    CARGO_HOME: "$CI_PROJECT_DIR/cargo"
   script:
-    - apk add --no-cache py-pip gcc libffi-dev python3-dev musl-dev openssl-dev
+    - export PATH="$CARGO_HOME/bin:$PATH"
+    - apk add --no-cache py-pip gcc libffi-dev python3-dev musl-dev openssl-dev curl
+    - curl https://sh.rustup.rs -sSf | sh -s -- -y
     - pip install -U pip
     - pip install -U twine
     - python setup.py sdist bdist_wheel
