@@ -86,3 +86,4 @@ package-lock.json
 /src/spritesmith-generated/
 /dist/
 /sickrage/core/webserver/static/js/core.js.map
+/cargo/
