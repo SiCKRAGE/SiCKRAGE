@@ -104,7 +104,9 @@ release_build_master:
     name: nikolaik/python-nodejs:python3.9-nodejs10-alpine
   variables:
     NODE_ENV: "development"
+    CARGO_HOME: "$CI_PROJECT_DIR/cargo"
   script:
+    - export PATH="$CARGO_HOME/bin:$PATH"
     - apk add --no-cache git gcc libffi-dev python3-dev musl-dev openssl-dev curl
     - curl https://sh.rustup.rs -sSf | sh -s -- -y
     - git config --global user.email $(git --no-pager show -s --format='%ae' HEAD)
@@ -151,7 +153,9 @@ release_build_develop:
     name: nikolaik/python-nodejs:python3.9-nodejs10-alpine
   variables:
     NODE_ENV: "development"
+    CARGO_HOME: "$CI_PROJECT_DIR/cargo"
   script:
+    - export PATH="$CARGO_HOME/bin:$PATH"
     - apk add --no-cache git gcc libffi-dev python3-dev musl-dev openssl-dev curl
     - curl https://sh.rustup.rs -sSf | sh -s -- -y
     - yarn install --pure-lockfile --cache-folder .yarn-cache
