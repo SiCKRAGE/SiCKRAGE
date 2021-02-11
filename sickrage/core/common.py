@@ -684,11 +684,11 @@ class Qualities(enum.IntFlag):
 
 # extend episode status enum class with composite statuses
 [extend_enum(EpisodeStatus, f"{status.name}_{q.name}", status + 100 * q)
- for status in list(EpisodeStatus).copy()
- for q in Qualities if not q.is_preset and status in [EpisodeStatus.DOWNLOADED,
-                                                      EpisodeStatus.SNATCHED,
-                                                      EpisodeStatus.SNATCHED_BEST,
-                                                      EpisodeStatus.SNATCHED_PROPER,
-                                                      EpisodeStatus.ARCHIVED,
-                                                      EpisodeStatus.FAILED,
-                                                      EpisodeStatus.IGNORED]]
+ for status in list(EpisodeStatus).copy() for q in Qualities if not q.is_preset and status in [EpisodeStatus.DOWNLOADED,
+                                                                                               EpisodeStatus.SNATCHED,
+                                                                                               EpisodeStatus.SNATCHED_BEST,
+                                                                                               EpisodeStatus.SNATCHED_PROPER,
+                                                                                               EpisodeStatus.ARCHIVED,
+                                                                                               EpisodeStatus.FAILED,
+                                                                                               EpisodeStatus.IGNORED,
+                                                                                               EpisodeStatus.SUBTITLED]]

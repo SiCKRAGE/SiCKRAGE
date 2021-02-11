@@ -30,7 +30,7 @@ from sickrage.core.common import Quality, Qualities, EpisodeStatus
 from sickrage.core.databases.main import MainDB
 from sickrage.core.enums import SearchFormat, SeriesProviderID
 from sickrage.core.exceptions import CantUpdateShowException, CantRefreshShowException, EpisodeNotFoundException, AnidbAdbaConnectionException, NoNFOException
-from sickrage.core.helpers import try_int, checkbox_to_value, flatten
+from sickrage.core.helpers import checkbox_to_value, flatten
 from sickrage.core.helpers.anidb import get_release_groups_for_anime, short_group_names
 from sickrage.core.queues.search import BacklogSearchTask, FailedSearchTask
 from sickrage.core.scene_numbering import xem_refresh
@@ -673,13 +673,12 @@ class EditShowHandler(BaseHandler):
         search_delay = self.get_argument('search_delay', None)
 
         status, message = edit_show(series_id=show, location=location, any_qualities=any_qualities, best_qualities=best_qualities,
-                                    exceptions_list=exceptions_list,
-                                    flatten_folders=flatten_folders, paused=paused, direct_call=direct_call, search_format=search_format,
-                                    dvd_order=dvd_order, series_provider_language=series_provider_language, subtitles=subtitles,
-                                    sub_use_sr_metadata=sub_use_sr_metadata,
-                                    skip_downloaded=skip_downloaded, rls_ignore_words=rls_ignore_words, rls_require_words=rls_require_words, anime=anime,
-                                    blacklist=blacklist, whitelist=whitelist, default_ep_status=default_ep_status, quality_preset=quality_preset,
-                                    scene=scene, search_delay=search_delay)
+                                    exceptions_list=exceptions_list, flatten_folders=flatten_folders, paused=paused, direct_call=direct_call,
+                                    search_format=SearchFormat[search_format], dvd_order=dvd_order, series_provider_language=series_provider_language,
+                                    subtitles=subtitles, sub_use_sr_metadata=sub_use_sr_metadata, skip_downloaded=skip_downloaded,
+                                    rls_ignore_words=rls_ignore_words, rls_require_words=rls_require_words, anime=anime, blacklist=blacklist,
+                                    whitelist=whitelist, default_ep_status=EpisodeStatus[default_ep_status], quality_preset=quality_preset, scene=scene,
+                                    search_delay=search_delay)
 
         if direct_call:
             return json_encode({'result': 'success'}) if status is True else json_encode({'result': 'error', 'message': message})
@@ -890,7 +889,7 @@ class MassEditHandler(BaseHandler):
             if default_ep_status == 'keep':
                 new_default_ep_status = show_obj.default_ep_status
             else:
-                new_default_ep_status = default_ep_status
+                new_default_ep_status = EpisodeStatus[default_ep_status]
 
             if anime == 'keep':
                 new_anime = show_obj.anime
@@ -901,7 +900,7 @@ class MassEditHandler(BaseHandler):
             if search_format == 'keep':
                 new_search_format = show_obj.search_format
             else:
-                new_search_format = search_format
+                new_search_format = SearchFormat[search_format]
 
             if flatten_folders == 'keep':
                 new_flatten_folders = show_obj.flatten_folders
