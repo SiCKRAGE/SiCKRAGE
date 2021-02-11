@@ -51,7 +51,7 @@ class BaseHandler(RequestHandler):
         return locale.get(sickrage.app.config.gui.gui_lang)
 
     def write_error(self, status_code, **kwargs):
-        if "exc_info" in kwargs:
+        if status_code not in [401, 404] and "exc_info" in kwargs:
             exc_info = kwargs["exc_info"]
             error = repr(exc_info[1])
 

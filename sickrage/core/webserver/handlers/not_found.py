@@ -28,15 +28,11 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 
 class NotFoundHandler(BaseHandler):
     def prepare(self):
-        url = self.request.uri
-
         if sickrage.app.config.general.web_root:
             if not self.request.uri.startswith(sickrage.app.config.general.web_root):
-                return self.redirect(url)
+                return self.redirect(self.request.uri)
 
-            url = url[len(sickrage.app.config.general.web_root) + 1:]
-
-        if url[:3] != 'api':
+        if self.request.uri[len(sickrage.app.config.general.web_root) + 1:][:3] != 'api':
             raise tornado.web.HTTPError(
                 status_code=404,
                 reason="You have reached this page by accident, please check the url."
