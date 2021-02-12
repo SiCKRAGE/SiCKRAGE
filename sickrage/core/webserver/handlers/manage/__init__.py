@@ -197,10 +197,10 @@ def edit_show(series_id, any_qualities, best_qualities, exceptions_list, locatio
     show_obj.paused = paused
     show_obj.anime = anime
     show_obj.scene = scene
-    show_obj.search_format = SearchFormat[search_format]
+    show_obj.search_format = search_format
     show_obj.subtitles = subtitles
     show_obj.sub_use_sr_metadata = sub_use_sr_metadata
-    show_obj.default_ep_status = EpisodeStatus[default_ep_status]
+    show_obj.default_ep_status = default_ep_status
     show_obj.skip_downloaded = skip_downloaded
 
     # If directCall from mass_edit_update no scene exceptions handling or black and white list handling
