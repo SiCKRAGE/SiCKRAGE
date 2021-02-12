@@ -2,9 +2,10 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.10.dev1](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.9...v10.0.10.dev1)
+#### [v10.0.10.dev2](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.9...v10.0.10.dev2)
 
 - Fixed issues with mass episode status editing [`3e21025`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/3e21025960645f480f6b366f9fd6d6603c874e44)
+- Fixed issues with mass editing show search format and default episode status [`34e22ae`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/34e22ae4b3738a45eec384df72936e740bd55fcf)
 
 #### [10.0.9](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.8...10.0.9)
 
