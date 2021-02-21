@@ -2,7 +2,14 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.9](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.8...v10.0.9)
+#### [v10.0.10](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.9...v10.0.10)
+
+- Fixed issues with mass episode status editing [`3e21025`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/3e21025960645f480f6b366f9fd6d6603c874e44)
+- Fixed issues with mass editing show search format and default episode status [`34e22ae`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/34e22ae4b3738a45eec384df72936e740bd55fcf)
+
+#### [10.0.9](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.8...10.0.9)
+
+> 8 February 2021
 
 - Performed webpack [`03897ba`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/03897baf59f8bbf2f73449905b5c1de93be821d7)
 - Fixed "Multiple rows were found for one_or_none()" exception when getting json object of episode object [`5761806`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/5761806f6896148c6250c236faa489ba847258fc)
