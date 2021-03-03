@@ -570,7 +570,7 @@ class TVEpisode(object):
             rawAirdate = [int(x) for x in str(firstaired).split("-")]
             self.airdate = datetime.date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
         except (ValueError, IndexError, TypeError):
-            sickrage.app.log.warning(
+            sickrage.app.log.debug(
                 f"Malformed air date of {firstaired} retrieved from {self.show.series_provider.name} for ({self.show.name} - S{int(season or 0):02d}E{int(episode or 0):02d})")
 
             # if I'm incomplete on the series_provider_id but I once was complete then just delete myself from the DB for now
