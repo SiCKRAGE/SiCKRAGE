@@ -2,7 +2,14 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.10](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.9...v10.0.10)
+#### [v10.0.11.dev1](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.10...v10.0.11.dev1)
+
+- Fixed issue with show refresh tasks getting stuck due to missing dependant task being cleared prematurely [`4ddbd58`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/4ddbd581468c98eed8157c4fdd23fe33a9f50b4b)
+- Refactred "Malformed air date" warnings to debug messages during loading data from series providers for episodes [`cb5551d`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/cb5551dc037d330b3dd796babb025dcc9691bc3d)
+
+#### [10.0.10](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.9...10.0.10)
+
+> 21 February 2021
 
 - Fixed issues with mass episode status editing [`3e21025`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/3e21025960645f480f6b366f9fd6d6603c874e44)
 - Fixed issues with mass editing show search format and default episode status [`34e22ae`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/34e22ae4b3738a45eec384df72936e740bd55fcf)
