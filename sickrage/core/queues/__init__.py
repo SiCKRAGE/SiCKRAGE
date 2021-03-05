@@ -136,9 +136,20 @@ class Queue(object):
             self.lock.release()
             self.notify_workers()
 
+    def get_task_dependants(self):
+        dependants = []
+
+        for x in self.tasks.copy().values():
+            if x.depend is not None:
+                dependants += x.depend
+
+        return dependants
+
     def auto_remove_tasks(self):
+        dependants = self.get_task_dependants()
+
         for task in self.tasks.copy().values():
-            if task.status in [TaskStatus.FINISHED, TaskStatus.FAILED]:
+            if task.status in [TaskStatus.FINISHED, TaskStatus.FAILED] and task.id not in dependants:
                 self.remove_task(task.id)
 
         self.auto_remove_tasks_timer = threading.Timer(10.0, self.auto_remove_tasks)
