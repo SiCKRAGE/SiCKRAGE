@@ -11,6 +11,7 @@ attrs==19.3.0
 babelfish==0.5.5
 beautifulsoup4==4.9.1
 bencode3==0.1.0
+bleach==3.3.0
 CacheControl==0.12.6
 certifi==2020.6.20
 cffi==1.14.1

@@ -19,6 +19,7 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 import functools
+import html
 import time
 import traceback
 import types
@@ -26,10 +27,11 @@ from concurrent.futures.thread import ThreadPoolExecutor
 from typing import Optional, Awaitable
 from urllib.parse import urlparse, urljoin
 
+import bleach
 from jose import ExpiredSignatureError
 from keycloak.exceptions import KeycloakClientError
 from mako.exceptions import RichTraceback
-from tornado import locale
+from tornado import locale, escape
 from tornado.web import RequestHandler
 
 import sickrage
@@ -196,3 +198,11 @@ class BaseHandler(RequestHandler):
     def options(self, *args, **kwargs):
         self.set_status(204)
         self.finish()
+
+    def get_argument(self, *args, **kwargs):
+        value = super(BaseHandler, self).get_argument(*args, **kwargs)
+
+        try:
+            return bleach.clean(value)
+        except TypeError:
+            return value
