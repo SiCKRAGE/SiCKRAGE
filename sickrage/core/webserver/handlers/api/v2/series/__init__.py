@@ -153,7 +153,7 @@ class ApiV2SeriesHandler(APIBaseHandler):
 
         try:
             new_quality = Qualities[quality_preset.upper()]
-        except KeyError:
+        except (AttributeError, KeyError):
             new_quality = Quality.combine_qualities([Qualities[x.upper()] for x in allowed_qualities], [Qualities[x.upper()] for x in preferred_qualities])
 
         sickrage.app.show_queue.add_show(series_provider_id=series_provider_id,
