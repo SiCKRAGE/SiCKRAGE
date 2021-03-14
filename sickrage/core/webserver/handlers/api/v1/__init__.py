@@ -35,6 +35,7 @@ import sickrage
 from sickrage.core.caches import image_cache
 from sickrage.core.common import dateFormat, dateTimeFormat, Overview, timeFormat, Quality, Qualities, EpisodeStatus
 from sickrage.core.databases.main import MainDB
+from sickrage.core.databases.main.schemas import TVEpisodeSchema
 from sickrage.core.enums import ProcessMethod, SeriesProviderID
 from sickrage.core.exceptions import EpisodeNotFoundException, CantRemoveShowException, CantRefreshShowException, CantUpdateShowException
 from sickrage.core.helpers import backup_app_data, srdatetime, pretty_file_size, read_file_buffered, try_int, sanitize_file_name, chmod_as_parent, flatten, \
@@ -705,7 +706,7 @@ class CMD_Episode(ApiCall):
 
         try:
             db_data = session.query(MainDB.TVEpisode).filter_by(series_id=self.series_id, season=self.s, episode=self.e).one()
-            episode_result = db_data.as_dict()
+            episode_result = TVEpisodeSchema().dump(db_data)
 
             show_path = show_obj.location
 

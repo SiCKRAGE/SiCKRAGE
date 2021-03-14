@@ -1088,7 +1088,7 @@ class PostProcessor(object):
         # set file modify stamp to show airdate
         if sickrage.app.config.general.airdate_episodes:
             for cur_ep in episode_objects:
-                cur_ep.airdateModifyStamp()
+                cur_ep.airdate_modify_stamp()
 
         # generate nfo/tbn
         root_episode_object.create_meta_files()
