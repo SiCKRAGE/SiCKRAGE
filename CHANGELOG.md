@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.11](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.10...v10.0.11)
+#### [v10.0.12.dev1](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.11...v10.0.12.dev1)
+
+- Refactored episode slug to sXXeXX [`993479f`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/993479fd84e3c97cc172efaf5dd5cfa395dbce3a)
+
+#### [10.0.11](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.10...10.0.11)
+
+> 11 March 2021
 
 - Fixed issue with show refresh tasks getting stuck due to missing dependant task being cleared prematurely [`4ddbd58`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/4ddbd581468c98eed8157c4fdd23fe33a9f50b4b)
 - Refactred "Malformed air date" warnings to debug messages during loading data from series providers for episodes [`cb5551d`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/cb5551dc037d330b3dd796babb025dcc9691bc3d)
