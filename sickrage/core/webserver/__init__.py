@@ -40,12 +40,12 @@ from sickrage.core.webserver.handlers.api import ApiSwaggerDotJsonHandler, ApiPi
 from sickrage.core.webserver.handlers.api.v1 import ApiHandler
 from sickrage.core.webserver.handlers.api.v2 import ApiV2RetrieveSeriesMetadataHandler
 from sickrage.core.webserver.handlers.api.v2.config import ApiV2ConfigHandler
-from sickrage.core.webserver.handlers.api.v2.episode import ApiV2EpisodesRenameHandler, ApiV2EpisodesManualSearchHandler
 from sickrage.core.webserver.handlers.api.v2.file_browser import ApiV2FileBrowserHandler
 from sickrage.core.webserver.handlers.api.v2.postprocess import Apiv2PostProcessHandler
 from sickrage.core.webserver.handlers.api.v2.schedule import ApiV2ScheduleHandler
 from sickrage.core.webserver.handlers.api.v2.series import ApiV2SeriesHandler, ApiV2SeriesEpisodesHandler, ApiV2SeriesImagesHandler, ApiV2SeriesImdbInfoHandler, \
-    ApiV2SeriesBlacklistHandler, ApiV2SeriesWhitelistHandler, ApiV2SeriesRefreshHandler, ApiV2SeriesUpdateHandler
+    ApiV2SeriesBlacklistHandler, ApiV2SeriesWhitelistHandler, ApiV2SeriesRefreshHandler, ApiV2SeriesUpdateHandler, ApiV2SeriesEpisodesRenameHandler, \
+    ApiV2SeriesEpisodesManualSearchHandler
 from sickrage.core.webserver.handlers.api.v2.series_provider import ApiV2SeriesProvidersHandler, ApiV2SeriesProvidersSearchHandler, \
     ApiV2SeriesProvidersLanguagesHandler
 from sickrage.core.webserver.handlers.calendar import CalendarHandler
@@ -227,14 +227,14 @@ class WebServer(threading.Thread):
             (fr'{self.api_v2_root}/series', ApiV2SeriesHandler),
             (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)', ApiV2SeriesHandler),
             (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/episodes', ApiV2SeriesEpisodesHandler),
+            (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/episodes/rename', ApiV2SeriesEpisodesRenameHandler),
+            (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/episodes/(s\d+e\d+)/search', ApiV2SeriesEpisodesManualSearchHandler),
             (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/images', ApiV2SeriesImagesHandler),
             (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/imdb-info', ApiV2SeriesImdbInfoHandler),
             (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/blacklist', ApiV2SeriesBlacklistHandler),
             (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/whitelist', ApiV2SeriesWhitelistHandler),
             (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/refresh', ApiV2SeriesRefreshHandler),
-            (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/update', ApiV2SeriesUpdateHandler),
-            (fr'{self.api_v2_root}/episodes/rename', ApiV2EpisodesRenameHandler),
-            (fr'{self.api_v2_root}/episodes/(\d+[-][a-z]+)/search', ApiV2EpisodesManualSearchHandler),
+            (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/update', ApiV2SeriesUpdateHandler)
         ]
 
         # New UI Static File Handlers

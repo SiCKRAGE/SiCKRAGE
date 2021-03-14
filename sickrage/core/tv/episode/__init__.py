@@ -70,7 +70,7 @@ class TVEpisode(object):
 
     @property
     def slug(self):
-        return f'{self.episode_id}-{self.series_provider_id.slug}'
+        return f's{self.season:02d}e{self.episode:02d}'
 
     @property
     def series_id(self):
