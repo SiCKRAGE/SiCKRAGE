@@ -46,8 +46,6 @@ class APIBaseHandler(BaseHandler):
         certs = sickrage.app.auth_server.certs()
         auth_header = self.request.headers.get('Authorization')
 
-        self.current_user = None
-
         if auth_header:
             if 'bearer' in auth_header.lower():
                 try:
@@ -103,8 +101,6 @@ class APIBaseHandler(BaseHandler):
                             sickrage.app.config.general.server_id = server_id
                             sentry_sdk.set_tag('server_id', sickrage.app.config.general.server_id)
                             sickrage.app.config.save()
-
-                    self.current_user = decoded_token
                 except Exception:
                     return self.send_error(401, error='failed to decode token')
             else:
@@ -113,6 +109,10 @@ class APIBaseHandler(BaseHandler):
             return self.send_error(401, error='authorization header missing')
 
     def get_current_user(self):
+        if 'access_token' in sickrage.app.api.token:
+            certs = sickrage.app.auth_server.certs()
+            sickrage.app.auth_server.decode_token(sickrage.app.api.token['access_token'], certs)
+
         return self.current_user
 
     def write_error(self, status_code, **kwargs):
