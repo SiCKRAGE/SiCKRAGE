@@ -46,6 +46,8 @@ class APIBaseHandler(BaseHandler):
         certs = sickrage.app.auth_server.certs()
         auth_header = self.request.headers.get('Authorization')
 
+        self.current_user = None
+
         if auth_header:
             if 'bearer' in auth_header.lower():
                 try:
@@ -88,14 +90,14 @@ class APIBaseHandler(BaseHandler):
                         if exchanged_token:
                             sickrage.app.api.token = exchanged_token
 
-                    internal_connections = f"{self.request.protocol}://{get_internal_ip()}:{sickrage.app.config.general.web_port}{sickrage.app.config.general.web_root}"
-                    external_connections = f"{self.request.protocol}://{get_external_ip()}:{sickrage.app.config.general.web_port}{sickrage.app.config.general.web_root}"
-                    connections = ','.join([internal_connections, external_connections])
-
-                    if sickrage.app.config.general.server_id and not sickrage.app.api.account.update_server(sickrage.app.config.general.server_id, connections):
-                        sickrage.app.config.general.server_id = ''
+                    # if sickrage.app.config.general.server_id and not sickrage.app.api.account.update_server(sickrage.app.config.general.server_id, connections):
+                    #     sickrage.app.config.general.server_id = ''
 
                     if not sickrage.app.config.general.server_id:
+                        internal_connections = f"{self.request.protocol}://{get_internal_ip()}:{sickrage.app.config.general.web_port}{sickrage.app.config.general.web_root}"
+                        external_connections = f"{self.request.protocol}://{get_external_ip()}:{sickrage.app.config.general.web_port}{sickrage.app.config.general.web_root}"
+                        connections = ','.join([internal_connections, external_connections])
+
                         server_id = sickrage.app.api.account.register_server(connections)
                         if server_id:
                             sickrage.app.config.general.server_id = server_id

@@ -21,6 +21,7 @@
 import datetime
 
 import sickrage
+from sickrage.core.helpers import convert_dict_keys_to_camelcase
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
 from sickrage.core.webserver.handlers.api import APIBaseHandler
 
@@ -71,5 +72,6 @@ class ApiV2ScheduleHandler(APIBaseHandler):
             results[i]['series_provider_id'] = result['series_provider_id'].name
             results[i]['quality'] = result['quality'].name
             results[i]['localtime'] = result['localtime'].timestamp()
+            results[i] = convert_dict_keys_to_camelcase(results[i])
 
         return self.write_json({'episodes': results, 'today': today.timestamp(), 'nextWeek': next_week.timestamp()})

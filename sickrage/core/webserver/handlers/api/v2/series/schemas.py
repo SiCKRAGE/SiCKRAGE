@@ -33,6 +33,16 @@ class SeriesSlugPath(BaseSchema):
     )
 
 
+class EpisodeSlugPath(BaseSchema):
+    """Episode slug schema"""
+
+    episode_slug = fields.String(
+        required=True,
+        default=False,
+        description="Episode slug for episode you want to lookup",
+    )
+
+
 class SeriesEpisodesRenameSuccessSchema(BaseSuccessSchema):
     pass
 

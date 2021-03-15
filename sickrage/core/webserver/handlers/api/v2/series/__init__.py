@@ -37,6 +37,7 @@ from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.core.tv.show.helpers import get_show_list, find_show, find_show_by_slug
 from sickrage.core.webserver.handlers.api import APIBaseHandler
 from sickrage.core.websocket import WebSocketMessage
+from .schemas import *
 
 
 class ApiV2SeriesHandler(APIBaseHandler):
@@ -338,7 +339,7 @@ class ApiV2SeriesImagesHandler(APIBaseHandler):
         series = find_show_by_slug(series_slug)
         if series is None:
             return self.send_error(404, error=f"Unable to find the specified series using slug: {series_slug}")
-        
+
         image = series_image(series.series_id, series.series_provider_id, SeriesImageType.POSTER_THUMB)
         return self.write_json({'poster': image.url})
 
@@ -348,7 +349,7 @@ class ApiV2SeriesImdbInfoHandler(APIBaseHandler):
         series = find_show_by_slug(series_slug)
         if series is None:
             return self.send_error(404, error=f"Unable to find the specified series using slug: {series_slug}")
-        
+
         with sickrage.app.main_db.session() as session:
             imdb_info = session.query(MainDB.IMDbInfo).filter_by(imdb_id=series.imdb_id).one_or_none()
             json_data = IMDbInfoSchema().dump(imdb_info)
@@ -361,7 +362,7 @@ class ApiV2SeriesBlacklistHandler(APIBaseHandler):
         series = find_show_by_slug(series_slug)
         if series is None:
             return self.send_error(404, error=f"Unable to find the specified series using slug: {series_slug}")
-        
+
         with sickrage.app.main_db.session() as session:
             blacklist = session.query(MainDB.Blacklist).filter_by(series_id=series.series_id, series_provider_id=series.series_provider_id).one_or_none()
             json_data = BlacklistSchema().dump(blacklist)
@@ -374,7 +375,7 @@ class ApiV2SeriesWhitelistHandler(APIBaseHandler):
         series = find_show_by_slug(series_slug)
         if series is None:
             return self.send_error(404, error=f"Unable to find the specified series using slug: {series_slug}")
-        
+
         with sickrage.app.main_db.session() as session:
             whitelist = session.query(MainDB.Whitelist).filter_by(series_id=series.series_id, series_provider_id=series.series_provider_id).one_or_none()
             json_data = WhitelistSchema().dump(whitelist)
