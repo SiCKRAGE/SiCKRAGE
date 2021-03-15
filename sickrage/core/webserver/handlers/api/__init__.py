@@ -109,11 +109,13 @@ class APIBaseHandler(BaseHandler):
             return self.send_error(401, error='authorization header missing')
 
     def get_current_user(self):
-        if 'access_token' in sickrage.app.api.token:
+        auth_header = self.request.headers.get('Authorization')
+        if 'bearer' in auth_header.lower():
             certs = sickrage.app.auth_server.certs()
-            sickrage.app.auth_server.decode_token(sickrage.app.api.token['access_token'], certs)
-
-        return self.current_user
+            token = auth_header.strip('Bearer').strip()
+            decoded_token = sickrage.app.auth_server.decode_token(token, certs)
+            if sickrage.app.config.user.sub_id == decoded_token.get('sub'):
+                return decoded_token
 
     def write_error(self, status_code, **kwargs):
         self.set_header('Content-Type', 'application/json')
