@@ -36,11 +36,12 @@ import sickrage
 from sickrage.core.helpers import create_https_certificates, launch_browser, get_internal_ip
 from sickrage.core.webserver.handlers.account import AccountLinkHandler, AccountUnlinkHandler, AccountIsLinkedHandler
 from sickrage.core.webserver.handlers.announcements import AnnouncementsHandler, MarkAnnouncementSeenHandler, AnnouncementCountHandler
-from sickrage.core.webserver.handlers.api import ApiSwaggerDotJsonHandler, ApiPingHandler
+from sickrage.core.webserver.handlers.api import ApiSwaggerDotJsonHandler, ApiPingHandler, ApiProfileHandler
 from sickrage.core.webserver.handlers.api.v1 import ApiHandler
 from sickrage.core.webserver.handlers.api.v2 import ApiV2RetrieveSeriesMetadataHandler
 from sickrage.core.webserver.handlers.api.v2.config import ApiV2ConfigHandler
 from sickrage.core.webserver.handlers.api.v2.file_browser import ApiV2FileBrowserHandler
+from sickrage.core.webserver.handlers.api.v2.history import ApiV2HistoryHandler
 from sickrage.core.webserver.handlers.api.v2.postprocess import Apiv2PostProcessHandler
 from sickrage.core.webserver.handlers.api.v2.schedule import ApiV2ScheduleHandler
 from sickrage.core.webserver.handlers.api.v2.series import ApiV2SeriesHandler, ApiV2SeriesEpisodesHandler, ApiV2SeriesImagesHandler, ApiV2SeriesImdbInfoHandler, \
@@ -215,12 +216,14 @@ class WebServer(threading.Thread):
         # API v2 Handlers
         self.handlers['api_v2_handlers'] = [
             (fr'{self.api_v2_root}/ping', ApiPingHandler),
+            (fr'{self.api_v2_root}/profile', ApiProfileHandler),
             (fr'{self.api_v2_root}/swagger.json', ApiSwaggerDotJsonHandler, {'api_handlers': 'api_v2_handlers', 'api_version': '2.0.0'}),
             (fr'{self.api_v2_root}/config', ApiV2ConfigHandler),
             (fr'{self.api_v2_root}/file-browser', ApiV2FileBrowserHandler),
             (fr'{self.api_v2_root}/postprocess', Apiv2PostProcessHandler),
             (fr'{self.api_v2_root}/retrieve-series-metadata', ApiV2RetrieveSeriesMetadataHandler),
             (fr'{self.api_v2_root}/schedule', ApiV2ScheduleHandler),
+            (fr'{self.api_v2_root}/history', ApiV2HistoryHandler),
             (fr'{self.api_v2_root}/series-providers', ApiV2SeriesProvidersHandler),
             (fr'{self.api_v2_root}/series-providers/([a-z]+)/search', ApiV2SeriesProvidersSearchHandler),
             (fr'{self.api_v2_root}/series-providers/([a-z]+)/languages', ApiV2SeriesProvidersLanguagesHandler),

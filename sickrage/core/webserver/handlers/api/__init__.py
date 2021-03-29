@@ -178,6 +178,11 @@ class APIBaseHandler(BaseHandler):
         return spec.to_dict()
 
 
+class ApiProfileHandler(APIBaseHandler):
+    def get(self):
+        return self.write_json(self.current_user)
+
+
 class ApiPingHandler(APIBaseHandler):
     def get(self):
         return self.write_json({'message': 'pong'})
