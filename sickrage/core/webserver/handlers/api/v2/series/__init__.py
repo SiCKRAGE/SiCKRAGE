@@ -79,13 +79,13 @@ class ApiV2SeriesHandler(APIBaseHandler):
         """
 
         if not series_slug:
-            all_series = {}
+            all_series = []
 
             for show in get_show_list():
                 if sickrage.app.show_queue.is_being_removed(show.series_id):
                     continue
 
-                all_series[show.slug] = show.to_json(progress=True)
+                all_series.append(show.to_json(progress=True))
 
             return self.write_json(all_series)
 
