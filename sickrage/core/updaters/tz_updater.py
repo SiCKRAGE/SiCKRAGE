@@ -20,7 +20,6 @@
 
 import datetime
 import re
-import threading
 
 from dateutil import tz
 from sqlalchemy import orm
@@ -28,7 +27,6 @@ from sqlalchemy import orm
 import sickrage
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.helpers import try_int
-from sickrage.core.websession import WebSession
 
 
 class TimeZoneUpdater(object):
@@ -37,37 +35,36 @@ class TimeZoneUpdater(object):
         self.running = False
         self.time_regex = re.compile(r'(?P<hour>\d{1,2})(?:[:.]?(?P<minute>\d{2})?)? ?(?P<meridiem>[PA]\.? ?M?)?\b', re.I)
 
-    def task(self, force=False):
-        if self.running and not force:
-            return
+    def update_network_timezone(self, network, timezone):
+        session = sickrage.app.cache_db.session()
 
         try:
-            self.running = True
-            threading.currentThread().setName(self.name)
-            self.update_network_timezones()
+            dbData = session.query(CacheDB.NetworkTimezone).filter_by(network_name=network).one()
+            if dbData.timezone != timezone:
+                dbData.timezone = timezone
+        except orm.exc.NoResultFound:
+            session.add(CacheDB.NetworkTimezone(**{
+                'network_name': network,
+                'timezone': timezone
+            }))
         finally:
-            self.running = False
+            session.commit()
+
+    def delete_network_timezone(self, network):
+        session = sickrage.app.cache_db.session()
+        session.query(CacheDB.NetworkTimezone).filter_by(network_name=network).delete()
 
     def update_network_timezones(self):
         """Update timezone information from SR repositories"""
 
         session = sickrage.app.cache_db.session()
 
-        network_timezones = {}
-
-        try:
-            url_data = WebSession().get('https://cdn.sickrage.ca/network_timezones/').text
-        except Exception:
+        resp = sickrage.app.api.network_timezones()
+        if not resp or 'data' not in resp:
             sickrage.app.log.warning('Updating network timezones failed.')
             return
 
-        try:
-            for line in url_data.splitlines():
-                (key, val) = line.strip().rsplit(':', 1)
-                if all([key, val]):
-                    network_timezones[key] = val
-        except (IOError, OSError):
-            pass
+        network_timezones = {item['network']: item['timezone'] for item in resp['data']}
 
         for x in session.query(CacheDB.NetworkTimezone):
             if x.network_name not in network_timezones:

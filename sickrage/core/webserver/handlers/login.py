@@ -19,13 +19,12 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 
-
 import sentry_sdk
 from jose import ExpiredSignatureError, JWTError
 
 import sickrage
 from sickrage.core.enums import UserPermission
-from sickrage.core.helpers import is_ip_whitelisted, get_internal_ip, get_external_ip
+from sickrage.core.helpers import is_ip_whitelisted, get_internal_ip
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
@@ -100,27 +99,21 @@ class LoginHandler(BaseHandler):
             if exchanged_token:
                 sickrage.app.api.token = exchanged_token
 
-        internal_connections = "{}://{}:{}{}".format(self.request.protocol,
-                                                     get_internal_ip(),
-                                                     sickrage.app.config.general.web_port,
-                                                     sickrage.app.config.general.web_root)
-
-        external_connections = "{}://{}:{}{}".format(self.request.protocol,
-                                                     get_external_ip(),
-                                                     sickrage.app.config.general.web_port,
-                                                     sickrage.app.config.general.web_root)
-
-        connections = ','.join([internal_connections, external_connections])
-
-        if sickrage.app.config.general.server_id and not sickrage.app.api.account.update_server(sickrage.app.config.general.server_id, connections):
-            sickrage.app.config.general.server_id = ''
-
         if not sickrage.app.config.general.server_id:
-            server_id = sickrage.app.api.account.register_server(connections)
+            server_id = sickrage.app.api.server.register_server(
+                ip_addresses=','.join([get_internal_ip()]),
+                web_protocol=self.request.protocol,
+                web_port=sickrage.app.config.general.web_port,
+                web_root=sickrage.app.config.general.web_root,
+                server_version=sickrage.version()
+            )
+
             if server_id:
                 sickrage.app.config.general.server_id = server_id
-                sentry_sdk.set_tag('server_id', sickrage.app.config.general.server_id)
                 sickrage.app.config.save()
+
+        if sickrage.app.config.general.server_id:
+            sentry_sdk.set_tag('server_id', sickrage.app.config.general.server_id)
 
     def handle_sso_auth_get(self):
         code = self.get_argument('code', None)
@@ -192,27 +185,21 @@ class LoginHandler(BaseHandler):
                 sickrage.app.log.debug('{!r}'.format(e))
                 return self.redirect('/logout')
 
-            internal_connections = "{}://{}:{}{}".format(self.request.protocol,
-                                                         get_internal_ip(),
-                                                         sickrage.app.config.general.web_port,
-                                                         sickrage.app.config.general.web_root)
-
-            external_connections = "{}://{}:{}{}".format(self.request.protocol,
-                                                         get_external_ip(),
-                                                         sickrage.app.config.general.web_port,
-                                                         sickrage.app.config.general.web_root)
-
-            connections = ','.join([internal_connections, external_connections])
-
-            if sickrage.app.config.general.server_id and not sickrage.app.api.account.update_server(sickrage.app.config.general.server_id, connections):
-                sickrage.app.config.general.server_id = ''
-
             if not sickrage.app.config.general.server_id:
-                server_id = sickrage.app.api.account.register_server(connections)
+                server_id = sickrage.app.api.server.register_server(
+                    ip_addresses=','.join([get_internal_ip()]),
+                    web_protocol=self.request.protocol,
+                    web_port=sickrage.app.config.general.web_port,
+                    web_root=sickrage.app.config.general.web_root,
+                    server_version=sickrage.version()
+                )
+
                 if server_id:
                     sickrage.app.config.general.server_id = server_id
-                    sentry_sdk.set_tag('server_id', sickrage.app.config.general.server_id)
                     sickrage.app.config.save()
+
+            if sickrage.app.config.general.server_id:
+                sentry_sdk.set_tag('server_id', sickrage.app.config.general.server_id)
 
             redirect_uri = self.get_argument('next', "/{}/".format(sickrage.app.config.general.default_page.value))
             return self.redirect("{}".format(redirect_uri))

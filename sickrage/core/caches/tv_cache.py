@@ -257,7 +257,7 @@ class TVCache(object):
                         from sickrage.search_providers import SearchProviderType
                         if not self.provider.private and self.provider.provider_type in [SearchProviderType.NZB, SearchProviderType.TORRENT]:
                             try:
-                                sickrage.app.api.provider_cache.add(data=dbData)
+                                sickrage.app.api.provider.add_search_result(provider=self.providerID, data=dbData)
                             except Exception as e:
                                 pass
         except (InvalidShowException, InvalidNameException):
@@ -269,7 +269,7 @@ class TVCache(object):
 
         # get data from external database
         if sickrage.app.config.general.enable_sickrage_api and not self.provider.private:
-            resp = sickrage.app.api.provider_cache.get(self.providerID, series_id, season, episode)
+            resp = sickrage.app.api.provider.get_search_result(self.providerID, series_id, season, episode)
             if resp and 'data' in resp:
                 dbData += resp['data']
 

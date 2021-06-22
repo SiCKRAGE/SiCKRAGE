@@ -25,7 +25,7 @@ from tornado.web import authenticated
 
 import sickrage
 from sickrage.core.common import Quality, Qualities, EpisodeStatus
-from sickrage.core.config.helpers import change_gui_lang, change_https_key, change_https_cert, change_updater_freq, change_show_update_hour, \
+from sickrage.core.config.helpers import change_gui_lang, change_https_key, change_https_cert, change_show_update_hour, \
     change_version_notify
 from sickrage.core.enums import UITheme, DefaultHomePage, TimezoneDisplay, SearchFormat, SeriesProviderID, CpuPreset
 from sickrage.core.helpers import generate_api_key, checkbox_to_value, try_int
@@ -167,7 +167,6 @@ class SaveGeneralHandler(BaseHandler):
         results = []
 
         change_gui_lang(gui_language)
-        change_updater_freq(update_frequency)
         change_show_update_hour(show_update_hour)
         change_version_notify(checkbox_to_value(version_notify))
 

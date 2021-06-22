@@ -94,9 +94,9 @@
     <%block name="modals" />
 
     % if current_user:
-        % if current_user and sickrage.app.newest_version_string:
+        % if current_user and sickrage.app.latest_version_string:
             <div class="alert alert-success alert-dismissible fade show text-center m-0 rounded-0">
-                <strong>${sickrage.app.newest_version_string}</strong>
+                <strong>${sickrage.app.latest_version_string}</strong>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package app.protobufs.v1;
+
+message CreatedAnnouncementResponse {
+    string ahash = 1;
+    string title = 2;
+    string description = 3;
+    string image = 4;
+    string date = 5;
+}
+
+message DeletedAnnouncementResponse {
+    string ahash = 1;
+}

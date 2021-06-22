@@ -19,6 +19,8 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 
+__version__ = "10.0.12.dev4"
+__install_type__ = ""
 
 import argparse
 import atexit
@@ -41,7 +43,6 @@ MAIN_DIR = os.path.abspath(os.path.realpath(os.path.expanduser(os.path.dirname(o
 PROG_DIR = os.path.abspath(os.path.realpath(os.path.expanduser(os.path.dirname(__file__))))
 LOCALE_DIR = os.path.join(PROG_DIR, 'locale')
 LIBS_DIR = os.path.join(PROG_DIR, 'libs')
-VERSION_FILE = os.path.join(PROG_DIR, 'version.txt')
 CHANGELOG_FILE = os.path.join(MAIN_DIR, 'CHANGELOG.md')
 REQS_FILE = os.path.join(MAIN_DIR, 'requirements.txt')
 CHECKSUM_FILE = os.path.join(PROG_DIR, 'checksums.md5')
@@ -227,8 +228,7 @@ def file_cleanup(remove=False):
 
 def version():
     # Get the version number
-    with open(VERSION_FILE) as f:
-        return f.read()
+    return __version__
 
 
 def changelog():
@@ -259,7 +259,7 @@ def main():
     parser = argparse.ArgumentParser(prog='sickrage')
     parser.add_argument('-v', '--version',
                         action='version',
-                        version='%(prog)s {}'.format(version()))
+                        version=version())
     parser.add_argument('-d', '--daemon',
                         action='store_true',
                         help='Run as a daemon (*NIX ONLY)')
@@ -399,8 +399,6 @@ def main():
 
         # start app
         app.start()
-        while app.started:
-            time.sleep(0.1)
     except (SystemExit, KeyboardInterrupt):
         if app:
             app.shutdown()

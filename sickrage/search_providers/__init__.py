@@ -787,11 +787,11 @@ class TorrentProvider(SearchProvider):
             if info_hash:
                 try:
                     # get content from external API
-                    resp = sickrage.app.api.torrent_cache.get(info_hash)
+                    resp = sickrage.app.api.torrent.get_torrent(info_hash)
                     if resp:
                         result = verify_torrent(resp)
                     else:
-                        sickrage.app.api.torrent_cache.add(url)
+                        sickrage.app.api.torrent.add_torrent(url)
 
                         # # get content from other torrent hash search engines
                         # for torrent_url in [x.format(info_hash=info_hash) for x in self.bt_cache_urls]:
@@ -868,7 +868,7 @@ class TorrentProvider(SearchProvider):
         """
 
         try:
-            trackers_list = self.session.get('https://cdn.sickrage.ca/torrent_trackers/').text.split()
+            trackers_list = sickrage.app.api.torrent.get_trackers()
         except Exception:
             trackers_list = []
 
@@ -1443,17 +1443,6 @@ class SearchProviders(dict):
         self[NewznabProvider.provider_type.name] = dict([(p.id, p) for p in NewznabProvider.get_providers()])
         self[TorrentRssProvider.provider_type.name] = dict([(p.id, p) for p in TorrentRssProvider.get_providers()])
 
-    def task(self, force=False):
-        if self.running and not force:
-            return
-
-        try:
-            self.running = True
-            threading.currentThread().setName(self.name)
-            self.update_urls()
-        finally:
-            self.running = False
-
     def sort(self, randomize=False):
         sorted_providers = []
 
@@ -1497,17 +1486,22 @@ class SearchProviders(dict):
     def torrentrss(self):
         return self[TorrentRssProvider.provider_type.name]
 
+    def update_url(self, provider_id, provider_urls):
+        provider = self.all().get(provider_id)
+        if provider:
+            sickrage.app.log.debug('Updated search provider {} URLs'.format(provider.name))
+            provider._urls = json.loads(provider_urls)
+
     def update_urls(self):
-        sickrage.app.log.debug('Updating provider URLs')
+        sickrage.app.log.debug('Updating search provider URLs')
 
         for pID, pObj in self.all().items():
             if pObj.provider_type not in [SearchProviderType.TORRENT_RSS, SearchProviderType.NEWZNAB] and pObj.id not in ['bitcannon']:
                 try:
                     resp = sickrage.app.api.provider.get_urls(pObj.id)
                     if resp and 'data' in resp:
-                        sickrage.app.log.debug('Updated {} URLs'.format(pObj.name))
-                        pObj._urls = json.loads(resp['data']['urls'])
+                        self.update_url(pID, resp['data']['urls'])
                 except Exception:
                     pass
 
-        sickrage.app.log.debug('Updating provider URLs finished')
+        sickrage.app.log.debug('Updating searching provider URLs finished')

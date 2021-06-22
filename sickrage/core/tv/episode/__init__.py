@@ -27,7 +27,7 @@ import traceback
 from collections import OrderedDict
 from xml.etree.ElementTree import ElementTree
 
-from mutagen.mp4 import MP4, MP4StreamInfoError
+from mutagen.mp4 import MP4, MP4StreamInfoError, MP4MetadataError
 from sqlalchemy import orm
 
 import sickrage
@@ -728,6 +728,8 @@ class TVEpisode(object):
             video['\xa9cmt'] = self.description
             video['\xa9gen'] = ','.join(self.show.genre.split('|'))
             video.save()
+        except MP4MetadataError:
+            pass
         except MP4StreamInfoError:
             pass
         except Exception:

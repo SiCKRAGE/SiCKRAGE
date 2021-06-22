@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package app.protobufs.v1;
+
+message SavedNetworkTimezoneResponse {
+    string network = 1;
+    string timezone = 2;
+}
+
+message DeletedNetworkTimezoneResponse {
+    string network = 1;
+}

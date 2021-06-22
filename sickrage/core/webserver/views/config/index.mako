@@ -26,7 +26,7 @@
                         % if sickrage.app.config.general.server_id:
                             <div class="form-row">
                                 <div class="col-lg-3 col-md-3 col-sm-3">
-                                    <i class="sickrage-core sickrage-core-keys"></i> ${_('SR App ID:')}
+                                    <i class="sickrage-core sickrage-core-keys"></i> ${_('SR Server ID:')}
                                 </div>
                                 <div class="col-lg-9 col-md-9 col-sm-9">
                                     ${sickrage.app.config.general.server_id}

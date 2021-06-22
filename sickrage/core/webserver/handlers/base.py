@@ -32,6 +32,7 @@ from jose import ExpiredSignatureError
 from keycloak.exceptions import KeycloakClientError
 from mako.exceptions import RichTraceback
 from tornado import locale, escape
+from tornado.ioloop import IOLoop
 from tornado.web import RequestHandler
 
 import sickrage
@@ -186,7 +187,7 @@ class BaseHandler(RequestHandler):
     def run_async(self, method):
         @functools.wraps(method)
         async def wrapper(self, *args, **kwargs):
-            await sickrage.app.wserver.io_loop.run_in_executor(self.executor, functools.partial(method, *args, **kwargs))
+            await IOLoop.current().run_in_executor(self.executor, functools.partial(method, *args, **kwargs))
 
         return types.MethodType(wrapper, self)
 

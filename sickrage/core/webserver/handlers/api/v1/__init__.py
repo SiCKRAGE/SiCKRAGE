@@ -1292,9 +1292,9 @@ class CMD_SiCKRAGECheckVersion(ApiCall):
                 "version": sickrage.app.version_updater.version,
             },
             "latest_version": {
-                "version": sickrage.app.version_updater.updater.get_newest_version,
+                "version": sickrage.app.version_updater.updater.latest_version,
             },
-            "needs_update": sickrage.app.version_updater.check_for_new_version(True),
+            "needs_update": sickrage.app.version_updater.check_for_update(True),
         })
 
 
@@ -1665,7 +1665,7 @@ class CMD_SiCKRAGEUpdate(ApiCall):
         super(CMD_SiCKRAGEUpdate, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
-        if sickrage.app.version_updater.check_for_new_version():
+        if sickrage.app.version_updater.check_for_update():
             if sickrage.app.version_updater.update():
                 return _responds(RESULT_SUCCESS, msg="SiCKRAGE is updating ...")
             return _responds(RESULT_FAILURE, msg="SiCKRAGE could not update ...")

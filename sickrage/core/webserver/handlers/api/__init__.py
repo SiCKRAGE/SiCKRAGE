@@ -18,6 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
+import ipaddress
 import json
 import traceback
 
@@ -31,7 +32,7 @@ from tornado.web import HTTPError
 
 import sickrage
 from sickrage.core.enums import UserPermission
-from sickrage.core.helpers import get_external_ip, get_internal_ip
+from sickrage.core.helpers import get_external_ip, get_internal_ip, get_ip_address
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
@@ -88,19 +89,21 @@ class APIBaseHandler(BaseHandler):
                         if exchanged_token:
                             sickrage.app.api.token = exchanged_token
 
-                    # if sickrage.app.config.general.server_id and not sickrage.app.api.account.update_server(sickrage.app.config.general.server_id, connections):
-                    #     sickrage.app.config.general.server_id = ''
-
                     if not sickrage.app.config.general.server_id:
-                        internal_connections = f"{self.request.protocol}://{get_internal_ip()}:{sickrage.app.config.general.web_port}{sickrage.app.config.general.web_root}"
-                        external_connections = f"{self.request.protocol}://{get_external_ip()}:{sickrage.app.config.general.web_port}{sickrage.app.config.general.web_root}"
-                        connections = ','.join([internal_connections, external_connections])
+                        server_id = sickrage.app.api.server.register_server(
+                            ip_addresses=','.join([get_internal_ip()]),
+                            web_protocol=self.request.protocol,
+                            web_port=sickrage.app.config.general.web_port,
+                            web_root=sickrage.app.config.general.web_root,
+                            server_version=sickrage.version()
+                        )
 
-                        server_id = sickrage.app.api.account.register_server(connections)
                         if server_id:
                             sickrage.app.config.general.server_id = server_id
-                            sentry_sdk.set_tag('server_id', sickrage.app.config.general.server_id)
                             sickrage.app.config.save()
+
+                    if sickrage.app.config.general.server_id:
+                        sentry_sdk.set_tag('server_id', sickrage.app.config.general.server_id)
                 except Exception:
                     return self.send_error(401, error='failed to decode token')
             else:
