@@ -2,10 +2,13 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.12.dev4](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.11...v10.0.12.dev4)
+#### [v10.0.12.dev5](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.11...v10.0.12.dev5)
 
 - Refactored episode slug to sXXeXX [`993479f`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/993479fd84e3c97cc172efaf5dd5cfa395dbce3a)
 - Misc fixes for series api v2 [`a86cc48`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/a86cc485efd6072954a658f9741bdbfff90414c8)
+- Fixed `bad substitution` error in gitlab CI script [`bd8c393`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/bd8c3932237246fef5007687fc4158ded90b840e)
+- Refactored gitlab CI script [`6df07cc`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/6df07ccfd97c99da3746509c705a67471a327d13)
+- Fixed git origin URL [`5d50c4f`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/5d50c4fa53a2e639190e8df358c8a5780b237c56)
 
 #### [10.0.11](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.10...10.0.11)
 
