@@ -151,7 +151,7 @@ release_build_master:
     - git fetch --all
     - git merge release/$RELEASE_VERSION
     - git tag -a $RELEASE_VERSION -m "Release v$RELEASE_VERSION master"
-    - git push "https://${GITLAB_CI_USER}:${GITLAB_CI_TOKEN}@${CI_REPOSITORY_URL#*@}" HEAD:master --follow-tags
+    - git push https://$GITLAB_CI_USER:$GITLAB_CI_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:master --follow-tags
     - git checkout develop
     - git merge --ff-only release/$RELEASE_VERSION
     - bumpversion --allow-dirty patch package.json sickrage/version.txt sickrage/__init__.py
@@ -159,7 +159,7 @@ release_build_master:
     - python checksum-generator.py
     - git add --all
     - git commit -m "[TASK] Bump develop branch to v$RELEASE_VERSION"
-    - git push "https://${GITLAB_CI_USER}:${GITLAB_CI_TOKEN}@${CI_REPOSITORY_URL#*@}" HEAD:develop --follow-tags
+    - git push https://$GITLAB_CI_USER:$GITLAB_CI_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:develop --follow-tags
   when: manual
   only:
     - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage
@@ -200,7 +200,7 @@ release_build_develop:
     - git add --all
     - git commit -m "[TASK] Pre-Releasing v$RELEASE_VERSION"
     - git tag -a $RELEASE_VERSION -m "Pre-release v$RELEASE_VERSION"
-    - git push "https://${GITLAB_CI_USER}:${GITLAB_CI_TOKEN}@${CI_REPOSITORY_URL#*@}" HEAD:$CI_COMMIT_REF_NAME --follow-tags
+    - git push https://$GITLAB_CI_USER:$GITLAB_CI_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME --follow-tags
   only:
     - develop@SiCKRAGE/sickrage
   except:
