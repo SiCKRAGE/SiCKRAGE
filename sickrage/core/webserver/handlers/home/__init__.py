@@ -733,7 +733,7 @@ class UpdateCheckHandler(BaseHandler):
         sickrage.app.alerts.message(_("Updater"), _('Checking for updates'))
 
         # check for new app updates
-        if not sickrage.app.version_updater.check_for_update(force=True):
+        if not sickrage.app.version_updater.check_for_update():
             sickrage.app.alerts.message(_("Updater"), _('No new updates available!'))
 
         return self.redirect(self.previous_url())

@@ -1294,7 +1294,7 @@ class CMD_SiCKRAGECheckVersion(ApiCall):
             "latest_version": {
                 "version": sickrage.app.version_updater.updater.latest_version,
             },
-            "needs_update": sickrage.app.version_updater.check_for_update(True),
+            "needs_update": sickrage.app.version_updater.check_for_update(),
         })
 
 
