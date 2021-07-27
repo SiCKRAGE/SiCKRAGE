@@ -175,12 +175,8 @@ def isVirtualEnv():
     return hasattr(sys, 'real_prefix')
 
 
-def check_requirements(install_requirements=False):
-    # sickrage requires python 3.6+
-    if sys.version_info < (3, 6, 0):
-        sys.exit("Sorry, SiCKRAGE requires Python 3.6+")
-
-    if os.path.exists(REQS_FILE) and install_requirements:
+def check_requirements():
+    if os.path.exists(REQS_FILE):
         with open(REQS_FILE) as f:
             for line in f.readlines():
                 try:
@@ -323,8 +319,13 @@ def main():
     # Parse startup args
     args = parser.parse_args()
 
+    # sickrage requires python 3.6+
+    if sys.version_info < (3, 6, 0):
+        sys.exit("Sorry, SiCKRAGE requires Python 3.6+")
+
     # check lib requirements
-    check_requirements(install_requirements=not args.disable_updates)
+    if __install_type__ not in ['windows', 'synology', 'docker', 'qnap', 'readynas', 'pip']:
+        check_requirements()
 
     # cleanup unwanted files
     file_cleanup(remove=not args.no_clean)

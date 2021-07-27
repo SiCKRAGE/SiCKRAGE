@@ -82,7 +82,7 @@ class VersionUpdater(object):
         return self.updater.current_branch
 
     def task(self, force=False):
-        if self.running or sickrage.app.disable_updates or sickrage.app.developer:
+        if self.running:
             return
 
         try:

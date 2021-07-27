@@ -305,11 +305,9 @@
                                     <i class="fas fa-fw fa-file-archive"></i>&nbsp;${_('View Log')}
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                %if not sickrage.app.disable_updates:
-                                    <a class="dropdown-item" href="${srWebRoot}/home/updateCheck?pid=${srPID}">
-                                        <i class="fas fa-fw fa-check-square"></i>&nbsp;${_('Check For Updates')}
-                                    </a>
-                                %endif
+                                <a class="dropdown-item" href="${srWebRoot}/home/updateCheck?pid=${srPID}">
+                                    <i class="fas fa-fw fa-check-square"></i>&nbsp;${_('Check For Updates')}
+                                </a>
                                 <a class="dropdown-item" href="${srWebRoot}/home/restart/?pid=${srPID}"
                                    class="confirm restart">
                                     <i class="fas fa-fw fa-redo"></i>&nbsp;${_('Restart')}

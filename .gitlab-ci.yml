@@ -302,6 +302,7 @@ deploy_docker_master:
   trigger:
     project: sickrage/sickrage-docker
     branch: master
+    strategy: depend
   only:
     - /^[0-9.]+$/@SiCKRAGE/sickrage
   except:
@@ -313,6 +314,7 @@ deploy_docker_develop:
   trigger:
     project: sickrage/sickrage-docker
     branch: develop
+    strategy: depend
   only:
     - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage
   except:
@@ -324,6 +326,7 @@ deploy_synology_master:
   trigger:
     project: sickrage/sickrage-synology
     branch: master
+    strategy: depend
   only:
     - /^[0-9.]+$/@SiCKRAGE/sickrage
   except:
@@ -335,6 +338,7 @@ deploy_synology_develop:
   trigger:
     project: sickrage/sickrage-synology
     branch: develop
+    strategy: depend
   only:
     - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage
   except:
@@ -351,6 +355,7 @@ deploy_readynas_master:
   trigger:
     project: sickrage/sickrage-readynas
     branch: master
+    strategy: depend
   only:
     - /^[0-9.]+$/@SiCKRAGE/sickrage
   except:
@@ -367,6 +372,7 @@ deploy_qnap_master:
   trigger:
     project: sickrage/sickrage-qnap
     branch: master
+    strategy: depend
   only:
     - /^[0-9.]+$/@SiCKRAGE/sickrage
   except:
