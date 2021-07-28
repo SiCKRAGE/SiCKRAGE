@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.15](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.14...10.0.15)
+
 #### [10.0.14](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.13...10.0.14)
+
+> 28 July 2021
 
 - Refactored app updating for source [`9d7a3f8`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/9d7a3f8bf832152bdfed6eb10f71c7d18d5f7c10)
 
