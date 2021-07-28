@@ -19,7 +19,7 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 
-__version__ = "10.0.12"
+__version__ = "10.0.13"
 __install_type__ = ""
 
 import argparse

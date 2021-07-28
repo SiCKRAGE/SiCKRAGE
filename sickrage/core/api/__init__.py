@@ -26,7 +26,7 @@ class API(object):
 
     @property
     def is_enabled(self):
-        return sickrage.app.config.general.enable_sickrage_api and self.token
+        return self.token
 
     @property
     def imdb(self):

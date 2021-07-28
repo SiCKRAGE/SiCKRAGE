@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.13](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.12...10.0.13)
+
 #### [10.0.12](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.11...10.0.12)
+
+> 28 July 2021
 
 - Refactored episode slug to sXXeXX [`993479f`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/993479fd84e3c97cc172efaf5dd5cfa395dbce3a)
 - Misc fixes for series api v2 [`a86cc48`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/a86cc485efd6072954a658f9741bdbfff90414c8)
