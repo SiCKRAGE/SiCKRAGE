@@ -23,6 +23,7 @@ import urllib.parse
 import pika
 from google.protobuf.json_format import MessageToDict
 from pika.adapters.tornado_connection import TornadoConnection
+from pika.exceptions import StreamLostError, AMQPConnectionError
 from tornado.ioloop import IOLoop
 
 import sickrage
@@ -86,28 +87,51 @@ class AMQPClient(object):
         if sickrage.app.api.token_time_remaining < (int(sickrage.app.api.token['expires_in']) / 2):
             sickrage.app.api.refresh_token()
 
-        TornadoConnection(
-            pika.URLParameters(
-                f'amqps://sickrage:{sickrage.app.api.token["access_token"]}@{self._amqp_host}:{self._amqp_port}/{urllib.parse.quote(self._amqp_vhost)}'
-            ),
-            on_open_callback=self.on_connection_open,
-            on_close_callback=self.on_connection_close,
-            on_open_error_callback=self.on_connection_open_error
-        )
+        try:
+            TornadoConnection(
+                pika.URLParameters(
+                    f'amqps://sickrage:{sickrage.app.api.token["access_token"]}@{self._amqp_host}:{self._amqp_port}/{urllib.parse.quote(self._amqp_vhost)}'
+                ),
+                on_open_callback=self.on_connection_open,
+                on_close_callback=self.on_connection_close,
+                on_open_error_callback=self.on_connection_open_error
+            )
+        except AMQPConnectionError:
+            sickrage.app.log.debug("AMQP connection error, attempting to reconnect")
+            IOLoop.current().call_later(5, self.reconnect)
+
+    def disconnect(self):
+        if self._channel and not self._channel.is_closed:
+            try:
+                self._channel.close()
+            except StreamLostError:
+                pass
+
+        if self._connection and not self._connection.is_closed:
+            try:
+                self._connection.close()
+            except StreamLostError:
+                pass
+
+        self._channel = None
+        self._connection = None
 
     def on_connection_close(self, connection, reason):
-        IOLoop.current().call_later(5, self.reconnect)
+        if not self._closing:
+            sickrage.app.log.debug("AMQP connection closed, attempting to reconnect")
+            IOLoop.current().call_later(5, self.reconnect)
 
     def on_connection_open(self, connection):
         self._connection = connection
         self._connection.channel(on_open_callback=self.on_channel_open)
 
     def on_connection_open_error(self, connection, reason):
+        sickrage.app.log.debug("AMQP connection open failed, attempting to reconnect")
         IOLoop.current().call_later(5, self.reconnect)
 
     def reconnect(self):
-        self._channel = None
         if not self._closing:
+            self.disconnect()
             self.connect()
 
     def on_channel_open(self, channel):
@@ -147,7 +171,4 @@ class AMQPClient(object):
 
     def stop(self):
         self._closing = True
-        if self._channel:
-            self._channel.close()
-        if self._connection:
-            self._connection.close()
+        self.disconnect()
