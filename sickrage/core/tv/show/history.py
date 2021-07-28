@@ -88,6 +88,7 @@ class History:
                     'season': result.season,
                     'episode': result.episode,
                     'series_id': result.series_id,
+                    'series_provider_id': result.series_provider_id,
                     'show_name': show.name
                 })
 

@@ -331,19 +331,6 @@ def change_backlog_searcher_freq(freq):
     sickrage.app.scheduler.reschedule_job(sickrage.app.backlog_searcher.name, trigger='interval', minutes=sickrage.app.config.general.backlog_searcher_freq)
 
 
-def change_updater_freq(freq):
-    """
-    Change frequency of version updater thread
-
-    :param freq: New frequency
-    """
-    sickrage.app.config.general.version_updater_freq = int(freq)
-    if sickrage.app.config.general.version_updater_freq < sickrage.app.min_version_updater_freq:
-        sickrage.app.config.general.version_updater_freq = sickrage.app.min_version_updater_freq
-
-    sickrage.app.scheduler.reschedule_job(sickrage.app.version_updater.name, trigger='interval', hours=sickrage.app.config.general.version_updater_freq)
-
-
 def change_show_update_hour(freq):
     """
     Change frequency of show updater thread
@@ -390,7 +377,7 @@ def change_version_notify(version_notify):
     """
     sickrage.app.config.general.version_notify = version_notify
     if not sickrage.app.config.general.version_notify:
-        sickrage.app.newest_version_string = None
+        sickrage.app.latest_version_string = None
 
 
 def change_web_external_port(web_external_port):

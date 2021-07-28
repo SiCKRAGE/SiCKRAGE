@@ -38,14 +38,16 @@ from urllib.request import FancyURLopener
 import rarfile
 import sentry_sdk
 from apscheduler.schedulers import SchedulerNotRunningError
-from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.tornado import TornadoScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from dateutil import tz
 from fake_useragent import UserAgent
 from sentry_sdk.integrations.logging import LoggingIntegration
+from tornado.ioloop import IOLoop
 from tornado.platform.asyncio import AnyThreadEventLoopPolicy
 
 import sickrage
+from sickrage.core.amqp import AMQPClient
 from sickrage.core.announcements import Announcements
 from sickrage.core.api import API
 from sickrage.core.auth import AuthServer
@@ -57,7 +59,7 @@ from sickrage.core.databases.config import ConfigDB, CustomStringEncryptedType
 from sickrage.core.databases.main import MainDB
 from sickrage.core.enums import MultiEpNaming, DefaultHomePage, NzbMethod, TorrentMethod, CheckPropersInterval
 from sickrage.core.helpers import generate_secret, make_dir, restore_app_data, get_disk_space_usage, get_free_space, launch_browser, torrent_webui_url, \
-    encryption, md5_file_hash, flatten
+    encryption, md5_file_hash, flatten, get_internal_ip
 from sickrage.core.logger import Logger
 from sickrage.core.nameparser.validator import check_force_season_folders
 from sickrage.core.processors import auto_postprocessor
@@ -145,7 +147,7 @@ class Core(object):
         self.db_username = None
         self.db_password = None
         self.debug = None
-        self.newest_version_string = None
+        self.latest_version_string = None
 
         self.naming_ep_type = (
             "%(seasonnumber)dx%(episodenumber)02d",
@@ -227,6 +229,7 @@ class Core(object):
         self.auth_server = None
         self.announcements = None
         self.api = None
+        self.amqp_client = None
 
     def start(self):
         self.started = True
@@ -241,7 +244,7 @@ class Core(object):
         self.init_sentry()
 
         # scheduler
-        self.scheduler = BackgroundScheduler({'apscheduler.timezone': 'UTC'})
+        self.scheduler = TornadoScheduler({'apscheduler.timezone': 'UTC'})
 
         # init core classes
         self.api = API()
@@ -271,6 +274,7 @@ class Core(object):
         self.auto_postprocessor = AutoPostProcessor()
         self.upnp_client = UPNPClient()
         self.announcements = Announcements()
+        self.amqp_client = AMQPClient()
 
         # authorization sso client
         self.auth_server = AuthServer()
@@ -318,13 +322,13 @@ class Core(object):
         self.config.migrate_config_file(self.config_file)
 
         # add server id tag to sentry
-        sentry_sdk.set_tag('server_id', sickrage.app.config.general.server_id)
+        sentry_sdk.set_tag('server_id', self.config.general.server_id)
 
         # add user to sentry
         sentry_sdk.set_user({
-            'id': sickrage.app.config.user.sub_id,
-            'username': sickrage.app.config.user.username,
-            'email': sickrage.app.config.user.email
+            'id': self.config.user.sub_id,
+            'username': self.config.user.username,
+            'email': self.config.user.email
         })
 
         # config overrides
@@ -400,28 +404,6 @@ class Core(object):
 
         if self.config.general.show_update_hour < 0 or self.config.general.show_update_hour > 23:
             self.config.general.show_update_hour = 0
-
-        # add version checker job
-        self.scheduler.add_job(
-            self.version_updater.task,
-            IntervalTrigger(
-                hours=self.config.general.version_updater_freq,
-                timezone='utc'
-            ),
-            name=self.version_updater.name,
-            id=self.version_updater.name
-        )
-
-        # add network timezones updater job
-        self.scheduler.add_job(
-            self.tz_updater.task,
-            IntervalTrigger(
-                days=1,
-                timezone='utc'
-            ),
-            name=self.tz_updater.name,
-            id=self.tz_updater.name
-        )
 
         # add show updater job
         self.scheduler.add_job(
@@ -534,26 +516,15 @@ class Core(object):
             id=self.upnp_client.name
         )
 
-        # add announcements job
+        # add server connections update job
         self.scheduler.add_job(
-            self.announcements.task,
+            self.api.update_server_connections,
             IntervalTrigger(
-                minutes=15,
+                days=1,
                 timezone='utc'
             ),
-            name=self.announcements.name,
-            id=self.announcements.name
-        )
-
-        # add provider URL update job
-        self.scheduler.add_job(
-            self.search_providers.task,
-            IntervalTrigger(
-                hours=1,
-                timezone='utc'
-            ),
-            name=self.search_providers.name,
-            id=self.search_providers.name
+            name=self.api.name,
+            id=self.api.name
         )
 
         # start queues
@@ -564,17 +535,32 @@ class Core(object):
         # start web server
         self.wserver.start()
 
-        # fire off jobs now
-        self.scheduler.get_job(self.version_updater.name).modify(next_run_time=datetime.datetime.utcnow())
-        self.scheduler.get_job(self.tz_updater.name).modify(next_run_time=datetime.datetime.utcnow())
-        self.scheduler.get_job(self.announcements.name).modify(next_run_time=datetime.datetime.utcnow())
-        self.scheduler.get_job(self.search_providers.name).modify(next_run_time=datetime.datetime.utcnow())
+        # update server connections
+        self.scheduler.get_job(self.api.name).modify(next_run_time=datetime.datetime.utcnow())
 
         # start scheduler service
         self.scheduler.start()
 
         # load shows
-        self.scheduler.add_job(self.load_shows)
+        IOLoop.current().add_callback(self.load_shows)
+
+        # load network timezones
+        IOLoop.current().spawn_callback(self.tz_updater.update_network_timezones)
+
+        # load search provider urls
+        IOLoop.current().spawn_callback(self.search_providers.update_urls)
+
+        # startup message
+        IOLoop.current().add_callback(self.startup_message)
+
+        # launch browser
+        IOLoop.current().add_callback(self.launch_browser)
+
+        # shutdown trigger
+        IOLoop.current().add_callback(self.shutdown_trigger)
+
+        # start ioloop
+        IOLoop.current().start()
 
     def init_sentry(self):
         # sentry log handler
@@ -633,6 +619,22 @@ class Core(object):
 
         self.log.info('Loading initial shows list finished')
 
+    def startup_message(self):
+        self.log.info("SiCKRAGE :: STARTED")
+        self.log.info(f"SiCKRAGE :: APP VERSION:[{sickrage.version()}]")
+        self.log.info(f"SiCKRAGE :: CONFIG VERSION:[v{self.config.db.version}]")
+        self.log.info(f"SiCKRAGE :: DATABASE VERSION:[v{self.main_db.version}]")
+        self.log.info(f"SiCKRAGE :: DATABASE TYPE:[{self.db_type}]")
+        self.log.info(f"SiCKRAGE :: INSTALL TYPE:[{self.version_updater.updater.type}]")
+        self.log.info(
+            f"SiCKRAGE :: URL:[{('http', 'https')[self.config.general.enable_https]}://{(get_internal_ip(), self.web_host)[self.web_host != '']}:{self.config.general.web_port}/{self.config.general.web_root}]")
+
+    def launch_browser(self):
+        if not self.no_launch and self.config.general.launch_browser:
+            launch_browser(protocol=('http', 'https')[self.config.general.enable_https],
+                           host=(get_internal_ip(), self.web_host)[self.web_host != ''],
+                           startport=self.config.general.web_port)
+
     def shutdown(self, restart=False):
         if self.started:
             self.log.info('SiCKRAGE IS {}!!!'.format(('SHUTTING DOWN', 'RESTARTING')[restart]))
@@ -652,6 +654,9 @@ class Core(object):
             self.search_queue.shutdown()
             self.show_queue.shutdown()
             self.postprocessor_queue.shutdown()
+
+            # stop amqp consumer
+            self.amqp_client.stop()
 
             # log out of ADBA
             if self.adba_connection:
@@ -673,7 +678,13 @@ class Core(object):
         if restart:
             os.execl(sys.executable, sys.executable, *sys.argv)
 
-        if sickrage.app.daemon:
-            sickrage.app.daemon.stop()
+        if self.daemon:
+            self.daemon.stop()
 
         self.started = False
+
+    def shutdown_trigger(self):
+        if self.started:
+            IOLoop.current().add_timeout(datetime.timedelta(seconds=5), self.shutdown_trigger)
+        else:
+            IOLoop.current().stop()

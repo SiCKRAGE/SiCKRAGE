@@ -26,7 +26,6 @@ import datetime
 import glob
 import hashlib
 import ipaddress
-import operator
 import os
 import platform
 import random
@@ -44,7 +43,6 @@ import webbrowser
 import zipfile
 from collections import OrderedDict, Iterable
 from contextlib import contextmanager
-from functools import reduce
 from urllib.parse import uses_netloc, urlsplit, urlunsplit, urljoin
 
 import errno
@@ -751,60 +749,44 @@ def create_https_certificates(ssl_cert, ssl_key):
     domain name(replacing dots by underscores), finally signing the certificate using specified CA and
     returns the path of key and cert files. If you are yet to generate a CA then check the top comments"""
 
-    # Check happens if the certificate and key pair already exists for a domain
-    if not os.path.exists(ssl_key) and not os.path.exists(ssl_cert):
-        # Generate our key
-        key = rsa.generate_private_key(
-            public_exponent=65537,
-            key_size=2048,
-            backend=default_backend(),
-        )
+    # Generate our key
+    key = rsa.generate_private_key(
+        public_exponent=65537,
+        key_size=2048,
+        backend=default_backend(),
+    )
 
-        name = x509.Name([
-            x509.NameAttribute(NameOID.COMMON_NAME, 'SiCKRAGE')
-        ])
+    name = x509.Name([
+        x509.NameAttribute(NameOID.COMMON_NAME, 'SiCKRAGE')
+    ])
 
-        # # best practice seem to be to include the hostname in the SAN, which *SHOULD* mean COMMON_NAME is ignored.
-        # alt_names = [x509.DNSName(hostname)]
-        #
-        # # allow addressing by IP, for when you don't have real DNS (common in most testing scenarios
-        # if ip_addresses:
-        #     for addr in ip_addresses:
-        #         # openssl wants DNSnames for ips...
-        #         alt_names.append(x509.DNSName(addr))
-        #         # ... whereas golang's crypto/tls is stricter, and needs IPAddresses
-        #         # note: older versions of cryptography do not understand ip_address objects
-        #         alt_names.append(x509.IPAddress(ipaddress.ip_address(addr)))
-        #
-        # san = x509.SubjectAlternativeName(alt_names)
+    # path_len=0 means this cert can only sign itself, not other certs.
+    basic_contraints = x509.BasicConstraints(ca=True, path_length=0)
+    now = datetime.datetime.utcnow()
+    cert = (
+        x509.CertificateBuilder()
+            .subject_name(name)
+            .issuer_name(name)
+            .public_key(key.public_key())
+            .serial_number(1000)
+            .not_valid_before(now)
+            .not_valid_after(now + datetime.timedelta(days=10 * 365))
+            .add_extension(basic_contraints, False)
+            # .add_extension(san, False)
+            .sign(key, hashes.SHA256(), default_backend())
+    )
+    cert_pem = cert.public_bytes(encoding=serialization.Encoding.PEM)
+    key_pem = key.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.TraditionalOpenSSL,
+        encryption_algorithm=serialization.NoEncryption(),
+    )
 
-        # path_len=0 means this cert can only sign itself, not other certs.
-        basic_contraints = x509.BasicConstraints(ca=True, path_length=0)
-        now = datetime.datetime.utcnow()
-        cert = (
-            x509.CertificateBuilder()
-                .subject_name(name)
-                .issuer_name(name)
-                .public_key(key.public_key())
-                .serial_number(1000)
-                .not_valid_before(now)
-                .not_valid_after(now + datetime.timedelta(days=10 * 365))
-                .add_extension(basic_contraints, False)
-                # .add_extension(san, False)
-                .sign(key, hashes.SHA256(), default_backend())
-        )
-        cert_pem = cert.public_bytes(encoding=serialization.Encoding.PEM)
-        key_pem = key.private_bytes(
-            encoding=serialization.Encoding.PEM,
-            format=serialization.PrivateFormat.TraditionalOpenSSL,
-            encryption_algorithm=serialization.NoEncryption(),
-        )
+    with open(ssl_key, 'wb') as key_out:
+        key_out.write(key_pem)
 
-        with open(ssl_key, 'wb') as key_out:
-            key_out.write(key_pem)
-
-        with open(ssl_cert, 'wb') as cert_out:
-            cert_out.write(cert_pem)
+    with open(ssl_cert, 'wb') as cert_out:
+        cert_out.write(cert_pem)
 
     return True
 
@@ -1794,6 +1776,10 @@ def get_internal_ip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect(('8.8.8.8', 1))
     return s.getsockname()[0]
+
+
+def get_ip_address(hostname):
+    return socket.gethostbyname(hostname)
 
 
 def camelcase(s):

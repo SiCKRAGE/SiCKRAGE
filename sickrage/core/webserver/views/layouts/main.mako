@@ -94,9 +94,9 @@
     <%block name="modals" />
 
     % if current_user:
-        % if current_user and sickrage.app.newest_version_string:
+        % if current_user and sickrage.app.latest_version_string:
             <div class="alert alert-success alert-dismissible fade show text-center m-0 rounded-0">
-                <strong>${sickrage.app.newest_version_string}</strong>
+                <strong>${sickrage.app.latest_version_string}</strong>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -305,11 +305,9 @@
                                     <i class="fas fa-fw fa-file-archive"></i>&nbsp;${_('View Log')}
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                %if not sickrage.app.disable_updates:
-                                    <a class="dropdown-item" href="${srWebRoot}/home/updateCheck?pid=${srPID}">
-                                        <i class="fas fa-fw fa-check-square"></i>&nbsp;${_('Check For Updates')}
-                                    </a>
-                                %endif
+                                <a class="dropdown-item" href="${srWebRoot}/home/updateCheck?pid=${srPID}">
+                                    <i class="fas fa-fw fa-check-square"></i>&nbsp;${_('Check For Updates')}
+                                </a>
                                 <a class="dropdown-item" href="${srWebRoot}/home/restart/?pid=${srPID}"
                                    class="confirm restart">
                                     <i class="fas fa-fw fa-redo"></i>&nbsp;${_('Restart')}

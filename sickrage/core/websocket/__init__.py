@@ -1,6 +1,8 @@
 import json
 from queue import Queue
 
+from jose import JWTError, ExpiredSignatureError
+from tornado.ioloop import IOLoop
 from tornado.websocket import WebSocketHandler
 
 import sickrage
@@ -24,7 +26,24 @@ class WebSocketUIHandler(WebSocketHandler):
 
     def on_message(self, message):
         """Received a message from the client."""
-        sickrage.app.log.debug('WebSocket received message from {}: {}'.format(self.request.remote_ip, message))
+        json_message = json.loads(message)
+        if json_message.get('initial', False):
+            certs = sickrage.app.auth_server.certs()
+            auth_token = json_message['token']
+
+            try:
+                decoded_token = sickrage.app.auth_server.decode_token(auth_token, certs)
+                if sickrage.app.config.user.sub_id != decoded_token.get('sub'):
+                    clients.remove(self)
+                    self.close(401, 'Not Authorized')
+            except ExpiredSignatureError:
+                clients.remove(self)
+                self.close(401, 'Token expired')
+            except JWTError as e:
+                clients.remove(self)
+                self.close(401, f'Improper JWT token supplied, {e!r}')
+        else:
+            sickrage.app.log.debug('WebSocket received message from {}: {}'.format(self.request.remote_ip, message))
 
     def data_received(self, chunk):
         """Received a streamed data chunk from the client."""
@@ -69,6 +88,6 @@ class WebSocketMessage(object):
         for client in clients.copy():
             try:
                 message = self.json()
-                sickrage.app.wserver.io_loop.add_callback(client.write_message, message)
+                IOLoop.current().run_in_executor(None, client.write_message, message)
             except AssertionError:
                 continue

@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package app.protobufs.v1;
+
+message UpdatedAppResponse {
+    bool force = 1;
+}

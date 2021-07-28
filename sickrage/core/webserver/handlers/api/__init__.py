@@ -18,6 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
+import ipaddress
 import json
 import traceback
 
@@ -31,7 +32,7 @@ from tornado.web import HTTPError
 
 import sickrage
 from sickrage.core.enums import UserPermission
-from sickrage.core.helpers import get_external_ip, get_internal_ip
+from sickrage.core.helpers import get_external_ip, get_internal_ip, get_ip_address
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
@@ -88,21 +89,21 @@ class APIBaseHandler(BaseHandler):
                         if exchanged_token:
                             sickrage.app.api.token = exchanged_token
 
-                    internal_connections = f"{self.request.protocol}://{get_internal_ip()}:{sickrage.app.config.general.web_port}{sickrage.app.config.general.web_root}"
-                    external_connections = f"{self.request.protocol}://{get_external_ip()}:{sickrage.app.config.general.web_port}{sickrage.app.config.general.web_root}"
-                    connections = ','.join([internal_connections, external_connections])
-
-                    if sickrage.app.config.general.server_id and not sickrage.app.api.account.update_server(sickrage.app.config.general.server_id, connections):
-                        sickrage.app.config.general.server_id = ''
-
                     if not sickrage.app.config.general.server_id:
-                        server_id = sickrage.app.api.account.register_server(connections)
+                        server_id = sickrage.app.api.server.register_server(
+                            ip_addresses=','.join([get_internal_ip()]),
+                            web_protocol=self.request.protocol,
+                            web_port=sickrage.app.config.general.web_port,
+                            web_root=sickrage.app.config.general.web_root,
+                            server_version=sickrage.version()
+                        )
+
                         if server_id:
                             sickrage.app.config.general.server_id = server_id
-                            sentry_sdk.set_tag('server_id', sickrage.app.config.general.server_id)
                             sickrage.app.config.save()
 
-                    self.current_user = decoded_token
+                    if sickrage.app.config.general.server_id:
+                        sentry_sdk.set_tag('server_id', sickrage.app.config.general.server_id)
                 except Exception:
                     return self.send_error(401, error='failed to decode token')
             else:
@@ -111,7 +112,13 @@ class APIBaseHandler(BaseHandler):
             return self.send_error(401, error='authorization header missing')
 
     def get_current_user(self):
-        return self.current_user
+        auth_header = self.request.headers.get('Authorization')
+        if 'bearer' in auth_header.lower():
+            certs = sickrage.app.auth_server.certs()
+            token = auth_header.strip('Bearer').strip()
+            decoded_token = sickrage.app.auth_server.decode_token(token, certs)
+            if sickrage.app.config.user.sub_id == decoded_token.get('sub'):
+                return decoded_token
 
     def write_error(self, status_code, **kwargs):
         self.set_header('Content-Type', 'application/json')
@@ -172,6 +179,11 @@ class APIBaseHandler(BaseHandler):
                 pass
 
         return spec.to_dict()
+
+
+class ApiProfileHandler(APIBaseHandler):
+    def get(self):
+        return self.write_json(self.current_user)
 
 
 class ApiPingHandler(APIBaseHandler):

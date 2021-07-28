@@ -19,27 +19,30 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 import datetime
+import os
 
 import sickrage
+from sickrage.core import Quality
+from sickrage.core.common import dateTimeFormat
 from sickrage.core.helpers import convert_dict_keys_to_camelcase
-from sickrage.core.tv.show.coming_episodes import ComingEpisodes
+from sickrage.core.tv.show.history import History
 from sickrage.core.webserver.handlers.api import APIBaseHandler
 
 
-class ApiV2ScheduleHandler(APIBaseHandler):
+class ApiV2HistoryHandler(APIBaseHandler):
     def get(self):
-        """Get TV show schedule information"
+        """Get snatch and download history"
         ---
-        tags: [Schedule]
-        summary: Get TV show schedule information
-        description: Get TV show schedule information
+        tags: [History]
+        summary: Get snatch and download history
+        description: Get snatch and download history
         responses:
           200:
             description: Success payload
             content:
               application/json:
                 schema:
-                  ScheduleSuccessSchema
+                  HistorySuccessSchema
           400:
             description: Bad request; Check `errors` for any validation errors
             content:
@@ -60,18 +63,29 @@ class ApiV2ScheduleHandler(APIBaseHandler):
                   NotFoundSchema
         """
 
-        next_week = datetime.datetime.combine(datetime.date.today() + datetime.timedelta(days=7),
-                                              datetime.datetime.now().time().replace(tzinfo=sickrage.app.tz))
+        limit = int(self.get_argument('limit', sickrage.app.config.gui.history_limit or 100))
 
-        today = datetime.datetime.now().replace(tzinfo=sickrage.app.tz)
+        results = []
 
-        results = ComingEpisodes.get_coming_episodes(ComingEpisodes.categories, sickrage.app.config.gui.coming_eps_sort, group=False)
+        for row in History().get(limit):
+            status, quality = Quality.split_composite_status(int(row["action"]))
 
-        for i, result in enumerate(results.copy()):
-            results[i]['airdate'] = datetime.datetime.fromordinal(result['airdate'].toordinal()).timestamp()
-            results[i]['series_provider_id'] = result['series_provider_id'].name
-            results[i]['quality'] = result['quality'].name
-            results[i]['localtime'] = result['localtime'].timestamp()
-            results[i] = convert_dict_keys_to_camelcase(results[i])
+            # if self.type and not status.lower() == self.type:
+            #     continue
 
-        return self.write_json({'episodes': results, 'today': today.timestamp(), 'nextWeek': next_week.timestamp()})
+            row["status"] = status.display_name
+            row["quality"] = quality.name
+            row["date"] = datetime.datetime.fromordinal(row["date"].toordinal()).timestamp()
+
+            del row["action"]
+
+            row["series_id"] = row.pop("series_id")
+            row['series_provider_id'] = row['series_provider_id'].name
+            row["resource_path"] = os.path.dirname(row["resource"])
+            row["resource"] = os.path.basename(row["resource"])
+
+            row = convert_dict_keys_to_camelcase(row)
+
+            results.append(row)
+
+        return self.write_json(results)

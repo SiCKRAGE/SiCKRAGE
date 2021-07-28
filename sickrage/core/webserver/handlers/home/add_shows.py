@@ -443,7 +443,7 @@ class AddNewShowHandler(BaseHandler):
 
         try:
             new_quality = Qualities[quality_preset.upper()]
-        except KeyError:
+        except (AttributeError, KeyError):
             new_quality = Quality.combine_qualities([Qualities[x.upper()] for x in anyQualities], [Qualities[x.upper()] for x in bestQualities])
 
         # add the show

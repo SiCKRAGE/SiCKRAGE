@@ -14,13 +14,14 @@ from sqlalchemy import orm
 import sickrage
 from sickrage.core.api.exceptions import APIError
 from sickrage.core.databases.cache import CacheDB
+from sickrage.core.helpers import get_internal_ip, get_external_ip
 
 
 class API(object):
     def __init__(self):
         self.name = 'SR-API'
         self.api_base = 'https://www.sickrage.ca/api/'
-        self.api_version = 'v5'
+        self.api_version = 'v6'
         self._session = None
 
     @property
@@ -32,8 +33,8 @@ class API(object):
         return self.IMDbAPI(self)
 
     @property
-    def account(self):
-        return self.AccountAPI(self)
+    def server(self):
+        return self.ServerAPI(self)
 
     @property
     def provider(self):
@@ -48,12 +49,8 @@ class API(object):
         return self.GoogleDriveAPI(self)
 
     @property
-    def torrent_cache(self):
-        return self.TorrentCacheAPI(self)
-
-    @property
-    def provider_cache(self):
-        return self.ProviderCacheAPI(self)
+    def torrent(self):
+        return self.TorrentAPI(self)
 
     @property
     def scene_exceptions(self):
@@ -62,6 +59,17 @@ class API(object):
     @property
     def alexa(self):
         return self.AlexaAPI(self)
+
+    def update_server_connections(self):
+        if sickrage.app.config.general.server_id:
+            self.server.update_server(
+                server_id=sickrage.app.config.general.server_id,
+                ip_addresses=','.join([get_internal_ip()]),
+                web_protocol=('http', 'https')[sickrage.app.config.general.enable_https],
+                web_port=sickrage.app.config.general.web_port,
+                web_root=sickrage.app.config.general.web_root,
+                server_version=sickrage.version(),
+            )
 
     @property
     def session(self):
@@ -77,6 +85,7 @@ class API(object):
     @property
     def token(self):
         session = sickrage.app.cache_db.session()
+
         try:
             token = session.query(CacheDB.OAuth2Token).one()
             return token.as_dict()
@@ -138,7 +147,7 @@ class API(object):
     def health(self):
         for i in range(3):
             try:
-                health = requests.get(urljoin(self.api_base, "oauth/health"), verify=False, timeout=30).ok
+                health = requests.get(urljoin(self.api_base, "health"), verify=False, timeout=30).ok
             except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout):
                 pass
             else:
@@ -181,12 +190,15 @@ class API(object):
         return self.request('GET', 'allowed-usernames')
 
     def download_privatekey(self):
-        return self.request('GET', 'account/private-key')
+        return self.request('GET', 'server/config/private-key')
 
     def upload_privatekey(self, privatekey):
-        return self.request('POST', 'account/private-key', data=dict({'privatekey': privatekey}))
+        return self.request('POST', 'server/config/private-key', data=dict({'privatekey': privatekey}))
 
-    def request(self, method, url, timeout=15, **kwargs):
+    def network_timezones(self):
+        return self.request('GET', 'network-timezones')
+
+    def request(self, method, url, timeout=120, **kwargs):
         if not self.is_enabled or not self.session:
             return
 
@@ -222,7 +234,7 @@ class API(object):
                 return
             except requests.exceptions.ReadTimeout as e:
                 if i > 3:
-                    sickrage.app.log.debug('Error connecting to url {url} Error: {err_msg}'.format(url=url, err_msg=e))
+                    sickrage.app.log.debug(f'Error connecting to url {url} Error: {e}')
                     return resp or e.response
 
                 timeout += timeout
@@ -237,29 +249,27 @@ class API(object):
                     continue
 
                 if 'application/json' in e.response.headers.get('content-type', ''):
-                    json_data = e.response.json().get('error', {})
-                    status_code = json_data.get('status', status_code)
-                    error_message = json_data.get('message', error_message)
-                    sickrage.app.log.debug('SiCKRAGE API response returned for url {url} Response: {err_msg}'.format(url=url, err_msg=error_message))
+                    status_code = e.response.json().get('error', status_code)
+                    error_message = e.response.json().get('message', error_message)
+                    sickrage.app.log.debug(f'SiCKRAGE API response returned for url {url} Response: {error_message}, Code: {status_code}')
                 else:
-                    sickrage.app.log.debug(
-                        'The response returned a non-200 response while requesting url {url} Error: {err_msg!r}'.format(url=url, err_msg=e))
+                    sickrage.app.log.debug(f'The response returned a non-200 response while requesting url {url} Error: {e!r}')
 
                 return resp or e.response
             except requests.exceptions.ConnectionError as e:
                 if i > 3:
-                    sickrage.app.log.debug('Error connecting to url {url} Error: {err_msg}'.format(url=url, err_msg=e))
+                    sickrage.app.log.debug(f'Error connecting to url {url} Error: {e}')
                     return resp or e.response
 
                 time.sleep(1)
             except requests.exceptions.RequestException as e:
-                sickrage.app.log.debug('Error requesting url {url} Error: {err_msg}'.format(url=url, err_msg=e))
+                sickrage.app.log.debug(f'Error requesting url {url} Error: {e}')
                 return resp or e.response
             except Exception as e:
                 if (isinstance(e, collections.Iterable) and 'ECONNRESET' in e) or (getattr(e, 'errno', None) == errno.ECONNRESET):
-                    sickrage.app.log.warning('Connection reset by peer accessing url {url} Error: {err_msg}'.format(url=url, err_msg=e))
+                    sickrage.app.log.warning(f'Connection reset by peer accessing url {url} Error: {e}')
                 else:
-                    sickrage.app.log.info('Unknown exception in url {url} Error: {err_msg}'.format(url=url, err_msg=e))
+                    sickrage.app.log.info(f'Unknown exception in url {url} Error: {e}')
                     sickrage.app.log.debug(traceback.format_exc())
 
                 return None
@@ -272,31 +282,45 @@ class API(object):
                 sickrage.app.log.debug("Throttling SiCKRAGE API Calls... Sleeping for 60 secs...\n")
                 time.sleep(60)
 
-    class AccountAPI:
+    class ServerAPI:
         def __init__(self, api):
             self.api = api
 
-        def register_server(self, connections):
+        def register_server(self, ip_addresses, web_protocol, web_port, web_root, server_version):
             data = {
-                'connections': connections,
+                'ip-addresses': ip_addresses,
+                'web-protocol': web_protocol,
+                'web-port': web_port,
+                'web-root': web_root,
+                'server-version': server_version
             }
 
-            return self.api.request('POST', 'account/server', data=data)
+            return self.api.request('POST', 'server', data=data)
 
         def unregister_server(self, server_id):
             data = {
                 'server-id': server_id
             }
 
-            return self.api.request('DELETE', 'account/server', data=data)
+            return self.api.request('DELETE', 'server', data=data)
 
-        def update_server(self, server_id, connections):
+        def update_server(self, server_id, ip_addresses, web_protocol, web_port, web_root, server_version):
             data = {
                 'server-id': server_id,
-                'connections': connections
+                'ip-addresses': ip_addresses,
+                'web-protocol': web_protocol,
+                'web-port': web_port,
+                'web-root': web_root,
+                'server-version': server_version
             }
 
-            return self.api.request('PUT', 'account/server', data=data)
+            return self.api.request('PUT', 'server', data=data)
+
+        def get_status(self, server_id):
+            return self.api.request('GET', f'server/{server_id}/status')
+
+        def get_server_certificate(self, server_id):
+            return self.api.request('GET', f'server/{server_id}/certificate')
 
         def upload_config(self, server_id, pkey_sig, config):
             data = {
@@ -304,14 +328,14 @@ class API(object):
                 'pkey-sig': pkey_sig,
                 'config': config
             }
-            return self.api.request('POST', 'account/config', data=data)
+            return self.api.request('POST', f'server/{server_id}/config', data=data)
 
-        def download_config(self, pkey_sig):
+        def download_config(self, server_id, pkey_sig):
             data = {
                 'pkey-sig': pkey_sig
             }
 
-            return self.api.request('GET', 'account/config', json=data)['config']
+            return self.api.request('GET', f'server/{server_id}/config', json=data)['config']
 
     class AnnouncementsAPI:
         def __init__(self, api):
@@ -325,45 +349,45 @@ class API(object):
             self.api = api
 
         def get_urls(self, provider):
-            query = 'provider/{}/urls'.format(provider)
+            query = f'provider/{provider}/urls'
             return self.api.request('GET', query)
 
         def get_status(self, provider):
-            query = 'provider/{}/status'.format(provider)
+            query = f'provider/{provider}/status'
             return self.api.request('GET', query)
 
-    class ProviderCacheAPI:
+        def get_search_result(self, provider, series_id, season, episode):
+            query = f'provider/{provider}/series-id/{series_id}/season/{season}/episode/{episode}'
+            return self.api.request('GET', query)
+
+        def add_search_result(self, provider, data):
+            return self.api.request('POST', f'provider/{provider}', json=data)
+
+    class TorrentAPI:
         def __init__(self, api):
             self.api = api
 
-        def get(self, provider, series_id, season, episode):
-            query = f'cache/provider/{provider}/series-id/{series_id}/season/{season}/episode/{episode}'
+        def get_trackers(self):
+            query = f'torrent/trackers'
             return self.api.request('GET', query)
 
-        def add(self, data):
-            return self.api.request('POST', 'cache/provider', json=data)
-
-    class TorrentCacheAPI:
-        def __init__(self, api):
-            self.api = api
-
-        def get(self, hash):
-            query = 'cache/torrent/{}'.format(hash)
+        def get_torrent(self, hash):
+            query = f'torrent/{hash}'
             return self.api.request('GET', query)
 
-        def add(self, url):
-            return self.api.request('POST', 'cache/torrent', json={'url': url})
+        def add_torrent(self, url):
+            return self.api.request('POST', 'torrent', json={'url': url})
 
     class IMDbAPI:
         def __init__(self, api):
             self.api = api
 
         def search_by_imdb_title(self, title):
-            query = 'imdb/search-by-title/{}'.format(title)
+            query = f'imdb/search-by-title/{title}'
             return self.api.request('GET', query)
 
         def search_by_imdb_id(self, imdb_id):
-            query = 'imdb/search-by-id/{}'.format(imdb_id)
+            query = f'imdb/search-by-id/{imdb_id}'
             return self.api.request('GET', query)
 
     class GoogleDriveAPI:
@@ -379,23 +403,23 @@ class API(object):
             return self.api.request('POST', query, files={'file': open(file, 'rb')}, params={'folder': folder})
 
         def download(self, id):
-            query = 'google-drive/download/{id}'.format(id=id)
+            query = f'google-drive/download/{id}'
             return self.api.request('GET', query)
 
         def delete(self, id):
-            query = 'google-drive/delete/{id}'.format(id=id)
+            query = f'google-drive/delete/{id}'
             return self.api.request('GET', query)
 
         def search_files(self, id, term):
-            query = 'google-drive/search-files/{id}/{term}'.format(id=id, term=term)
+            query = f'google-drive/search-files/{id}/{term}'
             return self.api.request('GET', query)
 
         def list_files(self, id):
-            query = 'google-drive/list-files/{id}'.format(id=id)
+            query = f'google-drive/list-files/{id}'
             return self.api.request('GET', query)
 
         def clear_folder(self, id):
-            query = 'google-drive/clear-folder/{id}'.format(id=id)
+            query = f'google-drive/clear-folder/{id}'
             return self.api.request('GET', query)
 
     class SceneExceptions:
@@ -407,7 +431,7 @@ class API(object):
             return self.api.request('GET', query)
 
         def search_by_id(self, series_id):
-            query = 'scene-exceptions/search-by-id/{}'.format(series_id)
+            query = f'scene-exceptions/search-by-id/{series_id}'
             return self.api.request('GET', query)
 
     class AlexaAPI:

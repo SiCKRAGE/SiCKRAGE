@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package app.protobufs.v1;
+
+message SavedServerCertificateResponse {
+    string certificate = 1;
+    string private_key = 2;
+}

@@ -1,10 +1,11 @@
 stages:
-#  - review_webpack
-#  - review_docker
-#  - review_deploy
+  #  - review_webpack
+  #  - review_docker
+  #  - review_deploy
   - release_build
   - release_sentry
   - release_deploy
+  - release_publish
 
 #review:webpack:
 #  stage: review_webpack
@@ -98,6 +99,28 @@ stages:
 #  only:
 #    - merge_requests@SiCKRAGE/sickrage
 
+release_build:
+  stage: release_build
+  retry: 2
+  image:
+    name: nikolaik/python-nodejs:python3.9-nodejs10-alpine
+  variables:
+    NODE_ENV: "development"
+    CARGO_HOME: "$CI_PROJECT_DIR/cargo"
+  script:
+    - export PATH="$CARGO_HOME/bin:$PATH"
+    - apk add --no-cache git gcc libffi-dev python3-dev musl-dev openssl-dev curl unzip
+    - curl https://sh.rustup.rs -sSf | sh -s -- -y
+    - export ENABLE_SENTRY_RELEASE="false" && yarn install --pure-lockfile --cache-folder .yarn-cache
+    - pip install -U pip
+    - pip install -r requirements-dev.txt
+    - yarn run build
+    - python checksum-generator.py
+  only:
+    - branches
+  except:
+    - branches@SiCKRAGE/sickrage
+
 release_build_master:
   stage: release_build
   image:
@@ -107,15 +130,15 @@ release_build_master:
     CARGO_HOME: "$CI_PROJECT_DIR/cargo"
   script:
     - export PATH="$CARGO_HOME/bin:$PATH"
-    - apk add --no-cache git gcc libffi-dev python3-dev musl-dev openssl-dev curl
+    - apk add --no-cache git gcc libffi-dev python3-dev musl-dev openssl-dev curl unzip
     - curl https://sh.rustup.rs -sSf | sh -s -- -y
     - git config --global user.email $(git --no-pager show -s --format='%ae' HEAD)
     - git config --global user.name $(git --no-pager show -s --format='%an' HEAD)
     - pip install -U pip
     - pip install bumpversion
     - pip install -r requirements-dev.txt
-    - RELEASE_VERSION=$(bumpversion --dry-run --list release | awk -F= '/new_version=/ { print $2 }')
-    - bumpversion --allow-dirty release package.json sickrage/version.txt
+    - bumpversion --allow-dirty release package.json sickrage/version.txt sickrage/__init__.py
+    - RELEASE_VERSION=$(awk -F '"' '/^__version__/ {print $2}' sickrage/__init__.py)
     - npx auto-changelog -v $RELEASE_VERSION --hide-credit --package --commit-limit false --ignore-commit-pattern \[TASK\].*
     - yarn install --pure-lockfile --cache-folder .yarn-cache
     - yarn run build
@@ -128,14 +151,15 @@ release_build_master:
     - git fetch --all
     - git merge release/$RELEASE_VERSION
     - git tag -a $RELEASE_VERSION -m "Release v$RELEASE_VERSION master"
-    - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:master --follow-tags
+    - git push https://$GITLAB_CI_USER:$GITLAB_CI_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:master --follow-tags
     - git checkout develop
     - git merge --ff-only release/$RELEASE_VERSION
-    - bumpversion --allow-dirty patch package.json sickrage/version.txt
+    - bumpversion --allow-dirty patch package.json sickrage/version.txt sickrage/__init__.py
+    - RELEASE_VERSION=$(awk -F '"' '/^__version__/ {print $2}' sickrage/__init__.py)
     - python checksum-generator.py
     - git add --all
-    - git commit -m "[TASK] Bump develop branch to v$(cat sickrage/version.txt)"
-    - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:develop --follow-tags
+    - git commit -m "[TASK] Bump develop branch to v$RELEASE_VERSION"
+    - git push https://$GITLAB_CI_USER:$GITLAB_CI_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:develop --follow-tags
   when: manual
   only:
     - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage
@@ -162,8 +186,9 @@ release_build_develop:
     - pip install -U pip
     - pip install bumpversion
     - pip install -r requirements-dev.txt
-    - bumpversion --allow-dirty dev package.json sickrage/version.txt
-    - npx auto-changelog -v $(cat sickrage/version.txt) --hide-credit --unreleased --package --commit-limit false --ignore-commit-pattern \[TASK\].*
+    - bumpversion --allow-dirty dev package.json sickrage/version.txt sickrage/__init__.py
+    - RELEASE_VERSION=$(awk -F '"' '/^__version__/ {print $2}' sickrage/__init__.py)
+    - npx auto-changelog -v $RELEASE_VERSION --hide-credit --unreleased --package --commit-limit false --ignore-commit-pattern \[TASK\].*
     - yarn run build
     - python checksum-generator.py
     #    - python setup.py extract_messages
@@ -173,9 +198,9 @@ release_build_develop:
     - git config --global user.email $(git --no-pager show -s --format='%ae' HEAD)
     - git config --global user.name $(git --no-pager show -s --format='%an' HEAD)
     - git add --all
-    - git commit -m "[TASK] Pre-Releasing v$(cat sickrage/version.txt)"
-    - git tag -a $(cat sickrage/version.txt) -m "Pre-release v$(cat sickrage/version.txt)"
-    - git push https://$GIT_ACCESS_USER:$GIT_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME --follow-tags
+    - git commit -m "[TASK] Pre-Releasing v$RELEASE_VERSION"
+    - git tag -a $RELEASE_VERSION -m "Pre-release v$RELEASE_VERSION"
+    - git push https://$GITLAB_CI_USER:$GITLAB_CI_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME --follow-tags
   only:
     - develop@SiCKRAGE/sickrage
   except:
@@ -191,16 +216,17 @@ release_sentry_master:
   retry: 2
   image:
     name: getsentry/sentry-cli
-    entrypoint: [""]
+    entrypoint: [ "" ]
   script:
     - export SENTRY_URL=$SENTRY_URL
     - export SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
     - export SENTRY_ORG=$SENTRY_ORG
     - export SENTRY_PROJECT=$SENTRY_PROJECT
-    - sentry-cli releases new --project $SENTRY_PROJECT $(cat sickrage/version.txt)
-    - sentry-cli releases set-commits --auto $(cat sickrage/version.txt)
-    - sentry-cli releases finalize $(cat sickrage/version.txt)
-    - sentry-cli releases deploys $(cat sickrage/version.txt) new -e master
+    - RELEASE_VERSION=$(awk -F '"' '/^__version__/ {print $2}' sickrage/__init__.py)
+    - sentry-cli releases new --project $SENTRY_PROJECT $RELEASE_VERSION
+    - sentry-cli releases set-commits --auto $RELEASE_VERSION
+    - sentry-cli releases finalize $RELEASE_VERSION
+    - sentry-cli releases deploys $RELEASE_VERSION new -e master
   only:
     - /^[0-9.]+$/@SiCKRAGE/sickrage
   except:
@@ -212,21 +238,30 @@ release_sentry_develop:
   retry: 2
   image:
     name: getsentry/sentry-cli
-    entrypoint: [""]
+    entrypoint: [ "" ]
   script:
     - export SENTRY_URL=$SENTRY_URL
     - export SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
     - export SENTRY_ORG=$SENTRY_ORG
     - export SENTRY_PROJECT=$SENTRY_PROJECT
-    - sentry-cli releases new --project $SENTRY_PROJECT $(cat sickrage/version.txt)
-    - sentry-cli releases set-commits --auto $(cat sickrage/version.txt)
-    - sentry-cli releases finalize $(cat sickrage/version.txt)
-    - sentry-cli releases deploys $(cat sickrage/version.txt) new -e develop
+    - RELEASE_VERSION=$(awk -F '"' '/^__version__/ {print $2}' sickrage/__init__.py)
+    - sentry-cli releases new --project $SENTRY_PROJECT $RELEASE_VERSION
+    - sentry-cli releases set-commits --auto $RELEASE_VERSION
+    - sentry-cli releases finalize $RELEASE_VERSION
+    - sentry-cli releases deploys $RELEASE_VERSION new -e develop
   only:
     - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage
   except:
     - branches
     - triggers
+
+release_publish:
+  stage: release_publish
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  script:
+    - release-cli create --name "Release $CI_COMMIT_TAG" --tag-name $CI_COMMIT_TAG
+  only:
+    - tags
 
 deploy_pypi:
   stage: release_deploy
@@ -240,6 +275,7 @@ deploy_pypi:
     - curl https://sh.rustup.rs -sSf | sh -s -- -y
     - pip install -U pip
     - pip install -U twine
+    - sed -i "s/^__install_type__ = [\"']\(.*\)[\"']/__install_type__ = \"pip\"/" sickrage/__init__.py
     - python setup.py sdist bdist_wheel
     - twine upload dist/*
   only:
@@ -249,11 +285,24 @@ deploy_pypi:
     - branches
     - triggers
 
+deploy_docker:
+  stage: release_deploy
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - sed -i "s/^__install_type__ = [\"']\(.*\)[\"']/__install_type__ = \"docker\"/" sickrage/__init__.py
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+  only:
+    - branches
+  except:
+    - branches@SiCKRAGE/sickrage
+
 deploy_docker_master:
   stage: release_deploy
   trigger:
     project: sickrage/sickrage-docker
     branch: master
+    strategy: depend
   only:
     - /^[0-9.]+$/@SiCKRAGE/sickrage
   except:
@@ -265,6 +314,7 @@ deploy_docker_develop:
   trigger:
     project: sickrage/sickrage-docker
     branch: develop
+    strategy: depend
   only:
     - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage
   except:
@@ -276,6 +326,7 @@ deploy_synology_master:
   trigger:
     project: sickrage/sickrage-synology
     branch: master
+    strategy: depend
   only:
     - /^[0-9.]+$/@SiCKRAGE/sickrage
   except:
@@ -287,6 +338,7 @@ deploy_synology_develop:
   trigger:
     project: sickrage/sickrage-synology
     branch: develop
+    strategy: depend
   only:
     - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage
   except:
@@ -303,6 +355,7 @@ deploy_readynas_master:
   trigger:
     project: sickrage/sickrage-readynas
     branch: master
+    strategy: depend
   only:
     - /^[0-9.]+$/@SiCKRAGE/sickrage
   except:
@@ -319,6 +372,7 @@ deploy_qnap_master:
   trigger:
     project: sickrage/sickrage-qnap
     branch: master
+    strategy: depend
   only:
     - /^[0-9.]+$/@SiCKRAGE/sickrage
   except:

@@ -1,13 +1,10 @@
-import glob
 import os
 import shutil
 
+import glob
 from setuptools import setup, Command
 
-
-def version():
-    with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'sickrage', 'version.txt'))) as f:
-        return f.read()
+from sickrage import __version__
 
 
 def requirements():
@@ -55,7 +52,7 @@ except ImportError:
 
 setup(
     name='sickrage',
-    version=version(),
+    version=__version__,
     description='Automatic Video Library Manager for TV Shows',
     author='echel0n',
     author_email='echel0n@sickrage.ca',
