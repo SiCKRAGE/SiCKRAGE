@@ -23,7 +23,8 @@ import urllib.parse
 import pika
 from google.protobuf.json_format import MessageToDict
 from pika.adapters.tornado_connection import TornadoConnection
-from pika.exceptions import StreamLostError, AMQPConnectionError
+from pika.adapters.utils.connection_workflow import AMQPConnectorSocketConnectError
+from pika.exceptions import StreamLostError, AMQPConnectionError, AMQPError
 from tornado.ioloop import IOLoop
 
 import sickrage
@@ -96,7 +97,7 @@ class AMQPClient(object):
                 on_close_callback=self.on_connection_close,
                 on_open_error_callback=self.on_connection_open_error
             )
-        except AMQPConnectionError:
+        except (AMQPError, AMQPConnectorSocketConnectError, AMQPConnectionError):
             sickrage.app.log.debug("AMQP connection error, attempting to reconnect")
             IOLoop.current().call_later(5, self.reconnect)
 
