@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.13.dev1](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.12...v10.0.13.dev1)
+#### [v10.0.13.dev2](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.12...v10.0.13.dev2)
 
 #### [10.0.12](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.11...10.0.12)
 
