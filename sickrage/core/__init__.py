@@ -405,6 +405,18 @@ class Core(object):
         if self.config.general.show_update_hour < 0 or self.config.general.show_update_hour > 23:
             self.config.general.show_update_hour = 0
 
+        # add app updater job
+        self.scheduler.add_job(
+            self.version_updater.task,
+            IntervalTrigger(
+                hours=1,
+                start_date=datetime.datetime.now() + datetime.timedelta(minutes=4),
+                timezone='utc'
+            ),
+            name=self.version_updater.name,
+            id=self.version_updater.name
+        )
+
         # add show updater job
         self.scheduler.add_job(
             self.show_updater.task,
