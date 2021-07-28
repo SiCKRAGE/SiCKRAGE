@@ -84,7 +84,7 @@ class APIBaseHandler(BaseHandler):
                     if sickrage.app.config.user.sub_id != decoded_token.get('sub'):
                         return self.send_error(401, error='user is not authorized')
 
-                    if sickrage.app.config.general.enable_sickrage_api and not sickrage.app.api.token:
+                    if not sickrage.app.api.token:
                         exchanged_token = sickrage.app.auth_server.token_exchange(token)
                         if exchanged_token:
                             sickrage.app.api.token = exchanged_token

@@ -94,7 +94,7 @@ class LoginHandler(BaseHandler):
         if sickrage.app.config.user.sub_id != decoded_token.get('sub'):
             return
 
-        if sickrage.app.config.general.enable_sickrage_api and not sickrage.app.api.token:
+        if not sickrage.app.api.token:
             exchanged_token = sickrage.app.auth_server.token_exchange(auth_token)
             if exchanged_token:
                 sickrage.app.api.token = exchanged_token
@@ -177,7 +177,7 @@ class LoginHandler(BaseHandler):
                             return self.redirect('/logout')
                     else:
                         return self.redirect('/logout')
-                elif sickrage.app.config.general.enable_sickrage_api and not sickrage.app.api.token:
+                elif not sickrage.app.api.token:
                     exchanged_token = sickrage.app.auth_server.token_exchange(token['access_token'])
                     if exchanged_token:
                         sickrage.app.api.token = exchanged_token
