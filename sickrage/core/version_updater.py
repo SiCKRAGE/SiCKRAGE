@@ -247,7 +247,7 @@ class UpdateManager(object):
     def need_update(self):
         try:
             latest_version = self.latest_version
-            if self.version != latest_version:
+            if LooseVersion(self.version) < LooseVersion(latest_version):
                 sickrage.app.log.debug(f"SiCKRAGE version upgrade: {self.version} -> {latest_version}")
                 return True
         except Exception as e:
@@ -260,14 +260,13 @@ class UpdateManager(object):
     def set_latest_version(self):
         latest_version = self.latest_version
 
-        if self.version != latest_version:
-            if not self.manual_update:
-                update_url = f"{sickrage.app.config.general.web_root}/home/update/?pid={sickrage.app.pid}"
-                message = _(f'New SiCKRAGE {self.current_branch} update available, version {latest_version} &mdash; <a href=\"{update_url}\">Update Now</a>')
-            else:
-                message = _(f"New SiCKRAGE {self.current_branch} update available, version {latest_version}, please manually update!")
+        if not self.manual_update:
+            update_url = f"{sickrage.app.config.general.web_root}/home/update/?pid={sickrage.app.pid}"
+            message = _(f'New SiCKRAGE {self.current_branch} update available, version {latest_version} &mdash; <a href=\"{update_url}\">Update Now</a>')
+        else:
+            message = _(f"New SiCKRAGE {self.current_branch} update available, version {latest_version}, please manually update!")
 
-            sickrage.app.latest_version_string = message
+        sickrage.app.latest_version_string = message
 
     @staticmethod
     def _pip_cmd(args, silent=False):
@@ -637,59 +636,20 @@ class PipUpdateManager(UpdateManager):
         self.type = "pip"
         self.manual_update = True
 
-    @property
-    def latest_version(self):
-        releases = []
-        latest_version = None
-
-        try:
-            resp = WebSession().get("https://pypi.org/pypi/sickrage/json").json()
-            if self.current_branch == 'develop':
-                releases = [x for x in resp["releases"].keys() if 'dev' in x]
-            elif self.current_branch == 'master':
-                releases = [x for x in resp["releases"].keys() if 'dev' not in x]
-
-            if releases:
-                latest_version = sorted(releases, key=LooseVersion, reverse=True)[0]
-        finally:
-            return latest_version or self.version
-
 
 class SourceUpdateManager(UpdateManager):
     def __init__(self):
         super(SourceUpdateManager, self).__init__()
         self.type = "source"
 
-    def version_regex(self):
-        return re.compile('^(?P<major>[0-9]+).(?P<minor>[0-9]+).(?P<patch>[0-9]+)(?:.dev(?P<pre_release>[0-9]+))?$', re.IGNORECASE)
-
-    def need_update(self):
-        current_version_match = self.version_regex().match(self.version)
-        new_version_match = self.version_regex().match(self.latest_version)
-
-        if current_version_match and new_version_match:
-            for version_label in ['major', 'minor', 'patch', 'pre_release']:
-                try:
-                    if version_label not in current_version_match.groupdict().keys() or version_label not in new_version_match.groupdict().keys():
-                        continue
-
-                    current_version_part = current_version_match.group(version_label)
-                    new_version_part = new_version_match.group(version_label)
-
-                    if current_version_part is None or new_version_part is None:
-                        continue
-
-                    if int(new_version_part) > int(current_version_part):
-                        return True
-                except (IndexError, TypeError):
-                    continue
-
     def update(self):
         """
         Downloads the latest source tarball from server and installs it over the existing version.
         """
 
-        tar_download_url = f'https://git.sickrage.ca/SiCKRAGE/sickrage/repository/archive.tar.gz?ref={self.current_branch}'
+        latest_version = self.latest_version
+
+        tar_download_url = f'https://git.sickrage.ca/SiCKRAGE/sickrage/-/archive/{latest_version}/sickrage-{latest_version}.tar.gz'
 
         try:
             if not self.upgrade_pip():
@@ -730,6 +690,6 @@ class SourceUpdateManager(UpdateManager):
             return False
 
         # Notify update successful
-        NotificationProvider.mass_notify_version_update(self.latest_version)
+        NotificationProvider.mass_notify_version_update(latest_version)
 
         return True
