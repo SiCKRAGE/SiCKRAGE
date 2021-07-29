@@ -177,8 +177,11 @@ class API(object):
         }
 
         if self.token_url:
-            client = OAuth2Session(sickrage.app.auth_server.client_id, token=self.token)
-            self.token = client.refresh_token(self.token_url, **extra)
+            try:
+                client = OAuth2Session(sickrage.app.auth_server.client_id, token=self.token)
+                self.token = client.refresh_token(self.token_url, **extra)
+            except requests.exceptions.RequestException:
+                pass
 
     def exchange_token(self, access_token, scope='offline_access'):
         exchange = {'scope': scope, 'subject_token': access_token}

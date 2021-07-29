@@ -19,13 +19,13 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 import urllib.parse
+from ssl import SSLCertVerificationError
 
 import pika
 from google.protobuf.json_format import MessageToDict
 from pika.adapters.tornado_connection import TornadoConnection
-from pika.adapters.utils.connection_workflow import AMQPConnectorSocketConnectError, AMQPConnectorTransportSetupError, AMQPConnectorAMQPHandshakeError, \
-    AMQPConnectionWorkflowFailed, AMQPConnectorException
-from pika.exceptions import StreamLostError, AMQPConnectionError, AMQPError, ConnectionClosedByBroker
+from pika.adapters.utils.connection_workflow import AMQPConnectorException
+from pika.exceptions import StreamLostError, AMQPConnectionError
 from tornado.ioloop import IOLoop
 
 import sickrage
@@ -38,6 +38,7 @@ from sickrage.protos.updates_v1_pb2 import UpdatedAppResponse
 
 class AMQPClient(object):
     def __init__(self):
+        self._name = 'AMQP'
         self._amqp_host = 'rmq.sickrage.ca'
         self._amqp_port = 5671
         self._amqp_vhost = 'sickrage-app'
@@ -98,7 +99,7 @@ class AMQPClient(object):
                 on_close_callback=self.on_connection_close,
                 on_open_error_callback=self.on_connection_open_error
             )
-        except (AMQPConnectorException, AMQPConnectionError):
+        except (AMQPConnectorException, AMQPConnectionError, SSLCertVerificationError):
             sickrage.app.log.debug("AMQP connection error, attempting to reconnect")
             IOLoop.current().call_later(5, self.reconnect)
 

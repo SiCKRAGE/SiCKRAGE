@@ -145,7 +145,11 @@ class SubsceneProvider(Provider):
             r = self.session.get(self.server_url + page_link, timeout=30)
             r.raise_for_status()
             soup2 = ParserBeautifulSoup(r.content, ['html5lib', 'html.parser'])
-            sub_id = re.search(r'\?mac=(.*)', soup2.find('a', id='downloadButton')['href']).group(1)
+
+            try:
+                sub_id = re.search(r'\?mac=(.*)', soup2.find('a', id='downloadButton')['href']).group(1)
+            except AttributeError:
+                continue
 
             # add the release and increment downloaded count if we already have the subtitle
             if sub_id in subtitles:

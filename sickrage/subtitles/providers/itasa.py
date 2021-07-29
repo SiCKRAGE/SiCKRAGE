@@ -352,7 +352,7 @@ class ItaSAProvider(Provider):
         # get the show id
         series_id = self.get_show_id(series, country)
         if series_id is None:
-            logger.error('No show id found for %r ', series)
+            logger.debug('No show id found for %r ', series)
             return []
 
         # get the page of the season of the show
