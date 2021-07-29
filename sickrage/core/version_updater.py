@@ -88,9 +88,6 @@ class VersionUpdater(object):
         try:
             self.running = True
 
-            # set thread name
-            threading.currentThread().setName(self.name)
-
             if not self.check_for_update():
                 return
 

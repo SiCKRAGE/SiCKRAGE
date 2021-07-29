@@ -13,7 +13,7 @@ beautifulsoup4==4.9.1
 bencode3==0.1.0
 bleach==3.3.0
 CacheControl==0.12.6
-certifi==2020.6.20
+certifi==2021.5.30
 cffi==1.14.1
 chardet==3.0.4
 click==7.1.2
