@@ -163,16 +163,23 @@ class Daemon(object):
                 sys.exit(1)
 
 
-def isElevatedUser():
-    try:
-        return os.getuid() == 0
-    except AttributeError:
-        import ctypes
-        return ctypes.windll.shell32.IsUserAnAdmin() != 0
+def version():
+    # Return the version number
+    return __version__
 
 
-def isVirtualEnv():
-    return hasattr(sys, 'real_prefix')
+def install_type():
+    # Return the install type
+    if not __install_type__ and os.path.isdir(os.path.join(MAIN_DIR, '.git')):
+        return 'git'
+    else:
+        return __install_type__ or 'source'
+
+
+def changelog():
+    # Return contents of CHANGELOG.md
+    with open(CHANGELOG_FILE) as f:
+        return f.read()
 
 
 def check_requirements():
@@ -220,17 +227,6 @@ def file_cleanup(remove=False):
                         print('Found unwanted file {}, you should delete this file manually!'.format(full_filename))
                 except OSError:
                     print('Unable to delete filename {} during cleanup, you should delete this file manually!'.format(full_filename))
-
-
-def version():
-    # Get the version number
-    return __version__
-
-
-def changelog():
-    # Get the version number
-    with open(CHANGELOG_FILE) as f:
-        return f.read()
 
 
 def main():
@@ -324,7 +320,7 @@ def main():
         sys.exit("Sorry, SiCKRAGE requires Python 3.6+")
 
     # check lib requirements
-    if __install_type__ not in ['windows', 'synology', 'docker', 'qnap', 'readynas', 'pip']:
+    if install_type() not in ['windows', 'synology', 'docker', 'qnap', 'readynas', 'pip']:
         check_requirements()
 
     # cleanup unwanted files
