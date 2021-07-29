@@ -18,7 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-import urllib.parse
+import ssl
 from ssl import SSLCertVerificationError
 
 import pika
@@ -91,10 +91,22 @@ class AMQPClient(object):
             sickrage.app.api.refresh_token()
 
         try:
+            credentials = pika.credentials.PlainCredentials(username='sickrage', password=sickrage.app.api.token["access_token"])
+
+            context = ssl.create_default_context()
+            context.check_hostname = False
+            context.verify_mode = ssl.CERT_NONE
+
+            parameters = pika.ConnectionParameters(
+                host=self._amqp_host,
+                port=self._amqp_port,
+                virtual_host=self._amqp_vhost,
+                credentials=credentials,
+                ssl_options=pika.SSLOptions(context)
+            )
+
             TornadoConnection(
-                pika.URLParameters(
-                    f'amqps://sickrage:{sickrage.app.api.token["access_token"]}@{self._amqp_host}:{self._amqp_port}/{urllib.parse.quote(self._amqp_vhost)}'
-                ),
+                parameters,
                 on_open_callback=self.on_connection_open,
                 on_close_callback=self.on_connection_close,
                 on_open_error_callback=self.on_connection_open_error
