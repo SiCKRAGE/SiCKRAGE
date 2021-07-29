@@ -1,6 +1,6 @@
-sickrage/__init__.py = 60631e4f394b568b243930a8d8f683a4
+sickrage/__init__.py = 0216d83856bf8ae62fd324c912f1a8b1
 sickrage/checksums.md5 = d41d8cd98f00b204e9800998ecf8427e
-sickrage/version.txt = fe883d52c6b62be628ca5b3ad8f62f78
+sickrage/version.txt = e09fe2cb3089a99e36cc628bb8b8f342
 sickrage/autoProcessTV/hellaToSiCKRAGE.py = 9bc477abfd456aaba8d6bf46f2c59b1f
 sickrage/autoProcessTV/__init__.py = bfa892dee586740a3a618d3c1955156c
 sickrage/autoProcessTV/mediaToSiCKRAGE.py = f88a6679a211b1f97126c116e2c33b9c
