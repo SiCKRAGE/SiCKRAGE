@@ -599,7 +599,8 @@ class Core(object):
         sentry_tags = {
             'platform': platform.platform(),
             'locale': repr(locale.getdefaultlocale()),
-            'python': platform.python_version()
+            'python': platform.python_version(),
+            'install_type': sickrage.install_type()
         }
 
         # set sentry tags

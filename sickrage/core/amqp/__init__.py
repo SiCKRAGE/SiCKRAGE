@@ -102,6 +102,7 @@ class AMQPClient(object):
                 port=self._amqp_port,
                 virtual_host=self._amqp_vhost,
                 credentials=credentials,
+                socket_timeout=300,
                 ssl_options=pika.SSLOptions(context)
             )
 
