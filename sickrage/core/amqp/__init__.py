@@ -153,7 +153,9 @@ class AMQPClient(object):
 
     def on_channel_open(self, channel):
         self._channel = channel
-        self._channel.basic_qos(prefetch_count=self._prefetch_count)
+        self._channel.basic_qos(callback=self.on_qos_applied, prefetch_count=self._prefetch_count)
+
+    def on_qos_applied(self, method):
         self.start_consuming()
 
     def on_message(self, unused_channel, basic_deliver, properties, body):
