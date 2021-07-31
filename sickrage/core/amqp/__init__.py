@@ -46,8 +46,9 @@ class AMQPClient(object):
         self._channel = None
         self._closing = False
         self._consumer_tag = None
+        self._prefetch_count = 100
 
-        IOLoop.current().spawn_callback(self.connect)
+        IOLoop.current().add_callback(self.connect)
 
     @property
     def events(self):
@@ -152,6 +153,7 @@ class AMQPClient(object):
 
     def on_channel_open(self, channel):
         self._channel = channel
+        self._channel.basic_qos(prefetch_count=self._prefetch_count)
         self.start_consuming()
 
     def on_message(self, unused_channel, basic_deliver, properties, body):
