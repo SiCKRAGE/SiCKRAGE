@@ -7,12 +7,6 @@ from tornado.websocket import WebSocketHandler
 import sickrage
 
 
-def check_web_socket_queue():
-    if not WebSocketUIHandler.message_queue.empty():
-        message = WebSocketUIHandler.message_queue.get()
-        WebSocketUIHandler.broadcast(message)
-
-
 class WebSocketUIHandler(WebSocketHandler):
     """WebSocket handler to send and receive data to and from a web client."""
 
@@ -26,8 +20,6 @@ class WebSocketUIHandler(WebSocketHandler):
     def open(self, *args, **kwargs):
         """Client connected to the WebSocket."""
         WebSocketUIHandler.clients.add(self)
-        # while not WebSocketUIHandler.message_queue.empty():
-        #     self.write_message(WebSocketUIHandler.message_queue.get())
 
     def on_message(self, message):
         """Received a message from the client."""
@@ -61,7 +53,7 @@ class WebSocketUIHandler(WebSocketHandler):
     @classmethod
     def broadcast(cls, msg):
         for client in cls.clients:
-            client.write_message(json.dumps(msg))
+            client.write_message(msg)
 
     def __repr__(self):
         """Client representation."""

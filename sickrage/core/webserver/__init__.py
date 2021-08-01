@@ -23,19 +23,19 @@ import os
 import shutil
 import socket
 import ssl
-import threading
 
 import tornado.autoreload
 import tornado.locale
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
-from cryptography.x509.extensions import ExtensionNotFound
+from cryptography.x509 import ExtensionNotFound
 from mako.lookup import TemplateLookup
 from tornado.httpserver import HTTPServer
+from tornado.ioloop import PeriodicCallback
 from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 import sickrage
-from sickrage.core.helpers import create_https_certificates, launch_browser, get_internal_ip
+from sickrage.core.helpers import create_https_certificates
 from sickrage.core.webserver.handlers.account import AccountLinkHandler, AccountUnlinkHandler, AccountIsLinkedHandler
 from sickrage.core.webserver.handlers.announcements import AnnouncementsHandler, MarkAnnouncementSeenHandler, AnnouncementCountHandler
 from sickrage.core.webserver.handlers.api import ApiSwaggerDotJsonHandler, ApiPingHandler, ApiProfileHandler
@@ -138,6 +138,9 @@ class WebServer(object):
 
     def start(self):
         self.started = True
+
+        # watch websocket message queue
+        PeriodicCallback(self.check_web_socket_queue, 100).start()
 
         # load languages
         tornado.locale.load_gettext_translations(sickrage.LOCALE_DIR, 'messages')
@@ -494,6 +497,11 @@ class WebServer(object):
         except socket.error as e:
             sickrage.app.log.warning(e.strerror)
             raise SystemExit
+
+    def check_web_socket_queue(self):
+        if not WebSocketUIHandler.message_queue.empty():
+            message = WebSocketUIHandler.message_queue.get()
+            WebSocketUIHandler.broadcast(message)
 
     def load_ssl_certificate(self):
         if os.path.exists(sickrage.app.config.general.https_key) and os.path.exists(sickrage.app.config.general.https_cert):

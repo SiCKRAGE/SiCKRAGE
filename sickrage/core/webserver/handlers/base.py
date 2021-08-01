@@ -19,7 +19,6 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 import functools
-import html
 import time
 import traceback
 import types
@@ -31,7 +30,8 @@ import bleach
 from jose import ExpiredSignatureError
 from keycloak.exceptions import KeycloakClientError
 from mako.exceptions import RichTraceback
-from tornado import locale, escape
+from tornado import locale
+from tornado.escape import utf8
 from tornado.ioloop import IOLoop
 from tornado.web import RequestHandler
 
@@ -164,7 +164,15 @@ class BaseHandler(RequestHandler):
     def redirect(self, url, permanent=True, status=None):
         if sickrage.app.config.general.web_root not in url:
             url = urljoin(sickrage.app.config.general.web_root + '/', url.lstrip('/'))
-        super(BaseHandler, self).redirect(url, permanent, status)
+
+        if self._headers_written:
+            raise Exception("Cannot redirect after headers have been written")
+        if status is None:
+            status = 301 if permanent else 302
+        else:
+            assert isinstance(status, int) and 300 <= status <= 399
+        self.set_status(status)
+        self.set_header("Location", utf8(url))
 
     def previous_url(self):
         url = urlparse(self.request.headers.get("referer", "/{}/".format(sickrage.app.config.general.default_page.value)))

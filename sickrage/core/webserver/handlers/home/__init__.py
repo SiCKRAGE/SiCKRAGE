@@ -1003,7 +1003,6 @@ class TogglePauseHandler(BaseHandler):
     def get(self, *args, **kwargs):
         show = self.get_argument('show')
 
-        session = sickrage.app.main_db.session()
         show_obj = find_show(int(show))
 
         if show_obj is None:
