@@ -49,8 +49,8 @@ class CanAddNewznabProviderHandler(BaseHandler):
 
         provider_obj = NewznabProvider(name, '')
         if provider_obj.id not in sickrage.app.search_providers.newznab():
-            return self.write(json_encode({'success': provider_obj.id}))
-        return self.write(json_encode({'error': 'Provider Name already exists as ' + name}))
+            return json_encode({'success': provider_obj.id})
+        return json_encode({'error': 'Provider Name already exists as ' + name})
 
 
 class CanAddTorrentRssProviderHandler(BaseHandler):
@@ -65,9 +65,9 @@ class CanAddTorrentRssProviderHandler(BaseHandler):
         if providerObj.id not in sickrage.app.search_providers.torrentrss():
             validate = providerObj.validateRSS()
             if validate['result']:
-                return self.write(json_encode({'success': providerObj.id}))
-            return self.write(json_encode({'error': validate['message']}))
-        return self.write(json_encode({'error': 'Provider name already exists as {}'.format(name)}))
+                return json_encode({'success': providerObj.id})
+            return json_encode({'error': validate['message']})
+        return json_encode({'error': 'Provider name already exists as {}'.format(name)})
 
 
 class GetNewznabCategoriesHandler(BaseHandler):
@@ -85,7 +85,7 @@ class GetNewznabCategoriesHandler(BaseHandler):
         temp_provider = NewznabProvider(name, url, key)
         success, tv_categories, error = temp_provider.get_newznab_categories()
 
-        return self.write(json_encode({'success': success, 'tv_categories': tv_categories, 'error': error}))
+        return json_encode({'success': success, 'tv_categories': tv_categories, 'error': error})
 
 
 class SaveProvidersHandler(BaseHandler):

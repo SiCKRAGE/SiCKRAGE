@@ -2,7 +2,15 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.23](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.22...10.0.23)
+
+- Refactored web handlers to return data and call tornado finish on resp from run_async method [`a7bffda`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/a7bffda58098baab6b9392bef05ff92fbe43690c)
+- Refactored web handlers to return data and call tornado finish on resp from run_async method [`7635d83`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/7635d83894ecdaa8b72f5f3e3918e24eff8aa37e)
+- Refactored web handlers to return data and call tornado finish on resp from run_async method [`98396dc`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/98396dc7f97b2b355fee8e9271b418a65a74f370)
+
 #### [10.0.22](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.21...10.0.22)
+
+> 1 August 2021
 
 - Moved websocket queue check function to webserver class [`18042f3`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/18042f35c632962689f8854d24c09422ceaf666c)
 

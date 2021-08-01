@@ -43,7 +43,7 @@ class BaseHandler(RequestHandler):
     def __init__(self, application, request, **kwargs):
         super(BaseHandler, self).__init__(application, request, **kwargs)
 
-        self.executor = ThreadPoolExecutor(thread_name_prefix='TORNADO-Thread')
+        self.executor = ThreadPoolExecutor(thread_name_prefix='WEB-Thread')
 
         self.startTime = time.time()
 
@@ -65,7 +65,7 @@ class BaseHandler(RequestHandler):
                 request_info = ''.join([f"<strong>{k}</strong>: {v}<br>" for k, v in self.request.__dict__.items()])
 
                 self.set_header('Content-Type', 'text/html')
-                return self.write(f"""<html>
+                return self.finish(f"""<html>
                                  <title>{error}</title>
                                  <body>
                                     <button onclick="window.location='{sickrage.app.config.general.web_root}/logs/';">View Log(Errors)</button>
@@ -111,7 +111,7 @@ class BaseHandler(RequestHandler):
             if cookie == sickrage.app.config.general.api_v1_key:
                 return True
 
-    def render_string(self, template_name, **kwargs):
+    def render(self, template_name, **kwargs):
         template_kwargs = {
             'title': "",
             'header': "",
@@ -152,17 +152,14 @@ class BaseHandler(RequestHandler):
 
             return self.application.settings['templates']['errors/500.mako'].render_unicode(**template_kwargs)
 
-    def render(self, template_name, **kwargs):
-        self.write(self.render_string(template_name, **kwargs))
-
     def set_default_headers(self):
         self.set_header("Access-Control-Allow-Origin", "*")
         self.set_header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
         self.set_header('Access-Control-Allow-Methods', 'POST, GET, PUT, PATCH, DELETE, OPTIONS')
         self.set_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
 
-    def redirect(self, url, permanent=True, status=None):
-        if sickrage.app.config.general.web_root not in url:
+    def redirect(self, url, permanent=True, status=None, add_web_root=True):
+        if add_web_root and sickrage.app.config.general.web_root not in url:
             url = urljoin(sickrage.app.config.general.web_root + '/', url.lstrip('/'))
 
         if self._headers_written:
@@ -195,7 +192,8 @@ class BaseHandler(RequestHandler):
     def run_async(self, method):
         @functools.wraps(method)
         async def wrapper(self, *args, **kwargs):
-            await IOLoop.current().run_in_executor(self.executor, functools.partial(method, *args, **kwargs))
+            resp = await IOLoop.current().run_in_executor(self.executor, functools.partial(method, *args, **kwargs))
+            self.finish(resp)
 
         return types.MethodType(wrapper, self)
 

@@ -19,12 +19,19 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 import os
+from concurrent.futures.thread import ThreadPoolExecutor
 
 import sickrage
 from sickrage.core.webserver.handlers.api import APIBaseHandler
 
 
-class ApiV2RetrieveSeriesMetadataHandler(APIBaseHandler):
+class ApiV2BaseHandler(APIBaseHandler):
+    def __init__(self, application, request, **kwargs):
+        super(ApiV2BaseHandler, self).__init__(application, request, **kwargs)
+        self.executor = ThreadPoolExecutor(thread_name_prefix='APIv2-Thread')
+
+
+class ApiV2RetrieveSeriesMetadataHandler(ApiV2BaseHandler):
     def get(self):
         series_directory = self.get_argument('seriesDirectory', None)
         if not series_directory:
@@ -54,4 +61,4 @@ class ApiV2RetrieveSeriesMetadataHandler(APIBaseHandler):
             if not json_data['seriesSlug'] and series_id and series_provider_id:
                 json_data['seriesSlug'] = f'{series_id}-{series_provider_id.slug}'
 
-        self.write_json(json_data)
+        return self.to_json(json_data)

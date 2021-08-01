@@ -22,15 +22,15 @@
 
 import sickrage
 from sickrage.core.enums import SeriesProviderID
-from sickrage.core.webserver.handlers.api import APIBaseHandler
+from sickrage.core.webserver.handlers.api.v2 import ApiV2BaseHandler
 
 
-class ApiV2SeriesProvidersHandler(APIBaseHandler):
+class ApiV2SeriesProvidersHandler(ApiV2BaseHandler):
     def get(self):
-        self.write_json([{'displayName': x.display_name, 'slug': x.slug} for x in SeriesProviderID])
+        return self.to_json([{'displayName': x.display_name, 'slug': x.slug} for x in SeriesProviderID])
 
 
-class ApiV2SeriesProvidersSearchHandler(APIBaseHandler):
+class ApiV2SeriesProvidersSearchHandler(ApiV2BaseHandler):
     def get(self, series_provider_slug):
         search_term = self.get_argument('searchTerm', None)
         lang = self.get_argument('seriesProviderLanguage', None)
@@ -46,13 +46,13 @@ class ApiV2SeriesProvidersSearchHandler(APIBaseHandler):
         if not results:
             return self.send_error(404, reason=f"Unable to find the series using the search term: {search_term}")
 
-        return self.write_json(results)
+        return self.to_json(results)
 
 
-class ApiV2SeriesProvidersLanguagesHandler(APIBaseHandler):
+class ApiV2SeriesProvidersLanguagesHandler(ApiV2BaseHandler):
     def get(self, series_provider_slug):
         series_provider_id = SeriesProviderID.by_slug(series_provider_slug)
         if not series_provider_id:
             return self.send_error(404, reason="Unable to identify a series provider using provided slug")
 
-        self.write_json(sickrage.app.series_providers[series_provider_id].languages())
+        return self.to_json(sickrage.app.series_providers[series_provider_id].languages())

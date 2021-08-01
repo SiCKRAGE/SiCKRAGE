@@ -22,11 +22,11 @@
 
 import sickrage
 from sickrage.core.enums import ProcessMethod
-from sickrage.core.webserver.handlers.api import APIBaseHandler
+from sickrage.core.webserver.handlers.api.v2 import ApiV2BaseHandler
 from sickrage.core.webserver.handlers.api.v2.postprocess.schemas import PostProcessSchema
 
 
-class Apiv2PostProcessHandler(APIBaseHandler):
+class Apiv2PostProcessHandler(ApiV2BaseHandler):
     def get(self):
         """Postprocess TV show video files"
         ---
@@ -81,4 +81,4 @@ class Apiv2PostProcessHandler(APIBaseHandler):
         if 'Processing succeeded' not in json_data:
             return self.send_error(400, error=json_data)
 
-        self.write_json({'data': json_data if return_data else ''})
+        return self.to_json({'data': json_data if return_data else ''})

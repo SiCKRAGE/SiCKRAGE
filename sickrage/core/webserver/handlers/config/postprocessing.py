@@ -238,7 +238,7 @@ class TestNamingHandler(BaseHandler):
 
         result = os.path.join(result['dir'], result['name'])
 
-        return self.write(result)
+        return result
 
 
 class IsNamingPatternValidHandler(BaseHandler):
@@ -256,10 +256,10 @@ class IsNamingPatternValidHandler(BaseHandler):
         if anime_type is not None:
             anime_type = int(anime_type)
 
-        return self.write(is_naming_pattern_valid(pattern=pattern, multi=multi, abd=abd, sports=sports, anime_type=anime_type))
+        return is_naming_pattern_valid(pattern=pattern, multi=multi, abd=abd, sports=sports, anime_type=anime_type)
 
 
 class IsRarSupportedHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
-        return self.write(is_rar_supported())
+        return is_rar_supported()

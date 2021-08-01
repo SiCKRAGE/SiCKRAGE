@@ -18,9 +18,10 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-import ipaddress
+import functools
 import json
 import traceback
+import types
 
 import sentry_sdk
 from apispec import APISpec
@@ -28,11 +29,12 @@ from apispec.exceptions import APISpecError
 from apispec.ext.marshmallow import MarshmallowPlugin
 from apispec_webframeworks.tornado import TornadoPlugin
 from tornado.escape import to_basestring
+from tornado.ioloop import IOLoop
 from tornado.web import HTTPError
 
 import sickrage
 from sickrage.core.enums import UserPermission
-from sickrage.core.helpers import get_external_ip, get_internal_ip, get_ip_address
+from sickrage.core.helpers import get_internal_ip
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
@@ -104,12 +106,23 @@ class APIBaseHandler(BaseHandler):
 
                     if sickrage.app.config.general.server_id:
                         sentry_sdk.set_tag('server_id', sickrage.app.config.general.server_id)
+
+                    method = self.run_async(getattr(self, method_name))
+                    setattr(self, method_name, method)
                 except Exception:
                     return self.send_error(401, error='failed to decode token')
             else:
                 return self.send_error(401, error='invalid authorization request')
         else:
             return self.send_error(401, error='authorization header missing')
+
+    def run_async(self, method):
+        @functools.wraps(method)
+        async def wrapper(self, *args, **kwargs):
+            resp = await IOLoop.current().run_in_executor(self.executor, functools.partial(method, *args, **kwargs))
+            self.finish(resp)
+
+        return types.MethodType(wrapper, self)
 
     def get_current_user(self):
         auth_header = self.request.headers.get('Authorization')
@@ -135,14 +148,14 @@ class APIBaseHandler(BaseHandler):
 
         sickrage.app.log.error(error_msg)
 
-        self.write_json({'error': error_msg})
+        return self.finish(self.to_json({'error': error_msg}))
 
     def set_default_headers(self):
         super(APIBaseHandler, self).set_default_headers()
         self.set_header('Content-Type', 'application/json')
 
-    def write_json(self, response):
-        self.write(json.dumps(response))
+    def to_json(self, response):
+        return json.dumps(response)
 
     def _validate_schema(self, schema, arguments):
         return schema().validate({k: to_basestring(v[0]) if len(v) <= 1 else to_basestring(v) for k, v in arguments.items()})
@@ -183,12 +196,12 @@ class APIBaseHandler(BaseHandler):
 
 class ApiProfileHandler(APIBaseHandler):
     def get(self):
-        return self.write_json(self.current_user)
+        return self.to_json(self.current_user)
 
 
 class ApiPingHandler(APIBaseHandler):
     def get(self):
-        return self.write_json({'message': 'pong'})
+        return self.to_json({'message': 'pong'})
 
 
 class ApiSwaggerDotJsonHandler(APIBaseHandler):
@@ -199,4 +212,4 @@ class ApiSwaggerDotJsonHandler(APIBaseHandler):
 
     def get(self):
         """ Get swagger.json """
-        return self.write_json(self.generate_swagger_json(self.api_handlers, self.api_version))
+        return self.to_json(self.generate_swagger_json(self.api_handlers, self.api_version))
