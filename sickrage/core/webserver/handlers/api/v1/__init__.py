@@ -23,7 +23,6 @@ import datetime
 import functools
 import os
 import re
-import threading
 import time
 import traceback
 import types
@@ -84,12 +83,12 @@ class ApiV1BaseHandler(RequestHandler):
     version = 5  # use an int since float-point is unpredictable
 
     def __init__(self, application, request, **kwargs):
-        super(RequestHandler, self).__init__(application, request, **kwargs)
+        super(ApiV1BaseHandler, self).__init__(application, request, **kwargs)
         self.executor = ThreadPoolExecutor(thread_name_prefix='APIv1-Thread')
 
-    def prepare(self, *args, **kwargs):
-        threading.currentThread().setName("API")
 
+class ApiV1Handler(ApiV1BaseHandler):
+    def prepare(self, *args, **kwargs):
         # set the output callback
         # default json
         output_callback_dict = {
@@ -275,7 +274,7 @@ class ApiV1BaseHandler(RequestHandler):
         return curArgs, curKwargs
 
 
-class ApiCall(ApiV1BaseHandler):
+class ApiCall(ApiV1Handler):
     _help = {"desc": "This command is not documented. Please report this to the developers."}
 
     def __init__(self, application, request, *args, **kwargs):

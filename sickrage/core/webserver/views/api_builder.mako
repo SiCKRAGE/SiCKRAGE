@@ -3,7 +3,6 @@
 <%!
     import json
     from collections import OrderedDict
-    from sickrage.core.webserver.handlers.api.v1 import ApiV1BaseHandler
 %>
 
 <%block name="metas">

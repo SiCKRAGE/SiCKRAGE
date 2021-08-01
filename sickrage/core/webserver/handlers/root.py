@@ -34,7 +34,7 @@ from sickrage.core.helpers import remove_article
 from sickrage.core.media.util import series_image, SeriesImageType
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes, ComingEpsLayout, ComingEpsSortBy
 from sickrage.core.tv.show.helpers import get_show_list, find_show
-from sickrage.core.webserver import ApiV1BaseHandler
+from sickrage.core.webserver.handlers.api.v1 import ApiV1Handler
 from sickrage.core.webserver.handlers.base import BaseHandler
 
 
@@ -84,7 +84,7 @@ class APIBulderHandler(BaseHandler):
             apikey = _('API Key not generated')
 
         api_commands = {}
-        for command, api_call in ApiV1BaseHandler(self.application, self.request).api_calls.items():
+        for command, api_call in ApiV1Handler(self.application, self.request).api_calls.items():
             api_commands[command] = api_call(self.application, self.request, **{'help': 1}).run()
 
         return self.render('api_builder.mako',

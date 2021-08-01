@@ -27,7 +27,7 @@ from sickrage.core.webserver.handlers.api import APIBaseHandler
 
 class ApiV2BaseHandler(APIBaseHandler):
     def __init__(self, application, request, **kwargs):
-        super(APIBaseHandler, self).__init__(application, request, **kwargs)
+        super(ApiV2BaseHandler, self).__init__(application, request, **kwargs)
         self.executor = ThreadPoolExecutor(thread_name_prefix='APIv2-Thread')
 
 

@@ -39,7 +39,7 @@ from sickrage.core.helpers import create_https_certificates
 from sickrage.core.webserver.handlers.account import AccountLinkHandler, AccountUnlinkHandler, AccountIsLinkedHandler
 from sickrage.core.webserver.handlers.announcements import AnnouncementsHandler, MarkAnnouncementSeenHandler, AnnouncementCountHandler
 from sickrage.core.webserver.handlers.api import ApiSwaggerDotJsonHandler, ApiPingHandler, ApiProfileHandler
-from sickrage.core.webserver.handlers.api.v1 import ApiV1BaseHandler
+from sickrage.core.webserver.handlers.api.v1 import ApiV1Handler
 from sickrage.core.webserver.handlers.api.v2 import ApiV2RetrieveSeriesMetadataHandler
 from sickrage.core.webserver.handlers.api.v2.config import ApiV2ConfigHandler
 from sickrage.core.webserver.handlers.api.v2.file_browser import ApiV2FileBrowserHandler
@@ -204,7 +204,7 @@ class WebServer(object):
         # API v1 Handlers
         self.handlers['api_v1_handlers'] = [
             # api
-            (fr'{self.api_v1_root}(/?.*)', ApiV1BaseHandler),
+            (fr'{self.api_v1_root}(/?.*)', ApiV1Handler),
 
             # api builder
             (fr'{sickrage.app.config.general.web_root}/api/builder', RedirectHandler,
