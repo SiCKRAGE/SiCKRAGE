@@ -88,6 +88,7 @@ class WebSocketMessage(object):
         for client in clients.copy():
             try:
                 message = self.json()
-                IOLoop.current().run_in_executor(None, client.write_message, message)
+                # IOLoop.current().run_in_executor(None, client.write_message, message)
+                client.write_message(message)
             except AssertionError:
                 continue
