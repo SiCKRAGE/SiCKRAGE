@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.22](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.21...10.0.22)
+
+- Moved websocket queue check function to webserver class [`18042f3`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/18042f35c632962689f8854d24c09422ceaf666c)
+
 #### [10.0.21](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.20...10.0.21)
+
+> 1 August 2021
 
 #### [10.0.20](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.19...10.0.20)
 

@@ -80,7 +80,6 @@ from sickrage.core.updaters.tz_updater import TimeZoneUpdater
 from sickrage.core.upnp import UPNPClient
 from sickrage.core.version_updater import VersionUpdater, SourceUpdateManager
 from sickrage.core.webserver import WebServer
-from sickrage.core.websocket import check_web_socket_queue
 from sickrage.metadata_providers import MetadataProviders
 from sickrage.notification_providers import NotificationProviders
 from sickrage.search_providers import SearchProviders
@@ -566,9 +565,6 @@ class Core(object):
 
         # shutdown trigger
         PeriodicCallback(self.shutdown_trigger, 5 * 1000).start()
-
-        # watch websocket message queue
-        PeriodicCallback(check_web_socket_queue, 100).start()
 
         # start ioloop
         IOLoop.current().start()

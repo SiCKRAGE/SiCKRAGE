@@ -26,7 +26,6 @@ import subprocess
 import sys
 import tarfile
 import tempfile
-import threading
 from distutils.version import LooseVersion
 from time import sleep
 
@@ -655,38 +654,43 @@ class SourceUpdateManager(UpdateManager):
             if not self.install_requirements(self.current_branch):
                 return False
 
-            with tempfile.TemporaryFile() as update_tarfile:
-                sickrage.app.log.info(f"Downloading update from {tar_download_url!r}")
-                resp = WebSession().get(tar_download_url)
-                if not resp or not resp.content:
-                    sickrage.app.log.warning('Failed to download SiCKRAGE update')
-                    return False
+            retry_count = 0
+            while retry_count < 3:
+                with tempfile.TemporaryFile() as update_tarfile:
+                    sickrage.app.log.info(f"Downloading update from {tar_download_url!r}")
+                    resp = WebSession().get(tar_download_url)
+                    if not resp or not resp.content:
+                        sickrage.app.log.warning('Failed to download SiCKRAGE update')
+                        retry_count += 1
+                        continue
 
-                update_tarfile.write(resp.content)
-                update_tarfile.seek(0)
+                    update_tarfile.write(resp.content)
+                    update_tarfile.seek(0)
 
-                with tempfile.TemporaryDirectory(prefix='sr_update_', dir=sickrage.app.data_dir) as unpack_dir:
-                    sickrage.app.log.info("Extracting SiCKRAGE update file")
-                    try:
-                        tar = tarfile.open(fileobj=update_tarfile, mode='r:gz')
-                        tar.extractall(unpack_dir)
-                        tar.close()
-                    except tarfile.TarError:
-                        sickrage.app.log.warning("Invalid update data, update failed: not a gzip file")
-                        return False
+                    with tempfile.TemporaryDirectory(prefix='sr_update_', dir=sickrage.app.data_dir) as unpack_dir:
+                        sickrage.app.log.info("Extracting SiCKRAGE update file")
+                        try:
+                            tar = tarfile.open(fileobj=update_tarfile, mode='r:gz')
+                            tar.extractall(unpack_dir)
+                            tar.close()
+                        except tarfile.TarError:
+                            sickrage.app.log.warning("Invalid update data, update failed: not a gzip file")
+                            retry_count += 1
+                            continue
 
-                    if len(os.listdir(unpack_dir)) != 1:
-                        sickrage.app.log.warning("Invalid update data, update failed")
-                        return False
+                        if len(os.listdir(unpack_dir)) != 1:
+                            sickrage.app.log.warning("Invalid update data, update failed")
+                            retry_count += 1
+                            continue
 
-                    update_dir = os.path.join(*[unpack_dir, os.listdir(unpack_dir)[0], 'sickrage'])
-                    sickrage.app.log.info(f"Sync folder {update_dir} to {sickrage.PROG_DIR}")
-                    dirsync.sync(update_dir, sickrage.PROG_DIR, 'sync', purge=True)
+                        update_dir = os.path.join(*[unpack_dir, os.listdir(unpack_dir)[0], 'sickrage'])
+                        sickrage.app.log.info(f"Sync folder {update_dir} to {sickrage.PROG_DIR}")
+                        dirsync.sync(update_dir, sickrage.PROG_DIR, 'sync', purge=True)
+
+                        # Notify update successful
+                        NotificationProvider.mass_notify_version_update(latest_version)
+
+                        return True
         except Exception as e:
             sickrage.app.log.error(f"Error while trying to update: {e!r}")
             return False
-
-        # Notify update successful
-        NotificationProvider.mass_notify_version_update(latest_version)
-
-        return True
