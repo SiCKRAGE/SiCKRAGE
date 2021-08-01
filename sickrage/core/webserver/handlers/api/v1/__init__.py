@@ -86,7 +86,7 @@ class ApiV1BaseHandler(RequestHandler):
         super(ApiV1BaseHandler, self).__init__(application, request, **kwargs)
         self.executor = ThreadPoolExecutor(thread_name_prefix='APIv1-Thread')
 
-    def prepare(self, *args, **kwargs):
+    async def prepare(self, *args, **kwargs):
         # set the output callback
         # default json
         output_callback_dict = {
@@ -109,7 +109,7 @@ class ApiV1BaseHandler(RequestHandler):
                 del self.request.arguments["profile"]
 
             try:
-                out_dict = self.route(_call_dispatcher, **self.request.arguments)
+                out_dict = await self.route(_call_dispatcher)
             except Exception as e:
                 sickrage.app.log.error(str(e))
                 error_data = {"error_msg": e, "request arguments": recursive_unicode(self.request.arguments)}
@@ -125,23 +125,15 @@ class ApiV1BaseHandler(RequestHandler):
         if 'outputType' in out_dict:
             output_callback = output_callback_dict[out_dict['outputType']]
 
-        self.finish(output_callback(out_dict))
+        await self.finish(output_callback(out_dict))
 
-    def run_async(self, method):
-        @functools.wraps(method)
-        async def wrapper(self, *args, **kwargs):
-            resp = await IOLoop.current().run_in_executor(self.executor, functools.partial(method, *args, **kwargs))
-            self.finish(resp)
-
-        return types.MethodType(wrapper, self)
-
-    def route(self, function, **kwargs):
-        kwargs = recursive_unicode(kwargs)
+    async def route(self, method):
+        kwargs = recursive_unicode(self.request.arguments)
         for arg, value in kwargs.items():
             if len(value) == 1:
                 kwargs[arg] = value[0]
 
-        return function(**kwargs)
+        return await IOLoop.current().run_in_executor(self.executor, functools.partial(method, **kwargs))
 
     def _out_as_image(self, _dict):
         self.set_header('Content-Type', _dict['image'].type)
