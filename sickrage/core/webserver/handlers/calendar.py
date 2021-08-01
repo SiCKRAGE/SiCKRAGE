@@ -21,7 +21,7 @@
 
 import datetime
 
-import dateutil
+from dateutil.tz import gettz
 from tornado.web import authenticated
 
 import sickrage
@@ -33,19 +33,19 @@ from sickrage.core.webserver.handlers.base import BaseHandler
 class CalendarHandler(BaseHandler):
     def get(self, *args, **kwargs):
         if sickrage.app.config.general.calendar_unprotected:
-            self.write(self.calendar())
+            return self.calendar()
         else:
-            self.calendar_auth()
+            return self.calendar_auth()
 
     @authenticated
     def calendar_auth(self):
-        self.write(self.calendar())
+        return self.calendar()
 
     def calendar(self):
         """ Provides a subscribeable URL for iCal subscriptions
         """
 
-        utc = dateutil.tz.gettz('GMT')
+        utc = gettz('GMT')
 
         sickrage.app.log.info("Receiving iCal request from %s" % self.request.remote_ip)
 

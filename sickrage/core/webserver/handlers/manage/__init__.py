@@ -338,7 +338,7 @@ class ShowEpisodeStatusesHandler(BaseHandler):
 
             result[cur_season][cur_episode] = dbData.name
 
-        return self.write(json_encode(result))
+        return json_encode(result)
 
 
 class EpisodeStatusesHandler(BaseHandler):
@@ -458,7 +458,7 @@ class ShowSubtitleMissedHandler(BaseHandler):
 
             result[cur_season][cur_episode]["subtitles"] = dbData.subtitles
 
-        return self.write(json_encode(result))
+        return json_encode(result)
 
 
 class SubtitleMissedHandler(BaseHandler):

@@ -35,4 +35,4 @@ class ChangelogHandler(BaseHandler):
         except Exception:
             data = ''
 
-        return self.write(data)
+        return data

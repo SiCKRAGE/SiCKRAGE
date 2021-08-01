@@ -28,7 +28,6 @@ from urllib.parse import unquote_plus, quote_plus
 from apscheduler.triggers.date import DateTrigger
 from tornado.escape import json_encode
 from tornado.httputil import url_concat
-from tornado.ioloop import IOLoop
 from tornado.web import authenticated
 
 import sickrage
@@ -155,7 +154,7 @@ class ShowProgressHandler(BaseHandler):
             progress_text = progress_text + " / " + str(episodes_total)
             progress_tip = progress_tip + "&#013;" + _("Total: ") + str(episodes_total)
 
-        return self.write(json_encode({'progress_text': progress_text, 'progress_tip': progress_tip, 'progressbar_percent': progressbar_percent}))
+        return json_encode({'progress_text': progress_text, 'progress_tip': progress_tip, 'progressbar_percent': progressbar_percent})
 
 
 class IsAliveHandler(BaseHandler):
@@ -165,9 +164,9 @@ class IsAliveHandler(BaseHandler):
         srcallback = self.get_argument('srcallback')
 
         if not srcallback:
-            return self.write(_("Error: Unsupported Request. Send jsonp request with 'srcallback' variable in the query string."))
+            return _("Error: Unsupported Request. Send jsonp request with 'srcallback' variable in the query string.")
 
-        return self.write("{}({})".format(srcallback, {'msg': str(sickrage.app.pid) if sickrage.app.started else 'nope'}))
+        return "{}({})".format(srcallback, {'msg': str(sickrage.app.pid) if sickrage.app.started else 'nope'})
 
 
 class TestSABnzbdHandler(BaseHandler):
@@ -183,9 +182,9 @@ class TestSABnzbdHandler(BaseHandler):
         if connection:
             authed, auth_msg = SabNZBd.test_authentication(host, username, password, apikey)
             if authed:
-                return self.write(_('Success. Connected and authenticated'))
-            return self.write(_('Authentication failed. SABnzbd expects {access!r} as authentication method, {auth}'.format(access=acces_msg, auth=auth_msg)))
-        return self.write(_('Unable to connect to host'))
+                return _('Success. Connected and authenticated')
+            return _('Authentication failed. SABnzbd expects {access!r} as authentication method, {auth}'.format(access=acces_msg, auth=auth_msg))
+        return _('Unable to connect to host')
 
 
 class TestSynologyDSMHandler(BaseHandler):
@@ -198,7 +197,7 @@ class TestSynologyDSMHandler(BaseHandler):
 
         client = get_client_instance(NzbMethod[nzb_method].value, client_type='nzb')
         __, access_msg = client(host, username, password).test_authentication()
-        return self.write(access_msg)
+        return access_msg
 
 
 class TestTorrentHandler(BaseHandler):
@@ -211,7 +210,7 @@ class TestTorrentHandler(BaseHandler):
 
         client = get_client_instance(TorrentMethod[torrent_method].value, client_type='torrent')
         __, access_msg = client(host, username, password).test_authentication()
-        return self.write(access_msg)
+        return access_msg
 
 
 class TestFreeMobileHandler(BaseHandler):
@@ -222,8 +221,8 @@ class TestFreeMobileHandler(BaseHandler):
 
         result, message = sickrage.app.notification_providers['freemobile'].test_notify(freemobile_id, freemobile_apikey)
         if result:
-            return self.write(_('SMS sent successfully'))
-        return self.write(_('Problem sending SMS: ') + message)
+            return _('SMS sent successfully')
+        return _('Problem sending SMS: ') + message
 
 
 class TestTelegramHandler(BaseHandler):
@@ -234,8 +233,8 @@ class TestTelegramHandler(BaseHandler):
 
         result, message = sickrage.app.notification_providers['telegram'].test_notify(telegram_id, telegram_apikey)
         if result:
-            return self.write(_('Telegram notification succeeded. Check your Telegram clients to make sure it worked'))
-        return self.write(_('Error sending Telegram notification: {message}').format(message=message))
+            return _('Telegram notification succeeded. Check your Telegram clients to make sure it worked')
+        return _('Error sending Telegram notification: {message}').format(message=message)
 
 
 class TestJoinHandler(BaseHandler):
@@ -246,8 +245,8 @@ class TestJoinHandler(BaseHandler):
 
         result, message = sickrage.app.notification_providers['join'].test_notify(join_id, join_apikey)
         if result:
-            return self.write(_('Join notification succeeded. Check your Join clients to make sure it worked'))
-        return self.write(_('Error sending Join notification: {message}').format(message=message))
+            return _('Join notification succeeded. Check your Join clients to make sure it worked')
+        return _('Error sending Join notification: {message}').format(message=message)
 
 
 class TestGrowlHandler(BaseHandler):
@@ -263,8 +262,8 @@ class TestGrowlHandler(BaseHandler):
             pw_append = _(' with password: ') + password
 
         if result:
-            return self.write(_('Registered and tested Growl successfully ') + unquote_plus(host) + pw_append)
-        return self.write(_('Registration and testing of Growl failed ') + unquote_plus(host) + pw_append)
+            return _('Registered and tested Growl successfully ') + unquote_plus(host) + pw_append
+        return _('Registration and testing of Growl failed ') + unquote_plus(host) + pw_append
 
 
 class TestProwlHandler(BaseHandler):
@@ -275,8 +274,8 @@ class TestProwlHandler(BaseHandler):
 
         result = sickrage.app.notification_providers['prowl'].test_notify(prowl_apikey, prowl_priority)
         if result:
-            return self.write(_('Test prowl notice sent successfully'))
-        return self.write(_('Test prowl notice failed'))
+            return _('Test prowl notice sent successfully')
+        return _('Test prowl notice failed')
 
 
 class TestBoxcar2Handler(BaseHandler):
@@ -286,8 +285,8 @@ class TestBoxcar2Handler(BaseHandler):
 
         result = sickrage.app.notification_providers['boxcar2'].test_notify(accesstoken)
         if result:
-            return self.write(_('Boxcar2 notification succeeded. Check your Boxcar2 clients to make sure it worked'))
-        return self.write(_('Error sending Boxcar2 notification'))
+            return _('Boxcar2 notification succeeded. Check your Boxcar2 clients to make sure it worked')
+        return _('Error sending Boxcar2 notification')
 
 
 class TestPushoverHandler(BaseHandler):
@@ -298,14 +297,14 @@ class TestPushoverHandler(BaseHandler):
 
         result = sickrage.app.notification_providers['pushover'].test_notify(user_key, api_key)
         if result:
-            return self.write(_('Pushover notification succeeded. Check your Pushover clients to make sure it worked'))
-        return self.write(_('Error sending Pushover notification'))
+            return _('Pushover notification succeeded. Check your Pushover clients to make sure it worked')
+        return _('Error sending Pushover notification')
 
 
 class TwitterStep1Handler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
-        return self.write(sickrage.app.notification_providers['twitter']._get_authorization())
+        return sickrage.app.notification_providers['twitter']._get_authorization()
 
 
 class TwitterStep2Handler(BaseHandler):
@@ -316,8 +315,8 @@ class TwitterStep2Handler(BaseHandler):
         result = sickrage.app.notification_providers['twitter']._get_credentials(key)
         sickrage.app.log.info("result: " + str(result))
         if result:
-            return self.write(_('Key verification successful'))
-        return self.write(_('Unable to verify key'))
+            return _('Key verification successful')
+        return _('Unable to verify key')
 
 
 class TestTwitterHandler(BaseHandler):
@@ -325,8 +324,8 @@ class TestTwitterHandler(BaseHandler):
     def get(self, *args, **kwargs):
         result = sickrage.app.notification_providers['twitter'].test_notify()
         if result:
-            return self.write(_('Tweet successful, check your twitter to make sure it worked'))
-        return self.write(_('Error sending tweet'))
+            return _('Tweet successful, check your twitter to make sure it worked')
+        return _('Error sending tweet')
 
 
 class TestTwilioHandler(BaseHandler):
@@ -338,21 +337,21 @@ class TestTwilioHandler(BaseHandler):
         to_number = self.get_argument('to_number')
 
         if not sickrage.app.notification_providers['twilio'].account_regex.match(account_sid):
-            return self.write(_('Please enter a valid account sid'))
+            return _('Please enter a valid account sid')
 
         if not sickrage.app.notification_providers['twilio'].auth_regex.match(auth_token):
-            return self.write(_('Please enter a valid auth token'))
+            return _('Please enter a valid auth token')
 
         if not sickrage.app.notification_providers['twilio'].phone_regex.match(phone_sid):
-            return self.write(_('Please enter a valid phone sid'))
+            return _('Please enter a valid phone sid')
 
         if not sickrage.app.notification_providers['twilio'].number_regex.match(to_number):
-            return self.write(_('Please format the phone number as "+1-###-###-####"'))
+            return _('Please format the phone number as "+1-###-###-####"')
 
         result = sickrage.app.notification_providers['twilio'].test_notify()
         if result:
-            return self.write(_('Authorization successful and number ownership verified'))
-        return self.write(_('Error sending sms'))
+            return _('Authorization successful and number ownership verified')
+        return _('Error sending sms')
 
 
 class TestAlexaHandler(BaseHandler):
@@ -360,8 +359,8 @@ class TestAlexaHandler(BaseHandler):
     def get(self, *args, **kwargs):
         result = sickrage.app.notification_providers['alexa'].test_notify()
         if result:
-            return self.write(_('Alexa notification successful'))
-        return self.write(_('Alexa notification failed'))
+            return _('Alexa notification successful')
+        return _('Alexa notification failed')
 
 
 class TestSlackHandler(BaseHandler):
@@ -369,8 +368,8 @@ class TestSlackHandler(BaseHandler):
     def get(self, *args, **kwargs):
         result = sickrage.app.notification_providers['slack'].test_notify()
         if result:
-            return self.write(_('Slack message successful'))
-        return self.write(_('Slack message failed'))
+            return _('Slack message successful')
+        return _('Slack message failed')
 
 
 class TestDiscordHandler(BaseHandler):
@@ -378,8 +377,8 @@ class TestDiscordHandler(BaseHandler):
     def get(self, *args, **kwargs):
         result = sickrage.app.notification_providers['discord'].test_notify()
         if result:
-            return self.write(_('Discord message successful'))
-        return self.write(_('Discord message failed'))
+            return _('Discord message successful')
+        return _('Discord message failed')
 
 
 class TestKODIHandler(BaseHandler):
@@ -398,7 +397,7 @@ class TestKODIHandler(BaseHandler):
                 final_result += _('Test KODI notice failed to ') + unquote_plus(curHost)
             final_result += "<br>\n"
 
-        return self.write(final_result)
+        return final_result
 
 
 class TestPMCHandler(BaseHandler):
@@ -424,7 +423,7 @@ class TestPMCHandler(BaseHandler):
         sickrage.app.alerts.message(_('Tested Plex client(s): '),
                                     unquote_plus(host.replace(',', ', ')))
 
-        return self.write(final_result)
+        return final_result
 
 
 class TestPMSHandler(BaseHandler):
@@ -455,15 +454,15 @@ class TestPMSHandler(BaseHandler):
         sickrage.app.alerts.message(_('Tested Plex Media Server host(s): '),
                                     unquote_plus(host.replace(',', ', ')))
 
-        return self.write(final_result)
+        return final_result
 
 
 class TestLibnotifyHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         if sickrage.app.notification_providers['libnotify'].test_notify():
-            return self.write(_('Tried sending desktop notification via libnotify'))
-        return self.write(sickrage.app.notification_providers['libnotify'].diagnose())
+            return _('Tried sending desktop notification via libnotify')
+        return sickrage.app.notification_providers['libnotify'].diagnose()
 
 
 class TestEMBYHandler(BaseHandler):
@@ -474,8 +473,8 @@ class TestEMBYHandler(BaseHandler):
 
         result = sickrage.app.notification_providers['emby'].test_notify(unquote_plus(host), emby_apikey)
         if result:
-            return self.write(_('Test notice sent successfully to ') + unquote_plus(host))
-        return self.write(_('Test notice failed to ') + unquote_plus(host))
+            return _('Test notice sent successfully to ') + unquote_plus(host)
+        return _('Test notice failed to ') + unquote_plus(host)
 
 
 class TestNMJHandler(BaseHandler):
@@ -487,8 +486,8 @@ class TestNMJHandler(BaseHandler):
 
         result = sickrage.app.notification_providers['nmj'].test_notify(unquote_plus(host), database, mount)
         if result:
-            return self.write(_('Successfully started the scan update'))
-        return self.write(_('Test failed to start the scan update'))
+            return _('Successfully started the scan update')
+        return _('Test failed to start the scan update')
 
 
 class SettingsNMJHandler(BaseHandler):
@@ -498,17 +497,16 @@ class SettingsNMJHandler(BaseHandler):
 
         result = sickrage.app.notification_providers['nmj'].notify_settings(unquote_plus(host))
         if result:
-            return self.write(
-                '{"message": "%(message)s %(host)s", "database": "%(database)s", "mount": "%(mount)s"}' % {
-                    "message": _('Got settings from'),
-                    "host": host, "database": sickrage.app.config.nmj.database,
-                    "mount": sickrage.app.config.nmj.mount
-                })
+            return '{"message": "%(message)s %(host)s", "database": "%(database)s", "mount": "%(mount)s"}' % {
+                "message": _('Got settings from'),
+                "host": host, "database": sickrage.app.config.nmj.database,
+                "mount": sickrage.app.config.nmj.mount
+            }
 
         message = _('Failed! Make sure your Popcorn is on and NMJ is running. (see Log & Errors -> Debug for '
                     'detailed info)')
 
-        return self.write('{"message": {}, "database": "", "mount": ""}'.format(message))
+        return '{"message": {}, "database": "", "mount": ""}'.format(message)
 
 
 class TestNMJv2Handler(BaseHandler):
@@ -518,8 +516,8 @@ class TestNMJv2Handler(BaseHandler):
 
         result = sickrage.app.notification_providers['nmjv2'].test_notify(unquote_plus(host))
         if result:
-            return self.write(_('Test notice sent successfully to ') + unquote_plus(host))
-        return self.write(_('Test notice failed to ') + unquote_plus(host))
+            return _('Test notice sent successfully to ') + unquote_plus(host)
+        return _('Test notice failed to ') + unquote_plus(host)
 
 
 class SettingsNMJv2Handler(BaseHandler):
@@ -530,15 +528,11 @@ class SettingsNMJv2Handler(BaseHandler):
         instance = self.get_argument('instance')
 
         result = sickrage.app.notification_providers['nmjv2'].notify_settings(unquote_plus(host), dbloc, instance)
+
         if result:
-            return self.write(
-                '{"message": "NMJ Database found at: %(host)s", "database": "%(database)s"}' % {"host": host,
-                                                                                                "database": sickrage.app.config.nmjv2.database}
-            )
-        return self.write(
-            '{"message": "Unable to find NMJ Database at location: %(dbloc)s. Is the right location selected and PCH '
-            'running?", "database": ""}' % {"dbloc": dbloc}
-        )
+            return f'{{"message": "NMJ Database found at: {host}", "database": "{sickrage.app.config.nmjv2.database}"}}'
+
+        return f'{{"message": "Unable to find NMJ Database at location: {dbloc}. Is the right location selected and PCH running?", "database": ""}}'
 
 
 class GetTraktTokenHandler(BaseHandler):
@@ -547,8 +541,8 @@ class GetTraktTokenHandler(BaseHandler):
         trakt_pin = self.get_argument('trakt_pin')
 
         if TraktAPI().authenticate(trakt_pin):
-            return self.write(_('Trakt Authorized'))
-        return self.write(_('Trakt Not Authorized!'))
+            return _('Trakt Authorized')
+        return _('Trakt Not Authorized!')
 
 
 class TestTraktHandler(BaseHandler):
@@ -557,7 +551,7 @@ class TestTraktHandler(BaseHandler):
         username = self.get_argument('username')
         blacklist_name = self.get_argument('blacklist_name')
 
-        return self.write(sickrage.app.notification_providers['trakt'].test_notify(username, blacklist_name))
+        return sickrage.app.notification_providers['trakt'].test_notify(username, blacklist_name)
 
 
 class LoadShowNotifyListsHandler(BaseHandler):
@@ -567,7 +561,7 @@ class LoadShowNotifyListsHandler(BaseHandler):
         for s in sorted(get_show_list(), key=lambda k: k.name):
             data[s.series_id] = {'id': s.series_id, 'name': s.name, 'list': s.notify_list}
             data['_size'] += 1
-        return self.write(json_encode(data))
+        return json_encode(data)
 
 
 class SaveShowNotifyListHandler(BaseHandler):
@@ -580,7 +574,7 @@ class SaveShowNotifyListHandler(BaseHandler):
             show = find_show(int(show))
             show.notify_list = emails
         except Exception:
-            return self.write('ERROR')
+            return 'ERROR'
 
 
 class TestEmailHandler(BaseHandler):
@@ -595,8 +589,8 @@ class TestEmailHandler(BaseHandler):
         to = self.get_argument('to')
 
         if sickrage.app.notification_providers['email'].test_notify(host, port, smtp_from, use_tls, user, pwd, to):
-            return self.write(_('Test email sent successfully! Check inbox.'))
-        return self.write(_('ERROR: %s') % sickrage.app.notification_providers['email'].last_err)
+            return _('Test email sent successfully! Check inbox.')
+        return _('ERROR: %s') % sickrage.app.notification_providers['email'].last_err
 
 
 class TestNMAHandler(BaseHandler):
@@ -607,8 +601,8 @@ class TestNMAHandler(BaseHandler):
 
         result = sickrage.app.notification_providers['nma'].test_notify(nma_api, nma_priority)
         if result:
-            return self.write(_('Test NMA notice sent successfully'))
-        return self.write(_('Test NMA notice failed'))
+            return _('Test NMA notice sent successfully')
+        return _('Test NMA notice failed')
 
 
 class TestPushalotHandler(BaseHandler):
@@ -618,8 +612,8 @@ class TestPushalotHandler(BaseHandler):
 
         result = sickrage.app.notification_providers['pushalot'].test_notify(authorization_token)
         if result:
-            return self.write(_('Pushalot notification succeeded. Check your Pushalot clients to make sure it worked'))
-        return self.write(_('Error sending Pushalot notification'))
+            return _('Pushalot notification succeeded. Check your Pushalot clients to make sure it worked')
+        return _('Error sending Pushalot notification')
 
 
 class TestPushbulletHandler(BaseHandler):
@@ -629,8 +623,8 @@ class TestPushbulletHandler(BaseHandler):
 
         result = sickrage.app.notification_providers['pushbullet'].test_notify(api)
         if result:
-            return self.write(_('Pushbullet notification succeeded. Check your device to make sure it worked'))
-        return self.write(_('Error sending Pushbullet notification'))
+            return _('Pushbullet notification succeeded. Check your device to make sure it worked')
+        return _('Error sending Pushbullet notification')
 
 
 class GetPushbulletDevicesHandler(BaseHandler):
@@ -640,8 +634,8 @@ class GetPushbulletDevicesHandler(BaseHandler):
 
         result = sickrage.app.notification_providers['pushbullet'].get_devices(api)
         if result:
-            return self.write(result)
-        return self.write(_('Error getting Pushbullet devices'))
+            return result
+        return _('Error getting Pushbullet devices')
 
 
 class ServerStatusHandler(BaseHandler):
@@ -760,8 +754,8 @@ class VerifyPathHandler(BaseHandler):
         path = self.get_argument('path')
 
         if os.path.isfile(path):
-            return self.write(_('Successfully found {path}'.format(path=path)))
-        return self.write(_('Failed to find {path}'.format(path=path)))
+            return _('Successfully found {path}'.format(path=path))
+        return _('Failed to find {path}'.format(path=path))
 
 
 class InstallRequirementsHandler(BaseHandler):
@@ -1196,7 +1190,7 @@ class DeleteEpisodeHandler(BaseHandler):
             err_msg = _("Error", "Show not in show list")
             if direct:
                 sickrage.app.alerts.error(_('Error'), err_msg)
-                return self.write(json_encode({'result': 'error'}))
+                return json_encode({'result': 'error'})
             else:
                 return self._genericMessage(_("Error"), err_msg)
 
@@ -1221,7 +1215,7 @@ class DeleteEpisodeHandler(BaseHandler):
                     pass
 
         if direct:
-            return self.write(json_encode({'result': 'success'}))
+            return json_encode({'result': 'success'})
         else:
             return self.redirect("/home/displayShow?show=" + show)
 
@@ -1315,9 +1309,9 @@ class SearchEpisodeHandler(BaseHandler):
 
         sickrage.app.search_queue.put(ep_queue_item)
         if not all([ep_queue_item.started, ep_queue_item.success]):
-            return self.write(json_encode({'result': 'success'}))
+            return json_encode({'result': 'success'})
 
-        return self.write(json_encode({'result': 'failure'}))
+        return json_encode({'result': 'failure'})
 
 
 class GetManualSearchStatusHandler(BaseHandler):
@@ -1342,7 +1336,7 @@ class GetManualSearchStatusHandler(BaseHandler):
                     # Running Manual Searches
                     episodes += self.get_episodes(int(show), task_items['season'], task_items['episode'], 'Searching')
 
-        return self.write(json_encode({'episodes': episodes}))
+        return json_encode({'episodes': episodes})
 
     def get_episodes(self, series_id, season, episode, search_status):
         results = []
@@ -1401,11 +1395,11 @@ class SearchEpisodeSubtitlesHandler(BaseHandler):
                 status = _('No subtitles downloaded')
 
             sickrage.app.alerts.message(tv_show.name, status)
-            return self.write(json_encode({'result': status, 'subtitles': ','.join(tv_episode.subtitles)}))
+            return json_encode({'result': status, 'subtitles': ','.join(tv_episode.subtitles)})
         except (EpisodeNotFoundException, MultipleEpisodesInDatabaseException):
-            return self.write(json_encode({'result': _("Episode couldn't be retrieved")}))
+            return json_encode({'result': _("Episode couldn't be retrieved")})
         except Exception:
-            return self.write(json_encode({'result': 'failure'}))
+            return json_encode({'result': 'failure'})
 
 
 class SetSceneNumberingHandler(BaseHandler):
@@ -1492,7 +1486,7 @@ class SetSceneNumberingHandler(BaseHandler):
             result['errorMessage'] = _("Episode couldn't be retrieved")
             result['success'] = False
 
-        return self.write(json_encode(result))
+        return json_encode(result)
 
 
 class RetryEpisodeHandler(BaseHandler):
@@ -1510,9 +1504,9 @@ class RetryEpisodeHandler(BaseHandler):
 
         sickrage.app.search_queue.put(ep_queue_item)
         if not all([ep_queue_item.started, ep_queue_item.success]):
-            return self.write(json_encode({'result': 'success'}))
+            return json_encode({'result': 'success'})
 
-        return self.write(json_encode({'result': 'failure'}))
+        return json_encode({'result': 'failure'})
 
 
 class FetchReleasegroupsHandler(BaseHandler):
@@ -1528,6 +1522,6 @@ class FetchReleasegroupsHandler(BaseHandler):
         except AnidbAdbaConnectionException as e:
             sickrage.app.log.debug('Unable to get ReleaseGroups: {}'.format(e))
         else:
-            return self.write(json_encode({'result': 'success', 'groups': groups}))
+            return json_encode({'result': 'success', 'groups': groups})
 
-        return self.write(json_encode({'result': 'failure'}))
+        return json_encode({'result': 'failure'})

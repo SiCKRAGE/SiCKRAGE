@@ -58,7 +58,7 @@ class ConfigBackupHandler(BaseHandler):
 
         final_result += "<br>\n"
 
-        return self.write(final_result)
+        return final_result
 
 
 class ConfigRestoreHandler(BaseHandler):
@@ -89,7 +89,7 @@ class ConfigRestoreHandler(BaseHandler):
 
         final_result += "<br>\n"
 
-        return self.write(final_result)
+        return final_result
 
 
 class SaveBackupRestoreHandler(BaseHandler):

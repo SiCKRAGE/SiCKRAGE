@@ -20,15 +20,19 @@
 # ##############################################################################
 import collections
 import datetime
+import functools
 import os
 import re
 import threading
 import time
 import traceback
+import types
+from concurrent.futures.thread import ThreadPoolExecutor
 from urllib.parse import unquote_plus
 
 from sqlalchemy import orm
 from tornado.escape import recursive_unicode, json_encode
+from tornado.ioloop import IOLoop
 from tornado.web import RequestHandler
 
 import sickrage
@@ -75,9 +79,13 @@ best_quality_list = [
 any_quality_list = best_quality_list + ["unknown"]
 
 
-class ApiHandler(RequestHandler):
+class ApiV1BaseHandler(RequestHandler):
     """ api class that returns json results """
     version = 5  # use an int since float-point is unpredictable
+
+    def __init__(self, application, request, **kwargs):
+        super(RequestHandler, self).__init__(application, request, **kwargs)
+        self.executor = ThreadPoolExecutor(thread_name_prefix='APIv1-Thread')
 
     def prepare(self, *args, **kwargs):
         threading.currentThread().setName("API")
@@ -120,7 +128,16 @@ class ApiHandler(RequestHandler):
         if 'outputType' in out_dict:
             output_callback = output_callback_dict[out_dict['outputType']]
 
-        self.finish(output_callback(out_dict))
+        method = self.run_async(output_callback)
+        method(out_dict)
+
+    def run_async(self, method):
+        @functools.wraps(method)
+        async def wrapper(self, *args, **kwargs):
+            resp = await IOLoop.current().run_in_executor(self.executor, functools.partial(method, *args, **kwargs))
+            self.finish(resp)
+
+        return types.MethodType(wrapper, self)
 
     def route(self, function, **kwargs):
         kwargs = recursive_unicode(kwargs)
@@ -258,7 +275,7 @@ class ApiHandler(RequestHandler):
         return curArgs, curKwargs
 
 
-class ApiCall(ApiHandler):
+class ApiCall(ApiV1BaseHandler):
     _help = {"desc": "This command is not documented. Please report this to the developers."}
 
     def __init__(self, application, request, *args, **kwargs):
@@ -639,7 +656,8 @@ class CMD_ComingEpisodes(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ComingEpisodes, self).__init__(application, request, *args, **kwargs)
-        self.sort, args = self.check_params("sort", ComingEpsSortBy.DATE.name.lower(), False, "string", [x.name.lower() for x in ComingEpsSortBy], *args, **kwargs)
+        self.sort, args = self.check_params("sort", ComingEpsSortBy.DATE.name.lower(), False, "string", [x.name.lower() for x in ComingEpsSortBy], *args,
+                                            **kwargs)
         self.type, args = self.check_params("type", '|'.join(ComingEpisodes.categories), False, "list", ComingEpisodes.categories, *args, **kwargs)
         self.paused, args = self.check_params("paused", bool(sickrage.app.config.gui.coming_eps_display_paused), False, "bool", [], *args, **kwargs)
 
@@ -691,7 +709,8 @@ class CMD_Episode(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_Episode, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
+                                                          **kwargs)
         self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
         self.e, args = self.check_params("episode", None, True, "int", [], *args, **kwargs)
         self.fullPath, args = self.check_params("full_path", False, False, "bool", [], *args, **kwargs)
@@ -756,7 +775,8 @@ class CMD_EpisodeSearch(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_EpisodeSearch, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
+                                                          **kwargs)
         self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
         self.e, args = self.check_params("episode", None, True, "int", [], *args, **kwargs)
 
@@ -807,7 +827,8 @@ class CMD_EpisodeSetStatus(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_EpisodeSetStatus, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
+                                                          **kwargs)
         self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
         self.status, args = self.check_params("status", None, True, "string", ["WANTED", "SKIPPED", "IGNORED", "FAILED"], *args, **kwargs)
         self.e, args = self.check_params("episode", None, False, "int", [], *args, **kwargs)
@@ -898,7 +919,8 @@ class CMD_SubtitleSearch(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_SubtitleSearch, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
+                                                          **kwargs)
         self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
         self.e, args = self.check_params("episode", None, True, "int", [], *args, **kwargs)
 
@@ -950,7 +972,8 @@ class CMD_Exceptions(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_Exceptions, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, False, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
+                                                          **kwargs)
 
     def run(self):
         """ Get the scene exceptions for all or a given show """
@@ -1175,7 +1198,8 @@ class CMD_PostProcess(ApiCall):
         self.path, args = self.check_params("path", None, False, "string", [], *args, **kwargs)
         self.force_replace, args = self.check_params("force_replace", False, False, "bool", [], *args, **kwargs)
         self.return_data, args = self.check_params("return_data", False, False, "bool", [], *args, **kwargs)
-        self.process_method, args = self.check_params("process_method", ProcessMethod.COPY.name.lower(), False, "string", [x.name.lower() for x in ProcessMethod], *args, **kwargs)
+        self.process_method, args = self.check_params("process_method", ProcessMethod.COPY.name.lower(), False, "string",
+                                                      [x.name.lower() for x in ProcessMethod], *args, **kwargs)
         self.is_priority, args = self.check_params("is_priority", False, False, "bool", [], *args, **kwargs)
         self.delete, args = self.check_params("delete", False, False, "bool", [], *args, **kwargs)
         self.failed, args = self.check_params("failed", False, False, "bool", [], *args, **kwargs)
@@ -1499,7 +1523,8 @@ class CMD_SiCKRAGESearchSeriesProvider(ApiCall):
         self.name, args = self.check_params("name", None, False, "string", [], *args, **kwargs)
         self.lang, args = self.check_params("lang", sickrage.app.config.general.series_provider_default_language, False, "string", [], *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, False, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
+                                                          **kwargs)
 
     def run(self):
         """ Search for a show with a given name on a specific series provider, in a specific language """
@@ -1687,7 +1712,8 @@ class CMD_Show(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_Show, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
+                                                          **kwargs)
 
     def run(self):
         """ Get detailed information about a show """
@@ -1779,7 +1805,8 @@ class CMD_ShowAddExisting(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowAddExisting, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
+                                                          **kwargs)
         self.location, args = self.check_params("location", None, True, "string", [], *args, **kwargs)
         self.initial, args = self.check_params("initial", None, False, "list", any_quality_list, *args, **kwargs)
         self.archive, args = self.check_params("archive", None, False, "list", best_quality_list, *args, **kwargs)
@@ -1875,7 +1902,8 @@ class CMD_ShowAddNew(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowAddNew, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
+                                                          **kwargs)
         self.location, args = self.check_params("location", None, False, "string", [], *args, **kwargs)
         self.initial, args = self.check_params("initial", None, False, "list", any_quality_list, *args, **kwargs)
         self.archive, args = self.check_params("archive", None, False, "list", best_quality_list, *args, **kwargs)
@@ -2003,7 +2031,8 @@ class CMD_ShowCache(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowCache, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
+                                                          **kwargs)
 
     def run(self):
         """ Check SiCKRAGE's cache to see if the images (poster, banner, fanart) for a show are valid """
@@ -2045,7 +2074,8 @@ class CMD_ShowDelete(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowDelete, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
+                                                          **kwargs)
         self.removefiles, args = self.check_params("removefiles", False, False, "bool", [], *args, **kwargs)
 
     def run(self):
@@ -2077,7 +2107,8 @@ class CMD_ShowGetQuality(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowGetQuality, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
+                                                          **kwargs)
 
     def run(self):
         """ Get the quality setting of a show """
@@ -2131,7 +2162,8 @@ class CMD_ShowGetBanner(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowGetBanner, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
+                                                          **kwargs)
 
     def run(self):
         """ Get the banner of a show """
@@ -2156,7 +2188,8 @@ class CMD_ShowGetNetworkLogo(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowGetNetworkLogo, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
+                                                          **kwargs)
 
     def run(self):
         """
@@ -2210,7 +2243,8 @@ class CMD_ShowPause(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowPause, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
+                                                          **kwargs)
         self.pause, args = self.check_params("pause", False, False, "bool", [], *args, **kwargs)
 
     def run(self):
@@ -2244,7 +2278,8 @@ class CMD_ShowRefresh(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowRefresh, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
+                                                          **kwargs)
 
     def run(self):
         """ Refresh a show in SiCKRAGE """
@@ -2276,7 +2311,8 @@ class CMD_ShowSeasonList(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowSeasonList, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
+                                                          **kwargs)
         self.sort, args = self.check_params("sort", "desc", False, "string", ["asc", "desc"], *args, **kwargs)
 
     def run(self):
@@ -2308,7 +2344,8 @@ class CMD_ShowSeasons(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowSeasons, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
+                                                          **kwargs)
         self.season, args = self.check_params("season", None, False, "int", [], *args, **kwargs)
 
     def run(self):
@@ -2369,7 +2406,8 @@ class CMD_ShowSetQuality(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowSetQuality, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
+                                                          **kwargs)
         # self.archive, args = self.check_params("archive", None, False, "list", _getQualityMap().values()[1:], *args, **kwargs)
         self.initial, args = self.check_params("initial", None, False, "list", any_quality_list, *args, **kwargs)
         self.archive, args = self.check_params("archive", None, False, "list", best_quality_list, *args, **kwargs)
@@ -2416,7 +2454,8 @@ class CMD_ShowStats(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowStats, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
+                                                          **kwargs)
 
     def run(self):
         """ Get episode statistics for a given show """
@@ -2527,7 +2566,8 @@ class CMD_ShowUpdate(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowUpdate, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
+                                                          **kwargs)
 
     def run(self):
         """ Update a show in SiCKRAGE """

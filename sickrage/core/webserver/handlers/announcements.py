@@ -46,10 +46,10 @@ class MarkAnnouncementSeenHandler(BaseHandler):
         if announcement:
             announcement.seen = True
 
-        return self.write(json.dumps({'success': True}))
+        return json.dumps({'success': True})
 
 
 class AnnouncementCountHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
-        return self.write(json.dumps({'count': sickrage.app.announcements.count()}))
+        return json.dumps({'count': sickrage.app.announcements.count()})

@@ -132,7 +132,7 @@ class LogsViewHandler(BaseHandler):
         }
 
         if to_json:
-            return self.write(json.dumps({'logs': get_logs(log_search, log_filter, min_level, max_lines)}))
+            return json.dumps({'logs': get_logs(log_search, log_filter, min_level, max_lines)})
 
         return self.render('logs/view.mako',
                            header="Log File",
@@ -150,10 +150,10 @@ class LogsViewHandler(BaseHandler):
 class ErrorCountHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
-        return self.write(json.dumps({'count': sickrage.app.log.error_viewer.count()}))
+        return json.dumps({'count': sickrage.app.log.error_viewer.count()})
 
 
 class WarningCountHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
-        return self.write(json.dumps({'count': sickrage.app.log.warning_viewer.count()}))
+        return json.dumps({'count': sickrage.app.log.warning_viewer.count()})

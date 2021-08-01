@@ -58,10 +58,10 @@ class LoginHandler(BaseHandler):
             decoded_token = sickrage.app.auth_server.decode_token(auth_token, certs)
         except ExpiredSignatureError:
             self.set_status(401)
-            return self.write({'error': 'Token expired'})
+            return {'error': 'Token expired'}
         except JWTError as e:
             self.set_status(401)
-            return self.write({'error': f'Improper JWT token supplied, {e!r}'})
+            return {'error': f'Improper JWT token supplied, {e!r}'}
 
         if not sickrage.app.config.user.sub_id:
             sickrage.app.config.user.sub_id = decoded_token.get('sub')
@@ -206,7 +206,7 @@ class LoginHandler(BaseHandler):
         else:
             authorization_url = sickrage.app.auth_server.authorization_url(redirect_uri=redirect_uri, scope="profile email")
             if authorization_url:
-                return super(BaseHandler, self).redirect(authorization_url)
+                return self.redirect(authorization_url, add_web_root=False)
 
         return self.redirect('/logout')
 

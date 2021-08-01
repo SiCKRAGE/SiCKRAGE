@@ -35,12 +35,12 @@ from sickrage.core.media.util import series_image, SeriesImageType
 from sickrage.core.queues.search import ManualSearchTask
 from sickrage.core.tv.episode.helpers import find_episode
 from sickrage.core.tv.show.helpers import get_show_list, find_show, find_show_by_slug
-from sickrage.core.webserver.handlers.api import APIBaseHandler
+from sickrage.core.webserver.handlers.api.v2 import ApiV2BaseHandler
 from sickrage.core.websocket import WebSocketMessage
 from .schemas import *
 
 
-class ApiV2SeriesHandler(APIBaseHandler):
+class ApiV2SeriesHandler(ApiV2BaseHandler):
     def get(self, series_slug=None):
         """Get list of series or specific series information"
         ---
@@ -87,13 +87,13 @@ class ApiV2SeriesHandler(APIBaseHandler):
 
                 all_series.append(show.to_json(progress=True))
 
-            return self.write_json(all_series)
+            return self.to_json(all_series)
 
         series = find_show_by_slug(series_slug)
         if series is None:
             return self.send_error(404, error=f"Unable to find the specified series using slug: {series_slug}")
 
-        return self.write_json(series.to_json(episodes=True, details=True))
+        return self.to_json(series.to_json(episodes=True, details=True))
 
     def post(self):
         data = json_decode(self.request.body)
@@ -181,7 +181,7 @@ class ApiV2SeriesHandler(APIBaseHandler):
 
         sickrage.app.alerts.message(_('Adding Show'), _(f'Adding the specified show into {series_directory}'))
 
-        return self.write_json({'message': True})
+        return self.to_json({'message': True})
 
     def patch(self, series_slug):
         warnings, errors = [], []
@@ -307,7 +307,7 @@ class ApiV2SeriesHandler(APIBaseHandler):
         # commit changes to database
         series.save()
 
-        return self.write_json(series.to_json(episodes=True, details=True))
+        return self.to_json(series.to_json(episodes=True, details=True))
 
     def delete(self, series_slug):
         data = json_decode(self.request.body)
@@ -318,10 +318,10 @@ class ApiV2SeriesHandler(APIBaseHandler):
 
         sickrage.app.show_queue.remove_show(series.series_id, series.series_provider_id, checkbox_to_value(data.get('delete')))
 
-        return self.write_json({'message': True})
+        return self.to_json({'message': True})
 
 
-class ApiV2SeriesEpisodesHandler(APIBaseHandler):
+class ApiV2SeriesEpisodesHandler(ApiV2BaseHandler):
     def get(self, series_slug, *args, **kwargs):
         series = find_show_by_slug(series_slug)
         if series is None:
@@ -331,20 +331,20 @@ class ApiV2SeriesEpisodesHandler(APIBaseHandler):
         for episode in series.episodes:
             episodes.append(episode.to_json())
 
-        return self.write_json(episodes)
+        return self.to_json(episodes)
 
 
-class ApiV2SeriesImagesHandler(APIBaseHandler):
+class ApiV2SeriesImagesHandler(ApiV2BaseHandler):
     def get(self, series_slug, *args, **kwargs):
         series = find_show_by_slug(series_slug)
         if series is None:
             return self.send_error(404, error=f"Unable to find the specified series using slug: {series_slug}")
 
         image = series_image(series.series_id, series.series_provider_id, SeriesImageType.POSTER_THUMB)
-        return self.write_json({'poster': image.url})
+        return self.to_json({'poster': image.url})
 
 
-class ApiV2SeriesImdbInfoHandler(APIBaseHandler):
+class ApiV2SeriesImdbInfoHandler(ApiV2BaseHandler):
     def get(self, series_slug, *args, **kwargs):
         series = find_show_by_slug(series_slug)
         if series is None:
@@ -354,10 +354,10 @@ class ApiV2SeriesImdbInfoHandler(APIBaseHandler):
             imdb_info = session.query(MainDB.IMDbInfo).filter_by(imdb_id=series.imdb_id).one_or_none()
             json_data = IMDbInfoSchema().dump(imdb_info)
 
-        return self.write_json(json_data)
+        return self.to_json(json_data)
 
 
-class ApiV2SeriesBlacklistHandler(APIBaseHandler):
+class ApiV2SeriesBlacklistHandler(ApiV2BaseHandler):
     def get(self, series_slug, *args, **kwargs):
         series = find_show_by_slug(series_slug)
         if series is None:
@@ -367,10 +367,10 @@ class ApiV2SeriesBlacklistHandler(APIBaseHandler):
             blacklist = session.query(MainDB.Blacklist).filter_by(series_id=series.series_id, series_provider_id=series.series_provider_id).one_or_none()
             json_data = BlacklistSchema().dump(blacklist)
 
-        return self.write_json(json_data)
+        return self.to_json(json_data)
 
 
-class ApiV2SeriesWhitelistHandler(APIBaseHandler):
+class ApiV2SeriesWhitelistHandler(ApiV2BaseHandler):
     def get(self, series_slug, *args, **kwargs):
         series = find_show_by_slug(series_slug)
         if series is None:
@@ -380,10 +380,10 @@ class ApiV2SeriesWhitelistHandler(APIBaseHandler):
             whitelist = session.query(MainDB.Whitelist).filter_by(series_id=series.series_id, series_provider_id=series.series_provider_id).one_or_none()
             json_data = WhitelistSchema().dump(whitelist)
 
-        return self.write_json(json_data)
+        return self.to_json(json_data)
 
 
-class ApiV2SeriesRefreshHandler(APIBaseHandler):
+class ApiV2SeriesRefreshHandler(ApiV2BaseHandler):
     def get(self, series_slug):
         force = self.get_argument('force', None)
 
@@ -397,7 +397,7 @@ class ApiV2SeriesRefreshHandler(APIBaseHandler):
             return self.send_error(400, error=_(f"Unable to refresh this show, error: {e}"))
 
 
-class ApiV2SeriesUpdateHandler(APIBaseHandler):
+class ApiV2SeriesUpdateHandler(ApiV2BaseHandler):
     def get(self, series_slug):
         force = self.get_argument('force', None)
 
@@ -411,7 +411,7 @@ class ApiV2SeriesUpdateHandler(APIBaseHandler):
             return self.send_error(400, error=_(f"Unable to update this show, error: {e}"))
 
 
-class ApiV2SeriesEpisodesRenameHandler(APIBaseHandler):
+class ApiV2SeriesEpisodesRenameHandler(ApiV2BaseHandler):
     def get(self, series_slug):
         """Get list of episodes to rename"
         ---
@@ -470,7 +470,7 @@ class ApiV2SeriesEpisodesRenameHandler(APIBaseHandler):
                     'newLocation': new_location,
                 })
 
-        return self.write_json(rename_data)
+        return self.to_json(rename_data)
 
     def post(self, series_slug):
         """Rename list of episodes"
@@ -522,10 +522,10 @@ class ApiV2SeriesEpisodesRenameHandler(APIBaseHandler):
         if len(renamed_episodes) > 0:
             WebSocketMessage('SHOW_RENAMED', {'seriesSlug': series.slug}).push()
 
-        return self.write_json(renamed_episodes)
+        return self.to_json(renamed_episodes)
 
 
-class ApiV2SeriesEpisodesManualSearchHandler(APIBaseHandler):
+class ApiV2SeriesEpisodesManualSearchHandler(ApiV2BaseHandler):
     def get(self, series_slug, episode_slug):
         """Episode Manual Search"
         ---
@@ -597,7 +597,7 @@ class ApiV2SeriesEpisodesManualSearchHandler(APIBaseHandler):
 
         sickrage.app.search_queue.put(ep_queue_item)
         if not all([ep_queue_item.started, ep_queue_item.success]):
-            return self.write_json({'success': True})
+            return self.to_json({'success': True})
 
         return self.send_error(
             status_code=404,

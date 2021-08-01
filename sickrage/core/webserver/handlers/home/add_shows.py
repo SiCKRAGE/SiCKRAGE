@@ -104,7 +104,7 @@ class SearchSeriesProviderForShowNameHandler(BaseHandler):
                     ('', 'disabled')[isinstance(find_show(int(series['id']), SeriesProviderID[series_provider_id]), TVShow)]
                 ))
 
-        return self.write(json_encode({'results': results, 'langid': lang}))
+        return json_encode({'results': results, 'langid': lang})
 
 
 class MassAddTableHandler(BaseHandler):
@@ -331,7 +331,7 @@ class AddShowByIDHandler(BaseHandler):
 
         if not location:
             sickrage.app.log.warning("There was an error creating the show, no root directory setting found")
-            return self.write(_('No root directories setup, please go back and add one.'))
+            return _('No root directories setup, please go back and add one.')
 
         show_dir = os.path.join(location, sanitize_file_name(show_name))
 

@@ -52,7 +52,7 @@ class ConfigSubtitleGetCodeHandler(BaseHandler):
         codes = [{"id": code, "name": Subtitles().name_from_code(code)} for code in Subtitles().subtitle_code_filter()]
         codes = list(filter(lambda code: q.lower() in code['name'].lower(), codes))
 
-        return self.write(json_encode(codes))
+        return json_encode(codes)
 
 
 class ConfigSubtitlesWantedLanguagesHandler(BaseHandler):
@@ -61,7 +61,7 @@ class ConfigSubtitlesWantedLanguagesHandler(BaseHandler):
         codes = [{"id": code, "name": Subtitles().name_from_code(code)} for code in Subtitles().subtitle_code_filter()]
         codes = list(filter(lambda code: code['id'] in Subtitles().wanted_languages(), codes))
 
-        return self.write(json_encode(codes))
+        return json_encode(codes)
 
 
 class SaveSubtitlesHandler(BaseHandler):

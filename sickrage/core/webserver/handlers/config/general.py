@@ -48,7 +48,7 @@ class ConfigGeneralHandler(BaseHandler):
 class GenerateApiKeyHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
-        return self.write(generate_api_key())
+        return generate_api_key()
 
 
 class SaveRootDirsHandler(BaseHandler):

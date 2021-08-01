@@ -26,10 +26,10 @@ from sickrage.core import Quality
 from sickrage.core.common import dateTimeFormat
 from sickrage.core.helpers import convert_dict_keys_to_camelcase
 from sickrage.core.tv.show.history import History
-from sickrage.core.webserver.handlers.api import APIBaseHandler
+from sickrage.core.webserver.handlers.api.v2 import ApiV2BaseHandler
 
 
-class ApiV2HistoryHandler(APIBaseHandler):
+class ApiV2HistoryHandler(ApiV2BaseHandler):
     def get(self):
         """Get snatch and download history"
         ---
@@ -88,4 +88,4 @@ class ApiV2HistoryHandler(APIBaseHandler):
 
             results.append(row)
 
-        return self.write_json(results)
+        return self.to_json(results)

@@ -42,7 +42,7 @@ class HomePostProcessHandler(BaseHandler):
 class HomeProcessEpisodeHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
-        return self.write("Please use our API instead for post-processing")
+        return "Please use our API instead for post-processing"
 
     @authenticated
     def post(self, *args, **kwargs):
@@ -70,6 +70,6 @@ class HomeProcessEpisodeHandler(BaseHandler):
 
         result = sickrage.app.postprocessor_queue.put(proc_dir, **pp_options)
         if quiet:
-            return self.write(result)
+            return result
 
         return self._genericMessage(_("Postprocessing results"), result.replace("\n", "<br>\n"))

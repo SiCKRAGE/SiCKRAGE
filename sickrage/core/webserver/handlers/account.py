@@ -92,7 +92,7 @@ class AccountLinkHandler(BaseHandler):
         else:
             authorization_url = sickrage.app.auth_server.authorization_url(redirect_uri=redirect_uri, scope="profile email")
             if authorization_url:
-                return super(BaseHandler, self).redirect(authorization_url)
+                return self.redirect(authorization_url, add_web_root=False)
 
         return self.redirect('/account/link')
 
@@ -117,4 +117,4 @@ class AccountUnlinkHandler(BaseHandler):
 class AccountIsLinkedHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
-        return self.write(json.dumps({'linked': ('true', 'false')[not sickrage.app.api.userinfo]}))
+        return json.dumps({'linked': ('true', 'false')[not sickrage.app.api.userinfo]})
