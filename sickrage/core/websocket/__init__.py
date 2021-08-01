@@ -2,17 +2,22 @@ import json
 from queue import Queue
 
 from jose import JWTError, ExpiredSignatureError
-from tornado.ioloop import IOLoop
 from tornado.websocket import WebSocketHandler
 
 import sickrage
 
-clients = set()
-message_queue = Queue()
+
+def check_web_socket_queue():
+    if not WebSocketUIHandler.message_queue.empty():
+        message = WebSocketUIHandler.message_queue.get()
+        WebSocketUIHandler.broadcast(message)
 
 
 class WebSocketUIHandler(WebSocketHandler):
     """WebSocket handler to send and receive data to and from a web client."""
+
+    clients = set()
+    message_queue = Queue()
 
     def check_origin(self, origin):
         """Allow alternate origins."""
@@ -20,9 +25,9 @@ class WebSocketUIHandler(WebSocketHandler):
 
     def open(self, *args, **kwargs):
         """Client connected to the WebSocket."""
-        clients.add(self)
-        while not message_queue.empty():
-            self.write_message(message_queue.get())
+        WebSocketUIHandler.clients.add(self)
+        # while not WebSocketUIHandler.message_queue.empty():
+        #     self.write_message(WebSocketUIHandler.message_queue.get())
 
     def on_message(self, message):
         """Received a message from the client."""
@@ -34,13 +39,13 @@ class WebSocketUIHandler(WebSocketHandler):
             try:
                 decoded_token = sickrage.app.auth_server.decode_token(auth_token, certs)
                 if sickrage.app.config.user.sub_id != decoded_token.get('sub'):
-                    clients.remove(self)
+                    WebSocketUIHandler.clients.remove(self)
                     self.close(401, 'Not Authorized')
             except ExpiredSignatureError:
-                clients.remove(self)
+                WebSocketUIHandler.clients.remove(self)
                 self.close(401, 'Token expired')
             except JWTError as e:
-                clients.remove(self)
+                WebSocketUIHandler.clients.remove(self)
                 self.close(401, f'Improper JWT token supplied, {e!r}')
         else:
             sickrage.app.log.debug('WebSocket received message from {}: {}'.format(self.request.remote_ip, message))
@@ -51,7 +56,12 @@ class WebSocketUIHandler(WebSocketHandler):
 
     def on_close(self):
         """Client disconnected from the WebSocket."""
-        clients.remove(self)
+        WebSocketUIHandler.clients.remove(self)
+
+    @classmethod
+    def broadcast(cls, msg):
+        for client in cls.clients:
+            client.write_message(json.dumps(msg))
 
     def __repr__(self):
         """Client representation."""
@@ -84,10 +94,4 @@ class WebSocketMessage(object):
 
     def push(self):
         """Push the message to all connected WebSocket clients."""
-        # message_queue.put(self.json())
-        for client in clients.copy():
-            try:
-                message = self.json()
-                IOLoop.current().run_in_executor(None, client.write_message, message)
-            except AssertionError:
-                continue
+        WebSocketUIHandler.message_queue.put(self.json())

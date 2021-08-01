@@ -18,7 +18,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-import asyncio
 import datetime
 import locale
 import logging
@@ -43,8 +42,7 @@ from apscheduler.triggers.interval import IntervalTrigger
 from dateutil import tz
 from fake_useragent import UserAgent
 from sentry_sdk.integrations.logging import LoggingIntegration
-from tornado.ioloop import IOLoop
-from tornado.platform.asyncio import AnyThreadEventLoopPolicy
+from tornado.ioloop import IOLoop, PeriodicCallback
 
 import sickrage
 from sickrage.core.amqp import AMQPClient
@@ -82,6 +80,7 @@ from sickrage.core.updaters.tz_updater import TimeZoneUpdater
 from sickrage.core.upnp import UPNPClient
 from sickrage.core.version_updater import VersionUpdater, SourceUpdateManager
 from sickrage.core.webserver import WebServer
+from sickrage.core.websocket import check_web_socket_queue
 from sickrage.metadata_providers import MetadataProviders
 from sickrage.notification_providers import NotificationProviders
 from sickrage.search_providers import SearchProviders
@@ -236,9 +235,6 @@ class Core(object):
 
         # thread name
         threading.currentThread().setName('CORE')
-
-        # event loop policy that allows loop creation on any thread.
-        asyncio.set_event_loop_policy(AnyThreadEventLoopPolicy())
 
         # init sentry
         self.init_sentry()
@@ -569,7 +565,10 @@ class Core(object):
         IOLoop.current().add_callback(self.launch_browser)
 
         # shutdown trigger
-        IOLoop.current().add_callback(self.shutdown_trigger)
+        PeriodicCallback(self.shutdown_trigger, 5 * 1000).start()
+
+        # watch websocket message queue
+        PeriodicCallback(check_web_socket_queue, 100).start()
 
         # start ioloop
         IOLoop.current().start()
@@ -697,7 +696,5 @@ class Core(object):
         self.started = False
 
     def shutdown_trigger(self):
-        if self.started:
-            IOLoop.current().add_timeout(datetime.timedelta(seconds=5), self.shutdown_trigger)
-        else:
+        if not self.started:
             IOLoop.current().stop()
