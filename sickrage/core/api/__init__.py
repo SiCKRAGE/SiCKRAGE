@@ -61,17 +61,6 @@ class API(object):
     def alexa(self):
         return self.AlexaAPI(self)
 
-    def update_server_connections(self):
-        if sickrage.app.config.general.server_id:
-            self.server.update_server(
-                server_id=sickrage.app.config.general.server_id,
-                ip_addresses=','.join([get_internal_ip()]),
-                web_protocol=('http', 'https')[sickrage.app.config.general.enable_https],
-                web_port=sickrage.app.config.general.web_port,
-                web_root=sickrage.app.config.general.web_root,
-                server_version=sickrage.version(),
-            )
-
     @property
     def session(self):
         extra = {

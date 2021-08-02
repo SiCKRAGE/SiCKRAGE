@@ -523,17 +523,6 @@ class Core(object):
             id=self.upnp_client.name
         )
 
-        # add server connections update job
-        self.scheduler.add_job(
-            self.api.update_server_connections,
-            IntervalTrigger(
-                days=1,
-                timezone='utc'
-            ),
-            name=self.api.name,
-            id=self.api.name
-        )
-
         # start queues
         self.search_queue.start_worker(self.config.general.max_queue_workers)
         self.show_queue.start_worker(self.config.general.max_queue_workers)
@@ -542,11 +531,11 @@ class Core(object):
         # start web server
         self.wserver.start()
 
-        # update server connections
-        self.scheduler.get_job(self.api.name).modify(next_run_time=datetime.datetime.utcnow())
-
         # start scheduler service
         self.scheduler.start()
+
+        # perform server checkup
+        IOLoop.current().add_callback(self.server_checkup)
 
         # load shows
         IOLoop.current().add_callback(self.load_shows)
@@ -563,7 +552,10 @@ class Core(object):
         # launch browser
         IOLoop.current().add_callback(self.launch_browser)
 
-        # shutdown trigger
+        # perform server checkups every hour
+        PeriodicCallback(self.server_checkup, 1 * 60 * 60 * 1000).start()
+
+        # perform shutdown trigger check every 5 seconds
         PeriodicCallback(self.shutdown_trigger, 5 * 1000).start()
 
         # start ioloop
@@ -601,6 +593,37 @@ class Core(object):
         # set sentry tags
         for tag_key, tag_value in sentry_tags.items():
             sentry_sdk.set_tag(tag_key, tag_value)
+
+    def server_checkup(self):
+        if self.config.general.server_id:
+            server_status = self.api.server.get_status(self.config.general.server_id)
+            if server_status and not server_status['registered']:
+                # re-register server
+                server_id = self.api.server.register_server(
+                    ip_addresses=','.join([get_internal_ip()]),
+                    web_protocol=('http', 'https')[self.config.general.enable_https],
+                    web_port=self.config.general.web_port,
+                    web_root=self.config.general.web_root,
+                    server_version=sickrage.version(),
+                )
+
+                if server_id:
+                    self.log.info('Re-registered SiCKRAGE server with SiCKRAGE API')
+                    sentry_sdk.set_tag('server_id', self.config.general.server_id)
+                    self.config.general.server_id = server_id
+                    self.config.save(mark_dirty=True)
+            else:
+                self.log.info('Updating SiCKRAGE server data on SiCKRAGE API')
+
+                # update server information
+                self.api.server.update_server(
+                    server_id=self.config.general.server_id,
+                    ip_addresses=','.join([get_internal_ip()]),
+                    web_protocol=('http', 'https')[self.config.general.enable_https],
+                    web_port=self.config.general.web_port,
+                    web_root=self.config.general.web_root,
+                    server_version=sickrage.version(),
+                )
 
     def load_shows(self):
         threading.currentThread().setName('CORE')
