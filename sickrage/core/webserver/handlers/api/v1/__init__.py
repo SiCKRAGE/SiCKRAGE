@@ -25,7 +25,6 @@ import os
 import re
 import time
 import traceback
-import types
 from concurrent.futures.thread import ThreadPoolExecutor
 from urllib.parse import unquote_plus
 

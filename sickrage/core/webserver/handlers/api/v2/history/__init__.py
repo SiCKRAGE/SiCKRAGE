@@ -88,4 +88,4 @@ class ApiV2HistoryHandler(ApiV2BaseHandler):
 
             results.append(row)
 
-        return self.to_json(results)
+        return self.json_response(results)

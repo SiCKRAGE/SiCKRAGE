@@ -28,7 +28,7 @@ class ApiV2FileBrowserHandler(ApiV2BaseHandler):
         path = self.get_argument('path', None)
         include_files = self.get_argument('includeFiles', None)
 
-        return self.to_json(self.get_path(path, bool(include_files)))
+        return self.json_response(self.get_path(path, bool(include_files)))
 
     def get_path(self, path, include_files=False):
         entries = {

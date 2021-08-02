@@ -59,4 +59,4 @@ class ApiV2ConfigHandler(ApiV2BaseHandler):
             }
         }
 
-        return self.to_json(config_data)
+        return self.json_response(config_data)
