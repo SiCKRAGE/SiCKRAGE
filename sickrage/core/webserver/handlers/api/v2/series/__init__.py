@@ -87,13 +87,13 @@ class ApiV2SeriesHandler(ApiV2BaseHandler):
 
                 all_series.append(show.to_json(progress=True))
 
-            return self.to_json(all_series)
+            return self.json_response(all_series)
 
         series = find_show_by_slug(series_slug)
         if series is None:
-            return self.send_error(404, error=f"Unable to find the specified series using slug: {series_slug}")
+            return self._not_found(error=f"Unable to find the specified series using slug: {series_slug}")
 
-        return self.to_json(series.to_json(episodes=True, details=True))
+        return self.json_response(series.to_json(episodes=True, details=True))
 
     def post(self):
         data = json_decode(self.request.body)
@@ -123,18 +123,18 @@ class ApiV2SeriesHandler(ApiV2BaseHandler):
         add_show_year = self._parse_boolean(data.get('addShowYear', 'false'))
 
         if not series_id:
-            return self.send_error(400, error=f"Missing seriesId parameter: {series_id}")
+            return self._bad_request(error=f"Missing seriesId parameter: {series_id}")
 
         series_provider_id = SeriesProviderID.by_slug(series_provider_slug)
         if not series_provider_id:
-            return self.send_error(404, error="Unable to identify a series provider using provided slug")
+            return self._not_found(error="Unable to identify a series provider using provided slug")
 
         series = find_show(int(series_id), series_provider_id)
         if series:
-            return self.send_error(400, error=f"Already exists series: {series_id}")
+            return self._bad_request(error=f"Already exists series: {series_id}")
 
         if is_existing and not series_directory:
-            return self.send_error(400, error="Missing seriesDirectory parameter")
+            return self._bad_request(error="Missing seriesDirectory parameter")
 
         if not is_existing:
             series_directory = os.path.join(root_directory, sanitize_file_name(series_name))
@@ -146,12 +146,12 @@ class ApiV2SeriesHandler(ApiV2BaseHandler):
 
             if os.path.isdir(series_directory):
                 sickrage.app.alerts.error(_("Unable to add show"), _("Folder ") + series_directory + _(" exists already"))
-                return self.send_error(400, error=f"Show directory {series_directory} already exists!")
+                return self._bad_request(error=f"Show directory {series_directory} already exists!")
 
             if not make_dir(series_directory):
                 sickrage.app.log.warning(f"Unable to create the folder {series_directory}, can't add the show")
                 sickrage.app.alerts.error(_("Unable to add show"), _(f"Unable to create the folder {series_directory}, can't add the show"))
-                return self.send_error(400, error=f"Unable to create the show folder {series_directory}, can't add the show")
+                return self._bad_request(error=f"Unable to create the show folder {series_directory}, can't add the show")
 
         chmod_as_parent(series_directory)
 
@@ -181,7 +181,7 @@ class ApiV2SeriesHandler(ApiV2BaseHandler):
 
         sickrage.app.alerts.message(_('Adding Show'), _(f'Adding the specified show into {series_directory}'))
 
-        return self.to_json({'message': True})
+        return self.json_response({'message': True})
 
     def patch(self, series_slug):
         warnings, errors = [], []
@@ -193,7 +193,7 @@ class ApiV2SeriesHandler(ApiV2BaseHandler):
 
         series = find_show_by_slug(series_slug)
         if series is None:
-            return self.send_error(404, error=f"Unable to find the specified series using slug: {series_slug}")
+            return self._bad_request(error=f"Unable to find the specified series using slug: {series_slug}")
 
         # if we changed the language then kick off an update
         if data.get('lang') is not None and data['lang'] != series.lang:
@@ -307,80 +307,80 @@ class ApiV2SeriesHandler(ApiV2BaseHandler):
         # commit changes to database
         series.save()
 
-        return self.to_json(series.to_json(episodes=True, details=True))
+        return self.json_response(series.to_json(episodes=True, details=True))
 
     def delete(self, series_slug):
         data = json_decode(self.request.body)
 
         series = find_show_by_slug(series_slug)
         if series is None:
-            return self.send_error(404, error=f"Unable to find the specified series using slug: {series_slug}")
+            return self._not_found(error=f"Unable to find the specified series using slug: {series_slug}")
 
         sickrage.app.show_queue.remove_show(series.series_id, series.series_provider_id, checkbox_to_value(data.get('delete')))
 
-        return self.to_json({'message': True})
+        return self.json_response({'message': True})
 
 
 class ApiV2SeriesEpisodesHandler(ApiV2BaseHandler):
     def get(self, series_slug, *args, **kwargs):
         series = find_show_by_slug(series_slug)
         if series is None:
-            return self.send_error(404, error=f"Unable to find the specified series using slug: {series_slug}")
+            return self._not_found(error=f"Unable to find the specified series using slug: {series_slug}")
 
         episodes = []
         for episode in series.episodes:
             episodes.append(episode.to_json())
 
-        return self.to_json(episodes)
+        return self.json_response(episodes)
 
 
 class ApiV2SeriesImagesHandler(ApiV2BaseHandler):
     def get(self, series_slug, *args, **kwargs):
         series = find_show_by_slug(series_slug)
         if series is None:
-            return self.send_error(404, error=f"Unable to find the specified series using slug: {series_slug}")
+            return self._not_found(error=f"Unable to find the specified series using slug: {series_slug}")
 
         image = series_image(series.series_id, series.series_provider_id, SeriesImageType.POSTER_THUMB)
-        return self.to_json({'poster': image.url})
+        return self.json_response({'poster': image.url})
 
 
 class ApiV2SeriesImdbInfoHandler(ApiV2BaseHandler):
     def get(self, series_slug, *args, **kwargs):
         series = find_show_by_slug(series_slug)
         if series is None:
-            return self.send_error(404, error=f"Unable to find the specified series using slug: {series_slug}")
+            return self._not_found(error=f"Unable to find the specified series using slug: {series_slug}")
 
         with sickrage.app.main_db.session() as session:
             imdb_info = session.query(MainDB.IMDbInfo).filter_by(imdb_id=series.imdb_id).one_or_none()
             json_data = IMDbInfoSchema().dump(imdb_info)
 
-        return self.to_json(json_data)
+        return self.json_response(json_data)
 
 
 class ApiV2SeriesBlacklistHandler(ApiV2BaseHandler):
     def get(self, series_slug, *args, **kwargs):
         series = find_show_by_slug(series_slug)
         if series is None:
-            return self.send_error(404, error=f"Unable to find the specified series using slug: {series_slug}")
+            return self._not_found(error=f"Unable to find the specified series using slug: {series_slug}")
 
         with sickrage.app.main_db.session() as session:
             blacklist = session.query(MainDB.Blacklist).filter_by(series_id=series.series_id, series_provider_id=series.series_provider_id).one_or_none()
             json_data = BlacklistSchema().dump(blacklist)
 
-        return self.to_json(json_data)
+        return self.json_response(json_data)
 
 
 class ApiV2SeriesWhitelistHandler(ApiV2BaseHandler):
     def get(self, series_slug, *args, **kwargs):
         series = find_show_by_slug(series_slug)
         if series is None:
-            return self.send_error(404, error=f"Unable to find the specified series using slug: {series_slug}")
+            return self._not_found(error=f"Unable to find the specified series using slug: {series_slug}")
 
         with sickrage.app.main_db.session() as session:
             whitelist = session.query(MainDB.Whitelist).filter_by(series_id=series.series_id, series_provider_id=series.series_provider_id).one_or_none()
             json_data = WhitelistSchema().dump(whitelist)
 
-        return self.to_json(json_data)
+        return self.json_response(json_data)
 
 
 class ApiV2SeriesRefreshHandler(ApiV2BaseHandler):
@@ -389,12 +389,12 @@ class ApiV2SeriesRefreshHandler(ApiV2BaseHandler):
 
         series = find_show_by_slug(series_slug)
         if series is None:
-            return self.send_error(404, error=f"Unable to find the specified series using slug: {series_slug}")
+            return self._not_found(error=f"Unable to find the specified series using slug: {series_slug}")
 
         try:
             sickrage.app.show_queue.refresh_show(series.series_id, series.series_provider_id, force=bool(force))
         except CantUpdateShowException as e:
-            return self.send_error(400, error=_(f"Unable to refresh this show, error: {e}"))
+            return self._bad_request(error=_(f"Unable to refresh this show, error: {e}"))
 
 
 class ApiV2SeriesUpdateHandler(ApiV2BaseHandler):
@@ -403,12 +403,12 @@ class ApiV2SeriesUpdateHandler(ApiV2BaseHandler):
 
         series = find_show_by_slug(series_slug)
         if series is None:
-            return self.send_error(404, error=f"Unable to find the specified series using slug: {series_slug}")
+            return self._not_found(error=f"Unable to find the specified series using slug: {series_slug}")
 
         try:
             sickrage.app.show_queue.update_show(series.series_id, series.series_provider_id, force=bool(force))
         except CantUpdateShowException as e:
-            return self.send_error(400, error=_(f"Unable to update this show, error: {e}"))
+            return self._bad_request(error=_(f"Unable to update this show, error: {e}"))
 
 
 class ApiV2SeriesEpisodesRenameHandler(ApiV2BaseHandler):
@@ -443,16 +443,16 @@ class ApiV2SeriesEpisodesRenameHandler(ApiV2BaseHandler):
                   NotAuthorizedSchema
         """
         if not series_slug:
-            return self.send_error(400, error="Missing series slug")
+            return self._bad_request(error="Missing series slug")
 
         rename_data = []
 
         series = find_show_by_slug(series_slug)
         if series is None:
-            return self.send_error(404, error=f"Unable to find the specified series using slug: {series_slug}")
+            return self._not_found(error=f"Unable to find the specified series using slug: {series_slug}")
 
         if not os.path.isdir(series.location):
-            return self.send_error(400, error="Can't rename episodes when the show location does not exist")
+            return self._bad_request(error="Can't rename episodes when the show location does not exist")
 
         for episode in series.episodes:
             if not episode.location:
@@ -470,7 +470,7 @@ class ApiV2SeriesEpisodesRenameHandler(ApiV2BaseHandler):
                     'newLocation': new_location,
                 })
 
-        return self.to_json(rename_data)
+        return self.json_response(rename_data)
 
     def post(self, series_slug):
         """Rename list of episodes"
@@ -508,10 +508,10 @@ class ApiV2SeriesEpisodesRenameHandler(ApiV2BaseHandler):
 
         series = find_show_by_slug(series_slug)
         if series is None:
-            return self.send_error(404, error=f"Unable to find the specified series using slug: {series_slug}")
+            return self._not_found(error=f"Unable to find the specified series using slug: {series_slug}")
 
         if not os.path.isdir(series.location):
-            return self.send_error(400, error="Can't rename episodes when the show location does not exist")
+            return self._bad_request(error="Can't rename episodes when the show location does not exist")
 
         for episode_id in data.get('episodeIdList', []):
             episode = find_episode(episode_id, series.series_provider_id)
@@ -522,7 +522,7 @@ class ApiV2SeriesEpisodesRenameHandler(ApiV2BaseHandler):
         if len(renamed_episodes) > 0:
             WebSocketMessage('SHOW_RENAMED', {'seriesSlug': series.slug}).push()
 
-        return self.to_json(renamed_episodes)
+        return self.json_response(renamed_episodes)
 
 
 class ApiV2SeriesEpisodesManualSearchHandler(ApiV2BaseHandler):
@@ -569,16 +569,16 @@ class ApiV2SeriesEpisodesManualSearchHandler(ApiV2BaseHandler):
 
         # validation_errors = self._validate_schema(SeriesEpisodesManualSearchPath, self.request.path)
         # if validation_errors:
-        #     return self.send_error(400, errors=validation_errors)
+        #     return self._bad_request(error=validation_errors)
         #
         # validation_errors = self._validate_schema(SeriesEpisodesManualSearchSchema, self.request.arguments)
         # if validation_errors:
-        #     return self.send_error(400, errors=validation_errors)
+        #     return self._bad_request(error=validation_errors)
         #
 
         series = find_show_by_slug(series_slug)
         if series is None:
-            return self.send_error(404, error=f"Unable to find the specified series using slug: {series_slug}")
+            return self._not_found(error=f"Unable to find the specified series using slug: {series_slug}")
 
         match = re.match(r'^s(?P<season>\d+)e(?P<episode>\d+)$', episode_slug)
         season_num = match.group('season')
@@ -586,7 +586,7 @@ class ApiV2SeriesEpisodesManualSearchHandler(ApiV2BaseHandler):
 
         episode = series.get_episode(int(season_num), int(episode_num), no_create=True)
         if episode is None:
-            return self.send_error(404, error=f"Unable to find the specified episode using slug: {episode_slug}")
+            return self._bad_request(error=f"Unable to find the specified episode using slug: {episode_slug}")
 
         # make a queue item for it and put it on the queue
         ep_queue_item = ManualSearchTask(int(episode.show.series_id),
@@ -597,9 +597,6 @@ class ApiV2SeriesEpisodesManualSearchHandler(ApiV2BaseHandler):
 
         sickrage.app.search_queue.put(ep_queue_item)
         if not all([ep_queue_item.started, ep_queue_item.success]):
-            return self.to_json({'success': True})
+            return self.json_response({'success': True})
 
-        return self.send_error(
-            status_code=404,
-            error=_(f"Unable to find season {season_num} episode {episode_num} for show {series.name} on search providers")
-        )
+        return self._not_found(error=_(f"Unable to find season {season_num} episode {episode_num} for show {series.name} on search providers"))

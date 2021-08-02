@@ -6,7 +6,7 @@
 %>
 
 <%block name="metas">
-    <meta data-var="commands" data-content="${api_commands}">
+##     <meta data-var="commands" data-content="${api_commands}">
     <meta data-var="episodes" data-content="${episodes}">
 </%block>
 

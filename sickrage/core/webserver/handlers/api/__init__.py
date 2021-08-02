@@ -22,7 +22,9 @@ import functools
 import json
 import traceback
 import types
+from concurrent.futures.thread import ThreadPoolExecutor
 
+import bleach
 import sentry_sdk
 from apispec import APISpec
 from apispec.exceptions import APISpecError
@@ -31,14 +33,18 @@ from apispec_webframeworks.tornado import TornadoPlugin
 from tornado.escape import to_basestring
 from tornado.ioloop import IOLoop
 from tornado.web import HTTPError
+from tornado.web import RequestHandler
 
 import sickrage
 from sickrage.core.enums import UserPermission
 from sickrage.core.helpers import get_internal_ip
-from sickrage.core.webserver.handlers.base import BaseHandler
 
 
-class APIBaseHandler(BaseHandler):
+class APIBaseHandler(RequestHandler):
+    def __init__(self, application, request, api_version='', **kwargs):
+        super(APIBaseHandler, self).__init__(application, request, **kwargs)
+        self.executor = ThreadPoolExecutor(thread_name_prefix=f'API{api_version}-Thread')
+
     def prepare(self):
         super(APIBaseHandler, self).prepare()
 
@@ -84,7 +90,7 @@ class APIBaseHandler(BaseHandler):
                         })
 
                     if sickrage.app.config.user.sub_id != decoded_token.get('sub'):
-                        return self.send_error(401, error='user is not authorized')
+                        return self._unauthorized(error='user is not authorized')
 
                     if not sickrage.app.api.token:
                         exchanged_token = sickrage.app.auth_server.token_exchange(token)
@@ -110,11 +116,11 @@ class APIBaseHandler(BaseHandler):
                     method = self.run_async(getattr(self, method_name))
                     setattr(self, method_name, method)
                 except Exception:
-                    return self.send_error(401, error='failed to decode token')
+                    return self._unauthorized(error='failed to decode token')
             else:
-                return self.send_error(401, error='invalid authorization request')
+                return self._unauthorized(error='invalid authorization request')
         else:
-            return self.send_error(401, error='authorization header missing')
+            return self._unauthorized(error='authorization header missing')
 
     def run_async(self, method):
         @functools.wraps(method)
@@ -134,9 +140,6 @@ class APIBaseHandler(BaseHandler):
                 return decoded_token
 
     def write_error(self, status_code, **kwargs):
-        self.set_header('Content-Type', 'application/json')
-        self.set_status(status_code)
-
         if status_code == 500:
             excp = kwargs['exc_info'][1]
             tb = kwargs['exc_info'][2]
@@ -148,14 +151,42 @@ class APIBaseHandler(BaseHandler):
 
         sickrage.app.log.error(error_msg)
 
-        return self.finish(self.to_json({'error': error_msg}))
+        return self.finish(self.json_response(error=error_msg, status=status_code))
 
     def set_default_headers(self):
-        super(APIBaseHandler, self).set_default_headers()
+        self.set_header('X-SiCKRAGE-Server', sickrage.version())
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, X-SiCKRAGE-Server")
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET, PUT, PATCH, DELETE, OPTIONS')
+        self.set_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+
+    def options(self, *args, **kwargs):
+        self.finish(self._no_content())
+
+    def json_response(self, data=None, error=None, status=200):
         self.set_header('Content-Type', 'application/json')
 
-    def to_json(self, response):
-        return json.dumps(response)
+        self.set_status(status)
+
+        if error is not None:
+            return json.dumps({'error': error})
+
+        if data is not None:
+            return json.dumps(data)
+
+        return None
+
+    def _no_content(self):
+        return self.json_response(status=204)
+
+    def _unauthorized(self, error):
+        return self.json_response(error=error, status=401)
+
+    def _bad_request(self, error):
+        return self.json_response(error=error, status=400)
+
+    def _not_found(self, error):
+        return self.json_response(error=error, status=404)
 
     def _validate_schema(self, schema, arguments):
         return schema().validate({k: to_basestring(v[0]) if len(v) <= 1 else to_basestring(v) for k, v in arguments.items()})
@@ -193,15 +224,23 @@ class APIBaseHandler(BaseHandler):
 
         return spec.to_dict()
 
+    def get_argument(self, *args, **kwargs):
+        value = super(APIBaseHandler, self).get_argument(*args, **kwargs)
+
+        try:
+            return bleach.clean(value)
+        except TypeError:
+            return value
+
 
 class ApiProfileHandler(APIBaseHandler):
     def get(self):
-        return self.to_json(self.current_user)
+        return self.json_response(self.current_user)
 
 
 class ApiPingHandler(APIBaseHandler):
     def get(self):
-        return self.to_json({'message': 'pong'})
+        return self.json_response({'message': 'pong'})
 
 
 class ApiSwaggerDotJsonHandler(APIBaseHandler):
@@ -212,4 +251,4 @@ class ApiSwaggerDotJsonHandler(APIBaseHandler):
 
     def get(self):
         """ Get swagger.json """
-        return self.to_json(self.generate_swagger_json(self.api_handlers, self.api_version))
+        return self.json_response(self.generate_swagger_json(self.api_handlers, self.api_version))

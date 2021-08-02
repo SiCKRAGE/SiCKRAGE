@@ -70,15 +70,15 @@ class Apiv2PostProcessHandler(ApiV2BaseHandler):
 
         validation_errors = self._validate_schema(PostProcessSchema, self.request.arguments)
         if validation_errors:
-            return self.send_error(400, errors=validation_errors)
+            return self._bad_request(error=validation_errors)
 
         if not path and not sickrage.app.config.general.tv_download_dir:
-            return self.send_error(400, error={"path": "You need to provide a path or set TV Download Dir"})
+            return self._bad_request(error={"path": "You need to provide a path or set TV Download Dir"})
 
         json_data = sickrage.app.postprocessor_queue.put(path, nzbName=nzb_name, process_method=ProcessMethod[process_method.upper()], force=force_replace,
                                                          is_priority=is_priority, delete_on=delete, failed=failed, proc_type=proc_type, force_next=force_next)
 
-        if 'Processing succeeded' not in json_data:
-            return self.send_error(400, error=json_data)
+        if 'Processing succeeded' not in json_data and 'Successfully processed' not in json_data:
+            return self._bad_request(error=json_data)
 
-        return self.to_json({'data': json_data if return_data else ''})
+        return self.json_response({'data': json_data if return_data else ''})

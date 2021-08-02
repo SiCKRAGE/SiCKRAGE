@@ -74,4 +74,4 @@ class ApiV2ScheduleHandler(ApiV2BaseHandler):
             results[i]['localtime'] = result['localtime'].timestamp()
             results[i] = convert_dict_keys_to_camelcase(results[i])
 
-        return self.to_json({'episodes': results, 'today': today.timestamp(), 'nextWeek': next_week.timestamp()})
+        return self.json_response({'episodes': results, 'today': today.timestamp(), 'nextWeek': next_week.timestamp()})

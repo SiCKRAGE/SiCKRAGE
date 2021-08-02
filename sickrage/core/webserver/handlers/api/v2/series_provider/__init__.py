@@ -27,7 +27,7 @@ from sickrage.core.webserver.handlers.api.v2 import ApiV2BaseHandler
 
 class ApiV2SeriesProvidersHandler(ApiV2BaseHandler):
     def get(self):
-        return self.to_json([{'displayName': x.display_name, 'slug': x.slug} for x in SeriesProviderID])
+        return self.json_response([{'displayName': x.display_name, 'slug': x.slug} for x in SeriesProviderID])
 
 
 class ApiV2SeriesProvidersSearchHandler(ApiV2BaseHandler):
@@ -37,22 +37,22 @@ class ApiV2SeriesProvidersSearchHandler(ApiV2BaseHandler):
 
         series_provider_id = SeriesProviderID.by_slug(series_provider_slug)
         if not series_provider_id:
-            return self.send_error(400, reason="Unable to identify a series provider using provided slug")
+            return self._bad_request(error="Unable to identify a series provider using provided slug")
 
         sickrage.app.log.debug(f"Searching for show with term: {search_term} on series provider: {sickrage.app.series_providers[series_provider_id].name}")
 
         # search via series name
         results = sickrage.app.series_providers[series_provider_id].search(search_term, language=lang)
         if not results:
-            return self.send_error(404, reason=f"Unable to find the series using the search term: {search_term}")
+            return self._not_found(error=f"Unable to find the series using the search term: {search_term}")
 
-        return self.to_json(results)
+        return self.json_response(results)
 
 
 class ApiV2SeriesProvidersLanguagesHandler(ApiV2BaseHandler):
     def get(self, series_provider_slug):
         series_provider_id = SeriesProviderID.by_slug(series_provider_slug)
         if not series_provider_id:
-            return self.send_error(404, reason="Unable to identify a series provider using provided slug")
+            return self._not_found(error="Unable to identify a series provider using provided slug")
 
-        return self.to_json(sickrage.app.series_providers[series_provider_id].languages())
+        return self.json_response(sickrage.app.series_providers[series_provider_id].languages())
