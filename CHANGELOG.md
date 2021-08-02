@@ -2,7 +2,9 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.25.dev1](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.24...v10.0.25.dev1)
+#### [v10.0.25.dev2](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.24...v10.0.25.dev2)
+
+- Fixed ValueError sickrage.core.searchers.backlog_searcher in _get_wanted [`1633328`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/1633328e43dede0070c144748f5b2dafa10eeffd)
 
 #### [10.0.24](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.23...10.0.24)
 
