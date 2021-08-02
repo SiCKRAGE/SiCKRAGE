@@ -108,7 +108,7 @@ class DailySearcher(object):
                         continue
                     elif cur_quality != Qualities.UNKNOWN and cur_quality > max(best_qualities):
                         continue
-                else:
+                elif any_qualities:
                     if cur_quality in any_qualities:
                         continue
                     elif cur_quality != Qualities.UNKNOWN and cur_quality > max(any_qualities):

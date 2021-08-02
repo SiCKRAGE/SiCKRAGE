@@ -484,8 +484,6 @@ class WebServer(object):
         # HTTPS Cert/Key object
         ssl_ctx = None
         if sickrage.app.config.general.enable_https:
-            tornado.autoreload.watch(sickrage.app.config.general.https_cert)
-            tornado.autoreload.start()
             ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
             ssl_ctx.load_cert_chain(sickrage.app.config.general.https_cert, sickrage.app.config.general.https_key)
 
@@ -525,6 +523,9 @@ class WebServer(object):
             key_out.write(resp['private_key'])
 
         sickrage.app.log.info("Loaded SSL certificate successfully")
+
+        if self.server:
+            sickrage.app.shutdown(restart=True)
 
         return True
 
