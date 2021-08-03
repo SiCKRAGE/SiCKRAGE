@@ -501,26 +501,33 @@ class WebServer(object):
             message = WebSocketUIHandler.message_queue.get()
             WebSocketUIHandler.broadcast(message)
 
-    def load_ssl_certificate(self):
-        if os.path.exists(sickrage.app.config.general.https_key) and os.path.exists(sickrage.app.config.general.https_cert):
-            if self.is_certificate_valid() and not self.certificate_needs_renewal():
+    def load_ssl_certificate(self, certificate=None, private_key=None):
+        if certificate and private_key:
+            with open(sickrage.app.config.general.https_cert, 'w') as cert_out:
+                cert_out.write(certificate)
+
+            with open(sickrage.app.config.general.https_key, 'w') as key_out:
+                key_out.write(private_key)
+        else:
+            if os.path.exists(sickrage.app.config.general.https_key) and os.path.exists(sickrage.app.config.general.https_cert):
+                if self.is_certificate_valid() and not self.certificate_needs_renewal():
+                    return True
+
+            resp = sickrage.app.api.server.get_server_certificate(sickrage.app.config.general.server_id)
+            if not resp or 'certificate' not in resp or 'private_key' not in resp:
+                if not create_https_certificates(sickrage.app.config.general.https_cert, sickrage.app.config.general.https_key):
+                    return False
+
+                if not os.path.exists(sickrage.app.config.general.https_cert) or not os.path.exists(sickrage.app.config.general.https_key):
+                    return False
+
                 return True
 
-        resp = sickrage.app.api.server.get_server_certificate(sickrage.app.config.general.server_id)
-        if not resp or 'certificate' not in resp or 'private_key' not in resp:
-            if not create_https_certificates(sickrage.app.config.general.https_cert, sickrage.app.config.general.https_key):
-                return False
+            with open(sickrage.app.config.general.https_cert, 'w') as cert_out:
+                cert_out.write(resp['certificate'])
 
-            if not os.path.exists(sickrage.app.config.general.https_cert) or not os.path.exists(sickrage.app.config.general.https_key):
-                return False
-
-            return True
-
-        with open(sickrage.app.config.general.https_cert, 'w') as cert_out:
-            cert_out.write(resp['certificate'])
-
-        with open(sickrage.app.config.general.https_key, 'w') as key_out:
-            key_out.write(resp['private_key'])
+            with open(sickrage.app.config.general.https_key, 'w') as key_out:
+                key_out.write(resp['private_key'])
 
         sickrage.app.log.info("Loaded SSL certificate successfully")
 
