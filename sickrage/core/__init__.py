@@ -613,7 +613,7 @@ class Core(object):
                     self.config.general.server_id = server_id
                     self.config.save(mark_dirty=True)
             else:
-                self.log.info('Updating SiCKRAGE server data on SiCKRAGE API')
+                self.log.debug('Updating SiCKRAGE server data on SiCKRAGE API')
 
                 # update server information
                 self.api.server.update_server(

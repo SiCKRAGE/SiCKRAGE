@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.26](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.25...10.0.26)
+
+- Refactored a core log entry from info to debug [`f7feab5`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/f7feab5c1ddd23d11ec411f75c90a307262db544)
+
 #### [10.0.25](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.24...10.0.25)
+
+> 3 August 2021
 
 - Fixed ValueError sickrage.core.searchers.backlog_searcher in _get_wanted [`1633328`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/1633328e43dede0070c144748f5b2dafa10eeffd)
 
