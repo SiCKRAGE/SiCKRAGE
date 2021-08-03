@@ -258,9 +258,9 @@ class UpdateManager(object):
 
         if not self.manual_update:
             update_url = f"{sickrage.app.config.general.web_root}/home/update/?pid={sickrage.app.pid}"
-            message = _(f'New SiCKRAGE {self.current_branch} update available, version {latest_version} &mdash; <a href=\"{update_url}\">Update Now</a>')
+            message = _(f'New SiCKRAGE {self.current_branch} {sickrage.install_type()} update available, version {latest_version} &mdash; <a href=\"{update_url}\">Update Now</a>')
         else:
-            message = _(f"New SiCKRAGE {self.current_branch} update available, version {latest_version}, please manually update!")
+            message = _(f"New SiCKRAGE {self.current_branch} {sickrage.install_type()} update available, version {latest_version}, please manually update!")
 
         sickrage.app.latest_version_string = message
 

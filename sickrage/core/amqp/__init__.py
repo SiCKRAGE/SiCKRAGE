@@ -89,7 +89,9 @@ class AMQPClient(object):
             return
 
         if sickrage.app.api.token_time_remaining < (int(sickrage.app.api.token['expires_in']) / 2):
-            sickrage.app.api.refresh_token()
+            if not sickrage.app.api.refresh_token():
+                IOLoop.current().call_later(5, self.reconnect)
+                return
 
         try:
             credentials = pika.credentials.PlainCredentials(username='sickrage', password=sickrage.app.api.token["access_token"])

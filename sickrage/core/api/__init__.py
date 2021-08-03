@@ -8,6 +8,7 @@ import oauthlib.oauth2
 import requests
 import requests.exceptions
 from jose import ExpiredSignatureError
+from oauthlib.oauth2 import MissingTokenError, InvalidGrantError, InvalidClientIdError
 from requests_oauthlib import OAuth2Session
 from sqlalchemy import orm
 
@@ -59,17 +60,6 @@ class API(object):
     @property
     def alexa(self):
         return self.AlexaAPI(self)
-
-    def update_server_connections(self):
-        if sickrage.app.config.general.server_id:
-            self.server.update_server(
-                server_id=sickrage.app.config.general.server_id,
-                ip_addresses=','.join([get_internal_ip()]),
-                web_protocol=('http', 'https')[sickrage.app.config.general.enable_https],
-                web_port=sickrage.app.config.general.web_port,
-                web_root=sickrage.app.config.general.web_root,
-                server_version=sickrage.version(),
-            )
 
     @property
     def session(self):
@@ -180,8 +170,11 @@ class API(object):
             try:
                 client = OAuth2Session(sickrage.app.auth_server.client_id, token=self.token)
                 self.token = client.refresh_token(self.token_url, **extra)
-            except requests.exceptions.RequestException:
-                pass
+                return True
+            except (InvalidGrantError, MissingTokenError, InvalidClientIdError, requests.exceptions.RequestException):
+                return False
+
+        return False
 
     def exchange_token(self, access_token, scope='offline_access'):
         exchange = {'scope': scope, 'subject_token': access_token}
@@ -217,7 +210,8 @@ class API(object):
                     continue
 
                 if self.token_time_remaining < (int(self.token['expires_in']) / 2):
-                    self.refresh_token()
+                    if not self.refresh_token():
+                        continue
 
                 resp = self.session.request(method, url, timeout=timeout, verify=False, hooks={'response': self.throttle_hook}, **kwargs)
 
