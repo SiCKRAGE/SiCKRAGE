@@ -198,9 +198,9 @@ def check_requirements():
                     continue
 
 
-def file_cleanup(remove=False):
+def verify_checksums(remove_unverified=False):
     valid_files = []
-    exempt_files = [pathlib.Path(CHECKSUM_FILE), pathlib.Path(AUTO_PROCESS_TV_CFG_FILE)]
+    exempt_files = [pathlib.Path(__file__), pathlib.Path(CHECKSUM_FILE), pathlib.Path(AUTO_PROCESS_TV_CFG_FILE)]
 
     if not os.path.exists(CHECKSUM_FILE):
         return
@@ -220,13 +220,13 @@ def file_cleanup(remove=False):
 
             if full_filename not in valid_files and PROG_DIR in str(full_filename):
                 try:
-                    if remove:
-                        print('Found unwanted file {}, removed!'.format(full_filename))
+                    if remove_unverified:
+                        print('Found unverified file {}, removed!'.format(full_filename))
                         full_filename.unlink()
                     else:
-                        print('Found unwanted file {}, you should delete this file manually!'.format(full_filename))
+                        print('Found unverified file {}, you should delete this file manually!'.format(full_filename))
                 except OSError:
-                    print('Unable to delete filename {} during cleanup, you should delete this file manually!'.format(full_filename))
+                    print('Unable to delete unverified filename {} during checksum verification, you should delete this file manually!'.format(full_filename))
 
 
 def main():
@@ -323,8 +323,8 @@ def main():
     if install_type() not in ['windows', 'synology', 'docker', 'qnap', 'readynas', 'pip']:
         check_requirements()
 
-    # cleanup unwanted files
-    file_cleanup(remove=not args.no_clean)
+    # verify file checksums, remove unverified files
+    verify_checksums(remove_unverified=not args.no_clean)
 
     try:
         from sickrage.core import Core

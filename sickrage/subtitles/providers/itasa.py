@@ -356,8 +356,7 @@ class ItaSAProvider(Provider):
             return []
 
         # get the page of the season of the show
-        logger.info('Getting the subtitle of show id %d, season %d episode %d, format %r', series_id,
-                    season, episode, video_format)
+        logger.info('Getting the subtitle of show id %d, season %d episode %d, format %r', series_id, season, episode, video_format)
         subtitles = []
 
         # Default format is SDTV
