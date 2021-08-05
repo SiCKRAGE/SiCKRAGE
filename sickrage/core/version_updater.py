@@ -49,25 +49,18 @@ class VersionUpdater(object):
         install_type = SourceUpdateManager()
 
         if sickrage.install_type() == 'git':
-            # GIT install type
             install_type = GitUpdateManager()
         elif sickrage.install_type() == 'windows':
-            # PIP install type
             install_type = WindowsUpdateManager()
         elif sickrage.install_type() == 'synology':
-            # PIP install type
             install_type = SynologyUpdateManager()
         elif sickrage.install_type() == 'docker':
-            # PIP install type
             install_type = DockerUpdateManager()
         elif sickrage.install_type() == 'qnap':
-            # PIP install type
             install_type = QnapUpdateManager()
         elif sickrage.install_type() == 'readynas':
-            # PIP install type
             install_type = ReadynasUpdateManager()
         elif sickrage.install_type() == 'pip':
-            # PIP install type
             install_type = PipUpdateManager()
 
         return install_type
