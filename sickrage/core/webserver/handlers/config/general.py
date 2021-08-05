@@ -19,14 +19,11 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 
-import os
-
 from tornado.web import authenticated
 
 import sickrage
 from sickrage.core.common import Quality, Qualities, EpisodeStatus
-from sickrage.core.config.helpers import change_gui_lang, change_https_key, change_https_cert, change_show_update_hour, \
-    change_version_notify
+from sickrage.core.config.helpers import change_gui_lang, change_show_update_hour, change_version_notify
 from sickrage.core.enums import UITheme, DefaultHomePage, TimezoneDisplay, SearchFormat, SeriesProviderID, CpuPreset
 from sickrage.core.helpers import generate_api_key, checkbox_to_value, try_int
 from sickrage.core.webserver import ConfigWebHandler
@@ -259,11 +256,11 @@ class SaveGeneralHandler(BaseHandler):
 
         sickrage.app.config.general.enable_https = checkbox_to_value(enable_https)
 
-        if not change_https_cert(https_cert):
-            results += ["Unable to create directory " + os.path.normpath(https_cert) + ", https cert directory not changed."]
-
-        if not change_https_key(https_key):
-            results += ["Unable to create directory " + os.path.normpath(https_key) + ", https key directory not changed."]
+        # if not change_https_cert(https_cert):
+        #     results += ["Unable to create directory " + os.path.normpath(https_cert) + ", https cert directory not changed."]
+        #
+        # if not change_https_key(https_key):
+        #     results += ["Unable to create directory " + os.path.normpath(https_key) + ", https key directory not changed."]
 
         sickrage.app.config.general.handle_reverse_proxy = checkbox_to_value(handle_reverse_proxy)
 

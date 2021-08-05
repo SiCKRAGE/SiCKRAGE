@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.28](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.27...10.0.28)
+
+- web ssl certificate/key locations and filenames are now hard-coded [`60d6bc3`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/60d6bc367c9f94e75ad9bb3ec5ccec3ddaa8da85)
+
 #### [10.0.27](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.26...10.0.27)
+
+> 5 August 2021
 
 - Fixed issues with checksum checks [`0bc9b08`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/0bc9b0819fb72b8b0701107f3f36ec10746c1490)
 - Fixed issues with checksum checks [`8d8d12e`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/8d8d12e37c5dff3f0d5d5fc7bb5fb4c05b18e881)

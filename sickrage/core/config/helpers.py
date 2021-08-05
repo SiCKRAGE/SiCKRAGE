@@ -183,50 +183,6 @@ def change_unrar_tool(unrar_tool):
         sickrage.app.log.info('Disabling UNPACK setting because no unrar is installed.')
         sickrage.app.config.general.unpack = False
 
-
-def change_https_cert(https_cert):
-    """
-    Replace HTTPS Certificate file path
-
-    :param https_cert: path to the new certificate file
-    :return: True on success, False on failure
-    """
-
-    if https_cert == '':
-        sickrage.app.config.general.https_cert = ''
-        return True
-
-    if os.path.normpath(sickrage.app.config.general.https_cert) != os.path.normpath(https_cert):
-        if make_dir(os.path.dirname(os.path.abspath(https_cert))):
-            sickrage.app.config.general.https_cert = os.path.normpath(https_cert)
-            sickrage.app.log.info("Changed https cert path to " + https_cert)
-        else:
-            return False
-
-    return True
-
-
-def change_https_key(https_key):
-    """
-    Replace HTTPS Key file path
-
-    :param https_key: path to the new key file
-    :return: True on success, False on failure
-    """
-    if https_key == '':
-        sickrage.app.config.general.https_key = ''
-        return True
-
-    if os.path.normpath(sickrage.app.config.general.https_key) != os.path.normpath(https_key):
-        if make_dir(os.path.dirname(os.path.abspath(https_key))):
-            sickrage.app.config.general.https_key = os.path.normpath(https_key)
-            sickrage.app.log.info("Changed https key path to " + https_key)
-        else:
-            return False
-
-    return True
-
-
 def change_nzb_dir(nzb_dir):
     """
     Change NZB blackhole directory
