@@ -485,7 +485,7 @@ class WebServer(object):
         ssl_ctx = None
         if sickrage.app.config.general.enable_https:
             ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-            ssl_ctx.load_cert_chain(sickrage.app.config.general.https_cert, sickrage.app.config.general.https_key)
+            ssl_ctx.load_cert_chain(sickrage.app.https_cert_file, sickrage.app.https_key_file)
 
         # Web Server
         self.server = HTTPServer(self.app, ssl_options=ssl_ctx, xheaders=sickrage.app.config.general.handle_reverse_proxy)
@@ -503,30 +503,30 @@ class WebServer(object):
 
     def load_ssl_certificate(self, certificate=None, private_key=None):
         if certificate and private_key:
-            with open(sickrage.app.config.general.https_cert, 'w') as cert_out:
+            with open(sickrage.app.https_cert_file, 'w') as cert_out:
                 cert_out.write(certificate)
 
-            with open(sickrage.app.config.general.https_key, 'w') as key_out:
+            with open(sickrage.app.https_key_file, 'w') as key_out:
                 key_out.write(private_key)
         else:
-            if os.path.exists(sickrage.app.config.general.https_key) and os.path.exists(sickrage.app.config.general.https_cert):
+            if os.path.exists(sickrage.app.https_key_file) and os.path.exists(sickrage.app.https_cert_file):
                 if self.is_certificate_valid() and not self.certificate_needs_renewal():
                     return True
 
             resp = sickrage.app.api.server.get_server_certificate(sickrage.app.config.general.server_id)
             if not resp or 'certificate' not in resp or 'private_key' not in resp:
-                if not create_https_certificates(sickrage.app.config.general.https_cert, sickrage.app.config.general.https_key):
+                if not create_https_certificates(sickrage.app.https_cert_file, sickrage.app.https_key_file):
                     return False
 
-                if not os.path.exists(sickrage.app.config.general.https_cert) or not os.path.exists(sickrage.app.config.general.https_key):
+                if not os.path.exists(sickrage.app.https_cert_file) or not os.path.exists(sickrage.app.https_key_file):
                     return False
 
                 return True
 
-            with open(sickrage.app.config.general.https_cert, 'w') as cert_out:
+            with open(sickrage.app.https_cert_file, 'w') as cert_out:
                 cert_out.write(resp['certificate'])
 
-            with open(sickrage.app.config.general.https_key, 'w') as key_out:
+            with open(sickrage.app.https_key_file, 'w') as key_out:
                 key_out.write(resp['private_key'])
 
         sickrage.app.log.info("Loaded SSL certificate successfully")
@@ -537,10 +537,10 @@ class WebServer(object):
         return True
 
     def certificate_needs_renewal(self):
-        if not os.path.exists(sickrage.app.config.general.https_cert):
+        if not os.path.exists(sickrage.app.https_cert_file):
             return
 
-        with open(sickrage.app.config.general.https_cert, 'rb') as f:
+        with open(sickrage.app.https_cert_file, 'rb') as f:
             cert_pem = f.read()
 
         cert = x509.load_pem_x509_certificate(cert_pem, default_backend())
@@ -549,10 +549,10 @@ class WebServer(object):
         return not_valid_after - datetime.datetime.utcnow() < (cert.not_valid_after - cert.not_valid_before) / 2
 
     def is_certificate_valid(self):
-        if not os.path.exists(sickrage.app.config.general.https_cert):
+        if not os.path.exists(sickrage.app.https_cert_file):
             return
 
-        with open(sickrage.app.config.general.https_cert, 'rb') as f:
+        with open(sickrage.app.https_cert_file, 'rb') as f:
             cert_pem = f.read()
 
         cert = x509.load_pem_x509_certificate(cert_pem, default_backend())
