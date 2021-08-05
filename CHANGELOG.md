@@ -2,9 +2,10 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.27.dev1](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.26...v10.0.27.dev1)
+#### [v10.0.27.dev2](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.26...v10.0.27.dev2)
 
 - Fixed issues with checksum checks [`0bc9b08`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/0bc9b0819fb72b8b0701107f3f36ec10746c1490)
+- Fixed issues with checksum checks [`8d8d12e`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/8d8d12e37c5dff3f0d5d5fc7bb5fb4c05b18e881)
 
 #### [10.0.26](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.25...10.0.26)
 
