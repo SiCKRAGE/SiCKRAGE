@@ -224,7 +224,7 @@ sentry:
     - export SENTRY_ORG=$SENTRY_ORG
     - export SENTRY_PROJECT=$SENTRY_PROJECT
     - RELEASE_VERSION=$(awk -F '"' '/^__version__/ {print $2}' sickrage/__init__.py)
-    - RELEASE_BRANCH=$(git branch -a --contains tags/$CI_COMMIT_REF_NAME | head -n 1)
+    - RELEASE_BRANCH=$(git branch -a --contains tags/$CI_COMMIT_REF_NAME | grep origin | sed 's/.*origin\///')
     - sentry-cli releases new --project $SENTRY_PROJECT $RELEASE_VERSION
     - sentry-cli releases set-commits --auto $RELEASE_VERSION
     - sentry-cli releases finalize $RELEASE_VERSION
