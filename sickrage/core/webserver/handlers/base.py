@@ -204,7 +204,6 @@ class BaseHandler(RequestHandler):
 
     def options(self, *args, **kwargs):
         self.set_status(204)
-        self.finish()
 
     def get_argument(self, *args, **kwargs):
         value = super(BaseHandler, self).get_argument(*args, **kwargs)

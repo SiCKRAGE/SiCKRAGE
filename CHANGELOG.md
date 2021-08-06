@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.29](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.28...10.0.29)
+
 #### [10.0.28](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.27...10.0.28)
+
+> 5 August 2021
 
 - web ssl certificate/key locations and filenames are now hard-coded [`60d6bc3`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/60d6bc367c9f94e75ad9bb3ec5ccec3ddaa8da85)
 
