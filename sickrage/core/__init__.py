@@ -41,7 +41,7 @@ from apscheduler.schedulers.tornado import TornadoScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from dateutil import tz
 from fake_useragent import UserAgent
-from sentry_sdk.integrations.logging import LoggingIntegration
+from sentry_sdk.integrations.logging import LoggingIntegration, ignore_logger
 from tornado.ioloop import IOLoop, PeriodicCallback
 
 import sickrage
@@ -600,6 +600,23 @@ class Core(object):
         # set sentry tags
         for tag_key, tag_value in sentry_tags.items():
             sentry_sdk.set_tag(tag_key, tag_value)
+
+        # set loggers to ignore
+        ignored_loggers = [
+            'enzyme.parsers.ebml.core',
+            'subliminal.core',
+            'subliminal.utils',
+            'subliminal.refiners.metadata',
+            'subliminal.providers.tvsubtitles',
+            'pika.connection',
+            'pika.adapters.base_connection',
+            'pika.adapters.utils.io_services_utils',
+            'pika.adapters.utils.connection_workflow',
+            'pika.adapters.utils.selector_ioloop_adapter'
+        ]
+
+        for item in ignored_loggers:
+            ignore_logger(item)
 
     def server_checkup(self):
         if self.config.general.server_id:

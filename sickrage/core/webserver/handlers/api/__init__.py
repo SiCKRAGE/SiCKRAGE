@@ -161,7 +161,7 @@ class APIBaseHandler(RequestHandler):
         self.set_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
 
     def options(self, *args, **kwargs):
-        self.finish(self._no_content())
+        self._no_content()
 
     def json_response(self, data=None, error=None, status=200):
         self.set_header('Content-Type', 'application/json')
