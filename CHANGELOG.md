@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.30](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.29...10.0.30)
+
+- fixed amqp bug that caused a restart loop when updating ssl server cert/key [`827fac1`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/827fac18e2d7b71334207c4c3387fa8fcfdc9b44)
+
 #### [10.0.29](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.28...10.0.29)
+
+> 6 August 2021
 
 #### [10.0.28](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.27...10.0.28)
 

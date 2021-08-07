@@ -100,7 +100,7 @@ class VersionUpdater(object):
             if self.update():
                 sickrage.app.log.info("Update was successful!")
                 sickrage.app.alerts.message(_('Updater'), _('Update was successful'))
-                sickrage.app.shutdown(restart=True)
+                sickrage.app.restart()
             else:
                 sickrage.app.log.info("Update failed!")
                 sickrage.app.alerts.error(_('Updater'), _('Update failed!'))

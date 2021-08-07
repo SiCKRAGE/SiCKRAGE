@@ -700,12 +700,11 @@ class RestartHandler(BaseHandler):
         self.current_user = None
 
         sickrage.app.scheduler.add_job(
-            sickrage.app.shutdown,
+            sickrage.app.restart,
             DateTrigger(
                 run_date=datetime.datetime.utcnow() + datetime.timedelta(seconds=5),
                 timezone='utc'
-            ),
-            kwargs={'restart': True}
+            )
         )
 
         return self.render('home/restart.mako',
