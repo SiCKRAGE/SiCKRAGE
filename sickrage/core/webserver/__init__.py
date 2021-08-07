@@ -31,7 +31,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.x509 import ExtensionNotFound
 from mako.lookup import TemplateLookup
 from tornado.httpserver import HTTPServer
-from tornado.ioloop import PeriodicCallback
+from tornado.ioloop import PeriodicCallback, IOLoop
 from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 import sickrage
@@ -529,10 +529,11 @@ class WebServer(object):
             with open(sickrage.app.https_key_file, 'w') as key_out:
                 key_out.write(resp['private_key'])
 
-        sickrage.app.log.info("Loaded SSL certificate successfully")
+        sickrage.app.log.info("Loaded SSL certificate successfully, restarting server in 1 minute")
 
         if self.server:
-            sickrage.app.shutdown(restart=True)
+            # restart after 1 minute
+            IOLoop.current().add_timeout(datetime.timedelta(minutes=1), sickrage.app.restart)
 
         return True
 

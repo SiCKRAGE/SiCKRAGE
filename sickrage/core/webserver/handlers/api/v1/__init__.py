@@ -1489,7 +1489,7 @@ class CMD_SiCKRAGERestart(ApiV1Handler):
 
     def run(self):
         """ Restart SiCKRAGE """
-        sickrage.app.shutdown(restart=True)
+        sickrage.app.restart()
         return _responds(RESULT_SUCCESS, msg="SiCKRAGE is restarting...")
 
 

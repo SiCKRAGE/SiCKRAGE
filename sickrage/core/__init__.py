@@ -738,6 +738,9 @@ class Core(object):
 
         self.started = False
 
+    def restart(self):
+        self.shutdown(restart=True)
+
     def shutdown_trigger(self):
         if not self.started:
             IOLoop.current().stop()
