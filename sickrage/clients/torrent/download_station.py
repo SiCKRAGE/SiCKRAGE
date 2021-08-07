@@ -20,12 +20,9 @@
 # ##############################################################################
 
 
-
 import os
 import re
 from urllib.parse import urljoin
-
-from requests import RequestException
 
 import sickrage
 from sickrage.clients import TorrentClient
@@ -37,8 +34,9 @@ class DownloadStationAPI(TorrentClient):
         super(DownloadStationAPI, self).__init__('DownloadStation', host, username, password)
 
         self.urls = {
-            'auth': urljoin(self.host, 'webapi/auth.cgi'),
-            'task': urljoin(self.host, 'webapi/DownloadStation/task.cgi'),
+            'auth': urljoin(self.host, '/webapi/auth.cgi'),
+            'query': urljoin(self.host, '/webapi/query.cgi'),
+            'task': urljoin(self.host, '/webapi/DownloadStation/task.cgi'),
             'info': urljoin(self.host, '/webapi/DownloadStation/info.cgi'),
         }
 
@@ -49,7 +47,6 @@ class DownloadStationAPI(TorrentClient):
 
         self.post_task = {
             'method': 'create',
-            'version': '1',
             'api': 'SYNO.DownloadStation.Task',
             'session': 'DownloadStation',
         }
@@ -115,13 +112,15 @@ class DownloadStationAPI(TorrentClient):
 
         params = {
             'api': 'SYNO.API.Auth',
-            'version': 2,
             'method': 'login',
             'account': self.username,
             'passwd': self.password,
             'session': 'DownloadStation',
             'format': 'cookie'
         }
+
+        api_info = self._get_api_info(params['api'])
+        params['version'] = api_info.get('maxVersion')
 
         self.response = self.session.get(self.urls['auth'], params=params, verify=bool(sickrage.app.config.torrent.verify_cert))
         if not self.response:
@@ -134,14 +133,44 @@ class DownloadStationAPI(TorrentClient):
 
         return self._check_response()
 
+    def _get_api_info(self, method):
+        json_data = {}
+
+        params = {
+            'api': 'SYNO.API.Info',
+            'version': 1,
+            'method': 'query',
+            'query': method
+        }
+
+        resp = self.session.get(self.urls['query'], params=params, verify=bool(sickrage.app.config.torrent.verify_cert))
+        if not resp:
+            return json_data
+
+        try:
+            json_resp = resp.json()
+        except (ValueError, AttributeError):
+            return json_data
+        else:
+            success = json_resp.get('success')
+            if success:
+                json_data = json_resp.get('data')
+
+        return json_data.get(method, {})
+
     def _add_torrent_uri(self, result):
         data = self.post_task
+        api_info = self._get_api_info(data['api'])
+        data['version'] = api_info.get('maxVersion')
         data['uri'] = result.url
 
         return self._send_dsm_request(method='post', data=data)
 
     def _add_torrent_file(self, result):
         data = self.post_task
+        api_info = self._get_api_info(data['api'])
+        data['version'] = api_info.get('maxVersion')
+
         files = {'file': ('{}.torrent'.format(result.name), result.content)}
 
         return self._send_dsm_request(method='post', data=data, files=files)
@@ -158,10 +187,12 @@ class DownloadStationAPI(TorrentClient):
 
         params = {
             'api': 'SYNO.DownloadStation.Info',
-            'version': 2,
             'method': 'getinfo',
             'session': 'DownloadStation',
         }
+
+        api_info = self._get_api_info(params['api'])
+        params['version'] = api_info.get('maxVersion')
 
         self.response = self.session.get(self.urls['info'], params=params, verify=False, timeout=120)
         if not self.response or not self.response.content:
@@ -185,8 +216,7 @@ class DownloadStationAPI(TorrentClient):
                 #  lets make sure the default is relative,
                 #  or forcefully set the location setting
                 params.update({
-                    'method': 'getconfig',
-                    'version': 2,
+                    'method': 'getconfig'
                 })
 
                 self.response = self.session.get(self.urls['info'], params=params, verify=False, timeout=120)
@@ -219,4 +249,3 @@ class DownloadStationAPI(TorrentClient):
 
         self._request(method=method, data=data, **kwargs)
         return self._check_response()
-

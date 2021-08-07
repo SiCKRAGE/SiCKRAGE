@@ -83,7 +83,7 @@ def snatch_episode(result, end_status=EpisodeStatus.SNATCHED):
         elif sickrage.app.config.general.nzb_method == NzbMethod.SABNZBD:
             dlResult = SabNZBd.sendNZB(result)
         elif sickrage.app.config.general.nzb_method == NzbMethod.NZBGET:
-            is_proper = True if end_status == EpisodeStatus.NATCHED_PROPER else False
+            is_proper = True if end_status == EpisodeStatus.SNATCHED_PROPER else False
             dlResult = NZBGet.sendNZB(result, is_proper)
         elif sickrage.app.config.general.nzb_method == NzbMethod.DOWNLOAD_STATION:
             client = get_client_instance(sickrage.app.config.general.nzb_method.value, client_type='nzb')()

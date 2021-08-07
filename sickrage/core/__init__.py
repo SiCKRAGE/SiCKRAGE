@@ -45,7 +45,7 @@ from sentry_sdk.integrations.logging import LoggingIntegration, ignore_logger
 from tornado.ioloop import IOLoop, PeriodicCallback
 
 import sickrage
-from sickrage.core.amqp import AMQPClient
+from sickrage.core.amqp.consumer import AMQPConsumer
 from sickrage.core.announcements import Announcements
 from sickrage.core.api import API
 from sickrage.core.auth import AuthServer
@@ -80,6 +80,7 @@ from sickrage.core.updaters.tz_updater import TimeZoneUpdater
 from sickrage.core.upnp import UPNPClient
 from sickrage.core.version_updater import VersionUpdater, SourceUpdateManager
 from sickrage.core.webserver import WebServer
+from sickrage.core.websocket import check_web_socket_queue
 from sickrage.metadata_providers import MetadataProviders
 from sickrage.notification_providers import NotificationProviders
 from sickrage.search_providers import SearchProviders
@@ -230,7 +231,7 @@ class Core(object):
         self.auth_server = None
         self.announcements = None
         self.api = None
-        self.amqp_client = None
+        self.amqp_consumer = None
 
     def start(self):
         self.started = True
@@ -272,7 +273,7 @@ class Core(object):
         self.auto_postprocessor = AutoPostProcessor()
         self.upnp_client = UPNPClient()
         self.announcements = Announcements()
-        self.amqp_client = AMQPClient()
+        self.amqp_consumer = AMQPConsumer()
 
         # authorization sso client
         self.auth_server = AuthServer()
@@ -559,6 +560,9 @@ class Core(object):
         # launch browser
         IOLoop.current().add_callback(self.launch_browser)
 
+        # watch websocket message queue
+        PeriodicCallback(check_web_socket_queue, 100).start()
+
         # perform server checkups every hour
         PeriodicCallback(self.server_checkup, 1 * 60 * 60 * 1000).start()
 
@@ -606,6 +610,7 @@ class Core(object):
             'enzyme.parsers.ebml.core',
             'subliminal.core',
             'subliminal.utils',
+            'subliminal.refiners.tvdb',
             'subliminal.refiners.metadata',
             'subliminal.providers.tvsubtitles',
             'pika.connection',
@@ -711,7 +716,7 @@ class Core(object):
             self.postprocessor_queue.shutdown()
 
             # stop amqp consumer
-            self.amqp_client.stop()
+            self.amqp_consumer.stop()
 
             # log out of ADBA
             if self.adba_connection:
