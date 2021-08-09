@@ -1119,11 +1119,11 @@ class TorrentRssProvider(TorrentProvider):
 class NewznabProvider(NZBProvider):
     provider_type = SearchProviderType.NEWZNAB
 
-    def __init__(self, name, url, key='0', catIDs='5030,5040', search_mode='eponly', search_fallback=False,
+    def __init__(self, name, url, api_key='0', catIDs='5030,5040', search_mode='eponly', search_fallback=False,
                  enable_daily=False, enable_backlog=False, default=False):
-        super(NewznabProvider, self).__init__(name, clean_url(url), bool(key != '0'))
+        super(NewznabProvider, self).__init__(name, clean_url(url), bool(api_key != '0'))
 
-        self.key = key
+        self.api_key = api_key
 
         self.search_mode = search_mode
         self.search_fallback = search_fallback
@@ -1171,8 +1171,8 @@ class NewznabProvider(NZBProvider):
             return False, return_categories, 'Provider requires auth and your key is not set'
 
         url_params = {'t': 'caps'}
-        if self.private and self.key:
-            url_params['apikey'] = self.key
+        if self.private and self.api_key:
+            url_params['apikey'] = self.api_key
 
         try:
             response = self.session.get(urljoin(self.urls['base_url'], 'api'), params=url_params).text
@@ -1204,8 +1204,8 @@ class NewznabProvider(NZBProvider):
         return self.search({'q': search_string})
 
     def _check_auth(self):
-        if self.private and not self.key:
-            sickrage.app.log.warning('Invalid api key for {}. Check your settings'.format(self.name))
+        if self.private and not self.api_key:
+            sickrage.app.log.warning('Missing API key for {}. Check your settings'.format(self.name))
             return False
 
         return True
@@ -1261,8 +1261,8 @@ class NewznabProvider(NZBProvider):
                 'maxage': sickrage.app.config.general.usenet_retention
             }
 
-            if self.private and self.key:
-                search_params['apikey'] = self.key
+            if self.private and self.api_key:
+                search_params['apikey'] = self.api_key
 
             if mode != 'RSS':
                 if (self.cap_tv_search or not self.cap_tv_search == 'True') and not self.force_query:

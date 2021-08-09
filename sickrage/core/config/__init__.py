@@ -415,7 +415,7 @@ class Config(object):
                     sickrage.app.search_providers[search_provider.provider_type.name][search_provider.provider_id] = NewznabProvider(**{
                         'name': search_provider.name,
                         'url': search_provider.url,
-                        'key': search_provider.key,
+                        'api_key': search_provider.api_key,
                         'catIDs': search_provider.cat_ids
                     })
 
@@ -437,8 +437,8 @@ class Config(object):
                     if search_provider.provider_type in [SearchProviderType.TORRENT, SearchProviderType.TORRENT_RSS]:
                         sickrage.app.search_providers.all()[search_provider.provider_id].ratio = search_provider.ratio
                     elif search_provider.provider_type in [SearchProviderType.NZB, SearchProviderType.NEWZNAB]:
-                        sickrage.app.search_providers.all()[search_provider.provider_id].api_key = search_provider.api_key
                         sickrage.app.search_providers.all()[search_provider.provider_id].username = search_provider.username
+                        sickrage.app.search_providers.all()[search_provider.provider_id].api_key = search_provider.api_key
 
                     sickrage.app.search_providers.all()[search_provider.provider_id].search_mode = search_provider.search_mode
                     sickrage.app.search_providers.all()[search_provider.provider_id].search_separator = search_provider.search_separator
@@ -546,14 +546,13 @@ class Config(object):
 
                     search_provider.name = sickrage.app.search_providers.all()[search_provider.provider_id].name
                     search_provider.url = sickrage.app.search_providers.all()[search_provider.provider_id].urls['base_url']
-                    search_provider.key = sickrage.app.search_providers.all()[search_provider.provider_id].key
+                    search_provider.api_key = sickrage.app.search_providers.all()[search_provider.provider_id].api_key
                     search_provider.cat_ids = sickrage.app.search_providers.all()[search_provider.provider_id].catIDs
 
                 if search_provider:
                     if search_provider.provider_type in [SearchProviderType.TORRENT, SearchProviderType.TORRENT_RSS]:
                         search_provider.ratio = sickrage.app.search_providers.all()[search_provider.provider_id].ratio
                     elif search_provider.provider_type in [SearchProviderType.NZB, SearchProviderType.NEWZNAB]:
-                        search_provider.api_key = sickrage.app.search_providers.all()[search_provider.provider_id].api_key
                         search_provider.username = sickrage.app.search_providers.all()[search_provider.provider_id].username
 
                     search_provider.search_mode = sickrage.app.search_providers.all()[search_provider.provider_id].search_mode
@@ -1333,6 +1332,7 @@ class Config(object):
             elif provider_obj.provider_type in [SearchProviderType.NZB, SearchProviderType.NEWZNAB]:
                 provider_obj.username = auto_type(provider_settings.get('username', ''))
                 provider_obj.api_key = auto_type(provider_settings.get('api_key', ''))
+                provider_obj.api_key = auto_type(provider_settings.get('key', provider_obj.api_key))
 
             custom_settings = {
                 'minseed': auto_type(provider_settings.get('minseed', 0)),

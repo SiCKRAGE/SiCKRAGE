@@ -37,7 +37,7 @@
                         '|'.join([providerID,
                         providerObj.name,
                         providerObj.urls["base_url"],
-                        str(providerObj.key),
+                        str(providerObj.api_key),
                         providerObj.catIDs,
                         ("false", "true")[bool(providerObj.default)],
                         ("false", "true")[bool(sickrage.app.config.general.use_nzbs)]]))
@@ -189,10 +189,10 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><span class="fas fa-cloud"></span></span>
                                         </div>
-                                        <input id="${providerID}_key"
-                                               name="${providerID}_key"
-                                               value="${providerObj.key}"
-                                               newznab_name="${providerID}_key"
+                                        <input id="${providerID}_api_key"
+                                               name="${providerID}_api_key"
+                                               value="${providerObj.api_key}"
+                                               newznab_name="${providerID}_api_key"
                                                class="newznab_key form-control"
                                                title="Provider API key"
                                                autocapitalize="off"/>

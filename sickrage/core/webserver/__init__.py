@@ -139,9 +139,6 @@ class WebServer(object):
     def start(self):
         self.started = True
 
-        # watch websocket message queue
-        PeriodicCallback(self.check_web_socket_queue, 100).start()
-
         # load languages
         tornado.locale.load_gettext_translations(sickrage.LOCALE_DIR, 'messages')
 
@@ -495,11 +492,6 @@ class WebServer(object):
         except socket.error as e:
             sickrage.app.log.warning(e.strerror)
             raise SystemExit
-
-    def check_web_socket_queue(self):
-        if not WebSocketUIHandler.message_queue.empty():
-            message = WebSocketUIHandler.message_queue.get()
-            WebSocketUIHandler.broadcast(message)
 
     def load_ssl_certificate(self, certificate=None, private_key=None):
         if certificate and private_key:

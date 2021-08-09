@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.31](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.30...10.0.31)
+
+- renamed newznab `key` param to `api_key` [`a5a271b`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/a5a271b8e523fef61e5d07d9840b5921910e28d1)
+
 #### [10.0.30](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.29...10.0.30)
+
+> 7 August 2021
 
 - fixed amqp bug that caused a restart loop when updating ssl server cert/key [`827fac1`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/827fac18e2d7b71334207c4c3387fa8fcfdc9b44)
 

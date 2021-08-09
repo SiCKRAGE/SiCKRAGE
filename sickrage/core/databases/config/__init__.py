@@ -708,7 +708,6 @@ class ConfigDB(SRDatabase):
         provider_type = Column(Enum(SearchProviderType), default=SearchProviderType.NEWZNAB)
         name = Column(Text, default='')
         url = Column(Text, default='')
-        key = Column(Text, default='')
         cat_ids = Column(Text, default='')
         api_key = Column(CustomStringEncryptedType(Text, key=encryption_key), default='')
         username = Column(Text, default='')

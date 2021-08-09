@@ -7,6 +7,12 @@ from tornado.websocket import WebSocketHandler
 import sickrage
 
 
+def check_web_socket_queue():
+    if not WebSocketUIHandler.message_queue.empty():
+        message = WebSocketUIHandler.message_queue.get()
+        WebSocketUIHandler.broadcast(message)
+
+
 class WebSocketUIHandler(WebSocketHandler):
     """WebSocket handler to send and receive data to and from a web client."""
 
