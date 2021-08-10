@@ -2,7 +2,14 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.32](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.31...10.0.32)
+
+- fixed issue with network timezones and search provider urls not being updated on first use of app [`ca8aaef`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/ca8aaefdd124fd4dc76e596c89ef8c8325ae3504)
+- fixed issue with network timezones and search provider urls not being updated on first use of app [`c1ec8ce`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/c1ec8ce1757759c8622548a3f2c0970d81ee4053)
+
 #### [10.0.31](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.30...10.0.31)
+
+> 9 August 2021
 
 - renamed newznab `key` param to `api_key` [`a5a271b`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/a5a271b8e523fef61e5d07d9840b5921910e28d1)
 

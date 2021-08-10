@@ -23,6 +23,7 @@ import re
 
 from dateutil import tz
 from sqlalchemy import orm
+from tornado.ioloop import IOLoop
 
 import sickrage
 from sickrage.core.databases.cache import CacheDB
@@ -56,6 +57,12 @@ class TimeZoneUpdater(object):
 
     def update_network_timezones(self):
         """Update timezone information from SR repositories"""
+
+        if not sickrage.app.api.token:
+            IOLoop.current().call_later(5, self.update_network_timezones)
+            return
+
+        sickrage.app.log.debug('Updating network timezones')
 
         session = sickrage.app.cache_db.session()
 
@@ -96,6 +103,8 @@ class TimeZoneUpdater(object):
 
         # cleanup
         del network_timezones
+
+        sickrage.app.log.debug('Updating network timezones finished')
 
     def get_network_timezone(self, network):
         """
