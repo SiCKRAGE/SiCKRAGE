@@ -30,7 +30,6 @@ import os
 import pkgutil
 import random
 import re
-import threading
 from base64 import b16encode, b32decode
 from collections import OrderedDict, defaultdict
 from time import sleep
@@ -40,16 +39,16 @@ from xml.sax import SAXParseException
 from bencode3 import bdecode, bencode
 from feedparser import FeedParserDict
 from requests.utils import add_dict_to_cookiejar, dict_from_cookiejar
+from tornado.ioloop import IOLoop
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.common import MULTI_EP_RESULT, SEASON_RESULT
-from sickrage.core.enums import SearchFormat, CpuPreset
-from sickrage.core.helpers import chmod_as_parent, sanitize_file_name, clean_url, bs4_parser, \
-    validate_url, try_int, convert_size
+from sickrage.core.common import Quality, Qualities
+from sickrage.core.enums import SearchFormat
+from sickrage.core.helpers import chmod_as_parent, sanitize_file_name, clean_url, bs4_parser, validate_url, try_int, convert_size
 from sickrage.core.helpers.show_names import all_possible_show_names
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
-from sickrage.core.common import Quality, Qualities
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.core.websession import WebSession
 
@@ -1493,6 +1492,15 @@ class SearchProviders(dict):
             provider._urls = json.loads(provider_urls)
 
     def update_urls(self):
+        if not sickrage.app.api.token:
+            IOLoop.current().call_later(5, self.update_urls)
+            return
+
+        if sickrage.app.api.token_time_remaining < (int(sickrage.app.api.token['expires_in']) / 2):
+            if not sickrage.app.api.refresh_token():
+                IOLoop.current().call_later(5, self.update_urls)
+                return
+
         sickrage.app.log.debug('Updating search provider URLs')
 
         for pID, pObj in self.all().items():
