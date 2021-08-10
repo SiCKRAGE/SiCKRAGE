@@ -1496,11 +1496,6 @@ class SearchProviders(dict):
             IOLoop.current().call_later(5, self.update_urls)
             return
 
-        if sickrage.app.api.token_time_remaining < (int(sickrage.app.api.token['expires_in']) / 2):
-            if not sickrage.app.api.refresh_token():
-                IOLoop.current().call_later(5, self.update_urls)
-                return
-
         sickrage.app.log.debug('Updating search provider URLs')
 
         for pID, pObj in self.all().items():
