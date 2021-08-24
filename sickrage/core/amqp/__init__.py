@@ -45,15 +45,23 @@ class AMQPBase(object):
         IOLoop.current().add_callback(self.connect)
 
     def connect(self):
+        # check for api token
         if not sickrage.app.api.token or not sickrage.app.config.general.server_id:
             IOLoop.current().call_later(5, self.reconnect)
             return
 
+        # refresh api token if needed
         if sickrage.app.api.token_time_remaining < (int(sickrage.app.api.token['expires_in']) / 2):
             if not sickrage.app.api.refresh_token():
                 IOLoop.current().call_later(5, self.reconnect)
                 return
 
+        # declare server amqp queue
+        if not sickrage.app.api.server.declare_amqp_queue(sickrage.app.config.general.server_id):
+            IOLoop.current().call_later(5, self.reconnect)
+            return
+
+        # connect to amqp server
         try:
             credentials = pika.credentials.PlainCredentials(username='sickrage', password=sickrage.app.api.token["access_token"])
 

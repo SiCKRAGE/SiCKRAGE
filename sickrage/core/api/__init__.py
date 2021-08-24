@@ -1,9 +1,9 @@
 import collections
+import errno
 import time
 import traceback
 from urllib.parse import urljoin
 
-import errno
 import oauthlib.oauth2
 import requests
 import requests.exceptions
@@ -15,7 +15,6 @@ from sqlalchemy import orm
 import sickrage
 from sickrage.core.api.exceptions import APIError
 from sickrage.core.databases.cache import CacheDB
-from sickrage.core.helpers import get_internal_ip, get_external_ip
 
 
 class API(object):
@@ -318,6 +317,9 @@ class API(object):
 
         def get_server_certificate(self, server_id):
             return self.api.request('GET', f'server/{server_id}/certificate')
+
+        def declare_amqp_queue(self, server_id):
+            return self.api.request('GET', f'server/{server_id}/declare-amqp-queue')
 
         def upload_config(self, server_id, pkey_sig, config):
             data = {
