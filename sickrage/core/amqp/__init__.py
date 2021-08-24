@@ -59,6 +59,7 @@ class AMQPBase(object):
         # declare server amqp queue
         if not sickrage.app.api.server.declare_amqp_queue(sickrage.app.config.general.server_id):
             IOLoop.current().call_later(5, self.reconnect)
+            return
 
         # connect to amqp server
         try:
