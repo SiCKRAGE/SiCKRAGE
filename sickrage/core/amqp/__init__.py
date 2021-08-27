@@ -19,7 +19,6 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 import ssl
-from ssl import SSLCertVerificationError
 
 import pika
 from pika.adapters.tornado_connection import TornadoConnection
@@ -84,7 +83,7 @@ class AMQPBase(object):
                 on_close_callback=self.on_connection_close,
                 on_open_error_callback=self.on_connection_open_error
             )
-        except (AMQPConnectorException, AMQPConnectionError, SSLCertVerificationError):
+        except (AMQPConnectorException, AMQPConnectionError):
             sickrage.app.log.debug("AMQP connection error, attempting to reconnect")
             IOLoop.current().call_later(5, self.reconnect)
 
