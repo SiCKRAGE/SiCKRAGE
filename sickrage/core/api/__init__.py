@@ -115,6 +115,9 @@ class API(object):
     def token_expiration(self):
         try:
             certs = sickrage.app.auth_server.certs()
+            if not certs:
+                return time.time()
+
             decoded_token = sickrage.app.auth_server.decode_token(self.token['access_token'], certs)
             return decoded_token.get('exp', time.time())
         except ExpiredSignatureError:

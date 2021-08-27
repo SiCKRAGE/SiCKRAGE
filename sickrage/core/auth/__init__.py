@@ -21,6 +21,7 @@
 
 
 import requests
+from keycloak.exceptions import KeycloakClientError
 from keycloak.openid_connect import KeycloakOpenidConnect
 from keycloak.realm import KeycloakRealm
 
@@ -62,7 +63,7 @@ class AuthServer(object):
     def get_url(self, *args, **kwargs):
         try:
             return self.client.get_url(*args, **kwargs)
-        except requests.exceptions.ConnectionError as e:
+        except (KeycloakClientError, requests.exceptions.ConnectionError) as e:
             return
 
     def certs(self):

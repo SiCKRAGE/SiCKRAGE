@@ -53,6 +53,9 @@ class APIBaseHandler(RequestHandler):
             return
 
         certs = sickrage.app.auth_server.certs()
+        if not certs:
+            return
+
         auth_header = self.request.headers.get('Authorization')
 
         if auth_header:
@@ -134,6 +137,9 @@ class APIBaseHandler(RequestHandler):
         auth_header = self.request.headers.get('Authorization')
         if 'bearer' in auth_header.lower():
             certs = sickrage.app.auth_server.certs()
+            if not certs:
+                return
+
             token = auth_header.strip('Bearer').strip()
             decoded_token = sickrage.app.auth_server.decode_token(token, certs)
             if sickrage.app.config.user.sub_id == decoded_token.get('sub'):

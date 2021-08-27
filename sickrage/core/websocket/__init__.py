@@ -32,6 +32,10 @@ class WebSocketUIHandler(WebSocketHandler):
         json_message = json.loads(message)
         if json_message.get('initial', False):
             certs = sickrage.app.auth_server.certs()
+            if not certs:
+                WebSocketUIHandler.clients.remove(self)
+                return self.close(401, 'Unable to verify token')
+
             auth_token = json_message['token']
 
             try:

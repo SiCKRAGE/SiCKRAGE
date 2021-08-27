@@ -52,6 +52,10 @@ class LoginHandler(BaseHandler):
 
     def handle_jwt_auth_get(self):
         certs = sickrage.app.auth_server.certs()
+        if not certs:
+            self.set_status(401)
+            return {'error': 'Unable to verify token'}
+
         auth_token = self.request.headers['Authorization'].strip('Bearer').strip()
 
         try:
