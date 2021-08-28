@@ -23,7 +23,7 @@ import ssl
 import pika
 from pika.adapters.tornado_connection import TornadoConnection
 from pika.adapters.utils.connection_workflow import AMQPConnectorException
-from pika.exceptions import StreamLostError, AMQPConnectionError
+from pika.exceptions import StreamLostError, AMQPConnectionError, ChannelWrongStateError
 from tornado.ioloop import IOLoop
 
 import sickrage
@@ -91,13 +91,13 @@ class AMQPBase(object):
         if self._channel and not self._channel.is_closed:
             try:
                 self._channel.close()
-            except StreamLostError:
+            except (ChannelWrongStateError, StreamLostError):
                 pass
 
         if self._connection and not self._connection.is_closed:
             try:
                 self._connection.close()
-            except StreamLostError:
+            except (ChannelWrongStateError, StreamLostError):
                 pass
 
         self._channel = None
@@ -118,7 +118,6 @@ class AMQPBase(object):
 
     def reconnect(self):
         if not self._closing:
-            self.disconnect()
             self.connect()
 
     def on_channel_open(self, channel):
