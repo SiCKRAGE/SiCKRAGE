@@ -38,7 +38,7 @@ from sickrage.core.caches import image_cache
 from sickrage.core.common import dateFormat, dateTimeFormat, Overview, timeFormat, Quality, Qualities, EpisodeStatus
 from sickrage.core.databases.main import MainDB
 from sickrage.core.databases.main.schemas import TVEpisodeSchema
-from sickrage.core.enums import ProcessMethod, SeriesProviderID
+from sickrage.core.enums import ProcessMethod, SeriesProviderID, SearchFormat
 from sickrage.core.exceptions import EpisodeNotFoundException, CantRemoveShowException, CantRefreshShowException, CantUpdateShowException
 from sickrage.core.helpers import backup_app_data, srdatetime, pretty_file_size, read_file_buffered, try_int, sanitize_file_name, chmod_as_parent, flatten, \
     make_dir
@@ -1731,7 +1731,7 @@ class CMD_Show(ApiV1Handler):
         showDict["show_name"] = show_object.name
         showDict["paused"] = (0, 1)[show_object.paused]
         showDict["subtitles"] = (0, 1)[show_object.subtitles]
-        showDict["search_format"] = show_object.search_format
+        showDict["search_format"] = SearchFormat(show_object.search_format).display_name
         showDict["flatten_folders"] = (0, 1)[show_object.flatten_folders]
         showDict["scene"] = (0, 1)[show_object.scene]
         showDict["anime"] = (0, 1)[show_object.anime]
@@ -2354,6 +2354,8 @@ class CMD_ShowSeasons(ApiV1Handler):
         for row in db_data:
             episode_dict = row.as_dict()
 
+            episode_dict['series_provider_id'] = SeriesProviderID(episode_dict['series_provider_id']).display_name
+
             status, quality = Quality.split_composite_status(int(episode_dict['status']))
             episode_dict['status'] = status.display_name
             episode_dict['quality'] = quality.display_name
@@ -2596,7 +2598,7 @@ class CMD_Shows(ApiV1Handler):
                 "paused": (0, 1)[curShow.paused],
                 "quality": Qualities(curShow.quality).display_name,
                 "language": curShow.lang,
-                "search_format": curShow.search_format,
+                "search_format": SearchFormat(curShow.search_format).display_name,
                 "anime": (0, 1)[curShow.anime],
                 "series_id": curShow.series_id,
                 "series_provider_id": curShow.series_provider.name,

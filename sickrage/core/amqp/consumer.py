@@ -20,6 +20,7 @@
 # ##############################################################################
 
 from google.protobuf.json_format import MessageToDict
+from pika.exceptions import ChannelWrongStateError, StreamLostError
 from tornado.ioloop import IOLoop
 
 import sickrage
@@ -102,6 +103,6 @@ class AMQPConsumer(AMQPBase):
                 on_message_callback=self.on_message,
                 queue=f'{sickrage.app.config.user.sub_id}.{sickrage.app.config.general.server_id}',
             )
-        except Exception as e:
-            sickrage.app.log.debug(f'Exception happened during consuming AMQP messages: {e!r}')
+        except (ChannelWrongStateError, StreamLostError):
+            sickrage.app.log.debug('AMQP channel error, attempting to reconnect')
             IOLoop.current().call_later(5, self.reconnect)
