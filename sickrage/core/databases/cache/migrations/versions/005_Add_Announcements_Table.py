@@ -15,7 +15,12 @@ down_revision = '4'
 
 
 def upgrade():
-    pass
+    op.create_table(
+        'announcements',
+        sa.Column('id', sa.Integer, primary_key=True),
+        sa.Column('hash', sa.String(255), unique=True, nullable=False),
+        sa.Column('seen', sa.Boolean, default=False)
+    )
 
 
 def downgrade():

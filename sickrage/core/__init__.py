@@ -548,6 +548,9 @@ class Core(object):
         # load shows
         IOLoop.current().add_callback(self.load_shows)
 
+        # perform version update check
+        IOLoop.current().spawn_callback(self.version_updater.check_for_update)
+
         # load network timezones
         IOLoop.current().spawn_callback(self.tz_updater.update_network_timezones)
 

@@ -158,8 +158,13 @@ class VersionUpdater(object):
         if sickrage.app.disable_updates:
             return False
 
+        sickrage.app.log.info('Checking for SiCKRAGE server updates')
+
         if not self.updater.need_update():
+            sickrage.app.log.info('SiCKRAGE server is up to date')
             return False
+
+        sickrage.app.log.info('New SiCKRAGE server update is available!')
 
         self.updater.set_latest_version()
 

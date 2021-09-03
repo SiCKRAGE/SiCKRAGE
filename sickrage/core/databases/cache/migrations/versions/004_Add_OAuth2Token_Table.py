@@ -22,6 +22,19 @@ down_revision = '3'
 def upgrade():
     conn = op.get_bind()
     meta = sa.MetaData(bind=conn)
+
+    op.create_table(
+        'oauth2_token',
+        sa.Column('id', sa.Integer, primary_key=True),
+        sa.Column('access_token', sa.String(255), unique=True, nullable=False),
+        sa.Column('refresh_token', sa.String(255), index=True),
+        sa.Column('expires_in', sa.Integer, nullable=False, default=0),
+        sa.Column('expires_at', sa.Integer, nullable=False, default=0),
+        sa.Column('scope', sa.Text, default=""),
+        sa.Column('session_state', sa.Text, default=""),
+        sa.Column('token_type', sa.Text, default="bearer"),
+    )
+
     oauth2_token = sa.Table('oauth2_token', meta, autoload=True)
 
     token_file = os.path.abspath(os.path.join(sickrage.app.data_dir, 'token.json'))
