@@ -1518,7 +1518,7 @@ class CMD_SiCKRAGESearchSeriesProvider(ApiV1Handler):
 
         results = []
 
-        series_provider = sickrage.app.series_providers[self.series_provider_id.upper()]
+        series_provider = sickrage.app.series_providers[SeriesProviderID[self.series_provider_id.upper()]]
         series_provider_language = self.lang or sickrage.app.config.general.series_provider_default_language
 
         if self.name and not self.series_id:  # only name was given
@@ -1813,11 +1813,9 @@ class CMD_ShowAddExisting(ApiV1Handler):
         if not os.path.isdir(self.location):
             return _responds(RESULT_FAILURE, msg='Not a valid location')
 
-        series_provider_id = SeriesProviderID[self.series_provider_id]
-
         series_provider_result = CMD_SiCKRAGESearchSeriesProvider(self.application, self.request, **{
             'series_id': self.series_id,
-            'series_provider_id': series_provider_id
+            'series_provider_id': self.series_provider_id
         }).run()
 
         series_name = None
@@ -1827,6 +1825,8 @@ class CMD_ShowAddExisting(ApiV1Handler):
                 return _responds(RESULT_FAILURE, msg="Empty results returned, check series_id and try again")
             if len(series_provider_result['data']['results']) == 1 and 'name' in series_provider_result['data']['results'][0]:
                 series_name = series_provider_result['data']['results'][0]['name']
+        else:
+            return _responds(RESULT_FAILURE, msg="Unable to retrieve information from indexer")
 
         first_aired = series_provider_result['data']['results'][0]['first_aired']
 
@@ -1849,7 +1849,7 @@ class CMD_ShowAddExisting(ApiV1Handler):
             newQuality = Quality.combine_qualities(iqualityID, aqualityID)
 
         sickrage.app.show_queue.add_show(
-            series_provider_id=series_provider_id, series_id=int(self.series_id), show_dir=self.location,
+            series_provider_id=SeriesProviderID[self.series_provider_id.upper()], series_id=int(self.series_id), showDir=self.location,
             default_status=sickrage.app.config.general.status_default, quality=newQuality, flatten_folders=int(self.flatten_folders),
             subtitles=self.subtitles, default_status_after=sickrage.app.config.general.status_default_after, skip_downloaded=self.skip_downloaded
         )
@@ -1958,11 +1958,9 @@ class CMD_ShowAddNew(ApiV1Handler):
                 return _responds(RESULT_FAILURE, msg="Status prohibited")
             default_ep_status_after = self.future_status
 
-        series_provider_id = SeriesProviderID[self.series_provider_id]
-
         series_provider_result = CMD_SiCKRAGESearchSeriesProvider(self.application, self.request, **{
             'series_id': self.series_id,
-            'series_provider_id': series_provider_id
+            'series_provider_id': self.series_provider_id
         }).run()
 
         series_name = None
@@ -1972,6 +1970,8 @@ class CMD_ShowAddNew(ApiV1Handler):
                 return _responds(RESULT_FAILURE, msg="Empty results returned, check series_id and try again")
             if len(series_provider_result['data']['results']) == 1 and 'name' in series_provider_result['data']['results'][0]:
                 series_name = series_provider_result['data']['results'][0]['name']
+        else:
+            return _responds(RESULT_FAILURE, msg="Unable to retrieve information from indexer")
 
         first_aired = series_provider_result['data']['results'][0]['first_aired']
 
@@ -1995,8 +1995,8 @@ class CMD_ShowAddNew(ApiV1Handler):
                 chmod_as_parent(show_path)
 
         sickrage.app.show_queue.add_show(
-            series_provider_id=series_provider_id, series_id=int(self.series_id), show_dir=show_path, default_status=new_status, quality=new_quality,
-            flatten_folders=int(self.flatten_folders), lang=self.lang, subtitles=self.subtitles, anime=self.anime, scene=self.scene,
+            series_provider_id=SeriesProviderID[self.series_provider_id.upper()], series_id=int(self.series_id), showDir=show_path, default_status=new_status,
+            quality=new_quality, flatten_folders=int(self.flatten_folders), lang=self.lang, subtitles=self.subtitles, anime=self.anime, scene=self.scene,
             search_format=self.search_format, default_status_after=default_ep_status_after, skip_downloaded=self.skip_downloaded
         )
 
@@ -2363,9 +2363,11 @@ class CMD_ShowSeasons(ApiV1Handler):
             if episode_dict['airdate'] > datetime.date.min:
                 dtEpisodeAirs = srdatetime.SRDateTime(sickrage.app.tz_updater.parse_date_time(episode_dict['airdate'], show_obj.airs, show_obj.network),
                                                       convert=True).dt
-                episode_dict['airdate'] = srdatetime.SRDateTime(dtEpisodeAirs).srfdate(d_preset=dateFormat)
+                episode_dict['airdate'] = str(srdatetime.SRDateTime(dtEpisodeAirs).srfdate(d_preset=dateFormat))
             else:
                 episode_dict['airdate'] = 'Never'
+
+            episode_dict['subtitles_lastsearch'] = str(episode_dict['subtitles_lastsearch'])
 
             curSeason = int(episode_dict['season'])
             curEpisode = int(episode_dict['episode'])

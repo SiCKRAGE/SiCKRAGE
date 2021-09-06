@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.38](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.37...10.0.38)
+
 #### [10.0.37](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.36...10.0.37)
+
+> 3 September 2021
 
 - Fixed cache database migration issues related to oauth2 and announcements tables [`d239c77`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/d239c773feb2eb41459451f1aaba95caf66816eb)
 
