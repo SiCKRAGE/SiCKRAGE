@@ -1,6 +1,6 @@
-sickrage/__init__.py = 1a5df36ec61f3987c57ca2f10a96761c
+sickrage/__init__.py = df70bb2ba706230cb4f2d899833a9d27
 sickrage/checksums.md5 = d41d8cd98f00b204e9800998ecf8427e
-sickrage/version.txt = 91a0f6c12763b97bdc96c85f6d9b04fe
+sickrage/version.txt = 117d1a250de8ae1a5b72fd37bb6294b5
 sickrage/core/process_tv.py = 192c68108d5b5d1d0c84c7865209e21d
 sickrage/core/enums.py = 5a8fac089e8c4451a1d6b28c1762e684
 sickrage/core/announcements.py = 6c3ed44e7ae50c281383ab5f278102c6
