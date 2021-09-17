@@ -216,7 +216,7 @@ failure_cases = ['7sins-jfcs01e09-720p-bluray-x264']
 class UnicodeTests(tests.SiCKRAGETestDBCase):
     def setUp(self):
         super(UnicodeTests, self).setUp()
-        self.show = TVShow(1, 1, 'en')
+        self.show = TVShow(1, 1, 'eng')
         self.show.name = "The Big Bang Theory"
 
     def _test_unicode(self, name, result):
@@ -280,7 +280,7 @@ class ComboTests(tests.SiCKRAGETestDBCase):
 class AnimeTests(tests.SiCKRAGETestDBCase):
     def setUp(self):
         super(AnimeTests, self).setUp()
-        self.show = TVShow(1, 1, 'en')
+        self.show = TVShow(1, 1, 'eng')
         self.show.anime = True
 
     def _test_names(self, np, section, transform=None, verbose=False):
@@ -337,7 +337,7 @@ class AnimeTests(tests.SiCKRAGETestDBCase):
 class BasicTests(tests.SiCKRAGETestDBCase):
     def setUp(self):
         super(BasicTests, self).setUp()
-        self.show = TVShow(1, 1, 'en')
+        self.show = TVShow(1, 1, 'eng')
 
     def _test_names(self, np, section, transform=None, verbose=False):
         if VERBOSE or verbose:

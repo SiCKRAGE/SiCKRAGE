@@ -98,77 +98,77 @@ class KODI_12PlusMetadata(MetadataProvider):
         tv_node = Element("tvshow")
 
         series_provider_language = show_obj.lang or sickrage.app.config.general.series_provider_default_language
-        series_provider_data = show_obj.series_provider.search(show_obj.series_id, language=series_provider_language)
-        if not series_provider_data:
+        series_info = show_obj.series_provider.get_series_info(show_obj.series_id, language=series_provider_language)
+        if not series_info:
             return False
 
         # check for title and id
-        if not (getattr(series_provider_data, 'seriesname', None) and getattr(series_provider_data, 'id', None)):
+        if not (getattr(series_info, 'name', None) and getattr(series_info, 'id', None)):
             sickrage.app.log.info("Incomplete info for show with id " + str(show_obj.series_id) + " on " + show_obj.series_provider.name + ", skipping it")
             return False
 
         title = SubElement(tv_node, "title")
-        title.text = series_provider_data["seriesname"]
+        title.text = series_info["name"]
 
-        if getattr(series_provider_data, 'rating', None):
+        if getattr(series_info, 'rating', None):
             rating = SubElement(tv_node, "rating")
-            rating.text = series_provider_data["rating"]
+            rating.text = str(series_info["rating"])
 
-        if getattr(series_provider_data, 'firstaired', None):
+        if getattr(series_info, 'firstAired', None):
             try:
-                year_text = str(datetime.datetime.strptime(series_provider_data["firstaired"], dateFormat).year)
+                year_text = str(datetime.datetime.strptime(series_info["firstAired"], dateFormat).year)
                 if year_text:
                     year = SubElement(tv_node, "year")
                     year.text = year_text
             except Exception:
                 pass
 
-        if getattr(series_provider_data, 'overview', None):
+        if getattr(series_info, 'overview', None):
             plot = SubElement(tv_node, "plot")
-            plot.text = series_provider_data["overview"]
+            plot.text = series_info["overview"]
 
-        # if getattr(series_provider_data, 'id', None):
+        # if getattr(series_info, 'id', None):
         #    episodeguide = SubElement(tv_node, "episodeguide")
         #    episodeguideurl = SubElement(episodeguide, "url")
         #    episodeguideurl.text = IndexerApi(show_obj.series_provider_id).config['base_url'] + str(
-        #        series_provider_data["id"]) + '/all/en.zip'
+        #        series_info["id"]) + '/all/en.zip'
 
-        if getattr(series_provider_data, 'contentrating', None):
-            mpaa = SubElement(tv_node, "mpaa")
-            mpaa.text = series_provider_data["contentrating"]
+        # if getattr(series_info, 'contentrating', None):
+        #     mpaa = SubElement(tv_node, "mpaa")
+        #     mpaa.text = series_info["contentrating"]
 
-        if getattr(series_provider_data, 'id', None):
+        if getattr(series_info, 'id', None):
             series_id = SubElement(tv_node, "id")
-            series_id.text = str(series_provider_data["id"])
+            series_id.text = str(series_info["id"])
 
-        if getattr(series_provider_data, 'genre', None) and isinstance(series_provider_data["genre"], str):
+        if getattr(series_info, 'genres', None):
             genre = SubElement(tv_node, "genre")
-            genre.text = " / ".join(x.strip() for x in series_provider_data["genre"].split('|') if x.strip())
+            genre.text = " / ".join(x['name'] for x in series_info["genres"])
 
-        if getattr(series_provider_data, 'firstaired', None):
+        if getattr(series_info, 'firstAired', None):
             premiered = SubElement(tv_node, "premiered")
-            premiered.text = series_provider_data["firstaired"]
+            premiered.text = series_info["firstAired"]
 
-        if getattr(series_provider_data, 'network', None):
+        if getattr(series_info, 'network', None):
             studio = SubElement(tv_node, "studio")
-            studio.text = series_provider_data["network"].strip()
+            studio.text = series_info["network"].strip()
 
-        for actor in show_obj.series_provider.actors(int(show_obj.series_id)):
-            cur_actor = SubElement(tv_node, "actor")
-
-            if 'name' in actor and actor['name'].strip():
-                cur_actor_name = SubElement(cur_actor, "name")
-                cur_actor_name.text = actor['name'].strip()
-            else:
+        for person in series_info['people']:
+            if 'name' not in person or not person['name'].strip():
                 continue
 
-            if 'role' in actor and actor['role'].strip():
-                cur_actor_role = SubElement(cur_actor, "role")
-                cur_actor_role.text = actor['role'].strip()
+            if person['role'].strip() == 'Actor':
+                cur_actor = SubElement(tv_node, "actor")
 
-            if 'image' in actor and actor['image'].strip():
-                cur_actor_thumb = SubElement(cur_actor, "thumb")
-                cur_actor_thumb.text = actor['image'].strip()
+                cur_actor_role = SubElement(cur_actor, "role")
+                cur_actor_role.text = person['role'].strip()
+
+                cur_actor_name = SubElement(cur_actor, "name")
+                cur_actor_name.text = person['name'].strip()
+
+                if person['imageUrl'].strip():
+                    cur_actor_thumb = SubElement(cur_actor, "thumb")
+                    cur_actor_thumb.text = person['imageUrl'].strip()
 
         # Make it purdy
         indent_xml(tv_node)
@@ -187,8 +187,8 @@ class KODI_12PlusMetadata(MetadataProvider):
         eps_to_write = [ep_obj] + ep_obj.related_episodes
 
         series_provider_language = ep_obj.show.lang or sickrage.app.config.general.series_provider_default_language
-        series_provider_data = ep_obj.show.series_provider.search(ep_obj.show.series_id, language=series_provider_language)
-        if not series_provider_data:
+        series_info = ep_obj.show.series_provider.get_series_info(ep_obj.show.series_id, language=series_provider_language)
+        if not series_info:
             return False
 
         if len(eps_to_write) > 1:
@@ -198,19 +198,18 @@ class KODI_12PlusMetadata(MetadataProvider):
 
         # write an NFO containing info for all matching episodes
         for curEpToWrite in eps_to_write:
-
             try:
-                myEp = series_provider_data[curEpToWrite.season][curEpToWrite.episode]
+                series_episode_info = series_info[curEpToWrite.season][curEpToWrite.episode]
             except (SeriesProviderEpisodeNotFound, SeriesProviderSeasonNotFound):
                 sickrage.app.log.info(
                     f"Unable to find episode {curEpToWrite.season:d}x{curEpToWrite.episode:d} on {ep_obj.show.series_provider.name}"
                     f"... has it been removed? Should I delete from db?")
                 return None
 
-            if not getattr(myEp, 'firstaired', None):
-                myEp["firstaired"] = str(datetime.date.min)
+            if not getattr(series_episode_info, 'firstAired', None):
+                series_episode_info["firstAired"] = str(datetime.date.min)
 
-            if not getattr(myEp, 'episodename', None):
+            if not getattr(series_episode_info, 'name', None):
                 sickrage.app.log.debug("Not generating nfo because the ep has no title")
                 return None
 
@@ -221,13 +220,13 @@ class KODI_12PlusMetadata(MetadataProvider):
             else:
                 episode = root_node
 
-            if getattr(myEp, 'episodename', None):
+            if getattr(series_episode_info, 'name', None):
                 title = SubElement(episode, "title")
-                title.text = myEp['episodename']
+                title.text = series_episode_info['name']
 
-            if getattr(series_provider_data, 'seriesname', None):
+            if getattr(series_info, 'name', None):
                 showtitle = SubElement(episode, "showtitle")
-                showtitle.text = series_provider_data['seriesname']
+                showtitle.text = series_info['name']
 
             season = SubElement(episode, "season")
             season.text = str(curEpToWrite.season)
@@ -242,63 +241,59 @@ class KODI_12PlusMetadata(MetadataProvider):
                 aired = SubElement(episode, "aired")
                 aired.text = str(curEpToWrite.airdate)
 
-            if getattr(myEp, 'overview', None):
+            if getattr(series_episode_info, 'overview', None):
                 plot = SubElement(episode, "plot")
-                plot.text = myEp['overview']
+                plot.text = series_episode_info['overview']
 
-            if curEpToWrite.season and getattr(series_provider_data, 'runtime', None):
+            if curEpToWrite.season and getattr(series_info, 'runtime', None):
                 runtime = SubElement(episode, "runtime")
-                runtime.text = series_provider_data["runtime"]
+                runtime.text = series_info["runtime"]
 
-            if getattr(myEp, 'airsbefore_season', None):
+            if getattr(series_episode_info, 'airsbefore_season', None):
                 displayseason = SubElement(episode, "displayseason")
-                displayseason.text = myEp['airsbefore_season']
+                displayseason.text = series_episode_info['airsbefore_season']
 
-            if getattr(myEp, 'airsbefore_episode', None):
+            if getattr(series_episode_info, 'airsbefore_episode', None):
                 displayepisode = SubElement(episode, "displayepisode")
-                displayepisode.text = myEp['airsbefore_episode']
+                displayepisode.text = series_episode_info['airsbefore_episode']
 
-            if getattr(myEp, 'filename', None):
+            if getattr(series_episode_info, 'filename', None):
                 thumb = SubElement(episode, "thumb")
-                thumb.text = myEp['filename'].strip()
+                thumb.text = series_episode_info['filename'].strip()
 
             # watched = SubElement(episode, "watched")
             # watched.text = 'false'
 
-            if getattr(myEp, 'writer', None):
-                ep_credits = SubElement(episode, "credits")
-                ep_credits.text = myEp['writer'].strip()
-
-            if getattr(myEp, 'director', None):
-                director = SubElement(episode, "director")
-                director.text = myEp['director'].strip()
-
-            if getattr(myEp, 'rating', None):
+            if getattr(series_episode_info, 'rating', None):
                 rating = SubElement(episode, "rating")
-                rating.text = myEp['rating']
+                rating.text = series_episode_info['rating']
 
-            if getattr(myEp, 'gueststars', None) and isinstance(myEp['gueststars'], str):
-                for actor in (x.strip() for x in myEp['gueststars'].split('|') if x.strip()):
-                    cur_actor = SubElement(episode, "actor")
-                    cur_actor_name = SubElement(cur_actor, "name")
-                    cur_actor_name.text = actor
-
-            for actor in ep_obj.show.series_provider.actors(int(ep_obj.show.series_id)):
-                cur_actor = SubElement(episode, "actor")
-
-                if 'name' in actor and actor['name'].strip():
-                    cur_actor_name = SubElement(cur_actor, "name")
-                    cur_actor_name.text = actor['name'].strip()
-                else:
+            for person in series_info['people']:
+                if 'name' not in person or not person['name'].strip():
                     continue
 
-                if 'role' in actor and actor['role'].strip():
-                    cur_actor_role = SubElement(cur_actor, "role")
-                    cur_actor_role.text = actor['role'].strip()
+                if person['role'].strip() == 'Actor':
+                    cur_actor = SubElement(episode, "actor")
 
-                if 'image' in actor and actor['image'].strip():
-                    cur_actor_thumb = SubElement(cur_actor, "thumb")
-                    cur_actor_thumb.text = actor['image'].strip()
+                    cur_actor_role = SubElement(cur_actor, "role")
+                    cur_actor_role.text = person['role'].strip()
+
+                    cur_actor_name = SubElement(cur_actor, "name")
+                    cur_actor_name.text = person['name'].strip()
+
+                    if person['imageUrl'].strip():
+                        cur_actor_thumb = SubElement(cur_actor, "thumb")
+                        cur_actor_thumb.text = person['imageUrl'].strip()
+                elif person['role'].strip() == 'Writer':
+                    ep_credits = SubElement(episode, "credits")
+                    ep_credits.text = series_episode_info['writer'].strip()
+                elif person['role'].strip() == 'Director':
+                    director = SubElement(episode, "director")
+                    director.text = series_episode_info['director'].strip()
+                elif person['role'].strip() == 'Guest Star':
+                    cur_actor = SubElement(episode, "actor")
+                    cur_actor_name = SubElement(cur_actor, "name")
+                    cur_actor_name.text = person['name'].strip()
 
         # Make it purdy
         indent_xml(root_node)

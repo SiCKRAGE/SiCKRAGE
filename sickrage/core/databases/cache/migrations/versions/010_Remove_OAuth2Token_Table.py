@@ -1,0 +1,54 @@
+"""Initial migration
+
+Revision ID: 10
+Revises:
+Create Date: 2017-12-29 14:39:27.854291
+
+"""
+import json
+import os
+from json import JSONDecodeError
+
+import sqlalchemy as sa
+from alembic import op
+from sqlalchemy import orm
+
+import sickrage
+
+# revision identifiers, used by Alembic.
+from sickrage.core import ConfigDB
+
+revision = '10'
+down_revision = '9'
+
+
+def upgrade():
+    conn = op.get_bind()
+    meta = sa.MetaData(bind=conn)
+    oauth2_token = sa.Table('oauth2_token', meta, autoload=True)
+
+    certs = sickrage.app.auth_server.certs()
+
+    with op.get_context().begin_transaction():
+        for row in conn.execute(oauth2_token.select()):
+            refresh_token = row.refresh_token
+
+    new_token = sickrage.app.auth_server.refresh_token(refresh_token)
+    decoded_token = sickrage.app.auth_server.decode_token(new_token['access_token'], certs)
+    apikey = decoded_token['apikey']
+
+    try:
+        session = sickrage.app.config.db.session()
+        general = session.query(ConfigDB.General).one()
+        general.sso_api_key = apikey
+        session.commit()
+    except orm.exc.NoResultFound:
+        pass
+
+    if conn.engine.dialect.has_table(conn.engine, 'oauth2_token'):
+        op.drop_table('oauth2_token')
+
+
+def downgrade():
+    # Operations to reverse the above upgrade go here.
+    pass

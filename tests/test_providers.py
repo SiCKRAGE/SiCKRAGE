@@ -79,7 +79,7 @@ class ProviderTests(type):
 
         def setUp(self):
             super(ProviderTests.ProviderTest, self).setUp()
-            self.show = TVShow(test_string_overrides.get(self.provider.name, {'ID': 82066})['ID'], 1, "en")
+            self.show = TVShow(test_string_overrides.get(self.provider.name, {'ID': 82066})['ID'], 1, "eng")
             self.show.name = test_string_overrides.get(self.provider.name, {'Name': 'Fringe'})['Name']
             self.show.anime = test_string_overrides.get(self.provider.name, {'Anime': False})['Anime']
 

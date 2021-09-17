@@ -75,23 +75,22 @@ class SearchSeriesProviderForShowNameHandler(BaseHandler):
     def get(self, *args, **kwargs):
         search_term = self.get_argument('search_term')
         series_provider_id = self.get_argument('series_provider_id', None)
-        lang = self.get_argument('lang', None)
+
+        series_provider_language = self.get_argument('lang', None)
+        if not series_provider_language or series_provider_language == 'null':
+            series_provider_language = sickrage.app.config.general.series_provider_default_language
 
         results = []
 
-        series_provider = sickrage.app.series_providers[SeriesProviderID[series_provider_id]]
-        series_provider_language = lang if not lang or lang == 'null' else sickrage.app.config.general.series_provider_default_language
-
-        sickrage.app.log.debug(f"Searching for Show with term: {search_term} on series provider: {series_provider.name}")
-
         # search via series name
-        series_results = series_provider.search(search_term, language=series_provider_language)
+        series_provider = sickrage.app.series_providers[SeriesProviderID[series_provider_id]]
+        series_results = series_provider.search(query=search_term, language=series_provider_language)
         if series_results:
             for series in series_results:
-                if not series.get('seriesname', None):
+                if not series.get('name', None):
                     continue
 
-                if not series.get('firstaired', None):
+                if not series.get('firstAired', None):
                     continue
 
                 results.append((
@@ -99,12 +98,12 @@ class SearchSeriesProviderForShowNameHandler(BaseHandler):
                     series_provider_id,
                     series_provider.show_url,
                     int(series['id']),
-                    series['seriesname'],
-                    series['firstaired'],
+                    series['name'],
+                    series['firstAired'],
                     ('', 'disabled')[isinstance(find_show(int(series['id']), SeriesProviderID[series_provider_id]), TVShow)]
                 ))
 
-        return json_encode({'results': results, 'langid': lang})
+        return json_encode({'results': results, 'langid': series_provider_language})
 
 
 class MassAddTableHandler(BaseHandler):

@@ -149,7 +149,7 @@ class TIVOMetadata(MetadataProvider):
 
         ep_obj: a TVEpisode instance to create the metadata file for.
 
-        The results are saved in the object myShow.
+        The results are saved in the object series_info.
 
         The key values for the tivo metadata file are from:
 
@@ -161,29 +161,28 @@ class TIVOMetadata(MetadataProvider):
         eps_to_write = [ep_obj] + ep_obj.related_episodes
 
         series_provider_language = ep_obj.show.lang or sickrage.app.config.general.series_provider_default_language
-
-        myShow = ep_obj.show.series_provider.search(ep_obj.show.series_id, language=series_provider_language)
-        if not myShow:
+        series_info = ep_obj.show.series_provider.get_series_info(ep_obj.show.series_id, language=series_provider_language)
+        if not series_info:
             return False
 
         for curEpToWrite in eps_to_write:
             try:
-                myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
+                series_episode_info = series_info[curEpToWrite.season][curEpToWrite.episode]
             except (SeriesProviderEpisodeNotFound, SeriesProviderSeasonNotFound):
                 sickrage.app.log.info(
                     "Unable to find episode %dx%d on %s, has it been removed? Should I delete from db?" % (
                         curEpToWrite.season, curEpToWrite.episode, ep_obj.show.series_provider.name))
                 return None
 
-            if ep_obj.season == 0 and not getattr(myEp, 'firstaired', None):
-                myEp["firstaired"] = str(datetime.date.min)
+            if ep_obj.season == 0 and not getattr(series_episode_info, 'firstAired', None):
+                series_episode_info["firstAired"] = str(datetime.date.min)
 
-            if not (getattr(myEp, 'episodename', None) and getattr(myEp, 'firstaired', None)):
+            if not (getattr(series_episode_info, 'name', None) and getattr(series_episode_info, 'firstAired', None)):
                 return None
 
-            if getattr(myShow, 'seriesname', None):
-                data += ("title : " + myShow["seriesname"] + "\n")
-                data += ("seriesTitle : " + myShow["seriesname"] + "\n")
+            if getattr(series_info, 'name', None):
+                data += ("title : " + series_info["name"] + "\n")
+                data += ("seriesTitle : " + series_info["name"] + "\n")
 
             data += ("episodeTitle : " + curEpToWrite._format_pattern('%Sx%0E %EN') + "\n")
 
@@ -217,12 +216,12 @@ class TIVOMetadata(MetadataProvider):
 
             # Usually starts with "SH" and followed by 6-8 digits.
             # Tivo uses zap2it for thier data, so the series id is the zap2it_id.
-            if getattr(myShow, 'zap2it_id', None):
-                data += ("seriesId : " + myShow["zap2it_id"] + "\n")
+            if getattr(series_info, 'zap2it_id', None):
+                data += ("seriesId : " + series_info["zap2it_id"] + "\n")
 
             # This is the call sign of the channel the episode was recorded from.
-            if getattr(myShow, 'network', None):
-                data += ("callsign : " + myShow["network"] + "\n")
+            if getattr(series_info, 'network', None):
+                data += ("callsign : " + series_info["network"] + "\n")
 
             # This must be entered as yyyy-mm-ddThh:mm:ssZ (the t is capitalized and never changes, the Z is also
             # capitalized and never changes). This is the original air date of the episode.
@@ -236,9 +235,9 @@ class TIVOMetadata(MetadataProvider):
                     data += ("vActor : " + actor['name'].strip() + "\n")
 
             # This is shown on both the Program screen and the Details screen.
-            if getattr(myEp, 'rating', None):
+            if getattr(series_episode_info, 'rating', None):
                 try:
-                    rating = float(myEp['rating'])
+                    rating = float(series_episode_info['rating'])
                 except ValueError:
                     rating = 0.0
                 # convert 10 to 4 star rating. 4 * rating / 10
@@ -248,8 +247,8 @@ class TIVOMetadata(MetadataProvider):
 
             # This is shown on both the Program screen and the Details screen.
             # It uses the standard TV rating system of: TV-Y7, TV-Y, TV-G, TV-PG, TV-14, TV-MA and TV-NR.
-            if getattr(myShow, 'contentrating', None):
-                data += ("tvRating : " + str(myShow["contentrating"]) + "\n")
+            if getattr(series_info, 'contentrating', None):
+                data += ("tvRating : " + str(series_info["contentrating"]) + "\n")
 
             # This field can be repeated as many times as necessary or omitted completely.
             if ep_obj.show.genre:
@@ -304,8 +303,7 @@ class TIVOMetadata(MetadataProvider):
             chmod_as_parent(nfo_file_path)
 
         except EnvironmentError as e:
-            sickrage.app.log.warning(
-                "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e))
+            sickrage.app.log.warning("Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e))
             return False
 
         return True

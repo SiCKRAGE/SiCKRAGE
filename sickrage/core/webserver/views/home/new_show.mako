@@ -9,7 +9,7 @@
 <%block name="metas">
     <meta data-var="sickrage.DEFAULT_LANGUAGE" data-content="${sickrage.app.config.general.series_provider_default_language}">
     <meta data-var="sickrage.LANGUAGES"
-          data-content="${','.join([lang['abbreviation'] for lang in sickrage.app.series_providers[SeriesProviderID.THETVDB].languages()])}">
+          data-content="${','.join([lang['id'] for lang in sickrage.app.series_providers[SeriesProviderID.THETVDB].languages()])}">
 </%block>
 
 <%block name="content">
@@ -107,8 +107,8 @@
                                                 <select name="seriesProviderLanguage" id="seriesProviderLanguage" class="form-control"
                                                         title="${_('Choose language')}">
                                                     % for language in sickrage.app.series_providers[SeriesProviderID.THETVDB].languages():
-                                                        <option value="${language['abbreviation']}" ${('', 'selected')[sickrage.app.config.general.series_provider_default_language == language['abbreviation']]}>
-                                                            ${language['englishname']}
+                                                        <option value="${language['id']}" ${('', 'selected')[sickrage.app.config.general.series_provider_default_language == language['id']]}>
+                                                            ${language['name']}
                                                         </option>
                                                     % endfor
                                                 </select>

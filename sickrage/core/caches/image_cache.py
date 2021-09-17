@@ -36,9 +36,9 @@ class ImageCache(object):
     FANART_THUMB = 6
 
     IMAGE_TYPES = {
-        BANNER: 'series',
+        BANNER: 'banner',
         POSTER: 'poster',
-        BANNER_THUMB: 'series_thumb',
+        BANNER_THUMB: 'banner_thumb',
         POSTER_THUMB: 'poster_thumb',
         FANART: 'fanart',
         FANART_THUMB: 'fanart_thumb'
@@ -266,6 +266,9 @@ class ImageCache(object):
         # retrieve the image from a series provider using the generic metadata class
         metadata_generator = MetadataProvider()
         img_data = metadata_generator._retrieve_show_image(self.IMAGE_TYPES[img_type], show_obj)
+        if not img_data:
+            return False
+
         result = metadata_generator._write_image(img_data, dest_path, force)
 
         return result

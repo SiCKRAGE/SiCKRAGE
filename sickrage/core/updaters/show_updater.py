@@ -66,7 +66,7 @@ class ShowUpdater(object):
             # get list of updated series from a series provider
             updated_shows = set()
             for series_provider_id in SeriesProviderID:
-                resp = sickrage.app.series_providers[series_provider_id].updated(last_update)
+                resp = sickrage.app.series_providers[series_provider_id].updates(last_update)
                 if resp:
                     for series in resp:
                         updated_shows.add(series['id'])

@@ -277,11 +277,10 @@ class ShowTaskAdd(ShowTask):
 
         sickrage.app.log.info("Started adding show {} from show dir: {}".format(self.show_name, self.show_dir))
 
-        s = sickrage.app.series_providers[self.series_provider_id].search(self.series_id,
-                                                                          language=self.lang or sickrage.app.config.general.series_provider_default_language,
-                                                                          enable_cache=False)
-
-        if not s:
+        series_provider_language = self.lang or sickrage.app.config.general.series_provider_default_language
+        series_info = sickrage.app.series_providers[self.series_provider_id].get_series_info(self.series_id, language=series_provider_language,
+                                                                                             enable_cache=False)
+        if not series_info:
             sickrage.app.alerts.error(
                 _("Unable to add show"),
                 _("Unable to look up the show in {} on {} using ID {}, not using the NFO. Delete .nfo and try adding "
@@ -307,7 +306,7 @@ class ShowTaskAdd(ShowTask):
         # this usually only happens if they have an NFO in their show dir which gave us a series id that has no
         # proper english version of the show
         try:
-            s.seriesname
+            series_info.name
         except AttributeError:
             sickrage.app.log.warning(
                 f"Show in {self.show_dir} has no name on {sickrage.app.series_providers[self.series_provider_id].name}, "
@@ -320,13 +319,18 @@ class ShowTaskAdd(ShowTask):
             return self._finish_early()
 
         # if the show has no episodes/seasons
-        if not len(s):
-            sickrage.app.log.warning("Show " + str(s['seriesname']) + " is on " + str(
-                sickrage.app.series_providers[self.series_provider_id].name) + "but contains no season/episode "
-                                                                               "data.")
-            sickrage.app.alerts.error(_("Unable to add show"),
-                                      _("Show ") + str(s['seriesname']) + _(" is on ") + str(sickrage.app.series_providers[self.series_provider_id].name) + _(
-                                          " but contains no season/episode data."))
+        if not len(series_info):
+            sickrage.app.log.warning(
+                "Show " + str(series_info['name']) + " is on " + str(
+                    sickrage.app.series_providers[self.series_provider_id].name) + "but contains no season/episode data."
+            )
+
+            sickrage.app.alerts.error(
+                _("Unable to add show"),
+                _("Show ") + str(series_info['name']) + _(" is on ") + str(sickrage.app.series_providers[self.series_provider_id].name) + _(
+                    " but contains no season/episode data.")
+            )
+
             return self._finish_early()
 
         try:

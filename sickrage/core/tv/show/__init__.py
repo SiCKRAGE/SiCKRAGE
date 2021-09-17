@@ -59,7 +59,7 @@ class TVShowID(object):
 
 
 class TVShow(object):
-    def __init__(self, series_id, series_provider_id, lang='en', location=''):
+    def __init__(self, series_id, series_provider_id, lang='eng', location=''):
         self.lock = threading.Lock()
         self._episodes = {}
 
@@ -668,54 +668,52 @@ class TVShow(object):
         sickrage.app.log.debug(str(self.series_id) + ": Loading show info from " + self.series_provider.name)
 
         series_provider_language = self.lang or sickrage.app.config.general.series_provider_default_language
-
-        myEp = self.series_provider.search(self.series_id, language=series_provider_language, enable_cache=cache)
-        if not myEp:
+        series_info = self.series_provider.get_series_info(self.series_id, language=series_provider_language, enable_cache=cache)
+        if not series_info:
             raise SeriesProviderException
 
         try:
-            self.name = myEp['seriesname'].strip()
+            self.name = series_info['name'].strip()
         except AttributeError:
-            raise SeriesProviderAttributeNotFound("Found %s, but attribute 'seriesname' was empty." % self.series_id)
+            raise SeriesProviderAttributeNotFound("Found %s, but attribute 'name' was empty." % self.series_id)
 
-        self.overview = safe_getattr(myEp, 'overview', self.overview)
-        self.classification = safe_getattr(myEp, 'classification', self.classification)
-        self.genre = safe_getattr(myEp, 'genre', self.genre)
-        self.network = safe_getattr(myEp, 'network', self.network)
-        self.runtime = try_int(safe_getattr(myEp, 'runtime', self.runtime))
-        self.imdb_id = safe_getattr(myEp, 'imdbid', self.imdb_id)
+        self.overview = safe_getattr(series_info, 'overview', self.overview)
+        # self.classification = safe_getattr(series_info, 'classification', self.classification)
+        self.genre = safe_getattr(series_info, 'genre', self.genre)
+        self.network = safe_getattr(series_info, 'network', self.network)
+        self.runtime = try_int(safe_getattr(series_info, 'runtime', self.runtime))
+        self.imdb_id = safe_getattr(series_info, 'imdbId', self.imdb_id)
 
         try:
-            self.airs = (safe_getattr(myEp, 'airsdayofweek') + " " + safe_getattr(myEp, 'airstime')).strip()
+            self.airs = f"{safe_getattr(series_info, 'airDay')} {safe_getattr(series_info, 'airTime')}"
         except:
             self.airs = ''
 
         try:
-            self.startyear = try_int(str(safe_getattr(myEp, 'firstaired') or datetime.date.min).split('-')[0])
+            self.startyear = try_int(str(safe_getattr(series_info, 'firstAired') or datetime.date.min).split('-')[0])
         except:
             self.startyear = 0
 
-        self.status = safe_getattr(myEp, 'status', self.status)
+        self.status = safe_getattr(series_info, 'status', self.status)
 
         self.save()
 
     def load_episodes_from_series_provider(self, cache=True):
         scanned_eps = {}
 
-        series_provider_language = self.lang or sickrage.app.config.general.series_provider_default_language
-
         sickrage.app.log.debug(str(self.series_id) + ": Loading all episodes from " + self.series_provider.name + "..")
 
         # flush episodes from cache so we can reload from database
         self.flush_episodes()
 
-        series_provider_data = self.series_provider.search(self.series_id, language=series_provider_language, enable_cache=cache)
-        if not series_provider_data:
+        series_provider_language = self.lang or sickrage.app.config.general.series_provider_default_language
+        series_info = self.series_provider.get_series_info(self.series_id, language=series_provider_language, enable_cache=cache)
+        if not series_info:
             raise SeriesProviderException
 
-        for season in series_provider_data:
+        for season in series_info:
             scanned_eps[season] = {}
-            for episode in series_provider_data[season]:
+            for episode in series_info[season]:
                 # need some examples of wtf episode 0 means to decide if we want it or not
                 if episode == 0:
                     continue

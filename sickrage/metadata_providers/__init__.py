@@ -599,36 +599,30 @@ class MetadataProvider(object):
         Returns: the binary image data if available, or else None
         """
 
-        image_data = None
-
-        if image_type not in ('fanart', 'poster', 'series', 'poster_thumb', 'series_thumb', 'fanart_thumb'):
-            sickrage.app.log.warning(
-                "Invalid image type " + str(image_type) + ", couldn't find it in the " + show_obj.series_provider.name + " object")
+        if image_type not in ('fanart', 'poster', 'banner', 'poster_thumb', 'banner_thumb', 'fanart_thumb'):
+            sickrage.app.log.warning(f"Invalid image type {image_type} for series provider {show_obj.series_provider.name}")
             return
 
-        series_provider_language = show_obj.lang or sickrage.app.config.general.series_provider_default_language
-
         is_image_thumb = '_thumb' in image_type
-        image_types = {
-            '{}'.format(image_type): {
-                'series_provider': lambda:
-                show_obj.series_provider.images(show_obj.series_id, language=series_provider_language, key_type=image_type.replace('_thumb', ''))[which][
-                    ('filename', 'thumbnail')[is_image_thumb]],
-                'fanart': lambda: self._retrieve_show_images_from_fanart(show_obj, image_type.replace('_thumb', ''), is_image_thumb)
-            }
-        }
 
-        for fname in ['series_provider', 'fanart']:
-            try:
-                image_url = image_types[image_type][fname]()
-                if image_url:
-                    image_data = self.get_show_image(image_url)
-                    if image_data:
-                        break
-            except (KeyError, IndexError, TypeError) as e:
-                pass
+        # retrieve image url from series provider
+        series_provider_language = show_obj.lang or sickrage.app.config.general.series_provider_default_language
+        image_urls = show_obj.series_provider.images(show_obj.series_id, language=series_provider_language, key_type=image_type.replace('_thumb', ''))
+        if len(image_urls):
+            image_url = image_urls[which][('image', 'thumbnail')[is_image_thumb]]
+            if image_url:
+                image_data = self.get_show_image(image_url)
+                if image_data:
+                    return image_data
 
-        return image_data
+        sickrage.app.log.debug(f"Could not find any {image_type} images on {show_obj.series_provider.name}")
+
+        # retrieve image url from fanart.tv
+        image_url = self._retrieve_show_images_from_fanart(show_obj, image_type.replace('_thumb', ''), is_image_thumb)
+        if image_url:
+            image_data = self.get_show_image(image_url)
+            if image_data:
+                return image_data
 
     @staticmethod
     def _retrieve_season_poster_image(show_obj, season, which=0):
@@ -640,10 +634,9 @@ class MetadataProvider(object):
         """
 
         try:
-            series_provider_language = show_obj.lang or sickrage.app.config.general.series_provider_default_language
-
             # Give us just the normal poster-style season graphics
-            image_data = show_obj.series_provider.images(show_obj.series_id, language=series_provider_language, key_type='season', season=season)
+            series_provider_language = show_obj.lang or sickrage.app.config.general.series_provider_default_language
+            image_data = show_obj.series_provider.images(show_obj.series_id, language=series_provider_language, key_type='poster', season=season)
             if image_data:
                 return image_data[which]['filename']
 
@@ -664,7 +657,7 @@ class MetadataProvider(object):
             series_provider_language = show_obj.lang or sickrage.app.config.general.series_provider_default_language
 
             # Give us just the normal season graphics
-            image_data = show_obj.series_provider.images(show_obj.series_id, language=series_provider_language, key_type='seasonwide', season=season)
+            image_data = show_obj.series_provider.images(show_obj.series_id, language=series_provider_language, key_type='banner', season=season)
             if image_data:
                 return image_data[which]['filename']
 
@@ -771,8 +764,7 @@ class MetadataProvider(object):
 
         try:
             series_provider_language = show.lang or sickrage.app.config.general.series_provider_default_language
-
-            return show.series_provider.search(show.series_id, language=series_provider_language)[season][episode]
+            return show.series_provider.get_series_info(show.series_id, language=series_provider_language)[season][episode]
         except (SeriesProviderEpisodeNotFound, SeriesProviderSeasonNotFound):
             pass
 

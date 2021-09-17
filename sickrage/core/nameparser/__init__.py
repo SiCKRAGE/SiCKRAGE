@@ -265,16 +265,16 @@ class NameParser(object):
 
                 if not season_number or not episode_numbers:
                     series_provider_language = show_obj.lang or sickrage.app.config.general.series_provider_default_language
-                    series = show_obj.series_provider.search(show_obj.series_id, language=series_provider_language)
-                    if series:
-                        ep_obj = series.aired_on(best_result.air_date)
+                    series_info = show_obj.series_provider.get_series_info(show_obj.series_id, language=series_provider_language)
+                    if series_info:
+                        ep_obj = series_info.aired_on(best_result.air_date)
                         if not ep_obj:
                             if best_result.in_showlist:
                                 sickrage.app.log.warning(f"Unable to find episode with date {best_result.air_date} for show {show_obj.name}, skipping")
                             episode_numbers = []
                         else:
-                            season_number = int(ep_obj[0]["airedseason"])
-                            episode_numbers = [int(ep_obj[0]["airedepisodenumber"])]
+                            season_number = int(ep_obj[0]["seasonNumber"])
+                            episode_numbers = [int(ep_obj[0]["episodeNumber"])]
 
                 for epNo in episode_numbers:
                     s = season_number

@@ -1501,7 +1501,7 @@ class CMD_SiCKRAGESearchSeriesProvider(ApiV1Handler):
             "name": {"desc": "The name of the show you want to search for"},
             "series_id": {"desc": "Unique ID of a show"},
             "series_provider_id": {"desc": "Unique ID of a series provider"},
-            "lang": {"desc": "The 2-letter language code of the desired show"},
+            "lang": {"desc": "The 3-letter language code of the desired show"},
         }
     }
 
@@ -1522,19 +1522,19 @@ class CMD_SiCKRAGESearchSeriesProvider(ApiV1Handler):
         series_provider_language = self.lang or sickrage.app.config.general.series_provider_default_language
 
         if self.name and not self.series_id:  # only name was given
-            resp = series_provider.search(self.name, language=series_provider_language)
-            if resp:
-                for curSeries in resp:
-                    if not resp.get('seriesname', None):
+            series_info = series_provider.search(self.name, language=series_provider_language)
+            if series_info:
+                for curSeries in series_info:
+                    if not series_info.get('name', None):
                         continue
 
-                    if not resp.get('firstaired', None):
+                    if not series_info.get('firstAired', None):
                         continue
 
                     results.append({
                         'series_id': int(curSeries['id']),
-                        "name": curSeries['seriesname'],
-                        'first_aired': curSeries['firstaired']
+                        "name": curSeries['name'],
+                        'first_aired': curSeries['firstAired']
                     })
 
                 return _responds(RESULT_SUCCESS, {"results": results, "langid": series_provider_language})
@@ -1542,19 +1542,19 @@ class CMD_SiCKRAGESearchSeriesProvider(ApiV1Handler):
         elif self.series_id:
             resp = series_provider.search(self.series_id, language=series_provider_language)
             if resp:
-                if not resp.get('seriesname', None):
+                if not resp.get('name', None):
                     sickrage.app.log.debug("Found show with series_id: " + str(self.series_id) + ", however it contained no show name")
                     return _responds(RESULT_FAILURE, msg="Show contains no name, invalid result")
 
-                if not resp.get('firstaired', None):
+                if not resp.get('firstAired', None):
                     sickrage.app.log.debug("Found show with series_id: " + str(self.series_id) + ", however it contained no first air date")
                     return _responds(RESULT_FAILURE, msg="Show contains no first air date, invalid result")
 
                 # found show
                 results = [{
                     'series_id': int(resp['id']),
-                    "name": resp['seriesname'],
-                    'first_aired': resp['firstaired']
+                    "name": resp['name'],
+                    'first_aired': resp['firstAired']
                 }]
 
                 return _responds(RESULT_SUCCESS, {"results": results, "langid": series_provider_language})
