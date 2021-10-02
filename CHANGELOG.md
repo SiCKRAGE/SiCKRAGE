@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.40](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.39...10.0.40)
+
+- removed import of pycountry, not needed [`9fac4ea`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/9fac4ea0e6e2680a9519cf48231f75aeb5c71951)
+
 #### [10.0.39](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.38...10.0.39)
+
+> 2 October 2021
 
 #### [10.0.38](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.37...10.0.38)
 
