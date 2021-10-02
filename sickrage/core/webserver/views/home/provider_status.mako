@@ -29,7 +29,7 @@
                                         <% providerURL = providerObj.urls['base_url'] %>
                                         <%
                                             online = True
-                                            resp = sickrage.app.api.provider.get_status(providerID)
+                                            resp = sickrage.app.api.search_provider.get_status(providerID)
                                             if resp and 'data' in resp:
                                                 online = bool(resp['data']['status'])
                                             else:

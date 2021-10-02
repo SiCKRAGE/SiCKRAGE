@@ -103,47 +103,45 @@ class Mede8erMetadata(MediaBrowserMetadata):
         tv_node.attrib["isTV"] = "true"
 
         series_provider_language = show_obj.lang or sickrage.app.config.general.series_provider_default_language
-
-        myShow = show_obj.series_provider.search(show_obj.series_id, language=series_provider_language)
-        if not myShow:
+        series_info = show_obj.series_provider.get_series_info(show_obj.series_id, language=series_provider_language)
+        if not series_info:
             return False
 
         # check for title and id
-        if not (getattr(myShow, 'seriesname', None) and getattr(myShow, 'id', None)):
+        if not (getattr(series_info, 'name', None) and getattr(series_info, 'id', None)):
             sickrage.app.log.info("Incomplete info for "
                                   "show with id " + str(show_obj.series_id) + " on " + show_obj.series_provider.name + ", skipping it")
             return False
 
         SeriesName = SubElement(tv_node, "title")
-        SeriesName.text = myShow['seriesname']
+        SeriesName.text = series_info['name']
 
-        if getattr(myShow, "genre", None):
+        if getattr(series_info, "genre", None):
             Genres = SubElement(tv_node, "genres")
-            for genre in myShow['genre'].split('|'):
-                if genre and genre.strip():
-                    cur_genre = SubElement(Genres, "Genre")
-                    cur_genre.text = genre.strip()
+            for genre in series_info['genre']:
+                cur_genre = SubElement(Genres, "Genre")
+                cur_genre.text = genre['name'].strip()
 
-        if getattr(myShow, 'firstaired', None):
+        if getattr(series_info, 'firstAired', None):
             FirstAired = SubElement(tv_node, "premiered")
-            FirstAired.text = myShow['firstaired']
+            FirstAired.text = series_info['firstAired']
 
-        if getattr(myShow, "firstaired", None):
+        if getattr(series_info, "firstAired", None):
             try:
-                year_text = str(datetime.datetime.strptime(myShow["firstaired"], dateFormat).year)
+                year_text = str(datetime.datetime.strptime(series_info["firstAired"], dateFormat).year)
                 if year_text:
                     year = SubElement(tv_node, "year")
                     year.text = year_text
             except Exception:
                 pass
 
-        if getattr(myShow, 'overview', None):
+        if getattr(series_info, 'overview', None):
             plot = SubElement(tv_node, "plot")
-            plot.text = myShow["overview"]
+            plot.text = series_info["overview"]
 
-        if getattr(myShow, 'rating', None):
+        if getattr(series_info, 'rating', None):
             try:
-                rating = int(float(myShow['rating']) * 10)
+                rating = int(float(series_info['rating']) * 10)
             except ValueError:
                 rating = 0
 
@@ -151,32 +149,44 @@ class Mede8erMetadata(MediaBrowserMetadata):
                 Rating = SubElement(tv_node, "rating")
                 Rating.text = str(rating)
 
-        if getattr(myShow, 'status', None):
+        if getattr(series_info, 'status', None):
             Status = SubElement(tv_node, "status")
-            Status.text = myShow['status']
+            Status.text = series_info['status']
 
-        if getattr(myShow, "contentrating", None):
-            mpaa = SubElement(tv_node, "mpaa")
-            mpaa.text = myShow["contentrating"]
+        # if getattr(series_info, "contentrating", None):
+        #     mpaa = SubElement(tv_node, "mpaa")
+        #     mpaa.text = series_info["contentrating"]
 
-        if getattr(myShow, 'imdb_id', None):
+        if getattr(series_info, 'imdbId', None):
             imdb_id = SubElement(tv_node, "id")
             imdb_id.attrib["moviedb"] = "imdb"
-            imdb_id.text = myShow['imdb_id']
+            imdb_id.text = series_info['imdbId']
 
-        if getattr(myShow, 'id', None):
+        if getattr(series_info, 'id', None):
             series_id = SubElement(tv_node, "series_id")
-            series_id.text = str(myShow['id'])
+            series_id.text = str(series_info['id'])
 
-        if getattr(myShow, 'runtime', None):
+        if getattr(series_info, 'runtime', None):
             Runtime = SubElement(tv_node, "runtime")
-            Runtime.text = myShow['runtime']
+            Runtime.text = series_info['runtime']
 
         cast = SubElement(tv_node, "cast")
-        for actor in show_obj.series_provider.actors(show_obj.series_id):
-            if 'name' in actor and actor['name'].strip():
+        for person in series_info['people']:
+            if 'name' not in person or not person['name'].strip():
+                continue
+
+            if person['role'].strip() == 'Actor':
                 cur_actor = SubElement(cast, "actor")
-                cur_actor.text = actor['name'].strip()
+
+                cur_actor_role = SubElement(cur_actor, "role")
+                cur_actor_role.text = person['role'].strip()
+
+                cur_actor_name = SubElement(cur_actor, "name")
+                cur_actor_name.text = person['name'].strip()
+
+                if person['imageUrl'].strip():
+                    cur_actor_thumb = SubElement(cur_actor, "thumb")
+                    cur_actor_thumb.text = person['imageUrl'].strip()
 
         indent_xml(root_node)
 
@@ -195,9 +205,8 @@ class Mede8erMetadata(MediaBrowserMetadata):
         eps_to_write = [ep_obj] + ep_obj.related_episodes
 
         series_provider_language = ep_obj.show.lang or sickrage.app.config.general.series_provider_default_language
-
-        myShow = ep_obj.show.series_provider.search(ep_obj.show.series_id, language=series_provider_language)
-        if not myShow:
+        series_info = ep_obj.show.series_provider.get_series_info(ep_obj.show.series_id, language=series_provider_language)
+        if not series_info:
             return False
 
         rootNode = Element("details")
@@ -209,9 +218,8 @@ class Mede8erMetadata(MediaBrowserMetadata):
 
         # write an MediaBrowser XML containing info for all matching episodes
         for curEpToWrite in eps_to_write:
-
             try:
-                myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
+                series_episode_info = series_info[curEpToWrite.season][curEpToWrite.episode]
             except (SeriesProviderEpisodeNotFound, SeriesProviderSeasonNotFound):
                 sickrage.app.log.info(
                     f"Unable to find episode {curEpToWrite.season:d}x{curEpToWrite.episode:d} on {ep_obj.show.series_provider.name}"
@@ -222,10 +230,10 @@ class Mede8erMetadata(MediaBrowserMetadata):
                 # root (or single) episode
 
                 # default to today's date for specials if firstaired is not set
-                if curEpToWrite.season == 0 and not getattr(myEp, 'firstaired', None):
-                    myEp['firstaired'] = str(datetime.date.min)
+                if curEpToWrite.season == 0 and not getattr(series_episode_info, 'firstAired', None):
+                    series_episode_info['firstAired'] = str(datetime.date.min)
 
-                if not (getattr(myEp, 'episodename', None) and getattr(myEp, 'firstaired', None)):
+                if not (getattr(series_episode_info, 'name', None) and getattr(series_episode_info, 'firstAired', None)):
                     return None
 
                 episode = movie
@@ -240,30 +248,30 @@ class Mede8erMetadata(MediaBrowserMetadata):
                 EpisodeNumber = SubElement(episode, "episode")
                 EpisodeNumber.text = str(curEpToWrite.episode)
 
-                if getattr(myShow, "firstaired", None):
+                if getattr(series_info, "firstAired", None):
                     try:
-                        year_text = str(datetime.datetime.strptime(myShow["firstaired"], dateFormat).year)
+                        year_text = str(datetime.datetime.strptime(series_info["firstAired"], dateFormat).year)
                         if year_text:
                             year = SubElement(episode, "year")
                             year.text = year_text
                     except:
                         pass
 
-                if getattr(myShow, "overview", None):
+                if getattr(series_info, "overview", None):
                     plot = SubElement(episode, "plot")
-                    plot.text = myShow["overview"]
+                    plot.text = series_info["overview"]
 
                 if curEpToWrite.description:
                     Overview = SubElement(episode, "episodeplot")
                     Overview.text = curEpToWrite.description
 
-                if getattr(myShow, 'contentrating', None):
+                if getattr(series_info, 'contentrating', None):
                     mpaa = SubElement(episode, "mpaa")
-                    mpaa.text = myShow["contentrating"]
+                    mpaa.text = series_info["contentrating"]
 
-                if not ep_obj.related_episodes and getattr(myEp, "rating", None):
+                if not ep_obj.related_episodes and getattr(series_episode_info, "rating", None):
                     try:
-                        rating = int((float(myEp['rating']) * 10))
+                        rating = int((float(series_episode_info['rating']) * 10))
                     except ValueError:
                         rating = 0
 
@@ -271,35 +279,48 @@ class Mede8erMetadata(MediaBrowserMetadata):
                         Rating = SubElement(episode, "rating")
                         Rating.text = str(rating)
 
-                if getattr(myEp, 'director', None):
-                    director = SubElement(episode, "director")
-                    director.text = myEp['director']
-
-                if getattr(myEp, 'writer', None):
-                    writer = SubElement(episode, "credits")
-                    writer.text = myEp['writer']
-
                 cast = SubElement(episode, "cast")
-                if getattr(myEp, 'gueststars', None) and isinstance(myEp['gueststars'], str):
-                    for actor in (x.strip() for x in myEp['gueststars'].split('|') if x.strip()):
-                        cur_actor = SubElement(cast, "actor")
-                        cur_actor.text = actor
+                for person in series_info['people']:
+                    if 'name' not in person or not person['name'].strip():
+                        continue
 
-                for actor in ep_obj.show.series_provider.actors(int(ep_obj.show.series_id)):
-                    if 'name' in actor and actor['name'].strip():
+                    if person['role'].strip() == 'Actor':
                         cur_actor = SubElement(cast, "actor")
-                        cur_actor.text = actor['name'].strip()
+                        cur_actor_role = SubElement(cur_actor, "role")
+                        cur_actor_role.text = person['role'].strip()
+
+                        cur_actor_name = SubElement(cur_actor, "name")
+                        cur_actor_name.text = person['name'].strip()
+
+                        if person['imageUrl'].strip():
+                            cur_actor_thumb = SubElement(cur_actor, "thumb")
+                            cur_actor_thumb.text = person['imageUrl'].strip()
+                    elif person['role'].strip() == 'Writer':
+                        writer = SubElement(episode, "credits")
+                        writer.text = series_episode_info['writer'].strip()
+                    elif person['role'].strip() == 'Director':
+                        director = SubElement(episode, "director")
+                        director.text = series_episode_info['director'].strip()
+                    elif person['role'].strip() == 'Guest Star':
+                        cur_actor = SubElement(cast, "actor")
+                        cur_actor_name = SubElement(cur_actor, "name")
+                        cur_actor_name.text = person['name'].strip()
 
             else:
-                # append data from (if any) related episodes
+                episode = movie
 
+                # append data from (if any) related episodes
                 if curEpToWrite.name:
+                    EpisodeName = SubElement(episode, "title")
+
                     if not EpisodeName.text:
                         EpisodeName.text = curEpToWrite.name
                     else:
                         EpisodeName.text = EpisodeName.text + ", " + curEpToWrite.name
 
                 if curEpToWrite.description:
+                    Overview = SubElement(episode, "episodeplot")
+
                     if not Overview.text:
                         Overview.text = curEpToWrite.description
                     else:

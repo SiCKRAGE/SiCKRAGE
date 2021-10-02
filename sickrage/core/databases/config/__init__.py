@@ -40,6 +40,7 @@ from sickrage.core.tv.show.coming_episodes import ComingEpsLayout, ComingEpsSort
 from sickrage.notification_providers.nmjv2 import NMJv2Location
 from sickrage.search_providers import SearchProviderType
 
+
 def encryption_key():
     try:
         return getattr(sickrage.app.config.user, 'sub_id', None) or 'sickrage'
@@ -117,7 +118,7 @@ class CustomStringEncryptedType(StringEncryptedType):
 
 class ConfigDB(SRDatabase):
     base = declarative_base(cls=SRDatabaseBase)
-    
+
     def __init__(self, db_type, db_prefix, db_host, db_port, db_username, db_password):
         super(ConfigDB, self).__init__('config', db_type, db_prefix, db_host, db_port, db_username, db_password)
 
@@ -150,6 +151,7 @@ class ConfigDB(SRDatabase):
         daily_searcher_freq = Column(Integer, default=40)
         ignore_words = Column(Text, default=','.join(['german', 'french', 'core2hd', 'dutch', 'swedish', 'reenc', 'MrLss']))
         api_v1_key = Column(Text, default=generate_api_key())
+        sso_api_key = Column(Text, default='')
         sso_auth_enabled = Column(Boolean, default=True)
         local_auth_enabled = Column(Boolean, default=False)
         ip_whitelist_enabled = Column(Boolean, default=False)
@@ -239,7 +241,7 @@ class ConfigDB(SRDatabase):
         quality_default = Column(IntFlag(Qualities), default=Qualities.SD)
         extra_scripts = Column(Text, default='')
         flatten_folders_default = Column(Boolean, default=False)
-        series_provider_default_language = Column(Text, default='en')
+        series_provider_default_language = Column(Text, default='eng')
         show_update_stale = Column(Boolean, default=True)
         ep_default_deleted_status = Column(Enum(EpisodeStatus), default=EpisodeStatus.ARCHIVED)
         no_restart = Column(Boolean, default=False)

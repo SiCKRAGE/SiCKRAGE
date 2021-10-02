@@ -98,10 +98,8 @@ class LoginHandler(BaseHandler):
         if sickrage.app.config.user.sub_id != decoded_token.get('sub'):
             return
 
-        if not sickrage.app.api.token:
-            exchanged_token = sickrage.app.auth_server.token_exchange(auth_token)
-            if exchanged_token:
-                sickrage.app.api.token = exchanged_token
+        if not sickrage.app.config.general.sso_api_key:
+            sickrage.app.config.general.sso_api_key = decoded_token.get('apikey')
 
         if not sickrage.app.config.general.server_id:
             server_id = sickrage.app.api.server.register_server(
@@ -181,10 +179,8 @@ class LoginHandler(BaseHandler):
                             return self.redirect('/logout')
                     else:
                         return self.redirect('/logout')
-                elif not sickrage.app.api.token:
-                    exchanged_token = sickrage.app.auth_server.token_exchange(token['access_token'])
-                    if exchanged_token:
-                        sickrage.app.api.token = exchanged_token
+                elif not sickrage.app.config.general.sso_api_key:
+                    sickrage.app.config.general.sso_api_key = decoded_token.get('apikey')
             except Exception as e:
                 sickrage.app.log.debug('{!r}'.format(e))
                 return self.redirect('/logout')
@@ -208,7 +204,7 @@ class LoginHandler(BaseHandler):
             redirect_uri = self.get_argument('next', "/{}/".format(sickrage.app.config.general.default_page.value))
             return self.redirect("{}".format(redirect_uri))
         else:
-            authorization_url = sickrage.app.auth_server.authorization_url(redirect_uri=redirect_uri, scope="profile email")
+            authorization_url = sickrage.app.auth_server.authorization_url(redirect_uri=redirect_uri, scope="profile email apikey")
             if authorization_url:
                 return self.redirect(authorization_url, add_web_root=False)
 

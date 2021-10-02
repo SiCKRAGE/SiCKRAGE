@@ -27,7 +27,7 @@ def upgrade():
     with op.get_context().begin_transaction():
         for row in conn.execute(history.select()):
             date = datetime.datetime.strptime(str(row.date), date_format)
-            conn.execute(f'UPDATE history SET date = {date} WHERE history.id = {row.id}')
+            conn.execute(f'UPDATE history SET date = "{date}" WHERE history.id = {row.id}')
 
     op.alter_column('history', 'date', type_=sa.DateTime)
 

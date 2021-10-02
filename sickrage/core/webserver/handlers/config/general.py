@@ -107,7 +107,7 @@ class SaveGeneralHandler(BaseHandler):
         trash_rotate_logs = self.get_argument('trash_rotate_logs', None)
         update_frequency = self.get_argument('update_frequency', None)
         skip_removed_files = self.get_argument('skip_removed_files', None)
-        series_provider_default_language = self.get_argument('series_provider_default_language', 'en')
+        series_provider_default_language = self.get_argument('series_provider_default_language', 'eng')
         ep_default_deleted_status = self.get_argument('ep_default_deleted_status', None)
         launch_browser = self.get_argument('launch_browser', None)
         show_update_hour = self.get_argument('show_update_hour', '3')

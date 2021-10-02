@@ -510,14 +510,13 @@ class TVEpisode(object):
         try:
             if cached_season is None:
                 series_provider_language = self.show.lang or sickrage.app.config.general.series_provider_default_language
-
-                series_provider_data = self.show.series_provider.search(self.show.series_id, language=series_provider_language, enable_cache=cache)
-                if not series_provider_data:
+                series_info = self.show.series_provider.get_series_info(self.show.series_id, language=series_provider_language, enable_cache=cache)
+                if not series_info:
                     return False
 
-                myEp = series_provider_data[season][episode]
+                series_episode_info = series_info[season][episode]
             else:
-                myEp = cached_season[episode]
+                series_episode_info = cached_season[episode]
         except (SeriesProviderEpisodeNotFound, SeriesProviderSeasonNotFound):
             sickrage.app.log.debug(f"Unable to find the episode on {self.show.series_provider.name}, has it been removed?")
 
@@ -528,24 +527,24 @@ class TVEpisode(object):
 
             return False
 
-        self.episode_id = try_int(safe_getattr(myEp, 'id'), self.episode_id)
+        self.episode_id = try_int(safe_getattr(series_episode_info, 'id'), self.episode_id)
         if not self.episode_id:
-            sickrage.app.log.warning(f"Failed to retrieve ID from {self.show.series_provider.name}")
+            sickrage.app.log.warning(f"Failed to retrieve {self.show.name} - S{int(season or 0):02d}E{int(episode or 0):02d} episode ID from {self.show.series_provider.name}")
             self.show.delete_episode(season, episode)
             return False
 
-        self.name = safe_getattr(myEp, 'episodename', self.name)
-        if not myEp.get('episodename'):
+        self.name = safe_getattr(series_episode_info, 'name', self.name)
+        if not series_episode_info.get('name'):
             sickrage.app.log.info(
-                f"This episode {self.show.name} - S{int(season or 0):02d}E{int(episode or 0):02d} has no name on {self.show.series_provider.name}. Setting to an empty string")
+                f"This episode {self.show.name} - S{int(season or 0):02d}E{int(episode or 0):02d} has no name on {self.show.series_provider.name}, setting to an empty string")
 
-        if not myEp.get('absolutenumber'):
+        if not series_episode_info.get('absolutenumber'):
             sickrage.app.log.debug(
                 f"This episode {self.show.name} - S{int(season or 0):02d}E{int(episode or 0):02d} has no absolute number on {self.show.series_provider.name}")
         else:
             sickrage.app.log.debug(
-                f"{self.show.series_id}: The absolute_number for S{int(season or 0):02d}E{int(episode or 0):02d} is: {myEp['absolutenumber']}")
-            self.absolute_number = try_int(safe_getattr(myEp, 'absolutenumber'), self.absolute_number)
+                f"{self.show.series_id}: The absolute_number for S{int(season or 0):02d}E{int(episode or 0):02d} is: {series_episode_info['absolutenumber']}")
+            self.absolute_number = try_int(safe_getattr(series_episode_info, 'absolutenumber'), self.absolute_number)
 
         self.season = season
         self.episode = episode
@@ -562,16 +561,16 @@ class TVEpisode(object):
         #     self.absolute_number
         # )
 
-        self.description = safe_getattr(myEp, 'overview', self.description)
+        self.description = safe_getattr(series_episode_info, 'overview', self.description)
 
-        firstaired = safe_getattr(myEp, 'firstaired') or datetime.date.min
+        air_date = safe_getattr(series_episode_info, 'airDate', datetime.date.min)
 
         try:
-            rawAirdate = [int(x) for x in str(firstaired).split("-")]
+            rawAirdate = [int(x) for x in str(air_date).split("-")]
             self.airdate = datetime.date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
         except (ValueError, IndexError, TypeError):
             sickrage.app.log.debug(
-                f"Malformed air date of {firstaired} retrieved from {self.show.series_provider.name} for ({self.show.name} - S{int(season or 0):02d}E{int(episode or 0):02d})")
+                f"Malformed air date of {air_date} retrieved from {self.show.series_provider.name} for ({self.show.name} - S{int(season or 0):02d}E{int(episode or 0):02d})")
 
             # if I'm incomplete on the series_provider_id but I once was complete then just delete myself from the DB for now
             self.show.delete_episode(season, episode)

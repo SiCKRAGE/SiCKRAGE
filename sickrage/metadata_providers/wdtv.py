@@ -178,9 +178,8 @@ class WDTVMetadata(MetadataProvider):
         eps_to_write = [ep_obj] + ep_obj.related_episodes
 
         series_provider_language = ep_obj.show.lang or sickrage.app.config.general.series_provider_default_language
-
-        myShow = ep_obj.show.series_provider.search(ep_obj.show.series_id, language=series_provider_language)
-        if not myShow:
+        series_info = ep_obj.show.series_provider.get_series_info(ep_obj.show.series_id, language=series_provider_language)
+        if not series_info:
             return False
 
         rootNode = Element("details")
@@ -188,17 +187,17 @@ class WDTVMetadata(MetadataProvider):
         # write an WDTV XML containing info for all matching episodes
         for curEpToWrite in eps_to_write:
             try:
-                myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
+                series_episode_info = series_info[curEpToWrite.season][curEpToWrite.episode]
             except (SeriesProviderEpisodeNotFound, SeriesProviderSeasonNotFound):
                 sickrage.app.log.info(
                     "Unable to find episode %dx%d on %s... has it been removed? Should I delete from db?" %
                     (curEpToWrite.season, curEpToWrite.episode, ep_obj.show.series_provider.name))
                 return None
 
-            if ep_obj.season == 0 and not getattr(myEp, 'firstaired', None):
-                myEp["firstaired"] = str(datetime.date.min)
+            if ep_obj.season == 0 and not getattr(series_episode_info, 'firstAired', None):
+                series_episode_info["firstAired"] = str(datetime.date.min)
 
-            if not (getattr(myEp, 'episodename', None) and getattr(myEp, 'firstaired', None)):
+            if not (getattr(series_episode_info, 'name', None) and getattr(series_episode_info, 'firstAired', None)):
                 return None
 
             if len(eps_to_write) > 1:
@@ -213,9 +212,9 @@ class WDTVMetadata(MetadataProvider):
             title = SubElement(episode, "title")
             title.text = ep_obj.pretty_name()
 
-            if getattr(myShow, 'seriesname', None):
+            if getattr(series_info, 'name', None):
                 seriesName = SubElement(episode, "series_name")
-                seriesName.text = myShow["seriesname"]
+                seriesName.text = series_info["name"]
 
             if curEpToWrite.name:
                 episodeName = SubElement(episode, "episode_name")
@@ -227,44 +226,43 @@ class WDTVMetadata(MetadataProvider):
             episodeNum = SubElement(episode, "episode_number")
             episodeNum.text = str(curEpToWrite.episode)
 
-            firstAired = SubElement(episode, "firstaired")
+            firstAired = SubElement(episode, "firstAired")
 
             if curEpToWrite.airdate > datetime.date.min:
                 firstAired.text = str(curEpToWrite.airdate)
 
-            if getattr(myShow, 'firstaired', None):
+            if getattr(series_info, 'firstAired', None):
                 try:
-                    year_text = str(datetime.datetime.strptime(myShow["firstaired"], dateFormat).year)
+                    year_text = str(datetime.datetime.strptime(series_info["firstAired"], dateFormat).year)
                     if year_text:
                         year = SubElement(episode, "year")
                         year.text = year_text
                 except Exception:
                     pass
 
-            if curEpToWrite.season != 0 and getattr(myShow, 'runtime', None):
+            if curEpToWrite.season != 0 and getattr(series_info, 'runtime', None):
                 runtime = SubElement(episode, "runtime")
-                runtime.text = myShow["runtime"]
+                runtime.text = series_info["runtime"]
 
-            if getattr(myShow, 'genre', None):
+            if getattr(series_info, 'genre', None):
                 genre = SubElement(episode, "genre")
-                genre.text = " / ".join([x.strip() for x in myShow["genre"].split('|') if x.strip()])
+                genre.text = " / ".join([x['name'].strip() for x in series_info["genre"]])
 
-            if getattr(myEp, 'director', None):
-                director = SubElement(episode, "director")
-                director.text = myEp['director']
-
-            for actor in ep_obj.show.series_provider.actors(int(ep_obj.show.series_id)):
-                if not ('name' in actor and actor['name'].strip()):
+            for person in series_info['people']:
+                if 'name' not in person or not person['name'].strip():
                     continue
 
-                cur_actor = SubElement(episode, "actor")
+                if person['role'].strip() == 'Actor':
+                    cur_actor = SubElement(episode, "actor")
 
-                cur_actor_name = SubElement(cur_actor, "name")
-                cur_actor_name.text = actor['name']
-
-                if 'role' in actor and actor['role'].strip():
                     cur_actor_role = SubElement(cur_actor, "role")
-                    cur_actor_role.text = actor['role'].strip()
+                    cur_actor_role.text = person['role'].strip()
+
+                    cur_actor_name = SubElement(cur_actor, "name")
+                    cur_actor_name.text = person['name'].strip()
+                elif person['role'].strip() == 'Director':
+                    director = SubElement(episode, "director")
+                    director.text = series_episode_info['director'].strip()
 
             if curEpToWrite.description:
                 overview = SubElement(episode, "overview")

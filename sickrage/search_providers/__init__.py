@@ -1501,7 +1501,7 @@ class SearchProviders(dict):
         for pID, pObj in self.all().items():
             if pObj.provider_type not in [SearchProviderType.TORRENT_RSS, SearchProviderType.NEWZNAB] and pObj.id not in ['bitcannon']:
                 try:
-                    resp = sickrage.app.api.provider.get_urls(pObj.id)
+                    resp = sickrage.app.api.search_provider.get_urls(pObj.id)
                     if resp and 'data' in resp:
                         self.update_url(pID, resp['data']['urls'])
                 except Exception:

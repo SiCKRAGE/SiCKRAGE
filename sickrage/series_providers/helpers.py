@@ -97,12 +97,12 @@ def search_series_provider_for_series_id(show_name, series_provider_id):
     # Query series provider for search term and build the list of results
     sickrage.app.log.debug("Trying to find show ID for show {} on series provider {}".format(show_name, series_provider.name))
 
-    series_provider_data = series_provider.search(show_name)
-    if not series_provider_data:
+    series_info = series_provider.search(show_name)
+    if not series_info:
         return
 
     # try to pick a show that's in my show list
-    for series in series_provider_data:
+    for series in series_info:
         series_id = series.get('id', None)
         if not series_id:
             continue
@@ -110,4 +110,4 @@ def search_series_provider_for_series_id(show_name, series_provider_id):
         if find_show(int(series_id), series_provider_id):
             return series_id
 
-    return series_provider_data[0].get('id', None)
+    return series_info[0].get('id', None)

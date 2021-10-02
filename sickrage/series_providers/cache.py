@@ -29,7 +29,14 @@ class SeriesProviderShowCache(OrderedDict):
         self.maxsize = 100
         super(SeriesProviderShowCache, self).__init__(*args, **kwargs)
 
-    def add_item(self, sid, seas, ep, attrib, value):
+    def add_season_data(self, sid, seas, attrib, value):
+        if sid not in self:
+            self[sid] = SeriesProviderShow()
+        if seas not in self[sid]:
+            self[sid][seas] = SeriesProviderSeason()
+        self[sid][seas].data[attrib] = value
+
+    def add_episode_data(self, sid, seas, ep, attrib, value):
         if sid not in self:
             self[sid] = SeriesProviderShow()
         if seas not in self[sid]:
@@ -62,7 +69,7 @@ class SeriesProviderShow(dict):
         return getattr(self, key, default)
 
     def aired_on(self, date):
-        ret = self.search(str(date), 'firstaired')
+        ret = self.search(str(date), 'firstAired')
         if len(ret) == 0:
             sickrage.app.log.debug("Could not find any episodes on TheTVDB that aired on {}".format(date))
             return None
@@ -71,13 +78,13 @@ class SeriesProviderShow(dict):
     def search(self, term=None, key=None):
         """
         Search all episodes in show. Can search all data, or a specific key (for
-        example, episodename)
+        example, name)
 
         Always returns an array (can be empty). First index contains the first
         match, and so on.
 
         Each array index is an Episode() instance, so doing
-        search_results[0]['episodename'] will retrieve the episode name of the
+        search_results[0]['name'] will retrieve the episode name of the
         first match.
 
         Search terms are converted to lower case (unicode) strings.
@@ -99,7 +106,7 @@ class SeriesProviderShow(dict):
 
     def __repr__(self):
         return "<Show {} (containing {} seasons)>".format(
-            self.data.get('seriesname', 'instance'),
+            self.data.get('name', 'instance'),
             len(self)
         )
 
@@ -199,7 +206,7 @@ class SeriesProviderEpisode(dict):
     def search(self, term=None, key=None):
         """Search episode data for term, if it matches, return the Episode (self).
         The key parameter can be used to limit the search to a specific element,
-        for example, episodename.
+        for example, name.
 
         This primarily for use use by Show.search and Season.search. See
         Show.search for further information on search
@@ -218,13 +225,14 @@ class SeriesProviderEpisode(dict):
                 return self
 
     def __repr__(self):
-        seasno = int(self.get('airedseason', 0))
-        epno = int(self.get('airedepisodenumber', 0))
-        epname = self.get('episodename')
-        if epname is not None:
-            return "<Episode %02dx%02d - %s>" % (seasno, epno, epname)
+        season_number = int(self.get('seasonNumber', 0))
+        episode_number = int(self.get('episodeNumber', 0))
+        episode_name = self.get('name')
+
+        if episode_name is not None:
+            return "<Episode %02dx%02d - %s>" % (season_number, episode_number, episode_name)
         else:
-            return "<Episode %02dx%02d>" % (seasno, epno)
+            return "<Episode %02dx%02d>" % (season_number, episode_number)
 
     def __getattr__(self, key):
         if key in self:

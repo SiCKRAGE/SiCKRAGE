@@ -54,8 +54,8 @@ c<%inherit file="../layouts/config.mako"/>
                             <select name="series_provider_default_language" id="series_provider_default_language" class="form-control"
                                     title="${_('Choose language')}">
                                 % for language in sickrage.app.series_providers[sickrage.app.config.general.series_provider_default].languages():
-                                    <option value="${language['abbreviation']}" ${('', 'selected')[sickrage.app.config.general.series_provider_default_language == language['abbreviation']]}>
-                                        ${language['englishname']}
+                                    <option value="${language['id']}" ${('', 'selected')[sickrage.app.config.general.series_provider_default_language == language['id']]}>
+                                        ${language['name']}
                                     </option>
                                 % endfor
                             </select>

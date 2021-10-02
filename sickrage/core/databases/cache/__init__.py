@@ -103,18 +103,6 @@ class CacheDB(SRDatabase):
         leechers = Column(Integer)
         size = Column(Integer)
 
-    class OAuth2Token(base):
-        __tablename__ = 'oauth2_token'
-
-        id = Column(Integer, primary_key=True)
-        access_token = Column(String(255), unique=True, nullable=False)
-        refresh_token = Column(String(255), index=True)
-        expires_in = Column(Integer, nullable=False, default=0)
-        expires_at = Column(Integer, nullable=False, default=0)
-        scope = Column(Text, default="")
-        session_state = Column(Text, default="")
-        token_type = Column(Text, default="bearer")
-
     class Announcements(base):
         __tablename__ = 'announcements'
 
