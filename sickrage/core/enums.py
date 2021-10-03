@@ -22,20 +22,17 @@ import enum
 
 
 class SeriesProviderID(enum.Enum):
-    SICKRAGE = 'sickrage'
     THETVDB = 'thetvdb'
 
     @property
     def _strings(self):
         return {
-            self.SICKRAGE.name: 'SiCKRAGE',
             self.THETVDB.name: 'TheTVDB'
         }
 
     @property
     def _slug_strings(self):
         return {
-            self.SICKRAGE.name: 'sickrage',
             self.THETVDB.name: 'thetvdb'
         }
 

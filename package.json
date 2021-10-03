@@ -59,11 +59,12 @@
     "tooltipster": "~4.2.6",
     "ttag": "~1.7.22",
     "underscore": "~1.9.1",
-    "webpack": "~4.44.0",
-    "webpack-cli": "~3.3.11",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^4.8.0",
     "webpack-spritesmith": "~1.1.0"
   },
   "dependencies": {
-    "auto-changelog": "~2.2.1"
+    "auto-changelog": "~2.2.1",
+    "yarn": "^1.22.15"
   }
 }

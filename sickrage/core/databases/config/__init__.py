@@ -145,7 +145,7 @@ class ConfigDB(SRDatabase):
         https_key = Column(Text, default='server.key')
         https_cert = Column(Text, default='server.crt')
         allow_high_priority = Column(Boolean, default=False)
-        anon_redirect = Column(Text, default='http://nullrefer.com/?')
+        anon_redirect = Column(Text, default='https://anonym.to/?')
         series_provider_timeout = Column(Integer, default=20)
         web_use_gzip = Column(Boolean, default=True)
         daily_searcher_freq = Column(Integer, default=40)

@@ -158,8 +158,8 @@
 
                                     <a href="${anon_url(show.series_provider.show_url, show.series_id)}"
                                        onclick="window.open(this.href, '_blank'); return false;"
-                                       title="<% show.series_provider.show_url + str(show.series_id) %>">
-                                        <i class="sickrage-core sickrage-core-${show.series_provider.name.lower()}"
+                                       title="${show.series_provider.show_url}${str(show.series_id)}">
+                                        <i class="sickrage-series-providers sickrage-series-providers-${show.series_provider.name.lower()}"
                                            style="margin-top: -1px; vertical-align:middle;"></i>
                                     </a>
                                 </div>
