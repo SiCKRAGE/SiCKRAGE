@@ -163,15 +163,23 @@ class API(object):
                 pass
 
     def refresh_token(self):
-        try:
-            if not self._token:
+        retries = 3
+
+        for i in range(retries):
+            try:
+                if not self._token:
+                    return self.login()
+
+                self._token = sickrage.app.auth_server.refresh_token(self._token.get('refresh_token'))
+            except KeycloakClientError:
                 return self.login()
+            except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectionError):
+                if i > retries:
+                    return False
+                time.sleep(0.2)
+                continue
 
-            self._token = sickrage.app.auth_server.refresh_token(self._token.get('refresh_token'))
-        except KeycloakClientError:
-            return self.login()
-
-        return True
+            return True
 
     def allowed_usernames(self):
         return self.request('GET', 'allowed-usernames')
