@@ -186,6 +186,7 @@ class TheTVDB(SeriesProvider):
         resp = sickrage.app.api.series_provider.languages(provider=self.slug)
         if resp:
             return sorted(resp, key=lambda i: i['name'])
+        return {}
 
     def __repr__(self):
         return repr(self.cache)
