@@ -168,7 +168,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
 
         if getattr(series_info, 'runtime', None):
             Runtime = SubElement(tv_node, "runtime")
-            Runtime.text = series_info['runtime']
+            Runtime.text = str(series_info['runtime'])
 
         cast = SubElement(tv_node, "cast")
         for person in series_info['people']:

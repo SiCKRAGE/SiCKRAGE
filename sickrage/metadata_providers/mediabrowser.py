@@ -294,7 +294,7 @@ class MediaBrowserMetadata(MetadataProvider):
 
         if getattr(series_info, 'rating', None):
             Rating = SubElement(tv_node, "Rating")
-            Rating.text = series_info['rating']
+            Rating.text = str(series_info['rating'])
 
         if getattr(series_info, 'firstAired', None):
             try:
@@ -310,7 +310,7 @@ class MediaBrowserMetadata(MetadataProvider):
             RunningTime.text = series_info['runtime']
 
             Runtime = SubElement(tv_node, "Runtime")
-            Runtime.text = series_info['runtime']
+            Runtime.text = str(series_info['runtime'])
 
         if getattr(series_info, 'imdbid', None):
             imdb_id = SubElement(tv_node, "IMDB_ID")
@@ -439,7 +439,7 @@ class MediaBrowserMetadata(MetadataProvider):
                 if not ep_obj.related_episodes:
                     if getattr(series_episode_info, 'rating', None):
                         Rating = SubElement(episode, "Rating")
-                        Rating.text = series_episode_info['rating']
+                        Rating.text = str(series_episode_info['rating'])
 
                     if getattr(series_info, 'imdb_id', None):
                         IMDB_ID = SubElement(episode, "IMDB_ID")
