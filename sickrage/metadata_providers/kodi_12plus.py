@@ -266,7 +266,7 @@ class KODI_12PlusMetadata(MetadataProvider):
 
             if getattr(series_episode_info, 'rating', None):
                 rating = SubElement(episode, "rating")
-                rating.text = series_episode_info['rating']
+                rating.text = str(series_episode_info['rating'])
 
             for person in series_info['people']:
                 if 'name' not in person or not person['name'].strip():

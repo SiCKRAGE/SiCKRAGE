@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.42](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.41...10.0.42)
+
+- fixed "Invalid image type series for series provider" [`2825d75`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/2825d75d88b44a5afada143d7c18821c386f710d)
+
 #### [10.0.41](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.40...10.0.41)
+
+> 3 October 2021
 
 - cleaned up oauth2 offline token migration code [`f0db748`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/f0db74855dc5c3f6e466aee2dc0aa4b5fb4f4a91)
 - cleaned up oauth2 offline token migration code [`2f2a708`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/2f2a7080e171b0852124a96758968de2b05dd812)

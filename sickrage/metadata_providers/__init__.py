@@ -490,7 +490,7 @@ class MetadataProvider(object):
         # use the default banner name
         banner_path = self.get_banner_path(show_obj)
 
-        banner_data = self._retrieve_show_image('series', show_obj, which)
+        banner_data = self._retrieve_show_image('banner', show_obj, which)
 
         if not banner_data:
             sickrage.app.log.debug("No show banner image was retrieved, unable to write banner")
@@ -544,7 +544,7 @@ class MetadataProvider(object):
         # use the default season all banner name
         banner_path = self.get_season_all_banner_path(show_obj)
 
-        banner_data = self._retrieve_show_image('series', show_obj, which)
+        banner_data = self._retrieve_show_image('banner', show_obj, which)
 
         if not banner_data:
             sickrage.app.log.debug("No show banner image was retrieved, unable to write season all banner")
@@ -636,9 +636,9 @@ class MetadataProvider(object):
         try:
             # Give us just the normal poster-style season graphics
             series_provider_language = show_obj.lang or sickrage.app.config.general.series_provider_default_language
-            image_data = show_obj.series_provider.images(show_obj.series_id, language=series_provider_language, key_type='poster', season=season)
-            if image_data:
-                return image_data[which]['filename']
+            image_urls = show_obj.series_provider.images(show_obj.series_id, language=series_provider_language, key_type='poster', season=season)
+            if len(image_urls):
+                return image_urls[which]['image']
 
             sickrage.app.log.debug("{}: No season {} poster images on {} to download found".format(show_obj.series_id, season, show_obj.series_provider.name))
         except (KeyError, IndexError):
@@ -657,9 +657,9 @@ class MetadataProvider(object):
             series_provider_language = show_obj.lang or sickrage.app.config.general.series_provider_default_language
 
             # Give us just the normal season graphics
-            image_data = show_obj.series_provider.images(show_obj.series_id, language=series_provider_language, key_type='banner', season=season)
-            if image_data:
-                return image_data[which]['filename']
+            image_urls = show_obj.series_provider.images(show_obj.series_id, language=series_provider_language, key_type='banner', season=season)
+            if len(image_urls):
+                return image_urls[which]['image']
 
             sickrage.app.log.debug("{}: No season {} banner images on {} to download found".format(show_obj.series_id, season, show_obj.series_provider.name))
         except (KeyError, IndexError):
