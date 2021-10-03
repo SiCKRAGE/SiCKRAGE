@@ -152,19 +152,20 @@ module.exports = {
         makeSprite('network'),
         makeSprite('notification-providers'),
         makeSprite('search-providers'),
+        makeSprite('series-providers'),
         makeSprite('subtitles'),
         makeSprite('flags')
     ]
 };
 
-if (process.env.ENABLE_SENTRY_RELEASE.toLowerCase() === 'true') {
-    module.exports.plugins.push(
-        new SentryWebpackPlugin({
-            release: version,
-            include: path.resolve(__dirname, 'sickrage/core/webserver/static/js'),
-            ignoreFile: '.sentrycliignore',
-            ignore: ['node_modules', 'webpack.config.js'],
-            configFile: 'sentry.properties'
-        }),
-    )
-}
+// if (process.env.ENABLE_SENTRY_RELEASE.toLowerCase() === 'true') {
+//     module.exports.plugins.push(
+//         new SentryWebpackPlugin({
+//             release: version,
+//             include: path.resolve(__dirname, 'sickrage/core/webserver/static/js'),
+//             ignoreFile: '.sentrycliignore',
+//             ignore: ['node_modules', 'webpack.config.js'],
+//             configFile: 'sentry.properties'
+//         }),
+//     )
+// }

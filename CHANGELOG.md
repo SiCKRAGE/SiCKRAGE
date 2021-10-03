@@ -2,7 +2,16 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.41](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.40...10.0.41)
+
+- cleaned up oauth2 offline token migration code [`f0db748`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/f0db74855dc5c3f6e466aee2dc0aa4b5fb4f4a91)
+- cleaned up oauth2 offline token migration code [`2f2a708`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/2f2a7080e171b0852124a96758968de2b05dd812)
+- skip search cache results if series provider id is none [`45ef300`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/45ef300f168a1942b2efb61941d13482956e1f53)
+- updated package.json [`d42b20d`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/d42b20d0d49422ac82d70df1d3f4f6d70ecf83b7)
+
 #### [10.0.40](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.39...10.0.40)
+
+> 2 October 2021
 
 - removed import of pycountry, not needed [`9fac4ea`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/9fac4ea0e6e2680a9519cf48231f75aeb5c71951)
 

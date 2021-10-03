@@ -286,6 +286,10 @@ class TVCache(object):
             result.series_id = int(curResult["series_id"])
             result.series_provider_id = curResult["series_provider_id"]
 
+            # skip if series provider id is not set
+            if not curResult["series_provider_id"]:
+                continue
+
             # convert to series provider id enum
             if not isinstance(result.series_provider_id, SeriesProviderID):
                 result.series_provider_id = SeriesProviderID[curResult["series_provider_id"]]

@@ -1,6 +1,6 @@
 {
   "name": "sickrage",
-  "version": "10.0.40",
+  "version": "10.0.41",
   "private": true,
   "repository": {
     "type": "git",
@@ -11,7 +11,7 @@
   },
   "homepage": "https://www.sickrage.ca",
   "scripts": {
-    "build": "webpack --config webpack.config.js -p"
+    "build": "webpack --config webpack.config.js"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "~5.14.0",
@@ -59,11 +59,12 @@
     "tooltipster": "~4.2.6",
     "ttag": "~1.7.22",
     "underscore": "~1.9.1",
-    "webpack": "~4.44.0",
-    "webpack-cli": "~3.3.11",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^4.8.0",
     "webpack-spritesmith": "~1.1.0"
   },
   "dependencies": {
-    "auto-changelog": "~2.2.1"
+    "auto-changelog": "~2.2.1",
+    "yarn": "^1.22.15"
   }
 }
