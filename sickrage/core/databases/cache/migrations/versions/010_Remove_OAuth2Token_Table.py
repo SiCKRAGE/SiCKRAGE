@@ -11,6 +11,7 @@ from json import JSONDecodeError
 
 import sqlalchemy as sa
 from alembic import op
+from keycloak.exceptions import KeycloakClientError
 from sqlalchemy import orm
 
 import sickrage
@@ -34,22 +35,21 @@ def upgrade():
             if refresh_token:
                 break
 
-    if refresh_token:
-        certs = sickrage.app.auth_server.certs()
-        if certs:
-            new_token = sickrage.app.auth_server.refresh_token(refresh_token)
-            if new_token:
-                decoded_token = sickrage.app.auth_server.decode_token(new_token['access_token'], certs)
-                apikey = decoded_token.get('apikey')
-
-                try:
+    try:
+        if refresh_token:
+            certs = sickrage.app.auth_server.certs()
+            if certs:
+                new_token = sickrage.app.auth_server.refresh_token(refresh_token)
+                if new_token:
+                    decoded_token = sickrage.app.auth_server.decode_token(new_token['access_token'], certs)
+                    apikey = decoded_token.get('apikey')
                     if apikey:
                         session = sickrage.app.config.db.session()
                         general = session.query(ConfigDB.General).one()
                         general.sso_api_key = apikey
                         session.commit()
-                except orm.exc.NoResultFound:
-                    pass
+    except (KeycloakClientError, orm.exc.NoResultFound):
+        pass
 
     if conn.engine.dialect.has_table(conn.engine, 'oauth2_token'):
         op.drop_table('oauth2_token')
