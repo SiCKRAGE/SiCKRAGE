@@ -1,6 +1,6 @@
 sickrage/checksums.md5 = d41d8cd98f00b204e9800998ecf8427e
-sickrage/__init__.py = f25d45b11746ad590bf035d2bed8cf1c
-sickrage/version.txt = c8d7b5e037c78950127037c692fdbbc4
+sickrage/__init__.py = 594f283896ddc2cc42b187d48b38b17b
+sickrage/version.txt = 897e6ebbf02cdb0fc26917f4c4bc5969
 sickrage/clients/__init__.py = abafc862109398700c9fee676cdeef6b
 sickrage/clients/nzb/nzbget.py = 2a23083d4915fed22c73f4966588cac8
 sickrage/clients/nzb/sabnzbd.py = f76666e47017abaf366f4a3e8b71c47b
@@ -428,7 +428,7 @@ sickrage/core/webserver/static/images/backdrops/config.jpg = ddbe8915317f7860d91
 sickrage/core/webserver/static/images/backdrops/home.jpg = 804dfc976638bbf45df310a3627e2d5c
 sickrage/core/webserver/static/images/backdrops/schedule.jpg = 0c0e5f4dcee42bfcfb73de100f1d3015
 sickrage/core/webserver/static/images/backdrops/history.jpg = b4911bfe3ec57a894b5a16fa1ab479cf
-sickrage/core/webserver/static/js/core.min.js = 5d706bcd0cef151e751511b89453e9e2
+sickrage/core/webserver/static/js/core.min.js = a20029f02c1885ae6f25d326398c0ca5
 sickrage/core/webserver/static/js/core.js.map = 283c0d7d06aa3af103790a97536778a0
 sickrage/core/webserver/views/login.mako = 3f6c8e8325928539d6bb70a77b378116
 sickrage/core/webserver/views/login_failed.mako = 5684d10edff37970a2285d7d5bb815eb
