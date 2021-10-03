@@ -11,7 +11,7 @@
   },
   "homepage": "https://www.sickrage.ca",
   "scripts": {
-    "build": "webpack --config webpack.config.js -p"
+    "build": "webpack --config webpack.config.js"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "~5.14.0",
