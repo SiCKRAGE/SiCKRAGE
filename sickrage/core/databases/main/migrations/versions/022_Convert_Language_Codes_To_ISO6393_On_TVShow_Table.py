@@ -22,8 +22,9 @@ def upgrade():
 
     with op.get_context().begin_transaction():
         for row in conn.execute(tv_shows.select()):
-            lang = babelfish.Language.fromalpha2(row.lang)
-            conn.execute(f'UPDATE tv_shows SET lang = "{lang.alpha3}" WHERE tv_shows.series_id = {row.series_id}')
+            if len(row.lang) == 2:
+                lang = babelfish.Language.fromalpha2(row.lang)
+                conn.execute(f'UPDATE tv_shows SET lang = "{lang.alpha3}" WHERE tv_shows.series_id = {row.series_id}')
 
 
 def downgrade():

@@ -117,7 +117,7 @@
                                                 <select name="seriesProviderLanguage" id="seriesProviderLangSelect" class="form-control"
                                                         title="${_('Choose language')}">
                                                     % for language in show.series_provider.languages():
-                                                        <option value="${language['id']}" ${('', 'selected')[sickrage.app.config.general.series_provider_default_language == language['id']]}>
+                                                        <option value="${language['id']}" ${('', 'selected')[show.lang == language['id']]}>
                                                             ${language['name']}
                                                         </option>
                                                     % endfor
