@@ -444,6 +444,10 @@ class API(object):
             endpoint = f'series-provider/{provider}/search/{query}/{language}'
             return self.api.request('GET', endpoint)
 
+        def search_by_id(self, provider, remote_id, language='eng'):
+            endpoint = f'series-provider/{provider}/search-by-id/{remote_id}/{language}'
+            return self.api.request('GET', endpoint)
+
         def get_series_info(self, provider, series_id, language='eng'):
             endpoint = f'series-provider/{provider}/series/{series_id}/{language}'
             return self.api.request('GET', endpoint)

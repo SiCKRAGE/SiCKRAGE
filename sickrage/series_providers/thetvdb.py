@@ -61,20 +61,34 @@ class TheTVDB(SeriesProvider):
         self.dvd_order = False
 
     def search(self, query, language='eng'):
-        """This searches TheTVDB.com for the series by name, seriesid, imdbid, or zap2itid
-        and returns the result list
+        """
+        This searches TheTVDB.com for the series by name and returns the result list
         """
 
         sickrage.app.log.debug(f"Searching for show using query term: {query}")
 
-        search_result = sickrage.app.api.series_provider.search(provider=self.slug, query=quote(query), language=language)
-        if not search_result:
+        search_results = sickrage.app.api.series_provider.search(provider=self.slug, query=quote(query), language=language)
+        if not search_results:
             sickrage.app.log.debug(f'Series search using query term {query} returned zero results, cannot find series on {self.name}')
+
+        return search_results
+
+    def search_by_id(self, remote_id, language='eng'):
+        """
+        This searches TheTVDB.com for the seriesid, imdbid, or zap2itid  and returns the result list
+        """
+
+        sickrage.app.log.debug(f"Searching for show using remote id: {remote_id}")
+
+        search_result = sickrage.app.api.series_provider.search_by_id(provider=self.slug, remote_id=quote(remote_id), language=language)
+        if not search_result:
+            sickrage.app.log.debug(f'Series search using remote id {remote_id} returned zero results, cannot find series on {self.name}')
 
         return search_result
 
     def get_series_info(self, sid, language='eng', dvd_order=False, enable_cache=True):
-        """Takes a series ID, gets the episodes URL and parses the TVDB
+        """
+        Takes a series id, gets the episodes URL and parses the TVDB
         """
 
         # check if series is in cache
@@ -169,11 +183,11 @@ class TheTVDB(SeriesProvider):
             if season:
                 image_url = series_info[season].imageUrl
                 if image_url != '':
-                    images.append(image_url)
+                    images.append({'image': image_url})
             else:
                 image_url = series_info.imageUrl
                 if image_url != '':
-                    images.append(image_url)
+                    images.append({'image': image_url})
 
         return images
 

@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.44](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.43...10.0.44)
+
 #### [10.0.43](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.42...10.0.43)
+
+> 3 October 2021
 
 #### [10.0.42](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.41...10.0.42)
 
