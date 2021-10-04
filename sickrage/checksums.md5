@@ -1,6 +1,6 @@
-sickrage/version.txt = 79e72a7eb113bc39288e8cb35a7d0ed6
+sickrage/version.txt = c4b938f3bbde4b45ec99b84cd5067a4b
 sickrage/checksums.md5 = d41d8cd98f00b204e9800998ecf8427e
-sickrage/__init__.py = fa385f6a7671810e2f8b6e305f862653
+sickrage/__init__.py = f7cba224fe5d1ab5cd90a602ea726f33
 sickrage/autoProcessTV/mediaToSiCKRAGE.py = f88a6679a211b1f97126c116e2c33b9c
 sickrage/autoProcessTV/hellaToSiCKRAGE.py = 9bc477abfd456aaba8d6bf46f2c59b1f
 sickrage/autoProcessTV/__init__.py = bfa892dee586740a3a618d3c1955156c
@@ -343,7 +343,7 @@ sickrage/core/webserver/static/fonts/fa-brands-400.eot = 0fabb6606be4c45acfeedd1
 sickrage/core/webserver/static/fonts/fa-solid-900.svg = 03ba7cb710104df27f1c9c46d64bee4e
 sickrage/core/webserver/static/css/core.min.css = cb7b1d9bbd30ae087976c1eff3c5926f
 sickrage/core/webserver/static/js/core.js.map = f7a228ef8848d79c5353da8759697089
-sickrage/core/webserver/static/js/core.min.js = 3a2128891e2bd2a9b601af80f8eb2c97
+sickrage/core/webserver/static/js/core.min.js = 8da9b9a03e8cc082fba33b6ad75a3521
 sickrage/core/webserver/views/schedule.mako = 1492940accef5afe80d9cbd14be1c078
 sickrage/core/webserver/views/history.mako = a90a54341918b398eb652d186a636952
 sickrage/core/webserver/views/generic_message.mako = 20ba53fc129c1b69d5b8ccc960233757
