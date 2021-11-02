@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.46](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.45...10.0.46)
+
 #### [10.0.45](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.44...10.0.45)
+
+> 4 October 2021
 
 - fixed issue with show language now displaying correcting in edit show view [`8a33201`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/8a3320101005be49a83e9203a306180e91a128af)
 

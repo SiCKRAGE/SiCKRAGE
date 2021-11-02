@@ -105,18 +105,6 @@ class TheTVDB(SeriesProvider):
             sickrage.app.log.debug(f"[{sid}]: Unable to get series info from {self.name}")
             return None
 
-        # add series data to cache
-        [self.cache.add_show_data(sid, k, v) for k, v in resp.items()]
-
-        # get season and episode data
-        sickrage.app.log.debug(f'[{sid}]: Getting episode data from {self.name}')
-
-        season_type = 'dvd' if dvd_order else 'default'
-        resp = sickrage.app.api.series_provider.get_episodes_info(provider=self.slug, series_id=sid, season_type=season_type, language=language)
-        if not resp or 'seasons' not in resp or 'episodes' not in resp:
-            sickrage.app.log.debug(f"[{sid}]: Unable to get season and episode data from {self.name}")
-            return None
-
         # add season data to cache
         for season in resp['seasons']:
             season_number = int(float(season.get('seasonNumber')))
@@ -124,9 +112,21 @@ class TheTVDB(SeriesProvider):
             for k, v in season.items():
                 self.cache.add_season_data(sid, season_number, k, v)
 
+        # add series data to cache
+        [self.cache.add_show_data(sid, k, v) for k, v in resp.items() if k != 'seasons']
+
+        # get season and episode data
+        sickrage.app.log.debug(f'[{sid}]: Getting episode data from {self.name}')
+
+        season_type = 'dvd' if dvd_order else 'official'
+        resp = sickrage.app.api.series_provider.get_episodes_info(provider=self.slug, series_id=sid, season_type=season_type, language=language)
+        if not resp:
+            sickrage.app.log.debug(f"[{sid}]: Unable to get episode data from {self.name}")
+            return None
+
         # add episode data to cache
         episode_incomplete = False
-        for episode in resp['episodes']:
+        for episode in resp:
             season_number, episode_number = episode.get('seasonNumber'), episode.get('episodeNumber')
             if season_number is None or episode_number is None:
                 episode_incomplete = True
