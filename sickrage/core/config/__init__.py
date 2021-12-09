@@ -842,9 +842,25 @@ class Config(object):
                                                                         default=self.general.calendar_unprotected, field_type=bool)
         self.general.calendar_icons = self._get_config_file_value(config_object, 'General', 'calendar_icons', default=self.general.calendar_icons,
                                                                   field_type=bool)
-        self.general.no_restart = self._get_config_file_value(config_object, 'General', 'no_restart', default=self.general.no_restart, field_type=bool)
+
+        self.general.no_restart = self._get_config_file_value(
+            config_object,
+            'General',
+            'no_restart',
+            default=self.general.no_restart,
+            field_type=bool
+        )
+
         self.general.allowed_video_file_exts = ','.join(
-            self._get_config_file_value(config_object, 'General', 'allowed_video_file_exts', default=self.general.allowed_video_file_exts, field_type=list))
+            self._get_config_file_value(
+                config_object,
+                'General',
+                'allowed_video_file_exts',
+                default=self.general.allowed_video_file_exts.split(','),
+                field_type=list
+            )
+        )
+
         self.general.extra_scripts = self._get_config_file_value(config_object, 'General', 'extra_scripts', default=self.general.extra_scripts, field_type=str)
         self.general.display_all_seasons = self._get_config_file_value(config_object, 'General', 'display_all_seasons',
                                                                        default=self.general.display_all_seasons, field_type=bool)
