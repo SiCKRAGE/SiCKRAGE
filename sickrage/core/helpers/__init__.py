@@ -26,6 +26,7 @@ import datetime
 import glob
 import hashlib
 import ipaddress
+import mimetypes
 import os
 import platform
 import random
@@ -59,6 +60,17 @@ import sickrage
 from sickrage.core.enums import TorrentMethod
 from sickrage.core.helpers import encryption
 from sickrage.core.websession import WebSession
+
+mimetypes.add_type('video/divx', '.divx')
+mimetypes.add_type("video/x-flv", ".flv")
+mimetypes.add_type("video/x-f4v", ".f4v")
+mimetypes.add_type("video/x-dvd-iso", ".iso")
+mimetypes.add_type("video/x-dvd-iso", ".img")
+mimetypes.add_type("video/x-dvd-iso", ".nrg")
+mimetypes.add_type("video/dvd", ".vob")
+mimetypes.add_type("video/mpeg", ".wtv")
+mimetypes.add_type("application/x-bittorrent", ".torrent")
+mimetypes.add_type("application/x-nzb", ".nzb")
 
 
 def safe_getattr(object, name, default=None):
@@ -154,7 +166,10 @@ def remove_extension(name):
 
     if name and "." in name:
         base_name, sep, extension = name.rpartition('.')
-        if base_name and extension.lower() in ['nzb', 'torrent'] + sickrage.app.config.general.allowed_video_file_exts.split(','):
+        mime_type = mimetypes.guess_type(name)[0]
+        is_video = True if mime_type is not None and mime_type.startswith('video') else False
+
+        if base_name and extension.lower() in ['nzb', 'torrent'] or is_video:
             name = base_name
 
     return name
@@ -319,7 +334,8 @@ def is_media_file(filename):
     if re.search('extras?$', sepFile[0], re.I):
         return False
 
-    return sepFile[-1].lower() in sickrage.app.config.general.allowed_video_file_exts.split(',')
+    mime_type = mimetypes.guess_type(filename)[0]
+    return True if mime_type is not None and mime_type.startswith('video') else False
 
 
 def is_rar_file(filename):

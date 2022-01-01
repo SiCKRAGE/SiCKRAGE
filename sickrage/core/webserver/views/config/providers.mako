@@ -159,27 +159,7 @@
                 <!-- start div for editing providers //-->
                 % for providerID, providerObj in sickrage.app.search_providers.newznab().items():
                     <div class="providerDiv" id="${providerID}Div">
-                        % if not providerObj.default:
-                            <div class="form-row form-group">
-                                <div class="col-lg-3 col-md-4 col-sm-5">
-                                    <label class="component-title">${_('URL:')}</label>
-                                </div>
-                                <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text"><span class="fas fa-globe"></span></span>
-                                        </div>
-                                        <input id="${providerID}_url"
-                                               value="${providerObj.urls['base_url']}"
-                                               title="Provider URL"
-                                               class="form-control"
-                                               autocapitalize="off" disabled/>
-                                    </div>
-                                </div>
-                            </div>
-                        % endif
-
-                        % if providerObj.private:
+                        % if providerObj.private and providerObj.default:
                             <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('API key:')}</label>
@@ -192,7 +172,7 @@
                                         <input id="${providerID}_api_key"
                                                name="${providerID}_api_key"
                                                value="${providerObj.api_key}"
-                                               newznab_name="${providerID}_api_key"
+                                               newznab_name="${providerID}"
                                                class="newznab_key form-control"
                                                title="Provider API key"
                                                autocapitalize="off"/>
@@ -218,7 +198,7 @@
                         % endif
 
                         % if hasattr(providerObj, 'enable_backlog'):
-                            <div class="row field-pair${(' d-none', '')[providerObj.supports_backlog]}">
+                            <div class="form-row form-group ${('d-none', '')[providerObj.supports_backlog]}">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Enable backlog searches')}</label>
                                 </div>
@@ -892,27 +872,27 @@
                             </div>
                         % endif
 
-##                         % if hasattr(providerObj, 'cat') and providerID == 'tntvillage':
-##                             <div class="form-row form-group">
-##                                 <div class="col-lg-3 col-md-4 col-sm-5">
-##                                     <label class="component-title">${_('Category:')}</label>
-##                                 </div>
-##                                 <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-##                                     <div class="input-group">
-##                                         <div class="input-group-prepend">
-##                                             <span class="input-group-text"><span class="fas fa-list"></span></span>
-##                                         </div>
-##                                         <select name="${providerID}_cat" id="${providerID}_cat"
-##                                                 title="Provider category"
-##                                                 class="form-control">
-##                                             % for i in providerObj.category_dict.keys():
-##                                                 <option value="${providerObj.category_dict[i]}" ${('', 'selected')[providerObj.category_dict[i] == providerObj.cat]}>${i}</option>
-##                                             % endfor
-##                                         </select>
-##                                     </div>
-##                                 </div>
-##                             </div>
-##                         % endif
+                        ##                         % if hasattr(providerObj, 'cat') and providerID == 'tntvillage':
+                        ##                             <div class="form-row form-group">
+                        ##                                 <div class="col-lg-3 col-md-4 col-sm-5">
+                        ##                                     <label class="component-title">${_('Category:')}</label>
+                        ##                                 </div>
+                        ##                                 <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                        ##                                     <div class="input-group">
+                        ##                                         <div class="input-group-prepend">
+                        ##                                             <span class="input-group-text"><span class="fas fa-list"></span></span>
+                        ##                                         </div>
+                        ##                                         <select name="${providerID}_cat" id="${providerID}_cat"
+                        ##                                                 title="Provider category"
+                        ##                                                 class="form-control">
+                        ##                                             % for i in providerObj.category_dict.keys():
+                        ##                                                 <option value="${providerObj.category_dict[i]}" ${('', 'selected')[providerObj.category_dict[i] == providerObj.cat]}>${i}</option>
+                        ##                                             % endfor
+                        ##                                         </select>
+                        ##                                     </div>
+                        ##                                 </div>
+                        ##                             </div>
+                        ##                         % endif
 
                         % if 'subtitle' in providerObj.custom_settings and providerID == 'tntvillage':
                             <div class="form-row form-group">
@@ -1029,7 +1009,9 @@
                                                 style="min-width:10em;"></select>
                                         <p>
                                             ${_('(select your Newznab categories on the left, and click the "update '
-                                            'categories" button to use them for searching.)')}<br/>
+                                            'categories" button to add them)')}<br/>
+                                            ${_('(select your Newznab categories on the right, and click the "update '
+                                            'categories" button to remove them)')}<br/>
                                             <b>${_('Don\'t forget to save changes!')}</b>
                                         </p>
                                     </div>

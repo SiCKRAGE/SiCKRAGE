@@ -5141,6 +5141,7 @@ $(document).ready(function ($) {
 
                     if (isDefault !== 'true') {
                         $('#editANewznabProvider').append($("<option></option>").attr("value", id).text(name));
+                        $('#editANewznabProvider').val(id);
                         SICKRAGE.config.providers.populateNewznabSection();
                     }
 
