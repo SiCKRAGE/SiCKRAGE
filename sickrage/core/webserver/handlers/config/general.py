@@ -18,6 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
+import os
 
 from tornado.web import authenticated
 
@@ -256,11 +257,11 @@ class SaveGeneralHandler(BaseHandler):
 
         sickrage.app.config.general.enable_https = checkbox_to_value(enable_https)
 
-        # if not change_https_cert(https_cert):
-        #     results += ["Unable to create directory " + os.path.normpath(https_cert) + ", https cert directory not changed."]
-        #
-        # if not change_https_key(https_key):
-        #     results += ["Unable to create directory " + os.path.normpath(https_key) + ", https key directory not changed."]
+        if os.path.exists(https_cert):
+            sickrage.app.config.general.https_cert = https_cert
+
+        if os.path.exists(https_key):
+            sickrage.app.config.general.https_key = https_key
 
         sickrage.app.config.general.handle_reverse_proxy = checkbox_to_value(handle_reverse_proxy)
 

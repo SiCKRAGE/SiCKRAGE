@@ -50,11 +50,6 @@ import errno
 import rarfile
 import requests
 from bs4 import BeautifulSoup
-from cryptography import x509
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import rsa
-from cryptography.x509.oid import NameOID
 
 import sickrage
 from sickrage.core.enums import TorrentMethod
@@ -758,53 +753,6 @@ def sanitize_scene_name(name, anime=False):
         name = name[:-1]
 
     return name
-
-
-def create_https_certificates(ssl_cert, ssl_key):
-    """This function takes a domain name as a parameter and then creates a certificate and key with the
-    domain name(replacing dots by underscores), finally signing the certificate using specified CA and
-    returns the path of key and cert files. If you are yet to generate a CA then check the top comments"""
-
-    # Generate our key
-    key = rsa.generate_private_key(
-        public_exponent=65537,
-        key_size=2048,
-        backend=default_backend(),
-    )
-
-    name = x509.Name([
-        x509.NameAttribute(NameOID.COMMON_NAME, 'SiCKRAGE')
-    ])
-
-    # path_len=0 means this cert can only sign itself, not other certs.
-    basic_contraints = x509.BasicConstraints(ca=True, path_length=0)
-    now = datetime.datetime.utcnow()
-    cert = (
-        x509.CertificateBuilder()
-            .subject_name(name)
-            .issuer_name(name)
-            .public_key(key.public_key())
-            .serial_number(1000)
-            .not_valid_before(now)
-            .not_valid_after(now + datetime.timedelta(days=10 * 365))
-            .add_extension(basic_contraints, False)
-            # .add_extension(san, False)
-            .sign(key, hashes.SHA256(), default_backend())
-    )
-    cert_pem = cert.public_bytes(encoding=serialization.Encoding.PEM)
-    key_pem = key.private_bytes(
-        encoding=serialization.Encoding.PEM,
-        format=serialization.PrivateFormat.TraditionalOpenSSL,
-        encryption_algorithm=serialization.NoEncryption(),
-    )
-
-    with open(ssl_key, 'wb') as key_out:
-        key_out.write(key_pem)
-
-    with open(ssl_cert, 'wb') as cert_out:
-        cert_out.write(cert_pem)
-
-    return True
 
 
 def anon_url(*url):

@@ -957,51 +957,51 @@ c<%inherit file="../layouts/config.mako"/>
                     </div>
                 </div>
 
-##                 <div id="content_enable_https">
-##                     <div class="form-row form-group">
-##
-##                         <div class="col-lg-3 col-md-4 col-sm-5">
-##                             <label class="component-title">${_('HTTPS certificate')}</label>
-##                         </div>
-##                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-##                             <div class="form-row">
-##                                 <div class="col-md-12">
-##                                     <input name="https_cert" id="https_cert"
-##                                            value="${sickrage.app.config.general.https_cert}"
-##                                            class="form-control"
-##                                            autocapitalize="off"/>
-##                                 </div>
-##                             </div>
-##                             <div class="form-row">
-##                                 <div class="col-md-12">
-##                                     <label for="https_cert">
-##                                         ${_('file name or path to HTTPS certificate')}
-##                                     </label>
-##                                 </div>
-##                             </div>
-##                         </div>
-##                     </div>
-##
-##                     <div class="form-row form-group">
-##                         <div class="col-lg-3 col-md-4 col-sm-5">
-##                             <label class="component-title">${_('HTTPS key')}</label>
-##                         </div>
-##                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-##                             <div class="form-row">
-##                                 <div class="col-md-12">
-##                                     <input name="https_key" id="https_key"
-##                                            value="${sickrage.app.config.general.https_key}"
-##                                            class="form-control" autocapitalize="off"/>
-##                                 </div>
-##                             </div>
-##                             <div class="form-row">
-##                                 <div class="col-md-12">
-##                                     <label for="https_key">${_('file name or path to HTTPS key')}</label>
-##                                 </div>
-##                             </div>
-##                         </div>
-##                     </div>
-##                 </div>
+                <div id="content_enable_https">
+                    <div class="form-row form-group">
+
+                        <div class="col-lg-3 col-md-4 col-sm-5">
+                            <label class="component-title">${_('Custom HTTPS certificate')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                            <div class="form-row">
+                                <div class="col-md-12">
+                                    <input name="https_cert" id="https_cert"
+                                           value="${sickrage.app.config.general.https_cert}"
+                                           class="form-control"
+                                           autocapitalize="off"/>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-12">
+                                    <label for="https_cert">
+                                        ${_('path to a custom HTTPS certificate file')}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row form-group">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
+                            <label class="component-title">${_('Custom HTTPS certificate key')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                            <div class="form-row">
+                                <div class="col-md-12">
+                                    <input name="https_key" id="https_key"
+                                           value="${sickrage.app.config.general.https_key}"
+                                           class="form-control" autocapitalize="off"/>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-12">
+                                    <label for="https_key">${_('path to a custom HTTPS key file')}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5">

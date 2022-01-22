@@ -98,9 +98,6 @@ class Core(object):
         self.gui_views_dir = os.path.join(sickrage.PROG_DIR, 'core', 'webserver', 'views')
         self.gui_app_dir = os.path.join(sickrage.PROG_DIR, 'core', 'webserver', 'app')
 
-        self.https_cert_file = None
-        self.https_key_file = None
-
         self.trakt_api_key = '5c65f55e11d48c35385d9e8670615763a605fad28374c8ae553a7b7a50651ddd'
         self.trakt_api_secret = 'b53e32045ac122a445ef163e6d859403301ffe9b17fb8321d428531b69022a82'
         self.trakt_app_id = '4562'
@@ -341,10 +338,6 @@ class Core(object):
 
         # set socket timeout
         socket.setdefaulttimeout(self.config.general.socket_timeout)
-
-        # set ssl cert/key filenames
-        self.https_cert_file = os.path.abspath(os.path.join(self.data_dir, 'server.crt'))
-        self.https_key_file = os.path.abspath(os.path.join(self.data_dir, 'server.key'))
 
         # setup logger settings
         self.log.logSize = self.config.general.log_size
