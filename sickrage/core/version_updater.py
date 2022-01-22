@@ -18,6 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
+import configparser
 import os
 import platform
 import re
@@ -256,7 +257,8 @@ class UpdateManager(object):
 
         if not self.manual_update:
             update_url = f"{sickrage.app.config.general.web_root}/home/update/?pid={sickrage.app.pid}"
-            message = _(f'New SiCKRAGE {self.current_branch} {sickrage.install_type()} update available, version {latest_version} &mdash; <a href=\"{update_url}\">Update Now</a>')
+            message = _(
+                f'New SiCKRAGE {self.current_branch} {sickrage.install_type()} update available, version {latest_version} &mdash; <a href=\"{update_url}\">Update Now</a>')
         else:
             message = _(f"New SiCKRAGE {self.current_branch} {sickrage.install_type()} update available, version {latest_version}, please manually update!")
 
@@ -594,6 +596,18 @@ class WindowsUpdateManager(UpdateManager):
         super(WindowsUpdateManager, self).__init__()
         self.type = "windows"
         self.manual_update = True
+
+    @property
+    def latest_version(self):
+        latest_version = None
+
+        try:
+            version_url = "https://www.sickrage.ca/downloads/windows/updates.txt"
+            version_config = configparser.ConfigParser()
+            version_config.read_string(WebSession().get(version_url).text)
+            latest_version = version_config['SiCKRAGE']['Version'].rsplit('.', 1)[0]
+        finally:
+            return latest_version or self.version
 
 
 class SynologyUpdateManager(UpdateManager):
