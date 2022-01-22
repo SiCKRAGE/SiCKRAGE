@@ -21,7 +21,7 @@
 import os
 from functools import cmp_to_key
 
-from tornado.escape import json_encode, json_decode
+from tornado.escape import json_encode, json_decode, xhtml_unescape
 from tornado.web import authenticated
 
 import sickrage
@@ -249,9 +249,11 @@ def edit_show(series_id, any_qualities, best_qualities, exceptions_list, locatio
         show_obj.rls_require_words = rls_require_words.strip()
         show_obj.search_delay = int(search_delay)
 
+    location = os.path.normpath(xhtml_unescape(location))
+
     # if we change location clear the db of episodes, change it, write to db, and rescan
-    if os.path.normpath(show_obj.location) != os.path.normpath(location):
-        sickrage.app.log.debug(os.path.normpath(show_obj.location) + " != " + os.path.normpath(location))
+    if os.path.normpath(show_obj.location) != location:
+        sickrage.app.log.debug(os.path.normpath(show_obj.location) + " != " + location)
         if not os.path.isdir(location) and not sickrage.app.config.general.create_missing_show_dirs:
             warnings.append("New location {} does not exist".format(location))
 

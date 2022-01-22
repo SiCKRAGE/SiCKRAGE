@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.48](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.47...10.0.48)
+
 #### [10.0.47](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.46...10.0.47)
+
+> 1 January 2022
 
 - Refactored video files to be mime typed by built-in module mimetypes, no longer requires end-user to specify allowed video file extensions [`9f0903d`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/9f0903deafba49880b6003bacf8fc3f579070ea0)
 

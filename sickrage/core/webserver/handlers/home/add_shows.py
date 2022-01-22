@@ -23,7 +23,7 @@ import os
 import re
 from urllib.parse import unquote_plus, urlencode
 
-from tornado.escape import json_encode
+from tornado.escape import json_encode, url_unescape, xhtml_unescape
 from tornado.httputil import url_concat
 from tornado.web import authenticated
 
@@ -84,7 +84,7 @@ class SearchSeriesProviderForShowNameHandler(BaseHandler):
 
         # search via series name
         series_provider = sickrage.app.series_providers[SeriesProviderID[series_provider_id]]
-        series_results = series_provider.search(query=search_term, language=series_provider_language)
+        series_results = series_provider.search(query=xhtml_unescape(search_term), language=series_provider_language)
         if series_results:
             for series in series_results:
                 if not series.get('name', None):
@@ -111,7 +111,7 @@ class MassAddTableHandler(BaseHandler):
     def get(self, *args, **kwargs):
         root_dir = self.get_arguments('rootDir')
 
-        root_dirs = [unquote_plus(x) for x in root_dir]
+        root_dirs = [unquote_plus(xhtml_unescape(x)) for x in root_dir]
 
         if sickrage.app.config.general.root_dirs:
             default_index = int(sickrage.app.config.general.root_dirs.split('|')[0])
@@ -398,18 +398,18 @@ class AddNewShowHandler(BaseHandler):
 
             series_provider_id = series_pieces[1]
             series_id = int(series_pieces[3])
-            show_name = series_pieces[4]
+            show_name = xhtml_unescape(series_pieces[4])
         else:
             series_provider_id = provided_series_provider_id or sickrage.app.config.general.series_provider_default
             series_id = int(whichSeries)
             if fullShowPath:
-                show_name = os.path.basename(os.path.normpath(fullShowPath))
+                show_name = os.path.basename(os.path.normpath(xhtml_unescape(fullShowPath)))
             else:
-                show_name = provided_series_name
+                show_name = xhtml_unescape(provided_series_name)
 
         # use the whole path if it's given, or else append the show name to the root dir to get the full show path
         if fullShowPath:
-            show_dir = os.path.normpath(fullShowPath)
+            show_dir = os.path.normpath(xhtml_unescape(fullShowPath))
         else:
             show_dir = os.path.join(rootDir, sanitize_file_name(show_name))
             if add_show_year and not re.match(r'.*\(\d+\)$', show_dir) and re.search(r'\d{4}', series_pieces[5]):
@@ -495,7 +495,7 @@ class AddExistingShowsHandler(BaseHandler):
         prompt_for_settings = self.get_argument('promptForSettings')
 
         # grab a list of other shows to add, if provided
-        shows_to_add = [unquote_plus(x) for x in shows_to_add]
+        shows_to_add = [unquote_plus(xhtml_unescape(x)) for x in shows_to_add]
 
         prompt_for_settings = checkbox_to_value(prompt_for_settings)
 
