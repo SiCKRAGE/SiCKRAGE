@@ -26,16 +26,13 @@ import ssl
 
 import tornado.autoreload
 import tornado.locale
-from cryptography import x509
-from cryptography.hazmat.backends import default_backend
-from cryptography.x509 import ExtensionNotFound
 from mako.lookup import TemplateLookup
 from tornado.httpserver import HTTPServer
-from tornado.ioloop import PeriodicCallback, IOLoop
+from tornado.ioloop import IOLoop
 from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 import sickrage
-from sickrage.core.helpers import create_https_certificates
+from sickrage.core.webserver.helpers import create_https_certificates, is_certificate_valid, certificate_needs_renewal
 from sickrage.core.webserver.handlers.account import AccountLinkHandler, AccountUnlinkHandler, AccountIsLinkedHandler
 from sickrage.core.webserver.handlers.announcements import AnnouncementsHandler, MarkAnnouncementSeenHandler, AnnouncementCountHandler
 from sickrage.core.webserver.handlers.api import ApiSwaggerDotJsonHandler, ApiPingHandler, ApiProfileHandler
@@ -136,6 +133,18 @@ class WebServer(object):
         self.app = None
         self.server = None
 
+    @property
+    def cert_file(self):
+        if os.path.exists(sickrage.app.config.general.https_cert):
+            return sickrage.app.config.general.https_cert
+        return os.path.abspath(os.path.join(sickrage.app.data_dir, 'server.crt'))
+
+    @property
+    def cert_key_file(self):
+        if os.path.exists(sickrage.app.config.general.https_key):
+            return sickrage.app.config.general.https_key
+        return os.path.abspath(os.path.join(sickrage.app.data_dir, 'server.key'))
+
     def start(self):
         self.started = True
 
@@ -167,7 +176,7 @@ class WebServer(object):
         # tornado SSL setup
         if sickrage.app.config.general.enable_https:
             if not self.load_ssl_certificate():
-                sickrage.app.log.info("Unable to retrieve CERT/KEY files from SiCKRAGE API, disabling HTTPS")
+                sickrage.app.log.info("Unable to load HTTPS certificate and key files, disabling HTTPS")
                 sickrage.app.config.general.enable_https = False
 
         # Load templates
@@ -482,7 +491,7 @@ class WebServer(object):
         ssl_ctx = None
         if sickrage.app.config.general.enable_https:
             ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-            ssl_ctx.load_cert_chain(sickrage.app.https_cert_file, sickrage.app.https_key_file)
+            ssl_ctx.load_cert_chain(self.cert_file, self.cert_key_file)
 
         # Web Server
         self.server = HTTPServer(self.app, ssl_options=ssl_ctx, xheaders=sickrage.app.config.general.handle_reverse_proxy)
@@ -494,31 +503,41 @@ class WebServer(object):
             raise SystemExit
 
     def load_ssl_certificate(self, certificate=None, private_key=None):
+        sr_cert_file = os.path.abspath(os.path.join(sickrage.app.data_dir, 'server.crt'))
+        sr_cert_key_file = os.path.abspath(os.path.join(sickrage.app.data_dir, 'server.key'))
+
+        # Custom user provided HTTPS certificate and certificate key files
+        if os.path.exists(sickrage.app.config.general.https_cert) and os.path.exists(sickrage.app.config.general.https_key):
+            if certificate_needs_renewal(sickrage.app.config.general.https_cert):
+                return False
+            return True
+
+        # SiCKRAGE HTTPS certificate and certificate key files
         if certificate and private_key:
-            with open(sickrage.app.https_cert_file, 'w') as cert_out:
+            with open(sr_cert_file, 'w') as cert_out:
                 cert_out.write(certificate)
 
-            with open(sickrage.app.https_key_file, 'w') as key_out:
+            with open(sr_cert_key_file, 'w') as key_out:
                 key_out.write(private_key)
         else:
-            if os.path.exists(sickrage.app.https_key_file) and os.path.exists(sickrage.app.https_cert_file):
-                if self.is_certificate_valid() and not self.certificate_needs_renewal():
+            if os.path.exists(sr_cert_file) and os.path.exists(sr_cert_key_file):
+                if is_certificate_valid(sr_cert_file) and not certificate_needs_renewal(sr_cert_file):
                     return True
 
             resp = sickrage.app.api.server.get_server_certificate(sickrage.app.config.general.server_id)
             if not resp or 'certificate' not in resp or 'private_key' not in resp:
-                if not create_https_certificates(sickrage.app.https_cert_file, sickrage.app.https_key_file):
+                if not create_https_certificates(sr_cert_file, sr_cert_key_file):
                     return False
 
-                if not os.path.exists(sickrage.app.https_cert_file) or not os.path.exists(sickrage.app.https_key_file):
+                if not os.path.exists(sr_cert_file) or not os.path.exists(sr_cert_key_file):
                     return False
 
                 return True
 
-            with open(sickrage.app.https_cert_file, 'w') as cert_out:
+            with open(sr_cert_file, 'w') as cert_out:
                 cert_out.write(resp['certificate'])
 
-            with open(sickrage.app.https_key_file, 'w') as key_out:
+            with open(sr_cert_key_file, 'w') as key_out:
                 key_out.write(resp['private_key'])
 
         sickrage.app.log.info("Loaded SSL certificate successfully, restarting server in 1 minute")
@@ -526,52 +545,6 @@ class WebServer(object):
         if self.server:
             # restart after 1 minute
             IOLoop.current().add_timeout(datetime.timedelta(minutes=1), sickrage.app.restart)
-
-        return True
-
-    def certificate_needs_renewal(self):
-        if not os.path.exists(sickrage.app.https_cert_file):
-            return
-
-        with open(sickrage.app.https_cert_file, 'rb') as f:
-            cert_pem = f.read()
-
-        cert = x509.load_pem_x509_certificate(cert_pem, default_backend())
-        not_valid_after = cert.not_valid_after
-
-        return not_valid_after - datetime.datetime.utcnow() < (cert.not_valid_after - cert.not_valid_before) / 2
-
-    def is_certificate_valid(self):
-        if not os.path.exists(sickrage.app.https_cert_file):
-            return
-
-        with open(sickrage.app.https_cert_file, 'rb') as f:
-            cert_pem = f.read()
-
-        cert = x509.load_pem_x509_certificate(cert_pem, default_backend())
-        issuer = cert.issuer.get_attributes_for_oid(x509.NameOID.COMMON_NAME)[0]
-        subject = cert.subject.get_attributes_for_oid(x509.NameOID.COMMON_NAME)[0]
-
-        if 'ZeroSSL' not in issuer.value:
-            return False
-
-        if subject.value != f'{sickrage.app.config.general.server_id}.external.sickrage.direct':
-            return False
-
-        try:
-            ext = cert.extensions.get_extension_for_class(x509.SubjectAlternativeName).value
-            sans = ext.get_values_for_type(x509.DNSName)
-
-            domains = [
-                f'{sickrage.app.config.general.server_id}.external.sickrage.direct',
-                f'{sickrage.app.config.general.server_id}.internal.sickrage.direct'
-            ]
-
-            for domain in sans:
-                if domain not in domains:
-                    return False
-        except ExtensionNotFound:
-            return False
 
         return True
 
