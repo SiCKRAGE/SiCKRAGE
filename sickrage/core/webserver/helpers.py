@@ -100,7 +100,8 @@ def certificate_needs_renewal(cert_file):
     with open(cert_file, 'rb') as f:
         cert_pem = f.read()
 
-    cert = x509.load_pem_x509_certificate(cert_pem, default_backend())
-    not_valid_after = cert.not_valid_after
+    cert_info = x509.load_pem_x509_certificate(cert_pem, default_backend())
+    expiry_date = cert_info.not_valid_after
+    time_left = expiry_date.date() - datetime.date.today()
 
-    return not_valid_after - datetime.datetime.utcnow() < (cert.not_valid_after - cert.not_valid_before) / 2
+    return time_left.days < 1
