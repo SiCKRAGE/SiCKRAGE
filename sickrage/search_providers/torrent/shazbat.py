@@ -27,10 +27,6 @@ class ShazbatProvider(TorrentProvider):
     def __init__(self):
         super(ShazbatProvider, self).__init__("Shazbat.tv", 'https://www.shazbat.tv', True)
 
-        self._urls.update({
-            'login': '{base_url}/login'.format(**self._urls)
-        })
-
         self.supports_backlog = False
 
         # custom settings
@@ -39,6 +35,12 @@ class ShazbatProvider(TorrentProvider):
         }
 
         self.cache = ShazbatCache(self, min_time=15)
+
+    @property
+    def urls(self):
+        return {
+            'login': f'{self.url}/login'
+        }
 
     def _check_auth(self):
         if not self.custom_settings['passkey']:
@@ -57,7 +59,7 @@ class ShazbatProvider(TorrentProvider):
 
 class ShazbatCache(TVCache):
     def _get_rss_data(self):
-        rss_url = self.provider.urls['base_url'] + '/rss/recent?passkey=' + self.provider.custom_settings['passkey'] + '&fname=true'
+        rss_url = self.provider.url + '/rss/recent?passkey=' + self.provider.custom_settings['passkey'] + '&fname=true'
         sickrage.app.log.debug("Cache update URL: %s" % rss_url)
 
         return self.get_rss_feed(rss_url)

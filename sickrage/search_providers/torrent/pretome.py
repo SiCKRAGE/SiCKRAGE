@@ -32,13 +32,6 @@ class PretomeProvider(TorrentProvider):
     def __init__(self):
         super(PretomeProvider, self).__init__("Pretome", 'https://pretome.info', True)
 
-        self._urls.update({
-            'login': '{base_url}/takelogin.php'.format(**self._urls),
-            'detail': '{base_url}/details.php?id=%s'.format(**self._urls),
-            'search': '{base_url}/browse.php?search=%s%s'.format(**self._urls),
-            'download': '{base_url}/download.php/%s/%s.torrent'.format(**self._urls)
-        })
-
         # custom settings
         self.custom_settings = {
             'username': '',
@@ -53,6 +46,15 @@ class PretomeProvider(TorrentProvider):
         self.proper_strings = ['PROPER', 'REPACK']
 
         self.cache = TVCache(self, min_time=30)
+
+    @property
+    def urls(self):
+        return {
+            'login': f'{self.url}/takelogin.php',
+            'detail': f'{self.url}/details.php?id=%s',
+            'search': f'{self.url}/browse.php?search=%s%s',
+            'download': f'{self.url}/download.php/%s/%s.torrent'
+        }
 
     def _check_auth(self):
 

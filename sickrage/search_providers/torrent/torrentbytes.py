@@ -35,11 +35,6 @@ class TorrentBytesProvider(TorrentProvider):
     def __init__(self):
         super(TorrentBytesProvider, self).__init__("TorrentBytes", 'https://www.torrentbytes.net', True)
 
-        self._urls.update({
-            'login': '{base_url}/takelogin.php'.format(**self._urls),
-            'search': '{base_url}/browse.php'.format(**self._urls),
-        })
-
         # custom settings
         self.custom_settings = {
             'username': '',
@@ -52,6 +47,13 @@ class TorrentBytesProvider(TorrentProvider):
         self.proper_strings = ['PROPER', 'REPACK']
 
         self.cache = TVCache(self, min_time=20)
+
+    @property
+    def urls(self):
+        return {
+            'login': f'{self.url}/takelogin.php',
+            'search': f'{self.url}/browse.php',
+        }
 
     def login(self):
         if any(dict_from_cookiejar(self.session.cookies).values()):
@@ -133,7 +135,7 @@ class TorrentBytesProvider(TorrentProvider):
                         continue
 
                     link = cells[labels.index("Name")].find("a", href=re.compile(r"download.php\?id="))["href"]
-                    download_url = urljoin(self.urls['base_url'], link)
+                    download_url = urljoin(self.url, link)
 
                     title_element = cells[labels.index("Name")].find("a", href=re.compile(r"details.php\?id="))
                     title = title_element.get("title", "") or title_element.get_text(strip=True)

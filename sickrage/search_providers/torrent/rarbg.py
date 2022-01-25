@@ -36,10 +36,6 @@ class RarbgProvider(TorrentProvider):
     def __init__(self):
         super(RarbgProvider, self).__init__("Rarbg", 'https://rarbg.com', False)
 
-        self._urls.update({
-            'api': 'http://torrentapi.org/pubapi_v2.php'
-        })
-
         # custom settings
         self.custom_settings = {
             'sorting': 'seeders',
@@ -56,6 +52,12 @@ class RarbgProvider(TorrentProvider):
         self.proper_strings = ['PROPER', 'REPACK', 'REAL', 'RERIP']
 
         self.cache = TVCache(self)
+
+    @property
+    def urls(self):
+        return {
+            'api': 'http://torrentapi.org/pubapi_v2.php'
+        }
 
     def login(self):
         if self.token and self.token_expires and datetime.datetime.now() < self.token_expires:

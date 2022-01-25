@@ -28,10 +28,6 @@ class XthorProvider(TorrentProvider):
     def __init__(self):
         super(XthorProvider, self).__init__("Xthor", "https://xthor.tk", True)
 
-        self._urls.update({
-            'search': "https://api.xthor.tk"
-        })
-
         # custom settings
         self.custom_settings = {
             'passkey': '',
@@ -44,6 +40,12 @@ class XthorProvider(TorrentProvider):
         self.subcategories = [433, 637, 455, 639]
 
         self.cache = TVCache(self)
+
+    @property
+    def urls(self):
+        return {
+            'search': "https://api.xthor.tk"
+        }
 
     def _check_auth(self):
         if self.custom_settings['passkey']:

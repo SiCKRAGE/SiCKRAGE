@@ -32,11 +32,13 @@ class BinSearchProvider(NZBProvider):
         super(BinSearchProvider, self).__init__("BinSearch", 'http://www.binsearch.info', False)
         self.supports_backlog = False
 
-        self._urls.update({
-            'rss': '{base_url}/rss.php'.format(**self._urls)
-        })
-
         self.cache = BinSearchCache(self)
+
+    @property
+    def urls(self):
+        return {
+            'rss': f'{self.url}/rss.php'
+        }
 
 
 class BinSearchCache(TVCache):

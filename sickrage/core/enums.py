@@ -31,24 +31,8 @@ class SeriesProviderID(enum.Enum):
         }
 
     @property
-    def _slug_strings(self):
-        return {
-            self.THETVDB.name: 'thetvdb'
-        }
-
-    @property
     def display_name(self):
         return self._strings[self.name]
-
-    @property
-    def slug(self):
-        return self._slug_strings[self.name]
-
-    @classmethod
-    def by_slug(cls, value):
-        for item in cls:
-            if item.slug == value:
-                return item
 
 
 class DefaultHomePage(enum.Enum):

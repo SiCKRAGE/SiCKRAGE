@@ -31,24 +31,24 @@ class ZooqleProvider(TorrentProvider):
         """Initialize the class."""
         super(ZooqleProvider, self).__init__('Zooqle', 'https://zooqle.com', False)
 
-        # URLs
-        self._urls.update({
-            'search': '{base_url}/search'.format(**self._urls),
-            'api': '{base_url}/api/media/%s'.format(**self._urls),
-        })
-
         # custom settings
         self.custom_settings = {
             'minseed': 0,
             'minleech': 0
         }
 
-
         # Proper Strings
         self.proper_strings = ['PROPER', 'REPACK', 'REAL']
 
         # Cache
         self.cache = TVCache(self, min_time=15)
+
+    @property
+    def urls(self):
+        return {
+            'search': f'{self.url}/search',
+            'api': f'{self.url}/api/media/%s',
+        }
 
     def _get_torrent_info(self, torrent_hash):
         try:

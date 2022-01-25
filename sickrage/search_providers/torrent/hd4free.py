@@ -29,10 +29,6 @@ class HD4FreeProvider(TorrentProvider):
     def __init__(self):
         super(HD4FreeProvider, self).__init__('HD4Free', 'https://hd4free.xyz', True)
 
-        self._urls.update({
-            'search': '{base_url}/searchapi.php'.format(**self._urls)
-        })
-
         # custom settings
         self.custom_settings = {
             'username': '',
@@ -43,6 +39,12 @@ class HD4FreeProvider(TorrentProvider):
         }
 
         self.cache = TVCache(self)
+
+    @property
+    def urls(self):
+        return {
+            'search': f'{self.url}/searchapi.php'
+        }
 
     def _check_auth(self):
         if self.custom_settings['username'] and self.custom_settings['api_key']:

@@ -133,7 +133,7 @@ class SaveProvidersHandler(BaseHandler):
 
             if provider_obj.provider_type in [SearchProviderType.TORRENT, SearchProviderType.TORRENT_RSS]:
                 provider_obj.ratio = int(self.get_argument(providerID + '_ratio', None) or 0)
-            elif provider_obj.provider_type in [SearchProviderType.NZB, SearchProviderType.NEWZNAB]:
+            elif provider_obj.provider_type in [SearchProviderType.NZB, SearchProviderType.NEWZNAB] and provider_obj.private and provider_obj.default:
                 provider_obj.username = self.get_argument(providerID + '_username', '').strip()
                 provider_obj.api_key = self.get_argument(providerID + '_api_key', '').strip()
 

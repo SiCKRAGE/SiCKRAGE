@@ -28,11 +28,6 @@ class HorribleSubsProvider(TorrentProvider):
 
         super(HorribleSubsProvider, self).__init__("HorribleSubs", 'https://horriblesubs.info', False)
 
-        self._urls.update({
-            'search': '{base_url}/api.php'.format(**self._urls),
-            'rss': '{base_url}/rss.php'.format(**self._urls)
-        })
-
         self.supports_absolute_numbering = True
         self.anime_only = True
 
@@ -43,6 +38,13 @@ class HorribleSubsProvider(TorrentProvider):
         }
 
         self.cache = TVCache(self, min_time=15)
+
+    @property
+    def urls(self):
+        return {
+            'search': f'{self.url}/api.php',
+            'rss': f'{self.url}/rss.php'
+        }
 
     def search(self, search_strings, age=0, series_id=None, series_provider_id=None, season=None, episode=None, **kwargs):
         results = []

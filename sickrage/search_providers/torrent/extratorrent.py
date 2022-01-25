@@ -29,11 +29,6 @@ class ExtraTorrentProvider(TorrentProvider):
     def __init__(self):
         super(ExtraTorrentProvider, self).__init__("ExtraTorrent", 'https://extratorrent.si', False)
 
-        self._urls.update({
-            'search': '{base_url}/search/'.format(**self._urls),
-            'rss': '{base_url}/category/8/TV+Torrents.html'.format(**self._urls)
-        })
-
         # custom settings
         self.custom_settings = {
             'minseed': 0,
@@ -41,6 +36,13 @@ class ExtraTorrentProvider(TorrentProvider):
         }
 
         self.cache = TVCache(self)
+
+    @property
+    def urls(self):
+        return {
+            'search': f'{self.url}/search/',
+            'rss': f'{self.url}/category/8/TV+Torrents.html'
+        }
 
     def search(self, search_strings, age=0, series_id=None, series_provider_id=None, season=None, episode=None, **kwargs):
         results = []

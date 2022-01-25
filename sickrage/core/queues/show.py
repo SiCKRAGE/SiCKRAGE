@@ -213,19 +213,21 @@ class ShowTask(Task):
 
     def run(self):
         show_obj = find_show(self.series_id, self.series_provider_id)
+
         if show_obj:
             WebSocketMessage('SHOW_QUEUE_STATUS_UPDATED', {'seriesSlug': show_obj.slug, 'showQueueStatus': show_obj.show_queue_status}).push()
         else:
             WebSocketMessage('SHOW_QUEUE_STATUS_UPDATED',
-                             {'seriesSlug': f'{self.series_id}-{self.series_provider_id.slug}', 'action': self.action.name}).push()
+                             {'seriesSlug': f'{self.series_id}-{self.series_provider_id.value}', 'action': self.action.name}).push()
 
     def finish(self):
         show_obj = find_show(self.series_id, self.series_provider_id)
+
         if show_obj:
             WebSocketMessage('SHOW_QUEUE_STATUS_UPDATED', {'seriesSlug': show_obj.slug, 'showQueueStatus': show_obj.show_queue_status}).push()
         else:
             WebSocketMessage('SHOW_QUEUE_STATUS_UPDATED',
-                             {'seriesSlug': f'{self.series_id}-{self.series_provider_id.slug}', 'action': self.action.name}).push()
+                             {'seriesSlug': f'{self.series_id}-{self.series_provider_id.value}', 'action': self.action.name}).push()
 
 
 class ShowTaskAdd(ShowTask):
@@ -441,7 +443,7 @@ class ShowTaskAdd(ShowTask):
             sickrage.app.show_queue.remove_show(self.series_id, self.series_provider_id)
         except CantRemoveShowException:
             WebSocketMessage('SHOW_REMOVED',
-                             {'seriesSlug': f'{self.series_id}-{self.series_provider_id.slug}'}).push()
+                             {'seriesSlug': f'{self.series_id}-{self.series_provider_id.value}'}).push()
 
 
 class ShowTaskRefresh(ShowTask):
@@ -631,6 +633,8 @@ class ShowTaskForceRemove(ShowTask):
         super(ShowTaskForceRemove, self).run()
 
         show_obj = find_show(self.series_id, self.series_provider_id)
+        if not show_obj:
+            return
 
         sickrage.app.log.info("Removing show: {}".format(show_obj.name))
 

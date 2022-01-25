@@ -30,11 +30,6 @@ class IPTorrentsProvider(TorrentProvider):
     def __init__(self):
         super(IPTorrentsProvider, self).__init__("IPTorrents", 'https://iptorrents.eu', True)
 
-        self._urls.update({
-            'login': '{base_url}/torrents'.format(**self._urls),
-            'search': '{base_url}/t?%s%s&q=%s&qf=#torrents'.format(**self._urls)
-        })
-
         self.enable_cookies = True
         self.required_cookies = ('uid', 'pass')
 
@@ -51,6 +46,13 @@ class IPTorrentsProvider(TorrentProvider):
         self.categories = '73=&60='
 
         self.cache = TVCache(self, min_time=10)
+
+    @property
+    def urls(self):
+        return {
+            'login': f'{self.url}/torrents',
+            'search': f'{self.url}/t?%s%s&q=%s&qf=#torrents'
+        }
 
     def login(self):
         return self.cookie_login('sign in')
@@ -78,7 +80,7 @@ class IPTorrentsProvider(TorrentProvider):
                         sickrage.app.log.warning("Invalid custom url: {}".format(self.custom_settings['custom_url']))
                         return results
 
-                    search_url = urljoin(self.custom_settings['custom_url'], search_url.split(self.urls['base_url'])[1])
+                    search_url = urljoin(self.custom_settings['custom_url'], search_url.split(self.url)[1])
 
                 resp = self.session.get(search_url)
                 if not resp or not resp.text:
@@ -113,7 +115,7 @@ class IPTorrentsProvider(TorrentProvider):
             for torrent in torrents[1:]:
                 try:
                     title = torrent('td')[1].find('a').text
-                    download_url = self.urls['base_url'] + torrent('td')[3].find('a')['href']
+                    download_url = self.url + torrent('td')[3].find('a')['href']
                     if not all([title, download_url]):
                         continue
 

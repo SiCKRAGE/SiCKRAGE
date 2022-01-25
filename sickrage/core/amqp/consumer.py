@@ -25,11 +25,11 @@ from tornado.ioloop import IOLoop
 
 import sickrage
 from sickrage.core.amqp import AMQPBase
-from sickrage.protos.announcement_v1_pb2 import CreatedAnnouncementResponse, DeletedAnnouncementResponse
-from sickrage.protos.network_timezone_v1_pb2 import SavedNetworkTimezoneResponse, DeletedNetworkTimezoneResponse
-from sickrage.protos.search_provider_url_v1_pb2 import SavedSearchProviderUrlResponse
-from sickrage.protos.server_certificate_v1_pb2 import SavedServerCertificateResponse
-from sickrage.protos.updates_v1_pb2 import UpdatedAppResponse
+from sickrage.core.amqp.protos.announcement_v1_pb2 import CreatedAnnouncementResponse, DeletedAnnouncementResponse
+from sickrage.core.amqp.protos.network_timezone_v1_pb2 import SavedNetworkTimezoneResponse, DeletedNetworkTimezoneResponse
+from sickrage.core.amqp.protos.search_provider_url_v1_pb2 import SavedSearchProviderUrlResponse
+from sickrage.core.amqp.protos.server_certificate_v1_pb2 import SavedServerCertificateResponse
+from sickrage.core.amqp.protos.updates_v1_pb2 import UpdatedAppResponse
 
 
 class AMQPConsumer(AMQPBase):

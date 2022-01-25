@@ -123,7 +123,7 @@ class Logger(logging.getLoggerClass()):
                 if search_provider.provider_type in [SearchProviderType.NZB, SearchProviderType.NEWZNAB]:
                     items.append(search_provider.api_key)
                 elif search_provider.provider_type == SearchProviderType.TORRENT_RSS and not search_provider.default:
-                    items.append(search_provider.urls['base_url'])
+                    items.append(search_provider.url)
 
                 items.append(search_provider.cookies)
 

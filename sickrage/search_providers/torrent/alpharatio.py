@@ -34,10 +34,6 @@ from sickrage.search_providers import TorrentProvider
 class AlphaRatioProvider(TorrentProvider):
     def __init__(self):
         super(AlphaRatioProvider, self).__init__("AlphaRatio", 'https://alpharatio.cc', True)
-        self._urls.update({
-            'login': '{base_url}/login.php'.format(**self._urls),
-            'search': '{base_url}/torrents.php?searchstr=%s%s'.format(**self._urls)
-        })
 
         # custom settings
         self.custom_settings = {
@@ -52,6 +48,13 @@ class AlphaRatioProvider(TorrentProvider):
         self.proper_strings = ['PROPER', 'REPACK']
 
         self.cache = TVCache(self, min_time=20)
+
+    @property
+    def urls(self):
+        return {
+            'login': f'{self.url}/login.php',
+            'search': f'{self.url}/torrents.php?searchstr=%s%s'
+        }
 
     def login(self):
         if any(dict_from_cookiejar(self.session.cookies).values()):
@@ -136,7 +139,7 @@ class AlphaRatioProvider(TorrentProvider):
 
                     title = cells[labels.index('Name /Year')].find('a', dir='ltr').get_text(strip=True)
                     download = cells[labels.index('Name /Year')].find('a', title='Download')['href']
-                    download_url = urljoin(self.urls['base_url'], download)
+                    download_url = urljoin(self.url, download)
                     if not all([title, download_url]):
                         continue
 

@@ -26,7 +26,7 @@
                             <tbody>
                                 % for providerID, providerObj in sickrage.app.search_providers.sort().items():
                                     % if providerObj.provider_type not in [SearchProviderType.TORRENT_RSS, SearchProviderType.NEWZNAB] and providerObj.id not in ['bitcannon']:
-                                        <% providerURL = providerObj.urls['base_url'] %>
+                                        <% providerURL = providerObj.url %>
                                         <%
                                             online = True
                                             resp = sickrage.app.api.search_provider.get_status(providerID)

@@ -33,12 +33,6 @@ class Anizb(NZBProvider):
         """Initialize the class."""
         super(Anizb, self).__init__('Anizb', 'https://anizb.org', False)
 
-        # URLs
-        self._urls.update({
-            'rss': '{base_url}/'.format(**self._urls),
-            'api': '{base_url}/api/?q='.format(**self._urls)
-        })
-
         # Miscellaneous Options
         self.supports_absolute_numbering = True
         self.anime_only = True
@@ -46,6 +40,13 @@ class Anizb(NZBProvider):
 
         # Cache
         self.cache = TVCache(self)
+
+    @property
+    def urls(self):
+        return {
+            'rss': f'{self.url}/',
+            'api': f'{self.url}/api/?q='
+        }
 
     def search(self, search_strings, age=0, series_id=None, series_provider_id=None, season=None, episode=None, **kwargs):
         """Start searching for anime using the provided search_strings. Used for backlog and daily."""

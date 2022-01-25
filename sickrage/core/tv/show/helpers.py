@@ -35,7 +35,7 @@ def find_show(series_id, series_provider_id=None):
 
 def find_show_by_slug(slug):
     series_id, series_provider_slug = slug.split('-')
-    return sickrage.app.shows.get((int(series_id), SeriesProviderID.by_slug(series_provider_slug)), None)
+    return sickrage.app.shows.get((int(series_id), SeriesProviderID(series_provider_slug)), None)
 
 
 def find_show_by_name(term):

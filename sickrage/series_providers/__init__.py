@@ -40,7 +40,7 @@ class SeriesProvider(object):
 
     @property
     def slug(self):
-        return self.id.slug
+        return self.id.value
 
 
 class SeriesProviders(dict):

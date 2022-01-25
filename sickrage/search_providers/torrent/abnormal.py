@@ -32,12 +32,6 @@ class ABNormalProvider(TorrentProvider):
     def __init__(self):
         super(ABNormalProvider, self).__init__("ABNormal", 'https://abnormal.ws', True)
 
-        # URLs
-        self._urls.update({
-            'login': '{base_url}/login.php'.format(**self._urls),
-            'search': '{base_url}/torrents.php'.format(**self._urls),
-        })
-
         # custom settings
         self.custom_settings = {
             'username': '',
@@ -51,6 +45,13 @@ class ABNormalProvider(TorrentProvider):
 
         # Cache
         self.cache = TVCache(self, min_time=30)
+
+    @property
+    def urls(self):
+        return {
+            'login': f'{self.url}/login.php',
+            'search': f'{self.url}/torrents.php',
+        }
 
     def login(self):
         if any(dict_from_cookiejar(self.session.cookies).values()):
@@ -142,7 +143,7 @@ class ABNormalProvider(TorrentProvider):
 
                     title = cells[labels.index('Release')].get_text(strip=True)
                     download = cells[labels.index('DL')].find('a', class_='tooltip')['href']
-                    download_url = urljoin(self.urls['base_url'], download)
+                    download_url = urljoin(self.url, download)
                     if not all([title, download_url]):
                         continue
 

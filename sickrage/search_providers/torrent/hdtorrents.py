@@ -33,11 +33,6 @@ class HDTorrentsProvider(TorrentProvider):
     def __init__(self):
         super(HDTorrentsProvider, self).__init__("HDTorrents", 'https://hd-torrents.org', True)
 
-        self._urls.update({
-            'login': '{base_url}/login.php'.format(**self._urls),
-            'search': '{base_url}/torrents.php'.format(**self._urls)
-        })
-
         # custom settings
         self.custom_settings = {
             'username': '',
@@ -50,6 +45,13 @@ class HDTorrentsProvider(TorrentProvider):
         self.proper_strings = ['PROPER', 'REPACK', 'REAL', 'RERIP']
 
         self.cache = TVCache(self, min_time=30)
+
+    @property
+    def urls(self):
+        return {
+            'login': f'{self.url}/login.php',
+            'search': f'{self.url}/torrents.php'
+        }
 
     def _check_auth(self):
         if not self.custom_settings['username'] or not self.custom_settings['password']:
@@ -155,7 +157,7 @@ class HDTorrentsProvider(TorrentProvider):
                     title = title.get_text(strip=True) if title else None
                     link = cells[labels.index('Dl')].a
                     link = link.get('href') if link else None
-                    download_url = urljoin(self.urls['base_url'], link) if link else None
+                    download_url = urljoin(self.url, link) if link else None
                     if not all([title, download_url]):
                         continue
 

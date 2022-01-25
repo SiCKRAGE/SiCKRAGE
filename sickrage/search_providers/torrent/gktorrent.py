@@ -33,11 +33,6 @@ class GKTorrentProvider(TorrentProvider):
     def __init__(self):
         super(GKTorrentProvider, self).__init__('GKTorrent', 'https://www.gktorrent.pw', False)
 
-        self._urls.update({
-            'search': '{base_url}/recherche/'.format(**self._urls),
-            'rss': '{base_url}/torrents/séries'.format(**self._urls),
-        })
-
         # custom settings
         self.custom_settings = {
             'custom_url': '',
@@ -48,6 +43,13 @@ class GKTorrentProvider(TorrentProvider):
         self.proper_strings = ['PROPER', 'REPACK']
 
         self.cache = TVCache(self, min_time=20)
+
+    @property
+    def urls(self):
+        return {
+            'search': f'{self.url}/recherche/',
+            'rss': f'{self.url}/torrents/séries',
+        }
 
     def search(self, search_strings, age=0, series_id=None, series_provider_id=None, season=None, episode=None, **kwargs):
         results = []
@@ -65,7 +67,7 @@ class GKTorrentProvider(TorrentProvider):
                     if not validate_url(self.custom_settings['custom_url']):
                         sickrage.app.log.warning("Invalid custom url: {}".format(self.custom_settings['custom_url']))
                         return results
-                    search_url = urljoin(self.custom_settings['custom_url'], search_url.split(self.urls['base_url'])[1])
+                    search_url = urljoin(self.custom_settings['custom_url'], search_url.split(self.url)[1])
 
                 resp = self.session.get(search_url)
                 if not resp or not resp.text:
@@ -104,17 +106,17 @@ class GKTorrentProvider(TorrentProvider):
                     info_cell = cells[0].a
                     if info_cell:
                         title = info_cell.get_text()
-                        download_url = self._get_download_link(urljoin(self.urls['base_url'], info_cell.get('href')))
+                        download_url = self._get_download_link(urljoin(self.url, info_cell.get('href')))
                     if not all([title, download_url]):
                         continue
 
                     title = '{name} {codec}'.format(name=title, codec='x264')
 
-                    if self.custom_settings['custom_url'] and self.urls['base_url'] in download_url:
+                    if self.custom_settings['custom_url'] and self.url in download_url:
                         if not validate_url(self.custom_settings['custom_url']):
                             sickrage.app.log.warning("Invalid custom url: {}".format(self.custom_settings['custom_url']))
                             return results
-                        download_url = urljoin(self.custom_settings['custom_url'], download_url.split(self.urls['base_url'])[1])
+                        download_url = urljoin(self.custom_settings['custom_url'], download_url.split(self.url)[1])
 
                     seeders = try_int(cells[2].get_text(strip=True))
                     leechers = try_int(cells[3].get_text(strip=True))
@@ -153,7 +155,7 @@ class GKTorrentProvider(TorrentProvider):
                         if link.startswith("magnet"):
                             links["magnet"] = link
                         else:
-                            links["torrent"] = urljoin(self.urls['base_url'], link)
+                            links["torrent"] = urljoin(self.url, link)
         except Exception:
             pass
 

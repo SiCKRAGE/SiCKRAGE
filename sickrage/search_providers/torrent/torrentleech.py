@@ -32,13 +32,6 @@ class TorrentLeechProvider(TorrentProvider):
     def __init__(self):
         super(TorrentLeechProvider, self).__init__("TorrentLeech", 'https://www.torrentleech.org', True)
 
-        self._urls.update({
-            'login': '{base_url}/user/account/login'.format(**self._urls),
-            'search': '{base_url}/torrents/browse/list/'.format(**self._urls),
-            'download': '{base_url}/download/%s/%s'.format(**self._urls),
-            'details': '{base_url}/download/%s/%s'.format(**self._urls),
-        })
-
         # custom settings
         self.custom_settings = {
             'username': '',
@@ -53,6 +46,15 @@ class TorrentLeechProvider(TorrentProvider):
         self.proper_strings = ['PROPER', 'REPACK', 'REAL', 'RERIP']
 
         self.cache = TVCache(self, min_time=20)
+
+    @property
+    def urls(self):
+        return {
+            'login': f'{self.url}/user/account/login',
+            'search': f'{self.url}/torrents/browse/list/',
+            'download': f'{self.url}/download/%s/%s',
+            'details': f'{self.url}/download/%s/%s',
+        }
 
     # def login(self):
     #     return self.cookie_login('log in')

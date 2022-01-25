@@ -30,11 +30,6 @@ class TORRENTZProvider(TorrentProvider):
     def __init__(self):
         super(TORRENTZProvider, self).__init__("Torrentz", 'https://torrentz2.eu', False)
 
-        self._urls.update({
-            'verified': '{base_url}/feed_verified'.format(**self._urls),
-            'feed': '{base_url}/feed'.format(**self._urls)
-        })
-
         # custom settings
         self.custom_settings = {
             'confirmed': False,
@@ -43,6 +38,13 @@ class TORRENTZProvider(TorrentProvider):
         }
 
         self.cache = TVCache(self, min_time=15)
+
+    @property
+    def urls(self):
+        return {
+            'verified': f'{self.url}/feed_verified',
+            'feed': f'{self.url}/feed'
+        }
 
     @staticmethod
     def _split_description(description):

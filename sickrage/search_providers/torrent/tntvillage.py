@@ -33,10 +33,6 @@ class TNTVillageProvider(TorrentProvider):
     def __init__(self):
         super(TNTVillageProvider, self).__init__("TNTVillage", 'http://www.tntvillage.scambioetico.org', False)
 
-        self._urls.update({
-            'search': '{base_url}/src/releaselist.php'.format(**self._urls),
-        })
-
         # custom settings
         self.custom_settings = {
             'subtitle': False,
@@ -48,6 +44,12 @@ class TNTVillageProvider(TorrentProvider):
         self.proper_strings = ['PROPER', 'REPACK']
 
         self.cache = TVCache(self, min_time=30)
+
+    @property
+    def urls(self):
+        return {
+            'search': f'{self.url}/src/releaselist.php',
+        }
 
     def search(self, search_strings, age=0, series_id=None, series_provider_id=None, season=None, episode=None, **kwargs):
         results = []

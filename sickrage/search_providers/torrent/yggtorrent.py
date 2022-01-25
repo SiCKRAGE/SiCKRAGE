@@ -32,14 +32,6 @@ class YggtorrentProvider(TorrentProvider):
         """Initialize the class."""
         super(YggtorrentProvider, self).__init__('Yggtorrent', 'https://www2.yggtorrent.si', True)
 
-        # URLs
-        self._urls.update({
-            'auth': '{base_url}/user/ajax_usermenu'.format(**self._urls),
-            'login': '{base_url}/user/login'.format(**self._urls),
-            'search': '{base_url}/engine/search'.format(**self._urls),
-            'download': '{base_url}/engine/download_torrent?id=%s'.format(**self._urls)
-        })
-
         # custom settings
         self.custom_settings = {
             'username': '',
@@ -53,6 +45,15 @@ class YggtorrentProvider(TorrentProvider):
 
         # Cache
         self.cache = TVCache(self, min_time=20)
+
+    @property
+    def urls(self):
+        return {
+            'auth': f'{self.url}/user/ajax_usermenu',
+            'login': f'{self.url}/user/login',
+            'search': f'{self.url}/engine/search',
+            'download': f'{self.url}/engine/download_torrent?id=%s'
+        }
 
     def search(self, search_strings, age=0, series_id=None, series_provider_id=None, season=None, episode=None, **kwargs):
         """

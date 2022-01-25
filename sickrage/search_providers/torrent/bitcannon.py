@@ -28,9 +28,6 @@ from sickrage.search_providers import TorrentProvider
 class BitCannonProvider(TorrentProvider):
     def __init__(self):
         super(BitCannonProvider, self).__init__("BitCannon", 'http://localhost:3000', False)
-        self._urls.update({
-            'search': '{base_url}/api/search'.format(**self._urls)
-        })
 
         # custom settings
         self.custom_settings = {
@@ -42,6 +39,12 @@ class BitCannonProvider(TorrentProvider):
 
         self.cache = TVCache(self, search_strings={'RSS': ['tv', 'anime']})
 
+    @property
+    def urls(self):
+        return {
+            'search': f'{self.url}/api/search'
+        }
+
     def search(self, search_strings, age=0, series_id=None, series_provider_id=None, season=None, episode=None, **kwargs):
         results = []
 
@@ -50,7 +53,7 @@ class BitCannonProvider(TorrentProvider):
             if not validate_url(self.custom_settings['custom_url']):
                 sickrage.app.log.warning("Invalid custom url: {0}".format(self.custom_settings['custom_url']))
                 return results
-            search_url = urljoin(self.custom_settings['custom_url'], search_url.split(self.urls['base_url'])[1])
+            search_url = urljoin(self.custom_settings['custom_url'], search_url.split(self.url)[1])
 
         show_object = find_show(series_id, series_provider_id)
 

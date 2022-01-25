@@ -36,7 +36,7 @@
                 newznab_providers += '{}!!!'.format(
                         '|'.join([providerID,
                         providerObj.name,
-                        providerObj.urls["base_url"],
+                        providerObj.url,
                         str(providerObj.api_key),
                         providerObj.catIDs,
                         ("false", "true")[bool(providerObj.default)],
@@ -50,7 +50,7 @@
                 torrentrss_providers += '{}!!!'.format(
                     '|'.join([providerID,
                               providerObj.name,
-                              providerObj.urls["base_url"],
+                              providerObj.url,
                               providerObj.cookies,
                               providerObj.titleTAG,
                               ("false", "true")[bool(providerObj.default)],
@@ -89,7 +89,7 @@
                 <div class="list-group w-50" id="provider_order_list">
                     % for providerID, providerObj in sickrage.app.search_providers.sort().items():
                         % if (providerObj.provider_type in [SearchProviderType.NZB, SearchProviderType.NEWZNAB] and sickrage.app.config.general.use_nzbs) or (providerObj.provider_type in [SearchProviderType.TORRENT, SearchProviderType.TORRENT_RSS] and sickrage.app.config.general.use_torrents):
-                        <% provider_url = providerObj.urls.get('base_url', '') %>
+                        <% provider_url = providerObj.url %>
                         % if 'custom_url' in providerObj.custom_settings and validate_url(providerObj.custom_settings['custom_url']):
                             <% provider_url = providerObj.custom_settings['custom_url'] %>
                         % endif

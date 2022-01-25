@@ -47,7 +47,7 @@ class UsersSchema(SQLAlchemyAutoSchema):
 class GeneralSchema(SQLAlchemyAutoSchema):
     proper_searcher_interval = EnumField(CheckPropersInterval)
     nzb_method = EnumField(NzbMethod)
-    series_provider_default = EnumField(SeriesProviderID)
+    series_provider_default = EnumField(SeriesProviderID, by_value=True)
     process_method = EnumField(ProcessMethod)
     file_timestamp_timezone = EnumField(FileTimestampTimezone)
     cpu_preset = EnumField(CpuPreset)
