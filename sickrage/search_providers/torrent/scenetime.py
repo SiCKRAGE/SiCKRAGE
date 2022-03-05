@@ -27,13 +27,6 @@ class SceneTimeProvider(TorrentProvider):
     def __init__(self):
         super(SceneTimeProvider, self).__init__("SceneTime", 'https://www.scenetime.com', True)
 
-        self._urls.update({
-            'login': '{base_url}/takelogin.php'.format(**self._urls),
-            'detail': '{base_url}/details.php?id=%s'.format(**self._urls),
-            'search': '{base_url}/browse_API.php'.format(**self._urls),
-            'download': '{base_url}/download.php/%s/%s'.format(**self._urls)
-        })
-
         # custom settings
         self.custom_settings = {
             'username': '',
@@ -49,6 +42,15 @@ class SceneTimeProvider(TorrentProvider):
         self.categories = [2, 42, 9, 63, 77, 79, 100, 83]
 
         self.cache = TVCache(self, min_time=20)
+
+    @property
+    def urls(self):
+        return {
+            'login': f'{self.url}/takelogin.php',
+            'detail': f'{self.url}/details.php?id=%s',
+            'search': f'{self.url}/browse_API.php',
+            'download': f'{self.url}/download.php/%s/%s'
+        }
 
     def login(self):
         return self.cookie_login('sign in')

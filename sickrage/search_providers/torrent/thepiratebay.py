@@ -30,11 +30,6 @@ class ThePirateBayProvider(TorrentProvider):
     def __init__(self):
         super(ThePirateBayProvider, self).__init__("ThePirateBay", 'https://thepiratebay.org', False)
 
-        self._urls.update({
-            "search": "{base_url}/search/%s/0/3/200".format(**self._urls),
-            "rss": "{base_url}/tv/latest".format(**self._urls),
-        })
-
         # custom settings
         self.custom_settings = {
             'custom_url': '',
@@ -44,6 +39,13 @@ class ThePirateBayProvider(TorrentProvider):
         }
 
         self.cache = TVCache(self, min_time=20)
+
+    @property
+    def urls(self):
+        return {
+            "search": f'{self.url}/search/%s/0/3/200',
+            "rss": f'{self.url}/tv/latest',
+        }
 
     def search(self, search_strings, age=0, series_id=None, series_provider_id=None, season=None, episode=None, **kwargs):
         results = []
@@ -56,7 +58,7 @@ class ThePirateBayProvider(TorrentProvider):
                     if not validate_url(self.custom_settings['custom_url']):
                         sickrage.app.log.warning("Invalid custom url: {0}".format(self.custom_settings['custom_url']))
                         return results
-                    search_url = urljoin(self.custom_settings['custom_url'], search_url.split(self.urls['base_url'])[1])
+                    search_url = urljoin(self.custom_settings['custom_url'], search_url.split(self.url)[1])
 
                 if mode != "RSS":
                     search_url = search_url % search_string
@@ -113,7 +115,7 @@ class ThePirateBayProvider(TorrentProvider):
                     download_url = download_url.get('href') if download_url else None
                     if download_url and 'magnet:?' not in download_url:
                         try:
-                            details_url = urljoin(self.custom_settings['custom_url'] or self.urls['base_url'], download_url)
+                            details_url = urljoin(self.custom_settings['custom_url'] or self.url, download_url)
                             details_data = self.session.get(details_url).text
                         except Exception:
                             sickrage.app.log.debug('Invalid ThePirateBay proxy please try another one')

@@ -68,7 +68,7 @@ class TheTVDB(SeriesProvider):
         sickrage.app.log.debug(f"Searching for show using query term: {query}")
 
         search_results = sickrage.app.api.series_provider.search(provider=self.slug, query=quote(query), language=language)
-        if not search_results:
+        if not search_results or 'error' in search_results:
             sickrage.app.log.debug(f'Series search using query term {query} returned zero results, cannot find series on {self.name}')
 
         return search_results
@@ -81,7 +81,7 @@ class TheTVDB(SeriesProvider):
         sickrage.app.log.debug(f"Searching for show using remote id: {remote_id}")
 
         search_result = sickrage.app.api.series_provider.search_by_id(provider=self.slug, remote_id=quote(remote_id), language=language)
-        if not search_result:
+        if not search_result or 'error' in search_result:
             sickrage.app.log.debug(f'Series search using remote id {remote_id} returned zero results, cannot find series on {self.name}')
 
         return search_result
@@ -101,7 +101,7 @@ class TheTVDB(SeriesProvider):
         sickrage.app.log.debug(f"[{sid}]: Getting series info from {self.name}")
 
         resp = sickrage.app.api.series_provider.get_series_info(provider=self.slug, series_id=sid, language=language)
-        if not resp:
+        if not resp or 'error' in resp:
             sickrage.app.log.debug(f"[{sid}]: Unable to get series info from {self.name}")
             return None
 
@@ -120,7 +120,7 @@ class TheTVDB(SeriesProvider):
 
         season_type = 'dvd' if dvd_order else 'official'
         resp = sickrage.app.api.series_provider.get_episodes_info(provider=self.slug, series_id=sid, season_type=season_type, language=language)
-        if not resp:
+        if not resp or 'error' in resp:
             sickrage.app.log.debug(f"[{sid}]: Unable to get episode data from {self.name}")
             return None
 
@@ -193,14 +193,15 @@ class TheTVDB(SeriesProvider):
 
     def updates(self, since):
         resp = sickrage.app.api.series_provider.updates(provider=self.slug, since=since)
-        if resp:
+        if resp and 'error' not in resp:
             return resp
 
     def languages(self):
         resp = sickrage.app.api.series_provider.languages(provider=self.slug)
-        if resp:
-            return sorted(resp, key=lambda i: i['name'])
-        return {}
+        if not resp or 'error' in resp:
+            return {}
+
+        return sorted(resp, key=lambda i: i['name'])
 
     def __repr__(self):
         return repr(self.cache)

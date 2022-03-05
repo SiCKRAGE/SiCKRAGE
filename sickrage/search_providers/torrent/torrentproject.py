@@ -60,7 +60,7 @@ class TorrentProjectProvider(TorrentProvider):
 
                 search_params['s'] = search_string
 
-                search_url = self.urls['base_url']
+                search_url = self.url
                 if self.custom_settings['custom_url']:
                     if not validate_url(self.custom_settings['custom_url']):
                         sickrage.app.log.warning("Invalid custom url set, please check your settings")

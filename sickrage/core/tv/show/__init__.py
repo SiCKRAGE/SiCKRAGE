@@ -55,7 +55,7 @@ class TVShowID(object):
 
     @property
     def slug(self):
-        return f'{self.series_id}-{self.series_provider_id.slug}'
+        return f'{self.series_id}-{self.series_provider_id.value}'
 
 
 class TVShow(object):
@@ -82,7 +82,7 @@ class TVShow(object):
 
     @property
     def slug(self):
-        return f'{self.series_id}-{self.series_provider_id.slug}'
+        return f'{self.series_id}-{self.series_provider_id.value}'
 
     @property
     def series_id(self):

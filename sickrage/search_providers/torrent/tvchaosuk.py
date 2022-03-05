@@ -31,12 +31,6 @@ class TVChaosUKProvider(TorrentProvider):
     def __init__(self):
         super(TVChaosUKProvider, self).__init__('TvChaosUK', 'https://www.tvchaosuk.com', True)
 
-        self._urls.update({
-            'login': '{base_url}/takelogin.php'.format(**self._urls),
-            'index': '{base_url}/index.php'.format(**self._urls),
-            'search': '{base_url}/browse.php'.format(**self._urls)
-        })
-
         # custom settings
         self.custom_settings = {
             'username': '',
@@ -46,6 +40,14 @@ class TVChaosUKProvider(TorrentProvider):
         }
 
         self.cache = TVCache(self, min_time=20)
+
+    @property
+    def urls(self):
+        return {
+            'login': f'{self.url}/takelogin.php',
+            'index': f'{self.url}/index.php',
+            'search': f'{self.url}/browse.php'
+        }
 
     def _check_auth(self):
         if self.custom_settings['username'] and self.custom_settings['password']:

@@ -34,22 +34,6 @@ class MoreThanTVProvider(TorrentProvider):
     def __init__(self):
         super(MoreThanTVProvider, self).__init__("MoreThanTV", 'https://www.morethan.tv', True)
 
-        self._urls.update({
-            'login': '{base_url}/login.php'.format(**self._urls),
-            'detail': '{base_url}/torrents.php'
-                      '?id=%s'.format(**self._urls),
-            'search': '{base_url}/torrents.php'
-                      '?tags_type=1'
-                      '&order_by=time'
-                      '&order_way=desc'
-                      '&action=basic'
-                      '&searchsubmit=1'
-                      '&searchstr=%s'.format(**self._urls),
-            'download': '{base_url}/torrents.php'
-                        '?action=download'
-                        '&id=%s'.format(**self._urls)
-        })
-
         self._uid = None
         self._hash = None
 
@@ -64,6 +48,15 @@ class MoreThanTVProvider(TorrentProvider):
         self.proper_strings = ['PROPER', 'REPACK']
 
         self.cache = TVCache(self)
+
+    @property
+    def urls(self):
+        return {
+            'login': f'{self.url}/login.php',
+            'detail': f'{self.url}/torrents.php?id=%s',
+            'search': f'{self.url}/torrents.php?tags_type=1&order_by=time&order_way=desc&action=basic&searchsubmit=1&searchstr=%s',
+            'download': f'{self.url}/torrents.php?action=download&id=%s'
+        }
 
     def _check_auth(self):
 
@@ -142,7 +135,7 @@ class MoreThanTVProvider(TorrentProvider):
                     if result.find('img', alt='Nuked'):
                         continue
 
-                    download_url = urljoin(self.urls['base_url'] + '/',
+                    download_url = urljoin(self.url + '/',
                                            result.find('span', title='Download').parent['href'])
                     title = result.find('a', title='View torrent').get_text(strip=True)
 

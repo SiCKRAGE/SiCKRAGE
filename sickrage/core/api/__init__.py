@@ -343,8 +343,8 @@ class API(object):
         def __init__(self, api):
             self.api = api
 
-        def get_urls(self, provider):
-            endpoint = f'provider/{provider}/urls'
+        def get_url(self, provider):
+            endpoint = f'provider/{provider}/url'
             return self.api.request('GET', endpoint)
 
         def get_status(self, provider):

@@ -28,9 +28,6 @@ from sickrage.search_providers import TorrentProvider
 class SkyTorrents(TorrentProvider):
     def __init__(self):
         super(SkyTorrents, self).__init__('SkyTorrents', 'https://www.skytorrents.lol', False)
-        self._urls.update({
-            "rss": "{base_url}/top100".format(**self._urls)
-        })
 
         # custom settings
         self.custom_settings = {
@@ -41,6 +38,12 @@ class SkyTorrents(TorrentProvider):
 
         self.cache = TVCache(self)
 
+    @property
+    def urls(self):
+        return {
+            "rss": f'{self.url}/top100'
+        }
+
     def search(self, search_strings, age=0, series_id=None, series_provider_id=None, season=None, episode=None, **kwargs):
         results = []
 
@@ -50,13 +53,13 @@ class SkyTorrents(TorrentProvider):
                 if mode != "RSS":
                     sickrage.app.log.debug("Search string: {0}".format(search_string))
 
-                search_url = (self.urls["base_url"], self.urls["rss"])[mode == "RSS"]
+                search_url = (self.url, self.urls["rss"])[mode == "RSS"]
 
                 if self.custom_settings['custom_url']:
                     if not validate_url(self.custom_settings['custom_url']):
                         sickrage.app.log.warning("Invalid custom url: {}".format(self.custom_settings['custom_url']))
                         return results
-                    search_url = urljoin(self.custom_settings['custom_url'], search_url.split(self.urls['base_url'])[1])
+                    search_url = urljoin(self.custom_settings['custom_url'], search_url.split(self.url)[1])
 
                 if mode != "RSS":
                     search_params = {'query': search_string, 'sort': ('seeders', 'created')[mode == 'RSS'], 'type': 'video', 'tag': 'hd', 'category': 'show'}

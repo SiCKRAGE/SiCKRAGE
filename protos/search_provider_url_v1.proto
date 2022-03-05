@@ -4,5 +4,5 @@ package app.protobufs.v1;
 
 message SavedSearchProviderUrlResponse {
     string provider_id = 1;
-    string provider_urls = 2;
+    string provider_url = 2;
 }

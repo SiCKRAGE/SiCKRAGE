@@ -28,12 +28,6 @@ class DanishbitsProvider(TorrentProvider):
     def __init__(self):
         super(DanishbitsProvider, self).__init__('Danishbits', 'https://danishbits.org', True)
 
-        # URLs
-        self._urls.update({
-            'login': '{base_url}/login.php'.format(**self._urls),
-            'search': '{base_url}/couchpotato.php'.format(**self._urls),
-        })
-
         # custom settings
         self.custom_settings = {
             'username': '',
@@ -48,6 +42,13 @@ class DanishbitsProvider(TorrentProvider):
 
         # Cache
         self.cache = TVCache(self)
+
+    @property
+    def urls(self):
+        return {
+            'login': f'{self.url}/login.php',
+            'search': f'{self.url}/couchpotato.php',
+        }
 
     def search(self, search_strings, age=0, series_id=None, series_provider_id=None, season=None, episode=None, **kwargs):
         results = []

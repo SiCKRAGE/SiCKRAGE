@@ -58,7 +58,7 @@ class NebulanceProvider(TorrentProvider):
         }
 
         try:
-            response = self.session.post(self.urls['base_url'], params={'page': 'login'}, data=login_params, timeout=30).text
+            response = self.session.post(self.url, params={'page': 'login'}, data=login_params, timeout=30).text
         except Exception:
             sickrage.app.log.warning("Unable to connect to provider")
             return False
@@ -87,7 +87,7 @@ class NebulanceProvider(TorrentProvider):
                 if mode != 'RSS':
                     sickrage.app.log.debug("Search string: %s " % search_string)
 
-                search_url = self.urls['base_url'] + "?" + urlencode(search_params)
+                search_url = self.url + "?" + urlencode(search_params)
 
                 resp = self.session.get(search_url)
                 if not resp or not resp.text:
@@ -133,7 +133,7 @@ class NebulanceProvider(TorrentProvider):
                     leechers = int(
                         torrent_row.findAll('a', {'title': 'Click here to view peers details'})[
                             1].text.strip())
-                    download_url = self.urls['base_url'] + download_href
+                    download_url = self.url + download_href
                     # FIXME
                     size = -1
 

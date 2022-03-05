@@ -29,12 +29,6 @@ class HDBitsProvider(TorrentProvider):
     def __init__(self):
         super(HDBitsProvider, self).__init__("HDBits", 'https://hdbits.org', True)
 
-        self._urls.update({
-            'search': '{base_url}/api/torrents'.format(**self._urls),
-            'rss': '{base_url}/api/torrents'.format(**self._urls),
-            'download': '{base_url}/download.php'.format(**self._urls)
-        })
-
         # custom settings
         self.custom_settings = {
             'username': '',
@@ -42,6 +36,14 @@ class HDBitsProvider(TorrentProvider):
         }
 
         self.cache = HDBitsCache(self, min_time=15)
+
+    @property
+    def urls(self):
+        return {
+            'search': f'{self.url}/api/torrents',
+            'rss': f'{self.url}/api/torrents',
+            'download': f'{self.url}/download.php'
+        }
 
     def _check_auth(self):
         if not self.custom_settings['username'] or not self.custom_settings['passkey']:

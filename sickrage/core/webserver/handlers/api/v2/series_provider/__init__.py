@@ -27,7 +27,7 @@ from sickrage.core.webserver.handlers.api.v2 import ApiV2BaseHandler
 
 class ApiV2SeriesProvidersHandler(ApiV2BaseHandler):
     def get(self):
-        return self.json_response([{'displayName': x.display_name, 'slug': x.slug} for x in SeriesProviderID])
+        return self.json_response([{'displayName': x.display_name, 'slug': x.value} for x in SeriesProviderID])
 
 
 class ApiV2SeriesProvidersSearchHandler(ApiV2BaseHandler):
@@ -35,7 +35,7 @@ class ApiV2SeriesProvidersSearchHandler(ApiV2BaseHandler):
         search_term = self.get_argument('searchTerm', None)
         lang = self.get_argument('seriesProviderLanguage', None)
 
-        series_provider_id = SeriesProviderID.by_slug(series_provider_slug)
+        series_provider_id = SeriesProviderID(series_provider_slug)
         if not series_provider_id:
             return self._bad_request(error="Unable to identify a series provider using provided slug")
 
@@ -51,7 +51,7 @@ class ApiV2SeriesProvidersSearchHandler(ApiV2BaseHandler):
 
 class ApiV2SeriesProvidersLanguagesHandler(ApiV2BaseHandler):
     def get(self, series_provider_slug):
-        series_provider_id = SeriesProviderID.by_slug(series_provider_slug)
+        series_provider_id = SeriesProviderID(series_provider_slug)
         if not series_provider_id:
             return self._not_found(error="Unable to identify a series provider using provided slug")
 

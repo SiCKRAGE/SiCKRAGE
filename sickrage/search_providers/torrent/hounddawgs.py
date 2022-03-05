@@ -33,11 +33,6 @@ class HoundDawgsProvider(TorrentProvider):
     def __init__(self):
         super(HoundDawgsProvider, self).__init__("HoundDawgs", 'https://hounddawgs.org', True)
 
-        self._urls.update({
-            'search': '{base_url}/torrents.php'.format(**self._urls),
-            'login': '{base_url}/login.php'.format(**self._urls)
-        })
-
         # custom settings
         self.custom_settings = {
             'username': '',
@@ -49,6 +44,13 @@ class HoundDawgsProvider(TorrentProvider):
         }
 
         self.cache = TVCache(self)
+
+    @property
+    def urls(self):
+        return {
+            'search': f'{self.url}/torrents.php',
+            'login': f'{self.url}/login.php'
+        }
 
     def login(self):
         if any(dict_from_cookiejar(self.session.cookies).values()):
@@ -155,7 +157,7 @@ class HoundDawgsProvider(TorrentProvider):
                         continue
 
                     title = all_as[2].string
-                    download_url = urljoin(self.urls['base_url'], all_as[0].attrs['href'])
+                    download_url = urljoin(self.url, all_as[0].attrs['href'])
                     if not all([title, download_url]):
                         continue
 

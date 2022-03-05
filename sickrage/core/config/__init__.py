@@ -529,7 +529,7 @@ class Config(object):
                         search_provider = self.db.session().query(self.db.SearchProvidersTorrentRss).filter_by(provider_id=_search_provider_id).one()
 
                     search_provider.name = sickrage.app.search_providers.all()[search_provider.provider_id].name
-                    search_provider.url = sickrage.app.search_providers.all()[search_provider.provider_id].urls['base_url']
+                    search_provider.url = sickrage.app.search_providers.all()[search_provider.provider_id].url
                     search_provider.title_tag = sickrage.app.search_providers.all()[search_provider.provider_id].titleTAG
                 elif _search_provider.provider_type == SearchProviderType.NEWZNAB:
                     try:
@@ -545,7 +545,7 @@ class Config(object):
                         search_provider = self.db.session().query(self.db.SearchProvidersNewznab).filter_by(provider_id=_search_provider_id).one()
 
                     search_provider.name = sickrage.app.search_providers.all()[search_provider.provider_id].name
-                    search_provider.url = sickrage.app.search_providers.all()[search_provider.provider_id].urls['base_url']
+                    search_provider.url = sickrage.app.search_providers.all()[search_provider.provider_id].url
                     search_provider.api_key = sickrage.app.search_providers.all()[search_provider.provider_id].api_key
                     search_provider.cat_ids = sickrage.app.search_providers.all()[search_provider.provider_id].catIDs
 

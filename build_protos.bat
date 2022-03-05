@@ -1,0 +1,1 @@
+.\protoc.exe --proto_path=.\protos --python_out=.\sickrage\core\amqp\protos .\protos\*

@@ -34,12 +34,6 @@ class HDSpaceProvider(TorrentProvider):
     def __init__(self):
         super(HDSpaceProvider, self).__init__("HDSpace", 'https://hd-space.org', True)
 
-        self._urls.update({
-            'login': '{base_url}/index.php?page=login'.format(**self._urls),
-            'search': '{base_url}/index.php?page=torrents&search=%s&active=1&options=0&category='.format(**self._urls),
-            'rss': '{base_url}/rss_torrents.php?feed=dl'.format(**self._urls)
-        })
-
         # custom settings
         self.custom_settings = {
             'username': '',
@@ -48,14 +42,24 @@ class HDSpaceProvider(TorrentProvider):
             'minleech': 0
         }
 
-        self.categories = [15, 21, 22, 24, 25, 40]  # HDTV/DOC 1080/720, bluray, remux
-        for cat in self.categories:
-            self._urls['search'] += str(cat) + '%%3B'
-            self._urls['rss'] += '&cat[]=' + str(cat)
-
-        self._urls['search'] = self._urls['search'][:-4]  # remove extra %%3B
-
         self.cache = TVCache(self)
+
+    @property
+    def urls(self):
+        urls = {
+            'login': f'{self.url}/index.php?page=login',
+            'search': f'{self.url}/index.php?page=torrents&search=%s&active=1&options=0&category=',
+            'rss': f'{self.url}/rss_torrents.php?feed=dl'
+        }
+
+        categories = [15, 21, 22, 24, 25, 40]  # HDTV/DOC 1080/720, bluray, remux
+        for cat in categories:
+            urls['search'] += str(cat) + '%%3B'
+            urls['rss'] += '&cat[]=' + str(cat)
+
+        urls['search'] = urls['search'][:-4]  # remove extra %%3B
+
+        return urls
 
     def _check_auth(self):
         if not self.custom_settings['username'] or not self.custom_settings['password']:
@@ -145,7 +149,7 @@ class HDSpaceProvider(TorrentProvider):
                 try:
                     dl_href = result.find('a', attrs={'href': re.compile(r'download.php.*')})['href']
                     title = re.search('f=(.*).torrent', dl_href).group(1).replace('+', '.')
-                    download_url = self.urls['base_url'] + dl_href
+                    download_url = self.url + dl_href
                     seeders = int(result.find('span', attrs={'class': 'seedy'}).find('a').text)
                     leechers = int(result.find('span', attrs={'class': 'leechy'}).find('a').text)
                     size = convert_size(result, -1)

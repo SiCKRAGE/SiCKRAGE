@@ -39,23 +39,23 @@ class NcoreProvider(TorrentProvider):
             'minleech': 0
         }
 
+        # Cache
+        self.cache = TVCache(self)
+
+    @property
+    def urls(self):
         categories = [
             'xvidser_hun', 'xvidser',
-            'dvd_hun', 'dvd',
-            'dvd9_hun', 'dvd9',
-            'hd_hun', 'hd'
+            'dvdser_hun', 'dvdser',
+            'hdser_hun', 'hdser'
         ]
 
-        categories = '&'.join(['kivalasztott_tipus[]=' + x for x in categories])
-
-        self._urls.update({
-            'login': '{base_url}/login.php'.format(**self._urls),
-            'search': ('{base_url}/torrents.php?{cats}&mire=%s&miben=name'
-                       '&tipus=kivalasztottak_kozott&submit.x=0&submit.y=0&submit=Ok'
-                       '&tags=&searchedfrompotato=true&jsons=true').format(cats=categories, **self._urls),
-        })
-
-        self.cache = TVCache(self)
+        return {
+            'login': f'{self.url}/login.php',
+            'search': f'{self.url}/torrents.php?{"&".join(["kivalasztott_tipus[]=" + x for x in categories])}&mire=%s&miben=name'
+                      '&tipus=kivalasztottak_kozott&submit.x=0&submit.y=0&submit=Ok'
+                      '&tags=&searchedfrompotato=true&jsons=true'
+        }
 
     def login(self):
         if any(dict_from_cookiejar(self.session.cookies).values()):

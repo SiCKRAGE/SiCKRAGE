@@ -29,10 +29,6 @@ class BTNProvider(TorrentProvider):
     def __init__(self):
         super(BTNProvider, self).__init__("BTN", 'https://broadcasthe.net', True)
 
-        self._urls.update({
-            'api': 'https://api.broadcasthe.net',
-        })
-
         self.supports_absolute_numbering = True
 
         # custom settings
@@ -44,6 +40,12 @@ class BTNProvider(TorrentProvider):
         }
 
         self.cache = TVCache(self, min_time=10)
+
+    @property
+    def urls(self):
+        return {
+            'api': 'https://api.broadcasthe.net',
+        }
 
     def _check_auth(self):
         if not self.custom_settings['api_key']:

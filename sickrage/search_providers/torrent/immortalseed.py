@@ -34,13 +34,6 @@ class ImmortalseedProvider(TorrentProvider):
     def __init__(self):
         super(ImmortalseedProvider, self).__init__('Immortalseed', 'https://immortalseed.me', True)
 
-        # URLs
-        self._urls.update({
-            'login': '{base_url}/takelogin.php'.format(**self._urls),
-            'search': '{base_url}/browse.php'.format(**self._urls),
-            'rss': '{base_url}/rss.php'.format(**self._urls),
-        })
-
         # custom settings
         self.custom_settings = {
             'username': '',
@@ -56,6 +49,14 @@ class ImmortalseedProvider(TorrentProvider):
 
         # Cache
         self.cache = ImmortalseedCache(self, min_time=20)
+
+    @property
+    def urls(self):
+        return {
+            'login': f'{self.url}/takelogin.php',
+            'search': f'{self.url}/browse.php',
+            'rss': f'{self.url}/rss.php',
+        }
 
     def _check_auth(self):
         if not self.custom_settings['username'] or not self.custom_settings['password']:

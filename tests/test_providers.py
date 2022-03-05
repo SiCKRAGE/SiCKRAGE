@@ -178,9 +178,9 @@ class ProviderTests(type):
             self.assertTrue(len(self.cassette))
 
         def test_url(self):
-            resp = WebSession(cache=False).get(self.provider.urls['base_url'], timeout=30)
-            self.assertTrue(self.provider.urls['base_url'] in resp.url,
-                            '{} redirected to {}'.format(self.provider.urls['base_url'], resp.url))
+            resp = WebSession(cache=False).get(self.provider.url, timeout=30)
+            self.assertTrue(self.provider.url in resp.url,
+                            '{} redirected to {}'.format(self.provider.url, resp.url))
             self.assertTrue(resp.status_code in [200, 403],
                             '{} returned a status code of {}'.format(resp.url, resp.status_code))
 

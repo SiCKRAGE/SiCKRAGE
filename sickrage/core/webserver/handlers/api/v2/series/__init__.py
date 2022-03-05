@@ -125,7 +125,7 @@ class ApiV2SeriesHandler(ApiV2BaseHandler):
         if not series_id:
             return self._bad_request(error=f"Missing seriesId parameter: {series_id}")
 
-        series_provider_id = SeriesProviderID.by_slug(series_provider_slug)
+        series_provider_id = SeriesProviderID(series_provider_slug)
         if not series_provider_id:
             return self._not_found(error="Unable to identify a series provider using provided slug")
 

@@ -33,12 +33,6 @@ class TorrentDayProvider(TorrentProvider):
     def __init__(self):
         super(TorrentDayProvider, self).__init__("TorrentDay", 'https://www.torrentday.com', True)
 
-        self._urls.update({
-            'login': '{base_url}/torrents/'.format(**self._urls),
-            'search': '{base_url}/t.json'.format(**self._urls),
-            'download': '{base_url}/download.php/'.format(**self._urls)
-        })
-
         # custom settings
         self.custom_settings = {
             'username': '',
@@ -69,6 +63,14 @@ class TorrentDayProvider(TorrentProvider):
         }
 
         self.cache = TVCache(self)
+
+    @property
+    def urls(self):
+        return {
+            'login': f'{self.url}/torrents/',
+            'search': f'{self.url}/t.json',
+            'download': f'{self.url}/download.php/'
+        }
 
     def login(self):
         return self.cookie_login('log in')

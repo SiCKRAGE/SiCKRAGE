@@ -197,8 +197,11 @@ class SearchProvider(object):
     def __init__(self, name, url, private):
         self.name = name
 
-        # urls
-        self._urls = {'base_url': url}
+        # url
+        self.url = url
+
+        # url format strings
+        self.url_strings = {}
 
         # other options
         self.private = private
@@ -249,7 +252,7 @@ class SearchProvider(object):
 
     @property
     def urls(self):
-        return self._urls
+        return {}
 
     def get_redirect_url(self, url):
         """Get the final address that the provided URL redirects to."""
@@ -658,7 +661,7 @@ class SearchProvider(object):
 
         :return: False when authentication was not successful. True if successful.
         """
-        check_url = check_url or self.urls['base_url']
+        check_url = check_url or self.url
 
         if self.check_required_cookies():
             # All required cookies have been found within the current session, we don't need to go through this again.
@@ -1038,7 +1041,7 @@ class TorrentRssProvider(TorrentProvider):
             data = self.cache._get_rss_data()['entries']
             if not data:
                 return {'result': False,
-                        'message': 'No items found in the RSS feed {}'.format(self.urls['base_url'])}
+                        'message': 'No items found in the RSS feed {}'.format(self.url)}
 
             (title, url) = self._get_title_and_url(data[0])
 
@@ -1174,7 +1177,7 @@ class NewznabProvider(NZBProvider):
             url_params['apikey'] = self.api_key
 
         try:
-            response = self.session.get(urljoin(self.urls['base_url'], 'api'), params=url_params).text
+            response = self.session.get(urljoin(self.url, 'api'), params=url_params).text
         except Exception:
             error_string = 'Error getting caps xml for [{}]'.format(self.name)
             sickrage.app.log.warning(error_string)
@@ -1295,7 +1298,7 @@ class NewznabProvider(NZBProvider):
                 sleep(sickrage.app.config.general.cpu_preset.value)
 
                 try:
-                    data = self.session.get(urljoin(self.urls['base_url'], 'api'), params=search_params).text
+                    data = self.session.get(urljoin(self.url, 'api'), params=search_params).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug('No data returned from provider')
@@ -1354,7 +1357,7 @@ class NewznabProvider(NZBProvider):
                         continue
 
                     seeders = leechers = -1
-                    if 'gingadaddy' in self.urls['base_url']:
+                    if 'gingadaddy' in self.url:
                         size_regex = re.search(r'\d*.?\d* [KMGT]B', str(item.description))
                         item_size = size_regex.group() if size_regex else -1
                     else:
@@ -1422,13 +1425,13 @@ class TorrentRssCache(TVCache):
         self.min_time = 15
 
     def _get_rss_data(self):
-        sickrage.app.log.debug("Cache update URL: %s" % self.provider.urls['base_url'])
+        sickrage.app.log.debug("Cache update URL: %s" % self.provider.url)
 
         if self.provider.cookies:
             add_dict_to_cookiejar(self.provider.session.cookies,
                                   dict(x.rsplit('=', 1) for x in self.provider.cookies.split(';')))
 
-        return self.get_rss_feed(self.provider.urls['base_url'])
+        return self.get_rss_feed(self.provider.url)
 
 
 class SearchProviders(dict):
@@ -1485,26 +1488,25 @@ class SearchProviders(dict):
     def torrentrss(self):
         return self[TorrentRssProvider.provider_type.name]
 
-    def update_url(self, provider_id, provider_urls):
-        provider = self.all().get(provider_id)
-        if provider:
-            sickrage.app.log.debug('Updated search provider {} URLs'.format(provider.name))
-            provider._urls = json.loads(provider_urls)
+    def update_url(self, provider_id, provider_url):
+        provider = self.all()[provider_id]
+        provider.url = provider_url
+        sickrage.app.log.debug(f'Updated URL for search provider {provider.name}')
 
     def update_urls(self):
         if not sickrage.app.api.token:
             IOLoop.current().call_later(5, self.update_urls)
             return
 
-        sickrage.app.log.debug('Updating search provider URLs')
+        sickrage.app.log.debug('Updating URLs for search providers')
 
         for pID, pObj in self.all().items():
             if pObj.provider_type not in [SearchProviderType.TORRENT_RSS, SearchProviderType.NEWZNAB] and pObj.id not in ['bitcannon']:
                 try:
-                    resp = sickrage.app.api.search_provider.get_urls(pObj.id)
+                    resp = sickrage.app.api.search_provider.get_url(pObj.id)
                     if resp and 'data' in resp:
-                        self.update_url(pID, resp['data']['urls'])
+                        self.update_url(pID, resp['data']['url'])
                 except Exception:
                     pass
 
-        sickrage.app.log.debug('Updating searching provider URLs finished')
+        sickrage.app.log.debug('Updating URLs for searching providers finished')

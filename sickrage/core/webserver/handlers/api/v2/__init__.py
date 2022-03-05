@@ -54,9 +54,9 @@ class ApiV2RetrieveSeriesMetadataHandler(ApiV2BaseHandler):
                 json_data['seriesName'] = series_name
 
             if not json_data['seriesProviderSlug'] and series_provider_id:
-                json_data['seriesProviderSlug'] = series_provider_id.slug
+                json_data['seriesProviderSlug'] = series_provider_id.value
 
             if not json_data['seriesSlug'] and series_id and series_provider_id:
-                json_data['seriesSlug'] = f'{series_id}-{series_provider_id.slug}'
+                json_data['seriesSlug'] = f'{series_id}-{series_provider_id.value}'
 
         return self.json_response(json_data)

@@ -29,11 +29,6 @@ class TokyoToshokanProvider(TorrentProvider):
     def __init__(self):
         super(TokyoToshokanProvider, self).__init__("TokyoToshokan", 'https://www.tokyotosho.info', False)
 
-        self._urls.update({
-            'search': '{base_url}/search.php'.format(**self._urls),
-            'rss': '{base_url}/rss.php'.format(**self._urls)
-        })
-
         self.supports_absolute_numbering = True
         self.anime_only = True
 
@@ -44,6 +39,13 @@ class TokyoToshokanProvider(TorrentProvider):
         }
 
         self.cache = TVCache(self, min_time=15)
+
+    @property
+    def urls(self):
+        return {
+            'search': f'{self.url}/search.php',
+            'rss': f'{self.url}/rss.php'
+        }
 
     def search(self, search_strings, age=0, series_id=None, series_provider_id=None, season=None, episode=None, **kwargs):
         results = []

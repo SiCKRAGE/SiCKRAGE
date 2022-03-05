@@ -15,9 +15,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SiCKRAGE. If not, see <http://www.gnu.org/licenses/>.
-
-
-from requests.compat import urlencode
+from urllib.parse import urlencode
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
@@ -30,11 +28,6 @@ class NorbitsProvider(TorrentProvider):
     def __init__(self):
         super(NorbitsProvider, self).__init__('Norbits', 'https://norbits.net', True)
 
-        self._urls.update({
-            'search': '{base_url}/api2.php?action=torrents'.format(**self._urls),
-            'download': '{base_url}/download.php?'.format(**self._urls)
-        })
-
         # custom settings
         self.custom_settings = {
             'username': '',
@@ -44,6 +37,13 @@ class NorbitsProvider(TorrentProvider):
         }
 
         self.cache = TVCache(self, min_time=20)
+
+    @property
+    def urls(self):
+        return {
+            'search': f'{self.url}/api2.php?action=torrents',
+            'download': f'{self.url}/download.php?'
+        }
 
     def _check_auth(self):
         if not self.custom_settings['username'] or not self.custom_settings['passkey']:

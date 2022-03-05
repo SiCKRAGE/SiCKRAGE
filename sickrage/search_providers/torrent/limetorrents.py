@@ -31,12 +31,6 @@ class LimeTorrentsProvider(TorrentProvider):
     def __init__(self):
         super(LimeTorrentsProvider, self).__init__('LimeTorrents', 'https://www.limetorrents.cc', False)
 
-        self._urls.update({
-            'update': '{base_url}/post/updatestats.php'.format(**self._urls),
-            'search': '{base_url}/search/tv/%s/'.format(**self._urls),
-            'rss': '{base_url}/browse-torrents/TV-shows/'.format(**self._urls),
-        })
-
         # custom settings
         self.custom_settings = {
             'confirmed': False,
@@ -47,6 +41,14 @@ class LimeTorrentsProvider(TorrentProvider):
         self.proper_strings = ['PROPER', 'REPACK', 'REAL']
 
         self.cache = TVCache(self)
+
+    @property
+    def urls(self):
+        return {
+            'update': f'{self.url}/post/updatestats.php',
+            'search': f'{self.url}/search/tv/%s/',
+            'rss': f'{self.url}/browse-torrents/TV-shows/',
+        }
 
     def search(self, search_strings, age=0, series_id=None, series_provider_id=None, season=None, episode=None, **kwargs):
         results = []

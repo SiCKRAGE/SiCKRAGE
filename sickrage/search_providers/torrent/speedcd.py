@@ -29,11 +29,6 @@ class SpeedCDProvider(TorrentProvider):
     def __init__(self):
         super(SpeedCDProvider, self).__init__("Speedcd", 'https://speed.cd', True)
 
-        self._urls.update({
-            'login': '{base_url}/login.php'.format(**self._urls),
-            'search': '{base_url}/browse.php'.format(**self._urls),
-        })
-
         # custom settings
         self.custom_settings = {
             # 'username': '',
@@ -49,6 +44,13 @@ class SpeedCDProvider(TorrentProvider):
         self.proper_strings = ['PROPER', 'REPACK', 'REAL', 'RERIP']
 
         self.cache = TVCache(self, min_time=20)
+
+    @property
+    def urls(self):
+        return {
+            'login': f'{self.url}/login.php',
+            'search': f'{self.url}/browse.php',
+        }
 
     # def login(self):
     #     return self.cookie_login('log in')
@@ -66,7 +68,7 @@ class SpeedCDProvider(TorrentProvider):
         #
         # try:
         #     with bs4_parser(self.session.get(self.urls['login']).text) as html:
-        #         login_url = urljoin(self.urls['base_url'], html.find('form', id='loginform').get('action'))
+        #         login_url = urljoin(self.url, html.find('form', id='loginform').get('action'))
         #         response = self.session.post(login_url, data=login_params, timeout=30).text
         # except Exception as e:
         #     sickrage.app.log.warning("Unable to connect to provider")
@@ -144,7 +146,7 @@ class SpeedCDProvider(TorrentProvider):
 
                 try:
                     title = cells[1].find('a').get_text()
-                    download_url = urljoin(self.urls['base_url'], cells[2].find(title='Download').parent['href'])
+                    download_url = urljoin(self.url, cells[2].find(title='Download').parent['href'])
                     if not all([title, download_url]):
                         continue
 

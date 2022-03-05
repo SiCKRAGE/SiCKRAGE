@@ -70,7 +70,7 @@ class NyaaProvider(TorrentProvider):
                     sickrage.app.log.debug('Search string: {}'.format(search_string))
                     search_params['q'] = search_string
 
-                data = self.cache.get_rss_feed(self.urls['base_url'], params=search_params)
+                data = self.cache.get_rss_feed(self.url, params=search_params)
                 if not data:
                     sickrage.app.log.debug('No data returned from provider')
                     continue

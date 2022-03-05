@@ -30,12 +30,6 @@ class FileListProvider(TorrentProvider):
     def __init__(self):
         super(FileListProvider, self).__init__('FileList', 'https://filelist.ro', True)
 
-        # URLs
-        self._urls.update({
-            "login": "{base_url}/takelogin.php".format(**self._urls),
-            "search": "{base_url}/browse.php".format(**self._urls),
-        })
-
         # custom settings
         self.custom_settings = {
             'username': '',
@@ -49,6 +43,13 @@ class FileListProvider(TorrentProvider):
 
         # Cache
         self.cache = TVCache(self)
+
+    @property
+    def urls(self):
+        return {
+            'login': f'{self.url}/takelogin.php',
+            'search': f'{self.url}/browse.php',
+        }
 
     def login(self):
         if any(dict_from_cookiejar(self.session.cookies).values()):
@@ -150,7 +151,7 @@ class FileListProvider(TorrentProvider):
                         continue
 
                     title = cells[labels.index("Name")].find("a").find("b").get_text(strip=True)
-                    download_url = urljoin(self.urls['base_url'],
+                    download_url = urljoin(self.url,
                                            cells[labels.index("Download")].find("a")["href"])
                     if not all([title, download_url]):
                         continue

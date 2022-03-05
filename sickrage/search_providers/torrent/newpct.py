@@ -36,20 +36,22 @@ class NewpctProvider(TorrentProvider):
     def __init__(self):
         super(NewpctProvider, self).__init__("Newpct", 'http://www.newpct.com', False)
 
-        self._urls.update({
-            'search': ['{base_url}/descargar-serie/%s'.format(**self._urls),
-                       '{base_url}/descargar-seriehd/%s'.format(**self._urls),
-                       '{base_url}/descargar-serievo/%s'.format(**self._urls)],
-            'rss': '{base_url}/feed'.format(**self._urls),
-            'download': 'https://tumejorserie.com/descargar/index.php?link=torrents/%s.torrent'.format(**self._urls),
-        })
-
         # custom settings
         self.custom_settings = {
             'onlyspasearch': False
         }
 
         self.cache = NewpctCache(self, min_time=20)
+
+    @property
+    def urls(self):
+        return {
+            'search': [f'{self.url}/descargar-serie/%s',
+                       f'{self.url}/descargar-seriehd/%s',
+                       f'{self.url}/descargar-serievo/%s'],
+            'rss': f'{self.url}/feed',
+            'download': 'https://tumejorserie.com/descargar/index.php?link=torrents/%s.torrent',
+        }
 
     def _get_season_search_strings(self, series_id, series_provider_id, season, episode):
         """
