@@ -30,7 +30,7 @@ class Banner(Media):
     """
 
     def __init__(self, series_id, series_provider_id, media_format=None):
-        super(Banner, self).__init__(series_id, series_provider_id, media_format)
+        super(Banner, self).__init__(series_id, series_provider_id=series_provider_id, media_format=media_format)
 
     def get_default_media_name(self):
         return 'banner-thumb.png' if self.media_format == 'thumb' else 'banner.png'

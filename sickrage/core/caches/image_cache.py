@@ -56,23 +56,49 @@ class ImageCache(object):
         """
         return os.path.abspath(os.path.join(sickrage.app.cache_dir, 'images'))
 
+    def _cache_series_dir(self, series_id):
+        """
+        Builds up the full path to the image cache directory
+        """
+        return os.path.abspath(os.path.join(self._cache_dir(), 'series', str(series_id)))
+
+    def _cache_seasons_dir(self, series_id):
+        """
+        Builds up the full path to the image cache directory
+        """
+        return os.path.abspath(os.path.join(self._cache_series_dir(series_id), 'seasons'))
+
+
+    def _cache_episodes_dir(self, series_id):
+        """
+        Builds up the full path to the image cache directory
+        """
+        return os.path.abspath(os.path.join(self._cache_series_dir(series_id), 'episodes'))
+
     def _thumbnails_dir(self):
         """
         Builds up the full path to the thumbnails image cache directory
         """
         return os.path.abspath(os.path.join(self._cache_dir(), 'thumbnails'))
 
-    def poster_path(self, series_id):
+    def poster_path(self, series_id, season_id=None, episode_id=None):
         """
         Builds up the path to a poster cache for a given series id
 
         :param series_id: ID of the show to use in the file name
         :return: a full path to the cached poster file for the given series id
         """
-        poster_file_name = str(series_id) + '.poster.jpg'
-        return os.path.join(self._cache_dir(), poster_file_name)
+        if episode_id:
+            poster_file_name = str(episode_id) + '.poster.jpg'
+            return os.path.join(self._cache_episodes_dir(series_id), poster_file_name)
+        elif season_id:
+            poster_file_name = str(season_id) + '.poster.jpg'
+            return os.path.join(self._cache_seasons_dir(series_id), poster_file_name)
+        else:
+            poster_file_name = str(series_id) + '.poster.jpg'
+            return os.path.join(self._cache_dir(), poster_file_name)
 
-    def banner_path(self, series_id):
+    def banner_path(self, series_id, season_id=None, episode_id=None):
         """
         Builds up the path to a banner cache for a given series id
 
@@ -82,7 +108,7 @@ class ImageCache(object):
         banner_file_name = str(series_id) + '.banner.jpg'
         return os.path.join(self._cache_dir(), banner_file_name)
 
-    def fanart_path(self, series_id):
+    def fanart_path(self, series_id, season_id=None, episode_id=None):
         """
         Builds up the path to a fanart cache for a given series id
 
@@ -92,7 +118,7 @@ class ImageCache(object):
         fanart_file_name = str(series_id) + '.fanart.jpg'
         return os.path.join(self._cache_dir(), fanart_file_name)
 
-    def fanart_thumb_path(self, series_id):
+    def fanart_thumb_path(self, series_id, season_id=None, episode_id=None):
         """
         Builds up the path to a poster thumb cache for a given series id
 
@@ -102,7 +128,7 @@ class ImageCache(object):
         fanartthumb_file_name = str(series_id) + '.fanart.jpg'
         return os.path.join(self._thumbnails_dir(), fanartthumb_file_name)
 
-    def poster_thumb_path(self, series_id):
+    def poster_thumb_path(self, series_id, season_id=None, episode_id=None):
         """
         Builds up the path to a poster thumb cache for a given series id
 
@@ -112,7 +138,7 @@ class ImageCache(object):
         posterthumb_file_name = str(series_id) + '.poster.jpg'
         return os.path.join(self._thumbnails_dir(), posterthumb_file_name)
 
-    def banner_thumb_path(self, series_id):
+    def banner_thumb_path(self, series_id, season_id=None, episode_id=None):
         """
         Builds up the path to a banner thumb cache for a given series id
 
@@ -122,15 +148,15 @@ class ImageCache(object):
         bannerthumb_file_name = str(series_id) + '.banner.jpg'
         return os.path.join(self._thumbnails_dir(), bannerthumb_file_name)
 
-    def has_poster(self, series_id):
+    def has_poster(self, series_id, season_id=None, episode_id=None):
         """
-        Returns true if a cached poster exists for the given series id
+        Returns true if a cached poster exists for the given series/season/episode id
         """
-        poster_path = self.poster_path(series_id)
+        poster_path = self.poster_path(series_id, season_id, episode_id)
         sickrage.app.log.debug("Checking if file " + str(poster_path) + " exists")
         return os.path.isfile(poster_path)
 
-    def has_banner(self, series_id):
+    def has_banner(self, series_id, season_id=None, episode_id=None):
         """
         Returns true if a cached banner exists for the given series id
         """
@@ -138,7 +164,7 @@ class ImageCache(object):
         sickrage.app.log.debug("Checking if file " + str(banner_path) + " exists")
         return os.path.isfile(banner_path)
 
-    def has_fanart(self, series_id):
+    def has_fanart(self, series_id, season_id=None, episode_id=None):
         """
         Returns true if a cached fanart exists for the given series id
         """
@@ -146,7 +172,7 @@ class ImageCache(object):
         sickrage.app.log.debug("Checking if file " + str(fanart_path) + " exists")
         return os.path.isfile(fanart_path)
 
-    def has_poster_thumbnail(self, series_id):
+    def has_poster_thumbnail(self, series_id, season_id=None, episode_id=None):
         """
         Returns true if a cached poster thumbnail exists for the given series id
         """
@@ -154,7 +180,7 @@ class ImageCache(object):
         sickrage.app.log.debug("Checking if file " + str(poster_thumb_path) + " exists")
         return os.path.isfile(poster_thumb_path)
 
-    def has_banner_thumbnail(self, series_id):
+    def has_banner_thumbnail(self, series_id, season_id=None, episode_id=None):
         """
         Returns true if a cached banner exists for the given series id
         """
@@ -263,7 +289,7 @@ class ImageCache(object):
             sickrage.app.log.error("Invalid cache image type: {}".format(img_type))
             return False
 
-        # retrieve the image from a series provider using the generic metadata class
+        # retrieve series and season images from a series provider
         metadata_generator = MetadataProvider()
         img_data = metadata_generator._retrieve_show_image(self.IMAGE_TYPES[img_type], show_obj)
         if not img_data:
@@ -272,6 +298,29 @@ class ImageCache(object):
         result = metadata_generator._write_image(img_data, dest_path, force)
 
         return result
+
+    def _cache_episode_images_from_series_provider(self, show_obj, force=False):
+        """
+        Retrieves episode images from a series provider and saves it to the cache folder
+
+        :param show_obj: TVShow object that we want to cache an image for
+        :return: bool representing success
+        """
+
+        metadata_generator = MetadataProvider()
+
+        # retrieve episode images from a series provider
+        series_provider_language = show_obj.lang or sickrage.app.config.general.series_provider_default_language
+        series_info = show_obj.series_provider.get_series_info(show_obj.series_id, language=series_provider_language)
+        if not series_info:
+            return False
+
+        for episode in show_obj.episodes:
+            series_episode = series_info[episode.season][episode.episode]
+            img_data = metadata_generator.get_image(series_episode.imageUrl)
+            if img_data:
+                dest_path = self.poster_path(show_obj.series_id, episode_id=series_episode.id)
+                metadata_generator._write_image(img_data, dest_path, force)
 
     def fill_cache(self, show_obj, force=False):
         """
@@ -318,18 +367,20 @@ class ImageCache(object):
                             cur_file_type) + " needs metadata: " + str(need_images[cur_file_type]))
 
                         if cur_file_type in need_images and need_images[cur_file_type]:
-                            sickrage.app.log.debug(
-                                "Found an image in the show dir that doesn't exist in the cache, caching it: " + cur_file_name + ", type " + str(
-                                    cur_file_type))
+                            sickrage.app.log.debug(f"Found an image in the show dir that doesn't exist in the cache, caching it: {cur_file_name}, type {cur_file_type}")
                             self._cache_image_from_file(cur_file_name, cur_file_type, show_obj.series_id)
                             need_images[cur_file_type] = False
 
-        # download from a series provider for missing ones
+        # download missing series and season images from a series provider
         for cur_image_type in [self.POSTER, self.BANNER, self.POSTER_THUMB, self.BANNER_THUMB, self.FANART]:
-            sickrage.app.log.debug(
-                "Seeing if we still need an image of type " + str(cur_image_type) + ": " + str(
-                    need_images[cur_image_type]))
+            sickrage.app.log.debug(f"Seeing if we still need an image of type {cur_image_type}: {need_images[cur_image_type]}")
             if cur_image_type in need_images and need_images[cur_image_type]:
                 self._cache_image_from_series_provider(show_obj, cur_image_type, force)
+
+        # download missing episode images from a series provider
+        sickrage.app.log.debug(f"Seeing if we still need episode poster images")
+        for episode in show_obj.episodes:
+            if not self.has_poster(show_obj.series_id, episode_id=episode.episode_id):
+                self._cache_episode_images_from_series_provider(show_obj, force)
 
         sickrage.app.log.info("Done cache check")

@@ -30,7 +30,7 @@ class FanArt(Media):
     """
 
     def __init__(self, series_id, series_provider_id, media_format=None):
-        super(FanArt, self).__init__(series_id, series_provider_id, media_format)
+        super(FanArt, self).__init__(series_id, series_provider_id=series_provider_id, media_format=media_format)
 
     def get_default_media_name(self):
         return 'fanart.png'

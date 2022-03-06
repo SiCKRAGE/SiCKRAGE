@@ -18,5 +18,15 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
+from sickrage.core import EpisodeStatus
+from sickrage.core.webserver.handlers.api.v2 import ApiV2BaseHandler
 
 
+class ApiV2EpisodeStatusesHandler(ApiV2BaseHandler):
+    def get(self):
+        statuses = [{
+                'name': x.display_name,
+                'slug': x.name,
+            } for x in EpisodeStatus]
+
+        return self.json_response(statuses)

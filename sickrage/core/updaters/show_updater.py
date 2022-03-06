@@ -74,9 +74,9 @@ class ShowUpdater(object):
             # start update process
             pi_list = []
             for show_obj in get_show_list():
-                if show_obj.paused:
-                    sickrage.app.log.info('Show update skipped, show: {} is paused.'.format(show_obj.name))
-                    continue
+                # if show_obj.paused:
+                #     sickrage.app.log.info('Show update skipped, show: {} is paused.'.format(show_obj.name))
+                #     continue
 
                 if show_obj.status == 'Ended':
                     if not sickrage.app.config.general.show_update_stale:

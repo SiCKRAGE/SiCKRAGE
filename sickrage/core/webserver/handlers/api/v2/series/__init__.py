@@ -600,3 +600,13 @@ class ApiV2SeriesEpisodesManualSearchHandler(ApiV2BaseHandler):
             return self.json_response({'success': True})
 
         return self._not_found(error=_(f"Unable to find season {season_num} episode {episode_num} for show {series.name} on search providers"))
+
+
+class ApiV2SeriesSearchFormatsHandler(ApiV2BaseHandler):
+    def get(self):
+        search_formats = [{
+            'name': x.display_name,
+            'slug': x.name,
+        } for x in SearchFormat]
+
+        return self.json_response(search_formats)

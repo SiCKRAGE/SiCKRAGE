@@ -199,7 +199,7 @@
                                                 <input type="checkbox" class="toggle color-primary is-material"
                                                        id="paused"
                                                        name="paused" ${('', 'checked')[show.paused == 1]} />
-                                                ${_('pause this show (SiCKRAGE will not download episodes)')}
+                                                ${_('pause this show (SiCKRAGE will download episodes but will continue to get updates)')}
                                             </label>
                                         </div>
                                     </div>

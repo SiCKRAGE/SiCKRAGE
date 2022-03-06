@@ -9,7 +9,7 @@ from sickrage.core.tv.show.helpers import find_show
 
 
 class Media(object):
-    def __init__(self, series_id, series_provider_id, media_format=None):
+    def __init__(self, series_id, episode_id=None, series_provider_id=None, media_format=None):
         """
         :param series_id: The series id of the show
         :param media_format: The media format of the show image
@@ -23,6 +23,8 @@ class Media(object):
             self.series_id = int(series_id)
         except ValueError:
             self.series_id = 0
+
+        self.episode_id = episode_id
 
         self.series_provider_id = series_provider_id
 

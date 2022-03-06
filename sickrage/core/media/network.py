@@ -29,7 +29,7 @@ class Network(Media):
     """
 
     def __init__(self, series_id, series_provider_id, media_format=None):
-        super(Network, self).__init__(series_id, series_provider_id, media_format)
+        super(Network, self).__init__(series_id, series_provider_id=series_provider_id, media_format=media_format)
 
     def get_default_media_name(self):
         return os.path.join('network', 'nonetwork.png')
