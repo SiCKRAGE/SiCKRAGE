@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.52](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.51...10.0.52)
+
+- bumped protobufs to 3.19.4 [`539c633`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/539c633fb04997507130867f79b0d4048cf7561d)
+
 #### [10.0.51](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.50...10.0.51)
+
+> 5 March 2022
 
 #### [10.0.50](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.49...10.0.50)
 

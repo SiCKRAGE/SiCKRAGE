@@ -56,7 +56,7 @@ pbr==5.4.5
 pika==1.2.0
 Pint==0.14
 profilehooks==1.11.2
-protobuf==3.17.3
+protobuf==3.19.4
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycparser==2.20
