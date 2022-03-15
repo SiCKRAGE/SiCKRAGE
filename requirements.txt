@@ -9,7 +9,7 @@ asn1crypto==1.4.0
 attrdict==2.0.1
 attrs==19.3.0
 babelfish==0.5.5
-beautifulsoup4==4.9.1
+beautifulsoup4==4.10.0
 bencode3==0.1.0
 bleach==3.3.0
 CacheControl==0.12.6
@@ -27,7 +27,7 @@ dogpile.cache==1.0.2
 ecdsa==0.14.1
 enzyme==0.4.1
 fake-useragent==0.1.11
-feedparser==6.0.2
+feedparser==6.0.8
 future==0.18.2
 gntp==1.0.3
 guessit==3.1.1
@@ -35,7 +35,7 @@ hachoir==3.1.1
 html5lib==1.1
 httplib2==0.18.1
 idna==2.10
-importlib-metadata==1.7.0
+importlib-metadata==4.11.3
 ipaddress==1.0.23
 knowit==0.2.4
 lockfile==0.12.2
