@@ -428,7 +428,7 @@ class MetadataProvider(object):
             sickrage.app.log.debug("No thumb is available for this episode, not creating a thumb")
             return False
 
-        thumb_data = self.get_show_image(thumb_url)
+        thumb_data = self.get_image(thumb_url)
 
         result = self._write_image(thumb_data, file_path)
 
@@ -506,7 +506,7 @@ class MetadataProvider(object):
             sickrage.app.log.debug("Path for season " + str(season) + " came back blank, skipping this season")
             return False
 
-        seasonData = self.get_show_image(season_url)
+        seasonData = self.get_image(season_url)
         if not seasonData:
             sickrage.app.log.debug("No season poster data available, skipping this season")
             return False
@@ -521,7 +521,7 @@ class MetadataProvider(object):
             sickrage.app.log.debug("Path for season " + str(season) + " came back blank, skipping this season")
             return False
 
-        seasonData = self.get_show_image(season_url)
+        seasonData = self.get_image(season_url)
         if not seasonData:
             sickrage.app.log.debug("No season banner data available, skipping this season")
             return False
@@ -611,7 +611,7 @@ class MetadataProvider(object):
         if len(image_urls):
             image_url = image_urls[which][('image', 'thumbnail')[is_image_thumb]]
             if image_url:
-                image_data = self.get_show_image(image_url)
+                image_data = self.get_image(image_url)
                 if image_data:
                     return image_data
 
@@ -620,7 +620,7 @@ class MetadataProvider(object):
         # retrieve image url from fanart.tv
         image_url = self._retrieve_show_images_from_fanart(show_obj, image_type.replace('_thumb', ''), is_image_thumb)
         if image_url:
-            image_data = self.get_show_image(image_url)
+            image_data = self.get_image(image_url)
             if image_data:
                 return image_data
 
@@ -769,7 +769,7 @@ class MetadataProvider(object):
             pass
 
     @staticmethod
-    def get_show_image(url):
+    def get_image(url):
         if url is None:
             return None
 

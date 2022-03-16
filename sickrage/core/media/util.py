@@ -49,12 +49,16 @@ def series_image(series_id=None, series_provider_id=None, which=None):
     elif which == SeriesImageType.FANART:
         return FanArt(series_id, series_provider_id, media_format)
     elif which in (SeriesImageType.POSTER, SeriesImageType.POSTER_THUMB):
-        return Poster(series_id, series_provider_id, media_format)
+        return Poster(series_id, episode_id=None, series_provider_id=series_provider_id, media_format=media_format)
     elif which == SeriesImageType.NETWORK:
         return Network(series_id, series_provider_id, media_format)
 
 
-def series_provider_image(series_id=None, series_provider_id=None, which=None):
+def episode_image(series_id, episode_id, series_provider_id=None):
+    return Poster(series_id, episode_id=episode_id, series_provider_id=series_provider_id)
+
+
+def series_provider_image(series_id=None, episode_id=None, series_provider_id=None, which=None):
     media_format = ('normal', 'thumb')[which in (SeriesImageType.BANNER_THUMB, SeriesImageType.POSTER_THUMB, SeriesImageType.SMALL)]
 
     if which not in (SeriesImageType.FANART, SeriesImageType.POSTER, SeriesImageType.BANNER, SeriesImageType.BANNER_THUMB, SeriesImageType.POSTER_THUMB):
@@ -86,4 +90,4 @@ def series_provider_image(series_id=None, series_provider_id=None, which=None):
     elif which == SeriesImageType.FANART:
         return FanArt(int(series_id), series_provider_id, media_format)
     elif which in [SeriesImageType.POSTER, SeriesImageType.POSTER_THUMB]:
-        return Poster(int(series_id), series_provider_id, media_format)
+        return Poster(int(series_id), episode_id, series_provider_id, media_format)

@@ -150,10 +150,10 @@ class DailySearchTask(Task):
         try:
             sickrage.app.log.info("Starting daily search for: [" + show_object.name + "]")
 
-            WebSocketMessage('SEARCH_QUEUE_STATUS_UPDATED',
-                             {'seriesSlug': show_object.slug,
-                              'episodeId': episode_object.episode_id,
-                              'searchQueueStatus': episode_object.search_queue_status}).push()
+            # WebSocketMessage('SEARCH_QUEUE_STATUS_UPDATED',
+            #                  {'seriesSlug': show_object.slug,
+            #                   'episodeId': episode_object.episode_id,
+            #                   'searchQueueStatus': episode_object.search_queue_status}).push()
 
             search_result = search_providers(self.series_id,
                                              self.series_provider_id,
@@ -176,10 +176,10 @@ class DailySearchTask(Task):
         except Exception:
             sickrage.app.log.debug(traceback.format_exc())
         finally:
-            WebSocketMessage('SEARCH_QUEUE_STATUS_UPDATED',
-                             {'seriesSlug': show_object.slug,
-                              'episodeId': episode_object.episode_id,
-                              'searchQueueStatus': episode_object.search_queue_status}).push()
+            # WebSocketMessage('SEARCH_QUEUE_STATUS_UPDATED',
+            #                  {'seriesSlug': show_object.slug,
+            #                   'episodeId': episode_object.episode_id,
+            #                   'searchQueueStatus': episode_object.search_queue_status}).push()
 
             sickrage.app.log.info("Finished daily search for: [" + show_object.name + "]")
 
@@ -282,10 +282,10 @@ class BacklogSearchTask(Task):
         try:
             sickrage.app.log.info("Starting backlog search for: [{}] S{:02d}E{:02d}".format(show_object.name, self.season, self.episode))
 
-            WebSocketMessage('SEARCH_QUEUE_STATUS_UPDATED',
-                             {'seriesSlug': show_object.slug,
-                              'episodeId': episode_object.episode_id,
-                              'searchQueueStatus': episode_object.search_queue_status}).push()
+            # WebSocketMessage('SEARCH_QUEUE_STATUS_UPDATED',
+            #                  {'seriesSlug': show_object.slug,
+            #                   'episodeId': episode_object.episode_id,
+            #                   'searchQueueStatus': episode_object.search_queue_status}).push()
 
             search_result = search_providers(self.series_id,
                                              self.series_provider_id,
@@ -308,10 +308,10 @@ class BacklogSearchTask(Task):
         except Exception:
             sickrage.app.log.debug(traceback.format_exc())
         finally:
-            WebSocketMessage('SEARCH_QUEUE_STATUS_UPDATED',
-                             {'seriesSlug': show_object.slug,
-                              'episodeId': episode_object.episode_id,
-                              'searchQueueStatus': episode_object.search_queue_status}).push()
+            # WebSocketMessage('SEARCH_QUEUE_STATUS_UPDATED',
+            #                  {'seriesSlug': show_object.slug,
+            #                   'episodeId': episode_object.episode_id,
+            #                   'searchQueueStatus': episode_object.search_queue_status}).push()
 
             sickrage.app.log.info("Finished backlog search for: [{}] S{:02d}E{:02d}".format(show_object.name, self.season, self.episode))
 
@@ -346,10 +346,10 @@ class FailedSearchTask(Task):
         try:
             sickrage.app.log.info("Starting failed download search for: [" + episode_object.name + "]")
 
-            WebSocketMessage('SEARCH_QUEUE_STATUS_UPDATED',
-                             {'seriesSlug': show_object.slug,
-                              'episodeId': episode_object.episode_id,
-                              'searchQueueStatus': episode_object.search_queue_status}).push()
+            # WebSocketMessage('SEARCH_QUEUE_STATUS_UPDATED',
+            #                  {'seriesSlug': show_object.slug,
+            #                   'episodeId': episode_object.episode_id,
+            #                   'searchQueueStatus': episode_object.search_queue_status}).push()
 
             sickrage.app.log.info("Marking episode as bad: [" + episode_object.pretty_name() + "]")
 
@@ -382,9 +382,9 @@ class FailedSearchTask(Task):
         except Exception:
             sickrage.app.log.debug(traceback.format_exc())
         finally:
-            WebSocketMessage('SEARCH_QUEUE_STATUS_UPDATED',
-                             {'seriesSlug': show_object.slug,
-                              'episodeId': episode_object.episode_id,
-                              'searchQueueStatus': episode_object.search_queue_status}).push()
+            # WebSocketMessage('SEARCH_QUEUE_STATUS_UPDATED',
+            #                  {'seriesSlug': show_object.slug,
+            #                   'episodeId': episode_object.episode_id,
+            #                   'searchQueueStatus': episode_object.search_queue_status}).push()
 
             sickrage.app.log.info("Finished failed download search for: [" + show_object.name + "]")

@@ -116,9 +116,9 @@ class ShowQueue(Queue):
         if (self.is_being_refreshed(series_id) or self.is_being_refreshed(series_id)) and not force:
             raise CantRefreshShowException("This show is already being refreshed or queued to be refreshed, skipping this request.")
 
-        if show_obj.paused and not force:
-            sickrage.app.log.debug('Skipping show [{}] because it is paused.'.format(show_obj.name))
-            return
+        # if show_obj.paused and not force:
+        #     sickrage.app.log.debug('Skipping show [{}] because it is paused.'.format(show_obj.name))
+        #     return
 
         sickrage.app.log.debug("Queueing show refresh for {}".format(show_obj.name))
 

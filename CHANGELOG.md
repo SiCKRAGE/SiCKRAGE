@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.53](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.52...10.0.53)
+
+- Bumped beautifulsoup4 [`6de06e8`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/6de06e82382da5d455fa30e1e61033229ffca631)
+
 #### [10.0.52](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.51...10.0.52)
+
+> 6 March 2022
 
 - bumped protobufs to 3.19.4 [`539c633`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/539c633fb04997507130867f79b0d4048cf7561d)
 

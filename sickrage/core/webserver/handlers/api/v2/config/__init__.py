@@ -32,31 +32,17 @@ class ApiV2ConfigHandler(ApiV2BaseHandler):
         config_data = sickrage.app.config.to_json()
 
         config_data['constants'] = {
-            'episodeStatuses': [{
-                'name': x.name,
-                'displayName': x.display_name,
-                'value': x.value
-            } for x in EpisodeStatus],
             'overviewStrings': [{
                 'name': x.name,
                 'cssName': x.css_name
             } for x in Overview],
-            'showSearchFormats': [{
-                'name': x.name,
-                'displayName': x.display_name,
-                'value': x.value
-            } for x in SearchFormat],
             'qualities': [{
                 'name': x.name,
                 'displayName': x.display_name,
                 'cssName': x.css_name,
                 'isPreset': x.is_preset,
                 'value': x.value
-            } for x in Qualities],
-            'compositeStatuses': {
-                'snatched': [x.name for x in EpisodeStatus.composites(EpisodeStatus.SNATCHED)],
-                'downloaded': [x.name for x in EpisodeStatus.composites(EpisodeStatus.DOWNLOADED)]
-            }
+            } for x in Qualities]
         }
 
         return self.json_response(config_data)

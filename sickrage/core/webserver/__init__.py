@@ -32,6 +32,7 @@ from tornado.ioloop import IOLoop
 from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 import sickrage
+from sickrage.core.webserver.handlers.api.v2.episode import ApiV2EpisodeStatusesHandler
 from sickrage.core.webserver.helpers import create_https_certificates, is_certificate_valid, certificate_needs_renewal
 from sickrage.core.webserver.handlers.account import AccountLinkHandler, AccountUnlinkHandler, AccountIsLinkedHandler
 from sickrage.core.webserver.handlers.announcements import AnnouncementsHandler, MarkAnnouncementSeenHandler, AnnouncementCountHandler
@@ -45,7 +46,7 @@ from sickrage.core.webserver.handlers.api.v2.postprocess import Apiv2PostProcess
 from sickrage.core.webserver.handlers.api.v2.schedule import ApiV2ScheduleHandler
 from sickrage.core.webserver.handlers.api.v2.series import ApiV2SeriesHandler, ApiV2SeriesEpisodesHandler, ApiV2SeriesImagesHandler, ApiV2SeriesImdbInfoHandler, \
     ApiV2SeriesBlacklistHandler, ApiV2SeriesWhitelistHandler, ApiV2SeriesRefreshHandler, ApiV2SeriesUpdateHandler, ApiV2SeriesEpisodesRenameHandler, \
-    ApiV2SeriesEpisodesManualSearchHandler
+    ApiV2SeriesEpisodesManualSearchHandler, ApiV2SeriesSearchFormatsHandler
 from sickrage.core.webserver.handlers.api.v2.series_provider import ApiV2SeriesProvidersHandler, ApiV2SeriesProvidersSearchHandler, \
     ApiV2SeriesProvidersLanguagesHandler
 from sickrage.core.webserver.handlers.calendar import CalendarHandler
@@ -241,7 +242,9 @@ class WebServer(object):
             (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/blacklist', ApiV2SeriesBlacklistHandler),
             (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/whitelist', ApiV2SeriesWhitelistHandler),
             (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/refresh', ApiV2SeriesRefreshHandler),
-            (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/update', ApiV2SeriesUpdateHandler)
+            (fr'{self.api_v2_root}/series/(\d+[-][a-z]+)/update', ApiV2SeriesUpdateHandler),
+            (fr'{self.api_v2_root}/series/search-formats', ApiV2SeriesSearchFormatsHandler),
+            (fr'{self.api_v2_root}/episodes/statuses', ApiV2EpisodeStatusesHandler),
         ]
 
         # New UI Static File Handlers

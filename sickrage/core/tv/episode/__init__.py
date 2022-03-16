@@ -40,6 +40,7 @@ from sickrage.core.enums import SearchFormat, FileTimestampTimezone
 from sickrage.core.exceptions import EpisodeNotFoundException, EpisodeDeletedException, NoNFOException
 from sickrage.core.helpers import replace_extension, modify_file_timestamp, sanitize_scene_name, remove_non_release_groups, \
     remove_extension, sanitize_file_name, make_dirs, move_file, delete_empty_folders, file_size, is_media_file, try_int, safe_getattr, flatten
+from sickrage.core.media.util import episode_image
 from sickrage.core.tv.show.helpers import find_show
 from sickrage.notification_providers import NotificationProvider
 from sickrage.series_providers.exceptions import SeriesProviderSeasonNotFound, SeriesProviderEpisodeNotFound
@@ -309,6 +310,10 @@ class TVEpisode(object):
             session.flush()
 
     @property
+    def poster(self):
+        return episode_image(self.series_id, self.episode_id, self.series_provider_id).url
+
+    @property
     def show(self):
         return find_show(self.series_id, self.series_provider_id)
 
@@ -529,7 +534,8 @@ class TVEpisode(object):
 
         self.episode_id = try_int(safe_getattr(series_episode_info, 'id'), self.episode_id)
         if not self.episode_id:
-            sickrage.app.log.warning(f"Failed to retrieve {self.show.name} - S{int(season or 0):02d}E{int(episode or 0):02d} episode ID from {self.show.series_provider.name}")
+            sickrage.app.log.warning(
+                f"Failed to retrieve {self.show.name} - S{int(season or 0):02d}E{int(episode or 0):02d} episode ID from {self.show.series_provider.name}")
             self.show.delete_episode(season, episode)
             return False
 
@@ -1390,5 +1396,23 @@ class TVEpisode(object):
             json_data['episodeSlug'] = self.slug
             json_data['overview'] = self.overview.name
             json_data['searchQueueStatus'] = self.search_queue_status
+
+            # status and quality section
+            status, quality = Quality.split_composite_status(self.status)
+
+            json_data['status'] = {
+                'name': status.display_name,
+                'slug': status.name
+            }
+
+            json_data['quality'] = {
+                'name': quality.display_name,
+                'slug': quality.name
+            }
+
+            # images section
+            json_data['images'] = {
+                'poster': self.poster
+            }
 
             return json_data
