@@ -2,7 +2,9 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.53.dev1](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.52...v10.0.53.dev1)
+#### [v10.0.53.dev2](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.52...v10.0.53.dev2)
+
+- Bumped beautifulsoup4 [`6de06e8`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/6de06e82382da5d455fa30e1e61033229ffca631)
 
 #### [10.0.52](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.51...10.0.52)
 
