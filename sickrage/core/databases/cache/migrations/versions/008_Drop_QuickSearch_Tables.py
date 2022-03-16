@@ -9,6 +9,8 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
+from sqlalchemy import inspect
+
 revision = '8'
 down_revision = '7'
 
@@ -17,10 +19,10 @@ def upgrade():
     conn = op.get_bind()
     meta = sa.MetaData(bind=conn)
 
-    if conn.engine.dialect.has_table(conn.engine, 'quicksearch_shows'):
+    if inspect(conn).has_table('quicksearch_shows'):
         op.drop_table('quicksearch_shows')
 
-    if conn.engine.dialect.has_table(conn.engine, 'quicksearch_episodes'):
+    if inspect(conn).has_table('quicksearch_episodes'):
         op.drop_table('quicksearch_episodes')
 
 
