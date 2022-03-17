@@ -12,7 +12,7 @@ from json import JSONDecodeError
 import sqlalchemy as sa
 from alembic import op
 from keycloak.exceptions import KeycloakClientError
-from sqlalchemy import orm
+from sqlalchemy import orm, inspect
 
 import sickrage
 
@@ -51,7 +51,7 @@ def upgrade():
     except (KeycloakClientError, orm.exc.NoResultFound):
         pass
 
-    if conn.engine.dialect.has_table(conn.engine, 'oauth2_token'):
+    if inspect(conn).has_table('oauth2_token'):
         op.drop_table('oauth2_token')
 
 

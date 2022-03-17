@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.54](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.53...10.0.54)
+
+- Bumped PyYaml [`81c2da3`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/81c2da37b21bd2c4775171394009440a0235f83c)
+
 #### [10.0.53](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.52...10.0.53)
+
+> 16 March 2022
 
 - Bumped beautifulsoup4 [`6de06e8`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/6de06e82382da5d455fa30e1e61033229ffca631)
 

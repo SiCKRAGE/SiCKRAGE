@@ -331,7 +331,8 @@ class MainDB(SRDatabase):
         last_backlog_search = Column(DateTime(timezone=True), default=datetime.datetime.now())
         last_proper_search = Column(DateTime(timezone=True), default=datetime.datetime.now())
 
-        episodes = relationship('TVEpisode', uselist=True, backref='tv_shows', cascade="all, delete-orphan", lazy='dynamic')
+        episodes = relationship('TVEpisode', uselist=True, back_populates='show', cascade="all, delete-orphan", lazy='dynamic')
+
         imdb_info = relationship('IMDbInfo', uselist=False, backref='tv_shows', cascade="all, delete-orphan")
         series_provider_mapping = relationship('SeriesProviderMapping', uselist=False, backref='tv_shows', cascade="all, delete-orphan")
         blacklist = relationship('Blacklist', uselist=False, backref='tv_shows', cascade="all, delete-orphan")
@@ -380,7 +381,7 @@ class MainDB(SRDatabase):
         version = Column(Integer, default=-1)
         release_group = Column(Text, default='')
 
-        show = relationship('TVShow', uselist=False, backref='tv_episodes')
+        show = relationship('TVShow', uselist=False, back_populates='episodes')
 
     class IMDbInfo(base):
         __tablename__ = 'imdb_info'

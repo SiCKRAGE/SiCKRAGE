@@ -9,6 +9,8 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
+from sqlalchemy import inspect
+
 revision = '16'
 down_revision = '15'
 
@@ -17,7 +19,7 @@ def upgrade():
     conn = op.get_bind()
     meta = sa.MetaData(bind=conn)
 
-    if conn.engine.dialect.has_table(conn.engine, 'scene_numbering'):
+    if inspect(conn).has_table('scene_numbering'):
         scene_numbering = sa.Table('scene_numbering', meta, autoload=True)
         with op.get_context().begin_transaction():
             for row in conn.execute(scene_numbering.select()):

@@ -31,13 +31,12 @@ from alembic.runtime.migration import MigrationContext
 from alembic.script import ScriptDirectory
 from attrdict import AttrDict
 from sqlalchemy import create_engine, event, inspect, MetaData, Index, TypeDecorator
-from sqlalchemy.engine import Engine, reflection
+from sqlalchemy.engine import Engine, reflection, Row
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.ext.serializer import loads, dumps
 from sqlalchemy.orm import sessionmaker, mapper, scoped_session
 from sqlalchemy.sql.ddl import CreateTable, CreateIndex
-from sqlalchemy.util import KeyedTuple
 
 import sickrage
 
@@ -169,12 +168,12 @@ class SRDatabase(object):
         return current_rev
 
     def setup(self):
-        if self.engine.dialect.has_table(self.engine, 'migrate_version'):
+        if inspect(self.engine).has_table('migrate_version'):
             migrate_version = self.engine.execute("select version from migrate_version").fetchone().version
             alembic.command.stamp(self.get_alembic_config(), str(migrate_version))
             self.engine.execute("drop table migrate_version")
 
-        if not self.engine.dialect.has_table(self.engine, 'alembic_version'):
+        if not inspect(self.engine).has_table('alembic_version'):
             alembic.command.stamp(self.get_alembic_config(), 'head')
             sickrage.app.log.info("Performing initialization on {} database".format(self.name))
             self.initialize()
@@ -207,7 +206,7 @@ class SRDatabase(object):
         if db_version < alembic_version:
             # temp code to resolve a migration bug introduced from v10.0.0, fixed in v10.0.2+
             if db_version < 21 and self.name == 'main':
-                if self.engine.dialect.has_table(self.engine, 'indexer_mapping') and self.engine.dialect.has_table(self.engine, 'series_provider_mapping'):
+                if inspect(self.engine).has_table('indexer_mapping') and inspect(self.engine).has_table('series_provider_mapping'):
                     sickrage.app.log.debug('Found offending series_provider_mapping table, removing!')
                     metadata = MetaData(self.engine, reflect=True)
                     table = metadata.tables.get('series_provider_mapping')
@@ -227,7 +226,9 @@ class SRDatabase(object):
         return config
 
     def get_metadata(self):
-        return MetaData(bind=self.engine, reflect=True)
+        metadata_obj = MetaData(bind=self.engine)
+        metadata_obj.reflect()
+        return metadata_obj
 
     def get_base(self):
         base = automap_base(metadata=self.get_metadata())
@@ -274,6 +275,18 @@ class SRDatabase(object):
 
         with open(filename, 'rb') as fh:
             backup_dict = pickle.load(fh)
+            backup_version = int(backup_dict['version'])
+
+            restore_version_matrix = {
+                'main': 23,
+                'cache': 11,
+                'config': 6
+            }
+
+            if not backup_version >= restore_version_matrix[self.name]:
+                sickrage.app.log.warning(f'Backup v{backup_version} for {self.name} database cannot be restored, needs to be restored with an '
+                                         f'older copy of SiCKRAGE.')
+                return
 
             # drop all tables
             self.get_base().metadata.drop_all()
@@ -304,7 +317,7 @@ class SRDatabase(object):
 
                     rows = []
                     for row in loads(data, meta, session):
-                        if isinstance(row, KeyedTuple):
+                        if isinstance(row, Row):
                             rows.append(row._asdict())
                     session.bulk_insert_mappings(table, rows)
                 session.commit()
