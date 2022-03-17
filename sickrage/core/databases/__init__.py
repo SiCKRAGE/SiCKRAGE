@@ -29,6 +29,7 @@ import alembic.script
 import sqlalchemy
 from alembic.runtime.migration import MigrationContext
 from alembic.script import ScriptDirectory
+from cleverdict import CleverDict
 from sqlalchemy import create_engine, event, inspect, MetaData, Index, TypeDecorator
 from sqlalchemy.engine import Engine, reflection, Row
 from sqlalchemy.exc import OperationalError
@@ -125,16 +126,7 @@ class SRDatabaseBase(object):
         return {c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs}
 
     def as_attrdict(self):
-        class AttrDict:
-            def __init__(self, in_dict: dict):
-                assert isinstance(in_dict, dict)
-                for key, val in in_dict.items():
-                    if isinstance(val, (list, tuple)):
-                        setattr(self, key, [AttrDict(x) if isinstance(x, dict) else x for x in val])
-                    else:
-                        setattr(self, key, AttrDict(val) if isinstance(val, dict) else val)
-
-        return AttrDict(self.as_dict())
+        return CleverDict(self.as_dict())
 
     def update(self, **kwargs):
         primary_keys = [pk.name for pk in self.__table__.primary_key]

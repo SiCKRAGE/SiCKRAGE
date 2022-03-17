@@ -51,13 +51,8 @@
                         % else:
                             % for cur_result in popular_shows:
                                 % if not cur_result['imdb_tt'] in imdb_tt:
-                                % if 'rating' in cur_result and cur_result['rating']:
-                                    <% cur_rating = cur_result['rating'] %>
-                                    <% cur_votes = cur_result['votes'] %>
-                                % else:
-                                    <% cur_rating = '0' %>
-                                    <% cur_votes = '0' %>
-                                % endif
+                                    <% cur_rating = cur_result.get('rating') or '0' %>
+                                    <% cur_votes = cur_result.get('votes') or '0' %>
 
                                     <div class="show-container" data-name="${cur_result['name']}"
                                          data-rating="${cur_rating}"

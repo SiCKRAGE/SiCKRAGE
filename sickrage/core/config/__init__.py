@@ -1218,7 +1218,7 @@ class Config(object):
         self.nma.notify_on_subtitle_download = self._get_config_file_value(config_object, 'NMA', 'nma_notify_onsubtitledownload',
                                                                            default=self.nma.notify_on_subtitle_download, field_type=bool)
         self.nma.api_keys = self._get_config_file_value(config_object, 'NMA', 'nma_api', default=self.nma.api_keys, field_type=str)
-        self.nma.priority = self._get_config_file_value(config_object, 'NMA', 'nma_priority', default=self.nma.priority, field_type=str)
+        self.nma.priority = self._get_config_file_value(config_object, 'NMA', 'nma_priority', default=self.nma.priority, field_type=int)
 
         # PUSHALOT SETTINGS
         self.pushalot.enable = self._get_config_file_value(config_object, 'Pushalot', 'use_pushalot', default=self.pushalot.enable, field_type=bool)
@@ -1416,7 +1416,7 @@ class Config(object):
         if not field_type:
             field_type = str
 
-        if not default:
+        if default is None:
             default = field_type() if field_type is not str.upper else str()
 
         if section in config_object:
@@ -1424,7 +1424,7 @@ class Config(object):
             if key in section_object:
                 try:
                     value = self.convert_value(section_object.get(key), field_type)
-                    if not value:
+                    if value is None:
                         return default
                     return value
                 except Exception:
