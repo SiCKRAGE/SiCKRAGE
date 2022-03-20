@@ -94,6 +94,7 @@ stevedore==3.2.0
 subliminal==2.1.0
 tornado==6.1
 twilio==6.44.2
+typing-extensions==4.1.1
 tzlocal==2.1
 Unidecode==1.1.1
 urllib3==1.25.10
