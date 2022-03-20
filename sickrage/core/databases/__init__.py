@@ -29,7 +29,7 @@ import alembic.script
 import sqlalchemy
 from alembic.runtime.migration import MigrationContext
 from alembic.script import ScriptDirectory
-from attrdict import AttrDict
+from cleverdict import CleverDict
 from sqlalchemy import create_engine, event, inspect, MetaData, Index, TypeDecorator
 from sqlalchemy.engine import Engine, reflection, Row
 from sqlalchemy.exc import OperationalError
@@ -123,10 +123,10 @@ class ContextSession(sqlalchemy.orm.Session):
 
 class SRDatabaseBase(object):
     def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        return {c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs}
 
     def as_attrdict(self):
-        return AttrDict(self.as_dict())
+        return CleverDict(self.as_dict())
 
     def update(self, **kwargs):
         primary_keys = [pk.name for pk in self.__table__.primary_key]

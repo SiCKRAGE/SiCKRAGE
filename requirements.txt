@@ -6,9 +6,8 @@ appdirs==1.4.4
 APScheduler==3.6.3
 arrow==0.15.8
 asn1crypto==1.4.0
-attrdict==2.0.1
 attrs==19.3.0
-babelfish==0.5.5
+babelfish==0.6.0
 beautifulsoup4==4.10.0
 bencode3==0.1.0
 bleach==3.3.0
@@ -16,6 +15,7 @@ CacheControl==0.12.6
 certifi==2021.5.30
 cffi==1.14.1
 chardet==3.0.4
+cleverdict==1.9.2
 click==7.1.2
 cloudscraper==1.2.46
 configobj==5.0.6
@@ -40,7 +40,7 @@ importlib-metadata==4.11.3
 ipaddress==1.0.23
 knowit==0.2.4
 lockfile==0.12.2
-lxml==4.6.1
+lxml==4.8.0
 Mako==1.1.3
 markdown2==2.3.9
 MarkupSafe==1.1.1

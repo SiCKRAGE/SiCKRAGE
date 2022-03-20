@@ -42,9 +42,16 @@ import unicodedata
 import uuid
 import webbrowser
 import zipfile
-from collections import OrderedDict, Iterable
+from collections import OrderedDict
 from contextlib import contextmanager
 from urllib.parse import uses_netloc, urlsplit, urlunsplit, urljoin
+
+try:
+    # Python <= 3.9
+    from collections import Iterable
+except ImportError:
+    # Python > 3.9
+    from collections.abc import Iterable
 
 import errno
 import rarfile
