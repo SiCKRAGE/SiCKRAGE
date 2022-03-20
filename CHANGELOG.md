@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.56](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.55...10.0.56)
+
 #### [10.0.55](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.54...10.0.55)
+
+> 20 March 2022
 
 - Bumped babelfish requirement [`2dfe7dd`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/2dfe7dd41721812859e68b36a9c17c745b517655)
 - Bumped lxml [`a750b74`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/a750b748c96df323c23d4d04b6741c68ca2bfbfa)
