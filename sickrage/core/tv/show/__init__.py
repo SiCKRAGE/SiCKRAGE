@@ -1428,16 +1428,17 @@ class TVShow(object):
                 'banner': self.banner
             }
 
-            # qualities section
-            json_data['qualities'] = {
-                'allowedQualities': [x.name for x in self.allowed_qualities],
-                'preferredQualities': [x.name for x in self.preferred_qualities]
-            }
-
             # show queue status
             json_data['showQueueStatus'] = self.show_queue_status
 
+            # detail sections
             if details:
+                # qualities section
+                json_data['qualities'] = {
+                    'allowedQualities': [x.name for x in self.allowed_qualities],
+                    'preferredQualities': [x.name for x in self.preferred_qualities]
+                }
+
                 # imdb info section
                 imdb_info = session.query(MainDB.IMDbInfo).filter_by(series_id=self.series_id, imdb_id=self.imdb_id).one_or_none()
                 json_data['imdbInfo'] = IMDbInfoSchema().dump(imdb_info)

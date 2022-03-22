@@ -20,6 +20,7 @@
 # ##############################################################################
 import os
 import re
+import time
 from itertools import zip_longest
 
 from tornado.escape import json_decode
@@ -85,23 +86,34 @@ class ApiV2SeriesHandler(ApiV2BaseHandler):
         if not series_slug:
             all_series = []
 
-            # with sickrage.app.main_db.session() as session:
-            #     for series in session.query(MainDB.TVShow).with_entities(MainDB.TVShow.series_id, MainDB.TVShow.series_provider_id, MainDB.TVShow.name):
-            #         json_data = TVShowSchema().dump(series)
-            #         json_data['seriesSlug'] = f'{series.series_id}-{series.series_provider_id}'
-            #         json_data['isLoading'] = False
-            #         json_data['images'] = {
-            #             'poster': series_image(series.series_id, series.series_provider_id, SeriesImageType.POSTER).url,
-            #             'banner': ''
-            #         }
+            # start = time.time()
+
+            with sickrage.app.main_db.session() as session:
+                for series in session.query(MainDB.TVShow).with_entities(MainDB.TVShow.series_id, MainDB.TVShow.series_provider_id, MainDB.TVShow.name):
+                    json_data = TVShowSchema().dump(series)
+                    json_data['seriesSlug'] = f'{series.series_id}-{series.series_provider_id.value}'
+                    json_data['isLoading'] = sickrage.app.show_queue.is_being_added(series.series_id)
+                    json_data['isRemoving'] = sickrage.app.show_queue.is_being_removed(series.series_id)
+                    json_data['images'] = {
+                        'poster': series_image(series.series_id, series.series_provider_id, SeriesImageType.POSTER).url,
+                        'banner': series_image(series.series_id, series.series_provider_id, SeriesImageType.BANNER).url
+                    }
+
+                    all_series.append(json_data)
+
+                # end = time.time()
+                # print(end - start)
+
+            # start = time.time()
             #
-            #         all_series.append(json_data)
-
-            for show in get_show_list(offset, limit):
-                if sickrage.app.show_queue.is_being_removed(show.series_id):
-                    continue
-
-                all_series.append(show.to_json(progress=False))
+            # for show in get_show_list(offset, limit):
+            #     if show.is_removing:
+            #         continue
+            #
+            #     all_series.append(show.to_json())
+            #
+            # end = time.time()
+            # print(end - start)
 
             return self.json_response(all_series)
 
