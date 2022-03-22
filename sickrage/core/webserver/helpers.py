@@ -72,17 +72,14 @@ def is_certificate_valid(cert_file):
     if 'ZeroSSL' not in issuer.value:
         return False
 
-    if subject.value != f'{sickrage.app.config.general.server_id}.external.sickrage.direct':
+    if subject.value != f'*.{sickrage.app.config.general.server_id}.sickrage.direct':
         return False
 
     try:
         ext = cert.extensions.get_extension_for_class(x509.SubjectAlternativeName).value
         sans = ext.get_values_for_type(x509.DNSName)
 
-        domains = [
-            f'{sickrage.app.config.general.server_id}.external.sickrage.direct',
-            f'{sickrage.app.config.general.server_id}.internal.sickrage.direct'
-        ]
+        domains = [f'*.{sickrage.app.config.general.server_id}.sickrage.direct']
 
         for domain in sans:
             if domain not in domains:

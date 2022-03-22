@@ -56,5 +56,5 @@ def find_show_by_location(location):
             return show
 
 
-def get_show_list():
-    return list(sickrage.app.shows.values())
+def get_show_list(offset=0, limit=0):
+    return list(sickrage.app.shows.values())[offset:(limit + offset if limit else None)]

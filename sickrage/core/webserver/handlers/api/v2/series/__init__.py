@@ -20,13 +20,15 @@
 # ##############################################################################
 import os
 import re
+import time
+from itertools import zip_longest
 
 from tornado.escape import json_decode
 
 import sickrage
 from sickrage.core.common import Quality, Qualities, EpisodeStatus
 from sickrage.core.databases.main import MainDB
-from sickrage.core.databases.main.schemas import IMDbInfoSchema, BlacklistSchema, WhitelistSchema
+from sickrage.core.databases.main.schemas import IMDbInfoSchema, BlacklistSchema, WhitelistSchema, TVShowSchema
 from sickrage.core.enums import SearchFormat, SeriesProviderID
 from sickrage.core.exceptions import CantUpdateShowException, NoNFOException, CantRefreshShowException
 from sickrage.core.helpers import checkbox_to_value, sanitize_file_name, make_dir, chmod_as_parent
@@ -78,14 +80,40 @@ class ApiV2SeriesHandler(ApiV2BaseHandler):
                   NotFoundSchema
         """
 
+        offset = int(self.get_argument('offset', 0))
+        limit = int(self.get_argument('limit', 0))
+
         if not series_slug:
             all_series = []
 
-            for show in get_show_list():
-                if sickrage.app.show_queue.is_being_removed(show.series_id):
-                    continue
+            # start = time.time()
 
-                all_series.append(show.to_json(progress=True))
+            with sickrage.app.main_db.session() as session:
+                for series in session.query(MainDB.TVShow).with_entities(MainDB.TVShow.series_id, MainDB.TVShow.series_provider_id, MainDB.TVShow.name):
+                    json_data = TVShowSchema().dump(series)
+                    json_data['seriesSlug'] = f'{series.series_id}-{series.series_provider_id.value}'
+                    json_data['isLoading'] = sickrage.app.show_queue.is_being_added(series.series_id)
+                    json_data['isRemoving'] = sickrage.app.show_queue.is_being_removed(series.series_id)
+                    json_data['images'] = {
+                        'poster': series_image(series.series_id, series.series_provider_id, SeriesImageType.POSTER).url,
+                        'banner': series_image(series.series_id, series.series_provider_id, SeriesImageType.BANNER).url
+                    }
+
+                    all_series.append(json_data)
+
+                # end = time.time()
+                # print(end - start)
+
+            # start = time.time()
+            #
+            # for show in get_show_list(offset, limit):
+            #     if show.is_removing:
+            #         continue
+            #
+            #     all_series.append(show.to_json())
+            #
+            # end = time.time()
+            # print(end - start)
 
             return self.json_response(all_series)
 
