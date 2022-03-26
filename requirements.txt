@@ -36,7 +36,8 @@ hachoir==3.1.1
 html5lib==1.1
 httplib2==0.18.1
 idna==2.10
-importlib-metadata==4.11.3
+importlib-metadata==4.11.3; python_version >= '3.7'
+importlib-metadata==4.8.3; python_version == '3.6'
 ipaddress==1.0.23
 knowit==0.2.4
 lockfile==0.12.2

@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.58](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.57...10.0.58)
+
+- added python version constraints for importlib-metadata in requirements.txt [`df671c9`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/df671c986d78ff7555acf5836736c754df971c10)
+
 #### [10.0.57](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.56...10.0.57)
+
+> 22 March 2022
 
 #### [10.0.56](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.55...10.0.56)
 

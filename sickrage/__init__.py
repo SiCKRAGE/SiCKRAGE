@@ -19,7 +19,7 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 
-__version__ = "10.0.57"
+__version__ = "10.0.58"
 __install_type__ = ""
 
 import argparse
@@ -27,6 +27,7 @@ import atexit
 import gettext
 import os
 import pathlib
+import re
 import site
 import subprocess
 import sys
@@ -187,7 +188,16 @@ def check_requirements():
         with open(REQS_FILE) as f:
             for line in f.readlines():
                 try:
-                    req_name, req_version = line.strip().split('==')
+                    req_name, req_version = line.strip().split('==', 1)
+                    if 'python_version' in req_version:
+                        m = re.search('(\d+.\d+.\d+).*(\d+.\d+)', req_version)
+                        req_version = m.group(1)
+                        python_version = m.group(2)
+                        python_version_major = int(python_version.split('.')[0])
+                        python_version_minor = int(python_version.split('.')[1])
+                        if sys.version_info.major == python_version_major and sys.version_info.minor != python_version_minor:
+                            continue
+
                     if not pkg_resources.get_distribution(req_name).version == req_version:
                         print('Updating requirement {} to {}'.format(req_name, req_version))
                         subprocess.check_call([sys.executable, "-m", "pip", "install", "--no-deps", "--no-cache-dir", line.strip()])
