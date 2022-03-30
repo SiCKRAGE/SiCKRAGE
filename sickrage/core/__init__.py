@@ -195,7 +195,7 @@ class Core(object):
         )
 
         self.user_agent = 'SiCKRAGE.CE.1/({};{};{})'.format(platform.system(), platform.release(), str(uuid.uuid1()))
-        self.languages = [language for language in os.listdir(sickrage.LOCALE_DIR) if '_' in language]
+        self.languages = [f for f in os.listdir(sickrage.LOCALE_DIR) if os.path.isdir(os.path.join(sickrage.LOCALE_DIR, f))]
         self.client_web_urls = {'torrent': '', 'newznab': ''}
 
         self.notification_providers = {}

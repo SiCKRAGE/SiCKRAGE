@@ -191,10 +191,9 @@ build_develop:
     - npx auto-changelog -v $RELEASE_VERSION --hide-credit --unreleased --package --commit-limit false --ignore-commit-pattern \[TASK\].*
     - yarn run build
     - python checksum-generator.py
-    #    - python setup.py extract_messages
-    #    - crowdin-cli-py upload sources
-    #    - crowdin-cli-py download
-    #    - python setup.py compile_catalog
+    - python setup.py extract_messages
+    - python setup.py init_catalog -l en_US
+    - python setup.py compile_catalog
     - git config --global user.email $(git --no-pager show -s --format='%ae' HEAD)
     - git config --global user.name $(git --no-pager show -s --format='%an' HEAD)
     - git add --all
