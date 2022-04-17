@@ -127,43 +127,57 @@ class RarbgProvider(TorrentProvider):
 
                 search_params['search_string'] = search_string
 
-                # Check if token is still valid before search
-                if not self.login():
-                    continue
+                max_retries = retries = 5
+                while retries > 0:
+                    backoff = 2 ** (max_retries - retries)
 
-                # sleep 5 secs per request
-                sleep(5)
+                    # Check if token is still valid before search
+                    if not self.login():
+                        break
 
-                resp = self.session.get(self.urls['api'], params=search_params, random_ua=True)
-                if not resp or not resp.content:
-                    sickrage.app.log.debug("No data returned from provider")
-                    continue
+                    # sleep per request based on backoff variable
+                    sleep(backoff)
 
-                try:
-                    data = resp.json()
-                except ValueError:
-                    sickrage.app.log.debug("No data returned from provider")
-                    continue
+                    resp = self.session.get(self.urls['api'], params=search_params, random_ua=True)
+                    if not resp or not resp.content:
+                        sickrage.app.log.debug("No data returned from provider")
+                        break
 
-                error = data.get('error')
-                error_code = data.get('error_code')
-                if error:
-                    # List of errors: https://github.com/rarbg/torrentapi/issues/1#issuecomment-114763312
-                    if error_code == 5:
-                        # 5 = Too many requests per second
-                        log_level = sickrage.app.log.INFO
-                    elif error_code not in (4, 8, 10, 12, 14, 20):
-                        # 4 = Invalid token. Use get_token for a new one!
-                        # 8, 10, 12, 14 = Cant find * in database. Are you sure this * exists?
-                        # 20 = No results found
-                        log_level = sickrage.app.log.WARNING
-                    else:
-                        log_level = sickrage.app.log.DEBUG
+                    try:
+                        data = resp.json()
+                    except ValueError:
+                        sickrage.app.log.debug("No data returned from provider")
+                        break
 
-                    sickrage.app.log.log(log_level, '{msg} Code: {code}'.format(msg=error, code=error_code))
-                    continue
+                    error = data.get('error')
+                    error_code = data.get('error_code')
+                    if error:
+                        # List of errors: https://github.com/rarbg/torrentapi/issues/1#issuecomment-114763312
+                        if error_code == 5:
+                            # 5 = Too many requests per second
+                            log_level = sickrage.app.log.INFO
+                            retries -= 1
+                        elif error_code not in (8, 10, 12, 14, 20):
+                            # 8, 10, 12, 14 = Cant find * in database. Are you sure this * exists?
+                            # 20 = No results found
+                            log_level = sickrage.app.log.WARNING
+                            retries = 0
+                        elif error_code not in (2, 4):
+                            # 2, 4 = Invalid token. Use get_token for a new one!
+                            log_level = sickrage.app.log.WARNING
+                            retries -= 1
+                        else:
+                            log_level = sickrage.app.log.DEBUG
+                            retries = 0
 
-                results += self.parse(data, mode)
+                        if retries:
+                            continue
+
+                        sickrage.app.log.log(log_level, '{msg} Code: {code}'.format(msg=error, code=error_code))
+                        break
+
+                    results += self.parse(data, mode)
+                    break
 
         return results
 

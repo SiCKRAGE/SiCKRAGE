@@ -112,6 +112,8 @@ def change_gui_lang(language):
         # System default language
         gettext.install('messages', sickrage.LOCALE_DIR, codeset='UTF-8', names=["ngettext"])
 
+    sickrage.app.config.gui.gui_lang = language
+
 
 def change_unrar_tool(unrar_tool):
     # Check for failed unrar attempt, and remove it
