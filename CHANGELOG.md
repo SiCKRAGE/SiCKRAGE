@@ -2,7 +2,15 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.59](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.58...10.0.59)
+
+- resolved gettext and fstring issues [`182a6c0`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/182a6c0ae9b368a57c566965e6d65d1339786378)
+- updated english translations [`2f4b447`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/2f4b447824dfcb2dfa0e8edd429f1cba9cf6e184)
+- added retries for rarbg search provider [`dc46165`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/dc4616541ba350e8f3848cc3cbc9250eb8be2d22)
+
 #### [10.0.58](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.57...10.0.58)
+
+> 26 March 2022
 
 - added python version constraints for importlib-metadata in requirements.txt [`df671c9`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/df671c986d78ff7555acf5836736c754df971c10)
 

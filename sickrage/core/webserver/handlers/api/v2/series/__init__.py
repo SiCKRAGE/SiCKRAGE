@@ -178,7 +178,7 @@ class ApiV2SeriesHandler(ApiV2BaseHandler):
 
             if not make_dir(series_directory):
                 sickrage.app.log.warning(f"Unable to create the folder {series_directory}, can't add the show")
-                sickrage.app.alerts.error(_("Unable to add show"), _(f"Unable to create the folder {series_directory}, can't add the show"))
+                sickrage.app.alerts.error(_("Unable to add show"), f"Unable to create the folder {series_directory}, can't add the show")
                 return self._bad_request(error=f"Unable to create the show folder {series_directory}, can't add the show")
 
         chmod_as_parent(series_directory)
@@ -207,7 +207,7 @@ class ApiV2SeriesHandler(ApiV2BaseHandler):
                                          scene=is_scene,
                                          skip_downloaded=skip_downloaded)
 
-        sickrage.app.alerts.message(_('Adding Show'), _(f'Adding the specified show into {series_directory}'))
+        sickrage.app.alerts.message(_('Adding Show'), f'Adding the specified show into {series_directory}')
 
         return self.json_response({'message': True})
 
@@ -275,7 +275,7 @@ class ApiV2SeriesHandler(ApiV2BaseHandler):
             try:
                 sickrage.app.show_queue.refresh_show(series.series_id, series.series_provider_id, True)
             except CantRefreshShowException as e:
-                errors.append(_(f"Unable to refresh this show: {e}"))
+                errors.append(f"Unable to refresh this show: {e}")
 
         if data.get('language') is not None:
             series.lang = data['language']
@@ -305,20 +305,19 @@ class ApiV2SeriesHandler(ApiV2BaseHandler):
                     try:
                         sickrage.app.show_queue.refresh_show(series.series_id, series.series_provider_id, True)
                     except CantRefreshShowException as e:
-                        errors.append(_(f"Unable to refresh this show: {e}"))
+                        errors.append(f"Unable to refresh this show: {e}")
                         # grab updated info from TVDB
                         # showObj.loadEpisodesFromSeriesProvider()
                         # rescan the episodes in the new folder
                 except NoNFOException:
-                    warnings.append(_(
-                        f"The folder at {data['location']} doesn't contain a tvshow.nfo - copy your files to that folder before you change the directory in SiCKRAGE."))
+                    warnings.append(f"The folder at {data['location']} doesn't contain a tvshow.nfo - copy your files to that folder before you change the directory in SiCKRAGE.")
 
         # force the update
         if do_update:
             try:
                 sickrage.app.show_queue.update_show(series.series_id, series.series_provider_id, force=True)
             except CantUpdateShowException as e:
-                errors.append(_(f"Unable to update show: {e}"))
+                errors.append(f"Unable to update show: {e}")
 
         if do_update_exceptions:
             try:
@@ -422,7 +421,7 @@ class ApiV2SeriesRefreshHandler(ApiV2BaseHandler):
         try:
             sickrage.app.show_queue.refresh_show(series.series_id, series.series_provider_id, force=bool(force))
         except CantUpdateShowException as e:
-            return self._bad_request(error=_(f"Unable to refresh this show, error: {e}"))
+            return self._bad_request(error=f"Unable to refresh this show, error: {e}")
 
 
 class ApiV2SeriesUpdateHandler(ApiV2BaseHandler):
@@ -436,7 +435,7 @@ class ApiV2SeriesUpdateHandler(ApiV2BaseHandler):
         try:
             sickrage.app.show_queue.update_show(series.series_id, series.series_provider_id, force=bool(force))
         except CantUpdateShowException as e:
-            return self._bad_request(error=_(f"Unable to update this show, error: {e}"))
+            return self._bad_request(error=f"Unable to update this show, error: {e}")
 
 
 class ApiV2SeriesEpisodesRenameHandler(ApiV2BaseHandler):
@@ -627,7 +626,7 @@ class ApiV2SeriesEpisodesManualSearchHandler(ApiV2BaseHandler):
         if not all([ep_queue_item.started, ep_queue_item.success]):
             return self.json_response({'success': True})
 
-        return self._not_found(error=_(f"Unable to find season {season_num} episode {episode_num} for show {series.name} on search providers"))
+        return self._not_found(error=f"Unable to find season {season_num} episode {episode_num} for show {series.name} on search providers")
 
 
 class ApiV2SeriesSearchFormatsHandler(ApiV2BaseHandler):
