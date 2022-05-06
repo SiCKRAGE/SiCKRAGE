@@ -686,6 +686,7 @@ class CMD_Episode(ApiV1Handler):
             "episode": {"desc": "The episode number"},
         },
         "optionalParameters": {
+            "series_provider_id": {"desc": "Unique ID of series provider"},
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
             "full_path": {
                 "desc": "Return the full absolute show location (if valid, and True), or the relative show location"
@@ -696,8 +697,8 @@ class CMD_Episode(ApiV1Handler):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_Episode, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
-                                                          **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", sickrage.app.config.general.series_provider_default.value, False, "string",
+                                                          [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
         self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
         self.e, args = self.check_params("episode", None, True, "int", [], *args, **kwargs)
         self.fullPath, args = self.check_params("full_path", False, False, "bool", [], *args, **kwargs)
@@ -755,6 +756,7 @@ class CMD_EpisodeSearch(ApiV1Handler):
             "episode": {"desc": "The episode number"},
         },
         "optionalParameters": {
+            "series_provider_id": {"desc": "Unique ID of series provider"},
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
         }
     }
@@ -762,8 +764,8 @@ class CMD_EpisodeSearch(ApiV1Handler):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_EpisodeSearch, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
-                                                          **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", sickrage.app.config.general.series_provider_default.value, False, "string",
+                                                          [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
         self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
         self.e, args = self.check_params("episode", None, True, "int", [], *args, **kwargs)
 
@@ -805,6 +807,7 @@ class CMD_EpisodeSetStatus(ApiV1Handler):
             "status": {"desc": "The status of the episode or season"}
         },
         "optionalParameters": {
+            "series_provider_id": {"desc": "Unique ID of series provider"},
             "episode": {"desc": "The episode number"},
             "force": {"desc": "True to replace existing downloaded episode or season, False otherwise"},
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
@@ -814,8 +817,8 @@ class CMD_EpisodeSetStatus(ApiV1Handler):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_EpisodeSetStatus, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
-                                                          **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", sickrage.app.config.general.series_provider_default.value, False, "string",
+                                                          [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
         self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
         self.status, args = self.check_params("status", None, True, "string", ["WANTED", "SKIPPED", "IGNORED", "FAILED"], *args, **kwargs)
         self.e, args = self.check_params("episode", None, False, "int", [], *args, **kwargs)
@@ -899,6 +902,7 @@ class CMD_SubtitleSearch(ApiV1Handler):
             "episode": {"desc": "The episode number"},
         },
         "optionalParameters": {
+            "series_provider_id": {"desc": "Unique ID of series provider"},
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
         }
     }
@@ -906,8 +910,8 @@ class CMD_SubtitleSearch(ApiV1Handler):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_SubtitleSearch, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
-                                                          **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", sickrage.app.config.general.series_provider_default.value, False, "string",
+                                                          [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
         self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
         self.e, args = self.check_params("episode", None, True, "int", [], *args, **kwargs)
 
@@ -952,6 +956,7 @@ class CMD_Exceptions(ApiV1Handler):
         "desc": "Get the scene exceptions for all or a given show",
         "optionalParameters": {
             "series_id": {"desc": "Unique ID of a show"},
+            "series_provider_id": {"desc": "Unique ID of series provider"},
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
         }
     }
@@ -959,8 +964,8 @@ class CMD_Exceptions(ApiV1Handler):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_Exceptions, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, False, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
-                                                          **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", sickrage.app.config.general.series_provider_default.value, False, "string",
+                                                          [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
 
     def run(self):
         """ Get the scene exceptions for all or a given show """
@@ -1510,8 +1515,8 @@ class CMD_SiCKRAGESearchSeriesProvider(ApiV1Handler):
         self.name, args = self.check_params("name", None, False, "string", [], *args, **kwargs)
         self.lang, args = self.check_params("lang", sickrage.app.config.general.series_provider_default_language, False, "string", [], *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, False, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
-                                                          **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", sickrage.app.config.general.series_provider_default.value, False, "string",
+                                                          [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
 
     def run(self):
         """ Search for a show with a given name on a specific series provider, in a specific language """
@@ -1692,6 +1697,7 @@ class CMD_Show(ApiV1Handler):
             "series_id": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
+            "series_provider_id": {"desc": "Unique ID of series provider"},
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
         }
     }
@@ -1699,8 +1705,8 @@ class CMD_Show(ApiV1Handler):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_Show, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
-                                                          **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", sickrage.app.config.general.series_provider_default.value, False, "string",
+                                                          [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
 
     def run(self):
         """ Get detailed information about a show """
@@ -1778,10 +1784,10 @@ class CMD_ShowAddExisting(ApiV1Handler):
         "desc": "Add an existing show in SiCKRAGE",
         "requiredParameters": {
             "series_id": {"desc": "Unique ID of a show"},
-            "series_provider_id": {"desc": "Unique ID of a series provider"},
             "location": {"desc": "Full path to the existing shows's folder"},
         },
         "optionalParameters": {
+            "series_provider_id": {"desc": "Unique ID of series provider"},
             "initial": {"desc": "The initial quality of the show"},
             "archive": {"desc": "The archive quality of the show"},
             "flatten_folders": {"desc": "True to flatten the show folder, False otherwise"},
@@ -1792,8 +1798,8 @@ class CMD_ShowAddExisting(ApiV1Handler):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowAddExisting, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
-                                                          **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", sickrage.app.config.general.series_provider_default.value, False, "string",
+                                                          [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
         self.location, args = self.check_params("location", None, True, "string", [], *args, **kwargs)
         self.initial, args = self.check_params("initial", None, False, "list", any_quality_list, *args, **kwargs)
         self.archive, args = self.check_params("archive", None, False, "list", best_quality_list, *args, **kwargs)
@@ -1863,9 +1869,9 @@ class CMD_ShowAddNew(ApiV1Handler):
         "desc": "Add a new show to SiCKRAGE",
         "requiredParameters": {
             "series_id": {"desc": "Unique ID of a show"},
-            "series_provider_id": {"desc": "Unique ID of a series provider"},
         },
         "optionalParameters": {
+            "series_provider_id": {"desc": "Unique ID of series provider"},
             "initial": {"desc": "The initial quality of the show"},
             "location": {"desc": "The path to the folder where the show should be created"},
             "archive": {"desc": "The archive quality of the show"},
@@ -1889,8 +1895,8 @@ class CMD_ShowAddNew(ApiV1Handler):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowAddNew, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
-                                                          **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", sickrage.app.config.general.series_provider_default.value, False, "string",
+                                                          [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
         self.location, args = self.check_params("location", None, False, "string", [], *args, **kwargs)
         self.initial, args = self.check_params("initial", None, False, "list", any_quality_list, *args, **kwargs)
         self.archive, args = self.check_params("archive", None, False, "list", best_quality_list, *args, **kwargs)
@@ -2011,6 +2017,7 @@ class CMD_ShowCache(ApiV1Handler):
             "series_id": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
+            "series_provider_id": {"desc": "Unique ID of series provider"},
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
         }
     }
@@ -2018,8 +2025,8 @@ class CMD_ShowCache(ApiV1Handler):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowCache, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
-                                                          **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", sickrage.app.config.general.series_provider_default.value, False, "string",
+                                                          [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
 
     def run(self):
         """ Check SiCKRAGE's cache to see if the images (poster, banner, fanart) for a show are valid """
@@ -2051,6 +2058,7 @@ class CMD_ShowDelete(ApiV1Handler):
             "series_id": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
+            "series_provider_id": {"desc": "Unique ID of series provider"},
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
             "removefiles": {
                 "desc": "True to delete the files associated with the show, False otherwise. This can not be undone!"
@@ -2061,8 +2069,8 @@ class CMD_ShowDelete(ApiV1Handler):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowDelete, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
-                                                          **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", sickrage.app.config.general.series_provider_default.value, False, "string",
+                                                          [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
         self.removefiles, args = self.check_params("removefiles", False, False, "bool", [], *args, **kwargs)
 
     def run(self):
@@ -2087,6 +2095,7 @@ class CMD_ShowGetQuality(ApiV1Handler):
             "series_id": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
+            "series_provider_id": {"desc": "Unique ID of series provider"},
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
         }
     }
@@ -2094,8 +2103,8 @@ class CMD_ShowGetQuality(ApiV1Handler):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowGetQuality, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
-                                                          **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", sickrage.app.config.general.series_provider_default.value, False, "string",
+                                                          [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
 
     def run(self):
         """ Get the quality setting of a show """
@@ -2116,6 +2125,7 @@ class CMD_ShowGetPoster(ApiV1Handler):
             "series_id": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
+            "series_provider_id": {"desc": "Unique ID of series provider"},
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
         }
     }
@@ -2123,8 +2133,8 @@ class CMD_ShowGetPoster(ApiV1Handler):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowGetPoster, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
-                                                          **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", sickrage.app.config.general.series_provider_default.value, False, "string",
+                                                          [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
 
     def run(self):
         """ Get the poster a show """
@@ -2142,6 +2152,7 @@ class CMD_ShowGetBanner(ApiV1Handler):
             "series_id": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
+            "series_provider_id": {"desc": "Unique ID of series provider"},
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
         }
     }
@@ -2149,8 +2160,8 @@ class CMD_ShowGetBanner(ApiV1Handler):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowGetBanner, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
-                                                          **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", sickrage.app.config.general.series_provider_default.value, False, "string",
+                                                          [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
 
     def run(self):
         """ Get the banner of a show """
@@ -2168,6 +2179,7 @@ class CMD_ShowGetNetworkLogo(ApiV1Handler):
             "series_id": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
+            "series_provider_id": {"desc": "Unique ID of series provider"},
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
         }
     }
@@ -2175,8 +2187,8 @@ class CMD_ShowGetNetworkLogo(ApiV1Handler):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowGetNetworkLogo, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
-                                                          **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", sickrage.app.config.general.series_provider_default.value, False, "string",
+                                                          [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
 
     def run(self):
         """
@@ -2196,6 +2208,7 @@ class CMD_ShowGetFanArt(ApiV1Handler):
             "series_id": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
+            "series_provider_id": {"desc": "Unique ID of series provider"},
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
         }
     }
@@ -2203,8 +2216,8 @@ class CMD_ShowGetFanArt(ApiV1Handler):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowGetFanArt, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
-                                                          **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", sickrage.app.config.general.series_provider_default.value, False, "string",
+                                                          [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
 
     def run(self):
         """ Get the fan art of a show """
@@ -2222,6 +2235,7 @@ class CMD_ShowPause(ApiV1Handler):
             "series_id": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
+            "series_provider_id": {"desc": "Unique ID of series provider"},
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
             "pause": {"desc": "True to pause the show, False otherwise"},
         }
@@ -2230,8 +2244,8 @@ class CMD_ShowPause(ApiV1Handler):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowPause, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
-                                                          **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", sickrage.app.config.general.series_provider_default.value, False, "string",
+                                                          [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
         self.pause, args = self.check_params("pause", False, False, "bool", [], *args, **kwargs)
 
     def run(self):
@@ -2258,6 +2272,7 @@ class CMD_ShowRefresh(ApiV1Handler):
             "series_id": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
+            "series_provider_id": {"desc": "Unique ID of series provider"},
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
         }
     }
@@ -2265,8 +2280,8 @@ class CMD_ShowRefresh(ApiV1Handler):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowRefresh, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
-                                                          **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", sickrage.app.config.general.series_provider_default.value, False, "string",
+                                                          [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
 
     def run(self):
         """ Refresh a show in SiCKRAGE """
@@ -2290,6 +2305,7 @@ class CMD_ShowSeasonList(ApiV1Handler):
             "series_id": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
+            "series_provider_id": {"desc": "Unique ID of series provider"},
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
             "sort": {"desc": "Return the seasons in ascending or descending order"}
         }
@@ -2298,8 +2314,8 @@ class CMD_ShowSeasonList(ApiV1Handler):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowSeasonList, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
-                                                          **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", sickrage.app.config.general.series_provider_default.value, False, "string",
+                                                          [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
         self.sort, args = self.check_params("sort", "desc", False, "string", ["asc", "desc"], *args, **kwargs)
 
     def run(self):
@@ -2323,6 +2339,7 @@ class CMD_ShowSeasons(ApiV1Handler):
             "series_id": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
+            "series_provider_id": {"desc": "Unique ID of series provider"},
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
             "season": {"desc": "The season number"},
         }
@@ -2331,8 +2348,8 @@ class CMD_ShowSeasons(ApiV1Handler):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowSeasons, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
-                                                          **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", sickrage.app.config.general.series_provider_default.value, False, "string",
+                                                          [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
         self.season, args = self.check_params("season", None, False, "int", [], *args, **kwargs)
 
     def run(self):
@@ -2388,6 +2405,7 @@ class CMD_ShowSetQuality(ApiV1Handler):
             "series_id": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
+            "series_provider_id": {"desc": "Unique ID of series provider"},
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
             "initial": {"desc": "The initial quality of the show"},
             "archive": {"desc": "The archive quality of the show"},
@@ -2397,8 +2415,8 @@ class CMD_ShowSetQuality(ApiV1Handler):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowSetQuality, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
-                                                          **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", sickrage.app.config.general.series_provider_default.value, False, "string",
+                                                          [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
         # self.archive, args = self.check_params("archive", None, False, "list", _getQualityMap().values()[1:], *args, **kwargs)
         self.initial, args = self.check_params("initial", None, False, "list", any_quality_list, *args, **kwargs)
         self.archive, args = self.check_params("archive", None, False, "list", best_quality_list, *args, **kwargs)
@@ -2438,6 +2456,7 @@ class CMD_ShowStats(ApiV1Handler):
             "series_id": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
+            "series_provider_id": {"desc": "Unique ID of series provider"},
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
         }
     }
@@ -2445,8 +2464,8 @@ class CMD_ShowStats(ApiV1Handler):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowStats, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
-                                                          **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", sickrage.app.config.general.series_provider_default.value, False, "string",
+                                                          [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
 
     def run(self):
         """ Get episode statistics for a given show """
@@ -2550,6 +2569,7 @@ class CMD_ShowUpdate(ApiV1Handler):
             "series_id": {"desc": "Unique ID of a show"},
         },
         "optionalParameters": {
+            "series_provider_id": {"desc": "Unique ID of series provider"},
             "tvdbid": {"desc": "thetvdb.com unique ID of a show"},
         }
     }
@@ -2557,8 +2577,8 @@ class CMD_ShowUpdate(ApiV1Handler):
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowUpdate, self).__init__(application, request, *args, **kwargs)
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
-        self.series_provider_id, args = self.check_params("series_provider_id", None, True, "string", [x.name.lower() for x in SeriesProviderID], *args,
-                                                          **kwargs)
+        self.series_provider_id, args = self.check_params("series_provider_id", sickrage.app.config.general.series_provider_default.value, False, "string",
+                                                          [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
 
     def run(self):
         """ Update a show in SiCKRAGE """
