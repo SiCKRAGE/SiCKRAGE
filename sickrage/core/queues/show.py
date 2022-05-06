@@ -315,8 +315,8 @@ class ShowTaskAdd(ShowTask):
                 f"probably the wrong language used to search with")
 
             sickrage.app.alerts.error(_("Unable to add show"),
-                                      _(f"Show in {self.show_dir} has no name on {sickrage.app.series_providers[self.series_provider_id].name}, "
-                                        f"probably the wrong language. Delete .nfo and add manually in the correct language"))
+                                      f"Show in {self.show_dir} has no name on {sickrage.app.series_providers[self.series_provider_id].name}, "
+                                      f"probably the wrong language. Delete .nfo and add manually in the correct language")
 
             return self._finish_early()
 
