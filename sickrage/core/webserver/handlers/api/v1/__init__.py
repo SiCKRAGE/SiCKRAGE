@@ -318,6 +318,9 @@ class ApiV1Handler(ApiV1BaseHandler):
             and to detect missing/required params
         """
 
+        if key == "series_id" and "tvdbid" in kwargs:
+            key = "tvdbid"
+
         if key:
             missing = True
             org_default = default
