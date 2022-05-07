@@ -2,7 +2,9 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.60.dev1](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.59...v10.0.60.dev1)
+#### [v10.0.60.dev2](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.59...v10.0.60.dev2)
+
+- added in missing mimetype mkv [`956a357`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/956a357160f4377e8ea2b0f86331394c322b71e4)
 
 #### [10.0.59](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.58...10.0.59)
 
