@@ -63,12 +63,14 @@ from sickrage.core.enums import TorrentMethod
 from sickrage.core.helpers import encryption
 from sickrage.core.websession import WebSession
 
+mimetypes.add_type('video/x-matroska', '.mkv')
 mimetypes.add_type('video/divx', '.divx')
 mimetypes.add_type("video/x-flv", ".flv")
 mimetypes.add_type("video/x-f4v", ".f4v")
 mimetypes.add_type("video/x-dvd-iso", ".iso")
 mimetypes.add_type("video/x-dvd-iso", ".img")
 mimetypes.add_type("video/x-dvd-iso", ".nrg")
+mimetypes.add_type("video/x-dvd-iso", ".ifo")
 mimetypes.add_type("video/dvd", ".vob")
 mimetypes.add_type("video/mpeg", ".wtv")
 mimetypes.add_type("application/x-bittorrent", ".torrent")
