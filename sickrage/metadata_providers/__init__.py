@@ -770,7 +770,7 @@ class MetadataProvider(object):
 
     @staticmethod
     def get_image(url):
-        if url is None:
+        if not url:
             return None
 
         sickrage.app.log.debug("Fetching image from " + url)
