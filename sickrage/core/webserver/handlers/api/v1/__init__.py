@@ -318,6 +318,9 @@ class ApiV1Handler(ApiV1BaseHandler):
             and to detect missing/required params
         """
 
+        if key == "series_id" and "tvdbid" in kwargs:
+            key = "tvdbid"
+
         if key:
             missing = True
             org_default = default
@@ -820,7 +823,9 @@ class CMD_EpisodeSetStatus(ApiV1Handler):
         self.series_provider_id, args = self.check_params("series_provider_id", sickrage.app.config.general.series_provider_default.value, False, "string",
                                                           [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
         self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
-        self.status, args = self.check_params("status", None, True, "string", ["WANTED", "SKIPPED", "IGNORED", "FAILED"], *args, **kwargs)
+        self.status, args = self.check_params("status", None, True, "string",
+                                              [EpisodeStatus.WANTED.name.lower(), EpisodeStatus.SKIPPED.name.lower(), EpisodeStatus.IGNORED.name.lower(),
+                                               EpisodeStatus.FAILED.name.lower()], *args, **kwargs)
         self.e, args = self.check_params("episode", None, False, "int", [], *args, **kwargs)
         self.force, args = self.check_params("force", False, False, "bool", [], *args, **kwargs)
 
@@ -831,7 +836,7 @@ class CMD_EpisodeSetStatus(ApiV1Handler):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         # convert string status to EpisodeStatus
-        self.status = EpisodeStatus[self.status]
+        self.status = EpisodeStatus[self.status.upper()]
 
         if self.e:
             try:
@@ -1111,6 +1116,8 @@ class CMD_Backlog(ApiV1Handler):
             if showEps:
                 shows.append({
                     "series_id": s.series_id,
+                    "series_provider_id": s.series_provider.slug,
+                    "tvdbid": map_series_providers(s.series_provider_id, s.series_id, s.name)[SeriesProviderID.THETVDB.name],
                     "show_name": s.name,
                     "status": s.status,
                     "episodes": showEps
@@ -1545,22 +1552,24 @@ class CMD_SiCKRAGESearchSeriesProvider(ApiV1Handler):
                 return _responds(RESULT_SUCCESS, {"results": results, "langid": series_provider_language})
 
         elif self.series_id:
-            resp = series_provider.search(self.series_id, language=series_provider_language)
+            resp = series_provider.search(str(self.series_id), language=series_provider_language)
             if resp:
-                if not resp.get('name', None):
-                    sickrage.app.log.debug("Found show with series_id: " + str(self.series_id) + ", however it contained no show name")
-                    return _responds(RESULT_FAILURE, msg="Show contains no name, invalid result")
+                for result in resp:
+                    if not result.get('name', None):
+                        continue
 
-                if not resp.get('firstAired', None):
-                    sickrage.app.log.debug("Found show with series_id: " + str(self.series_id) + ", however it contained no first air date")
-                    return _responds(RESULT_FAILURE, msg="Show contains no first air date, invalid result")
+                    if not result.get('firstAired', None):
+                        continue
 
-                # found show
-                results = [{
-                    'series_id': int(resp['id']),
-                    "name": resp['name'],
-                    'first_aired': resp['firstAired']
-                }]
+                    if not result.get('id', None) == str(self.series_id):
+                        continue
+
+                    # found show
+                    results = [{
+                        'series_id': int(result['id']),
+                        "name": result['name'],
+                        'first_aired': result['firstAired']
+                    }]
 
                 return _responds(RESULT_SUCCESS, {"results": results, "langid": series_provider_language})
 
@@ -1622,8 +1631,7 @@ class CMD_SiCKRAGESetDefaults(ApiV1Handler):
         self.future_show_paused, args = self.check_params("future_show_paused", None, False, "bool", [], *args,
                                                           **kwargs)
         self.flatten_folders, args = self.check_params("flatten_folders", None, False, "bool", [], *args, **kwargs)
-        self.status, args = self.check_params("status", None, False, "string", ["wanted", "skipped", "ignored"], *args,
-                                              **kwargs)
+        self.status, args = self.check_params("status", None, False, "string", ["wanted", "skipped", "ignored"], *args, **kwargs)
 
     def run(self):
         """ Set SiCKRAGE's user default configuration value """
@@ -1643,7 +1651,7 @@ class CMD_SiCKRAGESetDefaults(ApiV1Handler):
 
         if self.status:
             # only allow the status options we want
-            if self.status not in (EpisodeStatus.WANTED, EpisodeStatus.SKIPPED, EpisodeStatus.ARCHIVED, EpisodeStatus.IGNORED):
+            if EpisodeStatus[self.status.upper()] not in (EpisodeStatus.WANTED, EpisodeStatus.SKIPPED, EpisodeStatus.ARCHIVED, EpisodeStatus.IGNORED):
                 raise InternalApiError("Status Prohibited")
 
             sickrage.app.config.general.status_default = self.status
@@ -1757,7 +1765,7 @@ class CMD_Show(ApiV1Handler):
         showDict["skip_downloaded"] = (0, 1)[show_object.skip_downloaded]
 
         showDict["series_id"] = show_object.series_id
-        showDict["series_provider_id"] = show_object.series_provider.name
+        showDict["series_provider_id"] = show_object.series_provider.slug
         showDict["tvdbid"] = map_series_providers(show_object.series_provider_id, show_object.series_id, show_object.name)[SeriesProviderID.THETVDB.name]
         showDict["imdbid"] = show_object.imdb_id
 
@@ -1804,11 +1812,9 @@ class CMD_ShowAddExisting(ApiV1Handler):
         self.initial, args = self.check_params("initial", None, False, "list", any_quality_list, *args, **kwargs)
         self.archive, args = self.check_params("archive", None, False, "list", best_quality_list, *args, **kwargs)
         self.skip_downloaded, args = self.check_params("skip_downloaded", None, False, "int", [], *args, **kwargs)
-        self.flatten_folders, args = self.check_params("flatten_folders",
-                                                       bool(sickrage.app.config.general.flatten_folders_default), False,
-                                                       "bool", [], *args, **kwargs)
-        self.subtitles, args = self.check_params("subtitles", int(sickrage.app.config.subtitles.enable), False, "int",
-                                                 [], *args, **kwargs)
+        self.flatten_folders, args = self.check_params("flatten_folders", bool(sickrage.app.config.general.flatten_folders_default), False, "bool", [], *args,
+                                                       **kwargs)
+        self.subtitles, args = self.check_params("subtitles", int(sickrage.app.config.subtitles.enable), False, "int", [], *args, **kwargs)
 
     def run(self):
         """ Add an existing show in SiCKRAGE """
@@ -1855,9 +1861,15 @@ class CMD_ShowAddExisting(ApiV1Handler):
             newQuality = Quality.combine_qualities(iqualityID, aqualityID)
 
         sickrage.app.show_queue.add_show(
-            series_provider_id=SeriesProviderID[self.series_provider_id.upper()], series_id=int(self.series_id), showDir=self.location,
-            default_status=sickrage.app.config.general.status_default, quality=newQuality, flatten_folders=int(self.flatten_folders),
-            subtitles=self.subtitles, default_status_after=sickrage.app.config.general.status_default_after, skip_downloaded=self.skip_downloaded
+            series_provider_id=SeriesProviderID[self.series_provider_id.upper()],
+            series_id=int(self.series_id),
+            showDir=self.location,
+            default_status=sickrage.app.config.general.status_default,
+            quality=newQuality,
+            flatten_folders=int(self.flatten_folders),
+            subtitles=self.subtitles,
+            default_status_after=sickrage.app.config.general.status_default_after,
+            skip_downloaded=self.skip_downloaded
         )
 
         return _responds(RESULT_SUCCESS, {"name": series_name}, series_name + " has been queued to be added")
@@ -1902,13 +1914,18 @@ class CMD_ShowAddNew(ApiV1Handler):
         self.archive, args = self.check_params("archive", None, False, "list", best_quality_list, *args, **kwargs)
         self.flatten_folders, args = self.check_params("flatten_folders", bool(sickrage.app.config.general.flatten_folders_default), False, "bool", [], *args,
                                                        **kwargs)
-        self.status, args = self.check_params("status", None, False, "string", ["wanted", "skipped", "ignored"], *args, **kwargs)
+        self.status, args = self.check_params("status", None, False, "string",
+                                              [EpisodeStatus.WANTED.name.lower(), EpisodeStatus.SKIPPED.name.lower(), EpisodeStatus.IGNORED.name.lower()],
+                                              *args, **kwargs)
         self.lang, args = self.check_params("lang", sickrage.app.config.general.series_provider_default_language, False, "string", [], *args, **kwargs)
         self.subtitles, args = self.check_params("subtitles", bool(sickrage.app.config.subtitles.enable), False, "bool", [], *args, **kwargs)
         self.scene, args = self.check_params("scene", bool(sickrage.app.config.general.scene_default), False, "bool", [], *args, **kwargs)
         self.anime, args = self.check_params("anime", bool(sickrage.app.config.general.anime_default), False, "bool", [], *args, **kwargs)
-        self.search_format, args = self.check_params("search_format", sickrage.app.config.general.search_format_default, False, "string", [], *args, **kwargs)
-        self.future_status, args = self.check_params("future_status", None, False, "string", ["wanted", "skipped", "ignored"], *args, **kwargs)
+        self.search_format, args = self.check_params("search_format", sickrage.app.config.general.search_format_default.name.lower(), False, "string",
+                                                     [x.name.lower() for x in SearchFormat], *args, **kwargs)
+        self.future_status, args = self.check_params("future_status", None, False, "string",
+                                                     [EpisodeStatus.WANTED.name.lower(), EpisodeStatus.SKIPPED.name.lower(),
+                                                      EpisodeStatus.IGNORED.name.lower()], *args, **kwargs)
         self.skip_downloaded, args = self.check_params("skip_downloaded", bool(sickrage.app.config.general.skip_downloaded_default), False, "bool", [], *args,
                                                        **kwargs)
         self.add_show_year, args = self.check_params("add_show_year", bool(sickrage.app.config.general.add_show_year_default), False, "bool", [], *args,
@@ -1931,6 +1948,17 @@ class CMD_ShowAddNew(ApiV1Handler):
 
         if not os.path.isdir(self.location):
             return _responds(RESULT_FAILURE, msg="'" + self.location + "' is not a valid location")
+
+        # convert string status to EpisodeStatus
+        if self.status:
+            self.status = EpisodeStatus[self.status.upper()]
+
+        # convert string future status to EpisodeStatus
+        if self.future_status:
+            self.future_status = EpisodeStatus[self.future_status.upper()]
+
+        # convert string search format to SearchFormat
+        self.search_format = SearchFormat[self.search_format.upper()]
 
         # use default quality as a failsafe
         new_quality = int(sickrage.app.config.general.quality_default)
@@ -2001,9 +2029,19 @@ class CMD_ShowAddNew(ApiV1Handler):
                 chmod_as_parent(show_path)
 
         sickrage.app.show_queue.add_show(
-            series_provider_id=SeriesProviderID[self.series_provider_id.upper()], series_id=int(self.series_id), showDir=show_path, default_status=new_status,
-            quality=new_quality, flatten_folders=int(self.flatten_folders), lang=self.lang, subtitles=self.subtitles, anime=self.anime, scene=self.scene,
-            search_format=self.search_format, default_status_after=default_ep_status_after, skip_downloaded=self.skip_downloaded
+            series_provider_id=SeriesProviderID[self.series_provider_id.upper()],
+            series_id=int(self.series_id),
+            showDir=show_path,
+            default_status=new_status,
+            quality=new_quality,
+            flatten_folders=int(self.flatten_folders),
+            lang=self.lang,
+            subtitles=self.subtitles,
+            anime=self.anime,
+            scene=self.scene,
+            search_format=self.search_format,
+            default_status_after=default_ep_status_after,
+            skip_downloaded=self.skip_downloaded
         )
 
         return _responds(RESULT_SUCCESS, {"name": series_name}, series_name + " has been queued to be added")
@@ -2350,7 +2388,7 @@ class CMD_ShowSeasons(ApiV1Handler):
         self.series_id, args = self.check_params("series_id", None, True, "int", [], *args, **kwargs)
         self.series_provider_id, args = self.check_params("series_provider_id", sickrage.app.config.general.series_provider_default.value, False, "string",
                                                           [x.name.lower() for x in SeriesProviderID], *args, **kwargs)
-        self.season, args = self.check_params("season", None, False, "int", [], *args, **kwargs)
+        self.season, args = self.check_params("season", "2017", False, "int", [], *args, **kwargs)
 
     def run(self):
         """ Get the list of episodes for one or all seasons of a show """
@@ -2371,7 +2409,7 @@ class CMD_ShowSeasons(ApiV1Handler):
         for row in db_data:
             episode_dict = row.as_dict()
 
-            episode_dict['series_provider_id'] = SeriesProviderID(episode_dict['series_provider_id']).display_name
+            episode_dict['series_provider_id'] = show_obj.series_provider.slug
 
             status, quality = Quality.split_composite_status(int(episode_dict['status']))
             episode_dict['status'] = status.display_name
@@ -2389,10 +2427,16 @@ class CMD_ShowSeasons(ApiV1Handler):
             curSeason = int(episode_dict['season'])
             curEpisode = int(episode_dict['episode'])
 
-            if curSeason not in seasons:
-                seasons[curSeason] = {}
+            if self.season is None:
+                if curSeason not in seasons:
+                    seasons[curSeason] = {}
 
-            seasons[curSeason][curEpisode] = episode_dict
+                seasons[curSeason][curEpisode] = episode_dict
+            else:
+                if curEpisode not in seasons:
+                    seasons[curEpisode] = {}
+
+                seasons[curEpisode] = episode_dict
 
         return _responds(RESULT_SUCCESS, seasons)
 
@@ -2623,7 +2667,8 @@ class CMD_Shows(ApiV1Handler):
                 "search_format": SearchFormat(curShow.search_format).display_name,
                 "anime": (0, 1)[curShow.anime],
                 "series_id": curShow.series_id,
-                "series_provider_id": curShow.series_provider.name,
+                "series_provider_id": curShow.series_provider.slug,
+                "tvdbid": map_series_providers(curShow.series_provider_id, curShow.series_id, curShow.name)[SeriesProviderID.THETVDB.name],
                 "network": curShow.network,
                 "show_name": curShow.name,
                 "status": curShow.status,

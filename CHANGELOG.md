@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.60](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.59...10.0.60)
+
+- added in missing mimetype mkv [`956a357`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/956a357160f4377e8ea2b0f86331394c322b71e4)
+
 #### [10.0.59](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.58...10.0.59)
+
+> 6 May 2022
 
 - resolved gettext and fstring issues [`182a6c0`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/182a6c0ae9b368a57c566965e6d65d1339786378)
 - updated english translations [`2f4b447`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/2f4b447824dfcb2dfa0e8edd429f1cba9cf6e184)

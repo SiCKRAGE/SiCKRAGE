@@ -80,7 +80,10 @@ class TheTVDB(SeriesProvider):
 
         sickrage.app.log.debug(f"Searching for show using remote id: {remote_id}")
 
-        search_result = sickrage.app.api.series_provider.search_by_id(provider=self.slug, remote_id=quote(remote_id), language=language)
+        if not isinstance(remote_id, int):
+            remote_id = quote(remote_id)
+
+        search_result = sickrage.app.api.series_provider.search_by_id(provider=self.slug, remote_id=remote_id, language=language)
         if not search_result or 'error' in search_result:
             sickrage.app.log.debug(f'Series search using remote id {remote_id} returned zero results, cannot find series on {self.name}')
 

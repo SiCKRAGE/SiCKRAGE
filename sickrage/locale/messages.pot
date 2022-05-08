@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: sickrage 10.0.59.dev1\n"
+"Project-Id-Version: sickrage 10.0.60.dev3\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2022-05-06 08:56+0000\n"
+"POT-Creation-Date: 2022-05-08 00:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -4147,7 +4147,7 @@ msgstr ""
 msgid "Test Connection"
 msgstr ""
 
-#: sickrage/core/webserver/handlers/api/v1/__init__.py:948
+#: sickrage/core/webserver/handlers/api/v1/__init__.py:953
 #: sickrage/core/webserver/views/config/subtitles.mako:10
 #: sickrage/core/webserver/views/config/subtitles.mako:26
 #: sickrage/core/webserver/views/home/display_show.mako:725
