@@ -24,9 +24,4 @@ from sickrage.core.webserver.handlers.api.v2 import ApiV2BaseHandler
 
 class ApiV2EpisodeStatusesHandler(ApiV2BaseHandler):
     def get(self):
-        statuses = [{
-                'name': x.display_name,
-                'slug': x.name,
-            } for x in EpisodeStatus]
-
-        return self.json_response(statuses)
+        return self.json_response([{'name': x.display_name, 'slug': x.name} for x in EpisodeStatus])

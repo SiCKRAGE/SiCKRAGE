@@ -631,9 +631,4 @@ class ApiV2SeriesEpisodesManualSearchHandler(ApiV2BaseHandler):
 
 class ApiV2SeriesSearchFormatsHandler(ApiV2BaseHandler):
     def get(self):
-        search_formats = [{
-            'name': x.display_name,
-            'slug': x.name,
-        } for x in SearchFormat]
-
-        return self.json_response(search_formats)
+        return self.json_response([{'name': x.display_name, 'slug': x.name} for x in SearchFormat])

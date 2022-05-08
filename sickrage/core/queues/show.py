@@ -352,7 +352,7 @@ class ShowTaskAdd(ShowTask):
             show_obj.paused = self.paused if self.paused is not None else False
 
             # set up default new/missing episode status
-            sickrage.app.log.info("Setting all current episodes to the specified default status: " + str(self.default_status))
+            sickrage.app.log.info("Setting all current episodes to the specified default status: " + str(self.default_status.display_name))
             show_obj.default_ep_status = self.default_status
 
             # save to database
