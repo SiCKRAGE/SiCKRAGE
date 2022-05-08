@@ -2,7 +2,9 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.61.dev1](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.60...v10.0.61.dev1)
+#### [v10.0.61.dev2](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.60...v10.0.61.dev2)
+
+- fixed issues with blank URLs being sent to get_image function when populating show/season/episode images [`bda6105`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/bda61054c9b8ac46cf036413d83fd4769dfa6ae3)
 
 #### [10.0.60](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.59...10.0.60)
 
