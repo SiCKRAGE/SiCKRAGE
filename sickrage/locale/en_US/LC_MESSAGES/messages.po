@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: sickrage 10.0.60.dev3\n"
+"Project-Id-Version: sickrage 10.0.61.dev2\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2022-05-08 00:12+0000\n"
-"PO-Revision-Date: 2022-05-08 00:12+0000\n"
+"POT-Creation-Date: 2022-05-08 20:23+0000\n"
+"PO-Revision-Date: 2022-05-08 20:23+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
 "Language-Team: en_US <LL@li.org>\n"
@@ -6099,63 +6099,63 @@ msgstr ""
 msgid "Launching backlog for this show since it has episodes that are WANTED"
 msgstr ""
 
-#: sickrage/core/tv/show/__init__.py:599
+#: sickrage/core/tv/show/__init__.py:600
 #: sickrage/core/webserver/handlers/home/__init__.py:819
 msgid ""
 "This show is in the process of being downloaded - the info below is "
 "incomplete."
 msgstr ""
 
-#: sickrage/core/tv/show/__init__.py:604
+#: sickrage/core/tv/show/__init__.py:605
 msgid "This show is in the process of being removed."
 msgstr ""
 
-#: sickrage/core/tv/show/__init__.py:609
+#: sickrage/core/tv/show/__init__.py:610
 #: sickrage/core/webserver/handlers/home/__init__.py:822
 msgid "The information on this page is in the process of being updated."
 msgstr ""
 
-#: sickrage/core/tv/show/__init__.py:614
+#: sickrage/core/tv/show/__init__.py:615
 #: sickrage/core/webserver/handlers/home/__init__.py:825
 msgid "The episodes below are currently being refreshed from disk"
 msgstr ""
 
-#: sickrage/core/tv/show/__init__.py:619
+#: sickrage/core/tv/show/__init__.py:620
 #: sickrage/core/webserver/handlers/home/__init__.py:828
 msgid "Currently downloading subtitles for this show"
 msgstr ""
 
-#: sickrage/core/tv/show/__init__.py:624
+#: sickrage/core/tv/show/__init__.py:625
 #: sickrage/core/webserver/handlers/home/__init__.py:831
 msgid "This show is queued to be refreshed."
 msgstr ""
 
-#: sickrage/core/tv/show/__init__.py:629
+#: sickrage/core/tv/show/__init__.py:630
 #: sickrage/core/webserver/handlers/home/__init__.py:834
 msgid "This show is queued and awaiting an update."
 msgstr ""
 
-#: sickrage/core/tv/show/__init__.py:634
+#: sickrage/core/tv/show/__init__.py:635
 #: sickrage/core/webserver/handlers/home/__init__.py:837
 msgid "This show is queued and awaiting subtitles download."
 msgstr ""
 
-#: sickrage/core/tv/show/__init__.py:1460
+#: sickrage/core/tv/show/__init__.py:1474
 #: sickrage/core/webserver/handlers/home/__init__.py:146
 msgid "no data"
 msgstr ""
 
-#: sickrage/core/tv/show/__init__.py:1463
+#: sickrage/core/tv/show/__init__.py:1477
 #: sickrage/core/webserver/handlers/home/__init__.py:149
 msgid "Downloaded: "
 msgstr ""
 
-#: sickrage/core/tv/show/__init__.py:1466
+#: sickrage/core/tv/show/__init__.py:1480
 #: sickrage/core/webserver/handlers/home/__init__.py:152
 msgid "Snatched: "
 msgstr ""
 
-#: sickrage/core/tv/show/__init__.py:1469
+#: sickrage/core/tv/show/__init__.py:1483
 #: sickrage/core/webserver/handlers/home/__init__.py:155
 msgid "Total: "
 msgstr ""

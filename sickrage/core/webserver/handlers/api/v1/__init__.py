@@ -1628,10 +1628,11 @@ class CMD_SiCKRAGESetDefaults(ApiV1Handler):
         super(CMD_SiCKRAGESetDefaults, self).__init__(application, request, *args, **kwargs)
         self.initial, args = self.check_params("initial", None, False, "list", any_quality_list, *args, **kwargs)
         self.archive, args = self.check_params("archive", None, False, "list", best_quality_list, *args, **kwargs)
-        self.future_show_paused, args = self.check_params("future_show_paused", None, False, "bool", [], *args,
-                                                          **kwargs)
+        self.future_show_paused, args = self.check_params("future_show_paused", None, False, "bool", [], *args, **kwargs)
         self.flatten_folders, args = self.check_params("flatten_folders", None, False, "bool", [], *args, **kwargs)
-        self.status, args = self.check_params("status", None, False, "string", ["wanted", "skipped", "ignored"], *args, **kwargs)
+        self.status, args = self.check_params("status", None, False, "string",
+                                              [EpisodeStatus.WANTED.name.lower(), EpisodeStatus.SKIPPED.name.lower(), EpisodeStatus.ARCHIVED.name.lower(),
+                                               EpisodeStatus.IGNORED.name.lower()], *args, **kwargs)
 
     def run(self):
         """ Set SiCKRAGE's user default configuration value """
@@ -1650,8 +1651,11 @@ class CMD_SiCKRAGESetDefaults(ApiV1Handler):
             sickrage.app.config.general.quality_default = Quality.combine_qualities(iqualityID, aqualityID)
 
         if self.status:
+            # convert string status to EpisodeStatus
+            self.status = EpisodeStatus[self.status.upper()]
+
             # only allow the status options we want
-            if EpisodeStatus[self.status.upper()] not in (EpisodeStatus.WANTED, EpisodeStatus.SKIPPED, EpisodeStatus.ARCHIVED, EpisodeStatus.IGNORED):
+            if self.status not in (EpisodeStatus.WANTED, EpisodeStatus.SKIPPED, EpisodeStatus.ARCHIVED, EpisodeStatus.IGNORED):
                 raise InternalApiError("Status Prohibited")
 
             sickrage.app.config.general.status_default = self.status
@@ -1949,17 +1953,6 @@ class CMD_ShowAddNew(ApiV1Handler):
         if not os.path.isdir(self.location):
             return _responds(RESULT_FAILURE, msg="'" + self.location + "' is not a valid location")
 
-        # convert string status to EpisodeStatus
-        if self.status:
-            self.status = EpisodeStatus[self.status.upper()]
-
-        # convert string future status to EpisodeStatus
-        if self.future_status:
-            self.future_status = EpisodeStatus[self.future_status.upper()]
-
-        # convert string search format to SearchFormat
-        self.search_format = SearchFormat[self.search_format.upper()]
-
         # use default quality as a failsafe
         new_quality = int(sickrage.app.config.general.quality_default)
         iquality_id = []
@@ -1978,6 +1971,9 @@ class CMD_ShowAddNew(ApiV1Handler):
         # use default status as a failsafe
         new_status = sickrage.app.config.general.status_default
         if self.status:
+            # convert string status to EpisodeStatus
+            self.status = EpisodeStatus[self.status.upper()]
+
             # only allow the status options we want
             if self.status not in (EpisodeStatus.WANTED, EpisodeStatus.SKIPPED, EpisodeStatus.IGNORED):
                 return _responds(RESULT_FAILURE, msg="Status prohibited")
@@ -1987,9 +1983,13 @@ class CMD_ShowAddNew(ApiV1Handler):
         # use default status as a failsafe
         default_ep_status_after = sickrage.app.config.general.status_default_after
         if self.future_status:
+            # convert string future status to EpisodeStatus
+            self.future_status = EpisodeStatus[self.future_status.upper()]
+
             # only allow the status options we want
             if self.future_status not in (EpisodeStatus.WANTED, EpisodeStatus.SKIPPED, EpisodeStatus.IGNORED):
                 return _responds(RESULT_FAILURE, msg="Status prohibited")
+
             default_ep_status_after = self.future_status
 
         series_provider_result = CMD_SiCKRAGESearchSeriesProvider(self.application, self.request, **{
@@ -2039,7 +2039,7 @@ class CMD_ShowAddNew(ApiV1Handler):
             subtitles=self.subtitles,
             anime=self.anime,
             scene=self.scene,
-            search_format=self.search_format,
+            search_format=SearchFormat[self.search_format.upper()],
             default_status_after=default_ep_status_after,
             skip_downloaded=self.skip_downloaded
         )
@@ -2362,6 +2362,9 @@ class CMD_ShowSeasonList(ApiV1Handler):
         if not show_obj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
+        while show_obj.is_loading_episodes:
+            time.sleep(1)
+
         season_list = set()
         for episode_object in show_obj.episodes:
             season_list.add(episode_object.season)
@@ -2400,6 +2403,9 @@ class CMD_ShowSeasons(ApiV1Handler):
         show_obj = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id.upper()])
         if not show_obj:
             return _responds(RESULT_FAILURE, msg="Show not found")
+
+        while show_obj.is_loading_episodes:
+            time.sleep(1)
 
         if self.season is None:
             db_data = session.query(MainDB.TVEpisode).filter_by(series_id=self.series_id, series_provider_id=show_obj.series_provider_id)

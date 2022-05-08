@@ -62,6 +62,7 @@ class TVShow(object):
     def __init__(self, series_id, series_provider_id, lang='eng', location=''):
         self.lock = threading.Lock()
         self._episodes = {}
+        self.loading_episodes = False
 
         with sickrage.app.main_db.session() as session:
             try:
@@ -644,6 +645,10 @@ class TVShow(object):
     def is_removing(self):
         return self.show_queue_status.get('action') == 'REMOVE'
 
+    @property
+    def is_loading_episodes(self):
+        return self.loading_episodes
+
     def save(self):
         with self.lock, sickrage.app.main_db.session() as session:
             sickrage.app.log.debug("{0:d}: Saving to database: {1}".format(self.series_id, self.name))
@@ -701,6 +706,8 @@ class TVShow(object):
     def load_episodes_from_series_provider(self, cache=True):
         scanned_eps = {}
 
+        self.loading_episodes = True
+
         sickrage.app.log.debug(str(self.series_id) + ": Loading all episodes from " + self.series_provider.name + "..")
 
         # flush episodes from cache so we can reload from database
@@ -709,6 +716,7 @@ class TVShow(object):
         series_provider_language = self.lang or sickrage.app.config.general.series_provider_default_language
         series_info = self.series_provider.get_series_info(self.series_id, language=series_provider_language, enable_cache=cache)
         if not series_info:
+            self.loading_episodes = False
             raise SeriesProviderException
 
         for season in series_info:
@@ -736,6 +744,8 @@ class TVShow(object):
         self.last_update = datetime.datetime.now()
 
         self.save()
+
+        self.loading_episodes = False
 
         return scanned_eps
 
@@ -868,6 +878,8 @@ class TVShow(object):
             sickrage.app.log.debug(str(self.series_id) + ": Show dir doesn't exist, not loading episodes from disk")
             return
 
+        self.loading_episodes = True
+
         sickrage.app.log.debug(str(self.series_id) + ": Loading all episodes from the show directory " + self.location)
 
         # get file list
@@ -910,6 +922,8 @@ class TVShow(object):
                 except Exception:
                     sickrage.app.log.error("%s: Could not refresh subtitles" % self.series_id)
                     sickrage.app.log.debug(traceback.format_exc())
+
+        self.loading_episodes = False
 
     def load_imdb_info(self):
         imdb_info_mapper = {
