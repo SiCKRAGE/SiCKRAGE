@@ -847,9 +847,8 @@ class CMD_EpisodeSetStatus(ApiV1Handler):
             # get all episode numbers in specified season
             ep_list = [x for x in show_obj.episodes if x.season == self.s]
 
-        def _epResult(result_code, ep, msg=""):
-            return {'season': ep.season, 'episode': ep.episode, 'status': ep.status.display_name,
-                    'result': result_type_map[result_code], 'message': msg}
+        def _ep_result(result_code, ep, msg=""):
+            return {'season': ep.season, 'episode': ep.episode, 'status': ep.status.display_name, 'result': result_type_map[result_code], 'message': msg}
 
         ep_results = []
         failure = False
@@ -857,23 +856,23 @@ class CMD_EpisodeSetStatus(ApiV1Handler):
         wanted = []
 
         for epObj in ep_list:
-            if self.status == EpisodeStatus.WANTED:
-                # figure out what episodes are wanted so we can backlog them
-                wanted += [(epObj.season, epObj.episode)]
-
             # don't let them mess up UNAIRED episodes
             if epObj.status == EpisodeStatus.UNAIRED:
                 if self.e is not None:
-                    ep_results.append(_epResult(RESULT_FAILURE, epObj, "Refusing to change status because it is UNAIRED"))
+                    ep_results.append(_ep_result(RESULT_FAILURE, epObj, "Refusing to change status because it is UNAIRED"))
                     failure = True
                 continue
 
             # allow the user to force setting the status for an already downloaded episode
             if epObj.status in flatten(
                     [EpisodeStatus.composites(EpisodeStatus.DOWNLOADED), EpisodeStatus.composites(EpisodeStatus.ARCHIVED)]) and not self.force:
-                ep_results.append(_epResult(RESULT_FAILURE, epObj, "Refusing to change status because it is already marked as DOWNLOADED"))
+                ep_results.append(_ep_result(RESULT_FAILURE, epObj, "Refusing to change status because it is already marked as DOWNLOADED"))
                 failure = True
                 continue
+
+            if self.status == EpisodeStatus.WANTED:
+                # figure out what episodes are wanted so we can backlog them
+                wanted += [(epObj.season, epObj.episode)]
 
             epObj.status = self.status
             epObj.save()
@@ -881,7 +880,7 @@ class CMD_EpisodeSetStatus(ApiV1Handler):
             if self.status == EpisodeStatus.WANTED:
                 start_backlog = True
 
-            ep_results.append(_epResult(RESULT_SUCCESS, epObj))
+            ep_results.append(_ep_result(RESULT_SUCCESS, epObj))
 
         extra_msg = ""
         if start_backlog:
@@ -894,7 +893,7 @@ class CMD_EpisodeSetStatus(ApiV1Handler):
         if failure:
             return _responds(RESULT_FAILURE, ep_results, 'Failed to set all or some status. Check data.' + extra_msg)
         else:
-            return _responds(RESULT_SUCCESS, msg='All status set successfully.' + extra_msg)
+            return _responds(RESULT_SUCCESS, ep_results, 'All status set successfully.' + extra_msg)
 
 
 class CMD_SubtitleSearch(ApiV1Handler):
@@ -2362,9 +2361,6 @@ class CMD_ShowSeasonList(ApiV1Handler):
         if not show_obj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
-        while show_obj.is_loading_episodes:
-            time.sleep(1)
-
         season_list = set()
         for episode_object in show_obj.episodes:
             season_list.add(episode_object.season)
@@ -2411,6 +2407,8 @@ class CMD_ShowSeasons(ApiV1Handler):
             db_data = session.query(MainDB.TVEpisode).filter_by(series_id=self.series_id, series_provider_id=show_obj.series_provider_id)
         else:
             db_data = session.query(MainDB.TVEpisode).filter_by(series_id=self.series_id, series_provider_id=show_obj.series_provider_id, season=self.season)
+            if not db_data.all():
+                return _responds(RESULT_FAILURE, msg="Season not found")
 
         for row in db_data:
             episode_dict = row.as_dict()
