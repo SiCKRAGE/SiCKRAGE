@@ -893,7 +893,7 @@ class CMD_EpisodeSetStatus(ApiV1Handler):
         if failure:
             return _responds(RESULT_FAILURE, ep_results, 'Failed to set all or some status. Check data.' + extra_msg)
         else:
-            return _responds(RESULT_SUCCESS, msg='All status set successfully.' + extra_msg)
+            return _responds(RESULT_SUCCESS, ep_results, 'All status set successfully.' + extra_msg)
 
 
 class CMD_SubtitleSearch(ApiV1Handler):
@@ -2399,6 +2399,9 @@ class CMD_ShowSeasons(ApiV1Handler):
         show_obj = find_show(int(self.series_id), SeriesProviderID[self.series_provider_id.upper()])
         if not show_obj:
             return _responds(RESULT_FAILURE, msg="Show not found")
+
+        while show_obj.is_loading_episodes:
+            time.sleep(1)
 
         if self.season is None:
             db_data = session.query(MainDB.TVEpisode).filter_by(series_id=self.series_id, series_provider_id=show_obj.series_provider_id)
