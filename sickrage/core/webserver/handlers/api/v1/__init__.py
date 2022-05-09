@@ -2361,9 +2361,6 @@ class CMD_ShowSeasonList(ApiV1Handler):
         if not show_obj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
-        while show_obj.is_loading_episodes:
-            time.sleep(1)
-
         season_list = set()
         for episode_object in show_obj.episodes:
             season_list.add(episode_object.season)
@@ -2403,13 +2400,12 @@ class CMD_ShowSeasons(ApiV1Handler):
         if not show_obj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
-        while show_obj.is_loading_episodes:
-            time.sleep(1)
-
         if self.season is None:
             db_data = session.query(MainDB.TVEpisode).filter_by(series_id=self.series_id, series_provider_id=show_obj.series_provider_id)
         else:
             db_data = session.query(MainDB.TVEpisode).filter_by(series_id=self.series_id, series_provider_id=show_obj.series_provider_id, season=self.season)
+            if not db_data.all():
+                return _responds(RESULT_FAILURE, msg="Season not found")
 
         for row in db_data:
             episode_dict = row.as_dict()
