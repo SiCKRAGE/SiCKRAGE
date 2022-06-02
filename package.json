@@ -1,6 +1,6 @@
 {
   "name": "sickrage",
-  "version": "10.0.63",
+  "version": "10.0.64.dev0",
   "private": true,
   "repository": {
     "type": "git",
