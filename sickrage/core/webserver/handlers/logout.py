@@ -18,7 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
-
+from urllib.parse import urlencode
 
 import sickrage
 from sickrage.core.webserver.handlers.base import BaseHandler
@@ -34,6 +34,13 @@ class LogoutHandler(BaseHandler):
         self.clear_cookie('_sr_refresh_token')
 
         if logout_uri:
-            return self.redirect(f'{logout_uri}?redirect_uri={redirect_uri}', add_web_root=False)
+            # logout_args = {
+            #     'post_logout_redirect_uri': redirect_uri,
+            #     'id_token_hint': sickrage.app.api.token['access_token'],
+            #     'state': sickrage.app.api.token['session_state'],
+            # }
+            #
+            # return self.redirect(f'{logout_uri}?{urlencode(logout_args)}', add_web_root=False)
+            return self.redirect(f'{logout_uri}', add_web_root=False)
         else:
             return self.redirect(f'{redirect_uri}', add_web_root=False)

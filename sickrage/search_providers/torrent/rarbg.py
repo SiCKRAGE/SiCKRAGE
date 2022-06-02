@@ -155,16 +155,16 @@ class RarbgProvider(TorrentProvider):
                         # List of errors: https://github.com/rarbg/torrentapi/issues/1#issuecomment-114763312
                         if error_code == 5:
                             # 5 = Too many requests per second
-                            log_level = sickrage.app.log.INFO
+                            log_level = sickrage.app.log.DEBUG
                             retries -= 1
                         elif error_code not in (8, 10, 12, 14, 20):
                             # 8, 10, 12, 14 = Cant find * in database. Are you sure this * exists?
                             # 20 = No results found
-                            log_level = sickrage.app.log.WARNING
+                            log_level = sickrage.app.log.DEBUG
                             retries = 0
                         elif error_code not in (2, 4):
                             # 2, 4 = Invalid token. Use get_token for a new one!
-                            log_level = sickrage.app.log.WARNING
+                            log_level = sickrage.app.log.DEBUG
                             retries -= 1
                         else:
                             log_level = sickrage.app.log.DEBUG
