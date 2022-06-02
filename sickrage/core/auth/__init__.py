@@ -28,6 +28,11 @@ from keycloak.realm import KeycloakRealm
 import sickrage
 
 
+class KeycloakOpenidConnectCustom(KeycloakOpenidConnect):
+    def get_path_well_known(self):
+        return "realms/{}/.well-known/openid-configuration"
+
+
 class AuthServer(object):
     __server = {}
     __client = {}
@@ -46,7 +51,7 @@ class AuthServer(object):
     def health(self):
         for i in range(3):
             try:
-                health = requests.get("{base}/auth/realms/{realm}".format(base=self.server_url, realm=self.server_realm), verify=False, timeout=30).ok
+                health = requests.get("{base}/realms/{realm}".format(base=self.server_url, realm=self.server_realm), verify=False, timeout=30).ok
             except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout):
                 pass
             else:
@@ -81,7 +86,7 @@ class AuthServer(object):
         return self.client.logout(*args, **kwargs)
 
     def decode_token(self, *args, **kwargs):
-        return self.client.decode_token(*args, **kwargs)
+        return self.client.decode_token(*args, **kwargs, audience='sickrage-api')
 
     def refresh_token(self, *args, **kwargs):
         if not self.health:
@@ -111,7 +116,7 @@ class AuthServer(object):
     def __get_client(self) -> KeycloakOpenidConnect:
         client = self.__client.get('client', None)
         if client is None:
-            self.__client.update({'client': self.__get_server().open_id_connect(self.client_id, '')})
+            self.__client.update({'client': KeycloakOpenidConnectCustom(self.__get_server(), self.client_id, '')})
             client = self.__client.get('client', None)
         return client
 

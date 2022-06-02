@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.63](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.62...10.0.63)
+
+- refactored log level of rarbg provider to debug for rarbg api returned errors [`619e864`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/619e8648e4329e3eacad102bcc9e9801e3ebde40)
+
 #### [10.0.62](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.61...10.0.62)
+
+> 9 May 2022
 
 #### [10.0.61](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.60...10.0.61)
 
