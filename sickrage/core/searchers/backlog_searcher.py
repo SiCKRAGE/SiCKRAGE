@@ -47,7 +47,7 @@ class BacklogSearcher(object):
             self.running = True
 
             # set thread name
-            threading.currentThread().setName(self.name)
+            threading.current_thread().name = self.name
 
             # set cycle time
             self.cycleTime = sickrage.app.config.general.backlog_searcher_freq / 60 / 24

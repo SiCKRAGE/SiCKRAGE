@@ -2,4 +2,8 @@ include README.txt
 include COPYING.txt
 include CHANGELOG.md
 include requirements.txt
+
 recursive-include sickrage *
+
+global-exclude __pycache__
+global-exclude *.py[cod]

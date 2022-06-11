@@ -18,6 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
+import asyncio
 import datetime
 import locale
 import logging
@@ -43,6 +44,7 @@ from dateutil import tz
 from fake_useragent import UserAgent
 from sentry_sdk.integrations.logging import LoggingIntegration, ignore_logger
 from tornado.ioloop import IOLoop, PeriodicCallback
+from tornado.platform.asyncio import AnyThreadEventLoopPolicy
 
 import sickrage
 from sickrage.core.amqp.consumer import AMQPConsumer
@@ -234,7 +236,10 @@ class Core(object):
         self.started = True
 
         # thread name
-        threading.currentThread().setName('CORE')
+        threading.current_thread().name = 'CORE'
+
+        # set event loop policy
+        asyncio.set_event_loop_policy(AnyThreadEventLoopPolicy())
 
         # init sentry
         self.init_sentry()
@@ -651,7 +656,7 @@ class Core(object):
                 )
 
     def load_shows(self):
-        threading.currentThread().setName('CORE')
+        threading.current_thread().name = 'CORE'
 
         session = self.main_db.session()
 

@@ -47,7 +47,7 @@ class SubtitleSearcher(object):
             self.running = True
 
             # set thread name
-            threading.currentThread().setName(self.name)
+            threading.current_thread().name = self.name
 
             if len(Subtitles().getEnabledServiceList()) < 1:
                 sickrage.app.log.warning('Not enough services selected. At least 1 service is required to search subtitles in the background')

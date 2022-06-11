@@ -44,7 +44,7 @@ class UPNPClient(object):
         try:
             self.running = True
 
-            threading.currentThread().setName(self.name)
+            threading.current_thread().name = self.name
 
             self.add_nat_portmap()
         finally:

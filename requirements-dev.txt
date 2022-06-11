@@ -1,7 +1,5 @@
 twine
 crowdin-cli-py
 babel
-wheel
 tox
 vcrpy-unittest
-Mako

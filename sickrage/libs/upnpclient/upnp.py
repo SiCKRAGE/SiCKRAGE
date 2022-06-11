@@ -28,11 +28,18 @@ from binascii import unhexlify
 from collections import OrderedDict
 from decimal import Decimal
 from functools import partial
+from urllib.parse import urljoin, urlparse
 
 import requests
 from dateutil.parser import parse as parse_date
-from lxml import etree
-from requests.compat import urljoin, urlparse
+
+try:
+    from lxml import etree
+except ImportError:
+    try:
+        import xml.etree.cElementTree as etree
+    except ImportError:
+        import xml.etree.ElementTree as etree
 
 from .const import HTTP_TIMEOUT
 from .marshal import marshal_value

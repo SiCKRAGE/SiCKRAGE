@@ -45,7 +45,7 @@ class DailySearcher(object):
             self.running = True
 
             # set thread name
-            threading.currentThread().setName(self.name)
+            threading.current_thread().name = self.name
 
             # find new released episodes and update their statuses
             for curShow in get_show_list():

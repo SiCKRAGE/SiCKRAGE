@@ -58,7 +58,7 @@ class SiCKRAGETestCase(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(SiCKRAGETestCase, self).__init__(*args, **kwargs)
 
-        threading.currentThread().setName('TESTS')
+        threading.current_thread().name = 'TESTS'
 
         self.TESTALL = False
         self.TESTSKIPPED = ['test_issue_submitter', 'test_ssl_sni']

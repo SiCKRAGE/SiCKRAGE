@@ -53,11 +53,10 @@ class AccountLinkHandler(BaseHandler):
             # if sickrage.app.api.token:
             #     sickrage.app.api.logout()
 
-            exchanged_token = sickrage.app.auth_server.token_exchange(token['access_token'])
-            if exchanged_token:
-                sickrage.app.api.token = exchanged_token
-
             sickrage.app.config.general.enable_sickrage_api = True
+
+            if not sickrage.app.config.general.sso_api_key:
+                sickrage.app.config.general.sso_api_key = decoded_token.get('apikey')
 
             if not sickrage.app.config.user.sub_id:
                 sickrage.app.config.user.sub_id = decoded_token.get('sub_id')

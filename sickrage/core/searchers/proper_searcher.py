@@ -55,7 +55,7 @@ class ProperSearcher(object):
             self.running = True
 
             # set thread name
-            threading.currentThread().setName(self.name)
+            threading.current_thread().name = self.name
 
             sickrage.app.log.info("Beginning the search for new propers")
 
@@ -101,7 +101,7 @@ class ProperSearcher(object):
                 elif not providerObj.is_enabled:
                     continue
 
-                threading.currentThread().setName(orig_thread_name + " :: [" + providerObj.name + "]")
+                threading.current_thread().name = orig_thread_name + " :: [" + providerObj.name + "]"
 
                 sickrage.app.log.info("Searching for any new PROPER releases from " + providerObj.name)
 
@@ -125,7 +125,7 @@ class ProperSearcher(object):
                     sickrage.app.log.debug(traceback.format_exc())
                     continue
 
-                threading.currentThread().setName(orig_thread_name)
+                threading.current_thread().name = orig_thread_name
 
             self._set_last_proper_search(show.series_id, show.series_provider_id, datetime.datetime.now())
 
