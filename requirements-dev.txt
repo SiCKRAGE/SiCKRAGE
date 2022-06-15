@@ -3,3 +3,4 @@ crowdin-cli-py
 babel
 tox
 vcrpy-unittest
+mako
