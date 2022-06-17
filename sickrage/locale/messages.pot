@@ -6,16 +6,16 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: sickrage 10.0.63.dev1\n"
+"Project-Id-Version: sickrage 10.0.64.dev2\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2022-06-02 17:33+0000\n"
+"POT-Creation-Date: 2022-06-17 18:34+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.1\n"
+"Generated-By: Babel 2.10.3\n"
 
 #: sickrage/core/webserver/views/api_builder.mako:25
 msgid "Profile"
@@ -161,7 +161,7 @@ msgstr ""
 #: sickrage/core/webserver/views/history.mako:56
 #: sickrage/core/webserver/views/history.mako:113
 #: sickrage/core/webserver/views/home/index.mako:148
-#: sickrage/core/webserver/views/manage/mass_update.mako:70
+#: sickrage/core/webserver/views/manage/mass_update.mako:67
 msgid "Quality"
 msgstr ""
 
@@ -2963,7 +2963,7 @@ msgstr ""
 #: sickrage/core/webserver/views/config/postprocessing.mako:975
 #: sickrage/core/webserver/views/config/postprocessing.mako:1196
 #: sickrage/core/webserver/views/home/server_status.mako:124
-#: sickrage/core/webserver/views/manage/mass_update.mako:67
+#: sickrage/core/webserver/views/manage/mass_update.mako:64
 msgid "Show Name"
 msgstr ""
 
@@ -4610,7 +4610,7 @@ msgstr ""
 #: sickrage/core/webserver/views/home/display_show.mako:559
 #: sickrage/core/webserver/views/home/index.mako:153
 #: sickrage/core/webserver/views/home/provider_status.mako:23
-#: sickrage/core/webserver/views/manage/mass_update.mako:78
+#: sickrage/core/webserver/views/manage/mass_update.mako:75
 msgid "Status"
 msgstr ""
 
@@ -4689,7 +4689,7 @@ msgstr ""
 
 #: sickrage/core/webserver/views/home/edit_show.mako:150
 #: sickrage/core/webserver/views/manage/mass_edit.mako:158
-#: sickrage/core/webserver/views/manage/mass_update.mako:74
+#: sickrage/core/webserver/views/manage/mass_update.mako:71
 msgid "Skip downloaded"
 msgstr ""
 
@@ -4715,7 +4715,7 @@ msgstr ""
 
 #: sickrage/core/webserver/views/home/edit_show.mako:195
 #: sickrage/core/webserver/views/manage/mass_edit.mako:191
-#: sickrage/core/webserver/views/manage/mass_update.mako:75
+#: sickrage/core/webserver/views/manage/mass_update.mako:72
 #: sickrage/core/webserver/views/manage/queues.mako:18
 #: sickrage/core/webserver/views/manage/queues.mako:38
 msgid "Paused"
@@ -4733,7 +4733,7 @@ msgstr ""
 #: sickrage/core/webserver/views/includes/add_show_options.mako:49
 #: sickrage/core/webserver/views/layouts/main.mako:258
 #: sickrage/core/webserver/views/manage/mass_edit.mako:223
-#: sickrage/core/webserver/views/manage/mass_update.mako:72
+#: sickrage/core/webserver/views/manage/mass_update.mako:69
 msgid "Anime"
 msgstr ""
 
@@ -4748,7 +4748,7 @@ msgstr ""
 #: sickrage/core/webserver/views/home/edit_show.mako:236
 #: sickrage/core/webserver/views/includes/add_show_options.mako:110
 #: sickrage/core/webserver/views/manage/mass_edit.mako:239
-#: sickrage/core/webserver/views/manage/mass_update.mako:69
+#: sickrage/core/webserver/views/manage/mass_update.mako:66
 msgid "Search Format"
 msgstr ""
 
@@ -4771,7 +4771,7 @@ msgstr ""
 #: sickrage/core/webserver/views/home/edit_show.mako:275
 #: sickrage/core/webserver/views/includes/add_show_options.mako:36
 #: sickrage/core/webserver/views/manage/mass_edit.mako:174
-#: sickrage/core/webserver/views/manage/mass_update.mako:73
+#: sickrage/core/webserver/views/manage/mass_update.mako:70
 msgid "Season folders"
 msgstr ""
 
@@ -4904,12 +4904,12 @@ msgid "No Network"
 msgstr ""
 
 #: sickrage/core/webserver/views/home/index.mako:288
-#: sickrage/core/webserver/views/manage/mass_update.mako:35
+#: sickrage/core/webserver/views/manage/mass_update.mako:32
 msgid "Continuing"
 msgstr ""
 
 #: sickrage/core/webserver/views/home/index.mako:290
-#: sickrage/core/webserver/views/manage/mass_update.mako:41
+#: sickrage/core/webserver/views/manage/mass_update.mako:38
 msgid "Ended"
 msgstr ""
 
@@ -5452,7 +5452,7 @@ msgstr ""
 #: sickrage/core/webserver/handlers/manage/__init__.py:963
 #: sickrage/core/webserver/handlers/manage/__init__.py:964
 #: sickrage/core/webserver/views/layouts/main.mako:173
-#: sickrage/core/webserver/views/manage/mass_update.mako:16
+#: sickrage/core/webserver/views/manage/mass_update.mako:13
 msgid "Mass Update"
 msgstr ""
 
@@ -5735,43 +5735,43 @@ msgstr ""
 
 #: sickrage/core/webserver/handlers/manage/__init__.py:821
 #: sickrage/core/webserver/handlers/manage/__init__.py:822
-#: sickrage/core/webserver/views/manage/mass_update.mako:15
+#: sickrage/core/webserver/views/manage/mass_update.mako:12
 msgid "Mass Edit"
 msgstr ""
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:17
+#: sickrage/core/webserver/views/manage/mass_update.mako:14
 msgid "Mass Rescan"
 msgstr ""
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:18
+#: sickrage/core/webserver/views/manage/mass_update.mako:15
 msgid "Mass Rename"
 msgstr ""
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:19 src/js/core.js:5618
+#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5618
 msgid "Mass Delete"
 msgstr ""
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:20
+#: sickrage/core/webserver/views/manage/mass_update.mako:17
 msgid "Mass Remove"
 msgstr ""
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:22
+#: sickrage/core/webserver/views/manage/mass_update.mako:19
 msgid "Mass Subtitle"
 msgstr ""
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:68
+#: sickrage/core/webserver/views/manage/mass_update.mako:65
 msgid "Show Directory"
 msgstr ""
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:71
+#: sickrage/core/webserver/views/manage/mass_update.mako:68
 msgid "Scene"
 msgstr ""
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:76
+#: sickrage/core/webserver/views/manage/mass_update.mako:73
 msgid "Subtitle"
 msgstr ""
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:77
+#: sickrage/core/webserver/views/manage/mass_update.mako:74
 msgid "Default Ep Status"
 msgstr ""
 
@@ -6128,11 +6128,11 @@ msgstr ""
 msgid "Total: "
 msgstr ""
 
-#: sickrage/core/webserver/handlers/account.py:91
+#: sickrage/core/webserver/handlers/account.py:90
 msgid "Linked SiCKRAGE account to SiCKRAGE API"
 msgstr ""
 
-#: sickrage/core/webserver/handlers/account.py:114
+#: sickrage/core/webserver/handlers/account.py:113
 msgid "Unlinked SiCKRAGE account from SiCKRAGE API"
 msgstr ""
 

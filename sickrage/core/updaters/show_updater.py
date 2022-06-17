@@ -44,7 +44,7 @@ class ShowUpdater(object):
             self.running = True
 
             # set thread name
-            threading.currentThread().setName(self.name)
+            threading.current_thread().name = self.name
 
             session = sickrage.app.cache_db.session()
 

@@ -3,6 +3,8 @@
 .gitignore
 .gitattributes
 .eslintc
+**/__pycache__
+**/*.py[cod]
 src
 tests
 runscripts

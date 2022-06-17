@@ -19,35 +19,100 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 
-__version__ = "10.0.63"
+__version__ = "10.0.64"
 __install_type__ = ""
+
+import sys
+
+# sickrage requires python 3.6+
+if sys.version_info < (3, 6, 0):
+    sys.exit("Sorry, SiCKRAGE requires Python 3.6+")
 
 import argparse
 import atexit
 import gettext
+import multiprocessing
 import os
 import pathlib
 import re
 import site
 import subprocess
-import sys
 import threading
 import time
 import traceback
-from signal import SIGTERM
-
 import pkg_resources
+
+# pywin32 for windows service
+try:
+    import win32api
+    import win32serviceutil
+    import win32evtlogutil
+    import win32event
+    import win32service
+    import win32ts
+    import servicemanager
+    from win32com.shell import shell, shellcon
+except ImportError:
+    if __install_type__ == 'windows':
+        sys.exit("Sorry, SiCKRAGE requires Python module PyWin32.")
+
+from signal import SIGTERM
 
 app = None
 
 MAIN_DIR = os.path.abspath(os.path.realpath(os.path.expanduser(os.path.dirname(os.path.dirname(__file__)))))
 PROG_DIR = os.path.abspath(os.path.realpath(os.path.expanduser(os.path.dirname(__file__))))
 LOCALE_DIR = os.path.join(PROG_DIR, 'locale')
-LIBS_DIR = os.path.join(PROG_DIR, 'libs')
 CHANGELOG_FILE = os.path.join(MAIN_DIR, 'CHANGELOG.md')
 REQS_FILE = os.path.join(MAIN_DIR, 'requirements.txt')
 CHECKSUM_FILE = os.path.join(PROG_DIR, 'checksums.md5')
 AUTO_PROCESS_TV_CFG_FILE = os.path.join(*[PROG_DIR, 'autoProcessTV', 'autoProcessTV.cfg'])
+
+# add sickrage libs path to python system path
+LIBS_DIR = os.path.join(PROG_DIR, 'libs')
+if not (LIBS_DIR in sys.path) and not getattr(sys, 'frozen', False):
+    sys.path, remainder = sys.path[:1], sys.path[1:]
+    site.addsitedir(LIBS_DIR)
+    sys.path.extend(remainder)
+
+# set system default language
+gettext.install('messages', LOCALE_DIR, codeset='UTF-8', names=["ngettext"])
+
+if __install_type__ == 'windows':
+    class SiCKRAGEService(win32serviceutil.ServiceFramework):
+        _svc_name_ = "SiCKRAGE"
+        _svc_display_name_ = "SiCKRAGE"
+        _svc_description_ = (
+            "Automated video library manager for TV shows. "
+            'Set to "automatic" to start the service at system startup. '
+            "You may need to login with a real user account when you need "
+            "access to network shares."
+        )
+
+        if hasattr(sys, "frozen"):
+            _exe_name_ = "SiCKRAGE.exe"
+
+        def __init__(self, args):
+            win32serviceutil.ServiceFramework.__init__(self, args)
+            self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)
+
+        def SvcDoRun(self):
+            msg = "SiCKRAGE-service %s" % __version__
+            self.Logger(servicemanager.PYS_SERVICE_STARTED, msg + " has started")
+            start()
+            self.Logger(servicemanager.PYS_SERVICE_STOPPED, msg + " has stopped")
+
+        def SvcStop(self):
+            if app:
+                app.shutdown()
+
+            self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
+            win32event.SetEvent(self.hWaitStop)
+
+        def Logger(self, state, msg):
+            win32evtlogutil.ReportEvent(
+                self._svc_display_name_, state, 0, servicemanager.EVENTLOG_INFORMATION_TYPE, (self._svc_name_, msg)
+            )
 
 
 class Daemon(object):
@@ -239,26 +304,43 @@ def verify_checksums(remove_unverified=False):
                     print('Unable to delete unverified filename {} during checksum verification, you should delete this file manually!'.format(full_filename))
 
 
+def handle_windows_service():
+    if hasattr(sys, "frozen") and win32ts.ProcessIdToSessionId(win32api.GetCurrentProcessId()) == 0:
+        servicemanager.Initialize()
+        servicemanager.PrepareToHostSingle(SiCKRAGEService)
+        servicemanager.StartServiceCtrlDispatcher()
+        return True
+
+    if len(sys.argv) > 1 and sys.argv[1] in ("install", "update", "remove", "start", "stop", "restart", "debug"):
+        win32serviceutil.HandleCommandLine(SiCKRAGEService)
+        del sys.argv[1]
+        return True
+
+
 def main():
-    global app
+    multiprocessing.freeze_support()
 
     # set thread name
-    threading.currentThread().setName('MAIN')
+    threading.current_thread().name = 'MAIN'
 
     # fix threading time bug
     time.strptime("2012", "%Y")
 
-    # add sickrage libs path to python system path
-    if not (LIBS_DIR in sys.path):
-        sys.path, remainder = sys.path[:1], sys.path[1:]
-        site.addsitedir(LIBS_DIR)
-        sys.path.extend(remainder)
+    if __install_type__ == 'windows':
+        if not handle_windows_service():
+            start()
+    else:
+        start()
 
-    # set system default language
-    gettext.install('messages', LOCALE_DIR, codeset='UTF-8', names=["ngettext"])
 
-    # sickrage startup options
-    parser = argparse.ArgumentParser(prog='sickrage')
+def start():
+    global app
+
+    parser = argparse.ArgumentParser(
+        prog='sickrage',
+        description='Automated video library manager for TV shows'
+    )
+
     parser.add_argument('-v', '--version',
                         action='version',
                         version=version())
@@ -325,23 +407,29 @@ def main():
     # Parse startup args
     args = parser.parse_args()
 
-    # sickrage requires python 3.6+
-    if sys.version_info < (3, 6, 0):
-        sys.exit("Sorry, SiCKRAGE requires Python 3.6+")
-
-    # check lib requirements
-    if install_type() not in ['windows', 'synology', 'docker', 'qnap', 'readynas', 'pip']:
-        check_requirements()
+    # check requirements
+    # if install_type() not in ['windows', 'synology', 'docker', 'qnap', 'readynas', 'pip']:
+    #     check_requirements()
 
     # verify file checksums, remove unverified files
-    verify_checksums(remove_unverified=not args.no_clean)
+    # verify_checksums(remove_unverified=not args.no_clean)
 
     try:
         from sickrage.core import Core
-
-        # main app instance
         app = Core()
+    except ImportError:
+        try:
+            # attempt to send exception to sentry
+            import sentry_sdk
+            sentry_sdk.capture_exception(e)
+        except ImportError:
+            pass
 
+        traceback.print_exc()
+
+        sys.exit("Sorry, SiCKRAGE requirements need to be installed.")
+
+    try:
         app.quiet = args.quiet
         app.web_host = args.host
         app.web_port = int(args.port)
@@ -369,7 +457,7 @@ def main():
             pid_file = os.path.join(app.data_dir, pid_file)
 
         # add sickrage module to python system path
-        if not (PROG_DIR in sys.path):
+        if not (PROG_DIR in sys.path) and not getattr(sys, 'frozen', False):
             sys.path, remainder = sys.path[:1], sys.path[1:]
             site.addsitedir(PROG_DIR)
             sys.path.extend(remainder)
@@ -404,7 +492,6 @@ def main():
             app.daemon.daemonize()
             app.pid = app.daemon.pid
 
-        # start app
         app.start()
     except (SystemExit, KeyboardInterrupt):
         if app:

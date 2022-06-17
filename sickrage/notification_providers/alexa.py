@@ -17,12 +17,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
-import re
-
-from twilio.base.exceptions import TwilioRestException
-from twilio.rest import TwilioRestClient
-
 import sickrage
 from sickrage.notification_providers import NotificationProvider
 

@@ -24,7 +24,14 @@
 import re
 
 import requests
-from lxml import etree
+
+try:
+    from lxml import etree
+except ImportError:
+    try:
+        import xml.etree.cElementTree as etree
+    except ImportError:
+        import xml.etree.ElementTree as etree
 
 from .util import _getLogger
 

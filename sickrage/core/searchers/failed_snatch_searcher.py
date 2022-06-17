@@ -48,7 +48,7 @@ class FailedSnatchSearcher(object):
             self.running = True
 
             # set thread name
-            threading.currentThread().setName(self.name)
+            threading.current_thread().name = self.name
 
             # trim failed download history
             FailedHistory.trim_history()

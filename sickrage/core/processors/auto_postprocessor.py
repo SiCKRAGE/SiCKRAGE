@@ -45,7 +45,7 @@ class AutoPostProcessor(object):
             self.running = True
 
             # set thread name
-            threading.currentThread().setName(self.name)
+            threading.current_thread().name = self.name
 
             sickrage.app.postprocessor_queue.put(sickrage.app.config.general.tv_download_dir, force=force)
         finally:

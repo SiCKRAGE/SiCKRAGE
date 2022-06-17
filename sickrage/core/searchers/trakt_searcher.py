@@ -72,7 +72,7 @@ class TraktSearcher(object):
             self.running = True
 
             # set thread name
-            threading.currentThread().setName(self.name)
+            threading.current_thread().name = self.name
 
             self.todoWanted = []  # its about to all get re-added
             if len(sickrage.app.config.general.root_dirs.split('|')) < 2:

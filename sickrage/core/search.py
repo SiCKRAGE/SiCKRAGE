@@ -352,7 +352,7 @@ def search_providers(series_id, series_provider_id, season, episode, manualSearc
             search_count += 1
 
             try:
-                threading.currentThread().setName(orig_thread_name + "::[" + providerObj.name + "]")
+                threading.current_thread().name = orig_thread_name + "::[" + providerObj.name + "]"
 
                 if episode and search_mode == 'eponly':
                     sickrage.app.log.info("Performing episode search for " + show_object.name)
@@ -375,7 +375,7 @@ def search_providers(series_id, series_provider_id, season, episode, manualSearc
                 sickrage.app.log.error("Error while searching " + providerObj.name + ", skipping: {}".format(e))
                 break
             finally:
-                threading.currentThread().setName(orig_thread_name)
+                threading.current_thread().name = orig_thread_name
 
             if len(found_results):
                 # make a list of all the results for this provider

@@ -1,12 +1,9 @@
 <%inherit file="../layouts/main.mako"/>
 <%!
-    from functools import cmp_to_key
-
     import sickrage
     from sickrage.core.tv.show.helpers import get_show_list
     from sickrage.core.enums import SearchFormat
     from sickrage.core.common import EpisodeStatus
-    from sickrage.core.helpers.compat import cmp
 %>
 
 <%block name="sub_navbar">
