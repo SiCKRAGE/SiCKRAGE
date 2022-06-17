@@ -2,8 +2,10 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.64.dev1](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.63...v10.0.64.dev1)
+#### [v10.0.64.dev2](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.63...v10.0.64.dev2)
 
+- moved loading of core module to outside try/except block for init app settings [`82955e5`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/82955e589d8ba99cf419ff498e4f893fa556e2ec)
+- moved loading of core module to outside try/except block for init app settings [`b9e97aa`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/b9e97aa1afa3bcd3146eabf6e4a1657dd3ba7c87)
 - added missing dev depend mako to requirements-dev.txt [`1bff2fb`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/1bff2fbe57edd679cec068caca5066662556108d)
 
 #### [10.0.63](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.62...10.0.63)
