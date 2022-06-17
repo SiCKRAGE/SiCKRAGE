@@ -418,7 +418,15 @@ def start():
         from sickrage.core import Core
         app = Core()
     except ImportError:
+        try:
+            # attempt to send exception to sentry
+            import sentry_sdk
+            sentry_sdk.capture_exception(e)
+        except ImportError:
+            pass
+
         traceback.print_exc()
+
         sys.exit("Sorry, SiCKRAGE requirements need to be installed.")
 
     try:
