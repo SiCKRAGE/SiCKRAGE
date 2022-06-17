@@ -417,7 +417,7 @@ def start():
     try:
         from sickrage.core import Core
         app = Core()
-    except ImportError:
+    except ImportError as e:
         try:
             # attempt to send exception to sentry
             import sentry_sdk
