@@ -415,12 +415,13 @@ def start():
     # verify_checksums(remove_unverified=not args.no_clean)
 
     try:
-        try:
-            from sickrage.core import Core
-            app = Core()
-        except ImportError:
-            sys.exit("Sorry, SiCKRAGE requirements need to be installed.")
+        from sickrage.core import Core
+        app = Core()
+    except ImportError:
+        traceback.print_exc()
+        sys.exit("Sorry, SiCKRAGE requirements need to be installed.")
 
+    try:
         app.quiet = args.quiet
         app.web_host = args.host
         app.web_port = int(args.port)
