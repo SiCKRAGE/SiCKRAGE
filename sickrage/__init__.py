@@ -19,7 +19,7 @@
 #  along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 # ##############################################################################
 
-__version__ = "10.0.64"
+__version__ = "10.0.65"
 __install_type__ = ""
 
 import sys
@@ -418,15 +418,6 @@ def start():
         from sickrage.core import Core
         app = Core()
     except ImportError:
-        try:
-            # attempt to send exception to sentry
-            import sentry_sdk
-            sentry_sdk.capture_exception(e)
-        except ImportError:
-            pass
-
-        traceback.print_exc()
-
         sys.exit("Sorry, SiCKRAGE requirements need to be installed.")
 
     try:
@@ -497,8 +488,8 @@ def start():
         if app:
             app.shutdown()
     except Exception as e:
-        # attempt to send exception to sentry
         try:
+            # attempt to send exception to sentry
             import sentry_sdk
             sentry_sdk.capture_exception(e)
         except ImportError:

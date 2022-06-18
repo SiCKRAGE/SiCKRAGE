@@ -2,7 +2,14 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.65](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.64...10.0.65)
+
+- Fixed UnboundLocalError: local variable 'e' referenced before assignment [`15e551e`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/15e551ec1d177b666d4cd4c10b0eecd0181b29d5)
+- Fixed UnboundLocalError: local variable 'e' referenced before assignment [`6cb1fed`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/6cb1fed3efed5dcf3cbbc2c5938ae2ca300ddc00)
+
 #### [10.0.64](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.63...10.0.64)
+
+> 17 June 2022
 
 - moved loading of core module to outside try/except block for init app settings [`82955e5`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/82955e589d8ba99cf419ff498e4f893fa556e2ec)
 - moved loading of core module to outside try/except block for init app settings [`b9e97aa`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/b9e97aa1afa3bcd3146eabf6e4a1657dd3ba7c87)
