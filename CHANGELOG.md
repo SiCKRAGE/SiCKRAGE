@@ -2,7 +2,35 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [10.0.66](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.65...10.0.66)
+
+- New Crowdin updates [`#40`](https://git.sickrage.ca/SiCKRAGE/sickrage/pull/40)
+- New translations messages.pot (Portuguese, Brazilian) [`f9db8ad`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/f9db8ad9791b3bf63a539861dfe337c253629dab)
+- New translations messages.pot (Danish) [`3db9bfb`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/3db9bfbc71ecb619c06df031054faeb14ab93d5e)
+- New translations messages.pot (French) [`ddf3baa`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/ddf3baa529d038b1a475b713c9e8dcf43f43d535)
+- New translations messages.pot (Dutch) [`a468f8a`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/a468f8a37d10c51f6f7fe9a1c245b353c5ccf952)
+- New translations messages.pot (Norwegian) [`9743232`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/974323271cc753a59cea90cb0cb3c1bed217d2e4)
+- New translations messages.pot (German) [`a0a36df`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/a0a36df2a2032e43df37d134a4adc55b618f2129)
+- New translations messages.pot (Italian) [`76681eb`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/76681eb4a51bc5d68bd7be8da5f5b499f4d00d33)
+- New translations messages.pot (Vietnamese) [`7b1551a`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/7b1551acdbbb2432b27d983bb27a441751cda9f8)
+- New translations messages.pot (Portuguese) [`ed400bf`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/ed400bf0bb1851cc474cb656bbe764977eb3a804)
+- New translations messages.pot (Romanian) [`f8cec42`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/f8cec42303f1e5244dbaf147da1eb29eb70f0e8e)
+- New translations messages.pot (Catalan) [`02410d1`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/02410d1986bf8b8a5f08d336ac92e4b0d18737bc)
+- New translations messages.pot (Finnish) [`d66da43`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/d66da43dc60e56b358dce8ad49307a8d8593f71a)
+- New translations messages.pot (Polish) [`dcac221`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/dcac221a4e23871136e6f08c7a4f5e061d161278)
+- New translations messages.pot (Hungarian) [`fe95752`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/fe95752e4f1dd607934b1a92d01db21384060211)
+- New translations messages.pot (Czech) [`ff25e51`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/ff25e51981895982e7b4af6fdbb9b4dc3d15dbd7)
+- New translations messages.pot (Greek) [`f664d91`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/f664d912335bf4e930ca598f5cc1ded4255915e9)
+- New translations messages.pot (Hebrew) [`ba03c87`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/ba03c87fd5188b80e25dc530b239667e44448ed1)
+- New translations messages.pot (Russian) [`1c4c0ed`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/1c4c0ed4902f0e7c272067a5221afdd401694ee8)
+- New translations messages.pot (Ukrainian) [`aaa9093`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/aaa9093e8ebfd67be8699c27df346edb0fc9332b)
+- New translations messages.pot (Japanese) [`0401d35`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/0401d355eeb8ec7304ba8fd535043847ec1231d7)
+- Update source file messages.pot [`c882d05`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/c882d053aaaae824db073890c4b754f9405267d2)
+- Update source file messages.pot [`80de3aa`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/80de3aabf8c56cf54c097ad9f0936cf35bae5cf4)
+
 #### [10.0.65](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.64...10.0.65)
+
+> 18 June 2022
 
 - Fixed UnboundLocalError: local variable 'e' referenced before assignment [`15e551e`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/15e551ec1d177b666d4cd4c10b0eecd0181b29d5)
 - Fixed UnboundLocalError: local variable 'e' referenced before assignment [`6cb1fed`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/6cb1fed3efed5dcf3cbbc2c5938ae2ca300ddc00)
