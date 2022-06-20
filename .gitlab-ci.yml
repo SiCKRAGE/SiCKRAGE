@@ -2,6 +2,7 @@ stages:
   #  - review_webpack
   #  - review_docker
   #  - review_deploy
+  - test
   - build
   - sentry
   - deploy
@@ -99,27 +100,61 @@ stages:
 #  only:
 #    - merge_requests@SiCKRAGE/sickrage
 
-build:
-  stage: build
-  retry: 2
+.test_template: &test
+  stage: test
+  retry: 1
   image:
-    name: nikolaik/python-nodejs:python3.9-nodejs10-alpine
+    name: python:$PYTHON_VERSION
   variables:
-    NODE_ENV: "development"
-    CARGO_HOME: "$CI_PROJECT_DIR/cargo"
+    ASYNC_TEST_TIMEOUT: 60
   script:
-    - export PATH="$CARGO_HOME/bin:$PATH"
-    - apk add --no-cache git gcc libffi-dev python3-dev musl-dev openssl-dev curl unzip
-    - curl https://sh.rustup.rs -sSf | sh -s -- -y
-    - export ENABLE_SENTRY_RELEASE="false" && yarn install --pure-lockfile --cache-folder .yarn-cache
-    - pip install -U pip
-    - pip install -r requirements-dev.txt
-    - yarn run build
-    - python checksum-generator.py
-  only:
-    - branches
+    - pip install tox
+    - tox -e $TOX_ENV
+  artifacts:
+    when: always
+    reports:
+      junit: report.xml
+    paths:
+      - report.xml
+    expire_in: 1 week
   except:
-    - branches@SiCKRAGE/sickrage
+    refs:
+      - tags
+      - triggers
+    variables:
+      - $CI_COMMIT_BRANCH == "master"
+      - $CI_COMMIT_MESSAGE =~ /\[TASK\] Pre-Releasing/
+      - $CI_COMMIT_MESSAGE =~ /\[TASK\] Bump/
+
+test_py36:
+  <<: *test
+  variables:
+    TOX_ENV: "py36"
+    PYTHON_VERSION: "3.6"
+
+test_py37:
+  <<: *test
+  variables:
+    TOX_ENV: "py37"
+    PYTHON_VERSION: "3.7"
+
+test_py38:
+  <<: *test
+  variables:
+    TOX_ENV: "py38"
+    PYTHON_VERSION: "3.8"
+
+test_py39:
+  <<: *test
+  variables:
+    TOX_ENV: "py39"
+    PYTHON_VERSION: "3.9"
+
+test_py310:
+  <<: *test
+  variables:
+    TOX_ENV: "py310"
+    PYTHON_VERSION: "3.10"
 
 build_master:
   stage: build
@@ -264,18 +299,6 @@ pypi:
   except:
     - branches
     - triggers
-
-docker:
-  stage: deploy
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - sed -i "s/^__install_type__ = [\"']\(.*\)[\"']/__install_type__ = \"docker\"/" sickrage/__init__.py
-    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA .
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
-  only:
-    - branches
-  except:
-    - branches@SiCKRAGE/sickrage
 
 docker_master:
   stage: deploy

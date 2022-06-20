@@ -45,7 +45,7 @@ def getSeasonNZBs(name, urlData, season):
 
     filename = name.replace(".nzb", "")
 
-    regex = '([\w\._\ ]+)[\. ]S%02d[\. ]([\w\._\-\ ]+)[\- ]([\w_\-\ ]+?)' % season
+    regex = r'([\w\._\ ]+)[\. ]S%02d[\. ]([\w\._\-\ ]+)[\- ]([\w_\-\ ]+?)' % season
 
     sceneNameMatch = re.search(regex, filename, re.I)
     if sceneNameMatch:
@@ -54,14 +54,14 @@ def getSeasonNZBs(name, urlData, season):
         sickrage.app.log.error("Unable to parse " + name + " into a scene name. If it's a valid, log a bug.")
         return {}, ''
 
-    regex = '(' + re.escape(showName) + '\.S%02d(?:[E0-9]+)\.[\w\._]+\-\w+' % season + ')'
+    regex = '(' + re.escape(showName) + r'\.S%02d(?:[E0-9]+)\.[\w\._]+\-\w+' % season + ')'
     regex = regex.replace(' ', '.')
 
     epFiles = {}
     xmlns = None
 
     for curFile in nzbElement.getchildren():
-        xmlnsMatch = re.match("{(http://[A-Za-z0-9_./]+/nzb)\}file", curFile.tag)
+        xmlnsMatch = re.match(r"{(http://[A-Za-z0-9_./]+/nzb)\}file", curFile.tag)
         if not xmlnsMatch:
             continue
         else:

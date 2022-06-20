@@ -7,7 +7,6 @@ const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const SpritesmithPlugin = require('webpack-spritesmith');
-const SentryWebpackPlugin = require('@sentry/webpack-plugin');
 
 const templateFunction = function (data) {
     var iconName = path.basename(data.sprites[0].image, path.extname(data.sprites[0].image))

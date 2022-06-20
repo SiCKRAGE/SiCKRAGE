@@ -4,10 +4,6 @@
 /sickrage/libs/adba/anime-list.xml
 /sickrage/libs/adba/animetitles.xml
 
-# SR Tox Files #
-######################
-/.tox/
-
 # SR GitLab Files    #
 ######################
 /.gitlab/
@@ -20,9 +16,9 @@
 #  SR User Related   #
 ######################
 *.db*
-*.ini
 *.torrent
 *.magnet
+config.ini
 swagger.json
 privatekey.pem
 autoProcessTV.cfg
@@ -33,11 +29,9 @@ autoProcessTV.cfg
 
 #  SR Test Related   #
 ######################
-/tests/database/
-/tests/providers/
-/tests/show name/
-/tests/show name final/
-/tests/sr_update_*/
+/tests/data/
+/.tox/
+report.xml
 
 #  Compiled Source   #
 ######################

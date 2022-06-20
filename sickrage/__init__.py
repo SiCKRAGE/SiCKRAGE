@@ -34,13 +34,10 @@ import gettext
 import multiprocessing
 import os
 import pathlib
-import re
 import site
-import subprocess
 import threading
 import time
 import traceback
-import pkg_resources
 
 # pywin32 for windows service
 try:
@@ -76,7 +73,7 @@ if not (LIBS_DIR in sys.path) and not getattr(sys, 'frozen', False):
     sys.path.extend(remainder)
 
 # set system default language
-gettext.install('messages', LOCALE_DIR, codeset='UTF-8', names=["ngettext"])
+gettext.install('messages', LOCALE_DIR, names=["ngettext"])
 
 if __install_type__ == 'windows':
     class SiCKRAGEService(win32serviceutil.ServiceFramework):
@@ -246,31 +243,6 @@ def changelog():
     # Return contents of CHANGELOG.md
     with open(CHANGELOG_FILE) as f:
         return f.read()
-
-
-def check_requirements():
-    if os.path.exists(REQS_FILE):
-        with open(REQS_FILE) as f:
-            for line in f.readlines():
-                try:
-                    req_name, req_version = line.strip().split('==', 1)
-                    if 'python_version' in req_version:
-                        m = re.search('(\d+.\d+.\d+).*(\d+.\d+)', req_version)
-                        req_version = m.group(1)
-                        python_version = m.group(2)
-                        python_version_major = int(python_version.split('.')[0])
-                        python_version_minor = int(python_version.split('.')[1])
-                        if sys.version_info.major == python_version_major and sys.version_info.minor != python_version_minor:
-                            continue
-
-                    if not pkg_resources.get_distribution(req_name).version == req_version:
-                        print('Updating requirement {} to {}'.format(req_name, req_version))
-                        subprocess.check_call([sys.executable, "-m", "pip", "install", "--no-deps", "--no-cache-dir", line.strip()])
-                except pkg_resources.DistributionNotFound:
-                    print('Installing requirement {}'.format(line.strip()))
-                    subprocess.check_call([sys.executable, "-m", "pip", "install", "--no-deps", "--no-cache-dir", line.strip()])
-                except ValueError:
-                    continue
 
 
 def verify_checksums(remove_unverified=False):
@@ -484,6 +456,9 @@ def start():
             app.pid = app.daemon.pid
 
         app.start()
+
+        from tornado.ioloop import IOLoop
+        IOLoop.current().start()
     except (SystemExit, KeyboardInterrupt):
         if app:
             app.shutdown()
