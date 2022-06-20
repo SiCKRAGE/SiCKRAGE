@@ -1,21 +1,15 @@
 {
   "extends": [
-    "config:base",
-    ":assignee(echel0n)"
+    "config:base"
   ],
+  "prHourlyLimit": 2,
+  "rebaseWhen": "conflicted",
   "baseBranches": [
     "develop"
-  ],
-  "enabledManagers": [
-    "pip_requirements",
-    "poetry"
   ],
   "python": {
     "commitMessageAction": "Update Python",
     "managerBranchPrefix": "py/",
-    "labels": [
-      "dependencies",
-      "python"
-    ]
+    "labels": ["Update dep (Py)"]
   }
 }
