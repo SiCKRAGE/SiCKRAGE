@@ -1,6 +1,6 @@
-sickrage/__init__.py = b8a0bc7a20c44b54c03945257380acfa
+sickrage/__init__.py = dfd27d37dbcf234a2a86408831ea1783
 sickrage/checksums.md5 = d41d8cd98f00b204e9800998ecf8427e
-sickrage/version.txt = 90dc13bd783387b50f5f3ca9e4cc13f3
+sickrage/version.txt = 4b6f4b53f1acc6f0f195416366dd34dd
 sickrage/autoProcessTV/hellaToSiCKRAGE.py = 9bc477abfd456aaba8d6bf46f2c59b1f
 sickrage/autoProcessTV/__init__.py = bfa892dee586740a3a618d3c1955156c
 sickrage/autoProcessTV/mediaToSiCKRAGE.py = f88a6679a211b1f97126c116e2c33b9c
@@ -168,7 +168,7 @@ sickrage/core/webserver/static/images/backdrops/addshows.jpg = 7f3e186790208b63d
 sickrage/core/webserver/static/images/backdrops/home.jpg = 804dfc976638bbf45df310a3627e2d5c
 sickrage/core/webserver/static/images/backdrops/schedule.jpg = 0c0e5f4dcee42bfcfb73de100f1d3015
 sickrage/core/webserver/static/js/core.js.map = cdf19c1422438fb68dd84471031b2c56
-sickrage/core/webserver/static/js/core.min.js = 58eef54218b7d7410e84a3e7c8f5a392
+sickrage/core/webserver/static/js/core.min.js = d3c2225fbc1a880bc0fcd6a9c5b10779
 sickrage/core/webserver/static/fonts/fa-solid-900.eot = 89bd2e38475e441a5cd70f663f921d61
 sickrage/core/webserver/static/fonts/fa-regular-400.eot = ad3a7c0d77e09602f4ab73db3660ffd8
 sickrage/core/webserver/static/fonts/fa-brands-400.eot = 0fabb6606be4c45acfeedd115d0caca4
