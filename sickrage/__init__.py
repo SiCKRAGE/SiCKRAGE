@@ -484,6 +484,9 @@ def start():
             app.pid = app.daemon.pid
 
         app.start()
+
+        from tornado.ioloop import IOLoop
+        IOLoop.current().start()
     except (SystemExit, KeyboardInterrupt):
         if app:
             app.shutdown()

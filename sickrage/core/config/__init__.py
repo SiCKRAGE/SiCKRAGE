@@ -1131,8 +1131,7 @@ class Config(object):
         self.nmjv2.enable = self._get_config_file_value(config_object, 'NMJv2', 'use_nmjv2', default=self.nmjv2.enable, field_type=bool)
         self.nmjv2.host = self._get_config_file_value(config_object, 'NMJv2', 'nmjv2_host', default=self.nmjv2.host, field_type=str)
         self.nmjv2.database = self._get_config_file_value(config_object, 'NMJv2', 'nmjv2_database', default=self.nmjv2.database, field_type=str)
-        self.nmjv2.db_loc = NMJv2Location[
-            self._get_config_file_value(config_object, 'NMJv2', 'nmjv2_dbloc', default=NMJv2Location.LOCAL.name, field_type=str.upper)]
+        self.nmjv2.db_loc = NMJv2Location[self._get_config_file_value(config_object, 'NMJv2', 'nmjv2_dbloc', default=NMJv2Location.LOCAL.name, field_type=str.upper)]
 
         # SYNOLOGY SETTINGS
         self.synology.host = self._get_config_file_value(config_object, 'SynologyDSM', 'syno_dsm_host', default=self.synology.host, field_type=str)
@@ -1424,9 +1423,7 @@ class Config(object):
             if key in section_object:
                 try:
                     value = self.convert_value(section_object.get(key), field_type)
-                    if value is None:
-                        return default
-                    return value
+                    return value or default
                 except Exception:
                     return default
 
