@@ -110,7 +110,7 @@ def change_gui_lang(language):
         gt.install(names=["ngettext"])
     else:
         # System default language
-        gettext.install('messages', sickrage.LOCALE_DIR, codeset='UTF-8', names=["ngettext"])
+        gettext.install('messages', sickrage.LOCALE_DIR, names=["ngettext"])
 
     sickrage.app.config.gui.gui_lang = language
 

@@ -256,7 +256,7 @@ class Core(object):
         self.metadata_providers = MetadataProviders()
         self.search_providers = SearchProviders()
         self.series_providers = SeriesProviders()
-        self.log = Logger()
+        self.log = Logger(consoleLogging=not self.quiet, logFile=os.path.join(self.data_dir, 'logs', 'sickrage.log'))
         self.alerts = Notifications()
         self.wserver = WebServer()
         self.show_queue = ShowQueue()
@@ -347,9 +347,7 @@ class Core(object):
         # setup logger settings
         self.log.logSize = self.config.general.log_size
         self.log.logNr = self.config.general.log_nr
-        self.log.logFile = os.path.join(self.data_dir, 'logs', 'sickrage.log')
         self.log.debugLogging = self.debug or self.config.general.debug
-        self.log.consoleLogging = not self.quiet
 
         # start logger
         self.log.start()
@@ -570,9 +568,6 @@ class Core(object):
         # perform shutdown trigger check every 5 seconds
         PeriodicCallback(self.shutdown_trigger, 5 * 1000).start()
 
-        # start ioloop
-        IOLoop.current().start()
-
     def init_sentry(self):
         # sentry log handler
         sentry_logging = LoggingIntegration(
@@ -731,6 +726,11 @@ class Core(object):
 
             # save settings
             self.config.save()
+
+            # shutdown databases
+            self.main_db.shutdown()
+            self.config.db.shutdown()
+            self.cache_db.shutdown()
 
             # shutdown logging
             if self.log:

@@ -8,13 +8,8 @@ from sickrage import __version__
 
 
 def requirements():
-    with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements.txt'))) as f:
-        return f.read().splitlines()
-
-
-def requirements_dev():
-    with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements-dev.txt'))) as f:
-        return f.read().splitlines()
+    with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'requirements.txt')) as f:
+        return f.read().splitlines(keepends=False)
 
 
 class CleanCommand(Command):
@@ -61,9 +56,6 @@ setup(
     keywords=['sickrage', 'sickragetv', 'tv', 'torrent', 'nzb', 'video', 'echel0n'],
     packages=['sickrage'],
     install_requires=requirements(),
-    extras_require={
-        'dev': requirements_dev()
-    },
     include_package_data=True,
     python_requires='>=3',
     platforms='any',

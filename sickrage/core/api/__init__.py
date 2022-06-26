@@ -110,7 +110,7 @@ class API(object):
     def health(self):
         for i in range(3):
             try:
-                health = requests.get(urljoin(self.api_base, "health"), verify=False, timeout=30).ok
+                health = requests.get(urljoin(self.api_base, "health"), verify=True, timeout=30).ok
             except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout):
                 pass
             else:

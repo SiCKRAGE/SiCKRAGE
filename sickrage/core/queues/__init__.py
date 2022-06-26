@@ -84,7 +84,7 @@ class Queue(object):
             ids.append(worker_id)
 
         self.auto_remove_tasks_timer = threading.Timer(10.0, self.auto_remove_tasks)
-        self.auto_remove_tasks_timer.setName(self.name)
+        self.auto_remove_tasks_timer.name = self.name
         self.auto_remove_tasks_timer.start()
 
         return ids
@@ -94,12 +94,14 @@ class Queue(object):
         This function stops and kills a worker.
         If no id is provided, all workers are killed.
         :param worker_id: the identifier for the worker to kill
+        :param quiet: silence logging
         :return: None
         """
         try:
             self.lock.acquire()
             if worker_id is None:
                 sickrage.app.log.info("Shutting down all {} workers".format(self.name))
+
                 for worker in self.workers:
                     worker.must_die = True
             else:

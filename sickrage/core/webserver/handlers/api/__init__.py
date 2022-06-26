@@ -50,11 +50,11 @@ class APIBaseHandler(RequestHandler):
 
         method_name = self.request.method.lower()
         if method_name == 'options':
-            return
+            return self.finish()
 
         certs = sickrage.app.auth_server.certs()
         if not certs:
-            return
+            return self.finish()
 
         auth_header = self.request.headers.get('Authorization')
 
@@ -93,7 +93,7 @@ class APIBaseHandler(RequestHandler):
                         })
 
                     if sickrage.app.config.user.sub_id != decoded_token.get('sub'):
-                        return self._unauthorized(error='user is not authorized')
+                        return self.finish(self._unauthorized(error='user is not authorized'))
 
                     if not sickrage.app.config.general.sso_api_key:
                         sickrage.app.config.general.sso_api_key = decoded_token.get('apikey')
@@ -117,11 +117,11 @@ class APIBaseHandler(RequestHandler):
                     method = self.run_async(getattr(self, method_name))
                     setattr(self, method_name, method)
                 except Exception:
-                    return self._unauthorized(error='failed to decode token')
+                    self.finish(self._unauthorized(error='failed to decode token'))
             else:
-                return self._unauthorized(error='invalid authorization request')
+                self.finish(self._unauthorized(error='invalid authorization request'))
         else:
-            return self._unauthorized(error='authorization header missing')
+            self.finish(self._unauthorized(error='authorization header missing'))
 
     def run_async(self, method):
         @functools.wraps(method)

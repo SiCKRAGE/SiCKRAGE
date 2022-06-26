@@ -307,7 +307,7 @@ class ItaSAProvider(Provider):
 
         subs = []
         # Looking for subtitles in first page
-        season_re = re.compile('.*?stagione 0*?{}.*'.format(season))
+        season_re = re.compile(r'.*?stagione 0*?{}.*'.format(season))
         for subtitle in root.findall('data/subtitles/subtitle'):
             if season_re.match(subtitle.find('name').text.lower()):
                 logger.debug('Found season zip id %d - %r - %r',
@@ -323,7 +323,7 @@ class ItaSAProvider(Provider):
                         raise ConfigurationError('Not a zip file: {!r}'.format(content))
 
                 with ZipFile(io.BytesIO(content)) as zf:
-                    episode_re = re.compile('s(\d{1,2})e(\d{1,2})')
+                    episode_re = re.compile(r's(\d{1,2})e(\d{1,2})')
                     for index, name in enumerate(zf.namelist()):
                         match = episode_re.search(name)
                         if not match:  # pragma: no cover

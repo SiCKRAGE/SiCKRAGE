@@ -19,7 +19,7 @@ cleverdict==1.9.2
 click==7.1.2
 cloudscraper==1.2.46
 configobj==5.0.6
-cryptography==3.2.1
+cryptography==3.3.2
 decorator==4.4.2
 deluge-client==1.9.0
 dirsync==2.2.5

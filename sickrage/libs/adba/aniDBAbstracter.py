@@ -178,7 +178,7 @@ class Anime(aniDBabstractObject):
         if not self.allAnimeXML:
             self.allAnimeXML = read_anidb_xml(self.cache_path)
 
-        regex = re.compile('( \(\d{4}\))|[%s]' % re.escape(string.punctuation))  # remove any punctuation and e.g. ' (2011)'
+        regex = re.compile(r"( \(\d{4}\))|[%s]" % re.escape(string.punctuation))  # remove any punctuation and e.g. ' (2011)'
         # regex = re.compile('[%s]'  % re.escape(string.punctuation)) # remove any punctuation and e.g. ' (2011)'
         name = regex.sub('', name.lower())
         last_aid = 0
@@ -255,7 +255,8 @@ class Episode(aniDBabstractObject):
         if self.filePath and not (self.ed2k or self.size):
             (self.ed2k, self.size) = self._calculate_file_stuff(self.filePath)
 
-        self.rawData = self.aniDB.file(fid=self.fid, size=self.size, ed2k=self.ed2k, aid=self.aid, aname=None, gid=None, gname=None, epno=self.epno, fmask=self.bitCodeF, amask=self.bitCodeA)
+        self.rawData = self.aniDB.file(fid=self.fid, size=self.size, ed2k=self.ed2k, aid=self.aid, aname=None, gid=None, gname=None, epno=self.epno,
+                                       fmask=self.bitCodeF, amask=self.bitCodeA)
         self._fill(self.rawData.datalines[0])
         self._build_names()
         self.laoded = True
@@ -303,7 +304,8 @@ class Episode(aniDBabstractObject):
         if self.filePath and not (self.ed2k or self.size):
             (self.ed2k, self.size) = self._calculate_file_stuff(self.filePath)
         try:
-            edit_response = self.aniDB.mylistadd(size=self.size, ed2k=self.ed2k, edit=1, state=state, viewed=viewed, source=source, storage=storage, other=other)
+            edit_response = self.aniDB.mylistadd(size=self.size, ed2k=self.ed2k, edit=1, state=state, viewed=viewed, source=source, storage=storage,
+                                                 other=other)
         except Exception as e:
             logger.exception("Exception: %s", e)
         # handling the case that the entry is not in anidb yet, non ideal to check the string but isinstance is having issue

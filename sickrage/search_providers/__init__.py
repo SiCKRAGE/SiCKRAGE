@@ -1363,8 +1363,8 @@ class NewznabProvider(NZBProvider):
                     else:
                         item_size = item.size.get_text(strip=True) if item.size else -1
 
-                        newznab_attrs = item(re.compile('newznab:attr'))
-                        torznab_attrs = item(re.compile('torznab:attr'))
+                        newznab_attrs = item(re.compile(r'newznab:attr'))
+                        torznab_attrs = item(re.compile(r'torznab:attr'))
                         for attr in newznab_attrs + torznab_attrs:
                             item_size = attr['value'] if attr['name'] == 'size' else item_size
                             seeders = try_int(attr['value']) if attr['name'] == 'seeders' else seeders

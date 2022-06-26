@@ -73,7 +73,7 @@ class TorrentParser():
             self.file_type = "file"
             self._raw_torrent = open(self.torrent, "rb").read()
         # url?
-        elif re.search("^(http|ftp):\/\/", self.torrent, re.I):
+        elif re.search(r"^(http|ftp):\/\/", self.torrent, re.I):
             self.file_type = "url"
             self._raw_torrent = urlopen(self.torrent).read()
 

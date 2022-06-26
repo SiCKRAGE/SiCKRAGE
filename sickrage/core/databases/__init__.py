@@ -66,6 +66,7 @@ def instant_defaults_listener(target, args, kwargs):
 
 class IntFlag(TypeDecorator):
     impl = sqlalchemy.types.Integer()
+    cache_ok = True
 
     def __init__(self, enum):
         self.enum = enum
@@ -152,20 +153,21 @@ class SRDatabase(object):
 
     @property
     def engine(self):
-        if self.db_type == 'sqlite':
-            return create_engine('sqlite:///{}'.format(self.db_path), echo=False, connect_args={'check_same_thread': False, 'timeout': 30})
-        elif self.db_type == 'mysql':
+        if self.db_type == 'mysql':
             mysql_engine = create_engine('mysql+pymysql://{}:{}@{}:{}/'.format(self.db_username, self.db_password, self.db_host, self.db_port), echo=False)
             mysql_engine.execute(f"CREATE DATABASE IF NOT EXISTS {self.db_prefix}_{self.name}")
             return create_engine(
                 'mysql+pymysql://{}:{}@{}:{}/{}_{}'.format(self.db_username, self.db_password, self.db_host, self.db_port, self.db_prefix, self.name),
                 echo=False)
+        else:
+            return create_engine('sqlite:///{}'.format(self.db_path), echo=False, connect_args={'check_same_thread': False, 'timeout': 30})
 
     @property
     def version(self):
-        context = MigrationContext.configure(self.engine)
-        current_rev = context.get_current_revision()
-        return current_rev
+        with self.engine.connect() as connection:
+            context = MigrationContext.configure(connection)
+            current_rev = context.get_current_revision()
+            return current_rev
 
     def setup(self):
         if inspect(self.engine).has_table('migrate_version'):
@@ -321,3 +323,6 @@ class SRDatabase(object):
                             rows.append(row._asdict())
                     session.bulk_insert_mappings(table, rows)
                 session.commit()
+
+    def shutdown(self):
+        self.session.close()

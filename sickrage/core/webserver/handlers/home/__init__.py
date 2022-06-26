@@ -166,7 +166,7 @@ class IsAliveHandler(BaseHandler):
         if not srcallback:
             return _("Error: Unsupported Request. Send jsonp request with 'srcallback' variable in the query string.")
 
-        return "{}({})".format(srcallback, {'msg': str(sickrage.app.pid) if sickrage.app.started else 'nope'})
+        return '{}({})'.format(srcallback, {"msg": str(sickrage.app.pid) if sickrage.app.started else 'nope'})
 
 
 class TestSABnzbdHandler(BaseHandler):

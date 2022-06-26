@@ -50,7 +50,7 @@ class BinSearchCache(TVCache):
 
         # this pulls the title from the URL in the description
         self.descTitleStart = re.compile(r'^.*https?://www\.binsearch\.info/.b=')
-        self.descTitleEnd = re.compile('&amp;.*$')
+        self.descTitleEnd = re.compile(r'&amp;.*$')
 
         # these clean up the horrible mess of a title if the above fail
         self.titleCleaners = [
