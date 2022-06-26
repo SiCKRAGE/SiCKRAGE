@@ -262,7 +262,7 @@ sentry:
     - sentry-cli releases new --project $SENTRY_PROJECT $RELEASE_VERSION
     - sentry-cli releases set-commits --auto $RELEASE_VERSION
     - sentry-cli releases finalize $RELEASE_VERSION
-    - sentry-cli releases deploys $RELEASE_VERSION new -e $RELEASE_BRANCH
+#    - sentry-cli releases deploys $RELEASE_VERSION new -e $RELEASE_BRANCH
   only:
     - /^[0-9.]+$/@SiCKRAGE/sickrage
     - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage
