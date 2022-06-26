@@ -123,6 +123,7 @@ stages:
       - triggers
     variables:
       - $CI_COMMIT_BRANCH == "master"
+      - $CI_COMMIT_BRANCH == "i10n_develop"
       - $CI_COMMIT_MESSAGE =~ /\[TASK\] Pre-Releasing/
       - $CI_COMMIT_MESSAGE =~ /\[TASK\] Bump/
 
