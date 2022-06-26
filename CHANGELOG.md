@@ -2,7 +2,395 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.3](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.3...v10.0.3)
+#### [v10.0.67.dev2](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.66...v10.0.67.dev2)
+
+- Added renovate.json file [`#42`](https://git.sickrage.ca/SiCKRAGE/sickrage/pull/42)
+- bumped cryptography dependency [`bd7d884`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/bd7d8843af773035acd069b7fc9a76c1b715539a)
+- sync master &lt;-&gt; develop branches [`d463203`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/d4632034cb443c5578fe0535e3dd933b15928c55)
+- bumped cryptography dependency [`095ccb7`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/095ccb7367deca2e0950ecb94a441467590f4848)
+- bumped cryptography dependency [`7afab55`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/7afab55c8372344c8ead4580565ce4521edff2a7)
+- sync master &lt;-&gt; develop branches [`f772e7d`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/f772e7d24692af52ebf742cc41cf4c41ea151675)
+- sync master &lt;-&gt; develop branches [`807f96e`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/807f96e3366daa7e7c0435aa8cf36a94f910d856)
+
+#### [10.0.66](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.65...10.0.66)
+
+> 19 June 2022
+
+- New Crowdin updates [`#40`](https://git.sickrage.ca/SiCKRAGE/sickrage/pull/40)
+- New translations messages.pot (Portuguese, Brazilian) [`f9db8ad`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/f9db8ad9791b3bf63a539861dfe337c253629dab)
+- New translations messages.pot (Danish) [`3db9bfb`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/3db9bfbc71ecb619c06df031054faeb14ab93d5e)
+- New translations messages.pot (French) [`ddf3baa`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/ddf3baa529d038b1a475b713c9e8dcf43f43d535)
+- New translations messages.pot (Dutch) [`a468f8a`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/a468f8a37d10c51f6f7fe9a1c245b353c5ccf952)
+- New translations messages.pot (Norwegian) [`9743232`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/974323271cc753a59cea90cb0cb3c1bed217d2e4)
+- New translations messages.pot (German) [`a0a36df`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/a0a36df2a2032e43df37d134a4adc55b618f2129)
+- New translations messages.pot (Italian) [`76681eb`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/76681eb4a51bc5d68bd7be8da5f5b499f4d00d33)
+- New translations messages.pot (Vietnamese) [`7b1551a`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/7b1551acdbbb2432b27d983bb27a441751cda9f8)
+- New translations messages.pot (Portuguese) [`ed400bf`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/ed400bf0bb1851cc474cb656bbe764977eb3a804)
+- New translations messages.pot (Romanian) [`f8cec42`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/f8cec42303f1e5244dbaf147da1eb29eb70f0e8e)
+- New translations messages.pot (Catalan) [`02410d1`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/02410d1986bf8b8a5f08d336ac92e4b0d18737bc)
+- New translations messages.pot (Finnish) [`d66da43`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/d66da43dc60e56b358dce8ad49307a8d8593f71a)
+- New translations messages.pot (Polish) [`dcac221`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/dcac221a4e23871136e6f08c7a4f5e061d161278)
+- New translations messages.pot (Hungarian) [`fe95752`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/fe95752e4f1dd607934b1a92d01db21384060211)
+- New translations messages.pot (Czech) [`ff25e51`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/ff25e51981895982e7b4af6fdbb9b4dc3d15dbd7)
+- New translations messages.pot (Greek) [`f664d91`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/f664d912335bf4e930ca598f5cc1ded4255915e9)
+- New translations messages.pot (Hebrew) [`ba03c87`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/ba03c87fd5188b80e25dc530b239667e44448ed1)
+- New translations messages.pot (Russian) [`1c4c0ed`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/1c4c0ed4902f0e7c272067a5221afdd401694ee8)
+- New translations messages.pot (Ukrainian) [`aaa9093`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/aaa9093e8ebfd67be8699c27df346edb0fc9332b)
+- New translations messages.pot (Japanese) [`0401d35`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/0401d355eeb8ec7304ba8fd535043847ec1231d7)
+- Update source file messages.pot [`c882d05`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/c882d053aaaae824db073890c4b754f9405267d2)
+- Update source file messages.pot [`80de3aa`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/80de3aabf8c56cf54c097ad9f0936cf35bae5cf4)
+
+#### [10.0.65](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.64...10.0.65)
+
+> 18 June 2022
+
+- Fixed UnboundLocalError: local variable 'e' referenced before assignment [`15e551e`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/15e551ec1d177b666d4cd4c10b0eecd0181b29d5)
+- Fixed UnboundLocalError: local variable 'e' referenced before assignment [`6cb1fed`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/6cb1fed3efed5dcf3cbbc2c5938ae2ca300ddc00)
+
+#### [10.0.64](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.63...10.0.64)
+
+> 17 June 2022
+
+- moved loading of core module to outside try/except block for init app settings [`82955e5`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/82955e589d8ba99cf419ff498e4f893fa556e2ec)
+- moved loading of core module to outside try/except block for init app settings [`b9e97aa`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/b9e97aa1afa3bcd3146eabf6e4a1657dd3ba7c87)
+- added missing dev depend mako to requirements-dev.txt [`1bff2fb`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/1bff2fbe57edd679cec068caca5066662556108d)
+
+#### [10.0.63](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.62...10.0.63)
+
+> 2 June 2022
+
+- refactored log level of rarbg provider to debug for rarbg api returned errors [`619e864`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/619e8648e4329e3eacad102bcc9e9801e3ebde40)
+
+#### [10.0.62](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.61...10.0.62)
+
+> 9 May 2022
+
+#### [10.0.61](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.60...10.0.61)
+
+> 8 May 2022
+
+- fixed issues with blank URLs being sent to get_image function when populating show/season/episode images [`bda6105`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/bda61054c9b8ac46cf036413d83fd4769dfa6ae3)
+
+#### [10.0.60](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.59...10.0.60)
+
+> 8 May 2022
+
+- added in missing mimetype mkv [`956a357`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/956a357160f4377e8ea2b0f86331394c322b71e4)
+
+#### [10.0.59](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.58...10.0.59)
+
+> 6 May 2022
+
+- resolved gettext and fstring issues [`182a6c0`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/182a6c0ae9b368a57c566965e6d65d1339786378)
+- updated english translations [`2f4b447`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/2f4b447824dfcb2dfa0e8edd429f1cba9cf6e184)
+- added retries for rarbg search provider [`dc46165`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/dc4616541ba350e8f3848cc3cbc9250eb8be2d22)
+
+#### [10.0.58](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.57...10.0.58)
+
+> 26 March 2022
+
+- added python version constraints for importlib-metadata in requirements.txt [`df671c9`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/df671c986d78ff7555acf5836736c754df971c10)
+
+#### [10.0.57](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.56...10.0.57)
+
+> 22 March 2022
+
+#### [10.0.56](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.55...10.0.56)
+
+> 20 March 2022
+
+#### [10.0.55](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.54...10.0.55)
+
+> 20 March 2022
+
+- Bumped babelfish requirement [`2dfe7dd`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/2dfe7dd41721812859e68b36a9c17c745b517655)
+- Bumped lxml [`a750b74`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/a750b748c96df323c23d4d04b6741c68ca2bfbfa)
+
+#### [10.0.54](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.53...10.0.54)
+
+> 17 March 2022
+
+- Bumped PyYaml [`81c2da3`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/81c2da37b21bd2c4775171394009440a0235f83c)
+
+#### [10.0.53](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.52...10.0.53)
+
+> 16 March 2022
+
+- Bumped beautifulsoup4 [`6de06e8`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/6de06e82382da5d455fa30e1e61033229ffca631)
+
+#### [10.0.52](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.51...10.0.52)
+
+> 6 March 2022
+
+- bumped protobufs to 3.19.4 [`539c633`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/539c633fb04997507130867f79b0d4048cf7561d)
+
+#### [10.0.51](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.50...10.0.51)
+
+> 5 March 2022
+
+#### [10.0.50](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.49...10.0.50)
+
+> 23 January 2022
+
+#### [10.0.49](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.48...10.0.49)
+
+> 22 January 2022
+
+#### [10.0.48](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.47...10.0.48)
+
+> 22 January 2022
+
+#### [10.0.47](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.46...10.0.47)
+
+> 1 January 2022
+
+- Refactored video files to be mime typed by built-in module mimetypes, no longer requires end-user to specify allowed video file extensions [`9f0903d`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/9f0903deafba49880b6003bacf8fc3f579070ea0)
+
+#### [10.0.46](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.45...10.0.46)
+
+> 2 November 2021
+
+#### [10.0.45](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.44...10.0.45)
+
+> 4 October 2021
+
+- fixed issue with show language now displaying correcting in edit show view [`8a33201`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/8a3320101005be49a83e9203a306180e91a128af)
+
+#### [10.0.44](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.43...10.0.44)
+
+> 4 October 2021
+
+#### [10.0.43](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.42...10.0.43)
+
+> 3 October 2021
+
+#### [10.0.42](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.41...10.0.42)
+
+> 3 October 2021
+
+- fixed "Invalid image type series for series provider" [`2825d75`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/2825d75d88b44a5afada143d7c18821c386f710d)
+
+#### [10.0.41](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.40...10.0.41)
+
+> 3 October 2021
+
+- cleaned up oauth2 offline token migration code [`f0db748`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/f0db74855dc5c3f6e466aee2dc0aa4b5fb4f4a91)
+- cleaned up oauth2 offline token migration code [`2f2a708`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/2f2a7080e171b0852124a96758968de2b05dd812)
+- skip search cache results if series provider id is none [`45ef300`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/45ef300f168a1942b2efb61941d13482956e1f53)
+- updated package.json [`d42b20d`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/d42b20d0d49422ac82d70df1d3f4f6d70ecf83b7)
+
+#### [10.0.40](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.39...10.0.40)
+
+> 2 October 2021
+
+- removed import of pycountry, not needed [`9fac4ea`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/9fac4ea0e6e2680a9519cf48231f75aeb5c71951)
+
+#### [10.0.39](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.38...10.0.39)
+
+> 2 October 2021
+
+#### [10.0.38](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.37...10.0.38)
+
+> 6 September 2021
+
+#### [10.0.37](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.36...10.0.37)
+
+> 3 September 2021
+
+- Fixed cache database migration issues related to oauth2 and announcements tables [`d239c77`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/d239c773feb2eb41459451f1aaba95caf66816eb)
+
+#### [10.0.36](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.35...10.0.36)
+
+> 28 August 2021
+
+#### [10.0.35](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.34...10.0.35)
+
+> 27 August 2021
+
+#### [10.0.34](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.33...10.0.34)
+
+> 27 August 2021
+
+#### [10.0.33](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.32...10.0.33)
+
+> 24 August 2021
+
+#### [10.0.32](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.31...10.0.32)
+
+> 10 August 2021
+
+- fixed issue with network timezones and search provider urls not being updated on first use of app [`ca8aaef`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/ca8aaefdd124fd4dc76e596c89ef8c8325ae3504)
+- fixed issue with network timezones and search provider urls not being updated on first use of app [`c1ec8ce`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/c1ec8ce1757759c8622548a3f2c0970d81ee4053)
+
+#### [10.0.31](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.30...10.0.31)
+
+> 9 August 2021
+
+- renamed newznab `key` param to `api_key` [`a5a271b`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/a5a271b8e523fef61e5d07d9840b5921910e28d1)
+
+#### [10.0.30](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.29...10.0.30)
+
+> 7 August 2021
+
+- fixed amqp bug that caused a restart loop when updating ssl server cert/key [`827fac1`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/827fac18e2d7b71334207c4c3387fa8fcfdc9b44)
+
+#### [10.0.29](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.28...10.0.29)
+
+> 6 August 2021
+
+#### [10.0.28](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.27...10.0.28)
+
+> 5 August 2021
+
+- web ssl certificate/key locations and filenames are now hard-coded [`60d6bc3`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/60d6bc367c9f94e75ad9bb3ec5ccec3ddaa8da85)
+
+#### [10.0.27](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.26...10.0.27)
+
+> 5 August 2021
+
+- Fixed issues with checksum checks [`0bc9b08`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/0bc9b0819fb72b8b0701107f3f36ec10746c1490)
+- Fixed issues with checksum checks [`8d8d12e`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/8d8d12e37c5dff3f0d5d5fc7bb5fb4c05b18e881)
+
+#### [10.0.26](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.25...10.0.26)
+
+> 3 August 2021
+
+- Refactored a core log entry from info to debug [`f7feab5`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/f7feab5c1ddd23d11ec411f75c90a307262db544)
+
+#### [10.0.25](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.24...10.0.25)
+
+> 3 August 2021
+
+- Fixed ValueError sickrage.core.searchers.backlog_searcher in _get_wanted [`1633328`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/1633328e43dede0070c144748f5b2dafa10eeffd)
+
+#### [10.0.24](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.23...10.0.24)
+
+> 2 August 2021
+
+#### [10.0.23](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.22...10.0.23)
+
+> 1 August 2021
+
+- Refactored web handlers to return data and call tornado finish on resp from run_async method [`a7bffda`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/a7bffda58098baab6b9392bef05ff92fbe43690c)
+- Refactored web handlers to return data and call tornado finish on resp from run_async method [`7635d83`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/7635d83894ecdaa8b72f5f3e3918e24eff8aa37e)
+- Refactored web handlers to return data and call tornado finish on resp from run_async method [`98396dc`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/98396dc7f97b2b355fee8e9271b418a65a74f370)
+
+#### [10.0.22](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.21...10.0.22)
+
+> 1 August 2021
+
+- Moved websocket queue check function to webserver class [`18042f3`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/18042f35c632962689f8854d24c09422ceaf666c)
+
+#### [10.0.21](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.20...10.0.21)
+
+> 1 August 2021
+
+#### [10.0.20](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.19...10.0.20)
+
+> 31 July 2021
+
+#### [10.0.19](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.18...10.0.19)
+
+> 30 July 2021
+
+#### [10.0.18](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.17...10.0.18)
+
+> 29 July 2021
+
+#### [10.0.17](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.16...10.0.17)
+
+> 29 July 2021
+
+#### [10.0.16](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.15...10.0.16)
+
+> 29 July 2021
+
+#### [10.0.15](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.14...10.0.15)
+
+> 28 July 2021
+
+#### [10.0.14](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.13...10.0.14)
+
+> 28 July 2021
+
+- Refactored app updating for source [`9d7a3f8`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/9d7a3f8bf832152bdfed6eb10f71c7d18d5f7c10)
+
+#### [10.0.13](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.12...10.0.13)
+
+> 28 July 2021
+
+#### [10.0.12](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.11...10.0.12)
+
+> 28 July 2021
+
+- Refactored episode slug to sXXeXX [`993479f`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/993479fd84e3c97cc172efaf5dd5cfa395dbce3a)
+- Misc fixes for series api v2 [`a86cc48`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/a86cc485efd6072954a658f9741bdbfff90414c8)
+- Refactored multi-project pipeline strategy to depend for CI script [`776e1f6`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/776e1f6e7c5dec268956e8da162982185c60e807)
+- Fixed `bad substitution` error in gitlab CI script [`bd8c393`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/bd8c3932237246fef5007687fc4158ded90b840e)
+- Refactored gitlab CI script [`6df07cc`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/6df07ccfd97c99da3746509c705a67471a327d13)
+- Fixed git origin URL [`5d50c4f`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/5d50c4fa53a2e639190e8df358c8a5780b237c56)
+
+#### [10.0.11](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.10...10.0.11)
+
+> 11 March 2021
+
+- Fixed issue with show refresh tasks getting stuck due to missing dependant task being cleared prematurely [`4ddbd58`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/4ddbd581468c98eed8157c4fdd23fe33a9f50b4b)
+- Refactred "Malformed air date" warnings to debug messages during loading data from series providers for episodes [`cb5551d`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/cb5551dc037d330b3dd796babb025dcc9691bc3d)
+
+#### [10.0.10](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.9...10.0.10)
+
+> 21 February 2021
+
+- Fixed issues with mass episode status editing [`3e21025`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/3e21025960645f480f6b366f9fd6d6603c874e44)
+- Fixed issues with mass editing show search format and default episode status [`34e22ae`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/34e22ae4b3738a45eec384df72936e740bd55fcf)
+
+#### [10.0.9](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.8...10.0.9)
+
+> 8 February 2021
+
+- Performed webpack [`03897ba`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/03897baf59f8bbf2f73449905b5c1de93be821d7)
+- Fixed "Multiple rows were found for one_or_none()" exception when getting json object of episode object [`5761806`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/5761806f6896148c6250c236faa489ba847258fc)
+- Fixed issue with deploy of PyPi image [`18c3cbf`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/18c3cbf43db10e234c3d544c0854abf614dd3ef2)
+- Updated CI to use python 3.9 [`58ab668`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/58ab668fb584cc95a7534c83f3faa33be1e2308a)
+
+#### [10.0.8](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.7...10.0.8)
+
+> 26 January 2021
+
+- Removed ability to set web host from settings in UI, constrained to only setting from cli. [`c17dc55`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/c17dc551de4d6df4f4b20b96fb3d94bba086966e)
+- Removed IRC from main layout [`87a989d`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/87a989dc9f05308ea9fd6c23aad53d0249219624)
+- Fixed issue with provider options not appearing in settings [`256e1df`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/256e1df2636a8810cfa85120ce323f5967a7e4da)
+- Replaced get_lan_ip with get_internal_ip [`fa55c2c`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/fa55c2c97f156755ece800e46632bb7feb36977b)
+- Fixed `invalid literal for int() with base 10` when attempting to mass edit default episode statuses [`a7dd0d7`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/a7dd0d7d8999ca6554a33dc5d4b3a3b0c4ca2033)
+
+#### [10.0.7](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.6...10.0.7)
+
+> 15 January 2021
+
+#### [10.0.6](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.5...10.0.6)
+
+> 14 January 2021
+
+- Fixed issue with launching browser after app starts up via scheduler [`f554180`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/f5541800645d5b78fb4723a9a194269fde283378)
+
+#### [10.0.5](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.4...10.0.5)
+
+> 14 January 2021
+
+- Minor changes to CI script [`b9dd99c`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/b9dd99c21200368d4a1a11eb663cd1de5beeb044)
+
+#### [10.0.4](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.3...10.0.4)
+
+> 14 January 2021
+
+- Fixed issue with searching for new shows [`4d571f8`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/4d571f8636feb1269705fc829721ac1fc7ef5860)
+- Implemented abstract class in web base handler [`e9812be`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/e9812be71593a35b0987e30ec7135f51b98afcae)
+- Fixed issues with cascade database deletions [`4e8421c`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/4e8421c376baedd4c2e751b435916e1e71fa85de)
+- Decreased noise of saving config during auth methods [`5322d50`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/5322d507dd26c57d7ccb701241ec7380d56adcc0)
+- Refactored CI script to update changelog in separate stage [`18f98b0`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/18f98b04ac7ca43867752c5c6b1a2ccce72c783d)
+- Fixed CI script and merge issues between develop and master branches [`149d52e`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/149d52ee513080b794396b5e065db71ad17dff90)
+- Moved changelog creation to happen in release branch [`506bac0`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/506bac022497ac9c0d1c28f24dea5df2796931b4)
+- Fixed unterminated string in CI script [`4ab3dbd`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/4ab3dbd401afe04015c95eb27eae503b892dd9b1)
 
 #### [10.0.3](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.2...10.0.3)
 
