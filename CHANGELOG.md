@@ -2,10 +2,11 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.67.dev2](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.66...v10.0.67.dev2)
+#### [v10.0.67.dev3](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.66...v10.0.67.dev3)
 
 - Added renovate.json file [`#42`](https://git.sickrage.ca/SiCKRAGE/sickrage/pull/42)
 - bumped cryptography dependency [`bd7d884`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/bd7d8843af773035acd069b7fc9a76c1b715539a)
+- fix startup issue [`73ae82c`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/73ae82c4facfa63ef17ca7ce8fa74e10287a388c)
 - sync master &lt;-&gt; develop branches [`d463203`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/d4632034cb443c5578fe0535e3dd933b15928c55)
 - bumped cryptography dependency [`095ccb7`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/095ccb7367deca2e0950ecb94a441467590f4848)
 - bumped cryptography dependency [`7afab55`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/7afab55c8372344c8ead4580565ce4521edff2a7)
