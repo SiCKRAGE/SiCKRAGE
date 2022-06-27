@@ -9,7 +9,7 @@ asn1crypto==1.4.0
 attrs==19.3.0
 babelfish==0.6.0
 beautifulsoup4==4.10.0
-bencode3==0.1.0
+bencode.py==4.0.0
 bleach==3.3.0
 CacheControl==0.12.6
 certifi==2021.5.30

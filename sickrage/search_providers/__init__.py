@@ -25,7 +25,6 @@ import enum
 import importlib
 import inspect
 import itertools
-import json
 import os
 import pkgutil
 import random
@@ -36,7 +35,7 @@ from time import sleep
 from urllib.parse import urljoin
 from xml.sax import SAXParseException
 
-from bencode3 import bdecode, bencode
+import bencodepy
 from feedparser import FeedParserDict
 from requests.utils import add_dict_to_cookiejar, dict_from_cookiejar
 from tornado.ioloop import IOLoop
@@ -775,7 +774,7 @@ class TorrentProvider(SearchProvider):
 
         def verify_torrent(content):
             try:
-                if bdecode(content).get('info'):
+                if bencodepy.decode(content).get('info'):
                     return content
             except Exception:
                 pass
@@ -883,14 +882,14 @@ class TorrentProvider(SearchProvider):
 
             # adds public torrent trackers to content
             if result.content:
-                decoded_data = bdecode(result.content)
+                decoded_data = bencodepy.decode(result.content)
                 if not decoded_data.get('announce-list'):
                     decoded_data['announce-list'] = []
 
                 for tracker in trackers_list:
                     if tracker not in decoded_data['announce-list']:
                         decoded_data['announce-list'].append([str(tracker)])
-                result.content = bencode(decoded_data)
+                result.content = bencodepy.encode(decoded_data)
 
         return result
 
@@ -1059,7 +1058,7 @@ class TorrentRssProvider(TorrentProvider):
             else:
                 try:
                     torrent_file = self.session.get(url).content
-                    bdecode(torrent_file)
+                    bencodepy.decode(torrent_file)
                 except Exception as e:
                     if data:
                         self.dumpHTML(torrent_file)

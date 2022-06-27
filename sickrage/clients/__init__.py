@@ -19,10 +19,9 @@
 
 import re
 import time
+import bencodepy
 from base64 import b16encode, b32decode
 from hashlib import sha1
-
-from bencode3 import bdecode, BencodeError, bencode
 
 import sickrage
 from sickrage.core.websession import WebSession
@@ -186,8 +185,8 @@ class TorrentClient(GenericClient):
                 raise Exception('Torrent without content')
 
             try:
-                torrent_bdecode = bdecode(result.content)
-            except BencodeError:
+                torrent_bdecode = bencodepy.decode(result.content)
+            except bencodepy.exceptions.BencodeDecodeError:
                 sickrage.app.log.warning('Unable to bdecode torrent')
                 sickrage.app.log.debug('Torrent bencoded data: %r' % result.content)
                 raise
@@ -198,7 +197,7 @@ class TorrentClient(GenericClient):
                 sickrage.app.log.warning('Unable to find info field in torrent')
                 raise
 
-            result.hash = sha1(bencode(info)).hexdigest()
+            result.hash = sha1(bencodepy.encode(info)).hexdigest()
 
         return result
 
