@@ -104,7 +104,9 @@ def legacy_decrypt(section, key, encryption_version, encryption_secret):
 
 
 def change_gui_lang(language):
-    if language:
+    mo_file = os.path.join(sickrage.LOCALE_DIR, language, "LC_MESSAGES", "messages.mo")
+
+    if language and os.path.exists(mo_file):
         # Selected language
         gt = gettext.translation('messages', sickrage.LOCALE_DIR, languages=[language], codeset='UTF-8')
         gt.install(names=["ngettext"])
