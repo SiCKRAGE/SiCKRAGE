@@ -1094,7 +1094,8 @@ class PostProcessor(object):
         root_episode_object.create_meta_files()
 
         # update video file metadata
-        root_episode_object.update_video_metadata()
+        if sickrage.app.config.general.update_video_metadata:
+            root_episode_object.update_video_metadata()
 
         # save changes to database
         [cur_ep.save() for cur_ep in episode_objects]

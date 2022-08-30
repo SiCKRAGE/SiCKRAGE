@@ -160,7 +160,7 @@ test_py310:
 build_master:
   stage: build
   image:
-    name: nikolaik/python-nodejs:python3.9-nodejs10-alpine
+    name: nikolaik/python-nodejs:python3.10-nodejs14-alpine
   variables:
     NODE_ENV: "development"
     CARGO_HOME: "$CI_PROJECT_DIR/cargo"
@@ -210,7 +210,7 @@ build_develop:
   stage: build
   retry: 2
   image:
-    name: nikolaik/python-nodejs:python3.9-nodejs10-alpine
+    name: nikolaik/python-nodejs:python3.10-nodejs14-alpine
   variables:
     NODE_ENV: "development"
     CARGO_HOME: "$CI_PROJECT_DIR/cargo"

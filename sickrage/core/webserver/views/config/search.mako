@@ -553,7 +553,7 @@
                                     <label for="sab_forced">
                                         <input type="checkbox" class="enabler toggle color-primary is-material"
                                                name="sab_forced"
-                                               id="sab_forced" ${('', 'selected')[bool(sickrage.app.config.sabnzbd.forced)]}/>
+                                               id="sab_forced" ${('', 'checked')[bool(sickrage.app.config.sabnzbd.forced)]}/>
                                         ${_('enable to change priority from HIGH to FORCED')}
                                     </label>
                                 </div>
@@ -570,7 +570,7 @@
                                 <label for="nzbget_use_https">
                                     <input id="nzbget_use_https" type="checkbox"
                                            class="enabler toggle color-primary is-material"
-                                           name="nzbget_use_https" ${('', 'selected')[bool(sickrage.app.config.nzbget.use_https)]}/>
+                                           name="nzbget_use_https" ${('', 'checked')[bool(sickrage.app.config.nzbget.use_https)]}/>
                                     ${_('enable secure control')}
                                 </label>
                             </div>
@@ -587,12 +587,12 @@
                                     </div>
                                     <input name="nzbget_host" id="nzbget_host"
                                            value="${sickrage.app.config.nzbget.host}"
-                                           placeholder="${_('ex. http://localhost:6789')}"
+                                           placeholder="${_('ex. localhost:6789')}"
                                            title="NZBget RPC host name and port number (not NZBgetweb!"
                                            class="form-control"
                                            autocapitalize="off"
-                                           type="url"
-                                           pattern="https?:\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?">
+                                           type="text"
+                                           pattern="^[0-9a-zA-Z-_.:,]*$">
                                     <div class="invalid-tooltip">
                                         Please fill in a valid host:port
                                     </div>

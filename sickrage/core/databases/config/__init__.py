@@ -263,6 +263,7 @@ class ConfigDB(SRDatabase):
         view_changelog = Column(Boolean, default=False)
         strip_special_file_bits = Column(Boolean, default=True)
         max_queue_workers = Column(Integer, default=5)
+        update_video_metadata = Column(Boolean, default=True)
 
     class GUI(base):
         __tablename__ = 'gui'

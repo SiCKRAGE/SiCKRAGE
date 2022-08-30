@@ -19,7 +19,7 @@ def upgrade():
         'announcements',
         sa.Column('id', sa.Integer, primary_key=True),
         sa.Column('hash', sa.String(255), unique=True, nullable=False),
-        sa.Column('seen', sa.Boolean, default=False)
+        sa.Column('seen', sa.Boolean, server_default='false')
     )
 
 

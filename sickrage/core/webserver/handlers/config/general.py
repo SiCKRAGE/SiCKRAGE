@@ -161,6 +161,7 @@ class SaveGeneralHandler(BaseHandler):
         web_username = self.get_argument('web_username', '')
         web_password = self.get_argument('web_password', '')
         enable_sickrage_api = self.get_argument('enable_sickrage_api', None)
+        update_video_metadata = self.get_argument('update_video_metadata', None)
 
         results = []
 
@@ -270,6 +271,8 @@ class SaveGeneralHandler(BaseHandler):
         sickrage.app.config.general.default_page = DefaultHomePage[default_page]
 
         sickrage.app.config.general.max_queue_workers = try_int(max_queue_workers)
+
+        sickrage.app.config.general.update_video_metadata = checkbox_to_value(update_video_metadata)
 
         sickrage.app.config.save()
 

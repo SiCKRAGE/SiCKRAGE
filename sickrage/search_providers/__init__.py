@@ -1508,4 +1508,4 @@ class SearchProviders(dict):
                 except Exception:
                     pass
 
-        sickrage.app.log.debug('Updating URLs for searching providers finished')
+        sickrage.app.log.debug('Updating URLs for search providers finished')

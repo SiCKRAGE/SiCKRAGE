@@ -4850,9 +4850,10 @@ $(document).ready(function ($) {
                     $.get(SICKRAGE.srWebRoot + "/config/backuprestore/restore",
                         {
                             'backupFile': $("#backupFile").val(),
-                            'restore_database': $("#restore_database").prop('checked'),
-                            'restore_config': $("#restore_config").prop('checked'),
-                            'restore_cache': $("#restore_cache").prop('checked')
+                            'restore_main_database': $("#restore_main_database").prop('checked'),
+                            'restore_config_database': $("#restore_config_database").prop('checked'),
+                            'restore_cache_database': $("#restore_cache_database").prop('checked'),
+                            'restore_image_cache': $("#restore_image_cache").prop('checked')
                         })
                         .done(function (data) {
                             $('#Restore-result').html(data);

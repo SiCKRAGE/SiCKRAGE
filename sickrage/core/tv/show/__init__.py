@@ -838,7 +838,9 @@ class TVShow(object):
 
         if not show_only:
             self.write_episode_nfos(force)
-            self.update_episode_video_metadata()
+
+            if sickrage.app.config.general.update_video_metadata:
+                self.update_episode_video_metadata()
 
     def write_episode_nfos(self, force=False):
         if not os.path.isdir(self.location):
@@ -867,7 +869,6 @@ class TVShow(object):
                 continue
 
             sickrage.app.log.debug(str(self.series_id) + ": Updating video metadata for episode S%02dE%02d" % (episode_obj.season, episode_obj.episode))
-
             episode_obj.update_video_metadata()
 
     # find all media files in the show folder and create episodes for as many as possible

@@ -65,9 +65,10 @@ class ConfigRestoreHandler(BaseHandler):
     @authenticated
     def get(self, *args, **kwargs):
         backup_file = self.get_argument('backupFile')
-        restore_database = self.get_argument('restore_database')
-        restore_config = self.get_argument('restore_config')
-        restore_cache = self.get_argument('restore_cache')
+        restore_main_database = self.get_argument('restore_main_database')
+        restore_config_database = self.get_argument('restore_config_database')
+        restore_cache_database = self.get_argument('restore_cache_database')
+        restore_image_cache = self.get_argument('restore_image_cache')
 
         final_result = ''
 
@@ -75,11 +76,12 @@ class ConfigRestoreHandler(BaseHandler):
             source = backup_file
             target_dir = os.path.join(sickrage.app.data_dir, 'restore')
 
-            restore_database = checkbox_to_value(restore_database)
-            restore_config = checkbox_to_value(restore_config)
-            restore_cache = checkbox_to_value(restore_cache)
+            restore_main_database = checkbox_to_value(restore_main_database)
+            restore_config_database = checkbox_to_value(restore_config_database)
+            restore_cache_database = checkbox_to_value(restore_cache_database)
+            restore_image_cache = checkbox_to_value(restore_image_cache)
 
-            if restore_config_zip(source, target_dir, restore_database, restore_config, restore_cache):
+            if restore_config_zip(source, target_dir, restore_main_database, restore_config_database, restore_cache_database, restore_image_cache):
                 final_result += _("Successfully extracted restore files to " + target_dir)
                 final_result += _("<br>Restart sickrage to complete the restore.")
             else:

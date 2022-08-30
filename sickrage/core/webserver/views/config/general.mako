@@ -1321,6 +1321,24 @@ c<%inherit file="../layouts/config.mako"/>
                     </div>
                 </div>
 
+                <div class="form-row form-group">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
+                        <label class="component-title">${_('Update Video File Metadata Info')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                        <label class="form-check-label">
+                            <input type="checkbox" class="toggle color-primary is-material"
+                                   name="update_video_metadata"
+                                   id="update_video_metadata" ${('', 'checked')[bool(sickrage.app.config.general.update_video_metadata)]}/>
+                            ${_('Updates metadata info of video file.')}
+                            <br/>
+                            <div class="text-info">
+                                <b>${_('NOTE:')}</b> ${_('This will cause file modification timestamp to be changed')}
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
                 <div class="form-row">
                     <div class="col-md-12">
                         <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>

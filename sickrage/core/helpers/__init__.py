@@ -63,6 +63,7 @@ from sickrage.core.enums import TorrentMethod
 from sickrage.core.helpers import encryption
 from sickrage.core.websession import WebSession
 
+mimetypes.add_type('video/x-m4v', '.m4v')
 mimetypes.add_type('video/x-matroska', '.mkv')
 mimetypes.add_type('video/divx', '.divx')
 mimetypes.add_type("video/x-flv", ".flv")
@@ -873,58 +874,48 @@ def create_zipfile(fileList, archive, arcname=None):
         return False
 
 
-def restore_config_zip(archive, targetDir, restore_database=True, restore_config=True, restore_cache=True):
+def restore_config_zip(archive, target_dir, restore_main_database=True, restore_config_database=True, restore_cache_database=True, restore_image_cache=True):
     """
     Restores a backup ZIP file back in place
-
-    :param archive: ZIP filename
-    :param targetDir: Directory to restore to
-    :return: True on success, False on failure
     """
 
     if not os.path.isfile(archive):
         return
 
     try:
-        if not os.path.exists(targetDir):
-            os.mkdir(targetDir)
+        if not os.path.exists(target_dir):
+            os.mkdir(target_dir)
         else:
             def path_leaf(path):
                 head, tail = os.path.split(path)
                 return tail or os.path.basename(head)
 
-            bakFilename = '{0}-{1}'.format(path_leaf(targetDir), datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))
-            move_file(targetDir, os.path.join(os.path.dirname(targetDir), bakFilename))
+            bak_filename = f'{path_leaf(target_dir)}-{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}'
+            move_file(target_dir, os.path.join(os.path.dirname(target_dir), bak_filename))
 
         with zipfile.ZipFile(archive, 'r', allowZip64=True) as zip_file:
             for member in zip_file.namelist():
-                if not restore_database and member.split('/')[0] in ['main_db_backup.json',
-                                                                     'main.db',
-                                                                     'main.db-shm',
-                                                                     'main.db-wal',
-                                                                     'cache_db_backup.json',
-                                                                     'cache.db',
-                                                                     'cache.db-shm',
-                                                                     'cache.db-wal']:
+                if not restore_main_database and member.split('/')[0] == 'main_db_backup.json':
                     continue
 
-                if not restore_config and member.split('/')[0] in ['config.ini',
-                                                                   'privatekey.pem'
-                                                                   'config.db']:
+                if not restore_config_database and member.split('/')[0] == 'config_db_backup.json':
                     continue
 
-                if not restore_cache and member.split('/')[0] == 'cache':
+                if not restore_cache_database and member.split('/')[0] == 'cache_db_backup.json':
                     continue
 
-                zip_file.extract(member, targetDir)
+                if not restore_image_cache and member.split('/')[0] == 'cache':
+                    continue
+
+                zip_file.extract(member, target_dir)
 
         return True
     except Exception as e:
         sickrage.app.log.warning("Zip extraction error: {}".format(e))
-        shutil.rmtree(targetDir)
+        shutil.rmtree(target_dir)
 
 
-def backup_app_data(backupDir, keep_latest=False):
+def backup_app_data(backup_dir, backup_main_db=True, backup_config_db=True, backup_cache_db=True, backup_image_cache=True, keep_latest=False):
     source = []
 
     # files_list = [
@@ -933,11 +924,11 @@ def backup_app_data(backupDir, keep_latest=False):
     # ]
 
     def _keep_latest_backup():
-        for x in sorted(glob.glob(os.path.join(backupDir, '*.zip')), key=os.path.getctime, reverse=True)[1:]:
+        for x in sorted(glob.glob(os.path.join(backup_dir, '*.zip')), key=os.path.getctime, reverse=True)[1:]:
             os.remove(x)
 
-    if not os.path.exists(backupDir):
-        os.mkdir(backupDir)
+    if not os.path.exists(backup_dir):
+        os.mkdir(backup_dir)
 
     if keep_latest:
         _keep_latest_backup()
@@ -949,13 +940,23 @@ def backup_app_data(backupDir, keep_latest=False):
     #         source += [fp]
 
     # databases
-    for db in [sickrage.app.main_db, sickrage.app.config.db, sickrage.app.cache_db]:
-        backup_file = os.path.join(*[sickrage.app.data_dir, '{}_db_backup.json'.format(db.name)])
-        db.backup(backup_file)
+    if backup_main_db:
+        backup_file = os.path.join(*[sickrage.app.data_dir, f'{sickrage.app.main_db.name}_db_backup.json'])
+        sickrage.app.main_db.backup(backup_file)
+        source += [backup_file]
+
+    if backup_config_db:
+        backup_file = os.path.join(*[sickrage.app.data_dir, f'{sickrage.app.config.db.name}_db_backup.json'])
+        sickrage.app.config.db.backup(backup_file)
+        source += [backup_file]
+
+    if backup_cache_db:
+        backup_file = os.path.join(*[sickrage.app.data_dir, f'{sickrage.app.cache_db.name}_db_backup.json'])
+        sickrage.app.cache_db.backup(backup_file)
         source += [backup_file]
 
     # cache folder
-    if sickrage.app.cache_dir:
+    if backup_image_cache and sickrage.app.cache_dir:
         for (path, dirs, files) in os.walk(sickrage.app.cache_dir, topdown=True):
             for dirname in dirs:
                 if path == sickrage.app.cache_dir and dirname not in ['images']:
@@ -965,12 +966,12 @@ def backup_app_data(backupDir, keep_latest=False):
                 source += [os.path.join(path, filename)]
 
     # ZIP filename
-    target = os.path.join(backupDir, 'sickrage-{}.zip'.format(datetime.datetime.now().strftime('%Y%m%d%H%M%S')))
+    target = os.path.join(backup_dir, f'sickrage-{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.zip')
 
     return create_zipfile(source, target, sickrage.app.data_dir)
 
 
-def restore_app_data(srcDir, dstDir):
+def restore_app_data(src_dir, dst_dir):
     try:
         files_list = [
             'main.db',
@@ -980,33 +981,31 @@ def restore_app_data(srcDir, dstDir):
             'cache.db',
             'cache.db-shm',
             'cache.db-wal',
-            'main.codernitydb',
-            'cache.codernitydb',
             'privatekey.pem',
             os.path.basename(sickrage.app.config_file)
         ]
 
         for filename in files_list:
-            srcFile = os.path.join(srcDir, filename)
-            dstFile = os.path.join(dstDir, filename)
-            bakFile = os.path.join(dstDir, '{}_{}.bak'.format(filename, datetime.datetime.now().strftime('%Y%m%d_%H%M%S')))
+            src_file = os.path.join(src_dir, filename)
+            dst_file = os.path.join(dst_dir, filename)
+            bak_file = os.path.join(dst_dir, '{}_{}.bak'.format(filename, datetime.datetime.now().strftime('%Y%m%d_%H%M%S')))
 
-            if os.path.exists(srcFile):
-                if os.path.isfile(dstFile):
-                    move_file(dstFile, bakFile)
-                move_file(srcFile, dstFile)
+            if os.path.exists(src_file):
+                if os.path.isfile(dst_file):
+                    move_file(dst_file, bak_file)
+                move_file(src_file, dst_file)
 
         # database
         for db in [sickrage.app.main_db, sickrage.app.config.db, sickrage.app.cache_db]:
-            backup_file = os.path.join(*[srcDir, '{}_db_backup.json'.format(db.name)])
+            backup_file = os.path.join(*[src_dir, '{}_db_backup.json'.format(db.name)])
             if os.path.exists(backup_file):
                 db.restore(backup_file)
 
         # cache
-        if os.path.exists(os.path.join(srcDir, 'cache')):
-            if os.path.exists(os.path.join(dstDir, 'cache')):
-                move_file(os.path.join(dstDir, 'cache'), os.path.join(dstDir, '{}_{}.bak'.format('cache', datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))))
-            move_file(os.path.join(srcDir, 'cache'), dstDir)
+        if os.path.exists(os.path.join(src_dir, 'cache')):
+            if os.path.exists(os.path.join(dst_dir, 'cache')):
+                move_file(os.path.join(dst_dir, 'cache'), os.path.join(dst_dir, '{}_{}.bak'.format('cache', datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))))
+            move_file(os.path.join(src_dir, 'cache'), dst_dir)
 
         return True
     except Exception as e:
@@ -1746,9 +1745,12 @@ def get_external_ip():
 
 def get_internal_ip():
     """Return internal IP of system."""
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(('8.8.8.8', 1))
-    return s.getsockname()[0]
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(('8.8.8.8', 1))
+        return s.getsockname()[0]
+    except Exception:
+        return socket.gethostbyname(socket.gethostname())
 
 
 def get_ip_address(hostname):
