@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: sickrage 10.0.70.dev1\n"
+"Project-Id-Version: sickrage 10.0.70.dev2\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2022-06-28 15:03+0000\n"
+"POT-Creation-Date: 2022-09-25 06:37+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -280,8 +280,8 @@ msgstr ""
 #: sickrage/core/webserver/views/config/general.mako:366
 #: sickrage/core/webserver/views/config/general.mako:651
 #: sickrage/core/webserver/views/config/general.mako:1034
-#: sickrage/core/webserver/views/config/general.mako:1326
-#: sickrage/core/webserver/views/config/general.mako:1461
+#: sickrage/core/webserver/views/config/general.mako:1344
+#: sickrage/core/webserver/views/config/general.mako:1479
 #: sickrage/core/webserver/views/config/notifications.mako:208
 #: sickrage/core/webserver/views/config/notifications.mako:362
 #: sickrage/core/webserver/views/config/notifications.mako:497
@@ -336,42 +336,50 @@ msgstr ""
 
 #: sickrage/core/webserver/views/config/backup_restore.mako:4
 #: sickrage/core/webserver/views/config/backup_restore.mako:11
-#: sickrage/core/webserver/views/config/backup_restore.mako:26
+#: sickrage/core/webserver/views/config/backup_restore.mako:28
 msgid "Backup"
 msgstr ""
 
 #: sickrage/core/webserver/views/config/backup_restore.mako:5
-#: sickrage/core/webserver/views/config/backup_restore.mako:44
-#: sickrage/core/webserver/views/config/backup_restore.mako:60
+#: sickrage/core/webserver/views/config/backup_restore.mako:59
+#: sickrage/core/webserver/views/config/backup_restore.mako:75
 msgid "Restore"
 msgstr ""
 
 #: sickrage/core/webserver/views/config/backup_restore.mako:13
-msgid "Backup your main database file and config"
+msgid "Backup SiCKRAGE"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:22
+#: sickrage/core/webserver/views/config/backup_restore.mako:24
 msgid "Select the folder you wish to save your backup file to"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:46
-msgid "Restore your main database file and config"
+#: sickrage/core/webserver/views/config/backup_restore.mako:41
+msgid "Automatic Backups"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:56
+#: sickrage/core/webserver/views/config/backup_restore.mako:61
+msgid "Restore SiCKRAGE"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/backup_restore.mako:71
 msgid "Select the backup file you wish to restore"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:73
-msgid "Restore database files"
+#: sickrage/core/webserver/views/config/backup_restore.mako:88
+msgid "Restore main database file"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:82
-msgid "Restore configuration file"
+#: sickrage/core/webserver/views/config/backup_restore.mako:97
+msgid "Restore config database file"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:91
-msgid "Restore cache files"
+#: sickrage/core/webserver/views/config/backup_restore.mako:106
+msgid "Restore cache database file"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/backup_restore.mako:115
+msgid "Restore image cache files"
 msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:19
@@ -650,7 +658,8 @@ msgstr ""
 #: sickrage/core/webserver/views/config/general.mako:1236
 #: sickrage/core/webserver/views/config/general.mako:1277
 #: sickrage/core/webserver/views/config/general.mako:1318
-#: sickrage/core/webserver/views/config/general.mako:1353
+#: sickrage/core/webserver/views/config/general.mako:1336
+#: sickrage/core/webserver/views/config/general.mako:1371
 #: sickrage/core/webserver/views/config/notifications.mako:906
 #: sickrage/core/webserver/views/config/notifications.mako:949
 #: sickrage/core/webserver/views/config/notifications.mako:1028
@@ -1018,59 +1027,71 @@ msgstr ""
 msgid "This will strip inherited permissions"
 msgstr ""
 
+#: sickrage/core/webserver/views/config/general.mako:1326
+msgid "Update Video File Metadata Info"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:1333
+msgid "Updates metadata info of video file."
+msgstr ""
+
 #: sickrage/core/webserver/views/config/general.mako:1336
+msgid "This will cause file modification timestamp to be changed"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:1354
 msgid "SiCKRAGE API"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1342
+#: sickrage/core/webserver/views/config/general.mako:1360
 msgid "Enable SiCKRAGE API"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1349
+#: sickrage/core/webserver/views/config/general.mako:1367
 msgid "enable SiCKRAGE API extra features"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1353
+#: sickrage/core/webserver/views/config/general.mako:1371
 msgid "Enabling this will pop-up a window for you to login to the SiCKRAGE API"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1370
+#: sickrage/core/webserver/views/config/general.mako:1388
 msgid "GIT Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1375
+#: sickrage/core/webserver/views/config/general.mako:1393
 msgid "Git Branches"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1387
+#: sickrage/core/webserver/views/config/general.mako:1405
 msgid "GIT Branch Version"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1400
+#: sickrage/core/webserver/views/config/general.mako:1418
 msgid "Checkout Branch"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1411
+#: sickrage/core/webserver/views/config/general.mako:1429
 msgid "GIT executable path"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1424
+#: sickrage/core/webserver/views/config/general.mako:1442
 msgid "ex: /path/to/git"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1429
+#: sickrage/core/webserver/views/config/general.mako:1447
 msgid "Verify Path"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1439
+#: sickrage/core/webserver/views/config/general.mako:1457
 msgid "Click verify path to test."
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1447
+#: sickrage/core/webserver/views/config/general.mako:1465
 msgid "Git reset"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1453
+#: sickrage/core/webserver/views/config/general.mako:1471
 msgid ""
 "removes untracked files and performs a hard reset on git branch automatically"
 " to help resolve update issues"
@@ -3944,7 +3965,7 @@ msgid "NZBget host:port"
 msgstr ""
 
 #: sickrage/core/webserver/views/config/search.mako:590
-msgid "ex. http://localhost:6789"
+msgid "ex. localhost:6789"
 msgstr ""
 
 #: sickrage/core/webserver/views/config/search.mako:605
@@ -5747,7 +5768,7 @@ msgstr ""
 msgid "Mass Rename"
 msgstr ""
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5618
+#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5619
 msgid "Mass Delete"
 msgstr ""
 
@@ -6108,22 +6129,22 @@ msgstr ""
 msgid "This show is queued and awaiting subtitles download."
 msgstr ""
 
-#: sickrage/core/tv/show/__init__.py:1474
+#: sickrage/core/tv/show/__init__.py:1475
 #: sickrage/core/webserver/handlers/home/__init__.py:146
 msgid "no data"
 msgstr ""
 
-#: sickrage/core/tv/show/__init__.py:1477
+#: sickrage/core/tv/show/__init__.py:1478
 #: sickrage/core/webserver/handlers/home/__init__.py:149
 msgid "Downloaded: "
 msgstr ""
 
-#: sickrage/core/tv/show/__init__.py:1480
+#: sickrage/core/tv/show/__init__.py:1481
 #: sickrage/core/webserver/handlers/home/__init__.py:152
 msgid "Snatched: "
 msgstr ""
 
-#: sickrage/core/tv/show/__init__.py:1483
+#: sickrage/core/tv/show/__init__.py:1484
 #: sickrage/core/webserver/handlers/home/__init__.py:155
 msgid "Total: "
 msgstr ""
@@ -6287,7 +6308,7 @@ msgid "Config - Anime"
 msgstr ""
 
 #: sickrage/core/webserver/handlers/config/anime.py:64
-#: sickrage/core/webserver/handlers/config/general.py:281
+#: sickrage/core/webserver/handlers/config/general.py:284
 #: sickrage/core/webserver/handlers/config/notifications.py:420
 #: sickrage/core/webserver/handlers/config/postprocessing.py:215
 #: sickrage/core/webserver/handlers/config/providers.py:170
@@ -6316,19 +6337,19 @@ msgstr ""
 msgid "You need to choose a folder to save your backup to first!"
 msgstr ""
 
-#: sickrage/core/webserver/handlers/config/backup_restore.py:83
+#: sickrage/core/webserver/handlers/config/backup_restore.py:85
 msgid "Successfully extracted restore files to "
 msgstr ""
 
-#: sickrage/core/webserver/handlers/config/backup_restore.py:84
+#: sickrage/core/webserver/handlers/config/backup_restore.py:86
 msgid "<br>Restart sickrage to complete the restore."
 msgstr ""
 
-#: sickrage/core/webserver/handlers/config/backup_restore.py:86
+#: sickrage/core/webserver/handlers/config/backup_restore.py:88
 msgid "Restore FAILED"
 msgstr ""
 
-#: sickrage/core/webserver/handlers/config/backup_restore.py:88
+#: sickrage/core/webserver/handlers/config/backup_restore.py:90
 msgid "You need to select a backup file to restore!"
 msgstr ""
 
@@ -6340,7 +6361,7 @@ msgstr ""
 msgid "General Configuration"
 msgstr ""
 
-#: sickrage/core/webserver/handlers/config/general.py:283
+#: sickrage/core/webserver/handlers/config/general.py:286
 msgid "[GENERAL] Configuration Saved to Database"
 msgstr ""
 
@@ -7384,25 +7405,25 @@ msgstr ""
 msgid "Don't forget to save your new pushbullet settings."
 msgstr ""
 
-#: src/js/core.js:4864
+#: src/js/core.js:4865
 msgid "Select backup folder to save to"
 msgstr ""
 
-#: src/js/core.js:4869
+#: src/js/core.js:4870
 msgid "Select backup files to restore"
 msgstr ""
 
-#: src/js/core.js:5405
+#: src/js/core.js:5406
 msgid "No providers available to configure."
 msgstr ""
 
-#: src/js/core.js:5619
+#: src/js/core.js:5620
 msgid ""
 "You have selected to delete  show(s).  Are you sure you wish to continue? All"
 " files will be removed from your system."
 msgstr ""
 
-#: src/js/core.js:5714
+#: src/js/core.js:5715
 msgid "DELETED"
 msgstr ""
 
