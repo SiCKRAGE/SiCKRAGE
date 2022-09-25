@@ -187,6 +187,7 @@ def change_unrar_tool(unrar_tool):
         sickrage.app.log.info('Disabling UNPACK setting because no unrar is installed.')
         sickrage.app.config.general.unpack = False
 
+
 def change_nzb_dir(nzb_dir):
     """
     Change NZB blackhole directory
@@ -350,3 +351,16 @@ def change_web_external_port(web_external_port):
         sickrage.app.upnp_client.delete_nat_portmap()
         sickrage.app.config.general.web_external_port = int(web_external_port)
         sickrage.app.upnp_client.add_nat_portmap()
+
+
+def change_auto_backup_freq(freq):
+    """
+    Change frequency of auto-backup thread
+
+    :param freq: New frequency
+    """
+    sickrage.app.config.general.auto_backup_freq = int(freq)
+    if sickrage.app.config.general.auto_backup_freq < 1:
+        sickrage.app.config.general.auto_backup_freq = 1
+
+    sickrage.app.scheduler.reschedule_job(sickrage.app.auto_backup.name, trigger='interval', hours=sickrage.app.config.general.auto_backup_freq)

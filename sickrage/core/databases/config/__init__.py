@@ -264,6 +264,10 @@ class ConfigDB(SRDatabase):
         strip_special_file_bits = Column(Boolean, default=True)
         max_queue_workers = Column(Integer, default=5)
         update_video_metadata = Column(Boolean, default=True)
+        auto_backup_enable = Column(Boolean, default=False)
+        auto_backup_freq = Column(Integer, default=24)
+        auto_backup_keep_num = Column(Integer, default=1)
+        auto_backup_dir = Column(Text, default='')
 
     class GUI(base):
         __tablename__ = 'gui'

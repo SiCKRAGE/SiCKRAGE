@@ -159,7 +159,6 @@ c<%inherit file="../layouts/config.mako"/>
                 </div>
 
                 <div class="form-row form-group">
-
                     <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Number of Log files saved')}</label>
                     </div>
@@ -177,7 +176,6 @@ c<%inherit file="../layouts/config.mako"/>
                                    class="form-control"/>
                         </div>
                     </div>
-
                 </div>
 
                 <div class="form-row form-group">

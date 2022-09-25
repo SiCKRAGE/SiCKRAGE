@@ -915,29 +915,15 @@ def restore_config_zip(archive, target_dir, restore_main_database=True, restore_
         shutil.rmtree(target_dir)
 
 
-def backup_app_data(backup_dir, backup_main_db=True, backup_config_db=True, backup_cache_db=True, backup_image_cache=True, keep_latest=False):
+def backup_app_data(backup_dir, backup_type='manual', backup_main_db=True, backup_config_db=True, backup_cache_db=True, backup_image_cache=True, keep_num=0):
     source = []
-
-    # files_list = [
-    #     'privatekey.pem',
-    #     os.path.basename(sickrage.app.config_file)
-    # ]
-
-    def _keep_latest_backup():
-        for x in sorted(glob.glob(os.path.join(backup_dir, '*.zip')), key=os.path.getctime, reverse=True)[1:]:
-            os.remove(x)
 
     if not os.path.exists(backup_dir):
         os.mkdir(backup_dir)
 
-    if keep_latest:
-        _keep_latest_backup()
-
-    # individual files
-    # for f in files_list:
-    #     fp = os.path.join(sickrage.app.data_dir, f)
-    #     if os.path.exists(fp):
-    #         source += [fp]
+    if keep_num > 0:
+        for x in sorted(glob.glob(os.path.join(backup_dir, f'*{backup_type}*.zip')), key=os.path.getctime, reverse=True)[keep_num:]:
+            os.remove(x)
 
     # databases
     if backup_main_db:
@@ -966,7 +952,7 @@ def backup_app_data(backup_dir, backup_main_db=True, backup_config_db=True, back
                 source += [os.path.join(path, filename)]
 
     # ZIP filename
-    target = os.path.join(backup_dir, f'sickrage-{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.zip')
+    target = os.path.join(backup_dir, f'sickrage-{backup_type}-{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.zip')
 
     return create_zipfile(source, target, sickrage.app.data_dir)
 

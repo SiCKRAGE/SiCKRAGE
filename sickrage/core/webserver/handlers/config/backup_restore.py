@@ -24,6 +24,7 @@ import os
 from tornado.web import authenticated
 
 import sickrage
+from sickrage.core.config.helpers import change_auto_backup_freq
 from sickrage.core.helpers import backup_app_data, checkbox_to_value, restore_config_zip
 from sickrage.core.webserver import ConfigWebHandler
 from sickrage.core.webserver.handlers.base import BaseHandler
@@ -97,4 +98,25 @@ class ConfigRestoreHandler(BaseHandler):
 class SaveBackupRestoreHandler(BaseHandler):
     @authenticated
     def post(self, *args, **kwargs):
+        backup_dir = self.get_argument('backupDir')
+        auto_backup_enable = self.get_argument('auto_backup_enable', False)
+        auto_backup_freq = self.get_argument('auto_backup_freq')
+        auto_backup_keep_num = self.get_argument('auto_backup_keep_num')
+
+        results = []
+
+        sickrage.app.config.general.auto_backup_dir = backup_dir
+        sickrage.app.config.general.auto_backup_enable = checkbox_to_value(auto_backup_enable)
+        sickrage.app.config.general.auto_backup_keep_num = int(auto_backup_keep_num)
+
+        change_auto_backup_freq(auto_backup_freq)
+
+        sickrage.app.config.save()
+
+        if len(results) > 0:
+            [sickrage.app.log.error(x) for x in results]
+            sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
+        else:
+            sickrage.app.alerts.message(_('[BACKUP] Configuration Saved to Database'))
+
         return self.redirect("/config/backuprestore/")

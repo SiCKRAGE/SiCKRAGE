@@ -35,7 +35,7 @@ def upgrade():
     tv_shows = sa.Table('tv_shows', meta, autoload=True)
 
     if not hasattr(tv_shows.c, 'scene'):
-        op.add_column('tv_shows', sa.Column('scene', sa.Boolean, server_default='false'))
+        op.add_column('tv_shows', sa.Column('scene', sa.Boolean))
 
     with op.get_context().begin_transaction():
         for row in conn.execute(tv_shows.select()):

@@ -118,7 +118,7 @@ class VersionUpdater(object):
             if not os.path.isdir(backupDir):
                 os.mkdir(backupDir)
 
-            if backup_app_data(backupDir, keep_latest=True):
+            if backup_app_data(backupDir, keep_num=1):
                 sickrage.app.log.info("Config backup successful, updating...")
                 sickrage.app.alerts.message(_('Updater'), _('Config backup successful, updating...'))
                 return True

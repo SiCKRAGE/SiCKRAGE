@@ -51,6 +51,7 @@ from sickrage.core.amqp.consumer import AMQPConsumer
 from sickrage.core.announcements import Announcements
 from sickrage.core.api import API
 from sickrage.core.auth import AuthServer
+from sickrage.core.auto_backup import AutoBackup
 from sickrage.core.common import Quality, Qualities, EpisodeStatus
 from sickrage.core.config import Config
 from sickrage.core.config.helpers import change_gui_lang
@@ -227,6 +228,7 @@ class Core(object):
         self.subtitle_searcher = None
         self.auto_postprocessor = None
         self.upnp_client = None
+        self.auto_backup = None
         self.auth_server = None
         self.announcements = None
         self.api = None
@@ -274,6 +276,7 @@ class Core(object):
         self.subtitle_searcher = SubtitleSearcher()
         self.auto_postprocessor = AutoPostProcessor()
         self.upnp_client = UPNPClient()
+        self.auto_backup = AutoBackup()
         self.announcements = Announcements()
         self.amqp_consumer = AMQPConsumer()
 
@@ -525,6 +528,17 @@ class Core(object):
             ),
             name=self.upnp_client.name,
             id=self.upnp_client.name
+        )
+
+        # add auto backup job
+        self.scheduler.add_job(
+            self.auto_backup.task,
+            IntervalTrigger(
+                hours=self.config.general.auto_backup_freq,
+                timezone='utc'
+            ),
+            name=self.auto_backup.name,
+            id=self.auto_backup.name
         )
 
         # start queues

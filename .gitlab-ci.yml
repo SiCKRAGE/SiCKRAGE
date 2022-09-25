@@ -16,8 +16,8 @@ stages:
 #    NODE_ENV: "development"
 #  script:
 #    - apk add --no-cache git gcc libffi-dev python3-dev musl-dev openssl-dev
-#    - yarn install --pure-lockfile --cache-folder .yarn-cache
-#    - yarn run build
+#    - npm install
+#    - npm run build
 #  only:
 #    - merge_requests@SiCKRAGE/sickrage
 #  cache:
@@ -176,8 +176,8 @@ build_master:
     - bumpversion --allow-dirty release package.json sickrage/version.txt sickrage/__init__.py
     - RELEASE_VERSION=$(awk -F '"' '/^__version__/ {print $2}' sickrage/__init__.py)
     - npx auto-changelog -v $RELEASE_VERSION --hide-credit --package --commit-limit false --ignore-commit-pattern \[TASK\].*
-    - yarn install --pure-lockfile --cache-folder .yarn-cache
-    - yarn run build
+    - npm install
+    - npm run build
     - python checksum-generator.py
     - git checkout -b release/$RELEASE_VERSION
     - git fetch --all
@@ -218,14 +218,14 @@ build_develop:
     - export PATH="$CARGO_HOME/bin:$PATH"
     - apk add --no-cache git gcc libffi-dev python3-dev musl-dev openssl-dev curl
     - curl https://sh.rustup.rs -sSf | sh -s -- -y
-    - yarn install --pure-lockfile --cache-folder .yarn-cache
+    - npm install
     - pip install -U pip
     - pip install bumpversion
     - pip install -r requirements-dev.txt
     - bumpversion --allow-dirty dev package.json sickrage/version.txt sickrage/__init__.py
     - RELEASE_VERSION=$(awk -F '"' '/^__version__/ {print $2}' sickrage/__init__.py)
     - npx auto-changelog -v $RELEASE_VERSION --hide-credit --unreleased --package --commit-limit false --ignore-commit-pattern \[TASK\].*
-    - yarn run build
+    - npm run build
     - python checksum-generator.py
     - python setup.py extract_messages
     - python setup.py init_catalog -l en_US
