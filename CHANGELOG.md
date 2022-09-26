@@ -2,8 +2,9 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.70.dev2](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.69...v10.0.70.dev2)
+#### [v10.0.70.dev3](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.69...v10.0.70.dev3)
 
+- added auto-backup feature for app data [`8689eda`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/8689eda39d43af14194dcde37210b0d919893079)
 - fixed issue with sabnzbd priority checkbox in ui [`97c25ba`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/97c25bac573cbce637d4144d82efb115668d9689)
 - fixed gettext error "Cannot load translation" [`c668cd7`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/c668cd75a3a40a49a5e2af016c996d9ef293ffb0)
 

@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: sickrage 10.0.70.dev2\n"
+"Project-Id-Version: sickrage 10.0.70.dev3\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2022-09-25 06:37+0000\n"
-"PO-Revision-Date: 2022-09-25 06:37+0000\n"
+"POT-Creation-Date: 2022-09-26 15:47+0000\n"
+"PO-Revision-Date: 2022-09-26 15:48+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
 "Language-Team: en_US <LL@li.org>\n"
@@ -230,7 +230,7 @@ msgstr ""
 
 #: sickrage/core/webserver/views/config/anime.mako:10
 #: sickrage/core/webserver/views/config/anime.mako:105
-#: sickrage/core/webserver/views/config/general.mako:377
+#: sickrage/core/webserver/views/config/general.mako:375
 msgid "User Interface"
 msgstr ""
 
@@ -277,12 +277,12 @@ msgstr ""
 
 #: sickrage/core/webserver/views/config/anime.mako:95
 #: sickrage/core/webserver/views/config/anime.mako:122
-#: sickrage/core/webserver/views/config/general.mako:265
-#: sickrage/core/webserver/views/config/general.mako:366
-#: sickrage/core/webserver/views/config/general.mako:651
-#: sickrage/core/webserver/views/config/general.mako:1034
-#: sickrage/core/webserver/views/config/general.mako:1344
-#: sickrage/core/webserver/views/config/general.mako:1479
+#: sickrage/core/webserver/views/config/general.mako:263
+#: sickrage/core/webserver/views/config/general.mako:364
+#: sickrage/core/webserver/views/config/general.mako:649
+#: sickrage/core/webserver/views/config/general.mako:1032
+#: sickrage/core/webserver/views/config/general.mako:1342
+#: sickrage/core/webserver/views/config/general.mako:1477
 #: sickrage/core/webserver/views/config/notifications.mako:208
 #: sickrage/core/webserver/views/config/notifications.mako:362
 #: sickrage/core/webserver/views/config/notifications.mako:497
@@ -335,51 +335,78 @@ msgstr ""
 msgid "Separate anime and normal shows in groups"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:4
-#: sickrage/core/webserver/views/config/backup_restore.mako:11
-#: sickrage/core/webserver/views/config/backup_restore.mako:28
+#: sickrage/core/webserver/views/config/backup_restore.mako:7
+#: sickrage/core/webserver/views/config/backup_restore.mako:14
 msgid "Backup"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:5
-#: sickrage/core/webserver/views/config/backup_restore.mako:59
-#: sickrage/core/webserver/views/config/backup_restore.mako:75
+#: sickrage/core/webserver/views/config/backup_restore.mako:8
+#: sickrage/core/webserver/views/config/backup_restore.mako:109
+#: sickrage/core/webserver/views/config/backup_restore.mako:125
 msgid "Restore"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:13
+#: sickrage/core/webserver/views/config/backup_restore.mako:16
 msgid "Backup SiCKRAGE"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:24
+#: sickrage/core/webserver/views/config/backup_restore.mako:23
+msgid "Backup folder"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/backup_restore.mako:28
 msgid "Select the folder you wish to save your backup file to"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:41
-msgid "Automatic Backups"
+#: sickrage/core/webserver/views/config/backup_restore.mako:32
+msgid "Manual Backup"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:61
+#: sickrage/core/webserver/views/config/backup_restore.mako:41
+msgid "Automatic backup"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/backup_restore.mako:46
+msgid "Enable Automatic Backups"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/backup_restore.mako:53
+msgid "Automatic backup frequency"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/backup_restore.mako:65
+msgid "default = 24"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/backup_restore.mako:79
+msgid "Automatic backups to keep"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/backup_restore.mako:90
+msgid "default = 1"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/backup_restore.mako:111
 msgid "Restore SiCKRAGE"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:71
+#: sickrage/core/webserver/views/config/backup_restore.mako:121
 msgid "Select the backup file you wish to restore"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:88
+#: sickrage/core/webserver/views/config/backup_restore.mako:138
 msgid "Restore main database file"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:97
+#: sickrage/core/webserver/views/config/backup_restore.mako:147
 msgid "Restore config database file"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:106
+#: sickrage/core/webserver/views/config/backup_restore.mako:156
 msgid "Restore cache database file"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:115
+#: sickrage/core/webserver/views/config/backup_restore.mako:165
 msgid "Restore image cache files"
 msgstr ""
 
@@ -393,13 +420,13 @@ msgid "Interface"
 msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:25
-#: sickrage/core/webserver/views/config/general.mako:661
+#: sickrage/core/webserver/views/config/general.mako:659
 #: sickrage/core/webserver/views/home/index.mako:147
 msgid "Network"
 msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:28
-#: sickrage/core/webserver/views/config/general.mako:1045
+#: sickrage/core/webserver/views/config/general.mako:1043
 #: sickrage/core/webserver/views/home/edit_show.mako:293
 msgid "Advanced Settings"
 msgstr ""
@@ -480,191 +507,191 @@ msgid ""
 " delete"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:164
+#: sickrage/core/webserver/views/config/general.mako:163
 msgid "Number of Log files saved"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:175
+#: sickrage/core/webserver/views/config/general.mako:174
 msgid "default = 5"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:186
+#: sickrage/core/webserver/views/config/general.mako:184
 msgid "Size of Log files saved"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:197
+#: sickrage/core/webserver/views/config/general.mako:195
 msgid "default = 1048576 (1MB)"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:208
+#: sickrage/core/webserver/views/config/general.mako:206
 msgid "Default series provider for adding shows"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:231
+#: sickrage/core/webserver/views/config/general.mako:229
 msgid "Series provider timeout"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:242
+#: sickrage/core/webserver/views/config/general.mako:240
 msgid "default = 10"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:256
+#: sickrage/core/webserver/views/config/general.mako:254
 msgid "Show root directories"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:276
+#: sickrage/core/webserver/views/config/general.mako:274
 msgid "Updates"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:278
+#: sickrage/core/webserver/views/config/general.mako:276
 msgid "Options for software updates."
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:286
+#: sickrage/core/webserver/views/config/general.mako:284
 msgid "Check software updates"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:292
+#: sickrage/core/webserver/views/config/general.mako:290
 msgid ""
 "and display notifications when updates are available. Checks are run on "
 "startup and at the frequency set below"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:301
+#: sickrage/core/webserver/views/config/general.mako:299
 msgid "Automatically update"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:307
+#: sickrage/core/webserver/views/config/general.mako:305
 msgid ""
 "fetch and install software updates.Updates are run on startupand in the "
 "background at the frequency setbelow"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:315
+#: sickrage/core/webserver/views/config/general.mako:313
 msgid "Check the server every"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:326
+#: sickrage/core/webserver/views/config/general.mako:324
 msgid "default = 12 (hours)"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:340
+#: sickrage/core/webserver/views/config/general.mako:338
 msgid "Notify on software update"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:346
+#: sickrage/core/webserver/views/config/general.mako:344
 msgid ""
 "send a message to all enabled notification providers when SiCKRAGE has "
 "been updated"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:353
+#: sickrage/core/webserver/views/config/general.mako:351
 msgid "Backup on software update"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:359
+#: sickrage/core/webserver/views/config/general.mako:357
 msgid "backup SiCKRAGE config and databases before performing updates"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:379
+#: sickrage/core/webserver/views/config/general.mako:377
 msgid "Options for visual appearance."
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:386
+#: sickrage/core/webserver/views/config/general.mako:384
 msgid "Interface Language"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:399
+#: sickrage/core/webserver/views/config/general.mako:397
 msgid "System Language"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:411
+#: sickrage/core/webserver/views/config/general.mako:409
 msgid "for appearance to take effect, save then refresh your browser"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:420
+#: sickrage/core/webserver/views/config/general.mako:418
 msgid "Display theme"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:441
+#: sickrage/core/webserver/views/config/general.mako:439
 msgid "Show all seasons"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:447
-#: sickrage/core/webserver/views/config/general.mako:625
+#: sickrage/core/webserver/views/config/general.mako:445
+#: sickrage/core/webserver/views/config/general.mako:623
 msgid "on the show summary page"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:455
+#: sickrage/core/webserver/views/config/general.mako:453
 msgid "Sort with \"The\", \"A\", \"An\""
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:461
+#: sickrage/core/webserver/views/config/general.mako:459
 msgid "include articles (\"The\", \"A\", \"An\") when sorting show lists"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:469
+#: sickrage/core/webserver/views/config/general.mako:467
 msgid "Filter form-row"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:475
+#: sickrage/core/webserver/views/config/general.mako:473
 msgid "Add a filter form-row to the show display on the home page"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:482
+#: sickrage/core/webserver/views/config/general.mako:480
 msgid "Missed episodes range"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:494
+#: sickrage/core/webserver/views/config/general.mako:492
 msgid "# of days"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:503
+#: sickrage/core/webserver/views/config/general.mako:501
 msgid "Display fuzzy dates"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:510
+#: sickrage/core/webserver/views/config/general.mako:508
 msgid ""
 "move absolute dates into tooltips and display e.g. \"Last Thu\", \"On "
 "Tue\""
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:517
+#: sickrage/core/webserver/views/config/general.mako:515
 msgid "Trim zero padding"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:523
+#: sickrage/core/webserver/views/config/general.mako:521
 msgid "remove the leading number \"0\" shown on hour of day, and date of month"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:530
+#: sickrage/core/webserver/views/config/general.mako:528
 msgid "Date style"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:543
+#: sickrage/core/webserver/views/config/general.mako:541
 msgid "Use System Default"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:555
+#: sickrage/core/webserver/views/config/general.mako:553
 msgid "Time style"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:576
+#: sickrage/core/webserver/views/config/general.mako:574
 msgid "Timezone"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:588
+#: sickrage/core/webserver/views/config/general.mako:586
 msgid ""
 "display dates and times in either your timezone or the shows network "
 "timezone"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:590
-#: sickrage/core/webserver/views/config/general.mako:1236
-#: sickrage/core/webserver/views/config/general.mako:1277
-#: sickrage/core/webserver/views/config/general.mako:1318
-#: sickrage/core/webserver/views/config/general.mako:1336
-#: sickrage/core/webserver/views/config/general.mako:1371
+#: sickrage/core/webserver/views/config/general.mako:588
+#: sickrage/core/webserver/views/config/general.mako:1234
+#: sickrage/core/webserver/views/config/general.mako:1275
+#: sickrage/core/webserver/views/config/general.mako:1316
+#: sickrage/core/webserver/views/config/general.mako:1334
+#: sickrage/core/webserver/views/config/general.mako:1369
 #: sickrage/core/webserver/views/config/notifications.mako:906
 #: sickrage/core/webserver/views/config/notifications.mako:949
 #: sickrage/core/webserver/views/config/notifications.mako:1028
@@ -688,419 +715,419 @@ msgstr ""
 msgid "NOTE:"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:590
+#: sickrage/core/webserver/views/config/general.mako:588
 msgid ""
 "Use local timezone to start searching for episodes minutes after show "
 "ends (depends on your dailysearch frequency)"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:598
+#: sickrage/core/webserver/views/config/general.mako:596
 msgid "Download url"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:617
+#: sickrage/core/webserver/views/config/general.mako:615
 msgid "Show fanart in the background"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:632
+#: sickrage/core/webserver/views/config/general.mako:630
 msgid "Fanart transparency"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:663
+#: sickrage/core/webserver/views/config/general.mako:661
 msgid ""
 "It is recommended that you enable a username and password to secure "
 "SiCKRAGE from being tampered with remotely."
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:664
+#: sickrage/core/webserver/views/config/general.mako:662
 msgid "These options require a manual restart to take effect."
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:672
+#: sickrage/core/webserver/views/config/general.mako:670
 msgid "HTTP public port"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:693
+#: sickrage/core/webserver/views/config/general.mako:691
 msgid ""
 "used by UPnP to setup a remote port forwarding to remotely access "
 "SiCKRAGE over a public external IP address"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:703
+#: sickrage/core/webserver/views/config/general.mako:701
 msgid "HTTP private port"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:716
+#: sickrage/core/webserver/views/config/general.mako:714
 msgid "8081"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:717
+#: sickrage/core/webserver/views/config/general.mako:715
 msgid "Web port to browse and access WebUI"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:725
+#: sickrage/core/webserver/views/config/general.mako:723
 msgid "used to access SiCKRAGE over a private internal IP address"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:734
+#: sickrage/core/webserver/views/config/general.mako:732
 msgid "HTTP web root"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:748
+#: sickrage/core/webserver/views/config/general.mako:746
 msgid "Web root used in URL to browse and access WebUI"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:756
+#: sickrage/core/webserver/views/config/general.mako:754
 msgid ""
 "used in URL to access SiCKRAGE WebUI, DO NOT include a trailing slash at "
 "end."
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:758
+#: sickrage/core/webserver/views/config/general.mako:756
 msgid "this option require a manual restart to take effect."
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:767
+#: sickrage/core/webserver/views/config/general.mako:765
 msgid "Application API key"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:783
+#: sickrage/core/webserver/views/config/general.mako:781
 msgid "Generate"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:792
+#: sickrage/core/webserver/views/config/general.mako:790
 msgid ""
 "used to give 3rd party programs limited access to SiCKRAGE you can try "
 "all the features of the API"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:793
+#: sickrage/core/webserver/views/config/general.mako:791
 msgid "here"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:802
+#: sickrage/core/webserver/views/config/general.mako:800
 msgid "Web Authentication Method"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:826
+#: sickrage/core/webserver/views/config/general.mako:824
 msgid "Web Username"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:846
+#: sickrage/core/webserver/views/config/general.mako:844
 msgid "Web Password"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:869
+#: sickrage/core/webserver/views/config/general.mako:867
 msgid "Whitelisted IP Authentication"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:877
+#: sickrage/core/webserver/views/config/general.mako:875
 msgid "bypass web authentication for clients on localhost"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:882
+#: sickrage/core/webserver/views/config/general.mako:880
 msgid "bypass web authentication for clients in whitelisted IP list"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:892
+#: sickrage/core/webserver/views/config/general.mako:890
 msgid "List of IP addresses and networks that are allowed without auth"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:901
+#: sickrage/core/webserver/views/config/general.mako:899
 msgid ""
 "comma separated list of IP addresses or IP/netmask entries for networks "
 "that are allowed to bypass web authorization."
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:910
+#: sickrage/core/webserver/views/config/general.mako:908
 msgid "HTTP logs"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:916
+#: sickrage/core/webserver/views/config/general.mako:914
 msgid "enable logs from the internal Tornado web server"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:923
+#: sickrage/core/webserver/views/config/general.mako:921
 msgid "Enable UPnP"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:929
+#: sickrage/core/webserver/views/config/general.mako:927
 msgid "automatically sets up port-forwarding from external IP to SiCKRAGE"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:936
+#: sickrage/core/webserver/views/config/general.mako:934
 msgid "Listen on IPv6"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:942
+#: sickrage/core/webserver/views/config/general.mako:940
 msgid "attempt binding to any available IPv6 address"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:949
+#: sickrage/core/webserver/views/config/general.mako:947
 msgid "Enable HTTPS"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:955
+#: sickrage/core/webserver/views/config/general.mako:953
 msgid "enable access to the web interface using a HTTPS address"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:964
+#: sickrage/core/webserver/views/config/general.mako:962
 msgid "Custom HTTPS certificate"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:978
+#: sickrage/core/webserver/views/config/general.mako:976
 msgid "path to a custom HTTPS certificate file"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:987
+#: sickrage/core/webserver/views/config/general.mako:985
 msgid "Custom HTTPS certificate key"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:999
+#: sickrage/core/webserver/views/config/general.mako:997
 msgid "path to a custom HTTPS key file"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1008
+#: sickrage/core/webserver/views/config/general.mako:1006
 msgid "Reverse proxy headers"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1014
+#: sickrage/core/webserver/views/config/general.mako:1012
 msgid ""
 "accept the following reverse proxy headers (advanced) - (X-Forwarded-For,"
 " X-Forwarded-Host, and X-Forwarded-Proto)"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1021
+#: sickrage/core/webserver/views/config/general.mako:1019
 msgid "Notify on login"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1027
+#: sickrage/core/webserver/views/config/general.mako:1025
 msgid ""
 "send a message to all enabled notification providers when someone logs "
 "into SiCKRAGE from a public IP address"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1051
+#: sickrage/core/webserver/views/config/general.mako:1049
 msgid "CPU throttling"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1061
+#: sickrage/core/webserver/views/config/general.mako:1059
 msgid "Normal (default). High is lower and Low is higher CPU use"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1072
+#: sickrage/core/webserver/views/config/general.mako:1070
 msgid "Max queue workers"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1083
+#: sickrage/core/webserver/views/config/general.mako:1081
 msgid "Maximum allowed items to be processed from queue at same time"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1091
+#: sickrage/core/webserver/views/config/general.mako:1089
 msgid "Anonymous redirect"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1102
+#: sickrage/core/webserver/views/config/general.mako:1100
 msgid "Backlink protection via anonymizer service, must end in ?"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1111
+#: sickrage/core/webserver/views/config/general.mako:1109
 msgid "Enable debug"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1117
+#: sickrage/core/webserver/views/config/general.mako:1115
 msgid "Enable debug logs"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1124
+#: sickrage/core/webserver/views/config/general.mako:1122
 msgid "Verify SSL Certs"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1130
+#: sickrage/core/webserver/views/config/general.mako:1128
 msgid "Verify SSL Certificates (Disable this for broken SSL installs (Like QNAP)"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1139
+#: sickrage/core/webserver/views/config/general.mako:1137
 msgid "No Restart"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1144
+#: sickrage/core/webserver/views/config/general.mako:1142
 msgid ""
 "Only select this when you have external software restarting SR "
 "automatically when it stops (like FireDaemon)"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1146
+#: sickrage/core/webserver/views/config/general.mako:1144
 msgid ""
 "Shutdown SiCKRAGE on restarts (external service must restart SiCKRAGE on "
 "its own)."
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1155
+#: sickrage/core/webserver/views/config/general.mako:1153
 msgid "Unprotected calendar"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1161
+#: sickrage/core/webserver/views/config/general.mako:1159
 msgid ""
 "allow subscribing to the calendar without user and password. Some "
 "services like Google Calendar only work this way"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1168
+#: sickrage/core/webserver/views/config/general.mako:1166
 msgid "Google Calendar Icons"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1174
+#: sickrage/core/webserver/views/config/general.mako:1172
 msgid "show an icon next to exported calendar events in Google Calendar."
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1183
+#: sickrage/core/webserver/views/config/general.mako:1181
 msgid "Link Google Account"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1186
+#: sickrage/core/webserver/views/config/general.mako:1184
 msgid "Link"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1188
+#: sickrage/core/webserver/views/config/general.mako:1186
 msgid ""
 "link your google account to SiCKRAGE for advanced feature usage such as "
 "settings/database storage"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1196
+#: sickrage/core/webserver/views/config/general.mako:1194
 msgid "Proxy host"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1207
+#: sickrage/core/webserver/views/config/general.mako:1205
 msgid "Proxy SiCKRAGE connections"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1215
+#: sickrage/core/webserver/views/config/general.mako:1213
 msgid "Use proxy for series providers"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1221
+#: sickrage/core/webserver/views/config/general.mako:1219
 msgid "use proxy host for connecting to series providers (TheTVDB)"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1228
+#: sickrage/core/webserver/views/config/general.mako:1226
 msgid "Skip Remove Detection"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1234
+#: sickrage/core/webserver/views/config/general.mako:1232
 msgid ""
 "Skip detection of removed files. If disable it will set default deleted "
 "status"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1236
+#: sickrage/core/webserver/views/config/general.mako:1234
 msgid "This may mean SiCKRAGE misses renames as well"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1243
+#: sickrage/core/webserver/views/config/general.mako:1241
 msgid "Default deleted episode status"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1275
+#: sickrage/core/webserver/views/config/general.mako:1273
 msgid "Define the status to be set for media file that has been deleted."
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1277
+#: sickrage/core/webserver/views/config/general.mako:1275
 msgid "Archived option will keep previous downloaded quality"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1279
+#: sickrage/core/webserver/views/config/general.mako:1277
 msgid "Example: Downloaded (1080p WEB-DL) ==> Archived (1080p WEB-DL)"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1288
+#: sickrage/core/webserver/views/config/general.mako:1286
 msgid "Allowed video file extensions"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1299
+#: sickrage/core/webserver/views/config/general.mako:1297
 msgid "ex: avi,mp4,mkv"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1308
+#: sickrage/core/webserver/views/config/general.mako:1306
 msgid "Strip special filesystem bits from files"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1315
+#: sickrage/core/webserver/views/config/general.mako:1313
 msgid ""
 "Strips special filesystem bits from files, if disabled will leave special"
 " bits intact."
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1318
+#: sickrage/core/webserver/views/config/general.mako:1316
 msgid "This will strip inherited permissions"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1326
+#: sickrage/core/webserver/views/config/general.mako:1324
 msgid "Update Video File Metadata Info"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1333
+#: sickrage/core/webserver/views/config/general.mako:1331
 msgid "Updates metadata info of video file."
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1336
+#: sickrage/core/webserver/views/config/general.mako:1334
 msgid "This will cause file modification timestamp to be changed"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1354
+#: sickrage/core/webserver/views/config/general.mako:1352
 msgid "SiCKRAGE API"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1360
+#: sickrage/core/webserver/views/config/general.mako:1358
 msgid "Enable SiCKRAGE API"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1367
+#: sickrage/core/webserver/views/config/general.mako:1365
 msgid "enable SiCKRAGE API extra features"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1371
+#: sickrage/core/webserver/views/config/general.mako:1369
 msgid "Enabling this will pop-up a window for you to login to the SiCKRAGE API"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1388
+#: sickrage/core/webserver/views/config/general.mako:1386
 msgid "GIT Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1393
+#: sickrage/core/webserver/views/config/general.mako:1391
 msgid "Git Branches"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1405
+#: sickrage/core/webserver/views/config/general.mako:1403
 msgid "GIT Branch Version"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1418
+#: sickrage/core/webserver/views/config/general.mako:1416
 msgid "Checkout Branch"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1429
+#: sickrage/core/webserver/views/config/general.mako:1427
 msgid "GIT executable path"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1442
+#: sickrage/core/webserver/views/config/general.mako:1440
 msgid "ex: /path/to/git"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1447
+#: sickrage/core/webserver/views/config/general.mako:1445
 msgid "Verify Path"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1457
+#: sickrage/core/webserver/views/config/general.mako:1455
 msgid "Click verify path to test."
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1465
+#: sickrage/core/webserver/views/config/general.mako:1463
 msgid "Git reset"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1471
+#: sickrage/core/webserver/views/config/general.mako:1469
 msgid ""
 "removes untracked files and performs a hard reset on git branch "
 "automatically to help resolve update issues"
@@ -6322,7 +6349,7 @@ msgid "Unable to force an update on scene exceptions of the show."
 msgstr ""
 
 #: sickrage/core/webserver/handlers/config/__init__.py:34
-#: sickrage/core/webserver/handlers/config/backup_restore.py:38
+#: sickrage/core/webserver/handlers/config/backup_restore.py:39
 msgid "Backup/Restore"
 msgstr ""
 
@@ -6340,6 +6367,7 @@ msgid "Config - Anime"
 msgstr ""
 
 #: sickrage/core/webserver/handlers/config/anime.py:64
+#: sickrage/core/webserver/handlers/config/backup_restore.py:118
 #: sickrage/core/webserver/handlers/config/general.py:284
 #: sickrage/core/webserver/handlers/config/notifications.py:420
 #: sickrage/core/webserver/handlers/config/postprocessing.py:215
@@ -6353,36 +6381,40 @@ msgstr ""
 msgid "[ANIME] Configuration Saved to Database"
 msgstr ""
 
-#: sickrage/core/webserver/handlers/config/backup_restore.py:37
+#: sickrage/core/webserver/handlers/config/backup_restore.py:38
 msgid "Config - Backup/Restore"
 msgstr ""
 
-#: sickrage/core/webserver/handlers/config/backup_restore.py:53
+#: sickrage/core/webserver/handlers/config/backup_restore.py:54
 msgid "Backup SUCCESSFUL"
 msgstr ""
 
-#: sickrage/core/webserver/handlers/config/backup_restore.py:55
+#: sickrage/core/webserver/handlers/config/backup_restore.py:56
 msgid "Backup FAILED!"
 msgstr ""
 
-#: sickrage/core/webserver/handlers/config/backup_restore.py:57
+#: sickrage/core/webserver/handlers/config/backup_restore.py:58
 msgid "You need to choose a folder to save your backup to first!"
 msgstr ""
 
-#: sickrage/core/webserver/handlers/config/backup_restore.py:85
+#: sickrage/core/webserver/handlers/config/backup_restore.py:86
 msgid "Successfully extracted restore files to "
 msgstr ""
 
-#: sickrage/core/webserver/handlers/config/backup_restore.py:86
+#: sickrage/core/webserver/handlers/config/backup_restore.py:87
 msgid "<br>Restart sickrage to complete the restore."
 msgstr ""
 
-#: sickrage/core/webserver/handlers/config/backup_restore.py:88
+#: sickrage/core/webserver/handlers/config/backup_restore.py:89
 msgid "Restore FAILED"
 msgstr ""
 
-#: sickrage/core/webserver/handlers/config/backup_restore.py:90
+#: sickrage/core/webserver/handlers/config/backup_restore.py:91
 msgid "You need to select a backup file to restore!"
+msgstr ""
+
+#: sickrage/core/webserver/handlers/config/backup_restore.py:120
+msgid "[BACKUP] Configuration Saved to Database"
 msgstr ""
 
 #: sickrage/core/webserver/handlers/config/general.py:38
