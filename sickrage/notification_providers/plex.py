@@ -69,14 +69,14 @@ class PLEXNotification(NotificationProvider):
         enc_command = urlencode(command)
         sickrage.app.log.debug('PLEX: Encoded API command: ' + enc_command)
 
-        url = 'http://%s/xbmcCmds/xbmcHttp/?%s' % (host, enc_command)
+        url = f'http://{host}/xbmcCmds/xbmcHttp/?{enc_command}'
 
         headers = {}
 
         # if we have a password, use authentication
         if password:
-            base64string = base64.b64encode(bytes('{}:{}'.format(username, password).replace('\n', ''), 'utf-8'))
-            authheader = "Basic {}".format(base64string.decode('ascii'))
+            base64string = base64.b64encode(bytes(f'{username}:{password}'.replace('\n', ''), 'utf-8'))
+            authheader = f"Basic {base64string.decode('ascii')}"
             headers['Authorization'] = authheader
             sickrage.app.log.debug('PLEX: Contacting (with auth header) via url: ' + url)
         else:
@@ -84,7 +84,7 @@ class PLEXNotification(NotificationProvider):
 
         resp = WebSession().get(url, headers=headers)
         if not resp or not resp.text:
-            sickrage.app.log.warning('PLEX: Warning: Couldn\'t contact Plex at {}: {}'.format(url, e))
+            sickrage.app.log.warning(f"PLEX: Warning: Couldn't contact Plex at {url}")
             return False
 
         sickrage.app.log.debug('PLEX: HTTP response: ' + resp.text.replace('\n', ''))
@@ -125,10 +125,10 @@ class PLEXNotification(NotificationProvider):
             sickrage.app.log.debug('PLEX: Sending notification to \'%s\' - %s' % (curHost, message))
 
             command = {'command': 'ExecBuiltIn',
-                       'parameter': 'Notification(%s,%s)' % (title, message)}
+                       'parameter': f'Notification({title},{message})'}
             notify_result = self._send_to_plex(command, curHost, username, password)
             if notify_result:
-                result += '%s:%s' % (curHost, str(notify_result))
+                result += f'{curHost}:{str(notify_result)}'
 
         return result
 
