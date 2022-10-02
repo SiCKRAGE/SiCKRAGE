@@ -1325,7 +1325,8 @@ class GetManualSearchStatusHandler(BaseHandler):
             if not search_task:
                 # Finished Manual Searches
                 episodes += self.get_episodes(int(show), task_items['season'], task_items['episode'], 'Finished')
-                del sickrage.app.search_queue.TASK_HISTORY[task_id]
+                if task_id in sickrage.app.search_queue.TASK_HISTORY:
+                    del sickrage.app.search_queue.TASK_HISTORY[task_id]
 
             if isinstance(search_task, (ManualSearchTask, FailedSearchTask)):
                 if search_task.status == TaskStatus.QUEUED:
