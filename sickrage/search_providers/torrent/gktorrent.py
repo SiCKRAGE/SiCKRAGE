@@ -31,7 +31,7 @@ from sickrage.search_providers import TorrentProvider
 
 class GKTorrentProvider(TorrentProvider):
     def __init__(self):
-        super(GKTorrentProvider, self).__init__('GKTorrent', 'https://www.gktorrent.pw', False)
+        super(GKTorrentProvider, self).__init__('GKTorrent', 'https://www.gktorrent.cc', False)
 
         # custom settings
         self.custom_settings = {

@@ -28,7 +28,7 @@ from sickrage.search_providers import TorrentProvider
 
 class TORRENTZProvider(TorrentProvider):
     def __init__(self):
-        super(TORRENTZProvider, self).__init__("Torrentz", 'https://torrentz2.eu', False)
+        super(TORRENTZProvider, self).__init__("Torrentz", 'https://torrentz2.nz', False)
 
         # custom settings
         self.custom_settings = {

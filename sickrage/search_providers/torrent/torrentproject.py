@@ -27,7 +27,7 @@ from sickrage.search_providers import TorrentProvider
 
 class TorrentProjectProvider(TorrentProvider):
     def __init__(self):
-        super(TorrentProjectProvider, self).__init__('TorrentProject', 'https://torrentproject.se', False)
+        super(TorrentProjectProvider, self).__init__('TorrentProject', 'https://torrentproject.cc', False)
 
         # custom settings
         self.custom_settings = {
