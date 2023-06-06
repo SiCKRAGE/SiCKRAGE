@@ -1,21 +1,21 @@
 # Translations template for sickrage.
-# Copyright (C) 2022 SiCKRAGE
+# Copyright (C) 2023 SiCKRAGE
 # This file is distributed under the same license as the sickrage project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: sickrage 10.0.70.dev3\n"
+"Project-Id-Version: sickrage 10.0.71.dev1\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2022-09-26 15:47+0000\n"
+"POT-Creation-Date: 2023-06-06 00:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.12.1\n"
 
 #: sickrage/core/webserver/views/api_builder.mako:25
 msgid "Profile"
@@ -6931,8 +6931,8 @@ msgid "Syncing Trakt with SiCKRAGE"
 msgstr ""
 
 #: sickrage/core/webserver/handlers/home/__init__.py:1212
-#: sickrage/core/webserver/handlers/home/__init__.py:1399
-#: sickrage/core/webserver/handlers/home/__init__.py:1485
+#: sickrage/core/webserver/handlers/home/__init__.py:1400
+#: sickrage/core/webserver/handlers/home/__init__.py:1486
 #: sickrage/core/webserver/handlers/manage/__init__.py:76
 msgid "Episode couldn't be retrieved"
 msgstr ""
@@ -6942,24 +6942,24 @@ msgstr ""
 msgid "Can't rename episodes when the show dir is missing."
 msgstr ""
 
-#: sickrage/core/webserver/handlers/home/__init__.py:1384
+#: sickrage/core/webserver/handlers/home/__init__.py:1385
 msgid "Invalid show paramaters"
 msgstr ""
 
-#: sickrage/core/webserver/handlers/home/__init__.py:1392
+#: sickrage/core/webserver/handlers/home/__init__.py:1393
 #, python-format
 msgid "New subtitles downloaded: %s"
 msgstr ""
 
-#: sickrage/core/webserver/handlers/home/__init__.py:1394
+#: sickrage/core/webserver/handlers/home/__init__.py:1395
 msgid "No subtitles downloaded"
 msgstr ""
 
-#: sickrage/core/webserver/handlers/home/__init__.py:1461
+#: sickrage/core/webserver/handlers/home/__init__.py:1462
 msgid "Another episode already has the same scene absolute numbering"
 msgstr ""
 
-#: sickrage/core/webserver/handlers/home/__init__.py:1482
+#: sickrage/core/webserver/handlers/home/__init__.py:1483
 msgid "Another episode already has the same scene numbering"
 msgstr ""
 
