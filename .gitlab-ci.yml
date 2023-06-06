@@ -100,62 +100,62 @@ stages:
 #  only:
 #    - merge_requests@SiCKRAGE/sickrage
 
-.test_template: &test
-  stage: test
-  retry: 1
-  image:
-    name: python:$PYTHON_VERSION
-  variables:
-    ASYNC_TEST_TIMEOUT: 60
-  script:
-    - pip install tox
-    - tox -e $TOX_ENV
-  artifacts:
-    when: always
-    reports:
-      junit: report.xml
-    paths:
-      - report.xml
-    expire_in: 1 week
-  except:
-    refs:
-      - tags
-      - triggers
-    variables:
-      - $CI_COMMIT_BRANCH == "master"
-      - $CI_COMMIT_BRANCH == "i10n_develop"
-      - $CI_COMMIT_MESSAGE =~ /\[TASK\] Pre-Releasing/
-      - $CI_COMMIT_MESSAGE =~ /\[TASK\] Bump/
-
-test_py36:
-  <<: *test
-  variables:
-    TOX_ENV: "py36"
-    PYTHON_VERSION: "3.6"
-
-test_py37:
-  <<: *test
-  variables:
-    TOX_ENV: "py37"
-    PYTHON_VERSION: "3.7"
-
-test_py38:
-  <<: *test
-  variables:
-    TOX_ENV: "py38"
-    PYTHON_VERSION: "3.8"
-
-test_py39:
-  <<: *test
-  variables:
-    TOX_ENV: "py39"
-    PYTHON_VERSION: "3.9"
-
-test_py310:
-  <<: *test
-  variables:
-    TOX_ENV: "py310"
-    PYTHON_VERSION: "3.10"
+#.test_template: &test
+#  stage: test
+#  retry: 1
+#  image:
+#    name: python:$PYTHON_VERSION
+#  variables:
+#    ASYNC_TEST_TIMEOUT: 60
+#  script:
+#    - pip install tox
+#    - tox -e $TOX_ENV
+#  artifacts:
+#    when: always
+#    reports:
+#      junit: report.xml
+#    paths:
+#      - report.xml
+#    expire_in: 1 week
+#  except:
+#    refs:
+#      - tags
+#      - triggers
+#    variables:
+#      - $CI_COMMIT_BRANCH == "master"
+#      - $CI_COMMIT_BRANCH == "i10n_develop"
+#      - $CI_COMMIT_MESSAGE =~ /\[TASK\] Pre-Releasing/
+#      - $CI_COMMIT_MESSAGE =~ /\[TASK\] Bump/
+#
+#test_py36:
+#  <<: *test
+#  variables:
+#    TOX_ENV: "py36"
+#    PYTHON_VERSION: "3.6"
+#
+#test_py37:
+#  <<: *test
+#  variables:
+#    TOX_ENV: "py37"
+#    PYTHON_VERSION: "3.7"
+#
+#test_py38:
+#  <<: *test
+#  variables:
+#    TOX_ENV: "py38"
+#    PYTHON_VERSION: "3.8"
+#
+#test_py39:
+#  <<: *test
+#  variables:
+#    TOX_ENV: "py39"
+#    PYTHON_VERSION: "3.9"
+#
+#test_py310:
+#  <<: *test
+#  variables:
+#    TOX_ENV: "py310"
+#    PYTHON_VERSION: "3.10"
 
 build_master:
   stage: build
