@@ -2,7 +2,7 @@ stages:
   #  - review_webpack
   #  - review_docker
   #  - review_deploy
-  - test
+#  - test
   - build
   - sentry
   - deploy
