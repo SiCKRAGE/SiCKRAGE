@@ -2,11 +2,12 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
-#### [v10.0.71.dev1](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.70...v10.0.71.dev1)
+#### [v10.0.71.dev2](https://git.sickrage.ca/SiCKRAGE/sickrage/compare/10.0.70...v10.0.71.dev2)
 
 - added 1337x torrent provider [`0f9f562`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/0f9f562fe5760e2a0283a2c26c887748251ca8ea)
 - removed misc non-working public torrent providers [`35b38ca`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/35b38ca556f92e6013b868e9015efef3aa38dd34)
 - disable tests till fixed [`a7dbfce`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/a7dbfce40ac32cedabb7ef63041836f9ff9cc71a)
+- disable sentry in gitlab ci/cd script [`d7b1b2c`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/d7b1b2c3ad0fd4c9a73c597c52f9f9420952218c)
 - set language for tox test env [`815b4d9`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/815b4d9e4bdd3255ee2df0cf092fdb1df35db0cb)
 - misc updates to plex notification client [`e9a18e7`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/e9a18e773d76d6ebd3c6ad9c1993ab84163a5cf3)
 - disable tests till fixed [`fe2433b`](https://git.sickrage.ca/SiCKRAGE/sickrage/commit/fe2433b73834aac8c0bf4ca4e49c9065fc8a0c54)
