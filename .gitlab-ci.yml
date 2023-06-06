@@ -1,10 +1,10 @@
 stages:
-  #  - review_webpack
-  #  - review_docker
-  #  - review_deploy
+#  - review_webpack
+#  - review_docker
+#  - review_deploy
 #  - test
   - build
-  - sentry
+#  - sentry
   - deploy
   - publish
 
@@ -246,30 +246,30 @@ build_develop:
       - $CI_COMMIT_MESSAGE =~ /\[TASK\] Pre-Releasing/
       - $CI_COMMIT_MESSAGE =~ /\[TASK\] Bump/
 
-sentry:
-  stage: sentry
-  retry: 2
-  image:
-    name: getsentry/sentry-cli
-    entrypoint: [ "" ]
-  script:
-    - apk add --no-cache git
-    - export SENTRY_URL=$SENTRY_URL
-    - export SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
-    - export SENTRY_ORG=$SENTRY_ORG
-    - export SENTRY_PROJECT=$SENTRY_PROJECT
-    - RELEASE_VERSION=$(awk -F '"' '/^__version__/ {print $2}' sickrage/__init__.py)
-    - RELEASE_BRANCH=$(git branch -a --contains tags/$CI_COMMIT_REF_NAME | grep origin | sed 's/.*origin\///')
-    - sentry-cli releases new --project $SENTRY_PROJECT $RELEASE_VERSION
-    - sentry-cli releases set-commits --auto $RELEASE_VERSION
-    - sentry-cli releases finalize $RELEASE_VERSION
-#    - sentry-cli releases deploys $RELEASE_VERSION new -e $RELEASE_BRANCH
-  only:
-    - /^[0-9.]+$/@SiCKRAGE/sickrage
-    - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage
-  except:
-    - branches
-    - triggers
+#sentry:
+#  stage: sentry
+#  retry: 2
+#  image:
+#    name: getsentry/sentry-cli
+#    entrypoint: [ "" ]
+#  script:
+#    - apk add --no-cache git
+#    - export SENTRY_URL=$SENTRY_URL
+#    - export SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
+#    - export SENTRY_ORG=$SENTRY_ORG
+#    - export SENTRY_PROJECT=$SENTRY_PROJECT
+#    - RELEASE_VERSION=$(awk -F '"' '/^__version__/ {print $2}' sickrage/__init__.py)
+#    - RELEASE_BRANCH=$(git branch -a --contains tags/$CI_COMMIT_REF_NAME | grep origin | sed 's/.*origin\///')
+#    - sentry-cli releases new --project $SENTRY_PROJECT $RELEASE_VERSION
+#    - sentry-cli releases set-commits --auto $RELEASE_VERSION
+#    - sentry-cli releases finalize $RELEASE_VERSION
+##    - sentry-cli releases deploys $RELEASE_VERSION new -e $RELEASE_BRANCH
+#  only:
+#    - /^[0-9.]+$/@SiCKRAGE/sickrage
+#    - /^[0-9.]+dev[0-9]+$/@SiCKRAGE/sickrage
+#  except:
+#    - branches
+#    - triggers
 
 publish:
   stage: publish
